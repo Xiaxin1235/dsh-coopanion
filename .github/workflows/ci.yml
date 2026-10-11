@@ -66,7 +66,9 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           mkdir -p .cache/release
-          npm pack --ignore-scripts --silent --pack-destination .cache/release
+          packed=$(npm pack --ignore-scripts --silent --pack-destination .cache/release)
+          version=$(node -p 'JSON.parse(require("node:fs").readFileSync("package.json", "utf8")).version')
+          mv ".cache/release/$packed" ".cache/release/dsh-coopanion-$version.tgz"
           node scripts/check-package.mjs .cache/release/dsh-coopanion-*.tgz --write-report
           cp .cache/release/dsh-coopanion-*.tgz .cache/release/dsh-coopanion.tgz
           cp paper-star.zip .cache/release/

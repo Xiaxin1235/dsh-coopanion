@@ -10,12 +10,15 @@ import { pathToFileURL, fileURLToPath } from 'node:url';
 import { chromium } from 'playwright-core';
 import { importCharacter } from './helpers/characters.mjs';
 import { petClick } from './helpers/native-pointer.mjs';
+import { npmTarballName } from '../scripts/release-support.mjs';
 
 const version = process.env.DSH_TEST_VERSION ?? '0.2.0-rc.2';
 assert.ok(['0.2.0-rc.2', '0.2.1-alpha.1'].includes(version), 'test only advertised DSH versions');
 const project = fileURLToPath(new URL('../', import.meta.url));
 const manifest = JSON.parse(await readFile(join(project, 'package.json'), 'utf8'));
-const archive = resolve(process.env.DSH_TEST_PACKAGE ?? join(process.env.DSH_TEST_PACKAGE_DIR ?? project, `${manifest.name}-${manifest.version}.tgz`));
+const archive = resolve(process.env.DSH_TEST_PACKAGE ?? (process.env.DSH_TEST_PACKAGE_DIR
+  ? join(process.env.DSH_TEST_PACKAGE_DIR, `dsh-coopanion-${manifest.version}.tgz`)
+  : join(project, npmTarballName(manifest))));
 assert.ok(existsSync(archive), 'run npm pack before the installation test');
 // Windows TEMP can be an 8.3 alias (RUNNER~1). Use one physical path for the
 // CLI and profile loaders so stateful host modules share the same ESM identity.
