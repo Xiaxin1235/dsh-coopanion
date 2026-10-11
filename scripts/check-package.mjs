@@ -4,7 +4,7 @@ import { createHash } from 'node:crypto';
 import { dirname, join } from 'node:path';
 import { parseArgs } from 'node:util';
 import assert from 'node:assert/strict';
-import { git, readJson, releaseNotes, verifyMetadata } from './release-support.mjs';
+import { git, npmTarballName, readJson, releaseNotes, verifyMetadata } from './release-support.mjs';
 const { values, positionals } = parseArgs({ allowPositionals: true, options: {
   'write-report': { type: 'boolean', default: false },
   report: { type: 'string' },
@@ -14,12 +14,14 @@ const { values, positionals } = parseArgs({ allowPositionals: true, options: {
 assert.ok(positionals.length <= 1, 'pass at most one tarball');
 assert.ok(!(values['write-report'] && values.report), 'write or verify a report, not both');
 const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
-const archive = positionals[0] ?? `${pkg.name}-${pkg.version}.tgz`;
+const archive = positionals[0] ?? npmTarballName(pkg);
 const entries = execFileSync('tar', ['-tzf', archive], { encoding: 'utf8' }).trim().split('\n');
 assert.ok(entries.every(path => path.startsWith('package/') && !path.split('/').includes('..')), 'invalid archive paths');
 const unpack = path => execFileSync('tar', ['-xOzf', archive, `package/${path}`], { encoding: 'utf8' });
 const packed = JSON.parse(unpack('package.json'));
 verifyMetadata(packed, JSON.parse(unpack('npm-shrinkwrap.json')));
+assert.ok(unpack('cordis.patch.yml').includes(`name: '${packed.name}'`), 'bundle must load the scoped package');
+assert.ok(unpack('dist/client.js').includes(`id: ${JSON.stringify(packed.name)}`), 'browser module must register the scoped package');
 if (values['expected-version']) assert.equal(packed.version, values['expected-version'], 'archive version differs from tag');
 else assert.equal(packed.version, pkg.version);
 assert.equal(packed.repository.url, pkg.repository.url);

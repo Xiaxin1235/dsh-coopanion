@@ -40,7 +40,7 @@ v0.4.0 移除了旧 Canvas 关键帧引擎、`dsh-character` v1 协议、`.dshpe
 
 支持 **DSH 0.2.0-rc.2 和 0.2.1-alpha.1**；其他版本未声明兼容。
 
-1. 下载对应 [Release](https://github.com/takboo/dsh-coopanion/releases) 的 `.tgz`，或按下面步骤构建 `dsh-coopanion-0.4.3.tgz`。
+1. 下载对应 [Release](https://github.com/takboo/dsh-coopanion/releases) 的 `dsh-coopanion-0.4.3.tgz`，或按下面步骤构建 `takboo-dsh-coopanion-0.4.3.tgz`。npm 包名为 `@takboo/dsh-coopanion`；本地 `npm pack` 的文件名包含 scope。
 2. 在 Harness 侧边栏 **插件** 页安装压缩包的绝对路径，启用 `dsh-coopanion`。
 3. 完全退出再重新打开 Harness。首次启动时会下载并校验 Electron 44 运行时。
 4. 打开一段 Harness 会话，双击角色聊天，或从 **Settings → 桌宠** 管理角色。

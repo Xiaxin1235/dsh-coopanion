@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { test } from 'node:test';
-import { npmVersionState, releaseNotes } from '../scripts/release-support.mjs';
+import { npmVersionState, packageName, releaseNotes } from '../scripts/release-support.mjs';
 
 const project = fileURLToPath(new URL('../', import.meta.url));
 const validator = resolve(project, 'scripts/verify-release.mjs');
@@ -89,9 +89,12 @@ test('release notes contain only the target version and reject duplicates', () =
 
 test('npm preflight distinguishes unused, identical, conflicting and unavailable versions', async () => {
   const integrity = 'sha512-tested-bytes';
-  const request = body => async () => new Response(JSON.stringify(body));
-  assert.equal(await npmVersionState('dsh-coopanion', '1.0.0', integrity, async () => new Response('', { status: 404 })), 'unpublished');
-  assert.equal(await npmVersionState('dsh-coopanion', '1.0.0', integrity, request({ name: 'dsh-coopanion', version: '1.0.0', dist: { integrity } })), 'published');
-  await assert.rejects(npmVersionState('dsh-coopanion', '1.0.0', integrity, request({ name: 'dsh-coopanion', version: '1.0.0', dist: { integrity: 'different' } })), /different bytes/);
-  await assert.rejects(npmVersionState('dsh-coopanion', '1.0.0', integrity, async () => new Response('', { status: 503 })), /HTTP 503/);
+  const request = (body, status = 200) => async url => {
+    assert.equal(url, 'https://registry.npmjs.org/%40takboo%2Fdsh-coopanion/1.0.0');
+    return new Response(JSON.stringify(body), { status });
+  };
+  assert.equal(await npmVersionState(packageName, '1.0.0', integrity, request({}, 404)), 'unpublished');
+  assert.equal(await npmVersionState(packageName, '1.0.0', integrity, request({ name: packageName, version: '1.0.0', dist: { integrity } })), 'published');
+  await assert.rejects(npmVersionState(packageName, '1.0.0', integrity, request({ name: packageName, version: '1.0.0', dist: { integrity: 'different' } })), /different bytes/);
+  await assert.rejects(npmVersionState(packageName, '1.0.0', integrity, request({}, 503)), /HTTP 503/);
 });

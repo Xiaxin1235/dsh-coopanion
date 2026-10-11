@@ -2,7 +2,7 @@
 
 启用 npm 与 GitHub Release 的稳定标签发布流程。Linux、macOS、Windows 的类型、单元、浏览器、原生窗口测试，以及两版 DSH 的六组真实安装测试通过后，npm 与 Release 使用同一份压缩包；Release 提供固定名称插件包、校验值和源码提交报告，供 dshmarket 下载。
 
-Windows 安装测试使用真实临时目录路径、系统鼠标坐标和宿主公开退出接口，验证设置落盘、重启恢复与正常关闭。更新版本元数据、安装示例和首次 npm 认证操作说明。此版本用于首次验证 Trusted Publisher 的 OIDC 发布；运行记录见仓库 Actions。安装包：`dsh-coopanion-0.4.3.tgz`。
+Windows 安装测试使用真实临时目录路径、系统鼠标坐标和宿主公开退出接口，验证设置落盘、重启恢复与正常关闭。npm 包采用 `@takboo/dsh-coopanion`，同步宿主加载路径、浏览器模块标识、锁文件和发布校验；本地 pack 文件名包含 scope，Release 保持固定下载名称。此版本用于首次创建 npm 包，后续新版本通过 Trusted Publisher 验证 OIDC；运行记录见仓库 Actions。安装包：`dsh-coopanion-0.4.3.tgz`。
 
 # v0.4.2
 

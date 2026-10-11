@@ -3,12 +3,14 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 
 export const repository = 'takboo/dsh-coopanion';
+export const packageName = '@takboo/dsh-coopanion';
+export const npmTarballName = pkg => `${pkg.name.replace(/^@/, '').replaceAll('/', '-')}-${pkg.version}.tgz`;
 export const stableVersion = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
 export const readJson = path => JSON.parse(readFileSync(path, 'utf8'));
 export const git = args => execFileSync('git', args, { encoding: 'utf8' }).trim();
 
 export function verifyMetadata(pkg, lock) {
-  assert.equal(pkg.name, 'dsh-coopanion');
+  assert.equal(pkg.name, packageName);
   assert.match(pkg.version, stableVersion, 'releases use stable SemVer versions');
   assert.equal(pkg.repository?.url, `git+https://github.com/${repository}.git`);
   assert.equal(pkg.license, 'AGPL-3.0-or-later');
