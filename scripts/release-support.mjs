@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
+import { setTimeout as delay } from 'node:timers/promises';
 
 export const repository = 'takboo/dsh-coopanion';
 export const packageName = '@takboo/dsh-coopanion';
@@ -44,13 +45,23 @@ export function releaseNotes(notes, version) {
   return `# v${version}\n\n${content}\n`;
 }
 
-export async function npmVersionState(name, version, integrity, request = fetch) {
-  const response = await request(`https://registry.npmjs.org/${encodeURIComponent(name)}/${encodeURIComponent(version)}`, { signal: AbortSignal.timeout(15000) });
-  if (response.status === 404) return 'unpublished';
-  assert.ok(response.ok, `npm registry lookup failed: HTTP ${response.status}`);
-  const published = await response.json();
-  assert.equal(published.name, name, 'registry returned a different package');
-  assert.equal(published.version, version, 'registry returned a different version');
-  assert.equal(published.dist?.integrity, integrity, 'npm version is occupied by different bytes; choose a new version');
-  return 'published';
+export async function npmVersionState(name, version, integrity, request = fetch, { waitForPublished = false, timeoutMs = 5 * 60_000, pollMs = 10_000 } = {}) {
+  const deadline = Date.now() + timeoutMs;
+  while (true) {
+    const requestTimeout = waitForPublished ? Math.max(1, Math.min(15_000, deadline - Date.now())) : 15_000;
+    const response = await request(`https://registry.npmjs.org/${encodeURIComponent(name)}/${encodeURIComponent(version)}`, { signal: AbortSignal.timeout(requestTimeout) });
+    if (response.status === 404) {
+      if (!waitForPublished) return 'unpublished';
+      const remaining = deadline - Date.now();
+      assert.ok(remaining > 0, `npm has not published the verified bytes within ${timeoutMs} ms`);
+      await delay(Math.min(pollMs, remaining));
+      continue;
+    }
+    assert.ok(response.ok, `npm registry lookup failed: HTTP ${response.status}`);
+    const published = await response.json();
+    assert.equal(published.name, name, 'registry returned a different package');
+    assert.equal(published.version, version, 'registry returned a different version');
+    assert.equal(published.dist?.integrity, integrity, 'npm version is occupied by different bytes; choose a new version');
+    return 'published';
+  }
 }

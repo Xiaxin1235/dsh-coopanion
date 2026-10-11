@@ -98,3 +98,40 @@ test('npm preflight distinguishes unused, identical, conflicting and unavailable
   await assert.rejects(npmVersionState(packageName, '1.0.0', integrity, request({ name: packageName, version: '1.0.0', dist: { integrity: 'different' } })), /different bytes/);
   await assert.rejects(npmVersionState(packageName, '1.0.0', integrity, request({}, 503)), /HTTP 503/);
 });
+
+test('post-publish verification waits for the registry to expose identical bytes', async () => {
+  const integrity = 'sha512-tested-bytes';
+  let calls = 0;
+  const request = async () => {
+    calls += 1;
+    return calls < 3
+      ? new Response('{}', { status: 404 })
+      : new Response(JSON.stringify({ name: packageName, version: '1.0.0', dist: { integrity } }));
+  };
+  assert.equal(await npmVersionState(packageName, '1.0.0', integrity, request, { waitForPublished: true, pollMs: 0 }), 'published');
+  assert.equal(calls, 3);
+});
+
+test('post-publish verification has a deadline and fails immediately on conflicts or registry errors', async () => {
+  const integrity = 'sha512-tested-bytes';
+  let calls = 0;
+  const missing = async () => {
+    calls += 1;
+    return new Response('{}', { status: 404 });
+  };
+  await assert.rejects(npmVersionState(packageName, '1.0.0', integrity, missing, { waitForPublished: true, timeoutMs: 0 }), /npm has not published the verified bytes/);
+  assert.equal(calls, 1);
+
+  for (const [status, body, error] of [
+    [200, { name: packageName, version: '1.0.0', dist: { integrity: 'different' } }, /different bytes/],
+    [503, {}, /HTTP 503/],
+  ]) {
+    calls = 0;
+    const request = async () => {
+      calls += 1;
+      return new Response(JSON.stringify(body), { status });
+    };
+    await assert.rejects(npmVersionState(packageName, '1.0.0', integrity, request, { waitForPublished: true, pollMs: 0 }), error);
+    assert.equal(calls, 1);
+  }
+});

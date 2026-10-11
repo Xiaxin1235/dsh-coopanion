@@ -14,6 +14,8 @@ npm 包名为 **`@takboo/dsh-coopanion`**，采用维护者的 scope，并以 pu
 
 发布顺序为 **完整 CI → npm → GitHub Release**。Release 包含版本化 `.tgz`、相同字节的 `dsh-coopanion.tgz`、示例角色、`SHA256SUMS`、`verification.json` 和仅当前版本的说明。固定名称供市场下载链接使用，避免 `latest/download/<带版本文件名>` 在升级后失效。
 
+npm 接受上传后可能异步处理数分钟。发布后的 `--require-published` 校验对尚未同步的 404 每 10 秒重试，最多等待 5 分钟；已存在但字节不同、其他 HTTP 错误或等待超时仍会失败。上传前的版本检查保持单次查询，未发布版本可进入上传步骤。
+
 发布新版本：
 
 ```bash

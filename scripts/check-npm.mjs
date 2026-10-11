@@ -14,7 +14,7 @@ assert.ok(values.report, '--report is required');
 const report = readJson(values.report);
 assert.equal(report.name, packageName);
 assert.equal(report.integrity, `sha512-${createHash('sha512').update(readFileSync(positionals[0])).digest('base64')}`, 'tarball differs from verified report');
-const state = await npmVersionState(report.name, report.version, report.integrity);
+const state = await npmVersionState(report.name, report.version, report.integrity, fetch, { waitForPublished: values['require-published'] });
 if (values['require-published']) assert.equal(state, 'published', 'npm has not published the verified bytes');
 if (values['github-output']) {
   assert.ok(process.env.GITHUB_OUTPUT);
