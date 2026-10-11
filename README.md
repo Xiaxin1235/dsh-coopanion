@@ -2,7 +2,7 @@
 
 给 [DeepSeek Harness Desktop](https://github.com/deepseek-ai/deepseek-harness) 加一只桌面伙伴。她会陪你工作，在任务完成、出错或需要确认时提醒你；双击角色，可以向已打开的 Harness 会话发送消息。
 
-**v0.4.2 使用 Coopanion 的原生动画与角色运行时，组合程序采用 AGPL-3.0-or-later。** 大肥鱼的网格变形、弹簧动作、动态五官、物理拖拽和八套配色直接复用上游固定版本。角色贴图保留独立权利声明，见 [第三方声明](THIRD_PARTY_NOTICES.md) 和 [上游版本记录](web/upstream/UPSTREAM.md)。
+**v0.4.3 使用 Coopanion 的原生动画与角色运行时，组合程序采用 AGPL-3.0-or-later。** 大肥鱼的网格变形、弹簧动作、动态五官、物理拖拽和八套配色直接复用上游固定版本。角色贴图保留独立权利声明，见 [第三方声明](THIRD_PARTY_NOTICES.md) 和 [上游版本记录](web/upstream/UPSTREAM.md)。
 
 ## 功能
 
@@ -40,7 +40,7 @@ v0.4.0 移除了旧 Canvas 关键帧引擎、`dsh-character` v1 协议、`.dshpe
 
 支持 **DSH 0.2.0-rc.2 和 0.2.1-alpha.1**；其他版本未声明兼容。
 
-1. 下载对应 [Release](https://github.com/takboo/dsh-coopanion/releases) 的 `.tgz`，或按下面步骤构建 `dsh-coopanion-0.4.2.tgz`。本分支的修改不代表该版本已经发布。
+1. 下载对应 [Release](https://github.com/takboo/dsh-coopanion/releases) 的 `.tgz`，或按下面步骤构建 `dsh-coopanion-0.4.3.tgz`。
 2. 在 Harness 侧边栏 **插件** 页安装压缩包的绝对路径，启用 `dsh-coopanion`。
 3. 完全退出再重新打开 Harness。首次启动时会下载并校验 Electron 44 运行时。
 4. 打开一段 Harness 会话，双击角色聊天，或从 **Settings → 桌宠** 管理角色。
@@ -48,7 +48,7 @@ v0.4.0 移除了旧 Canvas 关键帧引擎、`dsh-character` v1 协议、`.dshpe
 也可使用 Desktop 自带的 CLI。先启动 Desktop 一次初始化 profile，完全退出应用，再执行：
 
 ```bash
-dsh plugin --profile desktop add /absolute/path/dsh-coopanion-0.4.2.tgz
+dsh plugin --profile desktop add /absolute/path/dsh-coopanion-0.4.3.tgz
 ```
 
 npm 安装的 dsh 不能管理 Desktop 所拥有的 profile。Desktop 完全退出后执行包管理命令，再重新打开应用。
@@ -115,6 +115,6 @@ npm run character:pack -- examples/star paper-star.zip
 
 CI 在 **Linux、macOS、Windows** 执行元数据检查、类型检查、单元测试、浏览器交互及真实 Electron 窗口测试，并在三平台分别验证两个 DSH 版本的实际安装。稳定 `v<major>.<minor>.<patch>` 标签派发 main 上的发布流程；全部检查通过后，用 npm OIDC 发布已验证的同一份 `.tgz`，再创建 GitHub Release，附带版本化和固定名称的插件包、示例角色、校验值、源码提交报告及当前版本说明。
 
-首次 npm 包创建和 Trusted Publisher 绑定需要维护者认证；dshmarket 通过社区目录 PR 收录，再自动关联 npm 包。具体操作、首次启用和失败重跑见 [发布说明](docs/releasing.md)。本分支的流程配置不代表 npm 发布或市场收录已经完成。
+首次 npm 包创建和 Trusted Publisher 绑定需要维护者认证；dshmarket 通过社区目录 PR 收录，再自动关联 npm 包。具体操作、首次启用和失败重跑见 [发布说明](docs/releasing.md)，市场条目的收录状态见 [目录 PR](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/7073)。
 
 插件没有遥测或独立模型 API。上游代码和角色资源已固定在仓库中，不在启动时在线拉取。Electron 首次准备仍从官方发行源下载并校验；Node 24 可用 `NODE_USE_ENV_PROXY=1` 沿用已有代理变量。

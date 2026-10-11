@@ -29,7 +29,7 @@ npm 已成功而附档失败时，优先在 7 天 artifact 保留期内重跑失
 
 ## 首次 npm 认证
 
-2026-10-10 检查时 `dsh-coopanion` 尚不存在，本机 `npm whoami` 返回 401；自动发布的配置已经准备，但尚未证明 OIDC 实跑成功。
+以下步骤用于 npm 包尚不存在时的首次启用。包创建且 Trusted Publisher 已验证后，后续版本只需提交版本更新、合并至 main 并推送稳定标签。发布状态以 [Release 工作流记录](https://github.com/takboo/dsh-coopanion/actions/workflows/release.yml) 和 npm registry 为准。
 
 npm 要求包已存在才能绑定 Trusted Publisher，见 [npm trust 前置条件](https://docs.npmjs.com/cli/v11/commands/npm-trust/)。首次需要维护者使用自己的 npm 账号登录及完成 2FA，并发布完整 CI 通过的真实包；不要创建占位包。
 
@@ -42,7 +42,7 @@ npm 要求包已存在才能绑定 Trusted Publisher，见 [npm trust 前置条�
    npm trust github dsh-coopanion --repo takboo/dsh-coopanion --file release.yml --allow-publish
    ```
 
-5. 重跑首次失败的 job，确认 npm identity 匹配后继续附档。下一版本通过 OIDC 发布时才验证 Trusted Publisher；新配置需在 **2 天内**首次成功使用，否则应在下次发版前重新配置，见 [npm 官方说明](https://docs.npmjs.com/trusted-publishers/)。OIDC 发布公开仓库 / 公开包时自动生成 provenance；不需要长期 `NPM_TOKEN`。
+5. 重跑首次失败的 job，确认 npm identity 匹配后继续附档。这个 job 会跳过已有的相同版本上传，因此不能证明 OIDC 已验证。再更新 package / shrinkwrap 版本和发布说明，合并至 main 并推送下一版本的稳定标签，确认 npm 上传步骤实际执行、registry integrity 与报告一致，并生成 provenance。新配置需在 **2 天内**首次成功使用，否则应在下次发版前重新配置，见 [npm 官方说明](https://docs.npmjs.com/trusted-publishers/)。OIDC 发布公开仓库 / 公开包时自动生成 provenance；不需要长期 `NPM_TOKEN`。
 
 ## dshmarket 上架
 
