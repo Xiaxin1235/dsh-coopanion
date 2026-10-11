@@ -1,3 +1,9 @@
+# v0.4.4
+
+在 `@takboo/dsh-coopanion` 首次创建后，通过下一稳定标签验证 Trusted Publisher 的实际 OIDC 上传与 provenance。npm 和 GitHub Release 继续使用完成三平台及六组宿主安装检查的同一份压缩包；发布记录和校验报告供核对来源与版本。
+
+同步 package / shrinkwrap 版本及安装示例。安装包：`dsh-coopanion-0.4.4.tgz`。
+
 # v0.4.3
 
 启用 npm 与 GitHub Release 的稳定标签发布流程。Linux、macOS、Windows 的类型、单元、浏览器、原生窗口测试，以及两版 DSH 的六组真实安装测试通过后，npm 与 Release 使用同一份压缩包；Release 提供固定名称插件包、校验值和源码提交报告，供 dshmarket 下载。
