@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
-import { existsSync } from 'node:fs';
+import { existsSync, realpathSync } from 'node:fs';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:net';
 import { tmpdir } from 'node:os';
@@ -17,7 +17,9 @@ const project = fileURLToPath(new URL('../', import.meta.url));
 const manifest = JSON.parse(await readFile(join(project, 'package.json'), 'utf8'));
 const archive = resolve(process.env.DSH_TEST_PACKAGE ?? join(process.env.DSH_TEST_PACKAGE_DIR ?? project, `${manifest.name}-${manifest.version}.tgz`));
 assert.ok(existsSync(archive), 'run npm pack before the installation test');
-const root = await mkdtemp(join(tmpdir(), 'dsh-coopanion-install-'));
+// Windows TEMP can be an 8.3 alias (RUNNER~1). Use one physical path for the
+// CLI and profile loaders so stateful host modules share the same ESM identity.
+const root = realpathSync.native(await mkdtemp(join(process.env.RUNNER_TEMP ?? tmpdir(), 'dsh-coopanion-install-')));
 const runtime = process.env.DSH_TEST_RUNTIME ? resolve(process.env.DSH_TEST_RUNTIME) : join(root, 'runtime');
 const home = join(root, 'home');
 const profileName = 'coopanion-install';
@@ -29,6 +31,10 @@ const environment = {
   PATH: `${join(project, 'node_modules', '.bin')}${process.platform === 'win32' ? ';' : ':'}${process.env.PATH}`,
   DSH_PET_TEST_DATA_DIR: join(root, 'pet'), DSH_PET_TEST_NO_SANDBOX: '1',
 };
+// Windows environment keys are case-insensitive; keep one PATH entry for spawn.
+if (process.platform === 'win32') {
+  for (const key of Object.keys(environment)) if (key !== 'PATH' && key.toLowerCase() === 'path') delete environment[key];
+}
 const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
 async function waitProfile(pattern) {
   for (let attempt = 0; attempt < 100; attempt++) {
@@ -67,12 +73,12 @@ const uiErrors = [];
 const consoleErrors = [];
 let hostLog = '';
 
-async function run(command, args, cwd = project) {
+async function run(command, args, cwd = project, timeoutMs = 240000) {
   const child = spawn(command, args, { cwd, env: environment, stdio: ['ignore', 'pipe', 'pipe'] });
   let output = '';
   const collect = chunk => { output = (output + chunk.toString()).slice(-32000); };
   child.stdout.on('data', collect); child.stderr.on('data', collect);
-  const deadline = setTimeout(() => child.kill('SIGKILL'), 240000);
+  const deadline = setTimeout(() => child.kill('SIGKILL'), timeoutMs);
   try {
     const [code, signal] = await once(child, 'exit');
     assert.equal(signal, null, output);
@@ -84,7 +90,10 @@ async function run(command, args, cwd = project) {
 async function stop(child) {
   if (!child || child.exitCode !== null || child.signalCode !== null) return;
   const finished = once(child, 'exit');
-  child.kill('SIGTERM');
+  // Windows cannot deliver a catchable SIGTERM. The fixture uses the real
+  // launcher's bounded appExit hook, preserving the clean-exit assertion.
+  if (child === host && child.connected) child.send({ type: 'shutdown-host' });
+  else child.kill('SIGTERM');
   const deadline = setTimeout(() => child.kill('SIGKILL'), 10000);
   try { await finished; } finally { clearTimeout(deadline); }
 }
@@ -93,7 +102,13 @@ try {
   if (!process.env.DSH_TEST_RUNTIME) {
     console.log(`Preparing published DSH ${version} in an isolated test directory…`);
     await mkdir(runtime, { recursive: true });
-    await run(process.platform === 'win32' ? 'npm.cmd' : 'npm', ['install', '--prefix', runtime, '--no-audit', '--no-fund', `@deepseek-ai/dsh@${version}`]);
+    const logs = join(project, 'artifacts', `npm-runtime-${version}`);
+    await mkdir(logs, { recursive: true });
+    assert.ok(process.env.npm_execpath, 'run this test through npm run test:install');
+    // Invoke npm's JavaScript entry directly: Windows cannot exec a .cmd without a shell.
+    const preparing = Date.now();
+    await run(process.execPath, [process.env.npm_execpath, 'install', '--prefix', runtime, '--no-audit', '--no-fund', '--loglevel=info', '--timing', '--logs-dir', logs, `@deepseek-ai/dsh@${version}`], project, process.platform === 'win32' ? 600000 : 240000);
+    console.log(`Published DSH ${version} prepared in ${Math.round((Date.now() - preparing) / 1000)}s.`);
   }
   const cliDir = join(runtime, 'node_modules', '@deepseek-ai', 'dsh');
   assert.equal(JSON.parse(await readFile(join(cliDir, 'package.json'), 'utf8')).version, version);
@@ -130,7 +145,7 @@ try {
   await writeFile(join(observer, 'package.json'), JSON.stringify({ name: 'coopanion-install-observer', private: true, type: 'module' }));
   const fixture = join(observer, 'host.mjs');
   await writeFile(fixture, await readFile(fileURLToPath(new URL('./fixtures/host.mjs', import.meta.url))));
-  await writeFile(join(profile, 'cordis.patch.yml'), `- insert:\n    - id: install-observer\n      name: ${JSON.stringify(fixture)}\n- id: locale\n  config:\n    preference: zh\n- id: ui-settings-models\n  config:\n    credentialOnboarding: false\n- id: dsh-coopanion\n  config:\n    autoStart: true\n    size: 150\n    roam: false\n    notifications: true\n    bubbleDurationMs: 12000\n`);
+  await writeFile(join(profile, 'cordis.patch.yml'), `- insert:\n    - id: install-observer\n      name: ${JSON.stringify(fixture)}\n- id: locale\n  config:\n    preference: zh\n- id: ui-settings-models\n  config:\n    credentialOnboarding: false\n- id: dsh-coopanion\n  config:\n    autoStart: true\n    size: 150\n    roam: true\n    notifications: true\n    bubbleDurationMs: 12000\n`);
   if (process.platform === 'linux' && !environment.DISPLAY) {
     const number = 100 + process.pid % 1000;
     display = spawn(process.env.XVFB_PATH ?? 'Xvfb', [`:${number}`, '-screen', '0', '1200x800x24', '-nolisten', 'tcp'], { stdio: ['ignore', 'ignore', 'pipe'] });
@@ -222,6 +237,15 @@ try {
   settingsPage = settings;
   settings.on('pageerror', error => uiErrors.push(error.message));
   settings.on('console', message => { if (message.type() === 'error') consoleErrors.push(message.text().split('\n')[0]); });
+  settings.on('response', async response => {
+    if (!/settings[/.]mutate/.test(response.url())) return;
+    try {
+      const request = response.request().postDataJSON();
+      if (!JSON.stringify(request.payload).includes('dsh-coopanion')) return;
+      const reply = await response.json();
+      console.log('DSH preference mutation:', JSON.stringify({ request: request.payload, ok: reply.result?.ok, error: reply.result?.error }));
+    } catch (error) { console.error('Settings response diagnostic:', String(error)); }
+  });
   await settings.goto(hostUrl);
   await settings.getByRole('button', { name: /^(继续|Continue)$/, exact: true }).click();
   // A queued background result opens its source in the actual Harness client.
@@ -251,6 +275,7 @@ try {
   await surface.getByRole('status').filter({ hasText: '已保存' }).waitFor();
   await page.waitForFunction(() => getComputedStyle(document.documentElement).getPropertyValue('--size') === '180px');
   assert.match(await readFile(join(profile, 'cordis.patch.yml'), 'utf8'), /size: 180/, 'native Host settings persist the size');
+  await settings.waitForFunction(() => document.querySelector('.dsh-coopanion-settings [role="switch"][aria-label="闲时走动"]').getAttribute('aria-checked') === 'true');
   await petClick(page, { button: 'right' });
   await page.locator('#toggle-roam').click();
   await surface.getByRole('switch', { name: '闲时走动', exact: true }).waitFor();
@@ -259,6 +284,7 @@ try {
   assert.match(await readFile(join(profile, 'cordis.patch.yml'), 'utf8'), /roam: false/, 'desktop menu persists the same Host preference');
   await surface.getByRole('switch', { name: '闲时走动', exact: true }).click();
   await page.waitForFunction(() => document.getElementById('toggle-roam').getAttribute('aria-checked') === 'true');
+  await waitProfile(/roam: true/);
   await page.keyboard.press('Escape');
   await page.close();
   await surface.getByTestId('pet-status').filter({ hasText: '已关闭' }).waitFor();

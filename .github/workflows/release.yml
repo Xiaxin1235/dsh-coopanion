@@ -1,0 +1,176 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing stable v<major>.<minor>.<patch> tag on main
+        required: true
+        type: string
+      mode:
+        description: Verify only, or publish the verified tarball
+        required: true
+        default: verify
+        type: choice
+        options: [verify, publish]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.event_name }}-${{ inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  dispatch-tag:
+    name: Start tagged release from main
+    if: github.repository == 'takboo/dsh-coopanion' && github.event_name == 'push' && github.event.created && !github.event.deleted
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: write
+    steps:
+      - name: Dispatch stable tags to the npm-authorized workflow on main
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          if [[ ! "$RELEASE_TAG" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
+            echo "Skipping non-stable tag: $RELEASE_TAG"
+            exit 0
+          fi
+          gh workflow run release.yml --repo "$GITHUB_REPOSITORY" --ref main -f "tag=$RELEASE_TAG" -f mode=publish
+
+  verify:
+    name: Verify release tag
+    if: github.repository == 'takboo/dsh-coopanion' && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      commit: ${{ steps.candidate.outputs.commit }}
+      version: ${{ steps.candidate.outputs.version }}
+      tag: ${{ steps.candidate.outputs.tag }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: ./.github/actions/setup-toolchain
+        with:
+          cache: ''
+      - name: Check tag ancestry, version, shrinkwrap and release notes
+        id: candidate
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: node scripts/verify-release.mjs --tag "$RELEASE_TAG" --github-output
+
+  checks:
+    name: Test release artifact
+    needs: verify
+    uses: ./.github/workflows/ci.yml
+    with:
+      ref: ${{ needs.verify.outputs.commit }}
+      release-tag: ${{ needs.verify.outputs.tag }}
+
+  publish:
+    name: Publish verified tarball to npm
+    needs: [verify, checks]
+    if: inputs.mode == 'publish'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      RELEASE_TAG: ${{ needs.verify.outputs.tag }}
+      VERIFIED_COMMIT: ${{ needs.verify.outputs.commit }}
+      VERSION: ${{ needs.verify.outputs.version }}
+    steps:
+      # Validation comes from main; the tarball is never rebuilt in this job.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: ./.github/actions/setup-toolchain
+        with:
+          cache: ''
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: desktop-pet
+          path: ${{ runner.temp }}/release
+          digest-mismatch: error
+      - name: Locate the verified tarball
+        run: echo "TARBALL=$RUNNER_TEMP/release/dsh-coopanion-$VERSION.tgz" >> "$GITHUB_ENV"
+      - name: Recheck tag and exact artifact bytes
+        run: |
+          cd "$RUNNER_TEMP/release"
+          sha256sum --check SHA256SUMS
+          cd "$GITHUB_WORKSPACE"
+          node scripts/verify-release.mjs --tag "$RELEASE_TAG" --commit "$VERIFIED_COMMIT"
+          node scripts/check-package.mjs "$TARBALL" --report "$RUNNER_TEMP/release/verification.json" --expected-commit "$VERIFIED_COMMIT" --expected-version "$VERSION"
+      - name: Detect an identical npm publication from an earlier attempt
+        id: npm-state
+        run: node scripts/check-npm.mjs "$TARBALL" --report "$RUNNER_TEMP/release/verification.json" --github-output
+      - name: Publish the tested tarball using npm OIDC
+        if: steps.npm-state.outputs.published != 'true'
+        run: npm publish "$TARBALL" --access public --tag latest --ignore-scripts --registry https://registry.npmjs.org
+      - name: Verify npm serves the same bytes
+        run: node scripts/check-npm.mjs "$TARBALL" --report "$RUNNER_TEMP/release/verification.json" --require-published
+
+  github-release:
+    name: Attach verified bytes to GitHub Release
+    needs: [verify, publish]
+    if: inputs.mode == 'publish'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RELEASE_TAG: ${{ needs.verify.outputs.tag }}
+      VERIFIED_COMMIT: ${{ needs.verify.outputs.commit }}
+      VERSION: ${{ needs.verify.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: ./.github/actions/setup-toolchain
+        with:
+          cache: ''
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: desktop-pet
+          path: ${{ runner.temp }}/release
+          digest-mismatch: error
+      - name: Locate the verified tarball
+        run: echo "TARBALL=$RUNNER_TEMP/release/dsh-coopanion-$VERSION.tgz" >> "$GITHUB_ENV"
+      - name: Verify tag, checksums and npm identity again
+        run: |
+          cd "$RUNNER_TEMP/release"
+          sha256sum --check SHA256SUMS
+          cd "$GITHUB_WORKSPACE"
+          node scripts/verify-release.mjs --tag "$RELEASE_TAG" --commit "$VERIFIED_COMMIT"
+          node scripts/check-package.mjs "$TARBALL" --report "$RUNNER_TEMP/release/verification.json" --expected-commit "$VERIFIED_COMMIT" --expected-version "$VERSION"
+          node scripts/check-npm.mjs "$TARBALL" --report "$RUNNER_TEMP/release/verification.json" --require-published
+      - name: Check whether an earlier attempt created the release
+        id: release-state
+        run: |
+          node --input-type=module <<'JS'
+          import { appendFileSync } from 'node:fs';
+          const response = await fetch(`https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/releases/tags/${encodeURIComponent(process.env.RELEASE_TAG)}`, {
+            headers: { authorization: `Bearer ${process.env.GH_TOKEN}`, accept: 'application/vnd.github+json' },
+            signal: AbortSignal.timeout(15000),
+          });
+          if (!response.ok && response.status !== 404) throw new Error(`GitHub release lookup HTTP ${response.status}`);
+          appendFileSync(process.env.GITHUB_OUTPUT, `exists=${response.ok}\n`);
+          JS
+      - name: Create release metadata when absent
+        if: steps.release-state.outputs.exists != 'true'
+        run: gh release create "$RELEASE_TAG" --verify-tag --title "桌宠 $RELEASE_TAG" --notes-file "$RUNNER_TEMP/release/release-notes.md"
+      - name: Upload the tested artifacts, including on recovery
+        run: |
+          cmp "$TARBALL" "$RUNNER_TEMP/release/dsh-coopanion.tgz"
+          gh release upload "$RELEASE_TAG" "$TARBALL" "$RUNNER_TEMP/release/dsh-coopanion.tgz" "$RUNNER_TEMP/release/paper-star.zip" "$RUNNER_TEMP/release/SHA256SUMS" "$RUNNER_TEMP/release/verification.json" "$RUNNER_TEMP/release/release-notes.md" --clobber

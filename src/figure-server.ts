@@ -26,7 +26,7 @@ async function sourceArchive(project: string): Promise<Uint8Array> {
     }
   }
   for (const dir of ['src', 'scripts', 'web', 'desktop', 'examples', 'docs', 'tests']) await add(dir);
-  for (const file of ['package.json', 'npm-shrinkwrap.json', 'tsconfig.json', 'tsconfig.client.json', 'cordis.patch.yml', 'README.md', 'LICENSE', 'LICENSE-MIT', 'THIRD_PARTY_NOTICES.md']) files[file] = await readFile(join(project, file));
+  for (const file of ['package.json', 'npm-shrinkwrap.json', 'tsconfig.json', 'tsconfig.client.json', '.node-version', 'cordis.patch.yml', 'README.md', 'LICENSE', 'LICENSE-MIT', 'THIRD_PARTY_NOTICES.md']) files[file] = await readFile(join(project, file));
   return zipSync(files, { level: 6 });
 }
 

@@ -18,7 +18,7 @@ x11.XSync(display, 0)
 x11.XCloseDisplay(display)
 `;
 
-/** Exercise real click-through hit testing, including the OS cursor on X11. */
+/** Exercise real click-through hit testing, including the OS cursor on X11 and Windows. */
 export async function petClick(page, options = {}, twice = false) {
   await page.evaluate(() => {
     if (window.__nativeInputTrace) { window.__nativeInputTrace.length = 0; return; }
@@ -43,6 +43,15 @@ export async function petClick(page, options = {}, twice = false) {
       return { x: Math.round(screenX + b.x + b.width / 2), y: Math.round(screenY + b.y + b.height / 2) };
     });
     await run('python3', ['-c', warpCursor, String(point.x), String(point.y)]);
+  }
+  if (process.platform === 'win32') {
+    const point = await pet.evaluate(el => {
+      const b = el.getBoundingClientRect();
+      return { x: Math.round((screenX + b.x + b.width / 2) * devicePixelRatio), y: Math.round((screenY + b.y + b.height / 2) * devicePixelRatio) };
+    });
+    await run('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command',
+      `Add-Type -TypeDefinition 'using System; using System.Runtime.InteropServices; public class PetCursor { [DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y); }'; if (-not [PetCursor]::SetCursorPos(${point.x}, ${point.y})) { throw 'Cannot move the native test cursor' }`,
+    ]);
   }
   await pet.hover();
   await page.waitForSelector('#pet[data-native-hit=true]');

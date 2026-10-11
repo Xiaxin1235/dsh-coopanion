@@ -1,12 +1,14 @@
 /** Test-only app mounted by the published DSH CLI, using its real session store. */
 import { randomUUID } from 'node:crypto';
-export const inject = ['sessions', 'appReady', 'webServer', 'connection', 'settings'];
+export const inject = ['sessions', 'appReady', 'appExit', 'webServer', 'connection', 'settings'];
 
 export function apply(ctx) {
   let session;
   const sessions = new Map();
   const action = async message => {
-    if (message?.type === 'start-task') {
+    if (message?.type === 'shutdown-host') {
+      ctx.appExit(0);
+    } else if (message?.type === 'start-task') {
       const id = message.sessionId ?? 'host-install';
       session = ctx.sessions.create(id, { meta: { cwd: id === 'host-install' ? '/test/安装验证' : '/test/第二会话' } });
       sessions.set(id, session);

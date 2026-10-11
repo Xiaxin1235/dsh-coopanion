@@ -55,10 +55,11 @@ npm 安装的 dsh 不能管理 Desktop 所拥有的 profile。Desktop 完全退�
 
 ## 开发与验证
 
-需要 Node.js 24。Electron 支持 Windows、macOS、Linux；Linux 的窗口测试需要 X11 / XWayland 或 Xvfb，以及 Python 3 和 libX11，用于同步原生鼠标位置。原生网格需要 Chromium 的 WebGL 支持。
+开发工具链固定 Node.js 24.21.0 和 npm 11.19.1。Electron 支持 Windows、macOS、Linux；Linux 的窗口测试需要 X11 / XWayland 或 Xvfb，以及 Python 3 和 libX11，用于同步原生鼠标位置。原生网格需要 Chromium 的 WebGL 支持。
 
 ```bash
-npm ci
+npm ci --ignore-scripts
+npm run verify:metadata
 npm run setup:electron
 npm run typecheck
 npm test
@@ -75,7 +76,7 @@ npm run test:install
 
 `npm run dev` 打开浏览器演示服务（默认 `http://127.0.0.1:4173`），`npm run demo` 启动桌面演示。演示中的任务事件是模拟的。浏览器预览和桌面版使用同一个 API 2 存储与沙箱运行时。
 
-浏览器测试检查实际 WebGL 动画、逐字说话与嘴部同步、拖拽 / 落地、会话、聊天、换装、包导入、重启保存及脚本隔离。桌面测试验证真实 Electron 窗口、IPC、流式动画、最终回复与完整阅读、休息唤醒、实际状态栏图标和角色数据；CI 同时运行 Linux 和 macOS 原生窗口测试。安装测试使用官方 DSH profile loader 安装实际 `.tgz`，检查任务事件、会话导航、设置页、配置持久化和重启；`DSH_TEST_VERSION=0.2.1-alpha.1` 测试另一支持版本。
+浏览器测试检查实际 WebGL 动画、逐字说话与嘴部同步、拖拽 / 落地、会话、聊天、换装、包导入、重启保存及脚本隔离。桌面测试验证真实 Electron 窗口、IPC、流式动画、最终回复与完整阅读、休息唤醒、实际状态栏图标和角色数据；CI 同时运行 Linux、macOS、Windows 原生窗口测试。安装测试使用官方 DSH profile loader 安装实际 `.tgz`，检查任务事件、会话导航、设置页、配置持久化和重启；`DSH_TEST_VERSION=0.2.1-alpha.1` 测试另一支持版本。
 
 窗口测试只在虚拟显示中使用测试沙箱参数与软件 WebGL。普通安装保留 Chromium sandbox、contextIsolation，关闭 Node integration。macOS / Windows 的实机窗口、系统通知和真实模型聊天仍需验收。
 
@@ -112,6 +113,8 @@ npm run character:pack -- examples/star paper-star.zip
 
 ## CI 与发布
 
-CI 执行类型检查、单元测试、浏览器交互、Electron 窗口、压缩包检查，以及两个 DSH 版本的实际安装测试。推送与 `package.json.version` 一致的 `v*` 标签且全部检查通过后，创建 GitHub Release，附带插件 `.tgz`、`paper-star.zip` 和校验值；不自动发布到 npm。
+CI 在 **Linux、macOS、Windows** 执行元数据检查、类型检查、单元测试、浏览器交互及真实 Electron 窗口测试，并在三平台分别验证两个 DSH 版本的实际安装。稳定 `v<major>.<minor>.<patch>` 标签派发 main 上的发布流程；全部检查通过后，用 npm OIDC 发布已验证的同一份 `.tgz`，再创建 GitHub Release，附带版本化和固定名称的插件包、示例角色、校验值、源码提交报告及当前版本说明。
+
+首次 npm 包创建和 Trusted Publisher 绑定需要维护者认证；dshmarket 通过社区目录 PR 收录，再自动关联 npm 包。具体操作、首次启用和失败重跑见 [发布说明](docs/releasing.md)。本分支的流程配置不代表 npm 发布或市场收录已经完成。
 
 插件没有遥测或独立模型 API。上游代码和角色资源已固定在仓库中，不在启动时在线拉取。Electron 首次准备仍从官方发行源下载并校验；Node 24 可用 `NODE_USE_ENV_PROXY=1` 沿用已有代理变量。

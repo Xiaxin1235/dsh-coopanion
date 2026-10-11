@@ -1,22 +1,59 @@
-name: Test and release
+name: CI
 on:
   push:
     branches: [main]
-    tags: ['v*']
   pull_request:
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      ref:
+        description: Immutable release commit to test
+        type: string
+        required: true
+      release-tag:
+        description: Validated stable release tag
+        type: string
+        required: true
 permissions:
   contents: read
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}-${{ inputs.ref || github.sha }}
+  cancel-in-progress: false
+defaults:
+  run:
+    shell: bash
 jobs:
-  test:
+  workflow-syntax:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          node-version: '24'
-          cache: npm
-      - run: npm ci
+          persist-credentials: false
+      - name: Validate workflow expressions and syntax
+        run: |
+          curl -fsSL https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz -o "$RUNNER_TEMP/actionlint.tar.gz"
+          echo "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8  $RUNNER_TEMP/actionlint.tar.gz" | sha256sum --check
+          tar -xzf "$RUNNER_TEMP/actionlint.tar.gz" -C "$RUNNER_TEMP" actionlint
+          "$RUNNER_TEMP/actionlint" -shellcheck= -pyflakes=
+  test:
+    name: Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+          persist-credentials: false
+      - uses: ./.github/actions/setup-toolchain
+        with:
+          cache: ${{ !inputs.release-tag && 'npm' || '' }}
+      - run: npm ci --ignore-scripts
+      - run: npm run verify:metadata
       - run: npm run setup:electron
       - run: npm run typecheck
       - run: npm test
@@ -25,56 +62,56 @@ jobs:
       - run: npm run character:pack -- examples/star paper-star.zip
       - run: npm run test:ui
       - run: npm run test:desktop
-      - name: Check distributable and create package
+      - name: Check distributable and create canonical Linux package
+        if: runner.os == 'Linux'
         run: |
-          npm pack
-          node scripts/check-package.mjs
-          sha256sum dsh-coopanion-*.tgz paper-star.zip > SHA256SUMS
-      - uses: actions/upload-artifact@v4
+          mkdir -p .cache/release
+          npm pack --ignore-scripts --silent --pack-destination .cache/release
+          node scripts/check-package.mjs .cache/release/dsh-coopanion-*.tgz --write-report
+          cp .cache/release/dsh-coopanion-*.tgz .cache/release/dsh-coopanion.tgz
+          cp paper-star.zip .cache/release/
+          cd .cache/release
+          sha256sum dsh-coopanion-*.tgz dsh-coopanion.tgz paper-star.zip verification.json release-notes.md > SHA256SUMS
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: runner.os == 'Linux'
         with:
           name: desktop-pet
-          path: |
-            artifacts/*.png
-            dsh-coopanion-*.tgz
-            paper-star.zip
-            SHA256SUMS
-  macos-native:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: npm
-      - run: npm ci
-      - run: npm run setup:electron
-      - run: npm run build
-      - run: npm run character:pack -- examples/star paper-star.zip
-      - run: npm run test:desktop
-      - uses: actions/upload-artifact@v4
+          path: .cache/release/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
-          name: macos-native
-          path: artifacts/native-pet.png
+          name: browser-and-desktop-${{ runner.os }}
+          path: artifacts/*.png
+          retention-days: 7
   install:
+    name: Install (${{ matrix.os }}, DSH ${{ matrix.dsh }})
     needs: test
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
         dsh: ['0.2.0-rc.2', '0.2.1-alpha.1']
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          node-version: '24'
-          cache: npm
-      - run: npm ci
+          ref: ${{ inputs.ref || github.sha }}
+          persist-credentials: false
+      - uses: ./.github/actions/setup-toolchain
+        with:
+          cache: ${{ !inputs.release-tag && 'npm' || '' }}
+      - run: npm ci --ignore-scripts
+      - run: npm run verify:metadata
       - run: npx playwright-core install --with-deps chromium
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: desktop-pet
           path: release
+          digest-mismatch: error
       - name: Verify package and install into the published DSH host
         env:
           DSH_TEST_VERSION: ${{ matrix.dsh }}
@@ -84,35 +121,12 @@ jobs:
           sha256sum --check SHA256SUMS
           cd ..
           npm run test:install
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
-          name: installation-${{ matrix.dsh }}
+          name: installation-${{ runner.os }}-${{ matrix.dsh }}
           path: |
             artifacts/install-*.json
             artifacts/installed-*.png
             artifacts/settings-*.png
-  release:
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: [test, macos-native, install]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-      - name: Validate tag matches package version
-        env:
-          RELEASE_TAG: ${{ github.ref_name }}
-        run: node -e "if ('v' + require('./package.json').version !== process.env.RELEASE_TAG) process.exit(1)"
-      - uses: actions/download-artifact@v4
-        with:
-          name: desktop-pet
-          path: release
-      - name: Verify and publish release
-        env:
-          GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ github.ref_name }}
-        run: |
-          cd release
-          sha256sum --check SHA256SUMS
-          gh release create "$RELEASE_TAG" dsh-coopanion-*.tgz paper-star.zip SHA256SUMS --title "桌宠 $RELEASE_TAG" --notes-file ../docs/release-notes.md
+            artifacts/npm-runtime-*/
