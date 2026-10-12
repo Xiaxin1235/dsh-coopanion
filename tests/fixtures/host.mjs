@@ -1,6 +1,6 @@
 /** Test-only app mounted by the published DSH CLI, using its real session store. */
 import { randomUUID } from 'node:crypto';
-export const inject = ['sessions', 'appReady', 'appExit', 'webServer', 'connection', 'settings'];
+export const inject = ['sessions', 'appReady', 'appExit', 'webServer', 'connection', 'settings', 'sessionController'];
 
 export function apply(ctx) {
   let session;
@@ -29,6 +29,8 @@ export function apply(ctx) {
     return () => process.off('message', action);
   });
   ctx.effect(() => ctx.appReady.onReady(async () => {
+    const probe = await import('./notification-probe.mjs');
+    await ctx.plugin(probe).await();
     const fibers = [...ctx.registry.values()].flatMap(runtime => [...runtime.fibers]).filter(fiber => fiber.parent.fiber.runtime?.name === 'dsh-coopanion');
     const errors = [];
     for (const fiber of fibers) { try { await fiber.await(); } catch (error) { errors.push(String(error)); } }

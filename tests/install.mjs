@@ -11,6 +11,7 @@ import { chromium } from 'playwright-core';
 import { importCharacter } from './helpers/characters.mjs';
 import { petClick } from './helpers/native-pointer.mjs';
 import { npmTarballName } from '../scripts/release-support.mjs';
+import { unzipSync } from 'fflate';
 
 const version = process.env.DSH_TEST_VERSION ?? '0.2.0-rc.2';
 assert.ok(['0.2.0-rc.2', '0.2.1-alpha.1'].includes(version), 'test only advertised DSH versions');
@@ -149,6 +150,7 @@ try {
   await writeFile(join(observer, 'package.json'), JSON.stringify({ name: 'coopanion-install-observer', private: true, type: 'module' }));
   const fixture = join(observer, 'host.mjs');
   await writeFile(fixture, await readFile(fileURLToPath(new URL('./fixtures/host.mjs', import.meta.url))));
+  await writeFile(join(observer, 'notification-probe.mjs'), await readFile(fileURLToPath(new URL('./fixtures/notification-probe/host.mjs', import.meta.url))));
   await writeFile(join(profile, 'cordis.patch.yml'), `- insert:\n    - id: install-observer\n      name: ${JSON.stringify(fixture)}\n- id: locale\n  config:\n    preference: zh\n- id: ui-settings-models\n  config:\n    credentialOnboarding: false\n- id: dsh-coopanion\n  config:\n    autoStart: true\n    size: 150\n    roam: true\n    notifications: true\n    bubbleDurationMs: 12000\n`);
   if (process.platform === 'linux' && !environment.DISPLAY) {
     const number = 100 + process.pid % 1000;
@@ -373,6 +375,16 @@ try {
     } finally { await context.close(); }
   }
   assert.deepEqual(uiErrors, [], 'the native DSH module loader and settings renderer have no page errors');
+  const sourceResponse = await settings.request.post(new URL('/api/coopanion-notification-n0/probe', hostUrl).href, { headers: { Origin: new URL(hostUrl).origin }, data: { type: 'client-request', rpcId: 'n0-source', method: 'coopanion-notification-n0/probe', payload: { action: 'session' } } });
+  assert.equal(sourceResponse.status(), 200, 'N0 public session creation is available');
+  const sourceEnvelope = await sourceResponse.json(); assert.equal(sourceEnvelope.result.ok, true);
+  const sourceId = sourceEnvelope.result.value.sessionId;
+  const exportUrl = new URL('/api/session.export', hostUrl); exportUrl.searchParams.set('sessionId', sourceId); exportUrl.searchParams.set('includeDescendants', 'true');
+  const exported = await settings.request.get(exportUrl.href); assert.equal(exported.status(), 200, 'N0 source is persistently exportable');
+  const archiveFiles = unzipSync(await exported.body());
+  const header = JSON.parse(Buffer.from(archiveFiles['session.v4.jsonl']).toString('utf8').split('\n')[0]);
+  assert.equal(header.id, sourceId, 'the exported source retains the complete native session identity');
+  await writeFile(join(project, 'artifacts', `notification-source-${version}.json`), JSON.stringify({ dsh: version, pluginVersion: manifest.version, creation: 'sessionController.create', sessionId: sourceId, exportedHeader: header, status: 'pass' }, null, 2) + '\n');
   await stop(host);
   assert.equal(host.exitCode, 0, hostLog);
   await writeFile(join(project, 'artifacts', `install-${version}.json`), JSON.stringify({ dsh: version, plugin: `${manifest.name}@${manifest.version}`, package: archive, installed: true, profileLoader: true, nativeWindow: true, customCharacter: true, builtinCharacterId: 'whale', sessionNotifications: true, multipleSessions: true, completionReturnsToIdle: true, notificationOpensSourceSession: true, nativeSettingsPage: true, darkTheme: true, closeAndRelaunch: true, hostRestartPersistence: true, autoStartDisabled: true, chineseAndEnglish: true, liveLocaleSwitch: true, automaticSystemLanguage: true, riskExemption: false, cleanShutdown: true }, null, 2) + '\n');
