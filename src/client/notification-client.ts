@@ -1,4 +1,5 @@
 import { deliveryClaimSchema, runtimeSchema, interactionSchema, type DeliveryClaim, type DeliveryReceipt, type NotificationPreferences, type NotificationSnapshot, type WebNotificationStatus } from '../notification-contract.ts';
+import { systemNotificationCopy } from './notification-copy.ts';
 import { SystemNotifications, type BrowserNotificationApi } from './system-notifications.ts';
 
 /** All calls travel through the authenticated DSH Connection supplied by the plugin entry point. */
@@ -12,6 +13,8 @@ export interface NotificationClientStatus {
   web: WebNotificationStatus;
   connected: boolean;
   delivery?: DeliveryReceipt['state'];
+  /** Browser delivery and Host acceptance are independent facts. */
+  receiptAccepted?: boolean;
   error?: string;
 }
 export interface NotificationSettings {
@@ -24,6 +27,7 @@ export interface NotificationClientOptions {
   transport: NotificationTransport;
   preferences: () => NotificationPreferences;
   openSession: (sessionId: string) => void;
+  locale?: () => string;
   api?: BrowserNotificationApi;
   clientId?: string;
   now?: () => number;
@@ -81,7 +85,7 @@ export class NotificationClient implements NotificationSettings {
   }
   private eligible(state: NotificationSnapshot): boolean {
     const prefs = this.options.preferences(), runtime = state.runtime;
-    return prefs.notifications && prefs.systemNotifications && runtime.phase === 'running' && !runtime.visible && !runtime.suspended;
+    return prefs.notifications && prefs.systemNotifications && runtime.phase === 'running' && runtime.visibilityRevision > 0 && !runtime.visible && !runtime.suspended;
   }
   private async deliver(value: DeliveryClaim): Promise<void> {
     const claim = deliveryClaimSchema.parse(value);
@@ -92,14 +96,14 @@ export class NotificationClient implements NotificationSettings {
       this.enqueue({ token: claim.token, clientId: this.clientId, noticeId: claim.notice.id, generation: claim.generation, state: 'failed', time: this.now(), detail: 'delivery-state-changed' });
       return;
     }
-    this.system.deliver(claim);
+    this.system.deliver({ ...claim, notice: systemNotificationCopy(claim.notice, this.options.locale?.() ?? 'zh') });
   }
   private enqueue(receipt: DeliveryReceipt): void {
     if (this.stop.signal.aborted) return;
     this.receipts.push(receipt);
     // Failed/unknown transport remains visible locally and cannot accumulate unbounded work.
     if (this.receipts.length > 128) { this.receipts.shift(); this.update({ error: 'Notification receipt backlog exceeded' }); }
-    this.update({ delivery: receipt.state, ...(receipt.detail === 'open-session-failed' ? { error: 'Unable to open the source session' } : {}) });
+    this.update({ delivery: receipt.state, receiptAccepted: undefined, ...(receipt.detail === 'open-session-failed' ? { error: 'Unable to open the source session' } : {}) });
   }
   private flush(): Promise<void> {
     if (this.flushing) return this.flushing;
@@ -109,8 +113,12 @@ export class NotificationClient implements NotificationSettings {
   private async flushReceipts(): Promise<void> {
     for (let n = 0; n < 8 && this.receipts.length; n++) {
       const receipt = this.receipts[0]!;
-      await this.request(signal => this.options.transport.receipt(receipt, signal));
+      const result = await this.request(signal => this.options.transport.receipt(receipt, signal));
       if (this.receipts[0] === receipt) this.receipts.shift();
+      if (result && typeof result === 'object' && 'accepted' in result) {
+        const accepted = result.accepted === true;
+        this.update({ receiptAccepted: accepted, ...(!accepted ? { error: 'Host rejected the notification receipt' } : {}) });
+      }
     }
   }
   start(): () => void {

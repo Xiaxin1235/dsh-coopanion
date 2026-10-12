@@ -131,6 +131,7 @@ export function Settings({ form, call, local, notifier, t }: SettingsProps) {
         <Button variant="outline" disabled={!local || !notifier || notificationBusy || !prefs?.notifications || !prefs?.systemNotifications || !running || status?.visible !== false || notification.web.permission !== 'granted'} onClick={() => void testNotification()}>{t('testNotification')}</Button>
       </div>
       <p className="pet-feedback" role="status">{notificationBusy ? t('notificationWorking') : notification.delivery ? t(`delivery${notification.delivery}`) : t('testNotificationHint')}</p>
+      {notification.receiptAccepted === false ? <p className="pet-error" role="alert">{t('receiptRejected')}</p> : null}
       {notificationError || notification.error ? <p className="pet-error" role="alert">{notificationError || notification.error}</p> : null}
     </section>
     <section className="pet-card" aria-label={t('characters')}>

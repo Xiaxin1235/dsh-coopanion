@@ -8,19 +8,20 @@ const claim: DeliveryClaim = { token: 'lease-full', clientId: 'ui-one', generati
   notice: { id: 'notice-full', sessionId: 'session-full-not-prefix', turn: 1, seq: 9, time: 1, category: 'question', stage: 'initial', title: 'Question', body: 'Choose?', requestIds: ['request-full'] } };
 function fixture() {
   vi.useFakeTimers();
-  const receipt = vi.fn(async (_value: DeliveryReceipt, _signal: AbortSignal) => {}), open = vi.fn();
+  const receipt = vi.fn(async (_value: DeliveryReceipt, _signal: AbortSignal): Promise<unknown> => undefined), open = vi.fn();
   const objects: Api[] = [];
   class Api {
     static permission: NotificationPermission = 'granted'; static requestPermission = vi.fn(async () => Api.permission);
     onshow: (() => void) | null = null; onclick: (() => void) | null = null; onerror: (() => void) | null = null; onclose: (() => void) | null = null; close = vi.fn();
     constructor(public title: string, public options: unknown) { objects.push(this); }
   }
+  let locale = 'en-US';
   let current = structuredClone(state), next: DeliveryClaim | null = structuredClone(claim), prefs = { notifications: true, systemNotifications: true, reminders: true, reminderDelayMs: 600000 };
   const transport = { state: vi.fn(async (_signal: AbortSignal) => current), claim: vi.fn(async (_value: { clientId: string; generation: number }, _signal: AbortSignal) => { const result = next; next = null; return result; }), receipt,
     snooze: vi.fn(async (_value: { interactionId: string; generation: number }, _signal: AbortSignal) => {}) };
-  const service = new NotificationClient({ transport, preferences: () => prefs, api: Api, openSession: open, clientId: 'ui-one', now: () => 100, pollMs: 100, timeoutMs: 1000,
+  const service = new NotificationClient({ transport, preferences: () => prefs, api: Api, openSession: open, locale: () => locale, clientId: 'ui-one', now: () => 100, pollMs: 100, timeoutMs: 1000,
     testClaim: vi.fn(async () => structuredClone(claim)) });
-  return { service, transport, Api, objects, open, prefs, current, setState: (value: NotificationSnapshot) => { current = value; }, setClaim: (value: DeliveryClaim) => { next = value; } };
+  return { service, transport, Api, objects, open, prefs, current, setLocale: (value: string) => { locale = value; }, setState: (value: NotificationSnapshot) => { current = value; }, setClaim: (value: DeliveryClaim) => { next = value; } };
 }
 afterEach(() => { vi.useRealTimers(); });
 const tick = async (ms = 0) => vi.advanceTimersByTimeAsync(ms);
@@ -35,8 +36,9 @@ it('runs outside Settings and reports only requested until the browser supplies 
   f.service.dispose();
 });
 it('does not claim while visible, stopped, suspended, permission-denied or opted out', async () => {
-  for (const mode of ['visible', 'stopped', 'suspended', 'denied', 'opted-out']) {
+  for (const mode of ['visible', 'stopped', 'suspended', 'denied', 'opted-out', 'no-visibility-ack']) {
     const f = fixture();
+    if (mode === 'no-visibility-ack') f.current.runtime.visibilityRevision = 0;
     if (mode === 'visible') f.current.runtime.visible = true;
     if (mode === 'stopped') f.current.runtime.phase = 'stopped';
     if (mode === 'suspended') f.current.runtime.suspended = true;
@@ -96,4 +98,40 @@ it('contains source-session navigation failure and keeps the native click receip
   expect(() => f.objects[0]!.onclick!()).not.toThrow();
   expect(receipt).toHaveBeenLastCalledWith(expect.objectContaining({ state: 'clicked', detail: 'open-session-failed' }));
   expect(f.objects[0]!.onclick).toBeNull(); system.dispose(); f.service.dispose();
+});
+
+it('localizes system application copy at delivery time without translating user previews or changing identities', async () => {
+  const f = fixture(); f.service.start(); await tick();
+  expect(f.objects[0]!.title).toBe('There is a question for you');
+  expect(f.objects[0]!.options).toMatchObject({ body: 'Choose?', tag: claim.notice.id });
+  f.setLocale('zh-CN'); f.setClaim({ ...claim, token: 'locale-two', notice: { ...claim.notice, id: 'localized-second', body: 'Keep this English user question 原样' } });
+  await tick(100);
+  expect(f.objects[1]!.title).toBe('有个问题想问你'); expect(f.objects[1]!.options).toMatchObject({ body: 'Keep this English user question 原样', tag: 'localized-second' });
+  f.setClaim({ ...claim, token: 'reminder', notice: { ...claim.notice, id: 'reminder-full', stage: 'reminder', requestIds: ['one', 'two'] } }); await tick(100);
+  expect(f.objects[2]!.title).toBe('有 2 件事，还等你看看'); expect(f.objects[2]!.options).toMatchObject({ body: '有 2 件事，还等你看看' });
+  f.objects[2]!.onclick!(); expect(f.open).toHaveBeenCalledExactlyOnceWith(claim.notice.sessionId); f.service.dispose();
+});
+it('does not equate a browser show callback with Host acceptance or retry rejected receipts', async () => {
+  const f = fixture(); f.transport.receipt.mockResolvedValue({ accepted: false }); f.service.start(); await tick();
+  expect(f.service.getSnapshot()).toMatchObject({ delivery: 'requested', receiptAccepted: false });
+  await tick(100); expect(f.service.getSnapshot().receiptAccepted).toBe(false);
+  expect(f.transport.receipt).toHaveBeenCalledTimes(1); expect(f.objects).toHaveLength(1);
+  f.objects[0]!.onshow!(); await tick(100);
+  expect(f.service.getSnapshot()).toMatchObject({ delivery: 'shown', receiptAccepted: false });
+  expect(f.transport.receipt).toHaveBeenCalledTimes(2); expect(f.objects).toHaveLength(1); f.service.dispose();
+});
+
+import { systemNotificationCopy } from '../src/client/notification-copy.ts';
+it('keeps initial completed/approval/question/error preview bytes and gives stop/recovery/reminder events bilingual short copy', () => {
+  for (const category of ['completed', 'approval', 'question', 'error'] as const) {
+    const notice = { ...claim.notice, category, body: '用户原文 English\n🐳' };
+    expect(systemNotificationCopy(notice, 'en').body).toBe(notice.body);
+    expect(systemNotificationCopy(notice, 'zh').body).toBe(notice.body);
+  }
+  for (const category of ['stopped', 'interrupted', 'blocked', 'max-tokens'] as const) {
+    const notice = { ...claim.notice, category, body: 'Host diagnostic text' };
+    const zh = systemNotificationCopy(notice, 'zh'), en = systemNotificationCopy(notice, 'en');
+    expect(zh.title).not.toBe(en.title); expect(en.body).toBe(en.title); expect(zh.body).toBe(zh.title);
+    expect(en).toMatchObject({ id: notice.id, sessionId: notice.sessionId, requestIds: notice.requestIds });
+  }
 });
