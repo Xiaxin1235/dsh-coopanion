@@ -168,8 +168,13 @@ export class NotificationBroker {
       const id = interactionId(session.id, 'question', question.callId); active.add(id);
       let origin = source.calls.get(question.callId);
       if (!origin) {
-        const event = session.snapshotEvents?.().map(event => event as NotificationEvent).findLast(event => (event.type === 'tool/call' && event.data.callId === question.callId && event.data.name === 'ask_user_question') || (event.type === 'tool/ptc-dispatch' && event.data.subCallId === question.callId && event.data.name === 'ask_user_question'));
-        if (event) origin = { turn: 'turn' in event.data && event.data.turn !== undefined ? event.data.turn : source.turn, seq: event.seq, time: event.time };
+        const events = session.snapshotEvents?.() ?? [];
+        const event = events.map(event => event as NotificationEvent).findLast(event => (event.type === 'tool/call' && event.data.callId === question.callId && event.data.name === 'ask_user_question') || (event.type === 'tool/ptc-dispatch' && event.data.subCallId === question.callId && event.data.name === 'ask_user_question'));
+        if (event) {
+          const start = events.findLast(prior => prior.type === 'turn/start' && prior.seq < event.seq);
+          const turn = 'turn' in event.data && event.data.turn !== undefined ? event.data.turn : start?.type === 'turn/start' ? start.data.turn : 0;
+          origin = { turn, seq: event.seq, time: event.time };
+        }
       }
       const existing = this.requests.get(id);
       if (!origin && existing) origin = { turn: existing.turn, seq: existing.seq, time: existing.createdAt };

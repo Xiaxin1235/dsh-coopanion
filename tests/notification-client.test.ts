@@ -3,7 +3,7 @@ import { NotificationClient } from '../src/client/notification-client.ts';
 import { SystemNotifications } from '../src/client/system-notifications.ts';
 import type { DeliveryClaim, DeliveryReceipt, NotificationSnapshot } from '../src/notification-contract.ts';
 
-const state: NotificationSnapshot = { protocol: 1, runtime: { phase: 'running', visible: false, generation: 3, visibilityRevision: 2, suspended: false }, interactions: [] };
+const state: NotificationSnapshot = { protocol: 1, runtime: { phase: 'running', visible: false, generation: 3, visibilityRevision: 2, suspended: false }, interactions: [{ id: 'request-full', nativeId: 'native-full', sessionId: 'session-full-not-prefix', kind: 'question', turn: 1, seq: 9, createdAt: 1, preview: 'Choose?', state: 'open', dueAt: 200, automaticReminders: 0 }] };
 const claim: DeliveryClaim = { token: 'lease-full', clientId: 'ui-one', generation: 3, visibilityRevision: 2, expiresAt: 20000,
   notice: { id: 'notice-full', sessionId: 'session-full-not-prefix', turn: 1, seq: 9, time: 1, category: 'question', stage: 'initial', title: 'Question', body: 'Choose?', requestIds: ['request-full'] } };
 function fixture() {
@@ -52,6 +52,17 @@ it('rechecks visibility and generation after claiming; a visible pet prevents sy
   f.service.start(); await tick(); expect(f.objects).toHaveLength(0);
   expect(f.transport.receipt).toHaveBeenCalledWith(expect.objectContaining({ state: 'failed', detail: 'delivery-state-changed' }), expect.any(AbortSignal)); f.service.dispose();
   const newer = fixture(); newer.setClaim({ ...claim, generation: 2 }); newer.service.start(); await tick(); expect(newer.objects).toHaveLength(0); newer.service.dispose();
+});
+it('rechecks request settlement after claiming and rejects a changed reminder group before construction', async () => {
+  for (const grouped of [false, true]) {
+    const f = fixture();
+    if (grouped) f.setClaim({ ...claim, notice: { ...claim.notice, requestIds: ['request-full', 'request-removed'] } });
+    f.transport.state.mockResolvedValueOnce(state).mockResolvedValueOnce({ ...state, interactions: grouped ? state.interactions : [] });
+    f.service.start(); await tick();
+    expect(f.objects).toHaveLength(0);
+    expect(f.transport.receipt).toHaveBeenCalledWith(expect.objectContaining({ state: 'failed', detail: 'delivery-state-changed' }), expect.any(AbortSignal));
+    f.service.dispose();
+  }
 });
 it('keeps a requested notification clickable and records late native receipts after a pet restart', async () => {
   const f = fixture(); f.service.start(); await tick();
@@ -120,6 +131,7 @@ it('localizes system application copy at delivery time without translating user 
   f.setLocale('zh-CN'); f.setClaim({ ...claim, token: 'locale-two', notice: { ...claim.notice, id: 'localized-second', body: 'Keep this English user question 原样' } });
   await tick(100);
   expect(f.objects[1]!.title).toBe('有个问题想问你'); expect(f.objects[1]!.options).toMatchObject({ body: 'Keep this English user question 原样', tag: 'localized-second' });
+  f.current.interactions = ['one', 'two'].map(id => ({ ...state.interactions[0]!, id, nativeId: id }));
   f.setClaim({ ...claim, token: 'reminder', notice: { ...claim.notice, id: 'reminder-full', stage: 'reminder', requestIds: ['one', 'two'] } }); await tick(100);
   expect(f.objects[2]!.title).toBe('有 2 件事，还等你看看'); expect(f.objects[2]!.options).toMatchObject({ body: '有 2 件事，还等你看看' });
   f.objects[2]!.onclick!(); expect(f.open).toHaveBeenCalledExactlyOnceWith(claim.notice.sessionId); f.service.dispose();

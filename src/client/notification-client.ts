@@ -91,7 +91,8 @@ export class NotificationClient implements NotificationSettings {
     if (claim.clientId !== this.clientId) throw new Error('Notification claim belongs to another client');
     const state = parseState(await this.request(signal => this.options.transport.state(signal)));
     this.connected();
-    if (!this.eligible(state) || claim.generation !== state.runtime.generation || claim.visibilityRevision !== state.runtime.visibilityRevision) {
+    const requestsValid = claim.notice.requestIds.every(id => state.interactions.some(item => item.id === id && item.sessionId === claim.notice.sessionId && item.state !== 'settled'));
+    if (!this.eligible(state) || !requestsValid || claim.generation !== state.runtime.generation || claim.visibilityRevision !== state.runtime.visibilityRevision) {
       this.enqueue({ token: claim.token, clientId: this.clientId, noticeId: claim.notice.id, generation: claim.generation, state: 'failed', time: this.now(), detail: 'delivery-state-changed' });
       return;
     }

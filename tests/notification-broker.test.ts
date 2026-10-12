@@ -2,7 +2,7 @@ import { expect, it, vi } from 'vitest';
 import { SessionId, SessionSeq, type Session, type SessionEvent } from '@deepseek-ai/dsh-session';
 import { ApprovalRequestId } from '@deepseek-ai/dsh-user-approval/types';
 import { createAssistantMessage, ToolCallId } from '@deepseek-ai/dsh-llm';
-import { NotificationBroker, type BrokerClock } from '../src/notification-broker.ts';
+import { NotificationBroker, type BrokerClock, type NotificationEvent } from '../src/notification-broker.ts';
 import { interactionId, type DeliveryClaim, type DeliveryReceipt, type NotificationRuntime, type TaskNotice } from '../src/notification-contract.ts';
 function session(id = 'full:session:id'): Pick<Session, 'id' | 'header'> {
   return { id: SessionId(id), header: { version: 4, id: SessionId(id), createdAt: 0, isSeeded: false, cwd: '/project/demo' } };
@@ -162,6 +162,17 @@ it('uses exact tool/PTC event provenance, never projection-time watermarks or pa
   broker.consume(s, { type: 'tool/ptc-dispatch', seq: 3, time: 1003, data: { name: 'ask_user_question', subCallId: 'full-sub-call' } });
   broker.questions(s, { active: [{ callId: 'full-sub-call', state: 'continued', questions: [{ question: 'PTC?' }] }] });
   expect(broker.snapshot().interactions).toMatchObject([{ nativeId: 'full-sub-call', turn: 2, seq: 3 }]);
+});
+it('restores the original turn of an older continued PTC question after its provenance cache is evicted', () => {
+  const { broker, s } = fixture();
+  const history: NotificationEvent[] = [
+    event('turn/start', 0, { turn: 1 }),
+    { type: 'tool/ptc-dispatch', seq: 1, time: 1001, data: { name: 'ask_user_question', subCallId: 'old-ptc-full-call' } },
+    event('turn/start', 2, { turn: 2 }),
+  ];
+  for (let n = 0; n < 201; n++) history.push(event('tool/call', n + 3, { turn: 2, step: n + 1, callId: ToolCallId(`new-call-${n}`), name: 'ask_user_question', arguments: '{}' }));
+  broker.restore({ ...s, snapshotEvents: () => history as readonly SessionEvent[] }, { active: [{ callId: 'old-ptc-full-call', state: 'continued', questions: [{ question: 'Earlier turn?' }] }] });
+  expect(broker.snapshot().interactions).toMatchObject([{ nativeId: 'old-ptc-full-call', turn: 1, seq: 1, createdAt: 1001 }]);
 });
 it('pauses timer execution during suspend, rechecks expired questions on wake and honors independent reminder toggles', () => {
   const { broker, s, time, presentRole } = fixture(true); asked(broker, s);
