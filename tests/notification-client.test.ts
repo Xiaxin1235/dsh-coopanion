@@ -53,18 +53,31 @@ it('rechecks visibility and generation after claiming; a visible pet prevents sy
   expect(f.transport.receipt).toHaveBeenCalledWith(expect.objectContaining({ state: 'failed', detail: 'delivery-state-changed' }), expect.any(AbortSignal)); f.service.dispose();
   const newer = fixture(); newer.setClaim({ ...claim, generation: 2 }); newer.service.start(); await tick(); expect(newer.objects).toHaveLength(0); newer.service.dispose();
 });
+it('keeps a requested notification clickable and records late native receipts after a pet restart', async () => {
+  const f = fixture(); f.service.start(); await tick();
+  const notification = f.objects[0]!;
+  f.current.runtime.generation++;
+  await tick(100);
+  expect(notification.onshow).not.toBeNull(); expect(notification.onclick).not.toBeNull();
+  notification.onshow!(); await tick(100);
+  notification.onclick!(); await tick(100);
+  expect(f.open).toHaveBeenCalledExactlyOnceWith(claim.notice.sessionId);
+  expect(f.transport.receipt.mock.calls.map(call => call[0].state)).toEqual(['requested', 'shown', 'clicked']);
+  expect(f.transport.receipt.mock.calls.every(call => call[0].generation === claim.generation && call[0].token === claim.token)).toBe(true);
+  expect(f.objects).toHaveLength(1); f.service.dispose();
+});
 it('rejects claims for another client and contains malformed state', async () => {
   const f = fixture(); f.setClaim({ ...claim, clientId: 'other' }); f.service.start(); await tick();
   expect(f.objects).toHaveLength(0); expect(f.service.getSnapshot().error).toMatch(/another client/); f.service.dispose();
   const broken = fixture(); broken.transport.state.mockResolvedValue({ ...state, protocol: 0 } as any); broken.service.start(); await tick();
   expect(broken.service.getSnapshot()).toMatchObject({ connected: false, error: 'Invalid notification state' }); broken.service.dispose();
 });
-it('disconnect and new generation release callbacks; recovery resumes polling and disposal aborts requests', async () => {
+it('keeps requested source callbacks across reconnect, resumes polling and aborts requests on disposal', async () => {
   const f = fixture(); f.service.start(); await tick(); const click = f.objects[0]!.onclick;
-  f.transport.state.mockRejectedValueOnce(new Error('Disconnected')); await tick(100); expect(f.objects[0]!.onclick).toBeNull(); click!(); expect(f.open).not.toHaveBeenCalled();
+  f.transport.state.mockRejectedValueOnce(new Error('Disconnected')); await tick(100); expect(f.objects[0]!.onclick).not.toBeNull(); click!(); expect(f.open).toHaveBeenCalledExactlyOnceWith(claim.notice.sessionId);
   await tick(100); expect(f.service.getSnapshot().connected).toBe(true);
   f.setClaim({ ...claim, token: 'second' }); await tick(100); const show = f.objects[1]!.onshow;
-  f.current.runtime.generation++; await tick(100); show!(); expect(f.service.getSnapshot().delivery).toBe('requested');
+  f.current.runtime.generation++; await tick(100); show!(); expect(f.service.getSnapshot().delivery).toBe('shown');
   f.transport.state.mockImplementation(async signal => new Promise<NotificationSnapshot>((_resolve, reject) => signal.addEventListener('abort', () => reject(new Error('cancelled')))));
   await tick(100); f.service.dispose(); await tick(); expect(f.transport.state.mock.calls.at(-1)?.[0].aborted).toBe(true);
 });

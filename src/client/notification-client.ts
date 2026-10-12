@@ -46,7 +46,6 @@ export class NotificationClient implements NotificationSettings {
   private readonly system: SystemNotifications;
   private readonly listeners = new Set<() => void>();
   private statusValue: NotificationClientStatus;
-  private stateValue?: NotificationSnapshot;
   private readonly stop = new AbortController();
   private readonly controllers = new Set<AbortController>();
   private timer?: ReturnType<typeof setTimeout>;
@@ -78,10 +77,10 @@ export class NotificationClient implements NotificationSettings {
     try { return await Promise.race([call(controller.signal), timeout]); }
     finally { clearTimeout(timer!); this.controllers.delete(controller); }
   }
-  private setState(state: NotificationSnapshot): void {
-    const previous = this.stateValue?.runtime;
-    if (previous && (previous.generation !== state.runtime.generation || state.runtime.phase !== 'running')) this.system.invalidate();
-    this.stateValue = state; this.update({ connected: true, error: undefined });
+  private connected(): void {
+    // A pet restart revokes new delivery, while already-requested OS objects
+    // retain their exact source mapping and report evidence for their own claim.
+    this.update({ connected: true, error: undefined });
   }
   private eligible(state: NotificationSnapshot): boolean {
     const prefs = this.options.preferences(), runtime = state.runtime;
@@ -91,7 +90,7 @@ export class NotificationClient implements NotificationSettings {
     const claim = deliveryClaimSchema.parse(value);
     if (claim.clientId !== this.clientId) throw new Error('Notification claim belongs to another client');
     const state = parseState(await this.request(signal => this.options.transport.state(signal)));
-    this.setState(state);
+    this.connected();
     if (!this.eligible(state) || claim.generation !== state.runtime.generation || claim.visibilityRevision !== state.runtime.visibilityRevision) {
       this.enqueue({ token: claim.token, clientId: this.clientId, noticeId: claim.notice.id, generation: claim.generation, state: 'failed', time: this.now(), detail: 'delivery-state-changed' });
       return;
@@ -128,14 +127,14 @@ export class NotificationClient implements NotificationSettings {
   private async poll(): Promise<void> {
     try {
       await this.flush();
-      const state = parseState(await this.request(signal => this.options.transport.state(signal))); this.setState(state);
+      const state = parseState(await this.request(signal => this.options.transport.state(signal))); this.connected();
       if (this.eligible(state) && this.system.status().permission === 'granted') {
         const claim = await this.request(signal => this.options.transport.claim({ clientId: this.clientId, generation: state.runtime.generation }, signal));
         if (claim && !this.stop.signal.aborted) await this.deliver(claim);
       }
       await this.flush();
     } catch (error) {
-      if (!this.stop.signal.aborted) { this.system.invalidate(); this.update({ connected: false, error: String(error instanceof Error ? error.message : error).slice(0, 600) }); }
+      if (!this.stop.signal.aborted) this.update({ connected: false, error: String(error instanceof Error ? error.message : error).slice(0, 600) });
     } finally { if (!this.stop.signal.aborted) this.timer = setTimeout(() => void this.poll(), this.options.pollMs ?? 750); }
   }
   async requestPermission(): Promise<WebNotificationStatus> {
@@ -148,7 +147,7 @@ export class NotificationClient implements NotificationSettings {
     await this.deliver(claim); await this.flush();
   }
   async snooze(interactionId: string): Promise<void> {
-    const state = parseState(await this.request(signal => this.options.transport.state(signal))); this.setState(state);
+    const state = parseState(await this.request(signal => this.options.transport.state(signal))); this.connected();
     if (!state.interactions.some(item => item.id === interactionId && item.state !== 'settled')) throw new Error('Interaction is no longer pending');
     await this.request(signal => this.options.transport.snooze({ interactionId, generation: state.runtime.generation }, signal));
   }

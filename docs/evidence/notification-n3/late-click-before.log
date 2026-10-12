@@ -1,0 +1,39 @@
+
+ RUN  v3.2.7 /Users/jam/.codex/worktrees/11ca/dsh-coopanion
+
+ ❯ tests/notification-client.test.ts (13 tests | 1 failed | 12 skipped) 8ms
+   ↓ runs outside Settings and reports only requested until the browser supplies show/click
+   ↓ does not claim while visible, stopped, suspended, permission-denied or opted out
+   ↓ rechecks visibility and generation after claiming; a visible pet prevents system delivery
+   × keeps a requested notification clickable and records late native receipts after a pet restart 8ms
+     → expected null not to be null
+   ↓ rejects claims for another client and contains malformed state
+   ↓ disconnect and new generation release callbacks; recovery resumes polling and disposal aborts requests
+   ↓ bounds hung requests, retries failed receipts, and serializes test/poll receipt flushes
+   ↓ applies user permission requests only on explicit action and validates snooze against live exact identities
+   ↓ reports unknown without a show receipt and bounds notification callbacks while preserving OS history
+   ↓ contains source-session navigation failure and keeps the native click receipt truthful
+   ↓ localizes system application copy at delivery time without translating user previews or changing identities
+   ↓ does not equate a browser show callback with Host acceptance or retry rejected receipts
+   ↓ keeps initial completed/approval/question/error preview bytes and gives stop/recovery/reminder events bilingual short copy
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/notification-client.test.ts > keeps a requested notification clickable and records late native receipts after a pet restart
+AssertionError: expected null not to be null
+ ❯ tests/notification-client.test.ts:61:35
+     59|   f.current.runtime.generation++;
+     60|   await tick(100);
+     61|   expect(notification.onshow).not.toBeNull(); expect(notification.oncl…
+       |                                   ^
+     62|   notification.onshow!(); await tick(100);
+     63|   notification.onclick!(); await tick(100);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 12 skipped (13)
+   Start at  16:23:28
+   Duration  276ms (transform 68ms, setup 0ms, collect 100ms, tests 8ms, environment 0ms, prepare 36ms)
+

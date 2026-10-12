@@ -29,9 +29,11 @@ let visibilityRevision = 0, suspended = false, screenLocked = false, systemAslee
 function visibility() { if (win && !win.isDestroyed()) { process.send?.({ type: 'visibility', generation, visibilityRevision: ++visibilityRevision, visible: win.isVisible(), suspended }); syncTray(); } }
 function forward(message) { if (win && !win.isDestroyed()) win.webContents.send('pet:update', message); }
 function hit(active) {
-  if (!win || win.isDestroyed() || active === interactive) return;
-  interactive = active;
-  win.setIgnoreMouseEvents(!active, { forward: true });
+  if (!win || win.isDestroyed()) return;
+  if (active !== interactive) {
+    interactive = active;
+    win.setIgnoreMouseEvents(!active, { forward: true });
+  }
   forward({ type: 'hit-state', active, focused: win.isFocused(), visible: win.isVisible() });
 }
 function show() { win?.showInactive(); syncTray(); }

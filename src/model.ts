@@ -167,7 +167,7 @@ export class PetModel {
         if (task.approvals.size) break;
         if (task.tools.size) { this.present(item, 'working', toolLabel(task.tools.values().next().value!)); break; }
         if (event.data.message.isError) {
-          this.present(item, 'error', '这一步遇到了问题，正在处理。');
+          this.present(item, 'thinking', '这一步遇到了问题，正在处理。');
         } else { this.present(item, 'thinking', '这一步完成了，继续想想…'); }
         break;
       case 'assistant/message': {

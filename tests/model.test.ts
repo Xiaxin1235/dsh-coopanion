@@ -151,6 +151,15 @@ describe('Harness task presentation', () => {
       expect(m.snapshot().mood).toBe(id === 'a' ? 'working' : 'thinking');
     }
   });
+  it('keeps a failed tool step in active processing until the turn actually fails', () => {
+    const m = new PetModel(), s = session('tool-error');
+    m.consume(s, event('turn/start', { turn: 1 }));
+    m.consume(s, event('tool/call', { turn: 1, step: 1, callId: ToolCallId('failed-step'), name: 'bash', arguments: '{}' }));
+    m.consume(s, event('tool/result', { turn: 1, step: 1, message: createToolResultMessage({ callId: ToolCallId('failed-step'), content: [], isError: true }) }));
+    expect(m.snapshot()).toMatchObject({ mood: 'thinking', active: true, results: [] });
+    m.consume(s, event('turn/end', { turn: 1, reason: { kind: 'error', error: { code: 'UNKNOWN', message: 'Turn failed' } } }));
+    expect(m.snapshot()).toMatchObject({ mood: 'error', active: false });
+  });
   it('ignores stale turn events and approval settlements from a previous turn', () => {
     const m = new PetModel(), s = session('one'), old = Symbol(), current = Symbol();
     m.consume(s, event('turn/start', { turn: 1 })); m.approval('one', 'bash', old);

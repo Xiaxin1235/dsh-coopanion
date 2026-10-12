@@ -69,7 +69,7 @@ export class SystemNotifications {
     if (notification) notification.onshow = notification.onclick = notification.onerror = notification.onclose = null;
     this.active.delete(token);
   }
-  /** Drop callbacks on disconnect or a new pet generation; OS history remains under OS control. */
+  /** Release callback ownership at the adapter's lifetime boundary; OS history stays under OS control. */
   invalidate(): void { for (const token of this.active.keys()) this.release(token); }
   /** Release callbacks while letting the operating system manage delivered notification history. */
   dispose(): void { this.disposed = true; this.invalidate(); this.requested.clear(); }

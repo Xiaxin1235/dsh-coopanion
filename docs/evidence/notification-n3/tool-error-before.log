@@ -1,0 +1,57 @@
+
+ RUN  v3.2.7 /Users/jam/.codex/worktrees/11ca/dsh-coopanion
+
+ ❯ tests/model.test.ts (18 tests | 1 failed) 11ms
+   ✓ Harness task presentation > restores distinct human prompts for sessions in the same project without replaying task states 2ms
+   ✓ Harness task presentation > tracks real reasoning and text streams without restarting or accepting stale attempts 1ms
+   ✓ Harness task presentation > shows task work and assistant replies, then issues a completion notification 0ms
+   ✓ Harness task presentation > keeps background sessions and subagents from changing the selected task 0ms
+   ✓ Harness task presentation > keeps explicit focus when new sessions start, and selects the first available session 0ms
+   ✓ Harness task presentation > retains complete confirmed results and acknowledges each completion independently 0ms
+   ✓ Harness task presentation > distinguishes canceled, blocked and failed turns from successful completion 0ms
+   ✓ Harness task presentation > does not erase a settled task when an approval finishes late 0ms
+   ✓ Harness task presentation > returns to idle after completion without extending its deadline on selection or background activity 0ms
+   ✓ Harness task presentation > starts with the current running task and cancels a previous celebration when a new turn begins 0ms
+   ✓ Harness task presentation > keeps working until all parallel tools finish and waiting until all approvals finish 0ms
+   × Harness task presentation > keeps a failed tool step in active processing until the turn actually fails 5ms
+     → expected { mood: 'error', …(8) } to match object { Object (mood, active, ...) }
+(6 matching properties omitted from actual)
+   ✓ Harness task presentation > ignores stale turn events and approval settlements from a previous turn 0ms
+   ✓ pairs actual approval audit ids and keeps continued questions waiting after completed turns and viewed results 0ms
+   ✓ preserves interrupted and blocked expressions when no pending request entrance exists 0ms
+   ✓ explicitly restores confirmed results as unread without historical celebration or duplicate event processing 0ms
+   ✓ restores actual historical terminal outcomes without notices or invented interruptions 0ms
+   ✓ restores exact native approval pairs and keeps public continued entrances when an agent resumes running 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/model.test.ts > Harness task presentation > keeps a failed tool step in active processing until the turn actually fails
+AssertionError: expected { mood: 'error', …(8) } to match object { Object (mood, active, ...) }
+(6 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "active": true,
+-   "mood": "thinking",
++   "mood": "error",
+    "results": [],
+  }
+
+ ❯ tests/model.test.ts:159:26
+    157|     m.consume(s, event('tool/call', { turn: 1, step: 1, callId: ToolCa…
+    158|     m.consume(s, event('tool/result', { turn: 1, step: 1, message: cre…
+    159|     expect(m.snapshot()).toMatchObject({ mood: 'thinking', active: tru…
+       |                          ^
+    160|     m.consume(s, event('turn/end', { turn: 1, reason: { kind: 'error',…
+    161|     expect(m.snapshot()).toMatchObject({ mood: 'error', active: false …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 17 passed (18)
+   Start at  16:20:52
+   Duration  293ms (transform 64ms, setup 0ms, collect 112ms, tests 11ms, environment 0ms, prepare 40ms)
+
