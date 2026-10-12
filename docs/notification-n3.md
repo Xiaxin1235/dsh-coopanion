@@ -16,7 +16,7 @@
 | 工具单步错误的呈现 | fail | 单步工具错误原来提前进入 error 状态；修复后继续显示 thinking／active，回合实际结束为 error 才进入异常状态。回归 pass | [修复前](evidence/notification-n3/tool-error-before.log)、[修复后](evidence/notification-n3/tool-error-after.log) |
 | 已请求系统通知的重启／断连点击 | fail | 桌宠重启或短暂断连原来释放已请求通知的点击回调；修复后保留完整源会话映射，迟到 shown／clicked 关联原 token／generation。回归 pass | [修复前](evidence/notification-n3/late-click-before.log)、[修复后](evidence/notification-n3/late-click-after.log) |
 | 原生冷启动右键复核 | fail | 第三候选安装中仍出现缺失 pointerdown／contextmenu。独占桌面回路复现新窗口位于静止指针下时的输入缺失；修复幂等 hit 请求的原生回执，并按原生回执观察指针离开／进入，再用相同坐标点击。4 次连续冷启动及完整重启回归 pass | [安装失败](evidence/notification-n3/install-rc2-v3-redacted.log)、[独占复现](evidence/notification-n3/native-cold-before.log)、[4 次复核](evidence/notification-n3/native-cold-after.log)、[完整原生回归](evidence/notification-n3/desktop-exclusive-after.log) |
-| 正式 DSH Client 模块加载 | fail | 第四候选通过原生输入与最终回复，但 Client 的外部 zod 依赖无法由 DSH 模块表提供。浏览器构建改为打入运行依赖，保留公开 Host peers 与 React 外部引用；真实构建 factory 回归 pass，正式宿主复核 pending | [实际安装失败](evidence/notification-n3/install-rc2-v4-redacted.log)、`tests/client-build.mjs` |
+| 正式 DSH Client 模块加载 | fail | 第四候选通过原生输入与最终回复，但 Client 的外部 zod 依赖无法由 DSH 模块表提供。浏览器构建改为打入运行依赖，保留公开 Host peers 与 React 外部引用；真实构建 factory 与两版正式宿主无头 Client 安装复核 pass | [实际安装失败](evidence/notification-n3/install-rc2-v4-redacted.log)、[rc.2 复核](evidence/notification-n3/client-install-0.2.0-rc.2.json)、[alpha.1 复核](evidence/notification-n3/client-install-0.2.1-alpha.1.json) |
 
 原生指针辅助器通过 CoreGraphics 移动系统指针，按原生 hit 回执观察真实离开／进入，用同一坐标执行普通 Playwright 点击，并检查实际 `pointerdown`／`contextmenu`。原生窗口对幂等 hit 请求返回实际输入状态；修复后的日志包含连续冷启动、重启前后右键输入链、角色保存／删除及 clean shutdown。
 
@@ -30,10 +30,12 @@
 |---|---|---|
 | Host／Client TypeScript | pass | 两套配置；当前投影恢复修复已复核 |
 | 整合单元检查 | pass | 85 项 Vitest、10 项 release-checks；6 项真实装配检查覆盖投影恢复、continued 精确结算和容量边界；工具错误及迟到通知点击回归通过 |
+| Client 构建 factory | pass | 构建真实 dist/client.js，在仅提供公开 peers／React seed 的模块载体中激活；旧包复现缺失 zod，修复包激活成功 |
 | 版本与压缩包 | pass | 第一修复候选 `689bf8cf3561185f2c5d2df1eeebdaf39b16dfeb` 的 0.4.4 验证包 SHA-256 为 `b5df6e9d200194c5f20bf9e900ededf2a163bf27f87fa12d6f2cd0bd52dde942`，位于本 worktree `.cache/n3/package/`；第二候选 `487774306fca3adb0d652939088484385b531992` 的摘要为 `2c713072985a6433afb446b6851f30454f79599c51b09599316e6336f74da64b`，位于 `.cache/n3/package-v2/` |
 | 现有角色浏览器回归 | pass | `tests/ui.mjs`，独立 Chromium 无头会话 |
 | 通知浏览器回归 | pass | `tests/notification-ui.mjs`，精确身份、continued、补提醒操作、阅读／输入／拖拽、双语、显示／代次清理、完成消息顺序与提示到期后的回复续显 |
 | macOS 原生完整回归 | pass | 独占桌面中连续 4 次冷启动、同一路径重启后菜单、角色删除及清理通过；原 DSH 已恢复 |
+| 两版正式安装的无头 Client | pass | 同一 `e148a7f4aed5e2976d6d140e1980b60a94125d85` 压缩包；实际 CLI 安装、Client 激活、旧 notifications=false 保留、新默认值与配置落盘；autoStart=false，无原生窗口 |
 | macOS × 两版 DSH 实际安装 | pending | 正式 CLI 安装、Host／Client 装配、新字段默认值及持久化、真实领取和回执、公开测试源会话导出 |
 | 整合候选远端三平台／六组安装 | pending | 使用当前提交生成的同一 Linux artifact，单独保存 CI 身份及摘要 |
 | 签名 DSH 系统实机 | pending | 单实例角色／系统通道、权限、通知中心、点击、补提醒、重连／锁屏／休眠 |
@@ -42,6 +44,8 @@
 | N4 文档、版本和交付 | pending | 按 N3 用户验收结论继续 |
 
 安装检查使用正式宿主与真实 NotificationClient／Host 领取路由；网页 Notification 构造器为受控适配器。其 requested／shown 证明调用链及 Host 回执接受，OS 送达状态单独保持 pending。安装报告保存两次不同提醒的完整身份、领取 token、客户端、原生 generation／visibilityRevision、回执及公开导出 header。
+
+最新本地候选为 `e148a7f4aed5e2976d6d140e1980b60a94125d85`，验证包位于 `.cache/n3/package-v5/`，SHA-256 为 `3191af1443f4fdda688e60cdf43db6bc5768618a7792188ae40a0e24c82a69eb`，见 [校验报告](evidence/notification-n3/local-verification.json)。两版无头 Client 安装报告绑定这同一包，临时 Host、无头浏览器及 profile 均已清理。其 nativeWindow／osDelivery 字段保持 pending。
 
 已请求通知的回调由 DSH Client 生命周期持有，桌宠状态变化停止新的投递资格，并保留旧领取的真实回执与源会话映射。DSH Client 页面销毁或适配器容量淘汰时释放对应回调，OS 历史继续按系统策略留存；页面重载后的旧通知点击在实机验收中单独检查。
 
