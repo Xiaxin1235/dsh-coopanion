@@ -187,3 +187,52 @@ it('preserves interrupted and blocked expressions when no pending request entran
   m.consume(s, event('turn/end', { turn: 2, reason: { kind: 'blocked' } }));
   m.interactions([]); expect(m.snapshot().text).toContain('暂时停下');
 });
+it('explicitly restores confirmed results as unread without historical celebration or duplicate event processing', () => {
+  let now = 1000; const m = new PetModel(() => now), s = session('history');
+  const begin = event('turn/start', { turn: 1 });
+  const reply = event('assistant/message', { turn: 1, step: 1, message: createAssistantMessage({ content: [{ type: 'text', text: 'Complete historical result' }], source: { provider: 'test', model: 'test' } }), stream: [] });
+  const end = event('turn/end', { turn: 1, reason: { kind: 'completed' } });
+  const restored = { ...s, snapshotEvents: () => [begin, reply, end] };
+  m.observe(restored); expect(m.snapshot().results).toEqual([]); // observe keeps its original identity-only behavior.
+  expect(m.restore(restored)).toBeUndefined();
+  expect(m.snapshot()).toMatchObject({ mood: 'idle', active: false, results: [{ text: 'Complete historical result', read: false }] });
+  expect(m.snapshot().sessions[0]).toMatchObject({ reply: 'Complete historical result', unread: 1 });
+  expect(m.consume(s, end)).toBeUndefined();
+  now += 3000; expect(m.settle()).toBe(false);
+  const id = m.snapshot().results[0].id; m.read(id); m.restore(restored);
+  expect(m.snapshot().results).toHaveLength(1); expect(m.snapshot().results[0].read).toBe(true); expect(m.snapshot().sessions[0].unread).toBe(0);
+  const freshHost = new PetModel(); freshHost.restore(restored); expect(freshHost.snapshot().results[0].read).toBe(false);
+});
+it('restores actual historical terminal outcomes without notices or invented interruptions', () => {
+  const reasons = [
+    { reason: { kind: 'aborted', reason: { kind: 'user' } }, mood: 'idle', text: '先停在这里' },
+    { reason: { kind: 'interrupted' }, mood: 'waiting', text: '中断' },
+    { reason: { kind: 'error', error: { code: 'UNKNOWN', message: 'failed' } }, mood: 'error', text: '遇到了问题' },
+    { reason: { kind: 'blocked' }, mood: 'waiting', text: '暂时停下' },
+    { reason: { kind: 'max-tokens' }, mood: 'waiting', text: '暂时停下' },
+    { reason: { kind: 'forked' }, mood: 'idle', text: '准备好了' },
+  ] as const;
+  for (const { reason, mood, text } of reasons) {
+    const m = new PetModel(), s = session(`history-${reason.kind}`), begin = event('turn/start', { turn: 1 }), end = event('turn/end', { turn: 1, reason });
+    expect(m.restore({ ...s, snapshotEvents: () => [begin, end] })).toBeUndefined();
+    expect(m.snapshot()).toMatchObject({ mood, active: false, results: [] }); expect(m.snapshot().text).toContain(text);
+    expect(m.consume(s, end)).toBeUndefined(); expect(m.settle()).toBe(false);
+  }
+  const unfinished = new PetModel(), s = session('unfinished');
+  unfinished.restore({ ...s, snapshotEvents: () => [event('turn/start', { turn: 1 }), event('tool/call', { turn: 1, step: 1, callId: ToolCallId('unfinished-call'), name: 'bash', arguments: '{}' })] });
+  expect(unfinished.snapshot()).toMatchObject({ mood: 'working', active: true, results: [] });
+  expect(unfinished.snapshot().text).not.toContain('中断');
+});
+it('restores exact native approval pairs and keeps public continued entrances when an agent resumes running', () => {
+  const m = new PetModel(), s = session('restored-pending');
+  const begin = event('turn/start', { turn: 1 }), ask = event('approval/asked', { id: ApprovalRequestId('native-complete-id'), toolName: 'bash' });
+  const wrong = event('approval/decided', { id: ApprovalRequestId('native'), outcome: 'allowed-once' });
+  m.restore({ ...s, snapshotEvents: () => [begin, ask, wrong] }); expect(m.snapshot().mood).toBe('waiting');
+  const end = event('turn/end', { turn: 1, reason: { kind: 'completed' } }); m.restore({ ...s, snapshotEvents: () => [begin, ask, wrong, end] });
+  expect(m.snapshot()).toMatchObject({ mood: 'idle', active: false });
+  const pending: PendingInteraction = { id: interactionId(s.id, 'question', 'late-full-call'), sessionId: s.id, nativeId: 'late-full-call', kind: 'question', turn: 1, seq: 5, createdAt: 1000, preview: 'Still answerable', state: 'continued', dueAt: null, automaticReminders: 0 };
+  m.interactions([pending]); m.running(s);
+  expect(m.snapshot()).toMatchObject({ mood: 'waiting', active: true }); expect(m.snapshot().text).toContain('问题');
+  m.restore({ ...s, snapshotEvents: () => [begin, ask, wrong, end] }); expect(m.snapshot()).toMatchObject({ mood: 'waiting', active: true });
+  m.interactions([{ ...pending, state: 'settled' }]); expect(m.snapshot().mood).toBe('thinking');
+});

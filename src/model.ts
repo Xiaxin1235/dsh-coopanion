@@ -41,6 +41,12 @@ export class PetModel {
     return item;
   }
 
+  /** Explicit initialization fold. A fresh Host restores readable results as unread; existing read state survives. */
+  restore(session: ObservedSession): void {
+    if (!this.observe(session)) return;
+    for (const event of session.snapshotEvents?.() ?? []) this.fold(session, event, false);
+  }
+
   private describe(item: PetSession, event: SessionEvent): void {
     if (event.type !== 'user/message' || event.data.source.kind !== 'user') return;
     const text = event.data.content.filter(p => p.type === 'text').map(p => p.text).join(' ').replace(/\s+/g, ' ').trim();
@@ -107,8 +113,9 @@ export class PetModel {
   running(session: Pick<Session, 'id' | 'header'>): void {
     const item = this.observe(session);
     if (!item || this.tasks.get(item.id)!.active) return;
-    this.tasks.get(item.id)!.active = true;
-    this.present(item, 'thinking', '正在处理当前会话…');
+    const task = this.tasks.get(item.id)!; task.active = true;
+    if (task.requests.size || task.approvals.size) this.present(item, 'waiting', item.text);
+    else this.present(item, 'thinking', '正在处理当前会话…');
   }
 
   private present(item: PetSession, mood: Mood, text: string): void {
@@ -130,6 +137,10 @@ export class PetModel {
   }
 
   consume(session: Pick<Session, 'id' | 'header'>, event: SessionEvent): PetNotice | undefined {
+    return this.fold(session, event, true);
+  }
+
+  private fold(session: Pick<Session, 'id' | 'header'>, event: SessionEvent, live: boolean): PetNotice | undefined {
     const item = this.observe(session);
     if (!item) return;
     const task = this.tasks.get(item.id)!;
@@ -167,8 +178,10 @@ export class PetModel {
         if (text.trim() && !task.tools.size && !task.approvals.size) this.present(item, 'talking', '正在组织回复…');
         break;
       }
-      case 'approval/asked':
-        return this.approval(item.id, event.data.toolName, event.data.id);
+      case 'approval/asked': {
+        const notice = this.approval(item.id, event.data.toolName, event.data.id);
+        return live ? notice : undefined;
+      }
       case 'approval/decided':
         this.approvalSettled(item.id, event.data.id); break;
       case 'turn/end': {
@@ -189,22 +202,22 @@ export class PetModel {
               }
             }
             task.finalText = undefined;
-            this.present(item, 'happy', text || '任务完成'); task.celebrateUntil = this.now() + 2500;
-            return { title: `${item.label} · 任务完成`, body: text.slice(0, 180) || '已完成，回到会话查看。', sessionId: item.id, kind: 'task' };
+            this.present(item, live ? 'happy' : 'idle', live ? text || '任务完成' : ready); task.celebrateUntil = live ? this.now() + 2500 : 0;
+            return live ? { title: `${item.label} · 任务完成`, body: text.slice(0, 180) || '已完成，回到会话查看。', sessionId: item.id, kind: 'task' } : undefined;
           }
           case 'error':
             this.present(item, 'error', '任务遇到了问题，请回到 Harness 查看详情。');
-            return { title: `${item.label} · 需要关注`, body: item.text, sessionId: item.id, kind: 'task' };
+            return live ? { title: `${item.label} · 需要关注`, body: item.text, sessionId: item.id, kind: 'task' } : undefined;
           case 'blocked':
           case 'max-tokens':
             this.present(item, 'waiting', '任务暂时停下了，请回到 Harness 看看。');
-            return { title: `${item.label} · 任务暂停`, body: item.text, sessionId: item.id, kind: 'task' };
+            return live ? { title: `${item.label} · 任务暂停`, body: item.text, sessionId: item.id, kind: 'task' } : undefined;
           case 'aborted':
             this.present(item, 'idle', '先停在这里，随时继续。');
-            return { title: `${item.label} · 任务已停止`, body: item.text, sessionId: item.id, kind: 'task', category: 'stopped' };
+            return live ? { title: `${item.label} · 任务已停止`, body: item.text, sessionId: item.id, kind: 'task', category: 'stopped' } : undefined;
           case 'interrupted':
             this.present(item, 'waiting', '这段任务中断了，陪你回去看看。');
-            return { title: `${item.label} · 任务中断`, body: item.text, sessionId: item.id, kind: 'task', category: 'interrupted' };
+            return live ? { title: `${item.label} · 任务中断`, body: item.text, sessionId: item.id, kind: 'task', category: 'interrupted' } : undefined;
           default:
             this.present(item, 'idle', '准备好了，随时叫我。');
         }
