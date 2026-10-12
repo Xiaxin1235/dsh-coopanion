@@ -236,14 +236,14 @@ export class NotificationBroker {
   }
 
   /** A live client poll refreshes its bounded liveness record and can own one eligible notice. */
-  claim(clientId: string, generation: number): DeliveryClaim | null {
+  claim(clientId: string, generation: number, noticeId?: string): DeliveryClaim | null {
     if (!clientId || clientId.length > 2048 || this.closed || generation !== this.run.generation) return null;
     this.clients.set(clientId, this.clock.now());
     if (this.clients.size > 100) this.clients.delete(this.clients.keys().next().value!);
     this.tick();
     if (!this.eligible() || this.run.visible || !this.prefs.systemNotifications) return null;
     if ([...this.deliveries.values()].some(d => d.claim?.clientId === clientId && ['claimed', 'requested'].includes(d.state))) return null;
-    const delivery = [...this.deliveries.values()].find(d => d.state === 'pending' && this.valid(d.notice));
+    const delivery = [...this.deliveries.values()].find(d => d.state === 'pending' && this.valid(d.notice) && (noticeId === undefined || d.notice.id === noticeId));
     if (!delivery) return null;
     const claim: DeliveryClaim = { token: this.options.token?.() ?? randomUUID(), clientId, generation, visibilityRevision: this.run.visibilityRevision, expiresAt: this.clock.now() + (this.options.claimDurationMs ?? 15_000), notice: structuredClone(delivery.notice) };
     delivery.state = 'claimed'; delivery.claim = claim;
@@ -275,10 +275,7 @@ export class NotificationBroker {
     return noticeSchema.parse({ id: noticeId(sessionId, turn, seq, category, stage), sessionId, turn, seq, time, category, stage, title: `${this.sources.get(sessionId)?.label ?? '会话'} · ${title[category]}`.slice(0, 256), body: preview.slice(0, 2048), requestIds });
   }
   private identity(notice: TaskNotice, occurrence = 0, runtimeId?: string): string {
-    const tuple: (number | string)[] = [notice.sessionId, notice.turn, notice.seq, notice.category, notice.stage];
-    if (runtimeId) tuple.push(runtimeId);
-    if (occurrence) tuple.push(occurrence);
-    return JSON.stringify(tuple);
+    return noticeId(notice.sessionId, notice.turn, notice.seq, notice.category, notice.stage, occurrence, runtimeId);
   }
   private enqueue(notice: TaskNotice): void {
     if (!this.eligible() || this.deliveries.has(notice.id)) return;

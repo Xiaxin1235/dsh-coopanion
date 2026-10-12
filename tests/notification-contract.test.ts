@@ -52,3 +52,11 @@ it('contains constructor failure and releases late callbacks on disposal', () =>
   const live = fixture(); live.service.deliver(claim); const show = live.objects[0].onshow; live.service.dispose(); show?.();
   expect(live.receipts).toHaveBeenCalledTimes(1);
 });
+
+it('distinguishes snooze occurrences and complete runtime-only request identities', () => {
+  expect(noticeId('session', 1, 2, 'question', 'initial')).toBe('["session",1,2,"question","initial"]');
+  expect(noticeId('session', 1, 2, 'question', 'reminder', 1)).not.toBe(noticeId('session', 1, 2, 'question', 'reminder', 2));
+  expect(noticeId('session', 1, 2, 'question', 'initial', 0, 'request-full-one')).not.toBe(noticeId('session', 1, 2, 'question', 'initial', 0, 'request-full-two'));
+  expect(JSON.parse(noticeId('session', 1, 2, 'question', 'reminder', 2, 'request-full-one'))).toEqual(['session', 1, 2, 'question', 'reminder', 'request-full-one', 2]);
+  expect(() => noticeId('session', 1, 2, 'question', 'initial', -1)).toThrow();
+});

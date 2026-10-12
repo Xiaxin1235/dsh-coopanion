@@ -4,7 +4,7 @@
 
 ## 身份与事件
 
-提醒 id 使用 `[sessionId, turn, seq, category, stage]` 的 JSON 元组编码；请求 id 使用 `[sessionId, kind, nativeId]`。各字段保留完整值。`stage` 区分 `initial` 和 `reminder`。
+提醒 id 使用 `[sessionId, turn, seq, category, stage]` 的 JSON 元组编码；请求 id 使用 `[sessionId, kind, nativeId]`。各字段保留完整值。后续稍后提醒增加可选调度轮次；无日志 callId 的运行请求使用完整 runtime UUID 并标记 `source: runtime`，上下文 turn／seq 保留已提交锚点。runtime 元组依次追加 UUID 与可选调度轮次。`stage` 区分 `initial` 和 `reminder`。
 
 类别为 `completed`、`approval`、`question`、`error`、`stopped`、`interrupted`、`blocked`、`max-tokens`。每条提醒带标题、预览、源时间和对应请求 id 列表；合并互动通过请求列表关联各自的结算状态。
 
@@ -20,9 +20,10 @@ Host 按运行状态、显示状态及用户设置选择通道。系统投递需
 
 | Connection 方法 | 请求 | Host 返回／行为 |
 |---|---|---|
-| `coopanion/notification-state` | 空对象 | `NotificationSnapshot`：protocol、运行状态及待处理请求 |
+| `coopanion/notification-state` | 空对象或可选 locale | `NotificationSnapshot`：protocol、运行状态及待处理请求 |
 | `coopanion/notification-claim` | clientId、generation | 当前有效 `DeliveryClaim` 或 null |
 | `coopanion/notification-receipt` | `DeliveryReceipt` | 验证 token、客户端、提醒及代次后记录回执 |
+| `coopanion/notification-test` | clientId、generation | 用户操作创建或复用公开源会话，返回对应完整提醒的领取；角色运行且隐藏时可用 |
 | `coopanion/notification-snooze` | interactionId、generation | 为当前有效请求重新安排到期时间 |
 
 方法使用对应 `/api/coopanion/<endpoint>` 的公开 Connection 载体。请求按共享严格 schema 校验。Host 负责服务端领取令牌、单次领取、停止取消、迟到回执处理与请求结算；N1 实现这些方法，集成分支负责入口装配。

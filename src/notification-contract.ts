@@ -16,12 +16,17 @@ export const noticeSchema = z.object({
   category: z.enum(['completed', 'approval', 'question', 'error', 'stopped', 'interrupted', 'blocked', 'max-tokens']),
   stage: z.enum(['initial', 'reminder']),
   title: z.string().max(256), body: z.string().max(2048),
-  requestIds: z.array(id).max(100).default([]),
+  requestIds: z.array(id).max(100).default([]), source: z.enum(['event', 'runtime']).optional(),
 }).strict();
 export type TaskNotice = z.infer<typeof noticeSchema>;
 /** Tuple encoding preserves complete identities even when they contain separators. */
-export function noticeId(sessionId: string, turn: number, seq: number, category: TaskNotice['category'], stage: TaskNotice['stage']): string {
-  return JSON.stringify([sessionId, turn, seq, category, stage]);
+export function noticeId(sessionId: string, turn: number, seq: number, category: TaskNotice['category'], stage: TaskNotice['stage'], occurrence = 0, runtimeId?: string): string {
+  if (!Number.isSafeInteger(occurrence) || occurrence < 0) throw new Error('Invalid notification occurrence');
+  if (runtimeId !== undefined && !runtimeId.length) throw new Error('Invalid runtime request id');
+  const tuple: (string | number)[] = [sessionId, turn, seq, category, stage];
+  if (runtimeId !== undefined) tuple.push(runtimeId);
+  if (occurrence > 0) tuple.push(occurrence);
+  return JSON.stringify(tuple);
 }
 export function interactionId(sessionId: string, kind: 'approval' | 'question', nativeId: string): string {
   return JSON.stringify([sessionId, kind, nativeId]);
@@ -29,7 +34,7 @@ export function interactionId(sessionId: string, kind: 'approval' | 'question', 
 export const interactionSchema = z.object({
   id, sessionId: id, nativeId: id, kind: z.enum(['approval', 'question']),
   turn: counter, seq: counter, createdAt: counter, preview: z.string().max(2048),
-  state: z.enum(['open', 'continued', 'settled']),
+  state: z.enum(['open', 'continued', 'settled']), source: z.enum(['event', 'runtime']).optional(),
   dueAt: counter.nullable(), automaticReminders: z.number().int().min(0).max(1),
 }).strict();
 export type PendingInteraction = z.infer<typeof interactionSchema>;
@@ -56,12 +61,14 @@ export interface NotificationSnapshot {
   interactions: PendingInteraction[];
 }
 export const notificationRequests = {
+  state: z.object({ locale: z.string().min(2).max(64).regex(/^[a-zA-Z0-9-]+$/).optional() }).strict(),
   claim: z.object({ clientId: id, generation: counter }).strict(),
   receipt: deliveryReceiptSchema,
+  test: z.object({ clientId: id, generation: counter }).strict(),
   snooze: z.object({ interactionId: id, generation: counter }).strict(),
 } as const;
 /** Paths are carried by authenticated DSH Connection, with server-issued claim tokens. */
-export const notificationEndpoints = ['notification-state', 'notification-claim', 'notification-receipt', 'notification-snooze'] as const;
+export const notificationEndpoints = ['notification-state', 'notification-claim', 'notification-receipt', 'notification-snooze', 'notification-test'] as const;
 
 export interface WebNotificationStatus {
   supported: boolean;

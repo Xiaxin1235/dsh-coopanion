@@ -1,6 +1,6 @@
 # N0 验证记录
 
-日期：2026-10-12。状态：单实例原生验证已通过，等待修正原型及新增导出检查的 CI 复核。
+日期：2026-10-12。状态：N0 已完成；共同实现基线为 `213becb0eec6a23ede0768cee36d01933c83bbab`。
 
 插件及锁文件版本保持 v0.4.4。N0 使用工作区内的私有原型与 CI artifact 进行验证。
 
@@ -18,9 +18,15 @@
 | 通知点击返回源会话 | pass | [单实例摘要](evidence/notification-n0/single-instance-summary.json)、[原始回执](evidence/notification-n0/single-instance-receipts.jsonl)及[源会话截图](evidence/notification-n0/macos-single-instance-click.png) |
 | 源会话完整身份与原生日志导出 | pass | 公开 `sessionController.create`，导出 ZIP 中的完整 header id 与通知一致；[原始 ZIP](evidence/notification-n0/single-instance-session.zip) |
 | 首轮远端三平台 CI 与六组安装检查 | pass | [CI 38204361687](https://github.com/takboo/dsh-coopanion/actions/runs/38204361687)，10 个 job 全部通过 |
-| 公开创建与导出校验的六组 CI 复核 | pending | 本轮新增实际安装用例，等待最新提交的 CI |
+| 公开创建与导出校验的六组 CI 复核 | pass | [CI 38211824330](https://github.com/takboo/dsh-coopanion/actions/runs/38211824330)，10 个 job 全部通过；[最终核对摘要](evidence/notification-n0/ci-final-summary.json) |
 
 ## 远端 CI 基线
+
+最终实现提交为 `213becb0eec6a23ede0768cee36d01933c83bbab`，CI 38211824330 于 2026-10-12 14:30（Asia/Shanghai）全部通过。实际检出合并引用为 `c1069d8c2e7193374993a8d30bf0e96a6d3d5b03`，父提交包含实现提交，两者 Git tree 同为 `7448cbec4c81b78de90871acf4a3a765f35d8ecb`。
+
+下载并核对六份宿主接口报告及六份公开创建／导出报告：每组七项接口检查通过，插件版本均为 0.4.4；导出 header id 与各自通知源会话的完整 id 一致。macOS CI 私有原型的四份文件 SHA-256 与单实例原生验证产物全部一致。原始报告保留实际 checkout 身份，核对结果及报告摘要见 [最终 CI 证据](evidence/notification-n0/ci-final-summary.json)，下载产物位于本地 `artifacts/notification-n0/ci-38211824330/`。
+
+以下首轮记录继续保留，用于追溯检查进展。
 
 [PR #6](https://github.com/takboo/dsh-coopanion/pull/6) 的源码提交为 `7d6e1089951d601d68031f9d92d02fa792c47056`。CI 于 2026-10-12 12:46（Asia/Shanghai）完成：工作流语法、Linux／macOS／Windows 测试及三平台 × 两版 DSH 的六组实际安装检查全部通过。
 
@@ -48,7 +54,6 @@ CI 实际检出 PR 合并引用 `1b109668307474dc57e277bd8274a19dc15d5e5d`，其
 
 ## 后续检查点
 
-1. 保留已通过的 PR／CI 基线和六组宿主接口及安装报告。
-2. 完成本轮公开创建／导出用例的三平台 × 两版宿主 CI 复核。
-3. 将通过的原型文件摘要、共享接口、原生证据及 CI commit 固定为共同基线。
-4. N0 完成条件全部满足后，自动创建 N1／N2 的两个 worktree，分别开始 Host 和界面实现。
+1. N1／N2 从共同实现提交 `213becb0eec6a23ede0768cee36d01933c83bbab` 创建两个 managed worktree，按计划文件归属并行实现 Host 与界面／角色。
+2. 每条实现线提供局部检查和可审阅提交；集成负责人接入共享入口、配置及原生窗口消息。
+3. N3 对整合产物进行完整自动检查和系统实机验收，并记录真实模型会话与用户验收结果。

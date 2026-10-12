@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, Notification, screen, Menu, Tray, nativeImage, shell } = require('electron');
+const { app, BrowserWindow, ipcMain, powerMonitor, screen, Menu, Tray, nativeImage, shell } = require('electron');
 const { join } = require('node:path');
 const { randomBytes } = require('node:crypto');
 const { once } = require('node:events');
@@ -24,7 +24,9 @@ if (process.env.DSH_PET_TEST_DEBUG_PORT) {
 let win, tray, options, lastFrame, poll, assetServer, characters;
 let presentation = {}, lastTrayKey, lastIconKey, iconBase, iconAppearance;
 let interactive = null;
-const notices = new Set();
+const generation = Number(process.env.DSH_PET_GENERATION ?? 1);
+let visibilityRevision = 0, suspended = false, screenLocked = false, systemAsleep = false;
+function visibility() { if (win && !win.isDestroyed()) { process.send?.({ type: 'visibility', generation, visibilityRevision: ++visibilityRevision, visible: win.isVisible(), suspended }); syncTray(); } }
 function forward(message) { if (win && !win.isDestroyed()) win.webContents.send('pet:update', message); }
 function hit(active) {
   if (!win || win.isDestroyed() || active === interactive) return;
@@ -108,15 +110,10 @@ process.on('message', message => {
     if (message.command === 'focus-harness' && process.env.DSH_PET_TEST_NO_SANDBOX !== '1') void shell.openExternal('dsh://open').catch(() => {});
   }
   if (message.type === 'snapshot') { lastFrame = { type: 'init', options, snapshot: { ...message.snapshot, results: message.snapshot.results ?? lastFrame?.snapshot?.results ?? [] } }; forward(message); syncTray(); }
+  if (message.type === 'notification-state' || message.type === 'notification-snooze-result') forward(message);
   if (message.type === 'notice') {
+    if (message.generation !== undefined && (message.generation !== generation || message.visibilityRevision !== visibilityRevision || !win?.isVisible() || suspended)) return;
     forward(message);
-    if (options?.notifications && Notification.isSupported()) {
-      const notice = new Notification({ title: message.notice.title, body: message.notice.body, silent: true });
-      notices.add(notice);
-      notice.on('close', () => notices.delete(notice));
-      notice.on('click', () => { process.send?.({ type: 'action', action: { type: 'open-session', sessionId: message.notice.sessionId } }); });
-      notice.show();
-    }
   }
 });
 process.on('disconnect', () => app.quit());
@@ -152,8 +149,12 @@ app.whenReady().then(async () => {
   });
   win = new BrowserWindow({ ...screen.getPrimaryDisplay().workArea, transparent: true, frame: false, resizable: false, skipTaskbar: true, hasShadow: false, show: false, alwaysOnTop: true, backgroundColor: '#00000000', webPreferences: { preload: join(__dirname, 'preload.cjs'), sandbox: true, contextIsolation: true, nodeIntegration: false } });
   win.setAlwaysOnTop(true, 'floating');
-  const visibility = () => { process.send?.({ type: 'visibility', visible: win.isVisible() }); syncTray(); };
   win.on('show', visibility); win.on('hide', visibility);
+  const suspendState = () => { suspended = screenLocked || systemAsleep; visibility(); };
+  powerMonitor.on('suspend', () => { systemAsleep = true; suspendState(); });
+  powerMonitor.on('resume', () => { systemAsleep = false; suspendState(); });
+  powerMonitor.on('lock-screen', () => { screenLocked = true; suspendState(); });
+  powerMonitor.on('unlock-screen', () => { screenLocked = false; suspendState(); });
   win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
   if (process.platform === 'darwin') app.dock?.hide();
   win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
@@ -169,6 +170,7 @@ app.whenReady().then(async () => {
       if (typeof action.characterId !== 'string' || !/^[a-z0-9-]{1,32}$/.test(action.characterId) || typeof action.scheme !== 'string' || action.scheme.length > 200 || typeof action.name !== 'string' || action.name.length > 200 || typeof action.sleeping !== 'boolean' || typeof action.sound !== 'boolean') return;
       presentation = { characterId: action.characterId, scheme: action.scheme, name: action.name, sleeping: action.sleeping, sound: action.sound, ready: action.ready === true }; syncTray(); return;
     }
+    if (action.type === 'notification-snooze') { if (typeof action.interactionId === 'string' && action.interactionId.length <= 2048 && Number.isSafeInteger(action.generation)) act(action); return; }
     if (action.type !== 'chat' && action.type !== 'select' && action.type !== 'open-session' && action.type !== 'preference' && action.type !== 'read') return;
     process.send?.({ type: 'action', action });
   });
@@ -194,5 +196,5 @@ app.whenReady().then(async () => {
   process.send?.({ type: 'ready' });
 }).catch(error => { console.error(error); app.exit(1); });
 
-app.on('before-quit', () => { clearInterval(poll); assetServer?.close(); for (const notice of notices) notice.close(); tray?.destroy(); });
+app.on('before-quit', () => { clearInterval(poll); assetServer?.close(); tray?.destroy(); });
 app.on('window-all-closed', () => app.quit());

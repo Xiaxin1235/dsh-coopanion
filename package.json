@@ -12,7 +12,12 @@
   "bugs": {
     "url": "https://github.com/takboo/dsh-coopanion/issues"
   },
-  "keywords": ["dsh-plugin", "deepseek-harness", "desktop-pet", "notifications"],
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "desktop-pet",
+    "notifications"
+  ],
   "packageManager": "npm@11.19.1",
   "publishConfig": {
     "access": "public",
@@ -77,7 +82,8 @@
     "character:pack": "node scripts/pack-character.mjs",
     "dev": "node scripts/preview.mjs",
     "demo": "node scripts/demo.mjs",
-    "prepack": "npm run build"
+    "prepack": "npm run build",
+    "test:notification-ui": "node tests/notification-ui.mjs"
   },
   "dependencies": {
     "electron": "44.7.0",
@@ -94,12 +100,15 @@
     "@deepseek-ai/dsh-client-ui-renderer": "0.2.0-rc.2 || 0.2.1-alpha.1",
     "@deepseek-ai/dsh-client-ui-settings": "0.2.0-rc.2 || 0.2.1-alpha.1",
     "@deepseek-ai/dsh-client-ui-slots": "0.2.0-rc.2 || 0.2.1-alpha.1",
+    "@deepseek-ai/dsh-client-ui-workspace": "0.2.0-rc.2 || 0.2.1-alpha.1",
     "@deepseek-ai/dsh-llm": "0.2.0-rc.2 || 0.2.1-alpha.1",
     "@deepseek-ai/dsh-session": "0.2.0-rc.2 || 0.2.1-alpha.1",
     "@deepseek-ai/dsh-settings": "0.2.0-rc.2 || 0.2.1-alpha.1",
     "@deepseek-ai/dsh-user-approval": "0.2.0-rc.2 || 0.2.1-alpha.1",
     "@deepseek-ai/schemastery": ">=3.18.4 <4",
-    "@deepseek-ai/dsh-client-ui-workspace": "0.2.0-rc.2 || 0.2.1-alpha.1"
+    "@deepseek-ai/dsh-user-questions": "0.2.0-rc.2 || 0.2.1-alpha.1",
+    "@deepseek-ai/dsh-session-projection": "0.2.0-rc.2 || 0.2.1-alpha.1",
+    "@deepseek-ai/dsh-api-session-controller": "0.2.0-rc.2 || 0.2.1-alpha.1"
   },
   "devDependencies": {
     "@deepseek-ai/cordis": "4.0.4",
@@ -116,6 +125,7 @@
     "@deepseek-ai/dsh-session": "0.2.0-rc.2",
     "@deepseek-ai/dsh-settings": "0.2.0-rc.2",
     "@deepseek-ai/dsh-user-approval": "0.2.0-rc.2",
+    "@deepseek-ai/dsh-user-questions": "0.2.0-rc.2",
     "@deepseek-ai/schemastery": "3.18.4",
     "@types/node": "^24.0.0",
     "@types/react": "^18.3.1",
@@ -126,7 +136,9 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "typescript": "^5.9.3",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "@deepseek-ai/dsh-session-projection": "0.2.0-rc.2",
+    "@deepseek-ai/dsh-api-session-controller": "0.2.0-rc.2"
   },
   "peerDependenciesMeta": {
     "@deepseek-ai/dsh-client-connection": {
@@ -154,6 +166,15 @@
       "optional": true
     },
     "@deepseek-ai/dsh-client-ui-workspace": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-user-questions": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-session-projection": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-api-session-controller": {
       "optional": true
     }
   }

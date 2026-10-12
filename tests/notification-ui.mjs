@@ -9,13 +9,14 @@ import { previewServer } from '../scripts/preview.mjs';
 
 const directory = await mkdtemp(join(tmpdir(), 'dsh-notification-ui-'));
 const server = previewServer({ dataDir: directory }); server.listen(0, '127.0.0.1'); await once(server, 'listening');
-const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH ?? (existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : chromium.executablePath()), headless: true, args: ['--no-sandbox', '--enable-unsafe-swiftshader'] });
+let browser;
 const source = 'session-full-question-abcdef-123456';
 const interactionId = JSON.stringify([source, 'question', 'native-call-full']);
 const request = { id: interactionId, nativeId: 'native-call-full', sessionId: source, kind: 'question', turn: 1, seq: 2, createdAt: 1, preview: '<img src=x onerror="throw 1"> Which option?', state: 'continued', dueAt: Date.now() + 600000, automaticReminders: 0 };
 const state = { protocol: 1, runtime: { phase: 'running', visible: true, generation: 7, visibilityRevision: 4, suspended: false }, interactions: [request] };
 const notice = (id, category = 'question', stage = 'initial', requestIds = [interactionId]) => ({ id, sessionId: source, category, stage, turn: 1, seq: 2, time: Date.now(), title: 'Question', body: request.preview, requestIds });
 try {
+  browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH ?? (existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : chromium.executablePath()), headless: true, args: ['--no-sandbox', '--enable-unsafe-swiftshader'] });
   const page = await browser.newPage({ viewport: { width: 1200, height: 800 }, reducedMotion: 'reduce' });
   page.setDefaultTimeout(12000);
   const errors = []; page.on('pageerror', error => errors.push(error.message));
@@ -92,4 +93,4 @@ try {
   await page.mouse.up(); await page.locator('#interaction:not([hidden])').waitFor();
   assert.deepEqual(errors, []);
   console.log('Notification UI passed: full source/request identity, Host-confirmed snooze, text previews, continued request inbox, reading/input/drag protection, settlement race, grouped bilingual prompts, reduced motion and generation/visibility cleanup.');
-} finally { await browser.close(); await new Promise(resolve => server.close(resolve)); await rm(directory, { recursive: true, force: true }); }
+} finally { await browser?.close(); await new Promise(resolve => server.close(resolve)); await rm(directory, { recursive: true, force: true }); }
