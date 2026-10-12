@@ -30,6 +30,16 @@
       <div class="reply-actions"><button id="bubble-reveal">立即显示</button><button id="bubble-expand" hidden>展开完整回复 ↗</button></div>
       <div class="bubble-footer"><span id="bubble-status"></span><button id="bubble-session" hidden>回到会话 ↗</button></div>
     </section>
+    <section id="interaction" class="bubble interaction interactive" hidden aria-live="polite" aria-labelledby="interaction-title">
+      <button id="interaction-close" class="b-close" aria-label="先收起来">×</button>
+      <strong id="interaction-title"></strong><p id="interaction-preview" class="b-text"></p>
+      <div class="reply-actions"><button id="interaction-open">回到源会话 ↗</button><button id="interaction-pending" hidden>等你的一点小事</button></div>
+    </section>
+    <section id="requests" class="panel requests interactive" hidden role="dialog" aria-labelledby="requests-title">
+      <header><strong id="requests-title">等你的一点小事</strong><button id="requests-close" aria-label="先收起来">×</button></header>
+      <div id="request-list" class="request-list"></div><p id="request-feedback" role="status"></p>
+      <footer><button id="requests-replies">查看会话与未读回复</button></footer>
+    </section>
     <section id="reader" class="panel reader interactive" hidden role="dialog" aria-labelledby="reader-title">
       <header><span class="conversation-heading"><small>捎回来的回复</small><strong id="reader-title"></strong></span><button id="reader-close" aria-label="收起完整回复">×</button></header>
       <small id="reader-detail" class="reader-detail"></small>

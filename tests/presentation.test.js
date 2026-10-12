@@ -49,3 +49,24 @@ it('shares background attention and active work between the character and tray w
   expect(state.activity).toEqual(sessionActivity(snapshot)); expect(state.sessionId).toBe('a');
   expect(tray.trayState({ ...snapshot, mood: 'idle', active: false, sessions: snapshot.sessions.slice(1) }, { sleeping: true })).toMatchObject({ mood: 'waiting', sleeping: false });
 });
+
+import { notificationCopy, notificationPresentation, createNoticeQueue } from '../web/notification-ui.js';
+const taskNotice = (id, category = 'question', stage = 'initial', requestIds = ['question-full']) => ({ id, sessionId: 'session-full', category, stage, title: 'Title', body: 'Full question preview', requestIds });
+it('maps every event and grouped reminder into character language with supported vocabulary fallback', () => {
+  for (const category of ['completed', 'approval', 'question', 'error', 'stopped', 'interrupted', 'blocked', 'max-tokens']) {
+    const zh = notificationPresentation(taskNotice(category, category), 'zh-CN', ['neutral']);
+    const en = notificationPresentation(taskNotice(category, category), 'en-US', []);
+    expect(zh.word).toBe('neutral'); expect(en.word).toBeUndefined(); expect(zh.title).not.toBe(en.title); expect(en.body).toBe('Full question preview');
+  }
+  expect(notificationPresentation(taskNotice('reminder', 'question', 'reminder', ['a', 'b']), 'en', ['worried'])).toMatchObject({ title: '2 requests are still waiting for you.', word: 'worried', mood: 'waiting' });
+  expect(notificationCopy('zh-TW').open).toContain('源会话');
+});
+it('holds deduplicated character prompts during reading and drops settled requests before presentation', () => {
+  const queue = createNoticeQueue({ limit: 2 });
+  queue.push(taskNotice('one')); expect(queue.push(taskNotice('one'))).toBe(false);
+  expect(queue.next(true, [])).toBeUndefined(); expect(queue.size).toBe(1);
+  expect(queue.next(false, [{ id: 'question-full', state: 'settled' }])).toBeUndefined();
+  queue.push(taskNotice('two')); queue.push(taskNotice('three')); queue.push(taskNotice('four'));
+  expect(queue.size).toBe(2); expect(queue.next(false, undefined).id).toBe('three');
+  queue.clear(); expect(queue.next(false)).toBeUndefined();
+});

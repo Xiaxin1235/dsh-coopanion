@@ -3,9 +3,10 @@ import { Button, Switch, Input, StateDot } from '@deepseek-ai/dsh-client-ui-prim
 import type { ConfigForm } from '@deepseek-ai/dsh-client-ui-settings/client';
 import type { PropsLocale } from '@deepseek-ai/dsh-client-ui-slots';
 import type { PetCommand, PetStatus } from '../controls.ts';
+import type { NotificationSettings, NotificationClientStatus } from './notification-client.ts';
 
-export interface Preferences { size: number; roam: boolean; notifications: boolean; bubbleDurationMs: number; autoStart: boolean; }
-export interface SettingsFace { form: ConfigForm<Preferences>; call: (command?: PetCommand, signal?: AbortSignal) => Promise<PetStatus>; local: boolean; }
+export interface Preferences { size: number; roam: boolean; notifications: boolean; systemNotifications: boolean; reminders: boolean; reminderDelayMs: number; bubbleDurationMs: number; autoStart: boolean; }
+export interface SettingsFace { form: ConfigForm<Preferences>; call: (command?: PetCommand, signal?: AbortSignal) => Promise<PetStatus>; local: boolean; notifier?: NotificationSettings; }
 export type SettingsProps = SettingsFace & PropsLocale<'coopanion'>;
 
 function NumberPreference({ value, min, max, label, hint, invalidHint, id, disabled, save }: {
@@ -24,7 +25,13 @@ function NumberPreference({ value, min, max, label, hint, invalidHint, id, disab
   </div>;
 }
 
-export function Settings({ form, call, local, t }: SettingsProps) {
+const disconnected: NotificationClientStatus = { web: { supported: false, permission: 'unavailable', osAuthorization: 'unknown' }, connected: false };
+const noSubscribe = () => () => {};
+
+export function Settings({ form, call, local, notifier, t }: SettingsProps) {
+  const notification = useSyncExternalStore(notifier?.subscribe ?? noSubscribe, notifier?.getSnapshot ?? (() => disconnected));
+  const [notificationBusy, setNotificationBusy] = useState(false);
+  const [notificationError, setNotificationError] = useState('');
   const accepted = useSyncExternalStore(listener => form.subscribe(listener), () => form.getSnapshot());
   const [status, setStatus] = useState<PetStatus>();
   const [failure, setFailure] = useState('');
@@ -58,6 +65,25 @@ export function Settings({ form, call, local, t }: SettingsProps) {
     catch (error) { setSaveFailure(String(error instanceof Error ? error.message : error)); }
     finally { setSaving(false); }
   };
+  const permission = async () => {
+    if (!notifier || notificationBusy) return;
+    setNotificationBusy(true); setNotificationError('');
+    try { await notifier.requestPermission(); }
+    catch (error) { setNotificationError(String(error instanceof Error ? error.message : error)); }
+    finally { setNotificationBusy(false); }
+  };
+  const enableSystem = async (enabled: boolean) => {
+    // Start the permission request in the actual toggle gesture before async persistence.
+    if (enabled) await permission();
+    await save('systemNotifications', enabled);
+  };
+  const testNotification = async () => {
+    if (!notifier || notificationBusy) return;
+    setNotificationBusy(true); setNotificationError('');
+    try { await notifier.test(); }
+    catch (error) { setNotificationError(String(error instanceof Error ? error.message : error)); }
+    finally { setNotificationBusy(false); }
+  };
   const ready = accepted.status === 'ready' && accepted.writable && !saving;
   const prefs = accepted.value;
   const running = status?.phase === 'running';
@@ -88,6 +114,24 @@ export function Settings({ form, call, local, t }: SettingsProps) {
         <NumberPreference id="coopanion-duration" label={t('duration')} hint={t('durationHint')} invalidHint={t('invalid')} value={prefs.bubbleDurationMs / 1000} min={2} max={60} disabled={!ready || !local} save={value => void save('bubbleDurationMs', value * 1000)} />
       </> : null}
       <p className="pet-feedback" role="status">{saving ? t('saving') : saveFailure || (feedback ? t(feedback) : '')}</p>
+    </section>
+    <section className="pet-card" aria-label={t('notificationSettings')}>
+      <h3>{t('notificationSettings')}</h3>
+      <div className="pet-row"><div className="pet-label"><strong>{t('systemNotifications')}</strong><p>{t('systemNotificationsHint')}</p></div>
+        <Switch checked={prefs?.systemNotifications ?? false} disabled={!ready || !local || notificationBusy} label={t('systemNotifications')} onChange={value => void enableSystem(value)} />
+      </div>
+      <div className="pet-row"><div className="pet-label"><strong>{t('reminders')}</strong><p>{t('remindersHint')}</p></div>
+        <Switch checked={prefs?.reminders ?? true} disabled={!ready || !local} label={t('reminders')} onChange={value => void save('reminders', value)} />
+      </div>
+      {prefs ? <NumberPreference id="coopanion-reminder-delay" label={t('reminderDelay')} hint={t('reminderDelayHint')} invalidHint={t('invalid')} value={(prefs.reminderDelayMs ?? 600000) / 60000} min={1} max={1440} disabled={!ready || !local} save={value => void save('reminderDelayMs', value * 60000)} /> : null}
+      <p role="status">{t('webPermission')}: {t(notification.web.permission === 'unavailable' ? 'permissionUnavailable' : notification.web.permission)} · {t('osUnknown')}</p>
+      <p>{t('systemSettingsHint')}</p>
+      <div className="pet-actions">
+        <Button variant="outline" disabled={!local || !notifier || notificationBusy || !notification.web.supported} onClick={() => void permission()}>{t('requestPermission')}</Button>
+        <Button variant="outline" disabled={!local || !notifier || notificationBusy || !prefs?.notifications || !prefs?.systemNotifications || !running || status?.visible !== false || notification.web.permission !== 'granted'} onClick={() => void testNotification()}>{t('testNotification')}</Button>
+      </div>
+      <p className="pet-feedback" role="status">{notificationBusy ? t('notificationWorking') : notification.delivery ? t(`delivery${notification.delivery}`) : t('testNotificationHint')}</p>
+      {notificationError || notification.error ? <p className="pet-error" role="alert">{notificationError || notification.error}</p> : null}
     </section>
     <section className="pet-card" aria-label={t('characters')}>
       <div className="pet-row"><div className="pet-label"><h3>{t('characters')}</h3><p>{t('charactersHint')}</p></div>
