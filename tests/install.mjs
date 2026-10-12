@@ -190,6 +190,16 @@ try {
     });
   };
   await bootHost();
+  // Harness readiness is independent of the asynchronous pet launch. Attach
+  // only after the actual Electron debug endpoint reports an available target.
+  let nativeReady = false;
+  for (let attempt = 0; attempt < 250; attempt++) {
+    assert.equal(host.exitCode, null, hostLog);
+    const endpoint = await fetch(`http://127.0.0.1:${port}/json/version`, { signal: AbortSignal.timeout(1000) }).then(response => response.ok ? response.json() : null, () => null);
+    if (endpoint?.webSocketDebuggerUrl) { nativeReady = true; break; }
+    await pause(100);
+  }
+  assert.ok(nativeReady, `The asynchronously launched native pet did not become ready:\n${hostLog}`);
   browser = await chromium.connectOverCDP(`http://127.0.0.1:${port}`);
   const page = browser.contexts()[0].pages()[0];
   page.on('pageerror', error => uiErrors.push(error.message));

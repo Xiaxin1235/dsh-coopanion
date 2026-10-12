@@ -77,7 +77,12 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
     };
     questions = sync;
     child.effect(() => () => { if (questions === sync) questions = undefined; });
-    if (mounted) for (const agent of ctx.agents.list()) sync(agent.session, false);
+    // A service is provided before its constructor registers projection units.
+    // Fold after that registration turn, including sessions without a live agent.
+    queueMicrotask(() => {
+      if (!mounted || questions !== sync) return;
+      for (const session of child.get('sessions')?.list() ?? ctx.agents.list().map(agent => agent.session)) sync(session, false);
+    });
   });
   let testSource: (() => Promise<Session>) | undefined;
   ctx.inject(['sessions', 'sessionController'], child => {

@@ -1,0 +1,20 @@
+Native pointer failure: [{"t":273,"type":"pointermove","target":"DIV#pet","x":1393,"y":1031,"mode":"idle","hidden":false,"focus":true,"box":{"x":1331,"y":967,"w":124,"h":128}},{"t":274,"type":"hit-state","active":true,"focused":false,"visible":true},{"t":531,"type":"pointermove","target":"DIV#pet","x":1392.5,"y":1028.5,"nativeHit":"true","mode":"idle","hidden":false,"focus":true,"box":{"x":1332,"y":962,"w":121,"h":133}}]
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Timeout 3000ms exceeded.
+Call log:
+[2m  - waiting for locator('#menu') to be visible[22m
+[2m    10 × locator resolved to hidden <section id="menu" hidden="" class="menu interactive">…</section>[22m
+
+    at petClick (/Users/jam/.codex/worktrees/11ca/dsh-coopanion/tests/helpers/native-pointer.mjs:60:39)
+    at async file:///Users/jam/.codex/worktrees/11ca/dsh-coopanion/tests/desktop.mjs:158:3 {
+  log: [
+    "  - waiting for locator('#menu') to be visible",
+    '    10 × locator resolved to hidden <section id="menu" hidden="" class="menu interactive">…</section>'
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.21.0

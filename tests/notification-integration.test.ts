@@ -128,3 +128,23 @@ it('keeps the original question answerer usable when reminder tracking reaches c
     expect((await invoke('notification-state')).value.interactions).toHaveLength(500);
   } finally { await scope.dispose(); await ctx.fiber.dispose(); }
 });
+
+it('restores dormant continued questions when optional projection services become available after mounting', async () => {
+  const ctx = new Context(); new SessionStore(ctx);
+  const session = ctx.sessions.create(SessionId('dormant-full-session'));
+  const callId = 'dormant-full-call';
+  session.append('turn/start', { turn: 1 });
+  session.append('request/header', { reason: 'initial', header: { tools: [{ name: 'ask_user_question', parameters: { type: 'object', properties: { timeout: { type: 'integer' } } } }] } } as never);
+  session.append('tool/call', { turn: 1, step: 1, callId, name: 'ask_user_question', arguments: JSON.stringify({ questions: [{ id: 'q', question: 'Still waiting?' }] }) } as never);
+  session.append('tool/result', { turn: 1, step: 1, message: { role: 'tool', id: 'dormant-pending', toolCallId: callId, content: [{ type: 'text', text: '{"pending":true}' }] } } as never, { surfaceOp: 'append' });
+  session.append('turn/end', { turn: 1, reason: { kind: 'completed' } });
+  ctx.provide('agents', { list: () => [] });
+  const bridge: PetBridge = { start: vi.fn(async () => {}), dispose: vi.fn(async () => {}), onAction: vi.fn(), removeAction: vi.fn(), update: vi.fn(), notify: vi.fn(), notificationState: vi.fn() };
+  const scope = ctx.plugin(child => mountPet(child, Config({ autoStart: false }), bridge));
+  try {
+    await scope.await();
+    expect(bridge.notificationState).toHaveBeenLastCalledWith(expect.objectContaining({ interactions: [] }));
+    new SessionProjectionRegistry(ctx); new UserQuestionService(ctx);
+    await vi.waitFor(() => expect(bridge.notificationState).toHaveBeenLastCalledWith(expect.objectContaining({ interactions: [expect.objectContaining({ sessionId: session.id, nativeId: callId, state: 'continued' })] })));
+  } finally { await scope.dispose(); await ctx.fiber.dispose(); }
+});

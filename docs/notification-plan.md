@@ -1,6 +1,6 @@
 # 角色提醒与系统通知执行计划
 
-更新：2026-10-12。状态：N0 已完成，N1／N2 实现已交接，N3 集成验收进行中。接口见 [N0 共享契约](notification-contract.md)，检查结果见 [N0 验证记录](notification-n0.md)和 [N1／N2 交接记录](notification-implementation.md)。
+更新：2026-10-12。状态：N0 已完成，N1／N2 实现已交接，N3 集成验收进行中。接口见 [N0 共享契约](notification-contract.md)，检查结果见 [N0 验证记录](notification-n0.md)、[N1／N2 交接记录](notification-implementation.md)和 [N3 验收记录](notification-n3.md)。
 
 本阶段交付一套由 Harness 事件驱动的提醒：角色显示时通过动作、表情、互动气泡和待处理信封呈现；角色隐藏时，通过 DSH 界面发送系统通知。实施基线为插件 v0.4.4，支持 DSH 0.2.0-rc.2 和 0.2.1-alpha.1。
 
