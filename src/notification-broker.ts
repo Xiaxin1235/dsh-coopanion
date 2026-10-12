@@ -194,7 +194,12 @@ export class NotificationBroker {
     this.source(session);
     const id = interactionId(session.id, 'question', question.nativeId);
     this.open(session.id, 'question', question.nativeId, question.turn, question.seq, this.clock.now(), question.preview, false, true, 'open', question.source);
-    const request = this.requests.get(id)!;
+    const request = this.requests.get(id);
+    if (!request) {
+      this.problems.push({ code: 'request-capacity-exceeded', sessionId: session.id, nativeId: question.nativeId });
+      if (this.problems.length > 100) this.problems.shift();
+      return () => {};
+    }
     const finish = () => { if (!request.projected) this.settle(id); this.refresh(); };
     question.signal?.addEventListener('abort', finish, { once: true });
     request.cleanup?.(); request.cleanup = () => question.signal?.removeEventListener('abort', finish);

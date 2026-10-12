@@ -12,6 +12,7 @@ import { importCharacter } from './helpers/characters.mjs';
 import { petClick } from './helpers/native-pointer.mjs';
 import { npmTarballName } from '../scripts/release-support.mjs';
 import { unzipSync } from 'fflate';
+import { prepareNotifications, verifyInstalledNotifications } from './helpers/installed-notifications.mjs';
 
 const version = process.env.DSH_TEST_VERSION ?? '0.2.0-rc.2';
 assert.ok(['0.2.0-rc.2', '0.2.1-alpha.1'].includes(version), 'test only advertised DSH versions');
@@ -241,6 +242,7 @@ try {
   settingsBrowser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH ?? (existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : chromium.executablePath()), headless: true, args: ['--no-sandbox'] });
   const settings = await settingsBrowser.newPage({ viewport: { width: 1280, height: 900 } });
   settingsPage = settings;
+  await prepareNotifications(settings);
   settings.on('pageerror', error => uiErrors.push(error.message));
   settings.on('console', message => { if (message.type() === 'error') consoleErrors.push(message.text().split('\n')[0]); });
   settings.on('response', async response => {
@@ -272,6 +274,7 @@ try {
   await surface.waitFor();
   console.log('Official DSH settings page loaded; checking controls and persisted preferences…');
   await surface.getByTestId('pet-status').filter({ hasText: '正在显示' }).waitFor();
+  await verifyInstalledNotifications({ page: settings, surface, profile, version, hostUrl, project });
   await surface.getByRole('button', { name: '隐藏桌宠', exact: true }).click();
   await surface.getByTestId('pet-status').filter({ hasText: '已隐藏' }).waitFor();
   await surface.getByRole('button', { name: '显示桌宠', exact: true }).click();
@@ -333,6 +336,9 @@ try {
   await surface.getByTestId('pet-status').filter({ hasText: '已关闭' }).waitFor();
   assert.equal(await surface.getByRole('spinbutton', { name: '角色尺寸', exact: true }).inputValue(), '180');
   assert.equal(await surface.getByRole('switch', { name: '随 Harness 启动', exact: true }).getAttribute('aria-checked'), 'false');
+  assert.equal(await surface.getByRole('switch', { name: '系统通知', exact: true }).getAttribute('aria-checked'), 'true');
+  assert.equal(await surface.getByRole('switch', { name: '待处理请求补提醒', exact: true }).getAttribute('aria-checked'), 'false');
+  assert.equal(await surface.getByRole('spinbutton', { name: '补提醒等待时间', exact: true }).inputValue(), '1');
   await surface.getByRole('button', { name: '管理角色', exact: true }).click();
   await surface.getByTestId('pet-status').filter({ hasText: '正在显示' }).waitFor();
   browser = await chromium.connectOverCDP(`http://127.0.0.1:${port}`);

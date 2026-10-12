@@ -92,3 +92,39 @@ it('delegates public blocking questions and settles only after the original answ
     expect((await invoke('notification-state')).value.interactions).toHaveLength(0);
   } finally { await scope.dispose(); await ctx.fiber.dispose(); }
 });
+
+it('tracks the public timed projection through continued and exact late reply settlement', async () => {
+  const { ctx, session, bridge, invoke } = setup();
+  const scope = ctx.plugin(child => mountPet(child, Config(), bridge));
+  try {
+    await scope.await(); await vi.waitFor(() => expect(ctx.coopanion.status().phase).toBe('running'));
+    const callId = 'integration-timed-question-full';
+    session.append('turn/start', { turn: 1 });
+    session.append('request/header', { reason: 'initial', header: { tools: [{ name: 'ask_user_question', parameters: { type: 'object', properties: { timeout: { type: 'integer' } } } }] } } as never);
+    session.append('tool/call', { turn: 1, step: 1, callId, name: 'ask_user_question', arguments: JSON.stringify({ questions: [{ id: 'q', question: 'Continue later?' }] }) } as never);
+    const origin = session.snapshotEvents().at(-1)!;
+    expect((await invoke('notification-state')).value.interactions).toMatchObject([{ nativeId: callId, state: 'open', turn: 1, seq: origin.seq }]);
+    session.append('tool/result', { turn: 1, step: 1, message: { role: 'tool', id: 'pending-result', toolCallId: callId, content: [{ type: 'text', text: '{"pending":true}' }] } } as never, { surfaceOp: 'append' });
+    session.append('turn/end', { turn: 1, reason: { kind: 'completed' } });
+    expect((await invoke('notification-state')).value.interactions).toMatchObject([{ nativeId: callId, state: 'continued', turn: 1, seq: origin.seq }]);
+    session.append('turn/start', { turn: 2 });
+    const reply = (identity: string) => session.append('user/message', { role: 'user', id: `reply-${identity}`, content: [{ type: 'text', text: '{"answers":[]}' }], source: { kind: 'user-question-reply', callId: identity, outcome: 'answered' } } as never, { surfaceOp: 'append' });
+    reply('integration-timed-question');
+    expect((await invoke('notification-state')).value.interactions).toHaveLength(1);
+    reply(callId);
+    expect((await invoke('notification-state')).value.interactions).toHaveLength(0);
+  } finally { await scope.dispose(); await ctx.fiber.dispose(); }
+});
+
+it('keeps the original question answerer usable when reminder tracking reaches capacity', async () => {
+  const { ctx, agent, session, bridge, invoke } = setup();
+  const scope = ctx.plugin(child => mountPet(child, Config({ autoStart: false }), bridge));
+  try {
+    await scope.await(); session.append('turn/start', { turn: 1 });
+    for (let n = 0; n < 500; n++) session.append('approval/asked', { id: ApprovalRequestId(`capacity-${n}`), toolName: 'bash' });
+    const answer = { answers: [] }, delegate = vi.fn(async () => answer);
+    await expect(ctx.waterfall('user-questions/request', { agent, questions: [{ id: 'q', question: 'Still answerable?' }] }, delegate as never)).resolves.toEqual(answer);
+    expect(delegate).toHaveBeenCalledOnce();
+    expect((await invoke('notification-state')).value.interactions).toHaveLength(500);
+  } finally { await scope.dispose(); await ctx.fiber.dispose(); }
+});
