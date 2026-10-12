@@ -57,6 +57,8 @@ jobs:
       - run: npm run setup:electron
       - run: npm run typecheck
       - run: npm test
+      - name: Verify N0 notification contract and prepare the private probe
+        run: npm run test:n0
       - run: npm run build
       - run: npx playwright-core install --with-deps chromium
       - run: npm run character:pack -- examples/star paper-star.zip
@@ -87,6 +89,16 @@ jobs:
         with:
           name: browser-and-desktop-${{ runner.os }}
           path: artifacts/*.png
+          retention-days: 7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: notification-n0-prototype-${{ runner.os }}
+          path: |
+            .cache/notification-n0/prototype.json
+            .cache/notification-n0/probe/
+          include-hidden-files: true
+          if-no-files-found: error
           retention-days: 7
   install:
     name: Install (${{ matrix.os }}, DSH ${{ matrix.dsh }})
@@ -132,3 +144,4 @@ jobs:
             artifacts/installed-*.png
             artifacts/settings-*.png
             artifacts/npm-runtime-*/
+            artifacts/notification-host-*.json

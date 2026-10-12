@@ -115,6 +115,7 @@ try {
   }
   const cliDir = join(runtime, 'node_modules', '@deepseek-ai', 'dsh');
   assert.equal(JSON.parse(await readFile(join(cliDir, 'package.json'), 'utf8')).version, version);
+  await run(process.execPath, [join(project, 'tests/notification-host-contract.mjs'), '--runtime', runtime, '--version', version]);
   const cli = join(cliDir, 'lib', 'bin.js');
   const bootFile = join(runtime, 'node_modules', '@deepseek-ai', 'dsh-app-boot', 'lib', 'index.js');
   const { evaluatePluginCompatibility } = await import(pathToFileURL(bootFile).href);

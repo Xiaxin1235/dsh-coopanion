@@ -72,6 +72,8 @@
     "test:ui": "node tests/ui.mjs",
     "test:desktop": "node tests/desktop.mjs",
     "test:install": "node tests/install.mjs",
+    "test:n0": "vitest run tests/notification-contract.test.ts && node scripts/prepare-notification-probe.mjs",
+    "test:n0:host": "node tests/notification-host-contract.mjs",
     "character:pack": "node scripts/pack-character.mjs",
     "dev": "node scripts/preview.mjs",
     "demo": "node scripts/demo.mjs",
