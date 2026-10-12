@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { PetModel } from '../src/model.ts';
 import { SessionId, SessionSeq, type SessionEvent, type Session } from '@deepseek-ai/dsh-session';
+import { ApprovalRequestId } from '@deepseek-ai/dsh-user-approval/types';
+import { interactionId, type PendingInteraction } from '../src/notification-contract.ts';
 import { createAssistantMessage, createUserMessage, createToolResultMessage, ToolCallId, LlmAttemptId } from '@deepseek-ai/dsh-llm';
 
 function session(id: string, origin?: 'subagent'): Pick<Session, 'id' | 'header'> {
@@ -104,8 +106,8 @@ describe('Harness task presentation', () => {
   it('distinguishes canceled, blocked and failed turns from successful completion', () => {
     const m = new PetModel(), s = session('one');
     m.consume(s, event('turn/start', { turn: 1 }));
-    expect(m.consume(s, event('turn/end', { turn: 1, reason: { kind: 'interrupted' } }))).toBeUndefined();
-    expect(m.snapshot().mood).toBe('idle');
+    expect(m.consume(s, event('turn/end', { turn: 1, reason: { kind: 'interrupted' } }))?.category).toBe('interrupted');
+    expect(m.snapshot().mood).toBe('waiting');
     expect(m.consume(s, event('turn/end', { turn: 2, reason: { kind: 'blocked' } }))?.title).toContain('暂停');
     expect(m.consume(s, event('turn/end', { turn: 3, reason: { kind: 'error', error: { code: 'UNKNOWN', message: 'test' } } }))?.title).toContain('需要关注');
     expect(m.snapshot().mood).toBe('error');
@@ -159,4 +161,29 @@ describe('Harness task presentation', () => {
     expect(m.snapshot().mood).toBe('waiting');
     m.approvalSettled('one', current); expect(m.snapshot().mood).toBe('thinking');
   });
+});
+
+it('pairs actual approval audit ids and keeps continued questions waiting after completed turns and viewed results', () => {
+  const m = new PetModel(), s = session('pending');
+  m.consume(s, event('turn/start', { turn: 1 }));
+  m.consume(s, event('approval/asked', { id: ApprovalRequestId('approval-full'), toolName: 'bash' }));
+  m.consume(s, event('approval/decided', { id: ApprovalRequestId('approval'), outcome: 'allowed-once' }));
+  expect(m.snapshot().mood).toBe('waiting');
+  m.consume(s, event('approval/decided', { id: ApprovalRequestId('approval-full'), outcome: 'allowed-once' }));
+  expect(m.snapshot().mood).toBe('thinking');
+  const request: PendingInteraction = { id: interactionId(s.id, 'question', 'full-call-id'), sessionId: s.id, nativeId: 'full-call-id', kind: 'question', turn: 1, seq: 5, createdAt: 1000, preview: 'Question?', state: 'continued', dueAt: null, automaticReminders: 0 };
+  m.consume(s, event('assistant/message', { turn: 1, step: 1, message: createAssistantMessage({ content: [{ type: 'text', text: 'Result' }], source: { provider: 'test', model: 'test' } }), stream: [] }));
+  m.consume(s, event('turn/end', { turn: 1, reason: { kind: 'completed' } }));
+  m.interactions([request]); expect(m.snapshot()).toMatchObject({ mood: 'waiting', active: false });
+  m.select(s.id); m.read(m.snapshot().results[0].id);
+  expect(m.snapshot().mood).toBe('waiting');
+  m.interactions([{ ...request, state: 'settled' }]); expect(m.snapshot().mood).toBe('idle');
+});
+
+it('preserves interrupted and blocked expressions when no pending request entrance exists', () => {
+  const m = new PetModel(), s = session('terminal');
+  m.consume(s, event('turn/end', { turn: 1, reason: { kind: 'interrupted' } }));
+  m.interactions([]); expect(m.snapshot()).toMatchObject({ mood: 'waiting', text: '这段任务中断了，陪你回去看看。' });
+  m.consume(s, event('turn/end', { turn: 2, reason: { kind: 'blocked' } }));
+  m.interactions([]); expect(m.snapshot().text).toContain('暂时停下');
 });

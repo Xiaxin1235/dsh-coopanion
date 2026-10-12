@@ -1,34 +1,83 @@
 import { expect, it, vi } from 'vitest';
-import { PetControls } from '../src/controls.ts';
+import { PetControls, type NativeLifecycle, type StartLifetime } from '../src/controls.ts';
 import type { DesktopOptions, PetBridge } from '../src/bridge.ts';
 
 const options: DesktopOptions = { size: 150, roam: true, notifications: true, bubbleDurationMs: 12000 };
-function fixture() {
-  let lifecycle: (state: { running: boolean; visible: boolean; error?: string }) => void = () => {};
+function fixture(limits = {}) {
+  let lifecycle: (state: NativeLifecycle) => void = () => {}, generation = 0, revision = 0;
   const bridge: PetBridge = {
-    start: vi.fn(async () => {}), dispose: vi.fn(async () => {}), update: vi.fn(), notify: vi.fn(),
-    onAction: vi.fn(), removeAction: vi.fn(), control: vi.fn(), configure: vi.fn(),
+    start: vi.fn(async (_options: DesktopOptions, lifetime?: StartLifetime) => { generation = lifetime?.generation ?? 0; revision = 1; lifecycle({ running: true, visible: true, generation, visibilityRevision: revision }); }),
+    dispose: vi.fn(async () => {}), update: vi.fn(), notify: vi.fn(),
+    onAction: vi.fn(), removeAction: vi.fn(), configure: vi.fn(),
+    control: vi.fn(command => { if (command !== 'characters') lifecycle({ running: true, visible: command !== 'hide', generation, visibilityRevision: ++revision }); }),
     onLifecycle: listener => { lifecycle = listener; }, removeLifecycle: vi.fn(),
   };
-  return { bridge, controls: new PetControls(bridge, () => options), lifecycle: (value: Parameters<typeof lifecycle>[0]) => lifecycle(value) };
+  return { bridge, controls: new PetControls(bridge, () => options, limits), lifecycle: (value: NativeLifecycle) => lifecycle(value) };
 }
 it('serializes concurrent starts, recovers after native close, and shows a hidden pet without spawning another', async () => {
   const { controls, bridge, lifecycle } = fixture();
   await Promise.all([controls.command('start'), controls.command('start')]);
   expect(bridge.start).toHaveBeenCalledOnce();
-  await controls.command('hide'); expect(controls.status()).toEqual({ phase: 'running', visible: false });
+  await controls.command('hide'); expect(controls.status()).toMatchObject({ phase: 'running', visible: false, generation: 1 });
   await controls.command('show'); expect(bridge.start).toHaveBeenCalledOnce();
-  lifecycle({ running: false, visible: false }); expect(controls.status().phase).toBe('stopped');
-  await controls.command('start'); expect(bridge.start).toHaveBeenCalledTimes(2);
+  lifecycle({ running: false, visible: false, generation: 1, visibilityRevision: 10 }); expect(controls.status().phase).toBe('stopped');
+  await controls.command('start'); expect(bridge.start).toHaveBeenCalledTimes(2); expect(controls.status().generation).toBe(2);
   await controls.command('restart'); expect(bridge.dispose).toHaveBeenCalledOnce(); expect(bridge.start).toHaveBeenCalledTimes(3);
   await controls.dispose(); await expect(controls.command('start')).rejects.toThrow('停用');
 });
 it('keeps launch failures retryable and can launch the character manager from a stopped process', async () => {
   const { controls, bridge } = fixture();
   vi.mocked(bridge.start).mockRejectedValueOnce(new Error('runtime missing'));
-  expect(await controls.command('start')).toEqual({ phase: 'error', visible: false, error: 'runtime missing' });
+  expect(await controls.command('start')).toMatchObject({ phase: 'error', visible: false, error: 'runtime missing' });
   expect((await controls.command('characters')).phase).toBe('running');
   expect(bridge.control).toHaveBeenLastCalledWith('characters');
   controls.configure(); expect(bridge.configure).toHaveBeenCalledWith(options);
   await controls.dispose();
+});
+it('publishes only acknowledged visibility and rejects old generations or reused native revisions', async () => {
+  const { controls, bridge, lifecycle } = fixture();
+  const states: ReturnType<PetControls['status']>[] = []; const detach = controls.onState(state => states.push(state));
+  vi.mocked(bridge.start).mockImplementationOnce(async () => {});
+  vi.mocked(bridge.control!).mockImplementation(() => {});
+  await controls.command('start'); expect(controls.status()).toMatchObject({ phase: 'running', visible: false, visibilityRevision: 0 });
+  lifecycle({ running: true, visible: true, generation: 0, visibilityRevision: 1 }); expect(controls.status().visible).toBe(false);
+  lifecycle({ running: true, visible: true, generation: 1, visibilityRevision: 1 }); expect(controls.status().visible).toBe(true);
+  await controls.command('hide'); expect(controls.status().visible).toBe(true);
+  lifecycle({ running: true, visible: false, generation: 1, visibilityRevision: 1 }); expect(controls.status().visible).toBe(true);
+  lifecycle({ running: true, visible: false, generation: 1, visibilityRevision: 2 }); expect(controls.status().visible).toBe(false);
+  lifecycle({ running: true, visible: false, generation: 1, visibilityRevision: 2, suspended: true }); expect(controls.status().suspended).toBe(true);
+  detach(); await controls.dispose(); expect(states.some(s => s.phase === 'starting')).toBe(true);
+});
+it('stop cancels a pending launch immediately and a late launch completion cannot revive the old generation', async () => {
+  const { controls, bridge } = fixture(); let finish!: () => void, signal!: AbortSignal;
+  vi.mocked(bridge.start).mockImplementationOnce((_options, lifetime?: StartLifetime) => { signal = lifetime!.signal; return new Promise<void>(resolve => { finish = resolve; }); });
+  const start = controls.command('start'); await Promise.resolve();
+  const stop = controls.command('stop'); expect(signal.aborted).toBe(true);
+  await start; expect((await stop).phase).toBe('stopped');
+  finish(); await Promise.resolve(); expect(controls.status().phase).toBe('stopped');
+  await controls.command('start'); expect(controls.status().generation).toBe(2);
+  await controls.dispose();
+});
+it('contains cleanup failures and bounds hanging startup and cleanup without rejecting Harness disposal', async () => {
+  vi.useFakeTimers();
+  try {
+    const { controls, bridge } = fixture({ startTimeoutMs: 100, cleanupTimeoutMs: 20 });
+    vi.mocked(bridge.start).mockImplementation(() => new Promise(() => {}));
+    vi.mocked(bridge.dispose).mockImplementation(() => new Promise(() => {}));
+    const start = controls.command('start'); await vi.advanceTimersByTimeAsync(120);
+    expect(await start).toMatchObject({ phase: 'error', visible: false });
+    expect(controls.status().error).toContain('启动超时'); expect(controls.status().error).toContain('清理超时');
+    const dispose = controls.dispose(); await vi.advanceTimersByTimeAsync(20); await dispose;
+    expect(controls.status().error).toContain('清理超时');
+    expect(bridge.removeLifecycle).toHaveBeenCalledOnce(); expect(vi.getTimerCount()).toBe(0);
+  } finally { vi.useRealTimers(); }
+});
+it('unload aborts startup, detaches listeners and isolates broken state observers', async () => {
+  const { controls, bridge } = fixture(); let signal!: AbortSignal;
+  controls.onState(() => { if (controls.status().phase === 'starting') throw new Error('view gone'); });
+  vi.mocked(bridge.start).mockImplementationOnce((_options, lifetime?: StartLifetime) => { signal = lifetime!.signal; return new Promise(() => {}); });
+  const start = controls.command('start'); await Promise.resolve();
+  const dispose = controls.dispose(); expect(signal.aborted).toBe(true);
+  await Promise.all([start, dispose]); expect(controls.status().phase).toBe('stopped');
+  expect(bridge.removeLifecycle).toHaveBeenCalledOnce();
 });

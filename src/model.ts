@@ -1,13 +1,15 @@
 import { basename } from 'node:path';
 import type { Session, SessionEvent } from '@deepseek-ai/dsh-session';
 import type { AssistantStreamFrame } from '@deepseek-ai/dsh-agent';
+import type {} from '@deepseek-ai/dsh-user-approval';
+import { type PendingInteraction, type TaskNotice } from './notification-contract.ts';
 
 export type Mood = 'idle' | 'thinking' | 'talking' | 'working' | 'waiting' | 'happy' | 'error' | 'sleeping';
 export interface PetResult { id: string; sessionId: string; text: string; time: number; read: boolean; }
 export interface PetSession { id: string; label: string; project: string; cwd: string; prompt: string; createdAt: number; updatedAt: number; mood: Mood; text: string; reply: string; replyId: string; unread: number; revision: number; active: boolean; streaming: boolean; speechId: string; chatAvailable?: boolean; }
 export interface PetSnapshot { mood: Mood; text: string; sessionId: string | null; revision: number; active: boolean; streaming: boolean; speechId: string; results: PetResult[]; sessions: PetSession[]; }
-export interface PetNotice { title: string; body: string; sessionId: string; kind?: 'task' | 'message'; }
-interface TaskState { seq: number; turn: number; active: boolean; finalText?: string; tools: Map<string, string>; approvals: Set<symbol>; celebrateUntil: number; stream?: { id: string; revision: number; index: number; text: string; blocks: Map<number, string> }; }
+export interface PetNotice extends Partial<Omit<TaskNotice, 'title' | 'body' | 'sessionId'>> { title: string; body: string; sessionId: string; kind?: 'task' | 'message'; }
+interface TaskState { seq: number; turn: number; active: boolean; finalText?: string; tools: Map<string, string>; approvals: Set<symbol | string>; questions: Set<string>; requests: Set<string>; celebrateUntil: number; stream?: { id: string; revision: number; index: number; text: string; blocks: Map<number, string> }; }
 type ObservedSession = Pick<Session, 'id' | 'header'> & Partial<Pick<Session, 'snapshotEvents'>>;
 const ready = '准备好了，随时叫我。';
 
@@ -31,7 +33,7 @@ export class PetModel {
       const project = session.header.cwd ? basename(session.header.cwd) : '未指定项目';
       item = { id: session.id, label: project, project, cwd: session.header.cwd ?? '', prompt: '', createdAt: session.header.createdAt, updatedAt: session.header.createdAt, mood: 'idle', text: ready, reply: '', replyId: '', unread: 0, revision: 0, active: false, streaming: false, speechId: '' };
       this.sessions.set(session.id, item);
-      this.tasks.set(session.id, { seq: -1, turn: 0, active: false, tools: new Map(), approvals: new Set(), celebrateUntil: 0 });
+      this.tasks.set(session.id, { seq: -1, turn: 0, active: false, tools: new Map(), approvals: new Set(), questions: new Set(), requests: new Set(), celebrateUntil: 0 });
       this.selected ??= session.id;
       // Restore identity from public history, without replaying stale task states or notices.
       for (const event of session.snapshotEvents?.() ?? []) this.describe(item, event);
@@ -165,6 +167,10 @@ export class PetModel {
         if (text.trim() && !task.tools.size && !task.approvals.size) this.present(item, 'talking', '正在组织回复…');
         break;
       }
+      case 'approval/asked':
+        return this.approval(item.id, event.data.toolName, event.data.id);
+      case 'approval/decided':
+        this.approvalSettled(item.id, event.data.id); break;
       case 'turn/end': {
         task.turn = event.data.turn; task.active = false; task.tools.clear(); task.approvals.clear(); task.celebrateUntil = 0;
         task.stream = undefined; item.streaming = false;
@@ -193,14 +199,20 @@ export class PetModel {
           case 'max-tokens':
             this.present(item, 'waiting', '任务暂时停下了，请回到 Harness 看看。');
             return { title: `${item.label} · 任务暂停`, body: item.text, sessionId: item.id, kind: 'task' };
+          case 'aborted':
+            this.present(item, 'idle', '先停在这里，随时继续。');
+            return { title: `${item.label} · 任务已停止`, body: item.text, sessionId: item.id, kind: 'task', category: 'stopped' };
+          case 'interrupted':
+            this.present(item, 'waiting', '这段任务中断了，陪你回去看看。');
+            return { title: `${item.label} · 任务中断`, body: item.text, sessionId: item.id, kind: 'task', category: 'interrupted' };
           default:
-            this.present(item, 'idle', '任务已停止，我在这里等你。');
+            this.present(item, 'idle', '准备好了，随时叫我。');
         }
       }
     }
   }
 
-  approval(id: string, tool: string, token: symbol = Symbol()): PetNotice | undefined {
+  approval(id: string, tool: string, token: symbol | string = Symbol()): PetNotice | undefined {
     const item = this.sessions.get(id);
     if (!item) return;
     const task = this.tasks.get(id)!; task.active = true; task.approvals.add(token); task.celebrateUntil = 0;
@@ -208,7 +220,7 @@ export class PetModel {
     return { title: `${item.label} · 等你确认`, body: item.text, sessionId: id, kind: 'task' };
   }
 
-  approvalSettled(id: string, token?: symbol): void {
+  approvalSettled(id: string, token?: symbol | string): void {
     const item = this.sessions.get(id);
     const task = this.tasks.get(id);
     if (!item || !task?.active) return;
@@ -216,6 +228,23 @@ export class PetModel {
     if (!token) task.approvals.clear();
     if (!task.approvals.size && item.mood === 'waiting') {
       this.present(item, task.tools.size ? 'working' : 'thinking', task.tools.size ? toolLabel(task.tools.values().next().value!) : '确认已处理，等待任务继续…');
+    }
+  }
+
+  /** Public request state can outlive a turn; viewing or reading never removes its waiting entrance. */
+  interactions(values: readonly PendingInteraction[]): void {
+    for (const [id, task] of this.tasks) {
+      const wasPending = task.requests.size > 0;
+      const pending = values.filter(value => value.sessionId === id && value.state !== 'settled');
+      task.requests = new Set(pending.map(value => value.id));
+      task.questions = new Set(pending.filter(value => value.kind === 'question').map(value => value.id));
+      const item = this.sessions.get(id)!;
+      if (pending.length) {
+        task.celebrateUntil = 0;
+        this.present(item, 'waiting', pending.some(value => value.kind === 'question') ? '有个问题想问你，请回到 Harness 看看。' : '下一步需要你确认，请回到 Harness。');
+      } else if (wasPending && !task.approvals.size && item.mood === 'waiting') {
+        this.present(item, task.active ? task.tools.size ? 'working' : 'thinking' : 'idle', task.active ? task.tools.size ? toolLabel(task.tools.values().next().value!) : '等待任务继续…' : ready);
+      }
     }
   }
 
