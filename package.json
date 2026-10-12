@@ -70,7 +70,7 @@
     "build": "node scripts/build.mjs",
     "setup:electron": "node node_modules/electron/install.js",
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.client.json",
-    "test": "vitest run && node --test tests/release-checks.mjs",
+    "test": "vitest run && node --test tests/release-checks.mjs tests/client-build.mjs",
     "verify:metadata": "node scripts/verify-metadata.mjs",
     "verify:release": "node scripts/verify-release.mjs",
     "verify:package": "node scripts/check-package.mjs",

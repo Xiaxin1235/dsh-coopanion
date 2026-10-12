@@ -16,10 +16,11 @@
 | 工具单步错误的呈现 | fail | 单步工具错误原来提前进入 error 状态；修复后继续显示 thinking／active，回合实际结束为 error 才进入异常状态。回归 pass | [修复前](evidence/notification-n3/tool-error-before.log)、[修复后](evidence/notification-n3/tool-error-after.log) |
 | 已请求系统通知的重启／断连点击 | fail | 桌宠重启或短暂断连原来释放已请求通知的点击回调；修复后保留完整源会话映射，迟到 shown／clicked 关联原 token／generation。回归 pass | [修复前](evidence/notification-n3/late-click-before.log)、[修复后](evidence/notification-n3/late-click-after.log) |
 | 原生冷启动右键复核 | fail | 第三候选安装中仍出现缺失 pointerdown／contextmenu。独占桌面回路复现新窗口位于静止指针下时的输入缺失；修复幂等 hit 请求的原生回执，并按原生回执观察指针离开／进入，再用相同坐标点击。4 次连续冷启动及完整重启回归 pass | [安装失败](evidence/notification-n3/install-rc2-v3-redacted.log)、[独占复现](evidence/notification-n3/native-cold-before.log)、[4 次复核](evidence/notification-n3/native-cold-after.log)、[完整原生回归](evidence/notification-n3/desktop-exclusive-after.log) |
+| 正式 DSH Client 模块加载 | fail | 第四候选通过原生输入与最终回复，但 Client 的外部 zod 依赖无法由 DSH 模块表提供。浏览器构建改为打入运行依赖，保留公开 Host peers 与 React 外部引用；真实构建 factory 回归 pass，正式宿主复核 pending | [实际安装失败](evidence/notification-n3/install-rc2-v4-redacted.log)、`tests/client-build.mjs` |
 
 原生指针辅助器通过 CoreGraphics 移动系统指针，按原生 hit 回执观察真实离开／进入，用同一坐标执行普通 Playwright 点击，并检查实际 `pointerdown`／`contextmenu`。原生窗口对幂等 hit 请求返回实际输入状态；修复后的日志包含连续冷启动、重启前后右键输入链、角色保存／删除及 clean shutdown。
 
-用户批准先核对活动任务，任务完成后暂时退出原 DSH，串行测试并恢复。原“优化 manual.md 表达”及 2 个 subagent 已完成，后台等待任务为 `exit code: 0`。原应用、Host 及其桌宠确认退出后完成上述独占复核，随后恢复签名应用及原 profile；当前选中的原会话已恢复。该窗口执行的是独立桌宠输入回归。
+用户批准先核对活动任务，任务完成后暂时退出原 DSH，串行测试并恢复。原活动会话及 2 个 subagent 已完成，后台等待任务为 `exit code: 0`。原应用、Host 及其桌宠确认退出后完成上述独占复核，随后恢复签名应用及原 profile；当前选中的原会话已恢复。该窗口执行的是独立桌宠输入回归。第四候选安装在 Client 激活处失败后再次恢复原 DSH，按用户请求释放鼠标和桌面，继续执行构建及无头检查。
 
 容量边界最多保留 500 项待处理跟踪。达到上限的新问题继续交给 Harness 原 answerer，诊断为 `request-capacity-exceeded`；释放已有请求后可继续接纳跟踪。
 
