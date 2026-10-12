@@ -1,0 +1,24 @@
+npm warn Unknown env config "store-dir". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> @takboo/dsh-coopanion@0.4.4 test:install
+> node tests/install.mjs
+
+Preparing published DSH 0.2.0-rc.2 in an isolated test directory…
+Published DSH 0.2.0-rc.2 prepared in 31s.
+Installing @takboo/dsh-coopanion@0.4.4 with the real DSH 0.2.0-rc.2 plugin command…
+Starting the installed bundle through the published DSH 0.2.0-rc.2 profile loader…
+Desktop diagnostic: 已切换，重启后会保留这个角色和配色。 whale [] []
+Downloading Electron binary...
+dsh web: http://127.0.0.1:62865/?token=<REDACTED>
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.waitForFunction: Timeout 30000ms exceeded.
+    at /Users/jam/.codex/worktrees/11ca/dsh-coopanion/tests/install.mjs:228:14 {
+  log: [],
+  name: 'TimeoutError'
+}
+
+Node.js v24.21.0

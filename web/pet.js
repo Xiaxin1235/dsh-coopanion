@@ -108,6 +108,10 @@ function showNextReply() {
   const result = snapshot.results?.find(r => r.sessionId === snapshot.sessionId && !r.read && !shownResults.has(r.id));
   if (result) speak(result);
 }
+function completionHasReply(notice) {
+  return notice?.category === 'completed' && notice.sessionId === snapshot.sessionId &&
+    snapshot.results?.some(result => result.id === `${notice.sessionId}:${notice.turn}:${notice.seq}`);
+}
 function acknowledge(result) {
   if (!result || result.read || acknowledgedResults.has(result.id)) return;
   acknowledgedResults.add(result.id); send({ type: 'read', resultId: result.id });
@@ -221,13 +225,17 @@ function render() {
   }
   renderedSessionId = snapshot.sessionId;
   if (!reader.hidden) updateReaderNavigation();
-  presentNextNotice(); showNextReply(); renderRequests(); updateMood(); position();
+  // Host can enqueue the role notice before the final-result IPC frame. The
+  // focused reply then supplies completion presentation for that exact event.
+  if (completionHasReply(currentNotice)) { interaction.hidden = true; currentNotice = undefined; }
+  showNextReply(); presentNextNotice(); renderRequests(); updateMood(); position();
 }
 
 function presentNextNotice() {
   if (!options.notifications || !interaction.hidden || userOccupied()) return;
   if (notificationState && (notificationState.runtime.phase !== 'running' || !notificationState.runtime.visible || notificationState.runtime.suspended)) return;
-  const notice = noticeQueue.next(false, notificationState?.interactions);
+  let notice = noticeQueue.next(false, notificationState?.interactions);
+  while (notice && completionHasReply(notice)) notice = noticeQueue.next(false, notificationState?.interactions);
   if (!notice) return;
   const available = activeView?.vocab.map(word => word.id).filter(word => !body?.words || body.words.includes(word)) ?? [];
   const current = notificationState && notice.requestIds.length ? { ...notice, requestIds: notice.requestIds.filter(id => pendingRequests().some(item => item.id === id)) } : notice;
@@ -483,7 +491,7 @@ function animate(now) {
   if (!options.notifications) { noticeQueue.clear(); interaction.hidden = true; }
   if (!interaction.hidden) {
     if (interaction.matches(':hover') || interaction.contains(document.activeElement)) interactionExpires = now + options.bubbleDurationMs;
-    if (now >= interactionExpires) { interaction.hidden = true; currentNotice = undefined; }
+    if (now >= interactionExpires) { interaction.hidden = true; currentNotice = undefined; showNextReply(); }
   }
   presentNextNotice();
   updateMood(now);

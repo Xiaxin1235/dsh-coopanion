@@ -11,7 +11,8 @@
 | macOS 原生角色重启后的右键菜单 | fail | 独立回路将失败缩小到直接加载已保存的纸星星；同步 macOS 系统指针与 CDP 指针后，原完整回归 pass | [失败日志](evidence/notification-n3/desktop-before.log)、[完整复核日志](evidence/notification-n3/desktop-after.log) |
 | 提问跟踪容量与原 answerer | fail | 500 个待处理请求后，新的运行提问访问缺失的跟踪记录而抛错；容量满时保留原 answerer 调用，并记录有界诊断。真实 Cordis 装配回归 pass | [失败日志](evidence/notification-n3/request-capacity-before.log)、`tests/notification-integration.test.ts` |
 | 可选投影服务晚挂载与旧会话恢复 | fail | 服务提供时投影单元尚未注册，且仅恢复 live Agent 会话；在注册回合结束后折叠所有已加载会话，continued 请求恢复回归 pass | [失败日志](evidence/notification-n3/optional-projection-before.log)、`tests/notification-integration.test.ts` |
-| 实际安装后连接原生窗口 | fail | Harness 挂载完成后桌宠异步准备运行时；安装测试增加实际调试端口的就绪检查。修复后完整安装检查 pending | 首轮本地 `.cache/n3/install-rc2.log` |
+| 实际安装后连接原生窗口 | fail | Harness 挂载完成后桌宠异步准备运行时；安装测试增加实际调试端口的就绪检查，第二候选通过该步骤 | [首次失败日志](evidence/notification-n3/install-rc2-redacted.log)；原始日志保留在本地 `.cache/n3/install-rc2.log` |
+| 角色完成提醒与最终回复的 IPC 顺序 | fail | 完成提示先到时阻塞最终回复；提示自动到期后也未继续回复。按完整 session／turn／seq 让最终回复接替同事件提示，并在提示到期后继续回复。两种消息顺序与自动到期浏览器回归 pass；完整安装检查 pending | [实际安装失败](evidence/notification-n3/install-rc2-v2-redacted.log)、[浏览器失败](evidence/notification-n3/completion-order-before.log)、`tests/notification-ui.mjs` |
 
 原生指针辅助器通过 CoreGraphics 移动系统指针，继续执行普通 Playwright 点击，检查原生 hit 回执及实际 `pointerdown`／`contextmenu`。原生窗口实现保持交接状态。修复后的日志包含重启前后右键输入链、角色保存／删除及 clean shutdown。
 
@@ -22,10 +23,10 @@
 | 范围 | 结果 | 当前证据与范围 |
 |---|---|---|
 | Host／Client TypeScript | pass | 两套配置；当前投影恢复修复已复核 |
-| 整合单元检查 | pass | 第一修复候选 82 项 Vitest、10 项 release-checks；新增投影恢复后的 6 项真实装配检查通过，完整套件随后复核 |
-| 版本与压缩包 | pass | 第一修复候选 `689bf8cf3561185f2c5d2df1eeebdaf39b16dfeb` 的 0.4.4 验证包 SHA-256 为 `b5df6e9d200194c5f20bf9e900ededf2a163bf27f87fa12d6f2cd0bd52dde942`，位于本 worktree `.cache/n3/package/` |
+| 整合单元检查 | pass | 83 项 Vitest、10 项 release-checks；6 项真实装配检查覆盖投影恢复、continued 精确结算和容量边界 |
+| 版本与压缩包 | pass | 第一修复候选 `689bf8cf3561185f2c5d2df1eeebdaf39b16dfeb` 的 0.4.4 验证包 SHA-256 为 `b5df6e9d200194c5f20bf9e900ededf2a163bf27f87fa12d6f2cd0bd52dde942`，位于本 worktree `.cache/n3/package/`；第二候选 `487774306fca3adb0d652939088484385b531992` 的摘要为 `2c713072985a6433afb446b6851f30454f79599c51b09599316e6336f74da64b`，位于 `.cache/n3/package-v2/` |
 | 现有角色浏览器回归 | pass | `tests/ui.mjs`，独立 Chromium 无头会话 |
-| 通知浏览器回归 | pass | `tests/notification-ui.mjs`，精确身份、continued、补提醒操作、阅读／输入／拖拽、双语及显示／代次清理 |
+| 通知浏览器回归 | pass | `tests/notification-ui.mjs`，精确身份、continued、补提醒操作、阅读／输入／拖拽、双语、显示／代次清理、完成消息顺序与提示到期后的回复续显 |
 | macOS 原生完整回归 | pass | 同一路径重启后菜单、角色删除及清理通过 |
 | macOS × 两版 DSH 实际安装 | pending | 正式 CLI 安装、Host／Client 装配、新字段默认值及持久化、真实领取和回执、公开测试源会话导出 |
 | 整合候选远端三平台／六组安装 | pending | 使用当前提交生成的同一 Linux artifact，单独保存 CI 身份及摘要 |

@@ -91,6 +91,31 @@ try {
   await receive({ type: 'notice', notice: notice('drag-notice') });
   await page.waitForTimeout(100); assert.equal(await page.locator('#interaction').isVisible(), false, 'drag holds character prompts');
   await page.mouse.up(); await page.locator('#interaction:not([hidden])').waitFor();
+  await page.locator('#interaction-close').click();
+
+  // Installed Host dispatches a completion notice before its final-result snapshot.
+  const completed = notice('completion-before-result', 'completed', 'initial', []);
+  completed.turn = 2; completed.seq = 3;
+  await receive({ type: 'snapshot', snapshot: { mood: 'thinking', sessionId: source, sessions: [{ id: source, mood: 'thinking', label: 'Completion source' }], results: [] } });
+  await receive({ type: 'notice', notice: completed });
+  await page.locator('#interaction:not([hidden])').waitFor();
+  const final = { id: `${source}:2:3`, sessionId: source, time: 2, text: 'The installed final reply.', read: false };
+  const finalSnapshot = { mood: 'happy', sessionId: source, sessions: [{ id: source, mood: 'happy', label: 'Completion source', replyId: final.id, unread: 1 }], results: [final] };
+  await receive({ type: 'snapshot', snapshot: finalSnapshot });
+  await page.waitForFunction(() => !document.getElementById('bubble').hidden && document.getElementById('bubble-text').textContent === 'The installed final reply.', undefined, { timeout: 3000 });
+  assert.equal(await page.locator('#interaction').isVisible(), false, 'the final reply owns focused completion presentation');
+  await page.locator('#dismiss').click();
+  await receive({ type: 'notice', notice: { ...completed, id: 'completion-after-result' } });
+  assert.equal(await page.locator('#interaction').isVisible(), false, 'the reverse arrival order does not produce a second completion prompt');
+
+  // An unrelated prompt expiring must release a waiting reply without another Host update.
+  await receive({ type: 'configure', options: { bubbleDurationMs: 2000 } });
+  await receive({ type: 'notice', notice: notice('expires-before-reply', 'error', 'initial', []) });
+  await page.locator('#interaction:not([hidden])').waitFor();
+  await page.mouse.move(0, 0);
+  const waiting = { ...final, id: `${source}:3:5`, text: 'Reply released after prompt expiry.' };
+  await receive({ type: 'snapshot', snapshot: { ...finalSnapshot, results: [final, waiting] } });
+  await page.waitForFunction(() => !document.getElementById('bubble').hidden && document.getElementById('bubble-text').textContent === 'Reply released after prompt expiry.', undefined, { timeout: 4000 });
   assert.deepEqual(errors, []);
   console.log('Notification UI passed: full source/request identity, Host-confirmed snooze, text previews, continued request inbox, reading/input/drag protection, settlement race, grouped bilingual prompts, reduced motion and generation/visibility cleanup.');
 } finally { await browser?.close(); await new Promise(resolve => server.close(resolve)); await rm(directory, { recursive: true, force: true }); }
