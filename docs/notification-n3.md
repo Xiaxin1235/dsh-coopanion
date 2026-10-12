@@ -38,22 +38,30 @@
 | 通知浏览器回归 | pass | `tests/notification-ui.mjs`，精确身份、continued、补提醒操作、阅读／输入／拖拽、双语、显示／代次清理、完成消息顺序与提示到期后的回复续显 |
 | macOS 原生完整回归 | pass | 独占桌面中连续 4 次冷启动、同一路径重启后菜单、角色删除及清理通过；原 DSH 已恢复 |
 | 两版正式安装的无头 Client | pass | 同一 `e148a7f4aed5e2976d6d140e1980b60a94125d85` 压缩包；实际 CLI 安装、Client 激活、旧 notifications=false 保留、新默认值与配置落盘；autoStart=false，无原生窗口 |
-| macOS × 两版 DSH 实际安装 | pending | 正式 CLI 安装、Host／Client 装配、新字段默认值及持久化、真实领取和回执、公开测试源会话导出 |
-| 整合候选远端三平台／六组安装 | pending | 使用当前提交生成的同一 Linux artifact，单独保存 CI 身份及摘要 |
+| macOS × 两版 DSH 实际安装 | pass | 远端 macOS runner 正式 CLI 安装、Host／Client 装配、新字段持久化与重启恢复、真实领取／回执、公开测试源会话导出；网页通知为受控适配器 |
+| 整合候选远端三平台／六组安装 | pass | [CI 38231668864](https://github.com/takboo/dsh-coopanion/actions/runs/38231668864) 的 10 个任务全部通过，六组消费同一 Linux artifact；[逐份核对摘要](evidence/notification-n3/ci-final-summary.json) |
 | 签名 DSH 系统实机 | pending | 单实例角色／系统通道、权限、通知中心、点击、补提醒、重连／锁屏／休眠 |
 | 真实模型会话 | pending | 真实提问、工具审批与回合结束 |
 | 用户验收 | pending | 通过 N3 条件后记录验收人及结论 |
 | N4 文档、版本和交付 | pending | 按 N3 用户验收结论继续 |
 
-完整安装用例使用正式宿主与真实 NotificationClient／Host 领取路由，网页 Notification 构造器为受控适配器。用例要求两次不同提醒的完整身份、领取 token、客户端、原生 generation／visibilityRevision、requested／shown 及 Host 回执接受、公开导出 header 相互匹配；OS 送达状态独立结算。完整安装用例当前仍为 pending。
+完整安装用例使用正式宿主与真实 NotificationClient／Host 领取路由，网页 Notification 构造器为受控适配器。六份安装报告中，每组 7 项宿主接口检查、2 次不同提醒身份、4 个 accepted 的 requested／shown 回执和公开导出 header 均匹配，配置重启恢复和正常清理通过；OS 送达状态独立保持 pending。
 
 两版 Client 安装验证使用候选 `e148a7f4aed5e2976d6d140e1980b60a94125d85`，验证包位于 `.cache/n3/package-v5/`，SHA-256 为 `3191af1443f4fdda688e60cdf43db6bc5768618a7792188ae40a0e24c82a69eb`，见 [校验报告](evidence/notification-n3/local-verification.json)。报告绑定这同一包，临时 Host、无头浏览器及 profile 均已清理。其 nativeWindow／osDelivery 字段保持 pending。后续身份／结算修复与最终 CI 产物分别记录新的提交和摘要。
 
 已请求通知的回调由 DSH Client 生命周期持有，桌宠状态变化停止新的投递资格，并保留旧领取的真实回执与源会话映射。DSH Client 页面销毁或适配器容量淘汰时释放对应回调，OS 历史继续按系统策略留存；页面重载后的旧通知点击在实机验收中单独检查。
 
+## 整合 CI 与实机候选
+
+用户已批准公开推送 `codex/notification-acceptance` 的通知整合代码、CI、文档及证据，并创建／维护 draft PR。当前 [PR #7](https://github.com/takboo/dsh-coopanion/pull/7) 的实现 head 为 `6daf803c6910e0a6ed3041a1607acbc3577e2f0c`。
+
+CI 38231668864 的实际 checkout 为 `5e7ba660f1f9c124bf47c37afc860bfd3227e534`，父提交包含上述 head；二者 Git tree 同为 `7c8fa28888c9de20d1e34b7564ec7db05e0b92e9`。Linux 包和固定别名的 SHA-256 均为 `74217559b37ee37d85a98c07a0d6ec225fb0630559ac067a05c188c4f0c93694`，与本地 `.cache/n3/package-v6/` 字节一致。canonical 包、示例、报告与版本说明的 SHA256SUMS 全部通过；[CI 校验报告](evidence/notification-n3/ci-verification.json) 保留实际 checkout 身份。
+
+签名实机候选消费这一 canonical 包。本机为 macOS 15.8.1（24H32），DSH Desktop 0.2.0-rc.2，bundle id 为 `com.deepseek.dsh`，Developer ID Application 为 Hangzhou DeepSeek Artificial Intelligence Co., Ltd，TeamIdentifier 为 `NAN929V4UM`。同包已在隔离 CLI profile 正式安装，并准备为 Desktop 提供该 profile；签名应用接管与实际加载尚待实机确认，原 profile 保持正常。
+
 ## 下一检查点
 
-1. 复核当前修复的完整套件和两版实际安装，绑定新的提交及验证压缩包。
-2. 将具体候选提交、PR 内容及证据交给用户审阅，按本聊天授权安排公开分支和 draft PR，再执行远端三平台／六组安装。
-3. 串行安排签名 DSH 的单实例实机及真实模型会话，完成环境清理并恢复原 DSH。
-4. 记录用户 N3 验收后，在本聊天继续 N4。
+1. 串行安排签名 DSH 的单实例实机，核对角色／系统通道、原生 requested／shown／clicked、通知中心及源会话导出。
+2. 补充真实审批／提问、continued、补提醒／snooze、阅读／输入保护、重连及环境状态，并执行真实模型会话。
+3. 关闭自建 Desktop／Host／辅助进程，释放端口和隔离数据并恢复原 DSH，记录用户 N3 验收。
+4. 用户验收通过后，在本聊天继续 N4。
