@@ -5,8 +5,7 @@ import { pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { verifyInstalledServices } from './helpers/installed-services.mjs';
-const { values } = parseArgs({ options: { runtime: { type: 'string' }, version: { type: 'string' }, plugin: { type: 'string' } } });
+const { values } = parseArgs({ options: { runtime: { type: 'string' }, version: { type: 'string' } } });
 assert.ok(values.runtime && values.version, 'provide the actual DSH runtime and version');
 const modules = join(resolve(values.runtime), 'node_modules');
 const load = name => import(pathToFileURL(join(modules, '@deepseek-ai', name, 'lib/index.js')).href);
@@ -56,10 +55,6 @@ try {
   report.cases.stopVocabulary = true;
   for (const reason of [{ kind: 'aborted', reason: { kind: 'user' } }, { kind: 'interrupted' }, { kind: 'error', error: { code: 'UNKNOWN', message: 'N0' } }, { kind: 'max-tokens' }, { kind: 'blocked' }]) {
     const s = ctx.sessions.create(`n0-${reason.kind}`); s.append('turn/start', { turn: 1 }); s.append('turn/end', { turn: 1, reason }); assert.deepEqual(s.snapshotEvents().at(-1).data.reason, reason);
-  }
-  if (values.plugin) {
-    report.integration = { kind: 'installed-plugin-published-services', nativeVisibility: 'controlled', humanAnswers: 'controlled', model: 'not-used',
-      cases: await verifyInstalledServices({ modules, plugin: resolve(values.plugin) }) };
   }
   report.status = 'pass';
 } catch (error) { report.status = 'fail'; report.error = String(error); throw error; }

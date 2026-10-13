@@ -141,7 +141,7 @@ try {
   assert.equal(existsSync(join(profile, 'compatibility.json')), false, 'no risk exemption is used');
   const installed = join(profile, 'node_modules', manifest.name);
   assert.equal(JSON.parse(await readFile(join(installed, 'package.json'), 'utf8')).version, manifest.version);
-  await run(process.execPath, [join(project, 'tests/notification-host-contract.mjs'), '--runtime', runtime, '--version', version, '--plugin', installed]);
+  await run(process.execPath, [join(project, 'tests/notification-host-contract.mjs'), '--runtime', runtime, '--version', version]);
 
   // Keep the observer in its own package. The Client loader identifies packages
   // from ancestor manifests; a fixture inside this repository can be mistaken
@@ -151,6 +151,7 @@ try {
   await writeFile(join(observer, 'package.json'), JSON.stringify({ name: 'coopanion-install-observer', private: true, type: 'module' }));
   const fixture = join(observer, 'host.mjs');
   await writeFile(fixture, await readFile(fileURLToPath(new URL('./fixtures/host.mjs', import.meta.url))));
+  await writeFile(join(observer, 'installed-services.mjs'), await readFile(fileURLToPath(new URL('./helpers/installed-services.mjs', import.meta.url))));
   await writeFile(join(observer, 'notification-probe.mjs'), await readFile(fileURLToPath(new URL('./fixtures/notification-probe/host.mjs', import.meta.url))));
   await writeFile(join(profile, 'cordis.patch.yml'), `- insert:\n    - id: install-observer\n      name: ${JSON.stringify(fixture)}\n- id: locale\n  config:\n    preference: zh\n- id: ui-settings-models\n  config:\n    credentialOnboarding: false\n- id: dsh-coopanion\n  config:\n    autoStart: true\n    size: 150\n    roam: true\n    notifications: true\n    bubbleDurationMs: 12000\n`);
   if (process.platform === 'linux' && !environment.DISPLAY) {
@@ -190,6 +191,18 @@ try {
     });
   };
   await bootHost();
+  const serviceCases = await new Promise((resolveCases, reject) => {
+    const timeout = setTimeout(() => finish(new Error('Installed service integration timed out')), 10000);
+    const receive = message => { if (message?.type === 'installed-services-verified') finish(message.error ? new Error(message.error) : undefined, message.cases); };
+    const ended = (code, signal) => finish(new Error(`Host exited during service verification: ${signal ?? code}`));
+    function finish(error, cases) { clearTimeout(timeout); host.off('message', receive); host.off('exit', ended); if (error) reject(error); else resolveCases(cases); }
+    host.on('message', receive); host.once('exit', ended);
+    host.send({ type: 'verify-installed-services', helper: join(observer, 'installed-services.mjs'), modules: join(runtime, 'node_modules'), plugin: installed });
+  });
+  const contractReportPath = join(project, 'artifacts', `notification-host-${version}.json`);
+  const contractReport = JSON.parse(await readFile(contractReportPath, 'utf8'));
+  contractReport.integration = { kind: 'installed-plugin-published-services', loader: 'published-dsh-host', nativeVisibility: 'controlled', humanAnswers: 'controlled', model: 'not-used', cases: serviceCases };
+  await writeFile(contractReportPath, JSON.stringify(contractReport, null, 2) + '\n');
   // Harness readiness is independent of the asynchronous pet launch. Attach
   // only after the actual Electron debug endpoint reports an available target.
   let nativeReady = false;
