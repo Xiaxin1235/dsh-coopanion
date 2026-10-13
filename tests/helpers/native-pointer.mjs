@@ -52,12 +52,20 @@ export async function petClick(page, options = {}, twice = false) {
     const origin = await pet.evaluate(() => ({ x: screenX, y: screenY }));
     await run('python3', ['-c', warpMacCursor, String(origin.x), String(origin.y)]);
     await page.waitForSelector('#pet[data-native-hit=false]');
-    const point = await pet.evaluate(el => {
-      const b = el.getBoundingClientRect();
-      return { x: screenX + b.x + b.width / 2, y: screenY + b.y + b.height / 2 };
-    });
-    await run('python3', ['-c', warpMacCursor, String(point.x), String(point.y)]);
-    await page.waitForSelector('#pet[data-native-hit=true]');
+    // Roaming can move the body while the cursor helper starts. Track its
+    // current position until the native window acknowledges entry, then click.
+    let entered = false;
+    for (let attempt = 0; attempt < 10 && !entered; attempt++) {
+      const point = await pet.evaluate(el => {
+        const b = el.getBoundingClientRect(), x = b.x + b.width / 2, y = b.y + b.height / 2;
+        return { x, y, screenX: screenX + x, screenY: screenY + y };
+      });
+      await run('python3', ['-c', warpMacCursor, String(point.screenX), String(point.screenY)]);
+      await page.mouse.move(point.x, point.y);
+      try { await page.waitForSelector('#pet[data-native-hit=true]', { timeout: 300 }); entered = true; }
+      catch (error) { if (error.name !== 'TimeoutError') throw error; }
+    }
+    assert.ok(entered, `Native cursor did not enter the moving pet: ${JSON.stringify(await page.evaluate(() => window.__nativeInputTrace))}`);
   }
   if (process.platform === 'linux' && process.env.DISPLAY) {
     // CDP moves a virtual pointer. Enabling native input also generates X11
