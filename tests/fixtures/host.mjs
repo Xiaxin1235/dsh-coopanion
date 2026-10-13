@@ -1,6 +1,7 @@
 /** Test-only app mounted by the published DSH CLI, using its real session store. */
 import { randomUUID } from 'node:crypto';
-export const inject = ['sessions', 'appReady', 'appExit', 'webServer', 'connection', 'settings'];
+import { pathToFileURL } from 'node:url';
+export const inject = ['sessions', 'appReady', 'appExit', 'webServer', 'connection', 'settings', 'sessionController'];
 
 export function apply(ctx) {
   let session;
@@ -8,6 +9,12 @@ export function apply(ctx) {
   const action = async message => {
     if (message?.type === 'shutdown-host') {
       ctx.appExit(0);
+    } else if (message?.type === 'verify-installed-services') {
+      try {
+        const { verifyInstalledServices } = await import(pathToFileURL(message.helper).href);
+        const cases = await verifyInstalledServices({ modules: message.modules, plugin: message.plugin });
+        process.send?.({ type: 'installed-services-verified', cases });
+      } catch (error) { process.send?.({ type: 'installed-services-verified', error: String(error.stack ?? error) }); }
     } else if (message?.type === 'start-task') {
       const id = message.sessionId ?? 'host-install';
       session = ctx.sessions.create(id, { meta: { cwd: id === 'host-install' ? '/test/安装验证' : '/test/第二会话' } });
@@ -29,6 +36,8 @@ export function apply(ctx) {
     return () => process.off('message', action);
   });
   ctx.effect(() => ctx.appReady.onReady(async () => {
+    const probe = await import('./notification-probe.mjs');
+    await ctx.plugin(probe).await();
     const fibers = [...ctx.registry.values()].flatMap(runtime => [...runtime.fibers]).filter(fiber => fiber.parent.fiber.runtime?.name === 'dsh-coopanion');
     const errors = [];
     for (const fiber of fibers) { try { await fiber.await(); } catch (error) { errors.push(String(error)); } }

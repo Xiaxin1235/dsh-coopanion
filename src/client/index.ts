@@ -9,6 +9,9 @@ import type { PetStatus } from '../controls.ts';
 import { Settings, type SettingsFace, type Preferences } from './Settings.tsx';
 import { en, zh, type LocaleKey } from './locales.ts';
 import css from './settings.css';
+import type { BrowserNotificationApi } from './system-notifications.ts';
+import { NotificationClient } from './notification-client.ts';
+import { notificationPreferencesSchema, type DeliveryClaim, type NotificationSnapshot } from '../notification-contract.ts';
 
 declare module '@deepseek-ai/dsh-client-ui-slots' { interface LocaleNamespaceMap { coopanion: LocaleKey; } }
 declare module '@deepseek-ai/cordis' { interface Context { connection: ConnectionHandle; } }
@@ -39,6 +42,31 @@ export function apply(ctx: Context): void {
   ctx.inject(['uiWorkspace'], child => {
     if (!ctx.connection.isLoopback) return;
     child.effect(() => {
+      const request = async <T,>(endpoint: string, payload: unknown, signal: AbortSignal): Promise<T> => {
+        const reply = await ctx.connection.rpc.call('/api', `coopanion/${endpoint}`, payload, signal);
+        if (!reply.ok) throw new Error(reply.error.message);
+        return reply.value as T;
+      };
+      const client = new NotificationClient({
+        locale: () => ctx.locale.getLocale().active,
+        api: globalThis.Notification as unknown as BrowserNotificationApi,
+        transport: {
+          state: signal => request<NotificationSnapshot>('notification-state', { locale: ctx.locale.getLocale().active }, signal),
+          claim: (payload, signal) => request<DeliveryClaim | null>('notification-claim', payload, signal),
+          receipt: (payload, signal) => request('notification-receipt', payload, signal),
+          snooze: (payload, signal) => request('notification-snooze', payload, signal),
+        },
+        preferences: () => {
+          const value = face.form.getSnapshot().value;
+          return notificationPreferencesSchema.parse({ notifications: value?.notifications ?? false, systemNotifications: value?.systemNotifications ?? false, reminders: value?.reminders ?? true, reminderDelayMs: value?.reminderDelayMs ?? 600000 });
+        },
+        openSession: sessionId => { child.uiWorkspace.openSession(sessionId as SessionId); window.focus(); },
+        testClaim: async (clientId, signal) => {
+          const state = await request<NotificationSnapshot>('notification-state', { locale: ctx.locale.getLocale().active }, signal);
+          return request<DeliveryClaim>('notification-test', { clientId, generation: state.runtime.generation }, signal);
+        },
+      });
+      face.notifier = client; const stopNotifications = client.start();
       const controller = new AbortController();
       let timer: ReturnType<typeof setTimeout>;
       const poll = async () => {
@@ -51,7 +79,7 @@ export function apply(ctx: Context): void {
         } catch { /* Connection recovery owns transport errors. */ }
         finally { if (!controller.signal.aborted) timer = setTimeout(poll, 750); }
       };
-      void poll(); return () => { controller.abort(); clearTimeout(timer); };
+      void poll(); return () => { stopNotifications(); if (face.notifier === client) face.notifier = undefined; controller.abort(); clearTimeout(timer); };
     });
   });
 }

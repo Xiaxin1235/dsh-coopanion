@@ -1,0 +1,39 @@
+
+ RUN  v3.2.7 /Users/jam/.codex/worktrees/11ca/dsh-coopanion
+
+ ❯ tests/notification-integration.test.ts (5 tests | 1 failed) 191ms
+   ✓ mounts Harness without waiting for native startup and cancels startup on unload 9ms
+   ✓ uses native visibility and exact audit identity for claims, accepts late evidence without another channel 10ms
+   ✓ delegates public blocking questions and settles only after the original answerer finishes 4ms
+   ✓ tracks the public timed projection through continued and exact late reply settlement 5ms
+   × keeps the original question answerer usable when reminder tracking reaches capacity 163ms
+     → promise rejected "TypeError: Cannot read properties of unde…" instead of resolving
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/notification-integration.test.ts > keeps the original question answerer usable when reminder tracking reaches capacity
+AssertionError: promise rejected "TypeError: Cannot read properties of unde…" instead of resolving
+ ❯ tests/notification-integration.test.ts:126:144
+    124|     for (let n = 0; n < 500; n++) session.append('approval/asked', { i…
+    125|     const answer = { answers: [] }, delegate = vi.fn(async () => answe…
+    126|     await expect(ctx.waterfall('user-questions/request', { agent, ques…
+       |                                                                                                                                                ^
+    127|     expect(delegate).toHaveBeenCalledOnce();
+    128|     expect((await invoke('notification-state')).value.interactions).to…
+
+Caused by: TypeError: Cannot read properties of undefined (reading 'cleanup')
+ ❯ NotificationBroker.question src/notification-broker.ts:200:13
+ ❯ src/index.ts:172:29
+ ❯ Object.apply node_modules/@deepseek-ai/cordis/lib/index.js:921:20
+ ❯ next node_modules/@deepseek-ai/cordis/lib/index.js:321:33
+ ❯ Proxy.waterfall node_modules/@deepseek-ai/cordis/lib/index.js:324:10
+ ❯ tests/notification-integration.test.ts:126:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  15:52:17
+   Duration  449ms (transform 74ms, setup 0ms, collect 123ms, tests 191ms, environment 0ms, prepare 31ms)
+

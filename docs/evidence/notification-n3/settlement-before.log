@@ -1,0 +1,47 @@
+
+ RUN  v3.2.7 /Users/jam/.codex/worktrees/11ca/dsh-coopanion
+
+ ❯ tests/notification-client.test.ts (14 tests | 1 failed | 13 skipped) 8ms
+   ↓ runs outside Settings and reports only requested until the browser supplies show/click
+   ↓ does not claim while visible, stopped, suspended, permission-denied or opted out
+   ↓ rechecks visibility and generation after claiming; a visible pet prevents system delivery
+   × rechecks request settlement after claiming and rejects a changed reminder group before construction 7ms
+     → expected [ Api{ …(7) } ] to have a length of +0 but got 1
+   ↓ keeps a requested notification clickable and records late native receipts after a pet restart
+   ↓ rejects claims for another client and contains malformed state
+   ↓ keeps requested source callbacks across reconnect, resumes polling and aborts requests on disposal
+   ↓ bounds hung requests, retries failed receipts, and serializes test/poll receipt flushes
+   ↓ applies user permission requests only on explicit action and validates snooze against live exact identities
+   ↓ reports unknown without a show receipt and bounds notification callbacks while preserving OS history
+   ↓ contains source-session navigation failure and keeps the native click receipt truthful
+   ↓ localizes system application copy at delivery time without translating user previews or changing identities
+   ↓ does not equate a browser show callback with Host acceptance or retry rejected receipts
+   ↓ keeps initial completed/approval/question/error preview bytes and gives stop/recovery/reminder events bilingual short copy
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/notification-client.test.ts > rechecks request settlement after claiming and rejects a changed reminder group before construction
+AssertionError: expected [ Api{ …(7) } ] to have a length of +0 but got 1
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/notification-client.test.ts:62:23
+     60|     f.transport.state.mockResolvedValueOnce(state).mockResolvedValueOn…
+     61|     f.service.start(); await tick();
+     62|     expect(f.objects).toHaveLength(0);
+       |                       ^
+     63|     expect(f.transport.receipt).toHaveBeenCalledWith(expect.objectCont…
+     64|     f.service.dispose();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 13 skipped (14)
+   Start at  17:22:14
+   Duration  183ms (transform 34ms, setup 0ms, collect 55ms, tests 8ms, environment 0ms, prepare 26ms)
+

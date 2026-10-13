@@ -1,0 +1,22 @@
+Native pointer pass: [{"t":793,"type":"pointermove","target":"DIV#pet","x":1392.5,"y":1031,"mode":"idle","hidden":false,"focus":true,"box":{"x":1329,"y":959,"w":127,"h":144}},{"t":794,"type":"hit-state","active":true,"focused":false,"visible":true},{"t":868,"type":"pointermove","target":"DIV#pet","x":1392.5,"y":1030.5,"nativeHit":"true","mode":"idle","hidden":false,"focus":true,"box":{"x":1328,"y":961,"w":129,"h":142}},{"t":991,"type":"pointerdown","target":"DIV#pet","x":1392.5,"y":1030.5,"nativeHit":"true","mode":"idle","hidden":false,"focus":true,"box":{"x":1328,"y":961,"w":129,"h":142}},{"t":991,"type":"contextmenu","target":"DIV#pet","x":1392,"y":1030,"nativeHit":"true","mode":"idle","hidden":false,"focus":true,"box":{"x":1328,"y":961,"w":129,"h":142}},{"t":1005,"type":"pointerup","target":"DIV#pet","x":1392.5,"y":1030.5,"nativeHit":"true","mode":"idle","hidden":false,"focus":true,"box":{"x":1328,"y":961,"w":129,"h":142}},{"t":1006,"type":"cursor","x":1392,"y":1030}]
+Native cold start passed 0
+Native pointer failure: [{"t":445,"type":"pointermove","target":"DIV#pet","x":1392.5,"y":1030.5,"nativeHit":"true","mode":"idle","hidden":false,"focus":true,"box":{"x":1329,"y":958,"w":127,"h":145}},{"t":525,"type":"pointermove","target":"DIV#pet","x":1392.5,"y":1030.5,"nativeHit":"true","mode":"idle","hidden":false,"focus":true,"box":{"x":1328,"y":961,"w":129,"h":142}}]
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Timeout 3000ms exceeded.
+Call log:
+[2m  - waiting for locator('#menu') to be visible[22m
+[2m    10 × locator resolved to hidden <section id="menu" hidden="" class="menu interactive">…</section>[22m
+
+    at petClick (/Users/jam/.codex/worktrees/11ca/dsh-coopanion/tests/helpers/native-pointer.mjs:80:39)
+    at async file:///Users/jam/.codex/worktrees/11ca/dsh-coopanion/.cache/n3/inputs-relaunch.mjs:23:5 {
+  log: [
+    "  - waiting for locator('#menu') to be visible",
+    '    10 × locator resolved to hidden <section id="menu" hidden="" class="menu interactive">…</section>'
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.21.0

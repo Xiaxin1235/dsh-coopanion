@@ -39,9 +39,11 @@ try {
   process.env.DSH_PET_TEST_DEBUG_PORT = String(port);
   process.env.DSH_PET_TEST_NO_SANDBOX = '1';
   const actions = []; bridge.onAction(action => actions.push(action));
+  const lifecycles = []; bridge.onLifecycle(state => lifecycles.push(state));
   const trayStates = []; bridge.on('tray-state', state => trayStates.push(state));
   const trayIcons = []; bridge.on('tray-icon', icon => trayIcons.push(icon));
   const waitTray = async check => { for (let n = 0; n < 100; n++) { if (check(trayStates.at(-1))) return; await pause(50); } assert.fail('native tray did not synchronize'); };
+  const waitLifecycle = async check => { for (let n = 0; n < 100; n++) { if (check(lifecycles.at(-1))) return; await pause(50); } assert.fail('native visibility did not acknowledge the command'); };
   const failures = []; bridge.on('failure', error => failures.push(error.message));
   const snapshot = { mood: 'thinking', active: true, text: '真实 IPC 桌面测试', sessionId: 'native-test', results: [], sessions: [{ id: 'native-test', label: '桌面测试会话', mood: 'thinking', active: true, text: '', reply: '' }] };
   bridge.update(snapshot);
@@ -143,7 +145,14 @@ try {
   bridge.configure({ size: 150, roam: false, notifications: false, bubbleDurationMs: 12000 });
   await waitTray(state => state?.roam === false && state.notifications === false);
   bridge.control('hide'); await waitTray(state => state?.visible === false);
+  await waitLifecycle(state => state?.generation > 0 && state.visibilityRevision > 0 && !state.visible);
+  assert.ok(lifecycles.at(-1)?.generation > 0 && lifecycles.at(-1)?.visibilityRevision > 0 && !lifecycles.at(-1)?.visible, 'hide is acknowledged by the actual native window');
+  const hiddenRevision = lifecycles.at(-1).visibilityRevision;
+  const hiddenGeneration = lifecycles.at(-1).generation;
   bridge.control('show'); await waitTray(state => state?.visible === true);
+  await waitLifecycle(state => state?.visible && state.visibilityRevision > hiddenRevision);
+  assert.equal(lifecycles.at(-1).generation, hiddenGeneration, 'show keeps the same native generation');
+  assert.ok(lifecycles.at(-1)?.visible && lifecycles.at(-1).visibilityRevision > hiddenRevision, 'show advances the same native visibility generation');
   await bridge.dispose();
   await browser.close(); browser = undefined;
   bridge = new ElectronBridge(); bridge.on('failure', error => failures.push(error.message)); bridge.update(snapshot);

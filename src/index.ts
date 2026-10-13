@@ -1,8 +1,15 @@
+import { randomUUID } from 'node:crypto';
 import type { Context, Volatile } from '@deepseek-ai/cordis';
 import type {} from '@deepseek-ai/dsh-client-connection';
 import type {} from '@deepseek-ai/dsh-settings';
 import type {} from '@deepseek-ai/dsh-agent';
 import type {} from '@deepseek-ai/dsh-user-approval';
+import type {} from '@deepseek-ai/dsh-user-questions';
+import type {} from '@deepseek-ai/dsh-api-session-controller';
+import type {} from '@deepseek-ai/dsh-session-projection';
+import { SessionId, type Session } from '@deepseek-ai/dsh-session';
+import { NotificationBroker, type NotificationEvent } from './notification-broker.ts';
+import { notificationPreferencesSchema, notificationEndpoints, notificationRequests, noticeId } from './notification-contract.ts';
 import { createUserMessage } from '@deepseek-ai/dsh-llm';
 import z from '@deepseek-ai/schemastery';
 import { ElectronBridge, isRecord, type PetBridge, type DesktopOptions } from './bridge.ts';
@@ -14,12 +21,16 @@ export const name = 'dsh-coopanion';
 export const inject = ['agents'];
 export interface Config {
   size: Volatile<number>; roam: Volatile<boolean>; notifications: Volatile<boolean>;
+  systemNotifications: Volatile<boolean>; reminders: Volatile<boolean>; reminderDelayMs: Volatile<number>;
   bubbleDurationMs: Volatile<number>; autoStart: Volatile<boolean>; electronPath?: string;
 }
 export const Config = z.object({
   size: z.number().min(90).max(240).default(180).volatile(),
   roam: z.boolean().default(true).volatile(),
   notifications: z.boolean().default(true).volatile(),
+  systemNotifications: z.boolean().default(false).volatile(),
+  reminders: z.boolean().default(true).volatile(),
+  reminderDelayMs: z.number().step(1).min(60000).max(86400000).default(600000).volatile(),
   bubbleDurationMs: z.number().min(2000).max(60000).default(12000).volatile(),
   autoStart: z.boolean().default(true).volatile(),
   electronPath: z.string(),
@@ -37,15 +48,50 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
   const preferences: Partial<Pick<DesktopOptions, 'roam' | 'notifications'>> = {};
   let savePreference: ((field: 'roam' | 'notifications', value: boolean) => Promise<void>) | undefined;
   ctx.inject(['settings'], child => { savePreference = (field, value) => child.settings.mutate('dsh-coopanion', [{ op: 'set', path: [field], value }]); });
-  const currentOptions = (): DesktopOptions => ({ size: options.size.get(), roam: options.roam.get(), notifications: options.notifications.get(), bubbleDurationMs: options.bubbleDurationMs.get(), electronPath: options.electronPath, ...preferences });
+  const currentOptions = (): DesktopOptions => ({ size: options.size.get(), roam: options.roam.get(), notifications: options.notifications.get(), bubbleDurationMs: options.bubbleDurationMs.get(), systemNotifications: options.systemNotifications.get(), reminders: options.reminders.get(), reminderDelayMs: options.reminderDelayMs.get(), electronPath: options.electronPath, locale, ...preferences });
   const controls = new PetControls(bridge, currentOptions);
+  let locale = 'zh';
   let navigation: { sessionId: string; expires: number } | undefined;
   ctx.provide('coopanion', controls);
   const update = () => {
     const snapshot = model.snapshot(), live = new Set<string>(ctx.agents.list().map(agent => agent.session.id));
     bridge.update({ ...snapshot, sessions: snapshot.sessions.map(session => ({ ...session, chatAvailable: live.has(session.id) })) });
   };
-  const notice = (value: ReturnType<PetModel['consume']>) => { if (value && currentOptions().notifications) bridge.notify(value); };
+  let mounted = false;
+  const notificationPrefs = () => notificationPreferencesSchema.parse({ notifications: currentOptions().notifications, systemNotifications: options.systemNotifications.get(), reminders: options.reminders.get(), reminderDelayMs: options.reminderDelayMs.get() });
+  const syncNotifications = () => {
+    if (!mounted) return;
+    const snapshot = broker.snapshot(); model.interactions(snapshot.interactions); bridge.notificationState?.(snapshot); update();
+  };
+  const broker = new NotificationBroker({ changed: syncNotifications, presentRole: (value, runtime) => bridge.presentRole?.(value, runtime) ?? false });
+  broker.preferences(notificationPrefs());
+  ctx.effect(() => () => broker.dispose());
+  ctx.effect(() => controls.onState(state => broker.runtime(state)));
+  let questions: ((session: Session, live?: boolean) => void) | undefined;
+  ctx.inject(['sessionProjections', 'userQuestions'], child => {
+    const sync = (session: Session, live = true) => {
+      try {
+        const view = child.sessionProjections.snapshot(session, ['userQuestions']).values.userQuestions;
+        if (view) broker.questions(session, view, live);
+      } catch (error) { child.logger.warn(`Question projection unavailable: ${String(error).slice(0, 300)}`); }
+    };
+    questions = sync;
+    child.effect(() => () => { if (questions === sync) questions = undefined; });
+    // A service is provided before its constructor registers projection units.
+    // Fold after that registration turn, including sessions without a live agent.
+    queueMicrotask(() => {
+      if (!mounted || questions !== sync) return;
+      for (const session of child.get('sessions')?.list() ?? ctx.agents.list().map(agent => agent.session)) sync(session, false);
+    });
+  });
+  let testSource: (() => Promise<Session>) | undefined;
+  ctx.inject(['sessions', 'sessionController'], child => {
+    let source: Promise<Session> | undefined;
+    const create = () => source ??= child.sessionController.create({ sessionId: SessionId(`coopanion-notification-test-${randomUUID()}`), cwd: process.cwd() }).then(value => {
+      const session = child.sessions.get(value.sessionId); if (!session) throw new Error('Notification test source unavailable'); return session;
+    }).catch(error => { source = undefined; throw error; });
+    testSource = create; child.effect(() => () => { if (testSource === create) testSource = undefined; });
+  });
   let streamUpdate: ReturnType<typeof setTimeout> | undefined;
   ctx.effect(() => () => clearTimeout(streamUpdate));
   ctx.effect(() => () => controls.dispose());
@@ -53,7 +99,7 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
     const timer = setInterval(() => { if (model.settle()) update(); }, 250);
     timer.unref(); return () => clearInterval(timer);
   });
-  ctx.on('settings/document-updated', ns => { if (ns === 'dsh-coopanion') controls.configure(); });
+  ctx.on('settings/document-updated', ns => { if (ns === 'dsh-coopanion') { broker.preferences(notificationPrefs()); controls.configure(); } });
   ctx.inject(['connection'], child => {
     const dispatch = async (endpoint: string, payload: unknown, signal: AbortSignal) => {
       try {
@@ -68,6 +114,25 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
           navigation = undefined;
           return { ok: true, value };
         }
+        if (endpoint === 'notification-state') { const input = notificationRequests.state.parse(payload); if (input.locale && input.locale !== locale) { locale = input.locale; controls.configure(); } return { ok: true, value: broker.snapshot() }; }
+        if (endpoint === 'notification-claim') { const input = notificationRequests.claim.parse(payload); return { ok: true, value: broker.claim(input.clientId, input.generation) }; }
+        if (endpoint === 'notification-receipt') { return { ok: true, value: { accepted: broker.receipt(notificationRequests.receipt.parse(payload)) } }; }
+        if (endpoint === 'notification-snooze') { const input = notificationRequests.snooze.parse(payload); if (!broker.snooze(input.interactionId, input.generation)) throw new Error('待处理请求已变化或提醒暂不可用'); return { ok: true, value: { accepted: true } }; }
+        if (endpoint === 'notification-test') {
+          const input = notificationRequests.test.parse(payload), state = broker.snapshot().runtime, prefs = notificationPrefs();
+          if (!testSource || state.phase !== 'running' || state.visible || state.suspended || state.visibilityRevision === 0 || input.generation !== state.generation || !prefs.notifications || !prefs.systemNotifications) throw new Error('请启动并隐藏角色，开启系统通知后测试');
+          const session = await testSource();
+          if (signal.aborted) throw new Error('请求已取消');
+          const latest = broker.snapshot().runtime;
+          if (latest.generation !== state.generation || latest.visibilityRevision !== state.visibilityRevision || latest.phase !== 'running' || latest.visible || latest.suspended) throw new Error('桌宠状态已变化');
+          const turn = (session.snapshotEvents().findLast(event => event.type === 'turn/start')?.data as { turn?: number } | undefined)?.turn ?? 0;
+          session.append('turn/start', { turn: turn + 1 });
+          session.append('turn/end', { turn: turn + 1, reason: { kind: 'completed' } });
+          const event = session.snapshotEvents().at(-1)!;
+          const claim = broker.claim(input.clientId, input.generation, noticeId(session.id, turn + 1, event.seq, 'completed', 'initial'));
+          if (!claim) throw new Error('测试通知未能领取，请稍后重试');
+          return { ok: true, value: claim };
+        }
         if (endpoint !== 'control') throw new Error('未知的桌宠操作');
         const { command } = wire.object({ command: wire.enum(['start', 'show', 'hide', 'restart', 'stop', 'characters']) }).strict().parse(payload);
         return { ok: true, value: await controls.command(command) };
@@ -75,7 +140,7 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
     };
     // Exact Connection routes coexist with the Gateway's exclusive /api interceptor.
     // The Connection carrier applies its normal Host/Origin and authentication checks.
-    for (const endpoint of ['status', 'control', 'navigation'] as const) {
+    for (const endpoint of ['status', 'control', 'navigation', ...notificationEndpoints] as const) {
       child.effect(() => child.connection.fetch.register({
         path: `/api/coopanion/${endpoint}`, methods: ['POST'], requestBody: 'buffered',
         fetch: async request => {
@@ -86,10 +151,10 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
       }));
     }
   });
-  ctx.inject(['sessions'], child => { for (const session of child.sessions.list()) model.observe(session); update(); });
-  for (const agent of ctx.agents.list()) { model.observe(agent.session); if (agent.status === 'running') model.running(agent.session); }
-  ctx.on('session/created', session => { model.created(session); update(); });
-  ctx.on('agent/created', ({ agent }) => { model.observe(agent.session); if (agent.status === 'running') model.running(agent.session); update(); return undefined; });
+  ctx.inject(['sessions'], child => { for (const session of child.sessions.list()) { model.restore(session); broker.restore(session); questions?.(session, false); } syncNotifications(); update(); });
+  for (const agent of ctx.agents.list()) { model.restore(agent.session); broker.restore(agent.session); questions?.(agent.session, false); if (agent.status === 'running') model.running(agent.session); }
+  ctx.on('session/created', session => { model.created(session); broker.restore(session); questions?.(session, false); update(); });
+  ctx.on('agent/created', ({ agent }) => { model.restore(agent.session); broker.restore(agent.session); questions?.(agent.session, false); if (agent.status === 'running') model.running(agent.session); update(); return undefined; });
   ctx.on('agent/status', ({ agent, status }) => { if (status === 'running') model.running(agent.session); else model.idle(agent.session.id); update(); });
   ctx.on('agent/assistant-stream', ({ agent, frame }) => {
     if (!model.stream(agent.session, frame) || streamUpdate) return;
@@ -97,23 +162,38 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
     streamUpdate = setTimeout(() => { streamUpdate = undefined; update(); }, 40);
   });
   ctx.on('agent/disposed', ({ agent }) => { model.idle(agent.session.id); model.detached(agent.session.id); update(); });
-  ctx.on('session/event', (session, event) => { notice(model.consume(session, event)); update(); });
-  ctx.on('session/disposed', session => { model.remove(session.id); update(); });
-  ctx.on('approval/request', async (request, next) => {
-    model.observe(request.agent.session);
-    const token = Symbol('approval');
-    notice(model.approval(request.agent.session.id, request.toolName, token)); update();
-    try { return await next(); }
-    finally { model.approvalSettled(request.agent.session.id, token); update(); }
+  ctx.on('session/event', (session, event) => { broker.consume(session, event); model.consume(session, event); questions?.(session); syncNotifications(); update(); });
+  ctx.on('session/disposed', session => { broker.remove(session.id); model.remove(session.id); update(); });
+  ctx.inject(['userQuestions'], child => {
+    child.on('user-questions/request', async (request, next) => {
+      const session = request.agent?.session;
+      if (!session || session.header.origin === 'subagent') return next();
+      model.observe(session);
+      const events: readonly NotificationEvent[] = session.snapshotEvents();
+      const callId = request.wait?.callId;
+      const origin = callId ? events.findLast(event => (event.type === 'tool/call' && event.data.callId === callId) || (event.type === 'tool/ptc-dispatch' && event.data.subCallId === callId)) : undefined;
+      const anchor = origin ?? events.at(-1);
+      const turnEvent = events.findLast(event => event.type === 'turn/start');
+      const finish = broker.question(session, { nativeId: origin && callId ? callId : randomUUID(), turn: turnEvent?.type === 'turn/start' ? turnEvent.data.turn : 0, seq: anchor?.seq ?? 0, preview: request.questions.map(q => q.question).join('\n'), signal: request.signal, source: origin ? 'event' : 'runtime' });
+      questions?.(session); syncNotifications();
+      try { return await next(); }
+      finally { questions?.(session); finish(); syncNotifications(); }
+    }, { prepend: true });
   });
   const onAction = (action: unknown) => {
     if (!isRecord(action)) return;
+    if (action.type === 'notification-snooze') {
+      const input = notificationRequests.snooze.safeParse({ interactionId: action.interactionId, generation: action.generation });
+      const ok = input.success && broker.snooze(input.data.interactionId, input.data.generation);
+      if (typeof action.interactionId === 'string') bridge.snoozeResult?.(action.interactionId, ok, ok ? undefined : '待处理请求已变化或提醒暂不可用');
+      syncNotifications(); return;
+    }
     if (action.type === 'preference' && (action.field === 'roam' || action.field === 'notifications') && typeof action.value === 'boolean') {
       const field = action.field, value = action.value;
       void (async () => {
         try {
           if (savePreference) await savePreference(field, value); else preferences[field] = value;
-          controls.configure();
+          broker.preferences(notificationPrefs()); controls.configure();
         } catch { bridge.notify({ title: '设置未能保存', body: '请回到 Harness 检查插件设置。', sessionId: model.snapshot().sessionId ?? '' }); }
       })(); return;
     }
@@ -145,10 +225,9 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
     const onFailure = (error: Error) => ctx.logger.warn(error.message);
     ctx.effect(() => { bridge.on('failure', onFailure); return () => bridge.off('failure', onFailure); });
   }
-  update();
+  mounted = true; syncNotifications(); update();
   if (options.autoStart.get()) {
-    const status = await controls.command('start');
-    if (status.error) ctx.logger.warn(status.error);
+    void controls.command('start').then(status => { if (status.error) ctx.logger.warn(status.error); }, error => ctx.logger.warn(String(error).slice(0, 600)));
   }
 }
 

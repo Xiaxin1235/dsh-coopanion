@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { PetModel } from '../src/model.ts';
 import { SessionId, SessionSeq, type SessionEvent, type Session } from '@deepseek-ai/dsh-session';
+import { ApprovalRequestId } from '@deepseek-ai/dsh-user-approval/types';
+import { interactionId, type PendingInteraction } from '../src/notification-contract.ts';
 import { createAssistantMessage, createUserMessage, createToolResultMessage, ToolCallId, LlmAttemptId } from '@deepseek-ai/dsh-llm';
 
 function session(id: string, origin?: 'subagent'): Pick<Session, 'id' | 'header'> {
@@ -104,8 +106,8 @@ describe('Harness task presentation', () => {
   it('distinguishes canceled, blocked and failed turns from successful completion', () => {
     const m = new PetModel(), s = session('one');
     m.consume(s, event('turn/start', { turn: 1 }));
-    expect(m.consume(s, event('turn/end', { turn: 1, reason: { kind: 'interrupted' } }))).toBeUndefined();
-    expect(m.snapshot().mood).toBe('idle');
+    expect(m.consume(s, event('turn/end', { turn: 1, reason: { kind: 'interrupted' } }))?.category).toBe('interrupted');
+    expect(m.snapshot().mood).toBe('waiting');
     expect(m.consume(s, event('turn/end', { turn: 2, reason: { kind: 'blocked' } }))?.title).toContain('暂停');
     expect(m.consume(s, event('turn/end', { turn: 3, reason: { kind: 'error', error: { code: 'UNKNOWN', message: 'test' } } }))?.title).toContain('需要关注');
     expect(m.snapshot().mood).toBe('error');
@@ -149,6 +151,15 @@ describe('Harness task presentation', () => {
       expect(m.snapshot().mood).toBe(id === 'a' ? 'working' : 'thinking');
     }
   });
+  it('keeps a failed tool step in active processing until the turn actually fails', () => {
+    const m = new PetModel(), s = session('tool-error');
+    m.consume(s, event('turn/start', { turn: 1 }));
+    m.consume(s, event('tool/call', { turn: 1, step: 1, callId: ToolCallId('failed-step'), name: 'bash', arguments: '{}' }));
+    m.consume(s, event('tool/result', { turn: 1, step: 1, message: createToolResultMessage({ callId: ToolCallId('failed-step'), content: [], isError: true }) }));
+    expect(m.snapshot()).toMatchObject({ mood: 'thinking', active: true, results: [] });
+    m.consume(s, event('turn/end', { turn: 1, reason: { kind: 'error', error: { code: 'UNKNOWN', message: 'Turn failed' } } }));
+    expect(m.snapshot()).toMatchObject({ mood: 'error', active: false });
+  });
   it('ignores stale turn events and approval settlements from a previous turn', () => {
     const m = new PetModel(), s = session('one'), old = Symbol(), current = Symbol();
     m.consume(s, event('turn/start', { turn: 1 })); m.approval('one', 'bash', old);
@@ -159,4 +170,78 @@ describe('Harness task presentation', () => {
     expect(m.snapshot().mood).toBe('waiting');
     m.approvalSettled('one', current); expect(m.snapshot().mood).toBe('thinking');
   });
+});
+
+it('pairs actual approval audit ids and keeps continued questions waiting after completed turns and viewed results', () => {
+  const m = new PetModel(), s = session('pending');
+  m.consume(s, event('turn/start', { turn: 1 }));
+  m.consume(s, event('approval/asked', { id: ApprovalRequestId('approval-full'), toolName: 'bash' }));
+  m.consume(s, event('approval/decided', { id: ApprovalRequestId('approval'), outcome: 'allowed-once' }));
+  expect(m.snapshot().mood).toBe('waiting');
+  m.consume(s, event('approval/decided', { id: ApprovalRequestId('approval-full'), outcome: 'allowed-once' }));
+  expect(m.snapshot().mood).toBe('thinking');
+  const request: PendingInteraction = { id: interactionId(s.id, 'question', 'full-call-id'), sessionId: s.id, nativeId: 'full-call-id', kind: 'question', turn: 1, seq: 5, createdAt: 1000, preview: 'Question?', state: 'continued', dueAt: null, automaticReminders: 0 };
+  m.consume(s, event('assistant/message', { turn: 1, step: 1, message: createAssistantMessage({ content: [{ type: 'text', text: 'Result' }], source: { provider: 'test', model: 'test' } }), stream: [] }));
+  m.consume(s, event('turn/end', { turn: 1, reason: { kind: 'completed' } }));
+  m.interactions([request]); expect(m.snapshot()).toMatchObject({ mood: 'waiting', active: false });
+  m.select(s.id); m.read(m.snapshot().results[0].id);
+  expect(m.snapshot().mood).toBe('waiting');
+  m.interactions([{ ...request, state: 'settled' }]); expect(m.snapshot().mood).toBe('idle');
+});
+
+it('preserves interrupted and blocked expressions when no pending request entrance exists', () => {
+  const m = new PetModel(), s = session('terminal');
+  m.consume(s, event('turn/end', { turn: 1, reason: { kind: 'interrupted' } }));
+  m.interactions([]); expect(m.snapshot()).toMatchObject({ mood: 'waiting', text: '这段任务中断了，陪你回去看看。' });
+  m.consume(s, event('turn/end', { turn: 2, reason: { kind: 'blocked' } }));
+  m.interactions([]); expect(m.snapshot().text).toContain('暂时停下');
+});
+it('explicitly restores confirmed results as unread without historical celebration or duplicate event processing', () => {
+  let now = 1000; const m = new PetModel(() => now), s = session('history');
+  const begin = event('turn/start', { turn: 1 });
+  const reply = event('assistant/message', { turn: 1, step: 1, message: createAssistantMessage({ content: [{ type: 'text', text: 'Complete historical result' }], source: { provider: 'test', model: 'test' } }), stream: [] });
+  const end = event('turn/end', { turn: 1, reason: { kind: 'completed' } });
+  const restored = { ...s, snapshotEvents: () => [begin, reply, end] };
+  m.observe(restored); expect(m.snapshot().results).toEqual([]); // observe keeps its original identity-only behavior.
+  expect(m.restore(restored)).toBeUndefined();
+  expect(m.snapshot()).toMatchObject({ mood: 'idle', active: false, results: [{ text: 'Complete historical result', read: false }] });
+  expect(m.snapshot().sessions[0]).toMatchObject({ reply: 'Complete historical result', unread: 1 });
+  expect(m.consume(s, end)).toBeUndefined();
+  now += 3000; expect(m.settle()).toBe(false);
+  const id = m.snapshot().results[0].id; m.read(id); m.restore(restored);
+  expect(m.snapshot().results).toHaveLength(1); expect(m.snapshot().results[0].read).toBe(true); expect(m.snapshot().sessions[0].unread).toBe(0);
+  const freshHost = new PetModel(); freshHost.restore(restored); expect(freshHost.snapshot().results[0].read).toBe(false);
+});
+it('restores actual historical terminal outcomes without notices or invented interruptions', () => {
+  const reasons = [
+    { reason: { kind: 'aborted', reason: { kind: 'user' } }, mood: 'idle', text: '先停在这里' },
+    { reason: { kind: 'interrupted' }, mood: 'waiting', text: '中断' },
+    { reason: { kind: 'error', error: { code: 'UNKNOWN', message: 'failed' } }, mood: 'error', text: '遇到了问题' },
+    { reason: { kind: 'blocked' }, mood: 'waiting', text: '暂时停下' },
+    { reason: { kind: 'max-tokens' }, mood: 'waiting', text: '暂时停下' },
+    { reason: { kind: 'forked' }, mood: 'idle', text: '准备好了' },
+  ] as const;
+  for (const { reason, mood, text } of reasons) {
+    const m = new PetModel(), s = session(`history-${reason.kind}`), begin = event('turn/start', { turn: 1 }), end = event('turn/end', { turn: 1, reason });
+    expect(m.restore({ ...s, snapshotEvents: () => [begin, end] })).toBeUndefined();
+    expect(m.snapshot()).toMatchObject({ mood, active: false, results: [] }); expect(m.snapshot().text).toContain(text);
+    expect(m.consume(s, end)).toBeUndefined(); expect(m.settle()).toBe(false);
+  }
+  const unfinished = new PetModel(), s = session('unfinished');
+  unfinished.restore({ ...s, snapshotEvents: () => [event('turn/start', { turn: 1 }), event('tool/call', { turn: 1, step: 1, callId: ToolCallId('unfinished-call'), name: 'bash', arguments: '{}' })] });
+  expect(unfinished.snapshot()).toMatchObject({ mood: 'working', active: true, results: [] });
+  expect(unfinished.snapshot().text).not.toContain('中断');
+});
+it('restores exact native approval pairs and keeps public continued entrances when an agent resumes running', () => {
+  const m = new PetModel(), s = session('restored-pending');
+  const begin = event('turn/start', { turn: 1 }), ask = event('approval/asked', { id: ApprovalRequestId('native-complete-id'), toolName: 'bash' });
+  const wrong = event('approval/decided', { id: ApprovalRequestId('native'), outcome: 'allowed-once' });
+  m.restore({ ...s, snapshotEvents: () => [begin, ask, wrong] }); expect(m.snapshot().mood).toBe('waiting');
+  const end = event('turn/end', { turn: 1, reason: { kind: 'completed' } }); m.restore({ ...s, snapshotEvents: () => [begin, ask, wrong, end] });
+  expect(m.snapshot()).toMatchObject({ mood: 'idle', active: false });
+  const pending: PendingInteraction = { id: interactionId(s.id, 'question', 'late-full-call'), sessionId: s.id, nativeId: 'late-full-call', kind: 'question', turn: 1, seq: 5, createdAt: 1000, preview: 'Still answerable', state: 'continued', dueAt: null, automaticReminders: 0 };
+  m.interactions([pending]); m.running(s);
+  expect(m.snapshot()).toMatchObject({ mood: 'waiting', active: true }); expect(m.snapshot().text).toContain('问题');
+  m.restore({ ...s, snapshotEvents: () => [begin, ask, wrong, end] }); expect(m.snapshot()).toMatchObject({ mood: 'waiting', active: true });
+  m.interactions([{ ...pending, state: 'settled' }]); expect(m.snapshot().mood).toBe('thinking');
 });

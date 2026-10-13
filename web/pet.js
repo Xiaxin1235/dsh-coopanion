@@ -1,6 +1,7 @@
 import { loadBody, knownScheme } from './upstream/body-host.js';
 import { createSfx } from './upstream/sound.js';
 import { createSpeech, replyPreview } from './speech.js';
+import { createNoticeQueue, pendingInteractions, notificationPresentation, notificationCopy } from './notification-ui.js';
 import { shortSessionIds, sessionTime, sessionActivity } from './session-ui.js';
 const PACK_LIMIT = 128 * 1024 * 1024;
 import { browserCharacters } from './character-library.js';
@@ -8,7 +9,15 @@ const BUILTIN_ID = 'whale';
 const $ = id => document.getElementById(id);
 const native = window.dshPetBridge;
 const pet = $('pet'), bubble = $('bubble'), conversations = $('conversations'), chat = $('chat'), menu = $('menu'), characters = $('characters'), reader = $('reader');
-const panels = [conversations, chat, menu, characters, reader];
+const interaction = $('interaction'), requests = $('requests');
+const panels = [conversations, chat, menu, characters, reader, requests];
+const noticeQueue = createNoticeQueue();
+let notificationState, currentNotice, interactionExpires = 0;
+const snoozing = new Map();
+const notificationLocale = () => options.locale ?? document.documentElement.lang ?? navigator.language;
+const pendingRequests = () => pendingInteractions(notificationState);
+const userInputOccupied = () => pressing || dragging || panels.some(p => !p.hidden) || !bubble.hidden;
+const userOccupied = () => userInputOccupied() || body?.layout?.busy;
 const panelAnchors = new WeakMap();
 const labels = { idle: '在这里陪你', thinking: '正在思考', talking: '正在回复', working: '正在忙', waiting: '等你确认', happy: '完成啦', error: '需要关注', sleeping: '休息中' };
 const library = native?.characters ?? browserCharacters;
@@ -57,7 +66,7 @@ function position() {
     pet.style.cursor = layout.cursor || 'grab';
   }
   const anchor = layout?.bubble ?? { x: x + options.size / 2, y };
-  for (const panel of [bubble, ...panels]) {
+  for (const panel of [bubble, interaction, ...panels]) {
     if (panel.hidden) { panelAnchors.delete(panel); continue; }
     if (!panelAnchors.has(panel)) panelAnchors.set(panel, { ...anchor });
     const panelAnchor = panelAnchors.get(panel);
@@ -69,7 +78,7 @@ function position() {
   }
   const activity = sessionActivity(snapshot);
   const attention = $('attention');
-  attention.hidden = !(activity.unread + activity.waiting + activity.errors) || panels.some(p => !p.hidden);
+  attention.hidden = !(activity.unread + Math.max(activity.waiting, pendingRequests().length) + activity.errors) || panels.some(p => !p.hidden);
   const holding = !attention.hidden && (attention.matches(':hover') || document.activeElement === attention);
   if (!holding) panelAnchors.delete(attention);
   else if (!panelAnchors.has(attention)) { const b = attention.getBoundingClientRect(); panelAnchors.set(attention, { x: b.x, y: b.y }); }
@@ -95,9 +104,13 @@ function speak(result) {
   position();
 }
 function showNextReply() {
-  if (!bubble.hidden || panels.some(p => !p.hidden)) return;
+  if (!bubble.hidden || !interaction.hidden || panels.some(p => !p.hidden) || pressing || dragging) return;
   const result = snapshot.results?.find(r => r.sessionId === snapshot.sessionId && !r.read && !shownResults.has(r.id));
   if (result) speak(result);
+}
+function completionHasReply(notice) {
+  return notice?.category === 'completed' && notice.sessionId === snapshot.sessionId &&
+    snapshot.results?.some(result => result.id === `${notice.sessionId}:${notice.turn}:${notice.seq}`);
 }
 function acknowledge(result) {
   if (!result || result.read || acknowledgedResults.has(result.id)) return;
@@ -105,6 +118,7 @@ function acknowledge(result) {
 }
 function openReader(result) {
   if (!result) return;
+  interaction.hidden = true;
   clearTimeout(touchTimer); touchBlockedUntil = performance.now() + 1000;
   panels.forEach(p => { p.hidden = true; }); bubble.hidden = true; reader.hidden = false;
   readerResult = result;
@@ -127,7 +141,7 @@ function act(actor, pack, word) {
 function updateMood(now = performance.now()) {
   const activity = sessionActivity(snapshot), active = activity.active;
   if (active || activity.waiting || activity.errors) asleep = false;
-  const mood = active || activity.waiting || activity.errors ? activity.mood : asleep ? 'sleeping' : (now < reactionUntil ? reactionMood : activity.mood);
+  const mood = now < reactionUntil && !userInputOccupied() ? reactionMood : active || activity.waiting || activity.errors ? activity.mood : pendingRequests().length ? 'waiting' : asleep ? 'sleeping' : activity.mood;
   pet.dataset.mood = mood;
   if (!body) return;
   if (mood !== appliedMood && !body.layout?.busy) {
@@ -139,7 +153,7 @@ function updateMood(now = performance.now()) {
   }
   const dialogOpen = panels.some(p => !p.hidden);
   const readingAttention = !$('attention').hidden && ($('attention').matches(':hover') || document.activeElement === $('attention'));
-  const controls = { roam: options.roam && !reduced && !hovered && !readingAttention && !dialogOpen && bubble.hidden && mood === 'idle' ? 'calm' : 'off', dialogOpen, thinking: mood === 'thinking', thoughtShown: false, expression: { thinking: 'thinking', talking: 'determined', working: 'determined', waiting: 'worried', error: 'sad' }[mood] ?? null, listening: !chat.hidden && !active };
+  const controls = { roam: options.roam && !reduced && !hovered && !readingAttention && !dialogOpen && bubble.hidden && interaction.hidden && mood === 'idle' ? 'calm' : 'off', dialogOpen: dialogOpen || !interaction.hidden, thinking: mood === 'thinking', thoughtShown: false, expression: { thinking: 'thinking', talking: 'determined', working: 'determined', waiting: 'worried', error: 'sad' }[mood] ?? null, listening: !chat.hidden && !active };
   const key = JSON.stringify(controls);
   if (key !== appliedControls) { if (controls.roam === 'off') body.stopWalk(0); body.set(controls); appliedControls = key; }
   $('toggle-roam').setAttribute('aria-checked', String(options.roam));
@@ -159,7 +173,7 @@ function render() {
   const shortIds = shortSessionIds(snapshot.sessions);
   const list = $('conversation-list');
   const query = $('conversation-search').value.trim().toLocaleLowerCase();
-  const needsYou = s => ['waiting', 'error'].includes(s.mood);
+  const needsYou = s => ['waiting', 'error'].includes(s.mood) || pendingRequests().some(item => item.sessionId === s.id);
   const matches = snapshot.sessions.filter(session => (!pendingOnly || session.unread || needsYou(session)) && [session.label, session.project, session.cwd, session.prompt, session.id].join(' ').toLocaleLowerCase().includes(query));
   matches.sort((a, b) => Number(needsYou(b)) - Number(needsYou(a)) || Number(!!b.unread) - Number(!!a.unread) || Number(b.id === snapshot.sessionId) - Number(a.id === snapshot.sessionId) || (b.updatedAt ?? 0) - (a.updatedAt ?? 0));
   const listKey = JSON.stringify([query, pendingOnly, matches.map(session => [session.id, session.label, session.prompt, session.cwd, session.updatedAt, session.mood, session.unread, session.chatAvailable, session.id === snapshot.sessionId])]);
@@ -188,11 +202,12 @@ function render() {
   const activity = sessionActivity(snapshot);
   $('conversation-count').textContent = `${activity.busy} 段进行中 · ${activity.unread} 份未读回复`;
   $('sessions-all').setAttribute('aria-pressed', String(!pendingOnly)); $('sessions-pending').setAttribute('aria-pressed', String(pendingOnly));
-  const attentionCount = activity.unread + activity.waiting + activity.errors;
+  const waiting = Math.max(activity.waiting, pendingRequests().length);
+  const attentionCount = activity.unread + waiting + activity.errors;
   $('attention').hidden = !attentionCount || panels.some(p => !p.hidden);
   $('attention-count').textContent = String(attentionCount);
-  $('attention').dataset.urgent = String(!!(activity.waiting || activity.errors));
-  $('attention').title = $('attention').ariaLabel = `${activity.waiting + activity.errors} 段会话需要你，${activity.unread} 份未读回复`;
+  $('attention').dataset.urgent = String(!!(waiting || activity.errors));
+  $('attention').title = $('attention').ariaLabel = `${waiting + activity.errors} · ${notificationCopy(notificationLocale()).pending} · ${activity.unread}`;
   $('chat-current').disabled = !snapshot.sessions.length; $('chat-session-name').textContent = selected?.label ?? '还没有对话';
   $('chat-current').setAttribute('aria-label', selected ? `当前对话：${selected.label}。点击切换` : '还没有可用的对话');
   $('chat-session-state').textContent = labels[selected?.mood] ?? '正在陪你聊';
@@ -210,8 +225,67 @@ function render() {
   }
   renderedSessionId = snapshot.sessionId;
   if (!reader.hidden) updateReaderNavigation();
-  showNextReply(); updateMood(); position();
+  // Host can enqueue the role notice before the final-result IPC frame. The
+  // focused reply then supplies completion presentation for that exact event.
+  if (completionHasReply(currentNotice)) { interaction.hidden = true; currentNotice = undefined; }
+  showNextReply(); presentNextNotice(); renderRequests(); updateMood(); position();
 }
+
+function presentNextNotice() {
+  if (!options.notifications || !interaction.hidden || userOccupied()) return;
+  if (notificationState && (notificationState.runtime.phase !== 'running' || !notificationState.runtime.visible || notificationState.runtime.suspended)) return;
+  let notice = noticeQueue.next(false, notificationState?.interactions);
+  while (notice && completionHasReply(notice)) notice = noticeQueue.next(false, notificationState?.interactions);
+  if (!notice) return;
+  const available = activeView?.vocab.map(word => word.id).filter(word => !body?.words || body.words.includes(word)) ?? [];
+  const current = notificationState && notice.requestIds.length ? { ...notice, requestIds: notice.requestIds.filter(id => pendingRequests().some(item => item.id === id)) } : notice;
+  const presentation = notificationPresentation(current, notificationLocale(), available);
+  currentNotice = current;
+  $('interaction-title').textContent = presentation.title;
+  $('interaction-preview').textContent = presentation.body;
+  const copy = notificationCopy(notificationLocale());
+  $('interaction-open').textContent = copy.open; $('interaction-close').ariaLabel = copy.close;
+  $('interaction-pending').textContent = copy.pending; $('interaction-pending').hidden = !notice.requestIds.length;
+  interaction.hidden = false; panelAnchors.delete(interaction);
+  interactionExpires = performance.now() + options.bubbleDurationMs;
+  reactionMood = presentation.mood; reactionUntil = performance.now() + 2500; asleep = false;
+  updateMood();
+  if (!reduced && presentation.word) { act(body, activeView, presentation.word); reducedNeedsStep = true; }
+  position();
+}
+function renderRequests() {
+  if (requests.hidden) return;
+  const copy = notificationCopy(notificationLocale()), items = pendingRequests();
+  $('requests-title').textContent = copy.pending; $('requests-close').ariaLabel = copy.close; $('requests-replies').textContent = copy.replies;
+  const list = $('request-list'), key = JSON.stringify([notificationLocale(), items, [...snoozing.keys()], options.reminders]);
+  if (list.dataset.key === key) return;
+  const focused = document.activeElement?.dataset?.requestId, action = document.activeElement?.dataset?.action;
+  const cards = items.map(item => {
+    const card = document.createElement('article'); card.className = 'request-card';
+    const label = document.createElement('strong'), preview = document.createElement('p'), meta = document.createElement('small'), actions = document.createElement('div');
+    label.textContent = item.kind === 'question' ? copy.questionLabel : copy.approvalLabel;
+    preview.textContent = item.preview;
+    const session = snapshot.sessions.find(session => session.id === item.sessionId);
+    meta.textContent = `${session?.label ?? item.sessionId}${item.state === 'continued' ? ' · ' + copy.continued : ''}${item.dueAt ? ' · ' + copy.delay + ': ' + new Intl.DateTimeFormat(notificationLocale(), { hour: '2-digit', minute: '2-digit' }).format(item.dueAt) : ''}`;
+    const open = document.createElement('button'); open.textContent = copy.open; open.dataset.requestId = item.id; open.dataset.action = 'open'; open.onclick = () => openSession(item.sessionId);
+    const later = document.createElement('button'); later.textContent = snoozing.has(item.id) ? copy.snoozing : copy.snooze; later.dataset.requestId = item.id; later.dataset.action = 'snooze'; later.disabled = snoozing.has(item.id) || !options.notifications || options.reminders === false;
+    later.onclick = () => { snoozing.set(item.id, { dueAt: item.dueAt, expiresAt: performance.now() + 10000 }); $('request-feedback').textContent = ''; send({ type: 'notification-snooze', interactionId: item.id, generation: notificationState.runtime.generation }); renderRequests(); };
+    actions.append(open, later); card.append(label, preview, meta, actions); return card;
+  });
+  if (!cards.length) { const empty = document.createElement('p'); empty.textContent = copy.empty; cards.push(empty); }
+  list.replaceChildren(...cards); list.dataset.key = key;
+  if (focused) list.querySelector(`[data-request-id="${CSS.escape(focused)}"][data-action="${action}"]`)?.focus();
+}
+function openRequests() {
+  clearTimeout(touchTimer); interaction.hidden = true; bubble.hidden = true; $('request-feedback').textContent = '';
+  panels.forEach(panel => { panel.hidden = panel !== requests; });
+  renderRequests(); updateMood(); position(); $('requests-close').focus();
+}
+$('requests-close').onclick = closePanels;
+$('requests-replies').onclick = () => openConversations(true);
+$('interaction-close').onclick = () => { interaction.hidden = true; currentNotice = undefined; presentNextNotice(); showNextReply(); };
+$('interaction-open').onclick = () => openSession(currentNotice?.sessionId);
+$('interaction-pending').onclick = openRequests;
 
 function receive(message) {
   if (!message || typeof message !== 'object') return;
@@ -235,8 +309,27 @@ function receive(message) {
       break;
     case 'characters': $('open-characters').click(); break;
     case 'snapshot': snapshot = { ...message.snapshot, results: message.snapshot.results ?? snapshot.results ?? [] }; render(); break;
+    case 'notification-state': {
+      const value = message.snapshot;
+      if (!value || value.protocol !== 1 || !Array.isArray(value.interactions)) break;
+      if (notificationState && value.runtime.generation !== notificationState.runtime.generation) { noticeQueue.clear(); interaction.hidden = true; currentNotice = undefined; snoozing.clear(); }
+      notificationState = value;
+      for (const [id, pending] of snoozing) { const item = value.interactions.find(item => item.id === id); if (!item || item.state === 'settled' || item.dueAt !== pending.dueAt) snoozing.delete(id); }
+      if (currentNotice?.requestIds.length && !currentNotice.requestIds.some(id => pendingRequests().some(item => item.id === id))) { interaction.hidden = true; currentNotice = undefined; }
+      if (value.runtime.phase !== 'running' || !value.runtime.visible || value.runtime.suspended) { noticeQueue.clear(); interaction.hidden = true; }
+      render(); break;
+    }
+    case 'notification-snooze-result': {
+      snoozing.delete(message.interactionId);
+      if (!message.ok) $('request-feedback').textContent = notificationCopy(notificationLocale()).unavailable;
+      renderRequests(); break;
+    }
     case 'notice': {
       if (!options.notifications) break;
+      if (message.notice.category && message.notice.id) {
+        if (notificationState && (notificationState.runtime.phase !== 'running' || !notificationState.runtime.visible || notificationState.runtime.suspended)) break;
+        noticeQueue.push(message.notice); presentNextNotice(); break;
+      }
       // Task notices are expressed by the body and inbox, not another status card.
       if (message.notice.kind === 'task') { body?.cue('perk'); break; }
       noticeSession = message.notice.sessionId;
@@ -261,15 +354,16 @@ function hit(px, py) {
   if (!!active !== lastHit) { lastHit = !!active; native?.hit(lastHit); }
 }
 
-function openChat() { clearTimeout(touchTimer); touchBlockedUntil = performance.now() + 1000; panels.forEach(p => { p.hidden = true; }); bubble.hidden = true; chat.hidden = false; updateMood(); position(); if (!$('message').disabled) $('message').focus(); }
+function openChat() { interaction.hidden = true; clearTimeout(touchTimer); touchBlockedUntil = performance.now() + 1000; panels.forEach(p => { p.hidden = true; }); bubble.hidden = true; chat.hidden = false; updateMood(); position(); if (!$('message').disabled) $('message').focus(); }
 function openConversations(pending = false) {
   if (!snapshot.sessions.length) return;
+  interaction.hidden = true;
   pendingOnly = pending === true;
   $('conversation-search').value = '';
   panels.forEach(p => { p.hidden = true; }); bubble.hidden = true; conversations.hidden = false; render();
   ($('conversation-list').querySelector('[aria-selected=true]') ?? $('conversation-list').querySelector('button'))?.focus();
 }
-function closePanels() { panels.forEach(p => { p.hidden = true; }); render(); }
+function closePanels() { interaction.hidden = true; panels.forEach(p => { p.hidden = true; }); render(); }
 pet.addEventListener('pointerdown', event => {
   if (event.button !== 0) return;
   touchBlockedUntil = 0; clearTimeout(touchTimer);
@@ -280,7 +374,7 @@ pet.addEventListener('pointerdown', event => {
 function release(event) {
   if (!pressing) return;
   body?.pointer(event.type === 'pointercancel' ? 'cancel' : 'up', { x: event.clientX, y: event.clientY, t: event.timeStamp });
-  pressing = false;
+  pressing = false; dragging = false;
   if (event.type === 'pointerup' && native && (event.screenX < screen.availLeft || event.screenX > screen.availLeft + screen.availWidth)) send({ type: 'move-display' });
 }
 pet.addEventListener('pointerup', release); pet.addEventListener('pointercancel', release);
@@ -307,7 +401,7 @@ function onBody(kind, detail) {
 }
 pet.addEventListener('dblclick', openChat);
 pet.addEventListener('keydown', event => { if (event.target === pet && ['Enter', ' '].includes(event.key)) { event.preventDefault(); openChat(); } });
-pet.addEventListener('contextmenu', event => { event.preventDefault(); clearTimeout(touchTimer); const open = menu.hidden; panels.forEach(p => { p.hidden = true; }); bubble.hidden = true; menu.hidden = !open; updateMood(); position(); if (!menu.hidden) $('open-characters').focus(); });
+pet.addEventListener('contextmenu', event => { event.preventDefault(); clearTimeout(touchTimer); const open = menu.hidden; panels.forEach(p => { p.hidden = true; }); bubble.hidden = true; menu.hidden = !open; interaction.hidden = true; updateMood(); position(); if (!menu.hidden) $('open-characters').focus(); });
 pet.addEventListener('pointerenter', () => { hovered = true; }); pet.addEventListener('pointerleave', () => { hovered = false; });
 $('chat-current').onclick = openConversations;
 $('menu-chat').onclick = openChat;
@@ -315,7 +409,7 @@ $('menu-close').onclick = closePanels;
 $('conversation-search').oninput = render;
 $('sessions-all').onclick = () => { pendingOnly = false; render(); };
 $('sessions-pending').onclick = () => { pendingOnly = true; render(); };
-$('attention').onclick = () => openConversations(true);
+$('attention').onclick = () => pendingRequests().length ? openRequests() : openConversations(true);
 $('conversation-list').onkeydown = event => {
   const cards = [...$('conversation-list').querySelectorAll('button')], current = cards.indexOf(document.activeElement);
   if (!cards.length || !['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return;
@@ -393,6 +487,13 @@ $('toggle-sound').onclick = () => { sfx.set(!sfx.isOn()); updateMood(); };
 let last = performance.now();
 function animate(now) {
   const dt = Math.min((now - last) / 1000, .05); last = now;
+  for (const [id, pending] of snoozing) if (now >= pending.expiresAt) { snoozing.delete(id); $('request-feedback').textContent = notificationCopy(notificationLocale()).unavailable; renderRequests(); }
+  if (!options.notifications) { noticeQueue.clear(); interaction.hidden = true; }
+  if (!interaction.hidden) {
+    if (interaction.matches(':hover') || interaction.contains(document.activeElement)) interactionExpires = now + options.bubbleDurationMs;
+    if (now >= interactionExpires) { interaction.hidden = true; currentNotice = undefined; showNextReply(); }
+  }
+  presentNextNotice();
   updateMood(now);
   if (!reduced && pet.dataset.mood === 'talking' && now >= talkAt) { body?.talk(); talkAt = now + 180; }
   body?.tick(reduced && !reducedNeedsStep && !pressing && !['air', 'drag', 'wake'].includes(body.layout?.mode) ? 0 : dt); reducedNeedsStep = false;

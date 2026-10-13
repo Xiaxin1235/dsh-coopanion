@@ -1,7 +1,18 @@
 import { execFile } from 'node:child_process';
+import assert from 'node:assert/strict';
 import { promisify } from 'node:util';
 
 const run = promisify(execFile);
+const warpMacCursor = `
+import ctypes, sys
+class Point(ctypes.Structure):
+    _fields_ = [('x', ctypes.c_double), ('y', ctypes.c_double)]
+cg = ctypes.CDLL('/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics')
+cg.CGWarpMouseCursorPosition.argtypes = [Point]
+cg.CGWarpMouseCursorPosition.restype = ctypes.c_int32
+if cg.CGWarpMouseCursorPosition(Point(float(sys.argv[1]), float(sys.argv[2]))) != 0:
+    raise RuntimeError('Cannot move the native test cursor')
+`;
 const warpCursor = `
 import ctypes, sys
 x11 = ctypes.CDLL('libX11.so.6')
@@ -18,7 +29,7 @@ x11.XSync(display, 0)
 x11.XCloseDisplay(display)
 `;
 
-/** Exercise real click-through hit testing, including the OS cursor on X11 and Windows. */
+/** Exercise real click-through hit testing with the OS and CDP cursors at the same point. */
 export async function petClick(page, options = {}, twice = false) {
   await page.evaluate(() => {
     if (window.__nativeInputTrace) { window.__nativeInputTrace.length = 0; return; }
@@ -35,6 +46,27 @@ export async function petClick(page, options = {}, twice = false) {
   // CDP can attach to an inactive target after relaunch. Activate it before
   // ordinary pointer input; the desktop itself continues to show without stealing focus.
   await page.bringToFront();
+  if (process.platform === 'darwin') {
+    // A restarted transparent window can appear under a stationary cursor.
+    // Observe a real leave/enter through the native cursor poll before CDP input.
+    const origin = await pet.evaluate(() => ({ x: screenX, y: screenY }));
+    await run('python3', ['-c', warpMacCursor, String(origin.x), String(origin.y)]);
+    await page.waitForSelector('#pet[data-native-hit=false]');
+    // Roaming can move the body while the cursor helper starts. Track its
+    // current position until the native window acknowledges entry, then click.
+    let entered = false;
+    for (let attempt = 0; attempt < 10 && !entered; attempt++) {
+      const point = await pet.evaluate(el => {
+        const b = el.getBoundingClientRect(), x = b.x + b.width / 2, y = b.y + b.height / 2;
+        return { x, y, screenX: screenX + x, screenY: screenY + y };
+      });
+      await run('python3', ['-c', warpMacCursor, String(point.screenX), String(point.screenY)]);
+      await page.mouse.move(point.x, point.y);
+      try { await page.waitForSelector('#pet[data-native-hit=true]', { timeout: 300 }); entered = true; }
+      catch (error) { if (error.name !== 'TimeoutError') throw error; }
+    }
+    assert.ok(entered, `Native cursor did not enter the moving pet: ${JSON.stringify(await page.evaluate(() => window.__nativeInputTrace))}`);
+  }
   if (process.platform === 'linux' && process.env.DISPLAY) {
     // CDP moves a virtual pointer. Enabling native input also generates X11
     // movement at the physical cursor; keep both at the same point as a user.
@@ -55,9 +87,22 @@ export async function petClick(page, options = {}, twice = false) {
   }
   await pet.hover();
   await page.waitForSelector('#pet[data-native-hit=true]');
-  await pet[twice ? 'dblclick' : 'click'](options);
+  if (process.platform === 'darwin') {
+    // Hover freezes roaming. Use one fresh point for both pointers so a later
+    // locator stability check cannot choose another point in the breathing body.
+    const point = await pet.evaluate(el => {
+      const b = el.getBoundingClientRect(), x = b.x + b.width / 2, y = b.y + b.height / 2;
+      return { x, y, screenX: screenX + x, screenY: screenY + y };
+    });
+    await run('python3', ['-c', warpMacCursor, String(point.screenX), String(point.screenY)]);
+    await page.mouse[twice ? 'dblclick' : 'click'](point.x, point.y, options);
+  } else await pet[twice ? 'dblclick' : 'click'](options);
   if (options.button === 'right') {
     try { await page.locator('#menu').waitFor({ state: 'visible', timeout: 3000 }); }
     catch (error) { console.log('Native pointer failure:', JSON.stringify(await page.evaluate(() => window.__nativeInputTrace))); throw error; }
+    const trace = await page.evaluate(() => window.__nativeInputTrace);
+    assert.ok(trace.some(event => event.type === 'pointerdown' && event.target === 'DIV#pet'), 'native right click reaches the pet');
+    assert.ok(trace.some(event => event.type === 'contextmenu' && event.target === 'DIV#pet'), 'native right click opens the menu through contextmenu');
+    if (process.env.DSH_PET_INPUT_TRACE === '1') console.log('Native pointer pass:', JSON.stringify(trace));
   }
 }

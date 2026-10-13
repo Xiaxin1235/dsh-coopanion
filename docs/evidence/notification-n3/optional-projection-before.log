@@ -1,0 +1,52 @@
+
+ RUN  v3.2.7 /Users/jam/.codex/worktrees/11ca/dsh-coopanion
+
+ ❯ tests/notification-integration.test.ts (6 tests | 1 failed) 1212ms
+   ✓ mounts Harness without waiting for native startup and cancels startup on unload 9ms
+   ✓ uses native visibility and exact audit identity for claims, accepts late evidence without another channel 10ms
+   ✓ delegates public blocking questions and settles only after the original answerer finishes 4ms
+   ✓ tracks the public timed projection through continued and exact late reply settlement 5ms
+   ✓ keeps the original question answerer usable when reminder tracking reaches capacity 166ms
+   × restores dormant continued questions when optional projection services become available after mounting 1017ms
+     → expected last "spy" call to have been called with [ ObjectContaining{…} ]
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/notification-integration.test.ts > restores dormant continued questions when optional projection services become available after mounting
+AssertionError: expected last "spy" call to have been called with [ ObjectContaining{…} ]
+
+- Expected
++ Received
+
+  [
+-   ObjectContaining {
+-     "interactions": [
+-       ObjectContaining {
+-         "nativeId": "dormant-full-call",
+-         "sessionId": "dormant-full-session",
+-         "state": "continued",
++   {
++     "interactions": [],
++     "protocol": 1,
++     "runtime": {
++       "generation": 0,
++       "phase": "stopped",
++       "suspended": false,
++       "visibilityRevision": 0,
++       "visible": false,
+      },
+-     ],
+    },
+  ]
+
+ ❯ tests/notification-integration.test.ts:148:61
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 passed (6)
+   Start at  15:58:18
+   Duration  1.52s (transform 83ms, setup 0ms, collect 135ms, tests 1.21s, environment 0ms, prepare 40ms)
+

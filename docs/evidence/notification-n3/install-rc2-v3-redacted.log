@@ -1,0 +1,33 @@
+npm warn Unknown env config "store-dir". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> @takboo/dsh-coopanion@0.4.4 test:install
+> node tests/install.mjs
+
+Preparing published DSH 0.2.0-rc.2 in an isolated test directory…
+Published DSH 0.2.0-rc.2 prepared in 29s.
+Installing @takboo/dsh-coopanion@0.4.4 with the real DSH 0.2.0-rc.2 plugin command…
+Starting the installed bundle through the published DSH 0.2.0-rc.2 profile loader…
+Native pointer failure: [{"t":453,"type":"pointermove","target":"DIV#pet","x":1392.5,"y":1030.5,"nativeHit":"true","mode":"idle","hidden":false,"focus":true,"box":{"x":1329,"y":958,"w":127,"h":145}},{"t":525,"type":"pointermove","target":"DIV#pet","x":1392.5,"y":1032,"nativeHit":"true","mode":"idle","hidden":false,"focus":true,"box":{"x":1328,"y":961,"w":129,"h":142}}]
+Desktop diagnostic: 支持 Coopanion API 2 ZIP 角色包；角色和配色会在重启后保留。 whale [] []
+Downloading Electron binary...
+dsh web: http://127.0.0.1:63718/?token=<REDACTED>
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Timeout 3000ms exceeded.
+Call log:
+[2m  - waiting for locator('#menu') to be visible[22m
+[2m    10 × locator resolved to hidden <section id="menu" hidden="" class="menu interactive">…</section>[22m
+
+    at petClick (/Users/jam/.codex/worktrees/11ca/dsh-coopanion/tests/helpers/native-pointer.mjs:80:39)
+    at async file:///Users/jam/.codex/worktrees/11ca/dsh-coopanion/tests/install.mjs:211:3 {
+  log: [
+    "  - waiting for locator('#menu') to be visible",
+    '    10 × locator resolved to hidden <section id="menu" hidden="" class="menu interactive">…</section>'
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.21.0

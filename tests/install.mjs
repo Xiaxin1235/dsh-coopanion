@@ -11,6 +11,8 @@ import { chromium } from 'playwright-core';
 import { importCharacter } from './helpers/characters.mjs';
 import { petClick } from './helpers/native-pointer.mjs';
 import { npmTarballName } from '../scripts/release-support.mjs';
+import { unzipSync } from 'fflate';
+import { prepareNotifications, verifyInstalledNotifications } from './helpers/installed-notifications.mjs';
 
 const version = process.env.DSH_TEST_VERSION ?? '0.2.0-rc.2';
 assert.ok(['0.2.0-rc.2', '0.2.1-alpha.1'].includes(version), 'test only advertised DSH versions');
@@ -139,6 +141,7 @@ try {
   assert.equal(existsSync(join(profile, 'compatibility.json')), false, 'no risk exemption is used');
   const installed = join(profile, 'node_modules', manifest.name);
   assert.equal(JSON.parse(await readFile(join(installed, 'package.json'), 'utf8')).version, manifest.version);
+  await run(process.execPath, [join(project, 'tests/notification-host-contract.mjs'), '--runtime', runtime, '--version', version]);
 
   // Keep the observer in its own package. The Client loader identifies packages
   // from ancestor manifests; a fixture inside this repository can be mistaken
@@ -148,6 +151,8 @@ try {
   await writeFile(join(observer, 'package.json'), JSON.stringify({ name: 'coopanion-install-observer', private: true, type: 'module' }));
   const fixture = join(observer, 'host.mjs');
   await writeFile(fixture, await readFile(fileURLToPath(new URL('./fixtures/host.mjs', import.meta.url))));
+  await writeFile(join(observer, 'installed-services.mjs'), await readFile(fileURLToPath(new URL('./helpers/installed-services.mjs', import.meta.url))));
+  await writeFile(join(observer, 'notification-probe.mjs'), await readFile(fileURLToPath(new URL('./fixtures/notification-probe/host.mjs', import.meta.url))));
   await writeFile(join(profile, 'cordis.patch.yml'), `- insert:\n    - id: install-observer\n      name: ${JSON.stringify(fixture)}\n- id: locale\n  config:\n    preference: zh\n- id: ui-settings-models\n  config:\n    credentialOnboarding: false\n- id: dsh-coopanion\n  config:\n    autoStart: true\n    size: 150\n    roam: true\n    notifications: true\n    bubbleDurationMs: 12000\n`);
   if (process.platform === 'linux' && !environment.DISPLAY) {
     const number = 100 + process.pid % 1000;
@@ -186,6 +191,28 @@ try {
     });
   };
   await bootHost();
+  const serviceCases = await new Promise((resolveCases, reject) => {
+    const timeout = setTimeout(() => finish(new Error('Installed service integration timed out')), 10000);
+    const receive = message => { if (message?.type === 'installed-services-verified') finish(message.error ? new Error(message.error) : undefined, message.cases); };
+    const ended = (code, signal) => finish(new Error(`Host exited during service verification: ${signal ?? code}`));
+    function finish(error, cases) { clearTimeout(timeout); host.off('message', receive); host.off('exit', ended); if (error) reject(error); else resolveCases(cases); }
+    host.on('message', receive); host.once('exit', ended);
+    host.send({ type: 'verify-installed-services', helper: join(observer, 'installed-services.mjs'), modules: join(runtime, 'node_modules'), plugin: installed });
+  });
+  const contractReportPath = join(project, 'artifacts', `notification-host-${version}.json`);
+  const contractReport = JSON.parse(await readFile(contractReportPath, 'utf8'));
+  contractReport.integration = { kind: 'installed-plugin-published-services', loader: 'published-dsh-host', nativeVisibility: 'controlled', humanAnswers: 'controlled', model: 'not-used', cases: serviceCases };
+  await writeFile(contractReportPath, JSON.stringify(contractReport, null, 2) + '\n');
+  // Harness readiness is independent of the asynchronous pet launch. Attach
+  // only after the actual Electron debug endpoint reports an available target.
+  let nativeReady = false;
+  for (let attempt = 0; attempt < 250; attempt++) {
+    assert.equal(host.exitCode, null, hostLog);
+    const endpoint = await fetch(`http://127.0.0.1:${port}/json/version`, { signal: AbortSignal.timeout(1000) }).then(response => response.ok ? response.json() : null, () => null);
+    if (endpoint?.webSocketDebuggerUrl) { nativeReady = true; break; }
+    await pause(100);
+  }
+  assert.ok(nativeReady, `The asynchronously launched native pet did not become ready:\n${hostLog}`);
   browser = await chromium.connectOverCDP(`http://127.0.0.1:${port}`);
   const page = browser.contexts()[0].pages()[0];
   page.on('pageerror', error => uiErrors.push(error.message));
@@ -238,6 +265,7 @@ try {
   settingsBrowser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH ?? (existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : chromium.executablePath()), headless: true, args: ['--no-sandbox'] });
   const settings = await settingsBrowser.newPage({ viewport: { width: 1280, height: 900 } });
   settingsPage = settings;
+  await prepareNotifications(settings);
   settings.on('pageerror', error => uiErrors.push(error.message));
   settings.on('console', message => { if (message.type() === 'error') consoleErrors.push(message.text().split('\n')[0]); });
   settings.on('response', async response => {
@@ -269,6 +297,7 @@ try {
   await surface.waitFor();
   console.log('Official DSH settings page loaded; checking controls and persisted preferences…');
   await surface.getByTestId('pet-status').filter({ hasText: '正在显示' }).waitFor();
+  await verifyInstalledNotifications({ page: settings, surface, profile, version, hostUrl, project });
   await surface.getByRole('button', { name: '隐藏桌宠', exact: true }).click();
   await surface.getByTestId('pet-status').filter({ hasText: '已隐藏' }).waitFor();
   await surface.getByRole('button', { name: '显示桌宠', exact: true }).click();
@@ -330,6 +359,9 @@ try {
   await surface.getByTestId('pet-status').filter({ hasText: '已关闭' }).waitFor();
   assert.equal(await surface.getByRole('spinbutton', { name: '角色尺寸', exact: true }).inputValue(), '180');
   assert.equal(await surface.getByRole('switch', { name: '随 Harness 启动', exact: true }).getAttribute('aria-checked'), 'false');
+  assert.equal(await surface.getByRole('switch', { name: '系统通知', exact: true }).getAttribute('aria-checked'), 'true');
+  assert.equal(await surface.getByRole('switch', { name: '待处理请求补提醒', exact: true }).getAttribute('aria-checked'), 'false');
+  assert.equal(await surface.getByRole('spinbutton', { name: '补提醒等待时间', exact: true }).inputValue(), '1');
   await surface.getByRole('button', { name: '管理角色', exact: true }).click();
   await surface.getByTestId('pet-status').filter({ hasText: '正在显示' }).waitFor();
   browser = await chromium.connectOverCDP(`http://127.0.0.1:${port}`);
@@ -372,6 +404,16 @@ try {
     } finally { await context.close(); }
   }
   assert.deepEqual(uiErrors, [], 'the native DSH module loader and settings renderer have no page errors');
+  const sourceResponse = await settings.request.post(new URL('/api/coopanion-notification-n0/probe', hostUrl).href, { headers: { Origin: new URL(hostUrl).origin }, data: { type: 'client-request', rpcId: 'n0-source', method: 'coopanion-notification-n0/probe', payload: { action: 'session' } } });
+  assert.equal(sourceResponse.status(), 200, 'N0 public session creation is available');
+  const sourceEnvelope = await sourceResponse.json(); assert.equal(sourceEnvelope.result.ok, true);
+  const sourceId = sourceEnvelope.result.value.sessionId;
+  const exportUrl = new URL('/api/session.export', hostUrl); exportUrl.searchParams.set('sessionId', sourceId); exportUrl.searchParams.set('includeDescendants', 'true');
+  const exported = await settings.request.get(exportUrl.href); assert.equal(exported.status(), 200, 'N0 source is persistently exportable');
+  const archiveFiles = unzipSync(await exported.body());
+  const header = JSON.parse(Buffer.from(archiveFiles['session.v4.jsonl']).toString('utf8').split('\n')[0]);
+  assert.equal(header.id, sourceId, 'the exported source retains the complete native session identity');
+  await writeFile(join(project, 'artifacts', `notification-source-${version}.json`), JSON.stringify({ dsh: version, pluginVersion: manifest.version, creation: 'sessionController.create', sessionId: sourceId, exportedHeader: header, status: 'pass' }, null, 2) + '\n');
   await stop(host);
   assert.equal(host.exitCode, 0, hostLog);
   await writeFile(join(project, 'artifacts', `install-${version}.json`), JSON.stringify({ dsh: version, plugin: `${manifest.name}@${manifest.version}`, package: archive, installed: true, profileLoader: true, nativeWindow: true, customCharacter: true, builtinCharacterId: 'whale', sessionNotifications: true, multipleSessions: true, completionReturnsToIdle: true, notificationOpensSourceSession: true, nativeSettingsPage: true, darkTheme: true, closeAndRelaunch: true, hostRestartPersistence: true, autoStartDisabled: true, chineseAndEnglish: true, liveLocaleSwitch: true, automaticSystemLanguage: true, riskExemption: false, cleanShutdown: true }, null, 2) + '\n');

@@ -1,0 +1,60 @@
+
+ RUN  v3.2.7 /Users/jam/.codex/worktrees/11ca/dsh-coopanion
+
+ ❯ tests/notification-broker.test.ts (18 tests | 1 failed | 17 skipped) 7ms
+   ↓ selects one acknowledged channel, uses nonpredictable tokens and binds exact client/notice/generation
+   ↓ requires a native visibility revision, rejecting stale native generations and fake same-revision visibility
+   ↓ records an unknown outcome when visibility or settlement races a claimed client, preserving one channel
+   ↓ never reclaims a claim after expiry and records delayed requested/shown as evidence without redelivery
+   ↓ settles approvals by native id and late question replies by full call id, retaining continued after turn/end
+   ↓ reminds once after ten minutes, groups simultaneous requests, and supports a separate snoozed occurrence
+   ↓ rechecks a settled request in a grouped reminder and cancellation removes timers/listeners
+   ↓ restores pending entrances without stale initial or automatic notices, while explicit snooze is available
+   ↓ cancels claims/timers across stop or suspend and rejects old-generation callbacks after restart
+   ↓ classifies actual turn outcomes, drops subagents/duplicates/forked, and contains view failures
+   ↓ does not expose private reasoning and retains only confirmed assistant text in completion previews
+   ↓ uses exact tool/PTC event provenance, never projection-time watermarks or partial ids
+   × restores the original turn of an older continued PTC question after its provenance cache is evicted 7ms
+     → expected [ { …(11) } ] to match object [ { …(4) } ]
+(7 matching properties omitted from actual)
+   ↓ pauses timer execution during suspend, rechecks expired questions on wake and honors independent reminder toggles
+   ↓ snoozing postpones an unclaimed request, and disconnect turns an outstanding claim unknown
+   ↓ tracks parallel runtime-only requests by real UUID lifetime, with contextual anchors and independent identities
+   ↓ hands exact event-backed runtime requests to the public continued projection without premature settlement
+   ↓ stopping immediately revokes a visible generation without fabricating a new native visibility revision
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/notification-broker.test.ts > restores the original turn of an older continued PTC question after its provenance cache is evicted
+AssertionError: expected [ { …(11) } ] to match object [ { …(4) } ]
+(7 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  [
+    {
+      "createdAt": 1001,
+      "nativeId": "old-ptc-full-call",
+      "seq": 1,
+-     "turn": 1,
++     "turn": 2,
+    },
+  ]
+
+ ❯ tests/notification-broker.test.ts:175:42
+    173|   for (let n = 0; n < 201; n++) history.push(event('tool/call', n + 3,…
+    174|   broker.restore({ ...s, snapshotEvents: () => history as readonly Ses…
+    175|   expect(broker.snapshot().interactions).toMatchObject([{ nativeId: 'o…
+       |                                          ^
+    176| });
+    177| it('pauses timer execution during suspend, rechecks expired questions …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 17 skipped (18)
+   Start at  17:15:07
+   Duration  253ms (transform 70ms, setup 0ms, collect 116ms, tests 7ms, environment 0ms, prepare 34ms)
+

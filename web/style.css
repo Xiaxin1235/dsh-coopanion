@@ -157,3 +157,22 @@ h1 { font-size: clamp(32px, 4vw, 54px); font-weight: 500; line-height: 1.4; lett
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 @media (max-height: 650px) { .eyebrow { margin-top: 35px; } .demo-footer { margin-top: 25px; } }
 @media (max-width: 600px) { #demo { top: 28px; } .eyebrow { margin-top: 25px; } .demo-footer { display: none; } .toast { top: 16px; right: 16px; } }
+
+.interaction { width:min(360px,calc(100vw - 24px)); }
+.interaction strong { display:block; padding-right:22px; line-height:1.5; }
+.interaction .b-text { max-height:120px; overflow:auto; white-space:pre-wrap; overflow-wrap:anywhere; }
+.requests { width:min(420px,calc(100vw - 24px)); }
+.request-list { display:flex; flex-direction:column; gap:12px; max-height:45vh; overflow:auto; padding:2px; }
+.request-card { border:1px solid var(--line); border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:8px; }
+.request-card p { margin:0; white-space:pre-wrap; overflow-wrap:anywhere; max-height:130px; overflow:auto; }
+.request-card small { overflow-wrap:anywhere; opacity:.7; }
+.request-card div { display:flex; flex-wrap:wrap; gap:8px; }
+.requests footer { margin-top:12px; }
+.requests #request-feedback:empty { display:none; }
+@media (prefers-reduced-motion:reduce) { .interaction { animation:none; transition:none; } }
+.requests header { margin-bottom:12px; }
+.request-card { font-size:13px; line-height:1.5; }
+.request-card button { background:var(--tint); color:var(--accent); border-radius:10px; padding:6px 10px; font-size:12px; }
+.requests footer { border-top:1px dashed var(--line); padding-top:12px; }
+.requests footer button { background:transparent; color:var(--accent); font-size:12px; padding:0; }
+.requests #request-feedback { font-size:12px; line-height:1.5; color:var(--muted); }

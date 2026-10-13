@@ -1,0 +1,1251 @@
+{
+  "status": "pass",
+  "implementationBaseline": "213becb0eec6a23ede0768cee36d01933c83bbab",
+  "actualCheckout": "c1069d8c2e7193374993a8d30bf0e96a6d3d5b03",
+  "checkoutParents": [
+    "2f31dd4a525595768bd83de31ee3f55a4f342bf1",
+    "213becb0eec6a23ede0768cee36d01933c83bbab"
+  ],
+  "tree": "7448cbec4c81b78de90871acf4a3a765f35d8ecb",
+  "pluginVersion": "0.4.4",
+  "ciUrl": "https://github.com/takboo/dsh-coopanion/actions/runs/38211824330",
+  "run": {
+    "conclusion": "success",
+    "headSha": "213becb0eec6a23ede0768cee36d01933c83bbab",
+    "jobs": [
+      {
+        "conclusion": "success",
+        "name": "workflow-syntax",
+        "status": "completed",
+        "url": "https://github.com/takboo/dsh-coopanion/actions/runs/38211824330/job/114687479422"
+      },
+      {
+        "conclusion": "success",
+        "name": "Test (windows-latest)",
+        "status": "completed",
+        "url": "https://github.com/takboo/dsh-coopanion/actions/runs/38211824330/job/114687479604"
+      },
+      {
+        "conclusion": "success",
+        "name": "Test (ubuntu-latest)",
+        "status": "completed",
+        "url": "https://github.com/takboo/dsh-coopanion/actions/runs/38211824330/job/114687479645"
+      },
+      {
+        "conclusion": "success",
+        "name": "Test (macos-latest)",
+        "status": "completed",
+        "url": "https://github.com/takboo/dsh-coopanion/actions/runs/38211824330/job/114687479710"
+      },
+      {
+        "conclusion": "success",
+        "name": "Install (ubuntu-latest, DSH 0.2.0-rc.2)",
+        "status": "completed",
+        "url": "https://github.com/takboo/dsh-coopanion/actions/runs/38211824330/job/114688789565"
+      },
+      {
+        "conclusion": "success",
+        "name": "Install (ubuntu-latest, DSH 0.2.1-alpha.1)",
+        "status": "completed",
+        "url": "https://github.com/takboo/dsh-coopanion/actions/runs/38211824330/job/114688789570"
+      },
+      {
+        "conclusion": "success",
+        "name": "Install (macos-latest, DSH 0.2.0-rc.2)",
+        "status": "completed",
+        "url": "https://github.com/takboo/dsh-coopanion/actions/runs/38211824330/job/114688789629"
+      },
+      {
+        "conclusion": "success",
+        "name": "Install (windows-latest, DSH 0.2.0-rc.2)",
+        "status": "completed",
+        "url": "https://github.com/takboo/dsh-coopanion/actions/runs/38211824330/job/114688789652"
+      },
+      {
+        "conclusion": "success",
+        "name": "Install (macos-latest, DSH 0.2.1-alpha.1)",
+        "status": "completed",
+        "url": "https://github.com/takboo/dsh-coopanion/actions/runs/38211824330/job/114688789670"
+      },
+      {
+        "conclusion": "success",
+        "name": "Install (windows-latest, DSH 0.2.1-alpha.1)",
+        "status": "completed",
+        "url": "https://github.com/takboo/dsh-coopanion/actions/runs/38211824330/job/114688789707"
+      }
+    ],
+    "status": "completed"
+  },
+  "prototype": {
+    "kind": "local-private-prototype",
+    "version": "0.4.4",
+    "hashes": {
+      "index.mjs": "0b6154a53a6a4317083528b5a6e6f62e627543bf31dd43035c2dd15a0ea41bad",
+      "client.js": "620a181b25adcdb6474822a57c9f69ee5c2af89daa0a9cff686aa5f78f497112",
+      "package.json": "1c39ad4d2ec5cfb3a4f0383fd5781c8d820a495707ff8f2775b42798c5f18a84",
+      "cordis.patch.yml": "53061d151052d36b49e2dcad5bdadad20f38380c5773a4d7c3211ef3dd0a8946"
+    }
+  },
+  "nativePrototypeMatchesCi": true,
+  "nativeSessionId": "notification-n0-1791783570096",
+  "installations": [
+    {
+      "artifact": "installation-Linux-0.2.0-rc.2",
+      "host": {
+        "dsh": "0.2.0-rc.2",
+        "pluginVersion": "0.4.4",
+        "sourceCommit": "c1069d8c2e7193374993a8d30bf0e96a6d3d5b03",
+        "kind": "actual-host-contract",
+        "cases": {
+          "questionOpen": true,
+          "continuedSurvivesTurnEnd": true,
+          "prefixReplyCannotSettle": true,
+          "exactLateReplySettles": true,
+          "approvalNativePair": true,
+          "questionPublicRequestAndCancellation": true,
+          "stopVocabulary": true
+        },
+        "source": "published DSH services and public projection snapshot",
+        "packages": {
+          "dsh-session": "87ea85e2fb5318bf1f826db9a1c88c1b26d3ea328027a7f32b211880c4d62b9d",
+          "dsh-user-approval": "6a5ad1ba3c3dc3abbbae52e6c8c4463970ee0c1c8988cebb0d5cf2acd17ee90b",
+          "dsh-user-questions": "e1c51afac2e31be8593c6426976e5f31dbe2a709b85ae1ea43ed406146f54265"
+        },
+        "events": [
+          {
+            "type": "turn/start",
+            "seq": 0,
+            "time": 1791786263792,
+            "data": {
+              "turn": 1
+            }
+          },
+          {
+            "type": "request/header",
+            "seq": 1,
+            "time": 1791786263793,
+            "data": {
+              "reason": "initial",
+              "header": {
+                "tools": [
+                  {
+                    "name": "ask_user_question",
+                    "description": "N0 timed question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "timeout": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "type": "tool/call",
+            "seq": 2,
+            "time": 1791786263794,
+            "data": {
+              "turn": 1,
+              "step": 1,
+              "callId": "n0-call-complete-identity",
+              "name": "ask_user_question",
+              "arguments": "{\"questions\":[{\"id\":\"q\",\"question\":\"N0 问题\"}]}"
+            }
+          },
+          {
+            "type": "tool/result",
+            "seq": 3,
+            "time": 1791786263799,
+            "data": {
+              "turn": 1,
+              "step": 1,
+              "message": {
+                "role": "tool",
+                "id": "result",
+                "toolCallId": "n0-call-complete-identity",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "{\"pending\":true,\"callId\":\"n0-call-complete-identity\"}"
+                  }
+                ]
+              }
+            },
+            "surfaceOp": "append"
+          },
+          {
+            "type": "turn/end",
+            "seq": 4,
+            "time": 1791786263799,
+            "data": {
+              "turn": 1,
+              "reason": {
+                "kind": "completed"
+              }
+            }
+          },
+          {
+            "type": "turn/start",
+            "seq": 5,
+            "time": 1791786263799,
+            "data": {
+              "turn": 2
+            }
+          },
+          {
+            "type": "user/message",
+            "seq": 6,
+            "time": 1791786263799,
+            "data": {
+              "role": "user",
+              "id": "unrelated",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "{\"answers\":[]}"
+                }
+              ],
+              "source": {
+                "kind": "user-question-reply",
+                "callId": "n0-call",
+                "outcome": "answered"
+              }
+            },
+            "surfaceOp": "append"
+          },
+          {
+            "type": "user/message",
+            "seq": 7,
+            "time": 1791786263800,
+            "data": {
+              "role": "user",
+              "id": "late",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "{\"answers\":[{\"id\":\"q\",\"selected\":[],\"custom\":\"回答\"}]}"
+                }
+              ],
+              "source": {
+                "kind": "user-question-reply",
+                "callId": "n0-call-complete-identity",
+                "outcome": "answered"
+              }
+            },
+            "surfaceOp": "append"
+          },
+          {
+            "type": "approval/asked",
+            "seq": 8,
+            "time": 1791786263802,
+            "data": {
+              "id": "685dc9a7-80b3-46ba-97cc-51f9618484c2",
+              "toolName": "bash",
+              "callId": "approval-call"
+            }
+          },
+          {
+            "type": "approval/decided",
+            "seq": 9,
+            "time": 1791786263803,
+            "data": {
+              "id": "685dc9a7-80b3-46ba-97cc-51f9618484c2",
+              "outcome": "allowed-once"
+            }
+          }
+        ],
+        "status": "pass"
+      },
+      "source": {
+        "dsh": "0.2.0-rc.2",
+        "pluginVersion": "0.4.4",
+        "creation": "sessionController.create",
+        "sessionId": "notification-n0-1791786317378",
+        "exportedHeader": {
+          "type": "session",
+          "version": 4,
+          "id": "notification-n0-1791786317378",
+          "createdAt": 1791786317381,
+          "cwd": "/home/runner/work/_temp/dsh-coopanion-install-nFxoDM/home/notification-n0",
+          "isSeeded": false,
+          "delegationDepth": 0,
+          "agentPreset": "standard"
+        },
+        "status": "pass"
+      },
+      "sha256": {
+        "notification-host-0.2.0-rc.2.json": "22c6c41737dab7b2aae876766d48bfad6e1622472fad88bc09526745ea8d2d6f",
+        "notification-source-0.2.0-rc.2.json": "40eadb12dbf43bb33ebf1fdf8475725d149d13facfb0e849ea2a549a81077769"
+      }
+    },
+    {
+      "artifact": "installation-Linux-0.2.1-alpha.1",
+      "host": {
+        "dsh": "0.2.1-alpha.1",
+        "pluginVersion": "0.4.4",
+        "sourceCommit": "c1069d8c2e7193374993a8d30bf0e96a6d3d5b03",
+        "kind": "actual-host-contract",
+        "cases": {
+          "questionOpen": true,
+          "continuedSurvivesTurnEnd": true,
+          "prefixReplyCannotSettle": true,
+          "exactLateReplySettles": true,
+          "approvalNativePair": true,
+          "questionPublicRequestAndCancellation": true,
+          "stopVocabulary": true
+        },
+        "source": "published DSH services and public projection snapshot",
+        "packages": {
+          "dsh-session": "b847e7ec736ce4049ec40ea0b20753bad5d7c2388785b4369d2bf00baa32472b",
+          "dsh-user-approval": "6a5ad1ba3c3dc3abbbae52e6c8c4463970ee0c1c8988cebb0d5cf2acd17ee90b",
+          "dsh-user-questions": "e1c51afac2e31be8593c6426976e5f31dbe2a709b85ae1ea43ed406146f54265"
+        },
+        "events": [
+          {
+            "type": "turn/start",
+            "seq": 0,
+            "time": 1791786259064,
+            "data": {
+              "turn": 1
+            }
+          },
+          {
+            "type": "request/header",
+            "seq": 1,
+            "time": 1791786259065,
+            "data": {
+              "reason": "initial",
+              "header": {
+                "tools": [
+                  {
+                    "name": "ask_user_question",
+                    "description": "N0 timed question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "timeout": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "type": "tool/call",
+            "seq": 2,
+            "time": 1791786259065,
+            "data": {
+              "turn": 1,
+              "step": 1,
+              "callId": "n0-call-complete-identity",
+              "name": "ask_user_question",
+              "arguments": "{\"questions\":[{\"id\":\"q\",\"question\":\"N0 问题\"}]}"
+            }
+          },
+          {
+            "type": "tool/result",
+            "seq": 3,
+            "time": 1791786259070,
+            "data": {
+              "turn": 1,
+              "step": 1,
+              "message": {
+                "role": "tool",
+                "id": "result",
+                "toolCallId": "n0-call-complete-identity",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "{\"pending\":true,\"callId\":\"n0-call-complete-identity\"}"
+                  }
+                ]
+              }
+            },
+            "surfaceOp": "append"
+          },
+          {
+            "type": "turn/end",
+            "seq": 4,
+            "time": 1791786259070,
+            "data": {
+              "turn": 1,
+              "reason": {
+                "kind": "completed"
+              }
+            }
+          },
+          {
+            "type": "turn/start",
+            "seq": 5,
+            "time": 1791786259071,
+            "data": {
+              "turn": 2
+            }
+          },
+          {
+            "type": "user/message",
+            "seq": 6,
+            "time": 1791786259071,
+            "data": {
+              "role": "user",
+              "id": "unrelated",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "{\"answers\":[]}"
+                }
+              ],
+              "source": {
+                "kind": "user-question-reply",
+                "callId": "n0-call",
+                "outcome": "answered"
+              }
+            },
+            "surfaceOp": "append"
+          },
+          {
+            "type": "user/message",
+            "seq": 7,
+            "time": 1791786259072,
+            "data": {
+              "role": "user",
+              "id": "late",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "{\"answers\":[{\"id\":\"q\",\"selected\":[],\"custom\":\"回答\"}]}"
+                }
+              ],
+              "source": {
+                "kind": "user-question-reply",
+                "callId": "n0-call-complete-identity",
+                "outcome": "answered"
+              }
+            },
+            "surfaceOp": "append"
+          },
+          {
+            "type": "approval/asked",
+            "seq": 8,
+            "time": 1791786259074,
+            "data": {
+              "id": "2b76922c-cb60-4a7f-84cc-e638dfcbba04",
+              "toolName": "bash",
+              "callId": "approval-call"
+            }
+          },
+          {
+            "type": "approval/decided",
+            "seq": 9,
+            "time": 1791786259074,
+            "data": {
+              "id": "2b76922c-cb60-4a7f-84cc-e638dfcbba04",
+              "outcome": "allowed-once"
+            }
+          }
+        ],
+        "status": "pass"
+      },
+      "source": {
+        "dsh": "0.2.1-alpha.1",
+        "pluginVersion": "0.4.4",
+        "creation": "sessionController.create",
+        "sessionId": "notification-n0-1791786308668",
+        "exportedHeader": {
+          "type": "session",
+          "version": 4,
+          "id": "notification-n0-1791786308668",
+          "createdAt": 1791786308671,
+          "cwd": "/home/runner/work/_temp/dsh-coopanion-install-QYl1Ke/home/notification-n0",
+          "isSeeded": false,
+          "delegationDepth": 0,
+          "agentPreset": "standard"
+        },
+        "status": "pass"
+      },
+      "sha256": {
+        "notification-host-0.2.1-alpha.1.json": "ba5ca4f10fe2db9fc263c2420ce5fa191609f95a0fb212976ac465ca80357d8a",
+        "notification-source-0.2.1-alpha.1.json": "c32094ed1f70374aca0af5805fea828eeeafbe615babc9aceedce51c9b86a5fc"
+      }
+    },
+    {
+      "artifact": "installation-Windows-0.2.0-rc.2",
+      "host": {
+        "dsh": "0.2.0-rc.2",
+        "pluginVersion": "0.4.4",
+        "sourceCommit": "c1069d8c2e7193374993a8d30bf0e96a6d3d5b03",
+        "kind": "actual-host-contract",
+        "cases": {
+          "questionOpen": true,
+          "continuedSurvivesTurnEnd": true,
+          "prefixReplyCannotSettle": true,
+          "exactLateReplySettles": true,
+          "approvalNativePair": true,
+          "questionPublicRequestAndCancellation": true,
+          "stopVocabulary": true
+        },
+        "source": "published DSH services and public projection snapshot",
+        "packages": {
+          "dsh-session": "87ea85e2fb5318bf1f826db9a1c88c1b26d3ea328027a7f32b211880c4d62b9d",
+          "dsh-user-approval": "6a5ad1ba3c3dc3abbbae52e6c8c4463970ee0c1c8988cebb0d5cf2acd17ee90b",
+          "dsh-user-questions": "e1c51afac2e31be8593c6426976e5f31dbe2a709b85ae1ea43ed406146f54265"
+        },
+        "events": [
+          {
+            "type": "turn/start",
+            "seq": 0,
+            "time": 1791786521148,
+            "data": {
+              "turn": 1
+            }
+          },
+          {
+            "type": "request/header",
+            "seq": 1,
+            "time": 1791786521149,
+            "data": {
+              "reason": "initial",
+              "header": {
+                "tools": [
+                  {
+                    "name": "ask_user_question",
+                    "description": "N0 timed question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "timeout": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "type": "tool/call",
+            "seq": 2,
+            "time": 1791786521150,
+            "data": {
+              "turn": 1,
+              "step": 1,
+              "callId": "n0-call-complete-identity",
+              "name": "ask_user_question",
+              "arguments": "{\"questions\":[{\"id\":\"q\",\"question\":\"N0 问题\"}]}"
+            }
+          },
+          {
+            "type": "tool/result",
+            "seq": 3,
+            "time": 1791786521155,
+            "data": {
+              "turn": 1,
+              "step": 1,
+              "message": {
+                "role": "tool",
+                "id": "result",
+                "toolCallId": "n0-call-complete-identity",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "{\"pending\":true,\"callId\":\"n0-call-complete-identity\"}"
+                  }
+                ]
+              }
+            },
+            "surfaceOp": "append"
+          },
+          {
+            "type": "turn/end",
+            "seq": 4,
+            "time": 1791786521155,
+            "data": {
+              "turn": 1,
+              "reason": {
+                "kind": "completed"
+              }
+            }
+          },
+          {
+            "type": "turn/start",
+            "seq": 5,
+            "time": 1791786521155,
+            "data": {
+              "turn": 2
+            }
+          },
+          {
+            "type": "user/message",
+            "seq": 6,
+            "time": 1791786521155,
+            "data": {
+              "role": "user",
+              "id": "unrelated",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "{\"answers\":[]}"
+                }
+              ],
+              "source": {
+                "kind": "user-question-reply",
+                "callId": "n0-call",
+                "outcome": "answered"
+              }
+            },
+            "surfaceOp": "append"
+          },
+          {
+            "type": "user/message",
+            "seq": 7,
+            "time": 1791786521156,
+            "data": {
+              "role": "user",
+              "id": "late",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "{\"answers\":[{\"id\":\"q\",\"selected\":[],\"custom\":\"回答\"}]}"
+                }
+              ],
+              "source": {
+                "kind": "user-question-reply",
+                "callId": "n0-call-complete-identity",
+                "outcome": "answered"
+              }
+            },
+            "surfaceOp": "append"
+          },
+          {
+            "type": "approval/asked",
+            "seq": 8,
+            "time": 1791786521159,
+            "data": {
+              "id": "ec892fa0-7a17-4298-9760-841f78a8cde8",
+              "toolName": "bash",
+              "callId": "approval-call"
+            }
+          },
+          {
+            "type": "approval/decided",
+            "seq": 9,
+            "time": 1791786521159,
+            "data": {
+              "id": "ec892fa0-7a17-4298-9760-841f78a8cde8",
+              "outcome": "allowed-once"
+            }
+          }
+        ],
+        "status": "pass"
+      },
+      "source": {
+        "dsh": "0.2.0-rc.2",
+        "pluginVersion": "0.4.4",
+        "creation": "sessionController.create",
+        "sessionId": "notification-n0-1791786615100",
+        "exportedHeader": {
+          "type": "session",
+          "version": 4,
+          "id": "notification-n0-1791786615100",
+          "createdAt": 1791786615103,
+          "cwd": "D:\\a\\_temp\\dsh-coopanion-install-yB9SGo\\home\\notification-n0",
+          "isSeeded": false,
+          "delegationDepth": 0,
+          "agentPreset": "standard"
+        },
+        "status": "pass"
+      },
+      "sha256": {
+        "notification-host-0.2.0-rc.2.json": "3f09e2a1269ea42cbf4a7ca6cee029a4ea7dc3e8132a28e11a3e922f2ec9d3ff",
+        "notification-source-0.2.0-rc.2.json": "0d285a15be54e0485bf2bdf10df97c99a096637a8d33594a05839b72973e96ab"
+      }
+    },
+    {
+      "artifact": "installation-Windows-0.2.1-alpha.1",
+      "host": {
+        "dsh": "0.2.1-alpha.1",
+        "pluginVersion": "0.4.4",
+        "sourceCommit": "c1069d8c2e7193374993a8d30bf0e96a6d3d5b03",
+        "kind": "actual-host-contract",
+        "cases": {
+          "questionOpen": true,
+          "continuedSurvivesTurnEnd": true,
+          "prefixReplyCannotSettle": true,
+          "exactLateReplySettles": true,
+          "approvalNativePair": true,
+          "questionPublicRequestAndCancellation": true,
+          "stopVocabulary": true
+        },
+        "source": "published DSH services and public projection snapshot",
+        "packages": {
+          "dsh-session": "b847e7ec736ce4049ec40ea0b20753bad5d7c2388785b4369d2bf00baa32472b",
+          "dsh-user-approval": "6a5ad1ba3c3dc3abbbae52e6c8c4463970ee0c1c8988cebb0d5cf2acd17ee90b",
+          "dsh-user-questions": "e1c51afac2e31be8593c6426976e5f31dbe2a709b85ae1ea43ed406146f54265"
+        },
+        "events": [
+          {
+            "type": "turn/start",
+            "seq": 0,
+            "time": 1791786508591,
+            "data": {
+              "turn": 1
+            }
+          },
+          {
+            "type": "request/header",
+            "seq": 1,
+            "time": 1791786508592,
+            "data": {
+              "reason": "initial",
+              "header": {
+                "tools": [
+                  {
+                    "name": "ask_user_question",
+                    "description": "N0 timed question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "timeout": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "type": "tool/call",
+            "seq": 2,
+            "time": 1791786508592,
+            "data": {
+              "turn": 1,
+              "step": 1,
+              "callId": "n0-call-complete-identity",
+              "name": "ask_user_question",
+              "arguments": "{\"questions\":[{\"id\":\"q\",\"question\":\"N0 问题\"}]}"
+            }
+          },
+          {
+            "type": "tool/result",
+            "seq": 3,
+            "time": 1791786508597,
+            "data": {
+              "turn": 1,
+              "step": 1,
+              "message": {
+                "role": "tool",
+                "id": "result",
+                "toolCallId": "n0-call-complete-identity",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "{\"pending\":true,\"callId\":\"n0-call-complete-identity\"}"
+                  }
+                ]
+              }
+            },
+            "surfaceOp": "append"
+          },
+          {
+            "type": "turn/end",
+            "seq": 4,
+            "time": 1791786508598,
+            "data": {
+              "turn": 1,
+              "reason": {
+                "kind": "completed"
+              }
+            }
+          },
+          {
+            "type": "turn/start",
+            "seq": 5,
+            "time": 1791786508598,
+            "data": {
+              "turn": 2
+            }
+          },
+          {
+            "type": "user/message",
+            "seq": 6,
+            "time": 1791786508598,
+            "data": {
+              "role": "user",
+              "id": "unrelated",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "{\"answers\":[]}"
+                }
+              ],
+              "source": {
+                "kind": "user-question-reply",
+                "callId": "n0-call",
+                "outcome": "answered"
+              }
+            },
+            "surfaceOp": "append"
+          },
+          {
+            "type": "user/message",
+            "seq": 7,
+            "time": 1791786508599,
+            "data": {
+              "role": "user",
+              "id": "late",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "{\"answers\":[{\"id\":\"q\",\"selected\":[],\"custom\":\"回答\"}]}"
+                }
+              ],
+              "source": {
+                "kind": "user-question-reply",
+                "callId": "n0-call-complete-identity",
+                "outcome": "answered"
+              }
+            },
+            "surfaceOp": "append"
+          },
+          {
+            "type": "approval/asked",
+            "seq": 8,
+            "time": 1791786508601,
+            "data": {
+              "id": "d62868bf-62ba-42bb-bafb-74763417e4ef",
+              "toolName": "bash",
+              "callId": "approval-call"
+            }
+          },
+          {
+            "type": "approval/decided",
+            "seq": 9,
+            "time": 1791786508602,
+            "data": {
+              "id": "d62868bf-62ba-42bb-bafb-74763417e4ef",
+              "outcome": "allowed-once"
+            }
+          }
+        ],
+        "status": "pass"
+      },
+      "source": {
+        "dsh": "0.2.1-alpha.1",
+        "pluginVersion": "0.4.4",
+        "creation": "sessionController.create",
+        "sessionId": "notification-n0-1791786591532",
+        "exportedHeader": {
+          "type": "session",
+          "version": 4,
+          "id": "notification-n0-1791786591532",
+          "createdAt": 1791786591537,
+          "cwd": "D:\\a\\_temp\\dsh-coopanion-install-eMtXPM\\home\\notification-n0",
+          "isSeeded": false,
+          "delegationDepth": 0,
+          "agentPreset": "standard"
+        },
+        "status": "pass"
+      },
+      "sha256": {
+        "notification-host-0.2.1-alpha.1.json": "9d1c37b82fe257421f20689bd1037593310e143df45c93dfdebeecffb92bd3ee",
+        "notification-source-0.2.1-alpha.1.json": "c428eb3375f88d4c720a7ceb27f1cbf7be85d55ed1cd5d6667d9cb8bb8d64c06"
+      }
+    },
+    {
+      "artifact": "installation-macOS-0.2.0-rc.2",
+      "host": {
+        "dsh": "0.2.0-rc.2",
+        "pluginVersion": "0.4.4",
+        "sourceCommit": "c1069d8c2e7193374993a8d30bf0e96a6d3d5b03",
+        "kind": "actual-host-contract",
+        "cases": {
+          "questionOpen": true,
+          "continuedSurvivesTurnEnd": true,
+          "prefixReplyCannotSettle": true,
+          "exactLateReplySettles": true,
+          "approvalNativePair": true,
+          "questionPublicRequestAndCancellation": true,
+          "stopVocabulary": true
+        },
+        "source": "published DSH services and public projection snapshot",
+        "packages": {
+          "dsh-session": "87ea85e2fb5318bf1f826db9a1c88c1b26d3ea328027a7f32b211880c4d62b9d",
+          "dsh-user-approval": "6a5ad1ba3c3dc3abbbae52e6c8c4463970ee0c1c8988cebb0d5cf2acd17ee90b",
+          "dsh-user-questions": "e1c51afac2e31be8593c6426976e5f31dbe2a709b85ae1ea43ed406146f54265"
+        },
+        "events": [
+          {
+            "type": "turn/start",
+            "seq": 0,
+            "time": 1791786251648,
+            "data": {
+              "turn": 1
+            }
+          },
+          {
+            "type": "request/header",
+            "seq": 1,
+            "time": 1791786251648,
+            "data": {
+              "reason": "initial",
+              "header": {
+                "tools": [
+                  {
+                    "name": "ask_user_question",
+                    "description": "N0 timed question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "timeout": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "type": "tool/call",
+            "seq": 2,
+            "time": 1791786251649,
+            "data": {
+              "turn": 1,
+              "step": 1,
+              "callId": "n0-call-complete-identity",
+              "name": "ask_user_question",
+              "arguments": "{\"questions\":[{\"id\":\"q\",\"question\":\"N0 问题\"}]}"
+            }
+          },
+          {
+            "type": "tool/result",
+            "seq": 3,
+            "time": 1791786251651,
+            "data": {
+              "turn": 1,
+              "step": 1,
+              "message": {
+                "role": "tool",
+                "id": "result",
+                "toolCallId": "n0-call-complete-identity",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "{\"pending\":true,\"callId\":\"n0-call-complete-identity\"}"
+                  }
+                ]
+              }
+            },
+            "surfaceOp": "append"
+          },
+          {
+            "type": "turn/end",
+            "seq": 4,
+            "time": 1791786251651,
+            "data": {
+              "turn": 1,
+              "reason": {
+                "kind": "completed"
+              }
+            }
+          },
+          {
+            "type": "turn/start",
+            "seq": 5,
+            "time": 1791786251651,
+            "data": {
+              "turn": 2
+            }
+          },
+          {
+            "type": "user/message",
+            "seq": 6,
+            "time": 1791786251652,
+            "data": {
+              "role": "user",
+              "id": "unrelated",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "{\"answers\":[]}"
+                }
+              ],
+              "source": {
+                "kind": "user-question-reply",
+                "callId": "n0-call",
+                "outcome": "answered"
+              }
+            },
+            "surfaceOp": "append"
+          },
+          {
+            "type": "user/message",
+            "seq": 7,
+            "time": 1791786251652,
+            "data": {
+              "role": "user",
+              "id": "late",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "{\"answers\":[{\"id\":\"q\",\"selected\":[],\"custom\":\"回答\"}]}"
+                }
+              ],
+              "source": {
+                "kind": "user-question-reply",
+                "callId": "n0-call-complete-identity",
+                "outcome": "answered"
+              }
+            },
+            "surfaceOp": "append"
+          },
+          {
+            "type": "approval/asked",
+            "seq": 8,
+            "time": 1791786251653,
+            "data": {
+              "id": "6d07f375-e05c-4650-b0f1-4242c20f02e8",
+              "toolName": "bash",
+              "callId": "approval-call"
+            }
+          },
+          {
+            "type": "approval/decided",
+            "seq": 9,
+            "time": 1791786251653,
+            "data": {
+              "id": "6d07f375-e05c-4650-b0f1-4242c20f02e8",
+              "outcome": "allowed-once"
+            }
+          }
+        ],
+        "status": "pass"
+      },
+      "source": {
+        "dsh": "0.2.0-rc.2",
+        "pluginVersion": "0.4.4",
+        "creation": "sessionController.create",
+        "sessionId": "notification-n0-1791786304414",
+        "exportedHeader": {
+          "type": "session",
+          "version": 4,
+          "id": "notification-n0-1791786304414",
+          "createdAt": 1791786304416,
+          "cwd": "/Users/runner/work/_temp/dsh-coopanion-install-7vNpIA/home/notification-n0",
+          "isSeeded": false,
+          "delegationDepth": 0,
+          "agentPreset": "standard"
+        },
+        "status": "pass"
+      },
+      "sha256": {
+        "notification-host-0.2.0-rc.2.json": "e35f6a4b19f677324dd30851d81a4a93ed3d1f9e5ccc926c1574c1183d83be81",
+        "notification-source-0.2.0-rc.2.json": "0b2fc20835345bd8679d9c1df6ba157cc872b4dea485c7d3120f1e99a53990eb"
+      }
+    },
+    {
+      "artifact": "installation-macOS-0.2.1-alpha.1",
+      "host": {
+        "dsh": "0.2.1-alpha.1",
+        "pluginVersion": "0.4.4",
+        "sourceCommit": "c1069d8c2e7193374993a8d30bf0e96a6d3d5b03",
+        "kind": "actual-host-contract",
+        "cases": {
+          "questionOpen": true,
+          "continuedSurvivesTurnEnd": true,
+          "prefixReplyCannotSettle": true,
+          "exactLateReplySettles": true,
+          "approvalNativePair": true,
+          "questionPublicRequestAndCancellation": true,
+          "stopVocabulary": true
+        },
+        "source": "published DSH services and public projection snapshot",
+        "packages": {
+          "dsh-session": "b847e7ec736ce4049ec40ea0b20753bad5d7c2388785b4369d2bf00baa32472b",
+          "dsh-user-approval": "6a5ad1ba3c3dc3abbbae52e6c8c4463970ee0c1c8988cebb0d5cf2acd17ee90b",
+          "dsh-user-questions": "e1c51afac2e31be8593c6426976e5f31dbe2a709b85ae1ea43ed406146f54265"
+        },
+        "events": [
+          {
+            "type": "turn/start",
+            "seq": 0,
+            "time": 1791786284555,
+            "data": {
+              "turn": 1
+            }
+          },
+          {
+            "type": "request/header",
+            "seq": 1,
+            "time": 1791786284556,
+            "data": {
+              "reason": "initial",
+              "header": {
+                "tools": [
+                  {
+                    "name": "ask_user_question",
+                    "description": "N0 timed question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "timeout": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "type": "tool/call",
+            "seq": 2,
+            "time": 1791786284556,
+            "data": {
+              "turn": 1,
+              "step": 1,
+              "callId": "n0-call-complete-identity",
+              "name": "ask_user_question",
+              "arguments": "{\"questions\":[{\"id\":\"q\",\"question\":\"N0 问题\"}]}"
+            }
+          },
+          {
+            "type": "tool/result",
+            "seq": 3,
+            "time": 1791786284560,
+            "data": {
+              "turn": 1,
+              "step": 1,
+              "message": {
+                "role": "tool",
+                "id": "result",
+                "toolCallId": "n0-call-complete-identity",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "{\"pending\":true,\"callId\":\"n0-call-complete-identity\"}"
+                  }
+                ]
+              }
+            },
+            "surfaceOp": "append"
+          },
+          {
+            "type": "turn/end",
+            "seq": 4,
+            "time": 1791786284560,
+            "data": {
+              "turn": 1,
+              "reason": {
+                "kind": "completed"
+              }
+            }
+          },
+          {
+            "type": "turn/start",
+            "seq": 5,
+            "time": 1791786284560,
+            "data": {
+              "turn": 2
+            }
+          },
+          {
+            "type": "user/message",
+            "seq": 6,
+            "time": 1791786284560,
+            "data": {
+              "role": "user",
+              "id": "unrelated",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "{\"answers\":[]}"
+                }
+              ],
+              "source": {
+                "kind": "user-question-reply",
+                "callId": "n0-call",
+                "outcome": "answered"
+              }
+            },
+            "surfaceOp": "append"
+          },
+          {
+            "type": "user/message",
+            "seq": 7,
+            "time": 1791786284560,
+            "data": {
+              "role": "user",
+              "id": "late",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "{\"answers\":[{\"id\":\"q\",\"selected\":[],\"custom\":\"回答\"}]}"
+                }
+              ],
+              "source": {
+                "kind": "user-question-reply",
+                "callId": "n0-call-complete-identity",
+                "outcome": "answered"
+              }
+            },
+            "surfaceOp": "append"
+          },
+          {
+            "type": "approval/asked",
+            "seq": 8,
+            "time": 1791786284561,
+            "data": {
+              "id": "05814459-2404-4c3d-b2c7-822d12e6016c",
+              "toolName": "bash",
+              "callId": "approval-call"
+            }
+          },
+          {
+            "type": "approval/decided",
+            "seq": 9,
+            "time": 1791786284562,
+            "data": {
+              "id": "05814459-2404-4c3d-b2c7-822d12e6016c",
+              "outcome": "allowed-once"
+            }
+          }
+        ],
+        "status": "pass"
+      },
+      "source": {
+        "dsh": "0.2.1-alpha.1",
+        "pluginVersion": "0.4.4",
+        "creation": "sessionController.create",
+        "sessionId": "notification-n0-1791786352730",
+        "exportedHeader": {
+          "type": "session",
+          "version": 4,
+          "id": "notification-n0-1791786352730",
+          "createdAt": 1791786352732,
+          "cwd": "/Users/runner/work/_temp/dsh-coopanion-install-e6Oh6o/home/notification-n0",
+          "isSeeded": false,
+          "delegationDepth": 0,
+          "agentPreset": "standard"
+        },
+        "status": "pass"
+      },
+      "sha256": {
+        "notification-host-0.2.1-alpha.1.json": "276b289dd297a61461ce8556700279496db9c22f065cda28ca629571c54b99ff",
+        "notification-source-0.2.1-alpha.1.json": "7205408a779b89b481a475d188aa3c631702091d4dd342a43bab3d6ea96a1f4a"
+      }
+    }
+  ]
+}
