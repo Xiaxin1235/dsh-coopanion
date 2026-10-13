@@ -11,8 +11,8 @@ import type { NativeLifecycle, PetBridge } from '../src/bridge.ts';
 function setup() {
   const ctx = new Context(); new SessionProjectionRegistry(ctx); new SessionStore(ctx); new UserQuestionService(ctx);
   const session = ctx.sessions.create(SessionId('source-full-identity'));
-  const agent = { session, ctx, status: 'idle' } as Agent;
-  ctx.provide('agents', { list: () => [agent] });
+  const agent = { id: session.id, session, ctx, status: 'idle' } as Agent;
+  ctx.provide('agents', { list: () => [agent], get: (id: string) => id === agent.id ? agent : undefined, roots: () => [agent] });
   const routes = new Map<string, { fetch(request: Request): Promise<Response> }>();
   ctx.provide('connection', { fetch: { register: (route: { path: string; fetch(request: Request): Promise<Response> }) => { routes.set(route.path, route); return () => routes.delete(route.path); } } } as never);
   let lifecycle: ((state: NativeLifecycle) => void) | undefined, generation = 0, revision = 0;
@@ -90,6 +90,24 @@ it('delegates public blocking questions and settles only after the original answ
     expect((await invoke('notification-state')).value.interactions).toHaveLength(1);
     answer({ answers: [] }); await request;
     expect((await invoke('notification-state')).value.interactions).toHaveLength(0);
+  } finally { await scope.dispose(); await ctx.fiber.dispose(); }
+});
+
+it('observes a public question when the Harness answerer was registered before the plugin', async () => {
+  const { ctx, agent, session, bridge, invoke } = setup();
+  let answer!: (value: { answers: [] }) => void;
+  const original = vi.fn(() => new Promise<{ answers: [] }>(resolve => { answer = resolve; }));
+  ctx.on('user-questions/request', original);
+  const scope = ctx.plugin(child => mountPet(child, Config(), bridge));
+  try {
+    await scope.await(); await vi.waitFor(() => expect(ctx.coopanion.status().phase).toBe('running'));
+    session.append('turn/start', { turn: 1 });
+    const request = ctx.userQuestions.ask({ agent, questions: [{ id: 'q', question: 'Answer through Harness' }] });
+    await vi.waitFor(() => expect(original).toHaveBeenCalledOnce());
+    expect((await invoke('notification-state')).value.interactions).toHaveLength(1);
+    answer({ answers: [] }); await expect(request).resolves.toEqual({ answers: [] });
+    expect((await invoke('notification-state')).value.interactions).toHaveLength(0);
+    expect(original).toHaveBeenCalledOnce();
   } finally { await scope.dispose(); await ctx.fiber.dispose(); }
 });
 

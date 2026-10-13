@@ -178,7 +178,7 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
       questions?.(session); syncNotifications();
       try { return await next(); }
       finally { questions?.(session); finish(); syncNotifications(); }
-    });
+    }, { prepend: true });
   });
   const onAction = (action: unknown) => {
     if (!isRecord(action)) return;
