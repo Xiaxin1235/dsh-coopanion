@@ -8,6 +8,8 @@ npm 包名为 **`@takboo/dsh-coopanion`**，采用维护者的 scope，并以 pu
 
 `.github/workflows/ci.yml` 在 Linux、macOS、Windows 上运行元数据、类型、单元、浏览器及真实 Electron 窗口测试，并在三平台分别验证 DSH **0.2.0-rc.2 / 0.2.1-alpha.1** 安装。Linux 构建是规范分发产物；六组安装测试消费这一份 `.tgz`。所有检查通过才允许发布。
 
+PR CI 的 `desktop-pet` artifact 用于审阅分发候选，`verification.json` 绑定实际 checkout commit、版本与包摘要。合并后的稳定标签会对标签指向的源码重新运行完整 CI，生成该次发布的 canonical 包；六组安装、npm 和 GitHub Release 继续消费该包，固定别名通过复制保留相同字节。发布审批覆盖合并、稳定标签和随后自动执行的 npm／Release 发布。
+
 稳定标签 `v<major>.<minor>.<patch>` 的新建 push 派发 **main 上的 `release.yml`**。标签入口仅有 Actions 派发权限；npm job 才拥有 `id-token: write`，GitHub Release 使用另一个 `contents: write` job。fork、其他分支、移动或删除标签不会进入自动发布路径；预发布标签不会发布到 `latest`。
 
 发布前验证标签是 `origin/main` 的祖先、package / shrinkwrap 版本一致、对应版本发布说明存在，然后检出不可变提交，运行完整 CI。构建并打包一次；后续安装、npm、GitHub Release 都使用同一压缩包，发布时 `--ignore-scripts`，不再次执行构建。报告记录版本、源码 commit、SHA-256 和 npm SHA-512 integrity；发布前还会重新检查标签没有移动。

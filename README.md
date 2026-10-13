@@ -2,7 +2,7 @@
 
 给 [DeepSeek Harness Desktop](https://github.com/deepseek-ai/deepseek-harness) 加一只桌面伙伴。她会陪你工作，在任务完成、出错或需要确认时提醒你；双击角色，可以向已打开的 Harness 会话发送消息。
 
-**v0.4.4 使用 Coopanion 的原生动画与角色运行时，组合程序采用 AGPL-3.0-or-later。** 大肥鱼的网格变形、弹簧动作、动态五官、物理拖拽和八套配色直接复用上游固定版本。角色贴图保留独立权利声明，见 [第三方声明](THIRD_PARTY_NOTICES.md) 和 [上游版本记录](web/upstream/UPSTREAM.md)。
+**v0.4.5 使用 Coopanion 的原生动画与角色运行时，组合程序采用 AGPL-3.0-or-later。** 大肥鱼的网格变形、弹簧动作、动态五官、物理拖拽和八套配色直接复用上游固定版本。角色贴图保留独立权利声明，见 [第三方声明](THIRD_PARTY_NOTICES.md) 和 [上游版本记录](web/upstream/UPSTREAM.md)。
 
 ## 功能
 
@@ -11,9 +11,11 @@
 - 最终回复使用描边气泡，短预览在最多约 3 秒内显示；可立即显示、展开完整阅读和返回源会话。嘴部同步与合成音效可关闭，不是 TTS。
 - `figure.json` API 2 ZIP 角色包导入、动画预览、配色 / 多轴换装、切换、删除；角色和搭配在重启后保留。
 - 透明、无边框、置顶桌宠；空白区域点击穿透。点击互动、双击聊天、右键菜单、闲时活动、休息和显示 / 隐藏。
-- 角色周围不显示常驻操作按钮或名称标签；仅有待查看回复或确认 / 异常时出现小信封。聊天面板中点击当前会话可切换对话。
+- 角色周围不显示常驻操作按钮或名称标签；有未读回复、待处理审批 / 提问或异常时出现小信封。聊天面板中点击当前会话可切换对话。
 - Harness 原生 **Settings → 桌宠** 页面：运行状态、启动 / 重启 / 关闭、显示 / 隐藏、角色管理及实时保存的偏好设置。
-- 实时思考 / 生成 / 工具工作 / 等待确认 / 完成 / 出错动画；状态与流式片段只驱动动作、神态和嘴部，不进入气泡。任务完成后才展示已确认的最终回复，完成表情 2.5 秒后回到待机。
+- 实时思考 / 生成 / 工具工作动画；完成、审批、AI 提问、出错和各类停止通过角色表情与互动提示呈现。流式片段驱动嘴部，最终回复独立进入阅读气泡；完成表情约 2.5 秒后回到待机。
+- 角色显示时由角色提醒；运行中隐藏角色时，可由 Harness 发送系统通知并点击返回源会话。系统通知默认关闭，设置页提供权限申请、测试通知和送达回执。
+- 审批与 AI 提问的待处理列表、默认 10 分钟后的一次自动补提醒及“稍后提醒”；同一会话同时到期的请求合并提示。
 - 会话以真实提问、项目路径、时间和有效短编号区分，支持搜索及键盘切换；旧会话从公开历史恢复提问。
 - 菜单与聊天使用角色风格的描边卡片，颜色跟随换装；摸头、叫醒、拖拽等互动使用上游身体事件。
 - macOS 状态栏采用随系统明暗变化的角色模板图标与状态小图形，不显示状态文字；悬停和菜单保留会话、任务、未读及设置详情，与桌面共用状态判断和持久偏好。
@@ -24,7 +26,7 @@
 
 后台最终回复进入未读列表，确认 / 异常优先排序；点击会话可读回复或回到 Harness 处理。正在阅读的回复不会被新结果替换，阅读器可前后翻看同一会话的结果。保留本次 Harness 运行内最近 200 份完整结果，优先淘汰已读；重启后原始对话仍由 Harness 保存。
 
-气泡展示或自动收起不会标记已读；主动展开阅读、关闭回复或通过该回复回到源会话时，才确认这一份结果，避免人在别处工作时漏掉已自动显示的回复。
+回复气泡展示或自动收起不会标记已读；主动展开阅读、关闭回复或通过该回复回到源会话时，才确认这一份结果。审批与 AI 提问由 Harness 的实际答复、决定或取消结果结算；查看、收起互动提示或打开源会话均不会代替处理请求。
 
 高频流式事件仅发送动画元数据，完整结果只在结果列表或已读状态变化时传输，避免长回复和多会话拖慢桌面更新。
 
@@ -40,7 +42,7 @@ v0.4.0 移除了旧 Canvas 关键帧引擎、`dsh-character` v1 协议、`.dshpe
 
 支持 **DSH 0.2.0-rc.2 和 0.2.1-alpha.1**；其他版本未声明兼容。
 
-1. 下载对应 [Release](https://github.com/takboo/dsh-coopanion/releases) 的 `dsh-coopanion-0.4.4.tgz`，或按下面步骤构建 `takboo-dsh-coopanion-0.4.4.tgz`。npm 包名为 `@takboo/dsh-coopanion`；本地 `npm pack` 的文件名包含 scope。
+1. 下载对应 [Release](https://github.com/takboo/dsh-coopanion/releases) 的 `dsh-coopanion-0.4.5.tgz`，或按下面步骤构建 `takboo-dsh-coopanion-0.4.5.tgz`。npm 包名为 `@takboo/dsh-coopanion`；本地 `npm pack` 的文件名包含 scope。
 2. 在 Harness 侧边栏 **插件** 页安装压缩包的绝对路径，启用 `dsh-coopanion`。
 3. 完全退出再重新打开 Harness。首次启动时会下载并校验 Electron 44 运行时。
 4. 打开一段 Harness 会话，双击角色聊天，或从 **Settings → 桌宠** 管理角色。
@@ -48,14 +50,14 @@ v0.4.0 移除了旧 Canvas 关键帧引擎、`dsh-character` v1 协议、`.dshpe
 也可使用 Desktop 自带的 CLI。先启动 Desktop 一次初始化 profile，完全退出应用，再执行：
 
 ```bash
-dsh plugin --profile desktop add /absolute/path/dsh-coopanion-0.4.4.tgz
+dsh plugin --profile desktop add /absolute/path/dsh-coopanion-0.4.5.tgz
 ```
 
 npm 安装的 dsh 不能管理 Desktop 所拥有的 profile。Desktop 完全退出后执行包管理命令，再重新打开应用。
 
 ## 开发与验证
 
-角色提醒、系统通知和超时互动的阶段目标、执行顺序、worktree 分工及验收条件见 [通知执行计划](docs/notification-plan.md)。该计划记录后续实施工作。
+通知阶段及交付状态见 [通知执行计划](docs/notification-plan.md)，本轮集成验收范围见 [N3 验收记录](docs/notification-n3.md)。
 
 开发工具链固定 Node.js 24.21.0 和 npm 11.19.1。Electron 支持 Windows、macOS、Linux；Linux 的窗口测试需要 X11 / XWayland 或 Xvfb，以及 Python 3 和 libX11，用于同步原生鼠标位置。原生网格需要 Chromium 的 WebGL 支持。
 
@@ -68,6 +70,7 @@ npm test
 npm run build
 npm run character:pack -- examples/star paper-star.zip
 npm run test:ui
+npm run test:notification-ui
 npm run test:desktop
 npm pack
 node scripts/check-package.mjs
@@ -80,7 +83,7 @@ npm run test:install
 
 浏览器测试检查实际 WebGL 动画、逐字说话与嘴部同步、拖拽 / 落地、会话、聊天、换装、包导入、重启保存及脚本隔离。桌面测试验证真实 Electron 窗口、IPC、流式动画、最终回复与完整阅读、休息唤醒、实际状态栏图标和角色数据；CI 同时运行 Linux、macOS、Windows 原生窗口测试。安装测试使用官方 DSH profile loader 安装实际 `.tgz`，检查任务事件、会话导航、设置页、配置持久化和重启；`DSH_TEST_VERSION=0.2.1-alpha.1` 测试另一支持版本。
 
-窗口测试只在虚拟显示中使用测试沙箱参数与软件 WebGL。普通安装保留 Chromium sandbox、contextIsolation，关闭 Node integration。macOS / Windows 的实机窗口、系统通知和真实模型聊天仍需验收。
+CI 窗口测试使用隔离数据和测试沙箱参数；Linux 在虚拟显示中运行。普通安装保留 Chromium sandbox、contextIsolation，关闭 Node integration。安装测试中的通知适配器、原生可见性及答复器为受控边界；完整系统实机验收和外部真实模型会话尚未验证。
 
 ## 新角色
 
@@ -96,7 +99,7 @@ npm run character:pack -- examples/star paper-star.zip
 
 ## 配置与会话
 
-**Settings → 桌宠** 沿用 Harness 的主题、中英文与系统语言设置。可控制随 Harness 启动、闲时活动、任务通知、角色尺寸（90–240）和气泡时长（2–60 秒）；数值按 Enter 或离开输入框保存。
+**Settings → 桌宠** 沿用 Harness 的主题、中英文与系统语言设置。可控制随 Harness 启动、闲时活动、任务通知、系统通知、待处理请求补提醒、等待时间、角色尺寸（90–240）和气泡时长（2–60 秒）；数值按 Enter 或离开输入框保存。
 
 ```yaml
 - id: dsh-coopanion
@@ -105,13 +108,26 @@ npm run character:pack -- examples/star paper-star.zip
     size: 180
     roam: true
     notifications: true
+    systemNotifications: false
+    reminders: true
+    reminderDelayMs: 600000
     bubbleDurationMs: 12000
     # electronPath: /absolute/path/to/electron
 ```
 
-气泡只展示已完成任务的最终回复；时长从逐字显示完成后计时，鼠标停留或键盘聚焦时暂停收起。超过 180 字的回复展示按句子截取的开头（不做模型摘要），可展开完整阅读；原文保留且不截断，完整阅读器不会自动关闭。减少动态效果时禁用闲时活动与逐字显示，保留直接拖动及落地。
+最终回复气泡与事件互动提示分别显示。回复气泡时长从逐字显示完成后计时，鼠标停留或键盘聚焦时暂停收起；互动提示收起后，未处理的审批和提问仍保留在小信封列表。超过 180 字的回复展示按句子截取的开头（不做模型摘要），可展开完整阅读；原文保留且不截断，完整阅读器不会自动关闭。减少动态效果时禁用闲时活动与逐字显示，保留直接拖动及落地。
 
-桌宠仅展示已加载的顶层会话，忽略子代理；新会话自动成为当前对话。未加载的历史会话需先在 Harness 中打开。桌面版通过公开的 `dsh://open` 协议唤回 Harness。多个本机客户端同时连接时，返回请求由首先领取的客户端处理。
+桌宠仅展示已加载的顶层会话，忽略子代理；首次可用会话成为当前对话，之后保持用户选中的关注会话。未加载的历史会话需先在 Harness 中打开。桌面版通过公开的 `dsh://open` 协议唤回 Harness。多个本机客户端同时连接时，返回请求由首先领取的客户端处理。
+
+## 提醒与系统通知
+
+开启任务通知后，角色显示时用动作、表情和互动提示提醒；输入、阅读或拖拽期间先排队，结束后再呈现。最终回复与未读列表独立保留。审批／提问可预览内容、返回源会话或选择“稍后提醒”；限时提问标记“仍可回答”时，回合结束后仍可处理。
+
+补提醒默认开启，等待时间可设为 1–1440 分钟。新的待处理请求自动补提醒一次；“稍后提醒”按当前等待时间重新计时。处理、取消或销毁会话后撤销该请求的计时。历史恢复保留待处理入口，不重放旧提醒。关闭任务通知会停止主动提醒，保留会话状态和未读回复。
+
+系统通知默认关闭。在 **Settings → 桌宠 → 提醒与通知** 开启后，点击 **申请／刷新权限**，隐藏运行中的角色，再发送 **测试系统通知**。Desktop 使用 DeepSeek Harness 的应用身份，本机 `dsh web` 使用浏览器身份；点击通知请求打开源会话。角色关闭、启动中、失败或锁屏／休眠期间暂停主动投递。
+
+网页权限“允许”、已请求和收到显示回执分别表示不同步骤；系统送达需在通知中心核对，并点击检查源会话。macOS 在 **系统设置 → 通知 → DeepSeek Harness** 管理授权；Windows 在 **设置 → 系统 → 通知**，Linux 在桌面通知设置中管理。权限或客户端不可用时，待处理入口仍保留；恢复显示不会补发旧系统通知。
 
 ## CI 与发布
 
