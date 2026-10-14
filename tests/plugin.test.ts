@@ -6,6 +6,7 @@ import type { NativeLifecycle, PetBridge } from '../src/bridge.ts';
 import type { Agent } from '@deepseek-ai/dsh-agent';
 import { ApprovalRequestId } from '@deepseek-ai/dsh-user-approval';
 import { LlmAttemptId } from '@deepseek-ai/dsh-llm';
+import type { SettingsNamespace } from '@deepseek-ai/dsh-settings';
 
 function nativeBridge(): PetBridge {
   const listeners = new Set<(state: NativeLifecycle) => void>(); let generation = 0, revision = 0;
@@ -19,6 +20,24 @@ function nativeBridge(): PetBridge {
   };
   return bridge;
 }
+
+it('boots in the durable Harness language and reacts to locale settings independently of notifications', async () => {
+  const ctx = new Context(); let preference: string | undefined = 'en';
+  ctx.provide('agents', { list: () => [] });
+  const describe = vi.fn(() => [{ ns: 'locale', value: { preference } }]);
+  ctx.provide('settings', { describe, mutate: vi.fn() });
+  const bridge = { ...nativeBridge(), configure: vi.fn() };
+  const fiber = ctx.plugin(async ctx => mountPet(ctx, Config({ notifications: false }), bridge));
+  try {
+    await fiber.await(); await vi.waitFor(() => expect(bridge.start).toHaveBeenCalledOnce());
+    expect(bridge.start).toHaveBeenCalledWith(expect.objectContaining({ locale: 'en', notifications: false }), expect.anything());
+    expect(describe).toHaveBeenCalledWith({ redactSecrets: true });
+    preference = 'zh'; ctx.emit('settings/document-updated', 'locale' as SettingsNamespace, 1);
+    expect(bridge.configure).toHaveBeenLastCalledWith(expect.objectContaining({ locale: 'zh' }));
+    preference = undefined; ctx.emit('settings/document-updated', 'locale' as SettingsNamespace, 2);
+    expect(bridge.configure).toHaveBeenLastCalledWith(expect.objectContaining({ locale: undefined }));
+  } finally { await fiber.dispose(); await ctx.fiber.dispose(); }
+});
 
 it('uses the real Cordis event bus, delegates approval, logs user input through the agent, and releases resources', async () => {
   const ctx = new Context();
@@ -103,14 +122,21 @@ it('registers and disposes exact authenticated Connection routes without taking 
   let action: ((value: unknown) => void) | undefined;
   const bridge: PetBridge = { ...nativeBridge(), onAction: listener => { action = listener; }, focusHarness: vi.fn() };
   const fiber = ctx.plugin(async scope => mountPet(scope, Config({ autoStart: false }), bridge)); await fiber.await();
-  expect([...routes.keys()]).toEqual(['status', 'control', 'navigation', 'notification-state', 'notification-claim', 'notification-receipt', 'notification-snooze', 'notification-test'].map(endpoint => `/api/coopanion/${endpoint}`));
+  expect([...routes.keys()]).toEqual(['status', 'control', 'navigation', 'locale', 'notification-state', 'notification-claim', 'notification-receipt', 'notification-snooze', 'notification-test'].map(endpoint => `/api/coopanion/${endpoint}`));
   const invoke = async (payload: unknown) => {
     const response = await routes.get('/api/coopanion/control')!.fetch(new Request('http://localhost/api/coopanion/control', { method: 'POST', body: JSON.stringify({ type: 'client-request', rpcId: 'test', method: 'coopanion/control', payload }) }));
     return response.json();
   };
   expect((await invoke({ command: 'start', electronPath: '/untrusted' })).result.ok).toBe(false);
   expect(bridge.start).not.toHaveBeenCalled();
+  const language = async (payload: unknown) => (await routes.get('/api/coopanion/locale')!.fetch(new Request('http://localhost/api/coopanion/locale', { method: 'POST', body: JSON.stringify({ type: 'client-request', rpcId: 'locale-test', method: 'coopanion/locale', payload }) }))).json();
+  expect((await language({ locale: 'en', extra: true })).result.ok).toBe(false);
+  expect((await language({ locale: 'en-US' })).result.ok).toBe(false);
+  expect((await language({ locale: 'zh' })).result).toEqual({ ok: true, value: { locale: 'zh' } });
+  expect((await language({ locale: 'en' })).result).toEqual({ ok: true, value: { locale: 'en' } });
+  await routes.get('/api/coopanion/notification-state')!.fetch(new Request('http://localhost/api/coopanion/notification-state', { method: 'POST', body: JSON.stringify({ type: 'client-request', rpcId: 'legacy', method: 'coopanion/notification-state', payload: { locale: 'zh' } }) }));
   expect(await invoke({ command: 'start' })).toEqual({ type: 'server-response', rpcId: 'test', result: { ok: true, value: { phase: 'running', visible: true, generation: 1, visibilityRevision: 2, suspended: false } } });
+  expect(bridge.start).toHaveBeenCalledWith(expect.objectContaining({ locale: 'en' }), expect.anything());
   const malformed = await routes.get('/api/coopanion/status')!.fetch(new Request('http://localhost/api/coopanion/status', { method: 'POST', body: '{}' }));
   expect(malformed.status).toBe(400);
   expect(bridge.update).toHaveBeenCalledWith(expect.objectContaining({ sessionId: 'existing' }));

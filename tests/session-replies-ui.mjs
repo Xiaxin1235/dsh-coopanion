@@ -25,7 +25,7 @@ const other = { ...source, id: 'other', label: '另一段会话', unread: 1 };
 const reply = (id, sessionId, time, text) => ({ id, sessionId, time, text, read: false });
 const frame = results => ({ mood: 'idle', active: false, sessionId: focus.id, sessions: [focus, source, other], results });
 async function fixture(t, results) {
-  const page = await browser.newPage({ viewport: { width: 1000, height: 800 }, reducedMotion: 'reduce' });
+  const page = await browser.newPage({ locale: 'zh-CN', viewport: { width: 1000, height: 800 }, reducedMotion: 'reduce' });
   t.after(() => page.close());
   page.setDefaultTimeout(5000);
   const errors = []; page.on('pageerror', error => errors.push(error.message));

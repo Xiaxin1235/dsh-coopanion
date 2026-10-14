@@ -113,7 +113,10 @@ export class ElectronBridge extends EventEmitter implements PetBridge {
   }
   onAction(listener: (action: unknown) => void): void { this.on('action', listener); }
   removeAction(listener: (action: unknown) => void): void { this.off('action', listener); }
-  configure(options: DesktopOptions): void { this.send({ type: 'configure', options }); }
+  // JSON IPC omits undefined. An explicit null lets a cleared Harness
+  // preference restore the renderer's automatic language instead of retaining
+  // its previous locale during a merged configuration update.
+  configure(options: DesktopOptions): void { this.send({ type: 'configure', options: { ...options, locale: options.locale ?? null } }); }
   control(command: 'show' | 'hide' | 'characters'): void { this.send({ type: 'control', command }); }
   focusHarness(): void { this.send({ type: 'control', command: 'focus-harness' }); }
   onLifecycle(listener: (state: NativeLifecycle) => void): void { this.on('lifecycle', listener); }

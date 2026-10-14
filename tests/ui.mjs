@@ -15,7 +15,7 @@ const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PAT
 const speechDone = page => page.waitForSelector('#bubble[data-typing=false]');
 const mainFrame = page => page.locator('#body-layer iframe').contentFrame();
 try {
-  const page = await browser.newPage({ viewport: { width: 1200, height: 800 } });
+  const page = await browser.newPage({ locale: 'zh-CN', viewport: { width: 1200, height: 800 } });
   page.setDefaultTimeout(12000);
   const errors = []; page.on('pageerror', error => errors.push(error.message));
   const petClick = async (options = {}, twice = false) => {

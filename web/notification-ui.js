@@ -1,3 +1,4 @@
+import { petLanguage, appStatusBody } from './locale.js';
 /** Pure presentation policy; request truth and delivery selection remain owned by Host. */
 const messages = {
   zh: {
@@ -21,7 +22,7 @@ const messages = {
     inboxSummary: (replies, pending) => `${pending} to handle · ${replies} unread replies`, focus: label => `Chatting with: ${label}`, inboxEmpty: 'All read. Carry on with your work.',
   },
 };
-export function notificationCopy(locale = 'zh') { return /^zh/i.test(locale) ? messages.zh : messages.en; }
+export function notificationCopy(locale = 'zh') { return messages[petLanguage(locale)]; }
 export function pendingInteractions(snapshot) { return (snapshot?.interactions ?? []).filter(item => item.state !== 'settled'); }
 export function notificationPresentation(notice, locale, words = []) {
   const copy = notificationCopy(locale);
@@ -31,7 +32,7 @@ export function notificationPresentation(notice, locale, words = []) {
     completed: ['happy', 'wave', 'neutral'], approval: ['worried', 'thinking', 'neutral'], question: ['curious', 'thinking', 'worried', 'neutral'],
     error: ['sad', 'worried', 'neutral'], stopped: ['nod', 'neutral'], interrupted: ['confused', 'worried', 'neutral'], blocked: ['worried', 'thinking', 'neutral'], 'max-tokens': ['worried', 'thinking', 'neutral'],
   }[notice.category] ?? ['neutral'];
-  return { title, body: notice.body, mood, word: candidates.find(word => words.includes(word)) };
+  return { title, body: appStatusBody(notice, locale), mood, word: candidates.find(word => words.includes(word)) };
 }
 /** Bounded queue: input, reading and drag hold presentation while the inbox remains available. */
 export function createNoticeQueue({ limit = 32, history = 256 } = {}) {

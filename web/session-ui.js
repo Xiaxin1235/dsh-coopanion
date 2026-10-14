@@ -8,9 +8,10 @@ export function shortSessionIds(sessions) {
   }));
 }
 
-export function sessionTime(session) {
+import { petCopy, petLanguage } from './locale.js';
+export function sessionTime(session, locale = 'zh') {
   const time = session.updatedAt || session.createdAt;
-  return time ? new Intl.DateTimeFormat('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }).format(time) : '时间未记录';
+  return time ? new Intl.DateTimeFormat(petLanguage(locale) === 'zh' ? 'zh-CN' : 'en-US', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }).format(time) : petCopy(locale).timeUnknown;
 }
 
 /** Attention entries carry their own source; inspecting them never changes chat focus. */

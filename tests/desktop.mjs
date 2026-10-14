@@ -47,7 +47,7 @@ try {
   const failures = []; bridge.on('failure', error => failures.push(error.message));
   const snapshot = { mood: 'thinking', active: true, text: '真实 IPC 桌面测试', sessionId: 'native-test', results: [], sessions: [{ id: 'native-test', label: '桌面测试会话', mood: 'thinking', active: true, text: '', reply: '' }] };
   bridge.update(snapshot);
-  await bridge.start({ size: 150, roam: false, notifications: true, bubbleDurationMs: 12000 });
+  await bridge.start({ locale: 'zh', size: 150, roam: false, notifications: true, bubbleDurationMs: 12000 });
   browser = await chromium.connectOverCDP(`http://127.0.0.1:${port}`);
   let page = browser.contexts()[0].pages()[0];
   await page.waitForSelector('#pet[data-host-ready=true][data-mood=thinking]');
@@ -153,9 +153,21 @@ try {
   await page.locator('#reader-session').click();
   for (let n = 0; n < 30 && !actions.slice(actionStart).some(action => action.type === 'open-session'); n++) await pause(50);
   assert.deepEqual(actions.slice(actionStart).filter(action => ['select', 'read', 'open-session'].includes(action.type)), [{ type: 'read', resultId: olderBackgroundReply.id }, { type: 'read', resultId: backgroundReply.id }, { type: 'open-session', sessionId: backgroundReply.sessionId }], 'native inbox acknowledges every captured turn and carries the exact source identity');
+  bridge.configure({ locale: 'en', size: 150, roam: false, notifications: true, bubbleDurationMs: 12000 });
+  await page.waitForFunction(() => document.documentElement.lang === 'en');
+  assert.equal(await page.locator('#chat-title').textContent(), 'I’m here. Take your time.');
+  await waitTray(state => state?.tooltip.includes('Focused:'));
+  const automatic = await page.evaluate(() => {
+    const language = navigator.languages.find(language => /^(zh|en)(-|$)/i.test(language)) ?? 'en';
+    return /^zh/i.test(language) ? 'zh-CN' : 'en';
+  });
+  bridge.configure({ locale: automatic === 'en' ? 'zh' : 'en', size: 150, roam: false, notifications: true, bubbleDurationMs: 12000 });
+  await page.waitForFunction(expected => document.documentElement.lang !== expected, automatic);
+  bridge.configure({ size: 150, roam: false, notifications: true, bubbleDurationMs: 12000 });
+  await page.waitForFunction(expected => document.documentElement.lang === expected, automatic);
   for (let n = 0; n < 100 && !trayIcons.some(icon => icon.icon === 'talking'); n++) await pause(50);
   assert.ok(trayIcons.some(icon => icon.icon === 'talking' && icon.title === '' && icon.template === (process.platform === 'darwin')), 'native icon is rendered with the state glyph and macOS template appearance');
-  bridge.configure({ size: 150, roam: false, notifications: false, bubbleDurationMs: 12000 });
+  bridge.configure({ locale: 'zh', size: 150, roam: false, notifications: false, bubbleDurationMs: 12000 });
   await waitTray(state => state?.roam === false && state.notifications === false);
   bridge.control('hide'); await waitTray(state => state?.visible === false);
   await waitLifecycle(state => state?.generation > 0 && state.visibilityRevision > 0 && !state.visible);
@@ -169,7 +181,7 @@ try {
   await bridge.dispose();
   await browser.close(); browser = undefined;
   bridge = new ElectronBridge(); bridge.on('failure', error => failures.push(error.message)); bridge.update(snapshot);
-  await bridge.start({ size: 150, roam: false, notifications: false, bubbleDurationMs: 12000 });
+  await bridge.start({ locale: 'zh', size: 150, roam: false, notifications: false, bubbleDurationMs: 12000 });
   browser = await chromium.connectOverCDP(`http://127.0.0.1:${port}`); page = browser.contexts()[0].pages()[0];
   await page.waitForSelector('#pet[data-character=paper-star][data-scheme=night]');
   await page.waitForSelector('#pet[data-host-ready=true][data-mood=thinking]');

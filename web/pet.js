@@ -4,6 +4,7 @@ import { createSpeech, replyPreview } from './speech.js';
 import { createNoticeQueue, pendingInteractions, notificationPresentation, notificationCopy } from './notification-ui.js';
 import { shortSessionIds, sessionTime, sessionActivity, inboxContents, unreadReplies } from './session-ui.js';
 import { renderReplyMarkdown } from './markdown-runtime.js';
+import { petLanguage, petCopy, localizedText, appNoticeCopy, automaticPetLanguage } from './locale.js';
 const PACK_LIMIT = 128 * 1024 * 1024;
 import { browserCharacters } from './character-library.js';
 const BUILTIN_ID = 'whale';
@@ -14,16 +15,18 @@ const interaction = $('interaction'), requests = $('requests');
 const panels = [conversations, chat, menu, characters, reader, requests];
 const noticeQueue = createNoticeQueue();
 let notificationState, currentNotice, interactionExpires = 0;
+let toastNotice;
 const snoozing = new Map();
-const notificationLocale = () => options.locale ?? document.documentElement.lang ?? navigator.language;
+const notificationLocale = () => options.locale ? petLanguage(options.locale) : automaticPetLanguage(navigator.languages ?? [navigator.language]);
+const uiCopy = () => petCopy(notificationLocale());
 const pendingRequests = () => pendingInteractions(notificationState);
 const userInputOccupied = () => pressing || dragging || panels.some(p => !p.hidden) || !bubble.hidden;
 const userOccupied = () => userInputOccupied() || body?.layout?.busy;
 const panelAnchors = new WeakMap();
-const labels = { idle: '在这里陪你', thinking: '正在思考', talking: '正在回复', working: '正在忙', waiting: '等你确认', happy: '完成啦', error: '需要关注', sleeping: '休息中' };
 const library = native?.characters ?? browserCharacters;
 const sfx = createSfx({ storageKey: 'dsh-pet.sound.v2', volume: .35 });
-const nameIn = names => names?.zh ?? names?.en ?? Object.values(names ?? {})[0] ?? '';
+const nameIn = names => localizedText(names, notificationLocale());
+const wordName = (word, view = previewCharacter) => word.names?.[notificationLocale()]?.[0] ?? (view?.builtin ? uiCopy().words[word.id] : undefined) ?? nameIn(word.names)?.[0] ?? word.id;
 let body, previewBody, previewCharacter, activeView, activeScheme, activeName = 'DeepSeek 大肥鱼', libraryState, libraryBusy = false;
 let appliedMood, appliedControls, speech, speechExpires = Infinity, pressing = false, dragStart, dragging = false, previewScheme = "", reducedNeedsStep = true;
 let options = { size: 180, roam: true, notifications: true, bubbleDurationMs: 12000 };
@@ -35,6 +38,8 @@ let bubbleResult, readerResult, pendingOnly = false, talkAt = 0;
 let readerQueue, inboxState = { requests: [], issues: [], replies: [], total: 0 };
 let resizeLayout;
 const shownResults = new Set(), acknowledgedResults = new Set();
+let renderedLocale;
+let characterFeedback = { key: 'characterHint', args: [] };
 const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
 let reduced = motionPreference.matches;
 motionPreference.addEventListener('change', event => { reduced = event.matches; });
@@ -51,6 +56,45 @@ function send(action) {
     if (session) snapshot = { ...snapshot, ...session, sessionId: session.id };
     render();
   }
+}
+
+function setCopyNode(id, key) { const node = $(id); node.dataset.i18n = key; node.textContent = uiCopy()[key]; }
+function characterStatus(key, ...args) {
+  characterFeedback = { key, args }; delete $('character-status').dataset.i18n;
+  const value = uiCopy()[key]; $('character-status').textContent = typeof value === 'function' ? value(...args) : value;
+}
+function refreshPreviewCopy() {
+  const view = previewCharacter; if (!view) return;
+  for (const option of $('character-action').options) { const word = view.vocab.find(word => word.id === option.value); if (word) option.textContent = wordName(word); }
+  const selected = $('character-scheme').value; fillSchemes(view, previewScheme); $('character-scheme').value = selected;
+  $('character-about').textContent = nameIn(view.about);
+  $('character-credit').textContent = uiCopy().authorCredit(view.author ?? uiCopy().unknownAuthor, view.credits?.map(c => c.name).join('、') ?? '', view.builtin ? uiCopy().builtinLicense : view.license ?? uiCopy().authorLicense);
+}
+function applyLocale() {
+  const locale = notificationLocale(); if (renderedLocale === locale) return;
+  renderedLocale = locale;
+  const text = uiCopy(), notice = notificationCopy(locale);
+  document.documentElement.lang = locale === 'zh' ? 'zh-CN' : 'en'; document.title = text.title;
+  const lookup = key => key.startsWith('notice:') ? notice[key.slice(7)] : key.startsWith('demo:') ? text.demoButtons[key.slice(5)] : text[key];
+  for (const [attribute, target] of [['data-i18n', null], ['data-i18n-aria-label', 'aria-label'], ['data-i18n-placeholder', 'placeholder'], ['data-i18n-title', 'title']]) {
+    for (const node of document.querySelectorAll(`[${attribute}]`)) {
+      const value = lookup(node.getAttribute(attribute));
+      if (typeof value !== 'string') throw new Error(`Missing locale text: ${node.getAttribute(attribute)}`);
+      if (target) node.setAttribute(target, value); else node.textContent = value;
+    }
+  }
+  activeName = activeView ? nameIn(activeView.name) : text.defaultName;
+  $('chat-character').textContent = activeName; $('menu-name').textContent = activeName;
+  pet.setAttribute('aria-label', text.petLabel(activeName));
+  if (bubbleResult) bubble.setAttribute('aria-label', text.finalReply(snapshot.sessions.find(session => session.id === bubbleResult.sessionId)?.label ?? activeName));
+  if (libraryState) for (const option of $('character-select').options) { const view = libraryState.characters.find(view => view.id === option.value); if (view) option.textContent = nameIn(view.name); }
+  refreshPreviewCopy(); characterStatus(characterFeedback.key, ...characterFeedback.args);
+  if (currentNotice && !interaction.hidden) {
+    const value = notificationPresentation(currentNotice, locale, body?.words ?? []);
+    $('interaction-title').textContent = value.title; $('interaction-preview').textContent = value.body;
+  }
+  if (toastNotice && !$('toast').hidden) { const value = appNoticeCopy(toastNotice, locale); $('toast-title').textContent = value.title; $('toast-body').textContent = value.body; }
+  trayKey = undefined;
 }
 
 function bounds() { return { W: innerWidth, H: innerHeight, floorY: innerHeight - 24, S: options.size / 256 }; }
@@ -96,7 +140,7 @@ function speak(result) {
   const source = snapshot.sessions.find(session => session.id === result.sessionId);
   const preview = replyPreview(result.text);
   $('bubble-status').textContent = source?.label ?? '';
-  bubble.setAttribute('aria-label', `${source?.label ?? activeName}的最终回复`);
+  bubble.setAttribute('aria-label', uiCopy().finalReply(source?.label ?? activeName));
   bubbleSession = result.sessionId; bubbleResult = result;
   $('bubble-session').hidden = !bubbleSession;
   $('bubble-expand').hidden = !preview.long;
@@ -135,8 +179,8 @@ function openReader(result, queue) {
   panels.forEach(p => { p.hidden = true; }); bubble.hidden = true; reader.hidden = false;
   readerResult = result; readerQueue = queue;
   const source = snapshot.sessions.find(s => s.id === result.sessionId);
-  $('reader-title').textContent = source?.label ?? '会话回复';
-  $('reader-detail').textContent = `${source?.project ?? ''} · ${sessionTime({ updatedAt: result.time })}`;
+  $('reader-title').textContent = source?.label ?? uiCopy().sessionReply;
+  $('reader-detail').textContent = `${source?.project ?? ''} · ${sessionTime({ updatedAt: result.time }, notificationLocale())}`;
   renderReplyMarkdown($('reader-text'), result.text); $('reader-text').scrollTop = 0;
   updateReaderNavigation(); acknowledge(result); updateMood(); position(); $('reader-text').focus();
 }
@@ -148,12 +192,17 @@ function updateReaderNavigation() {
   const index = history.findIndex(r => r.id === readerResult?.id);
   $('reader-count').textContent = `${Math.max(1, index + 1)} / ${Math.max(1, history.length)}`;
   $('reader-prev').disabled = index <= 0; $('reader-next').disabled = index < 0 || index >= history.length - 1;
+  if (readerResult) {
+    const source = snapshot.sessions.find(session => session.id === readerResult.sessionId);
+    $('reader-detail').textContent = `${source?.project ?? ''} · ${sessionTime({ updatedAt: readerResult.time }, notificationLocale())}`;
+  }
 }
 function react(mood) { reactionMood = mood; reactionUntil = performance.now() + 700; }
 function act(actor, pack, word) {
   if (pack?.vocab.some(w => w.id === word) && (!actor.words || actor.words.includes(word))) actor.do(word);
 }
 function updateMood(now = performance.now()) {
+  const labels = uiCopy().labels;
   const activity = sessionActivity(snapshot), active = activity.active;
   if (active || activity.waiting || activity.errors) asleep = false;
   const mood = now < reactionUntil && !userInputOccupied() ? reactionMood : active || activity.waiting || activity.errors ? activity.mood : pendingRequests().length ? 'waiting' : asleep ? 'sleeping' : activity.mood;
@@ -173,16 +222,17 @@ function updateMood(now = performance.now()) {
   if (key !== appliedControls) { if (controls.roam === 'off') body.stopWalk(0); body.set(controls); appliedControls = key; }
   $('toggle-roam').setAttribute('aria-checked', String(options.roam));
   $('toggle-sleep').setAttribute('aria-checked', String(asleep));
-  $('toggle-sleep').disabled = active; $('toggle-sleep').title = active ? '正在忙，完成后再休息' : '有新的任务会自动醒来';
+  $('toggle-sleep').disabled = active; $('toggle-sleep').title = active ? uiCopy().sleepBusy : uiCopy().sleepWake;
   $('toggle-notices').setAttribute('aria-checked', String(options.notifications));
   $('toggle-sound').setAttribute('aria-checked', String(sfx.isOn()));
-  $('menu-state').textContent = `${labels[mood] ?? labels.idle}${snapshot.sessionId ? ' · 有会话相伴' : ''}`;
-  const presentation = { type: 'presentation', characterId: activeView.id, scheme: activeScheme, name: activeName, mood, sleeping: asleep, sound: sfx.isOn(), ready: !!body.layout };
+  $('menu-state').textContent = `${labels[mood] ?? labels.idle}${snapshot.sessionId ? ' · ' + uiCopy().connected : ''}`;
+  const presentation = { type: 'presentation', locale: notificationLocale(), characterId: activeView.id, scheme: activeScheme, name: activeName, mood, sleeping: asleep, sound: sfx.isOn(), ready: !!body.layout };
   const nextTrayKey = JSON.stringify(presentation);
   if (nextTrayKey !== trayKey) { trayKey = nextTrayKey; native?.action(presentation); }
 }
 
 function render() {
+  applyLocale(); const labels = uiCopy().labels;
   const previous = renderedSessionId;
   const selected = snapshot.sessions.find(session => session.id === snapshot.sessionId);
   const shortIds = shortSessionIds(snapshot.sessions);
@@ -193,7 +243,7 @@ function render() {
   const needsYou = s => ['waiting', 'error'].includes(s.mood) || pendingRequests().some(item => item.sessionId === s.id);
   const matches = snapshot.sessions.filter(session => (!pendingOnly || hasUnread(session) || needsYou(session)) && [session.label, session.project, session.cwd, session.prompt, session.id].join(' ').toLocaleLowerCase().includes(query));
   matches.sort((a, b) => Number(needsYou(b)) - Number(needsYou(a)) || Number(hasUnread(b)) - Number(hasUnread(a)) || Number(b.id === snapshot.sessionId) - Number(a.id === snapshot.sessionId) || (b.updatedAt ?? 0) - (a.updatedAt ?? 0));
-  const listKey = JSON.stringify([query, pendingOnly, matches.map(session => [session.id, session.label, session.prompt, session.cwd, session.updatedAt, session.mood, hasUnread(session), session.chatAvailable, session.id === snapshot.sessionId])]);
+  const listKey = JSON.stringify([notificationLocale(), query, pendingOnly, matches.map(session => [session.id, session.label, session.prompt, session.cwd, session.updatedAt, session.mood, hasUnread(session), session.chatAvailable, session.id === snapshot.sessionId])]);
   if (list.dataset.key !== listKey) {
     const activeId = document.activeElement?.dataset?.sessionId;
     const entries = matches.map(session => {
@@ -203,21 +253,21 @@ function render() {
       card.tabIndex = session.id === snapshot.sessionId ? 0 : -1;
       card.title = `${session.label}\n${session.prompt ?? ''}\n${session.cwd ?? session.project ?? ''}\n${session.id}`;
       const copy = document.createElement('span'), meta = document.createElement('small'), status = document.createElement('em'), time = document.createElement('span'), name = document.createElement('strong'), detail = document.createElement('small'), prompt = document.createElement('small'), mark = document.createElement('b');
-      meta.className = 'session-meta'; status.textContent = `${session.id === snapshot.sessionId ? '关注 · ' : ''}${labels[session.mood] ?? labels.idle}${hasUnread(session) ? ' · 1 份未读' : ''}${session.chatAvailable === false ? ' · 未打开' : ''}`;
-      time.textContent = sessionTime(session); meta.append(status, time);
-      name.textContent = session.label; detail.className = 'session-detail'; detail.textContent = `${session.cwd || session.project || '会话'} · #${shortIds.get(session.id)}`;
-      prompt.className = 'session-prompt'; prompt.textContent = session.prompt && session.prompt !== session.label ? `最近：${session.prompt}` : ''; prompt.hidden = !prompt.textContent;
+      meta.className = 'session-meta'; status.textContent = `${session.id === snapshot.sessionId ? uiCopy().focused + ' · ' : ''}${labels[session.mood] ?? labels.idle}${hasUnread(session) ? ' · ' + uiCopy().unread : ''}${session.chatAvailable === false ? ' · ' + uiCopy().notOpen : ''}`;
+      time.textContent = sessionTime(session, notificationLocale()); meta.append(status, time);
+      name.textContent = session.label; detail.className = 'session-detail'; detail.textContent = `${session.cwd || session.project || uiCopy().session} · #${shortIds.get(session.id)}`;
+      prompt.className = 'session-prompt'; prompt.textContent = session.prompt && session.prompt !== session.label ? uiCopy().recent(session.prompt) : ''; prompt.hidden = !prompt.textContent;
       mark.textContent = '✓'; mark.setAttribute('aria-hidden', 'true');
       copy.append(meta, name, prompt, detail); card.append(copy, mark); return card;
     });
     if (!entries.length) {
-      const empty = document.createElement('p'); empty.className = 'conversation-empty'; empty.textContent = query ? '没找到这段对话。试试提问里的词或项目名？' : pendingOnly ? '都看过啦，安心做手边的事。' : '还没有可用的对话。先在 Harness 中打开一段对话，我就能听见它。'; entries.push(empty);
+      const empty = document.createElement('p'); empty.className = 'conversation-empty'; empty.textContent = query ? uiCopy().emptySearch : pendingOnly ? uiCopy().emptyPending : uiCopy().emptySessions; entries.push(empty);
     }
     list.replaceChildren(...entries); list.dataset.key = listKey;
     if (activeId) list.querySelector(`[data-session-id="${CSS.escape(activeId)}"]`)?.focus();
   }
   const activity = sessionActivity(snapshot);
-  $('conversation-count').textContent = `${activity.busy} 段进行中 · ${snapshot.results ? unreadSources.size : activity.unread} 份未读回复`;
+  $('conversation-count').textContent = uiCopy().activity(activity.busy, snapshot.results ? unreadSources.size : activity.unread);
   $('sessions-all').setAttribute('aria-pressed', String(!pendingOnly)); $('sessions-pending').setAttribute('aria-pressed', String(pendingOnly));
   inboxState = inboxContents(snapshot, pendingRequests(), acknowledgedResults);
   const pendingCount = inboxState.requests.length + inboxState.issues.length;
@@ -225,9 +275,9 @@ function render() {
   $('attention-count').textContent = String(inboxState.total);
   $('attention').dataset.urgent = String(!!pendingCount);
   $('attention').title = $('attention').ariaLabel = notificationCopy(notificationLocale()).inboxSummary(inboxState.replies.length, pendingCount);
-  $('chat-current').disabled = !snapshot.sessions.length; $('chat-session-name').textContent = selected?.label ?? '还没有对话';
-  $('chat-current').setAttribute('aria-label', selected ? `当前对话：${selected.label}。点击切换` : '还没有可用的对话');
-  $('chat-session-state').textContent = labels[selected?.mood] ?? '正在陪你聊';
+  $('chat-current').disabled = !snapshot.sessions.length; $('chat-session-name').textContent = selected?.label ?? uiCopy().noSession;
+  $('chat-current').setAttribute('aria-label', selected ? uiCopy().chatTarget(selected.label) : uiCopy().emptySessions);
+  $('chat-session-state').textContent = labels[selected?.mood] ?? labels.idle;
   $('chat-session-detail').textContent = selected ? `${selected.cwd || selected.project || ''} · #${shortIds.get(selected.id)}` : '';
   const latestReply = snapshot.results?.find(r => r.id === selected?.replyId)?.text || selected?.reply || '';
   $('chat-reply').textContent = latestReply ? replyPreview(latestReply).text : ''; $('chat-reply').hidden = !latestReply;
@@ -235,7 +285,7 @@ function render() {
   const enabled = !!snapshot.sessionId && selected?.chatAvailable !== false;
   $('message').disabled = !enabled; $('send').disabled = !enabled;
   $('conversation-open').disabled = !snapshot.sessionId; $('chat-session').disabled = !snapshot.sessionId;
-  $('chat-help').textContent = enabled ? `消息交给「${selected.label}」，完成后只展示最终回复。` : snapshot.sessionId ? '这段对话尚未在 Harness 中打开，请先回去打开它。' : '先在 Harness 中打开一段对话，就可以从这里和我说话。';
+  $('chat-help').textContent = enabled ? uiCopy().chatHelp(selected.label) : snapshot.sessionId ? uiCopy().unavailableChat : uiCopy().noChat;
   if (previous !== snapshot.sessionId) {
     $('message').value = ''; bubble.hidden = true;
     clearTimeout(touchTimer); reactionUntil = 0;
@@ -298,7 +348,7 @@ function renderRequests() {
     const card = document.createElement('article'); card.className = 'inbox-card inbox-issue';
     const meta = document.createElement('small'), label = document.createElement('strong'), preview = document.createElement('p'), actions = document.createElement('div'), open = document.createElement('button');
     meta.textContent = `${session.mood === 'error' ? copy.errorLabel : copy.waitingLabel} · ${sourceDetail(session.id)}`;
-    label.textContent = session.label; preview.textContent = session.text;
+    label.textContent = session.label; preview.textContent = session.mood === 'error' ? petCopy(notificationLocale()).issueError : petCopy(notificationLocale()).issueWaiting;
     open.textContent = copy.handle; open.dataset.inboxKey = session.id; open.dataset.action = 'open'; open.onclick = () => openSession(session.id);
     actions.append(open); card.append(meta, label, preview, actions); return card;
   }));
@@ -310,7 +360,7 @@ function renderRequests() {
     content.ariaLabel = `${copy.readReply} · ${sources.get(result.sessionId)?.label ?? result.sessionId}`;
     // Capture the queue at the explicit read action so incoming replies cannot reorder it.
     content.onclick = () => openReader(result, inboxContents(snapshot, pendingRequests(), acknowledgedResults).replies.map(item => ({ ...item })));
-    meta.textContent = `${copy.newReply} · ${sessionTime({ updatedAt: result.time })}`;
+    meta.textContent = `${copy.newReply} · ${sessionTime({ updatedAt: result.time }, notificationLocale())}`;
     label.textContent = sources.get(result.sessionId)?.label ?? result.sessionId;
     preview.className = 'inbox-preview'; preview.textContent = replyPreview(result.text).text;
     detail.textContent = `${sourceDetail(result.sessionId)} · ${copy.readReply}`;
@@ -383,8 +433,10 @@ function receive(message) {
       // Task notices are expressed by the body and inbox, not another status card.
       if (message.notice.kind === 'task') { body?.cue('perk'); break; }
       noticeSession = message.notice.sessionId;
-      $('toast-title').textContent = message.notice.title;
-      $('toast-body').textContent = message.notice.body;
+      toastNotice = message.notice;
+      const toast = appNoticeCopy(message.notice, notificationLocale());
+      $('toast-title').textContent = toast.title;
+      $('toast-body').textContent = toast.body;
       $('toast').hidden = false; clearTimeout(toastTimer);
       toastTimer = setTimeout(() => { $('toast').hidden = true; }, options.bubbleDurationMs); break;
     }
@@ -501,7 +553,7 @@ $('chat-form').onsubmit = event => {
   if (!native) {
     const sessionId = snapshot.sessionId;
     demoState(sessionId, 'thinking');
-    setTimeout(() => demoComplete(sessionId, `收到「${text}」！这是演示回复。真实插件会使用 Harness 的模型。`), 350);
+    setTimeout(() => demoComplete(sessionId, uiCopy().demoReply(text)), 350);
   }
 };
 function preference(field) {
@@ -587,16 +639,16 @@ else {
   options.size = 190; document.documentElement.style.setProperty('--size', '190px');
   snapshot.results = [];
   snapshot.sessionId = 'demo'; snapshot.sessions = [
-    { id: 'demo', label: '演示会话', project: 'dsh-coopanion', cwd: '/workspace/dsh-coopanion', prompt: '让角色在思考与回复时做出对应的动作', createdAt: Date.now() - 3600000, updatedAt: Date.now(), mood: 'idle', text: snapshot.text, revision: 0 },
-    { id: 'demo-notes', label: '另一个想法', project: 'dsh-coopanion', cwd: '/workspace/dsh-coopanion', prompt: '重做角色菜单与会话选择，让它更像伙伴', createdAt: Date.now() - 7200000, updatedAt: Date.now() - 1800000, mood: 'idle', text: '', revision: 0 },
+    { id: 'demo', label: uiCopy().demoSession, project: 'dsh-coopanion', cwd: '/workspace/dsh-coopanion', prompt: uiCopy().demoPrompt, createdAt: Date.now() - 3600000, updatedAt: Date.now(), mood: 'idle', text: snapshot.text, revision: 0 },
+    { id: 'demo-notes', label: uiCopy().demoOther, project: 'dsh-coopanion', cwd: '/workspace/dsh-coopanion', prompt: uiCopy().demoOtherPrompt, createdAt: Date.now() - 7200000, updatedAt: Date.now() - 1800000, mood: 'idle', text: '', revision: 0 },
   ];
-  const texts = { thinking: '让我想一想，怎样把这个功能做好…', talking: '我想到了。让思考、说话与工作各有自己的动作，就能一眼看出这段对话在做什么。', working: '正在看文件 · src/index.ts', waiting: '下一步需要你确认。真实插件会引导你回到 Harness。', happy: '任务完成啦！要不要休息一下？🐳', error: '任务遇到了问题，请回到 Harness 查看详情。' };
+
   document.querySelectorAll('[data-demo]').forEach(button => { button.onclick = () => {
     const mood = button.dataset.demo;
-    if (mood === 'happy') demoComplete(snapshot.sessionId, texts.happy);
-    else if (mood === 'long') demoComplete(snapshot.sessionId, '动画、气泡和会话的展示已经分开了。\n\n' + '思考和工具调用由动作表达，最终回复可以展开阅读。长内容会完整保留，不会在一千二百字处截断。\n\n'.repeat(35) + '最后一句：这份回复完整地保留下来了。');
-    else if (mood === 'background') demoComplete(snapshot.sessions.find(s => s.id !== snapshot.sessionId).id, '后台会话已经完成，这是它的最终回复。');
-    else demoState(snapshot.sessionId, mood, texts[mood]);
+    if (mood === 'happy') demoComplete(snapshot.sessionId, uiCopy().demoTexts.happy);
+    else if (mood === 'long') demoComplete(snapshot.sessionId, uiCopy().demoLong);
+    else if (mood === 'background') demoComplete(snapshot.sessions.find(s => s.id !== snapshot.sessionId).id, uiCopy().demoBackground);
+    else demoState(snapshot.sessionId, mood, uiCopy().demoTexts[mood]);
   }; });
   y = innerHeight - pet.offsetHeight - 42; render();
 }
@@ -605,7 +657,7 @@ async function setCharacter(view, scheme = '') {
   const next = await loadBody({ layer: $('body-layer'), pack: view, start: { x: body?.layout?.x ?? innerWidth * .68, facing: body?.layout?.facing ?? 1, scheme }, theme: 'light', bounds: bounds(),
     onSound: (name, kind, ...args) => sfx.play(name, kind, ...args),
     onEvent: (kind, detail) => { if (body === next) onBody(kind, detail); },
-    onError: error => { $('character-status').textContent = `角色运行失败：${error.message}`; if (body === next && view.id !== BUILTIN_ID) void restoreBuiltin(); },
+    onError: error => { characterStatus('bodyError', error.message); if (body === next && view.id !== BUILTIN_ID) void restoreBuiltin(); },
   });
   body?.dispose(); body = next; activeView = view; activeScheme = knownScheme(view, scheme); activeName = nameIn(view.name);
   // A new body has not reported its geometry yet. Retire the previous body's
@@ -615,7 +667,7 @@ async function setCharacter(view, scheme = '') {
   sfx.usePack(view.base, view.sounds);
   pet.dataset.character = view.id; pet.dataset.scheme = activeScheme;
   applyAppearance();
-  pet.setAttribute('aria-label', `${activeName}，点击互动，双击聊天，右键菜单，拖动移动`);
+  pet.setAttribute('aria-label', uiCopy().petLabel(activeName));
   render();
 }
 function applyAppearance() {
@@ -632,7 +684,7 @@ function applyAppearance() {
 }
 async function restoreBuiltin() {
   try { const view = await library.load(BUILTIN_ID); await setCharacter(view); await library.select(BUILTIN_ID, activeScheme); }
-  catch (error) { $('character-status').textContent = `无法加载内置角色：${error.message}`; }
+  catch (error) { characterStatus('builtinError', error.message); }
 }
 function setBusy(value) {
   libraryBusy = value;
@@ -644,7 +696,7 @@ function setBusy(value) {
 function fillSchemes(pack, scheme) {
   previewScheme = knownScheme(pack, scheme);
   const choices = pack.presets.map(p => new Option(nameIn(p.name) || p.id, p.id));
-  choices.push(new Option(pack.axes.length ? '自定义搭配' : '默认', '__custom'));
+  choices.push(new Option(pack.axes.length ? uiCopy().customOutfit : uiCopy().defaultScheme, '__custom'));
   $('character-scheme').replaceChildren(...choices);
   $('character-scheme').value = pack.presets.some(p => p.id === previewScheme) ? previewScheme : '__custom';
   const preset = pack.presets.find(p => p.id === previewScheme), parts = previewScheme.split('-');
@@ -660,15 +712,15 @@ async function preview(id) {
   previewCharacter = undefined; previewBody?.dispose(); previewBody = undefined;
   const view = await library.load(id);
   fillSchemes(view, libraryState.schemes[id]);
-  $('character-action').replaceChildren(...view.vocab.map(w => new Option(w.names.zh?.[0] ?? w.id, w.id)));
+  $('character-action').replaceChildren(...view.vocab.map(w => new Option(wordName(w, view), w.id)));
   $('character-action').value = view.vocab.some(w => w.id === 'wave') ? 'wave' : view.vocab[0]?.id ?? '';
   const next = await loadBody({ layer: $('character-preview'), pack: view, start: { x: previewBounds().W / 2, facing: 1, scheme: previewScheme }, theme: 'light', bounds: previewBounds(),
-    onError: error => { previewCharacter = undefined; $('character-status').textContent = `预览失败：${error.message}`; setBusy(false); },
+    onError: error => { previewCharacter = undefined; characterStatus('previewError', error.message); setBusy(false); },
   });
   previewBody = next; previewBody.set({ roam: 'off' }); previewCharacter = view;
   $('character-about').textContent = nameIn(view.about);
-  $('character-credit').textContent = `作者：${view.author ?? '未注明'} · ${view.credits?.map(c => c.name).join('、') ?? ''} · 许可：${view.builtin ? '代码 AGPL-3.0-or-later；素材见权利声明' : view.license ?? '由角色作者注明'}`;
-  $('character-use').textContent = pet.dataset.character === id ? '正在使用' : '使用角色';
+  $('character-credit').textContent = uiCopy().authorCredit(view.author ?? uiCopy().unknownAuthor, view.credits?.map(c => c.name).join('、') ?? '', view.builtin ? uiCopy().builtinLicense : view.license ?? uiCopy().authorLicense);
+  setCopyNode('character-use', pet.dataset.character === id ? 'using' : 'useCharacter');
 }
 async function refreshCharacters(selected) {
   libraryState = await library.list();
@@ -676,13 +728,13 @@ async function refreshCharacters(selected) {
   $('character-select').value = selected ?? libraryState.selected;
   if (!$('character-select').value) $('character-select').value = BUILTIN_ID;
   await preview($('character-select').value);
-  if (libraryState.problems.length) $('character-status').textContent = libraryState.problems.join('；');
+  if (libraryState.problems.length) characterStatus('operationError', libraryState.problems.join('; '));
 }
 async function characterOperation(operation) {
   if (libraryBusy) return;
   setBusy(true);
   try { await operation(); }
-  catch (error) { $('character-status').textContent = `操作未完成：${String(error.message ?? error).slice(0, 400)}`; }
+  catch (error) { characterStatus('operationError', String(error.message ?? error).slice(0, 400)); }
   finally { setBusy(false); position(); }
 }
 $('open-characters').onclick = () => {
@@ -696,23 +748,23 @@ $('character-scheme').onchange = () => void characterOperation(async () => {
   const custom = [...$('character-axes').querySelectorAll('select')].map(el => el.value).join('-');
   fillSchemes(previewCharacter, scheme === '__custom' ? custom : scheme);
   await previewBody?.setScheme(previewScheme, { fade: reduced ? 0 : .25 });
-  $('character-use').textContent = '使用这个配色';
+  setCopyNode('character-use', 'useScheme');
 });
 $('character-axes').onchange = () => void characterOperation(async () => {
   const scheme = [...$('character-axes').querySelectorAll('select')].map(el => el.value).join('-');
   fillSchemes(previewCharacter, scheme);
   await previewBody?.setScheme(previewScheme, { fade: reduced ? 0 : .25 });
-  $('character-use').textContent = '使用这个搭配';
+  setCopyNode('character-use', 'useOutfit');
 });
 $('character-test').onclick = () => { if (previewBody && previewCharacter) act(previewBody, previewCharacter, $('character-action').value); };
 $('character-import').onclick = () => $('character-file').click();
 $('character-file').onchange = () => void characterOperation(async () => {
   const file = $('character-file').files[0]; if (!file) return;
   try {
-    if (file.size > PACK_LIMIT) throw new Error('角色包不能超过 128 MiB');
+    if (file.size > PACK_LIMIT) throw new Error(uiCopy().packTooLarge);
     const after = await library.import(await file.arrayBuffer());
     await refreshCharacters(after.importedId);
-    $('character-status').textContent = '已导入。预览满意后点击使用角色。';
+    characterStatus('imported');
   } finally { $('character-file').value = ''; }
 });
 $('character-use').onclick = () => void characterOperation(async () => {
@@ -723,20 +775,20 @@ $('character-use').onclick = () => void characterOperation(async () => {
     applyAppearance();
   } else await setCharacter(previewCharacter, scheme);
   await library.select(previewCharacter.id, scheme);
-  $('character-use').textContent = '正在使用'; $('character-status').textContent = '已切换，重启后会保留这个角色和配色。';
+  setCopyNode('character-use', 'using'); characterStatus('switched');
 });
 $('character-remove').onclick = () => void characterOperation(async () => {
   const id = $('character-select').value;
   if (pet.dataset.character === id) await restoreBuiltin();
   previewBody?.dispose(); previewBody = undefined;
-  await library.remove(id); await refreshCharacters(); $('character-status').textContent = '已删除本地角色包。';
+  await library.remove(id); await refreshCharacters(); characterStatus('removed');
 });
 void (async () => {
   setBusy(true);
   try {
     libraryState = await library.list();
     try { await setCharacter(await library.load(libraryState.selected), libraryState.schemes[libraryState.selected]); }
-    catch (error) { await restoreBuiltin(); $('character-status').textContent = `已恢复内置大肥鱼：${String(error.message ?? error).slice(0, 300)}`; }
-  } catch (error) { $('character-status').textContent = `角色加载失败：${error.message}`; }
+    catch (error) { await restoreBuiltin(); characterStatus('restoreError', String(error.message ?? error).slice(0, 300)); }
+  } catch (error) { characterStatus('loadError', error.message); }
   finally { setBusy(false); }
 })();
