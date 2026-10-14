@@ -189,9 +189,10 @@ try {
   assert.equal(await page.locator('#chat-session-name').innerText(), '演示会话', 'background completion keeps the chat target fixed');
   await page.keyboard.press('Escape');
   await page.locator('#attention').click();
-  assert.equal(await page.locator('#sessions-pending').getAttribute('aria-pressed'), 'true');
-  await page.locator('#conversation-list [data-session-id=demo-notes]').click();
+  await page.locator('#requests:not([hidden])').waitFor();
+  await page.getByRole('button', { name: '展开全文 · 另一个想法', exact: true }).click();
   assert.equal(await page.locator('#reader-text').textContent(), '后台会话已经完成，这是它的最终回复。');
+  assert.equal(await page.locator('#chat-session-name').innerText(), '演示会话', 'reading a single background reply keeps the chat target fixed');
   await page.keyboard.press('Escape');
   await page.locator('[data-demo=happy]').click(); await speechDone(page); await page.screenshot({ path: 'artifacts/desktop-pet.png' });
   assert.deepEqual(errors, []);

@@ -7,6 +7,8 @@ const messages = {
     reminder: '刚才那件事，还等你看看。', grouped: n => `有 ${n} 件事，还等你看看。`,
     pending: '等你的一点小事', empty: '都处理好啦，安心做手边的事。', open: '回到源会话 ↗', snooze: '稍后提醒', snoozing: '正在安排…', close: '先收起来', replies: '查看会话与未读回复',
     approvalLabel: '需要确认', questionLabel: '有个问题', continued: '仍可回答', delay: '下次提醒', unavailable: '这件事已处理或暂时无法安排提醒。',
+    inboxTitle: '给你带回来了', inboxCaption: '回复与待办', inbox: '收件箱 ↩', newReply: '新回复', readReply: '展开全文', continue: '继续对话 ↗', handle: '去处理 ↗', errorLabel: '需要关注', waitingLabel: '任务暂停', replyCaption: '捎回来的回复', previous: '上一份回复', next: '下一份回复',
+    inboxSummary: (replies, pending) => `${pending} 件待处理 · ${replies} 份未读回复`, focus: label => `正在聊：${label}`, inboxEmpty: '都看过啦，安心做手边的事。',
   },
   en: {
     completed: 'Finished. Shall we look at the result?', approval: 'The next step needs your approval.', question: 'There is a question for you.',
@@ -15,6 +17,8 @@ const messages = {
     reminder: 'That earlier request is still waiting for you.', grouped: n => `${n} requests are still waiting for you.`,
     pending: 'A few things waiting for you', empty: 'All taken care of. Carry on with your work.', open: 'Open source session ↗', snooze: 'Remind me later', snoozing: 'Scheduling…', close: 'Put away for now', replies: 'Sessions and unread replies',
     approvalLabel: 'Approval needed', questionLabel: 'A question for you', continued: 'You can still answer', delay: 'Next reminder', unavailable: 'This request was handled or a reminder cannot be scheduled yet.',
+    inboxTitle: 'Brought back for you', inboxCaption: 'Replies and requests', inbox: 'Inbox ↩', newReply: 'New reply', readReply: 'Read full reply', continue: 'Continue conversation ↗', handle: 'Take a look ↗', errorLabel: 'Needs attention', waitingLabel: 'Task paused', replyCaption: 'A reply for you', previous: 'Previous reply', next: 'Next reply',
+    inboxSummary: (replies, pending) => `${pending} to handle · ${replies} unread replies`, focus: label => `Chatting with: ${label}`, inboxEmpty: 'All read. Carry on with your work.',
   },
 };
 export function notificationCopy(locale = 'zh') { return /^zh/i.test(locale) ? messages.zh : messages.en; }

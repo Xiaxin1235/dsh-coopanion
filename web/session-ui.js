@@ -13,6 +13,15 @@ export function sessionTime(session) {
   return time ? new Intl.DateTimeFormat('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }).format(time) : '时间未记录';
 }
 
+/** Attention entries carry their own source; inspecting them never changes chat focus. */
+export function inboxContents(snapshot, interactions = [], acknowledged = new Set()) {
+  const requests = interactions.filter(item => item.state !== 'settled');
+  const requested = new Set(requests.map(item => item.sessionId));
+  const issues = (snapshot.sessions ?? []).filter(session => session.mood === 'error' || session.mood === 'waiting' && !requested.has(session.id));
+  const replies = (snapshot.results ?? []).filter(result => !result.read && !acknowledged.has(result.id)).sort((a, b) => b.time - a.time);
+  return { requests, issues, replies, total: requests.length + issues.length + replies.length };
+}
+
 /** One focus for chat, one aggregate signal for work happening elsewhere. */
 export function sessionActivity(snapshot) {
   const sessions = snapshot.sessions ?? [];

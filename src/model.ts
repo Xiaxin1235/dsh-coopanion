@@ -41,7 +41,7 @@ export class PetModel {
     return item;
   }
 
-  /** Explicit initialization fold. A fresh Host restores readable results as unread; existing read state survives. */
+  /** Fold history as a read baseline; callers reconcile activity with the live Agent status. */
   restore(session: ObservedSession): void {
     if (!this.observe(session)) return;
     for (const event of session.snapshotEvents?.() ?? []) this.fold(session, event, false);
@@ -192,8 +192,8 @@ export class PetModel {
             const text = task.finalText?.trim() ? task.finalText : '';
             if (text) {
               const id = `${item.id}:${event.data.turn}:${event.seq}`;
-              this.results.set(id, { id, sessionId: item.id, text, time: event.time, read: false });
-              item.reply = text; item.replyId = id; item.unread++;
+              this.results.set(id, { id, sessionId: item.id, text, time: event.time, read: !live });
+              item.reply = text; item.replyId = id; if (live) item.unread++;
               // Retain complete text for the latest 200 results, preferring unread entries.
               if (this.results.size > 200) {
                 const old = [...this.results.values()].find(r => r.read) ?? this.results.values().next().value!;

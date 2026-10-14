@@ -2,7 +2,7 @@ import { loadBody, knownScheme } from './upstream/body-host.js';
 import { createSfx } from './upstream/sound.js';
 import { createSpeech, replyPreview } from './speech.js';
 import { createNoticeQueue, pendingInteractions, notificationPresentation, notificationCopy } from './notification-ui.js';
-import { shortSessionIds, sessionTime, sessionActivity } from './session-ui.js';
+import { shortSessionIds, sessionTime, sessionActivity, inboxContents } from './session-ui.js';
 const PACK_LIMIT = 128 * 1024 * 1024;
 import { browserCharacters } from './character-library.js';
 const BUILTIN_ID = 'whale';
@@ -31,6 +31,8 @@ let x = innerWidth * .68, y = innerHeight - 155, hovered = false, asleep = false
 let cursorPoint, lastHit;
 let renderedSessionId = null, reactionUntil = 0, reactionMood, bubbleSession, trayKey, touchTimer, touchBlockedUntil = 0;
 let bubbleResult, readerResult, pendingOnly = false, talkAt = 0;
+let readerQueue, inboxState = { requests: [], issues: [], replies: [], total: 0 };
+let resizeLayout;
 const shownResults = new Set(), acknowledgedResults = new Set();
 const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
 let reduced = motionPreference.matches;
@@ -55,6 +57,11 @@ function previewBounds() { const el = $('character-preview'); return { W: el.cli
 function position() {
   const layout = body?.layout;
   const box = layout?.box;
+  // Bounds are applied inside the figure frame. Reanchor once its new geometry arrives.
+  if (resizeLayout && layout !== resizeLayout && box?.w > 0 && box?.h > 0) {
+    for (const panel of [bubble, interaction, ...panels, $('attention')]) panelAnchors.delete(panel);
+    resizeLayout = undefined;
+  }
   if (box) {
     pet.hidden = false;
     x = box.x; y = box.y;
@@ -76,9 +83,8 @@ function position() {
     panel.style.left = `${px}px`; panel.style.top = `${py}px`;
     panel.style.setProperty('--tail', `${Math.max(22, Math.min(pw - 22, panelAnchor.x - px))}px`);
   }
-  const activity = sessionActivity(snapshot);
   const attention = $('attention');
-  attention.hidden = !(activity.unread + Math.max(activity.waiting, pendingRequests().length) + activity.errors) || panels.some(p => !p.hidden);
+  attention.hidden = !inboxState.total || panels.some(p => !p.hidden);
   const holding = !attention.hidden && (attention.matches(':hover') || document.activeElement === attention);
   if (!holding) panelAnchors.delete(attention);
   else if (!panelAnchors.has(attention)) { const b = attention.getBoundingClientRect(); panelAnchors.set(attention, { x: b.x, y: b.y }); }
@@ -116,12 +122,12 @@ function acknowledge(result) {
   if (!result || result.read || acknowledgedResults.has(result.id)) return;
   acknowledgedResults.add(result.id); send({ type: 'read', resultId: result.id });
 }
-function openReader(result) {
+function openReader(result, queue) {
   if (!result) return;
   interaction.hidden = true;
   clearTimeout(touchTimer); touchBlockedUntil = performance.now() + 1000;
   panels.forEach(p => { p.hidden = true; }); bubble.hidden = true; reader.hidden = false;
-  readerResult = result;
+  readerResult = result; readerQueue = queue;
   const source = snapshot.sessions.find(s => s.id === result.sessionId);
   $('reader-title').textContent = source?.label ?? '会话回复';
   $('reader-detail').textContent = `${source?.project ?? ''} · ${sessionTime({ updatedAt: result.time })}`;
@@ -129,7 +135,10 @@ function openReader(result) {
   updateReaderNavigation(); acknowledge(result); updateMood(); position(); $('reader-text').focus();
 }
 function updateReaderNavigation() {
-  const history = (snapshot.results ?? []).filter(r => r.sessionId === readerResult?.sessionId);
+  const copy = notificationCopy(notificationLocale());
+  $('reader-caption').textContent = copy.replyCaption; $('reader-inbox').textContent = copy.inbox; $('reader-inbox').hidden = !readerQueue;
+  $('reader-session').textContent = copy.continue; $('reader-prev').ariaLabel = copy.previous; $('reader-next').ariaLabel = copy.next;
+  const history = readerQueue ?? (snapshot.results ?? []).filter(r => r.sessionId === readerResult?.sessionId);
   const index = history.findIndex(r => r.id === readerResult?.id);
   $('reader-count').textContent = `${Math.max(1, index + 1)} / ${Math.max(1, history.length)}`;
   $('reader-prev').disabled = index <= 0; $('reader-next').disabled = index < 0 || index >= history.length - 1;
@@ -202,12 +211,12 @@ function render() {
   const activity = sessionActivity(snapshot);
   $('conversation-count').textContent = `${activity.busy} 段进行中 · ${activity.unread} 份未读回复`;
   $('sessions-all').setAttribute('aria-pressed', String(!pendingOnly)); $('sessions-pending').setAttribute('aria-pressed', String(pendingOnly));
-  const waiting = Math.max(activity.waiting, pendingRequests().length);
-  const attentionCount = activity.unread + waiting + activity.errors;
-  $('attention').hidden = !attentionCount || panels.some(p => !p.hidden);
-  $('attention-count').textContent = String(attentionCount);
-  $('attention').dataset.urgent = String(!!(waiting || activity.errors));
-  $('attention').title = $('attention').ariaLabel = `${waiting + activity.errors} · ${notificationCopy(notificationLocale()).pending} · ${activity.unread}`;
+  inboxState = inboxContents(snapshot, pendingRequests(), acknowledgedResults);
+  const pendingCount = inboxState.requests.length + inboxState.issues.length;
+  $('attention').hidden = !inboxState.total || panels.some(p => !p.hidden);
+  $('attention-count').textContent = String(inboxState.total);
+  $('attention').dataset.urgent = String(!!pendingCount);
+  $('attention').title = $('attention').ariaLabel = notificationCopy(notificationLocale()).inboxSummary(inboxState.replies.length, pendingCount);
   $('chat-current').disabled = !snapshot.sessions.length; $('chat-session-name').textContent = selected?.label ?? '还没有对话';
   $('chat-current').setAttribute('aria-label', selected ? `当前对话：${selected.label}。点击切换` : '还没有可用的对话');
   $('chat-session-state').textContent = labels[selected?.mood] ?? '正在陪你聊';
@@ -255,37 +264,70 @@ function presentNextNotice() {
 }
 function renderRequests() {
   if (requests.hidden) return;
-  const copy = notificationCopy(notificationLocale()), items = pendingRequests();
-  $('requests-title').textContent = copy.pending; $('requests-close').ariaLabel = copy.close; $('requests-replies').textContent = copy.replies;
-  const list = $('request-list'), key = JSON.stringify([notificationLocale(), items, [...snoozing.keys()], options.reminders]);
-  if (list.dataset.key === key) return;
-  const focused = document.activeElement?.dataset?.requestId, action = document.activeElement?.dataset?.action;
-  const cards = items.map(item => {
+  const copy = notificationCopy(notificationLocale());
+  inboxState = inboxContents(snapshot, pendingRequests(), acknowledgedResults);
+  const { requests: items, issues, replies } = inboxState;
+  const sources = new Map(snapshot.sessions.map(session => [session.id, session])), shortIds = shortSessionIds(snapshot.sessions);
+  const sourceDetail = id => { const session = sources.get(id); return [session?.project || session?.cwd, `#${shortIds.get(id) ?? id}`].filter(Boolean).join(' · '); };
+  $('requests-title').textContent = copy.inboxTitle; $('inbox-caption').textContent = copy.inboxCaption; $('requests-close').ariaLabel = copy.close;
+  $('inbox-count').textContent = copy.inboxSummary(replies.length, items.length + issues.length);
+  $('inbox-focus').textContent = copy.focus(sources.get(snapshot.sessionId)?.label ?? '—');
+  $('inbox-empty').textContent = copy.inboxEmpty; $('inbox-empty').hidden = !!inboxState.total;
+  const keys = [notificationLocale(), snapshot.sessions.map(session => [session.id, session.label, session.project, session.cwd])];
+  replaceInboxList($('request-list'), JSON.stringify([...keys, items, [...snoozing.keys()], options.reminders, options.notifications]), () => items.map(item => {
     const card = document.createElement('article'); card.className = 'request-card';
     const label = document.createElement('strong'), preview = document.createElement('p'), meta = document.createElement('small'), actions = document.createElement('div');
     label.textContent = item.kind === 'question' ? copy.questionLabel : copy.approvalLabel;
     preview.textContent = item.preview;
     const session = snapshot.sessions.find(session => session.id === item.sessionId);
     meta.textContent = `${session?.label ?? item.sessionId}${item.state === 'continued' ? ' · ' + copy.continued : ''}${item.dueAt ? ' · ' + copy.delay + ': ' + new Intl.DateTimeFormat(notificationLocale(), { hour: '2-digit', minute: '2-digit' }).format(item.dueAt) : ''}`;
-    const open = document.createElement('button'); open.textContent = copy.open; open.dataset.requestId = item.id; open.dataset.action = 'open'; open.onclick = () => openSession(item.sessionId);
-    const later = document.createElement('button'); later.textContent = snoozing.has(item.id) ? copy.snoozing : copy.snooze; later.dataset.requestId = item.id; later.dataset.action = 'snooze'; later.disabled = snoozing.has(item.id) || !options.notifications || options.reminders === false;
+    const open = document.createElement('button'); open.textContent = copy.handle; open.dataset.requestId = item.id; open.dataset.inboxKey = item.id; open.dataset.action = 'open'; open.onclick = () => openSession(item.sessionId);
+    const later = document.createElement('button'); later.textContent = snoozing.has(item.id) ? copy.snoozing : copy.snooze; later.dataset.requestId = item.id; later.dataset.inboxKey = item.id; later.dataset.action = 'snooze'; later.disabled = snoozing.has(item.id) || !options.notifications || options.reminders === false;
     later.onclick = () => { snoozing.set(item.id, { dueAt: item.dueAt, expiresAt: performance.now() + 10000 }); $('request-feedback').textContent = ''; send({ type: 'notification-snooze', interactionId: item.id, generation: notificationState.runtime.generation }); renderRequests(); };
     actions.append(open, later); card.append(label, preview, meta, actions); return card;
-  });
-  if (!cards.length) { const empty = document.createElement('p'); empty.textContent = copy.empty; cards.push(empty); }
-  list.replaceChildren(...cards); list.dataset.key = key;
-  if (focused) list.querySelector(`[data-request-id="${CSS.escape(focused)}"][data-action="${action}"]`)?.focus();
+  }));
+  replaceInboxList($('inbox-issues'), JSON.stringify([...keys, issues.map(session => [session.id, session.mood, session.text])]), () => issues.map(session => {
+    const card = document.createElement('article'); card.className = 'inbox-card inbox-issue';
+    const meta = document.createElement('small'), label = document.createElement('strong'), preview = document.createElement('p'), actions = document.createElement('div'), open = document.createElement('button');
+    meta.textContent = `${session.mood === 'error' ? copy.errorLabel : copy.waitingLabel} · ${sourceDetail(session.id)}`;
+    label.textContent = session.label; preview.textContent = session.text;
+    open.textContent = copy.handle; open.dataset.inboxKey = session.id; open.dataset.action = 'open'; open.onclick = () => openSession(session.id);
+    actions.append(open); card.append(meta, label, preview, actions); return card;
+  }));
+  // Confirmed reply text is immutable for its result id; avoid rescanning long bodies on live frames.
+  replaceInboxList($('inbox-replies'), JSON.stringify([...keys, replies.map(result => [result.id, result.sessionId, result.time])]), () => replies.map(result => {
+    const card = document.createElement('article'); card.className = 'inbox-card inbox-reply';
+    const content = document.createElement('button'), meta = document.createElement('small'), label = document.createElement('strong'), preview = document.createElement('span'), detail = document.createElement('small'), actions = document.createElement('div'), open = document.createElement('button');
+    content.className = 'inbox-content'; content.dataset.resultId = result.id; content.dataset.inboxKey = result.id; content.dataset.action = 'read';
+    content.ariaLabel = `${copy.readReply} · ${sources.get(result.sessionId)?.label ?? result.sessionId}`;
+    // Capture the queue at the explicit read action so incoming replies cannot reorder it.
+    content.onclick = () => openReader(result, inboxContents(snapshot, pendingRequests(), acknowledgedResults).replies.map(item => ({ ...item })));
+    meta.textContent = `${copy.newReply} · ${sessionTime({ updatedAt: result.time })}`;
+    label.textContent = sources.get(result.sessionId)?.label ?? result.sessionId;
+    preview.className = 'inbox-preview'; preview.textContent = replyPreview(result.text).text;
+    detail.textContent = `${sourceDetail(result.sessionId)} · ${copy.readReply}`;
+    content.append(meta, label, preview, detail);
+    open.textContent = copy.continue; open.dataset.resultId = result.id; open.dataset.inboxKey = result.id; open.dataset.action = 'open'; open.onclick = () => { acknowledge(result); openSession(result.sessionId); };
+    actions.append(open); card.append(content, actions); return card;
+  }));
 }
-function openRequests() {
+function replaceInboxList(list, key, build) {
+  if (list.dataset.key === key) return;
+  const focused = list.contains(document.activeElement) ? document.activeElement.dataset : undefined;
+  list.replaceChildren(...build()); list.dataset.key = key; list.hidden = !list.children.length;
+  if (focused?.inboxKey) (list.querySelector(`[data-inbox-key="${CSS.escape(focused.inboxKey)}"][data-action="${focused.action}"]`) ?? $('requests-close')).focus();
+}
+function openRequests(autoRead = true) {
   clearTimeout(touchTimer); interaction.hidden = true; bubble.hidden = true; $('request-feedback').textContent = '';
+  const contents = inboxContents(snapshot, pendingRequests(), acknowledgedResults);
+  if (autoRead !== false && contents.replies.length === 1 && contents.total === 1) { openReader(contents.replies[0], contents.replies.map(item => ({ ...item }))); return; }
   panels.forEach(panel => { panel.hidden = panel !== requests; });
   renderRequests(); updateMood(); position(); $('requests-close').focus();
 }
 $('requests-close').onclick = closePanels;
-$('requests-replies').onclick = () => openConversations(true);
 $('interaction-close').onclick = () => { interaction.hidden = true; currentNotice = undefined; presentNextNotice(); showNextReply(); };
 $('interaction-open').onclick = () => openSession(currentNotice?.sessionId);
-$('interaction-pending').onclick = openRequests;
+$('interaction-pending').onclick = () => openRequests(false);
 
 function receive(message) {
   if (!message || typeof message !== 'object') return;
@@ -303,7 +345,7 @@ function receive(message) {
       render(); break;
     case 'ui-control':
       if (message.command === 'chat') openChat();
-      else if (message.command === 'sessions') openConversations(true);
+      else if (message.command === 'sessions') openRequests();
       else if (message.command === 'sleep') $('toggle-sleep').click();
       else if (message.command === 'sound') $('toggle-sound').click();
       break;
@@ -409,7 +451,7 @@ $('menu-close').onclick = closePanels;
 $('conversation-search').oninput = render;
 $('sessions-all').onclick = () => { pendingOnly = false; render(); };
 $('sessions-pending').onclick = () => { pendingOnly = true; render(); };
-$('attention').onclick = () => pendingRequests().length ? openRequests() : openConversations(true);
+$('attention').onclick = () => openRequests();
 $('conversation-list').onkeydown = event => {
   const cards = [...$('conversation-list').querySelectorAll('button')], current = cards.indexOf(document.activeElement);
   if (!cards.length || !['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return;
@@ -425,10 +467,11 @@ $('bubble-expand').onclick = () => openReader(bubbleResult);
 $('chat-read').onclick = () => openReader((snapshot.results ?? []).find(r => r.sessionId === snapshot.sessionId && !r.read) ?? (snapshot.results ?? []).find(r => r.id === snapshot.sessions.find(s => s.id === snapshot.sessionId)?.replyId));
 $('reader-close').onclick = closePanels;
 for (const [id, offset] of [['reader-prev', -1], ['reader-next', 1]]) $(id).onclick = () => {
-  const history = (snapshot.results ?? []).filter(r => r.sessionId === readerResult?.sessionId);
-  openReader(history[history.findIndex(r => r.id === readerResult?.id) + offset]);
+  const history = readerQueue ?? (snapshot.results ?? []).filter(r => r.sessionId === readerResult?.sessionId);
+  openReader(history[history.findIndex(r => r.id === readerResult?.id) + offset], readerQueue);
 };
-$('reader-session').onclick = () => openSession(readerResult?.sessionId);
+$('reader-inbox').onclick = () => openRequests(false);
+$('reader-session').onclick = () => { acknowledge(readerResult); openSession(readerResult?.sessionId); };
 $('conversation-list').onclick = event => {
   const card = event.target.closest('[data-session-id]');
   const session = card && snapshot.sessions.find(item => item.id === card.dataset.sessionId);
@@ -480,7 +523,7 @@ document.addEventListener('pointerleave', () => {
   body?.pointer('leave', {});
   if (!pressing) { cursorPoint = undefined; lastHit = false; native?.hit(false); }
 });
-addEventListener('resize', () => { body?.set({ bounds: bounds() }); previewBody?.set({ bounds: previewBounds() }); position(); });
+addEventListener('resize', () => { resizeLayout = body?.layout; body?.set({ bounds: bounds() }); previewBody?.set({ bounds: previewBounds() }); position(); });
 $('toggle-sound').onclick = () => { sfx.set(!sfx.isOn()); updateMood(); };
 
 
