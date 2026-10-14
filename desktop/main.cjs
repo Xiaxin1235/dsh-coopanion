@@ -4,8 +4,8 @@ const { randomBytes } = require('node:crypto');
 const { once } = require('node:events');
 const { CharacterStore } = require('../dist/character-store.cjs');
 const { createPetServer } = require('../dist/figure-server.cjs');
-const { trayState } = require('./tray-state.cjs');
-const { petCopy, petLanguage, automaticPetLanguage } = require('../web/locale.js');
+const { trayState, trayLocale } = require('./tray-state.cjs');
+const { petCopy, petLanguage } = require('../web/locale.js');
 app.setName(petCopy('en').defaultName);
 if (process.env.DSH_PET_TEST_DATA_DIR) {
   app.setPath('userData', process.env.DSH_PET_TEST_DATA_DIR);
@@ -41,7 +41,7 @@ function show() { win?.showInactive(); syncTray(); }
 function act(action) { process.send?.({ type: 'action', action }); }
 function syncTray() {
   if (!tray || tray.isDestroyed()) return;
-  const locale = options.locale ?? presentation.locale ?? automaticPetLanguage(app.getPreferredSystemLanguages());
+  const locale = trayLocale(options, presentation, app.getPreferredSystemLanguages());
   const state = trayState(lastFrame?.snapshot, presentation, { ...options, locale }, win?.isVisible());
   const copy = petCopy(locale);
   if (app.getName() !== copy.defaultName) app.setName(copy.defaultName);

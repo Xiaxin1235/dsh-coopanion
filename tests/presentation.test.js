@@ -3,6 +3,13 @@ import { createSpeech, replyPreview } from '../web/speech.js';
 import { shortSessionIds, sessionActivity, inboxContents } from '../web/session-ui.js';
 import tray from '../desktop/tray-state.cjs';
 
+it('resolves native language before the first Host configuration arrives', () => {
+  expect(tray.trayLocale(undefined, {}, ['zh-CN'])).toBe('zh');
+  expect(tray.trayLocale(undefined, {}, ['fr-FR','en-US'])).toBe('en');
+  expect(tray.trayLocale({ locale:'en' }, { locale:'zh' }, ['zh-CN'])).toBe('en');
+  expect(tray.trayLocale({ locale:null }, { locale:'zh' }, ['en-US'])).toBe('zh');
+});
+
 it('uses the Harness language for native tray labels and preserves user session titles', () => {
   const snapshot = { sessionId:'locale-source',mood:'thinking',active:true,sessions:[{id:'locale-source',label:'用户的中文会话',mood:'thinking',active:true}] };
   const state = tray.trayState(snapshot, {}, { locale:'en' }, true);

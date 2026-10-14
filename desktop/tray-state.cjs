@@ -1,5 +1,9 @@
 const { sessionActivity } = require('../web/session-ui.js');
-const { petCopy } = require('../web/locale.js');
+const { petCopy, automaticPetLanguage } = require('../web/locale.js');
+
+function trayLocale(options = {}, presentation = {}, languages = []) {
+  return options.locale ?? presentation.locale ?? automaticPetLanguage(languages);
+}
 
 /** Desktop and status bar project the same host snapshot and acknowledged preferences. */
 function trayState(snapshot = {}, presentation = {}, options = {}, visible = false) {
@@ -15,4 +19,4 @@ function trayState(snapshot = {}, presentation = {}, options = {}, visible = fal
     title: '',
   };
 }
-module.exports = { trayState };
+module.exports = { trayState, trayLocale };
