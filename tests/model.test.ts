@@ -196,7 +196,7 @@ it('preserves interrupted and blocked expressions when no pending request entran
   m.consume(s, event('turn/end', { turn: 2, reason: { kind: 'blocked' } }));
   m.interactions([]); expect(m.snapshot().text).toContain('暂时停下');
 });
-it('explicitly restores confirmed results as unread without historical celebration or duplicate event processing', () => {
+it('restores confirmed historical results as read without celebration or duplicate event processing', () => {
   let now = 1000; const m = new PetModel(() => now), s = session('history');
   const begin = event('turn/start', { turn: 1 });
   const reply = event('assistant/message', { turn: 1, step: 1, message: createAssistantMessage({ content: [{ type: 'text', text: 'Complete historical result' }], source: { provider: 'test', model: 'test' } }), stream: [] });
@@ -204,13 +204,13 @@ it('explicitly restores confirmed results as unread without historical celebrati
   const restored = { ...s, snapshotEvents: () => [begin, reply, end] };
   m.observe(restored); expect(m.snapshot().results).toEqual([]); // observe keeps its original identity-only behavior.
   expect(m.restore(restored)).toBeUndefined();
-  expect(m.snapshot()).toMatchObject({ mood: 'idle', active: false, results: [{ text: 'Complete historical result', read: false }] });
-  expect(m.snapshot().sessions[0]).toMatchObject({ reply: 'Complete historical result', unread: 1 });
+  expect(m.snapshot()).toMatchObject({ mood: 'idle', active: false, results: [{ text: 'Complete historical result', read: true }] });
+  expect(m.snapshot().sessions[0]).toMatchObject({ reply: 'Complete historical result', unread: 0 });
   expect(m.consume(s, end)).toBeUndefined();
   now += 3000; expect(m.settle()).toBe(false);
   const id = m.snapshot().results[0].id; m.read(id); m.restore(restored);
   expect(m.snapshot().results).toHaveLength(1); expect(m.snapshot().results[0].read).toBe(true); expect(m.snapshot().sessions[0].unread).toBe(0);
-  const freshHost = new PetModel(); freshHost.restore(restored); expect(freshHost.snapshot().results[0].read).toBe(false);
+  const freshHost = new PetModel(); freshHost.restore(restored); expect(freshHost.snapshot().results[0].read).toBe(true);
 });
 it('restores actual historical terminal outcomes without notices or invented interruptions', () => {
   const reasons = [

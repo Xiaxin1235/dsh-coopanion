@@ -35,16 +35,18 @@
       <strong id="interaction-title"></strong><p id="interaction-preview" class="b-text"></p>
       <div class="reply-actions"><button id="interaction-open">回到源会话 ↗</button><button id="interaction-pending" hidden>等你的一点小事</button></div>
     </section>
-    <section id="requests" class="panel requests interactive" hidden role="dialog" aria-labelledby="requests-title">
-      <header><strong id="requests-title">等你的一点小事</strong><button id="requests-close" aria-label="先收起来">×</button></header>
-      <div id="request-list" class="request-list"></div><p id="request-feedback" role="status"></p>
-      <footer><button id="requests-replies">查看会话与未读回复</button></footer>
+    <section id="requests" class="panel requests inbox interactive" hidden role="dialog" aria-labelledby="requests-title">
+      <header><span class="conversation-heading"><small id="inbox-caption">回复与待办</small><strong id="requests-title">给你带回来了</strong></span><button id="requests-close" aria-label="先收起来">×</button></header>
+      <p id="inbox-count" class="inbox-count"></p>
+      <div id="inbox-list" class="inbox-list"><div id="request-list" class="request-list"></div><div id="inbox-issues" class="inbox-section"></div><div id="inbox-replies" class="inbox-section"></div><p id="inbox-empty" hidden></p></div>
+      <p id="request-feedback" role="status"></p>
+      <footer><span id="inbox-focus"></span></footer>
     </section>
     <section id="reader" class="panel reader interactive" hidden role="dialog" aria-labelledby="reader-title">
-      <header><span class="conversation-heading"><small>捎回来的回复</small><strong id="reader-title"></strong></span><button id="reader-close" aria-label="收起完整回复">×</button></header>
+      <header><span class="conversation-heading"><small id="reader-caption">捎回来的回复</small><strong id="reader-title"></strong></span><button id="reader-close" aria-label="收起完整回复">×</button></header>
       <small id="reader-detail" class="reader-detail"></small>
       <div id="reader-text" class="reader-text" tabindex="0"></div>
-      <footer class="reader-footer"><button id="reader-prev" aria-label="上一份回复">‹</button><span id="reader-count"></span><button id="reader-next" aria-label="下一份回复">›</button><button id="reader-session" class="session-link">回到这段会话 ↗</button></footer>
+      <footer class="reader-footer"><button id="reader-prev" aria-label="上一份回复">‹</button><span id="reader-count"></span><button id="reader-next" aria-label="下一份回复">›</button><button id="reader-inbox" class="session-link" hidden>收件箱 ↩</button><button id="reader-session" class="session-link">继续对话 ↗</button></footer>
     </section>
     <section id="conversations" class="panel conversations interactive" hidden>
       <header><span class="conversation-heading"><small>一起工作的片段</small><strong>这次，陪哪一段？</strong></span><button id="conversations-close" aria-label="收起对话气泡">×</button></header>
@@ -88,7 +90,7 @@
       <p id="character-status" role="status">支持 Coopanion API 2 ZIP 角色包；角色和配色会在重启后保留。</p>
     </section>
     <div id="pet" class="pet interactive" hidden data-mood="idle" tabindex="0" role="button" aria-label="DeepSeek 大肥鱼，点击互动，双击聊天，右键菜单，拖动移动"></div>
-    <button id="attention" class="attention interactive" hidden aria-label="查看待处理会话"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4Z"/><path d="m4 6 8 7 8-7"/></svg><span id="attention-count"></span></button>
+    <button id="attention" class="attention interactive" hidden aria-label="查看回复与待办"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4Z"/><path d="m4 6 8 7 8-7"/></svg><span id="attention-count"></span></button>
     <button id="toast" class="toast interactive" hidden><span>🐳</span><div><strong id="toast-title"></strong><p id="toast-body"></p></div><b>↗</b></button>
   </main>
   <script src="pet.js" type="module"></script>

@@ -140,6 +140,17 @@ try {
   await page.locator('#reader-next').click();
   assert.equal(await page.locator('#reader-text').textContent(), newer.text);
   await page.keyboard.press('Escape');
+  const backgroundReply = { id: 'native-inbox-background-full', sessionId: 'native-inbox-source-full', time: Date.now(), text: '从后台捎回来的完整回复。\n当前聊天对象保持不变。', read: false };
+  const actionStart = actions.length;
+  bridge.update({ ...idleFrame, results: [backgroundReply], sessions: [{ ...idleFrame.sessions[0], unread: 0 }, { id: backgroundReply.sessionId, label: '后台检查', mood: 'idle', active: false, unread: 1, replyId: backgroundReply.id, reply: backgroundReply.text }] });
+  await page.locator('#attention:not([hidden])').waitFor();
+  await page.locator('#attention').click();
+  await page.locator('#reader:not([hidden])').waitFor();
+  assert.equal(await page.locator('#reader-text').textContent(), backgroundReply.text, 'one native background reply opens directly from the envelope');
+  assert.equal(await page.locator('#chat-session-name').innerText(), '桌面测试会话');
+  await page.locator('#reader-session').click();
+  for (let n = 0; n < 30 && !actions.slice(actionStart).some(action => action.type === 'open-session'); n++) await pause(50);
+  assert.deepEqual(actions.slice(actionStart).filter(action => ['select', 'read', 'open-session'].includes(action.type)), [{ type: 'read', resultId: backgroundReply.id }, { type: 'open-session', sessionId: backgroundReply.sessionId }], 'native inbox navigation carries exact result/source identity without changing chat focus first');
   for (let n = 0; n < 100 && !trayIcons.some(icon => icon.icon === 'talking'); n++) await pause(50);
   assert.ok(trayIcons.some(icon => icon.icon === 'talking' && icon.title === '' && icon.template === (process.platform === 'darwin')), 'native icon is rendered with the state glyph and macOS template appearance');
   bridge.configure({ size: 150, roam: false, notifications: false, bubbleDurationMs: 12000 });

@@ -151,10 +151,16 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
       }));
     }
   });
-  ctx.inject(['sessions'], child => { for (const session of child.sessions.list()) { model.restore(session); broker.restore(session); questions?.(session, false); } syncNotifications(); update(); });
-  for (const agent of ctx.agents.list()) { model.restore(agent.session); broker.restore(agent.session); questions?.(agent.session, false); if (agent.status === 'running') model.running(agent.session); }
-  ctx.on('session/created', session => { model.created(session); broker.restore(session); questions?.(session, false); update(); });
-  ctx.on('agent/created', ({ agent }) => { model.restore(agent.session); broker.restore(agent.session); questions?.(agent.session, false); if (agent.status === 'running') model.running(agent.session); update(); return undefined; });
+  const restoreSession = (session: Session, running = ctx.agents.list().some(agent => agent.session.id === session.id && agent.status === 'running')) => {
+    model.restore(session);
+    // A stored open turn is history, not evidence of an Agent running in this Host.
+    if (running) model.running(session); else model.idle(session.id);
+    broker.restore(session); questions?.(session, false);
+  };
+  ctx.inject(['sessions'], child => { for (const session of child.sessions.list()) restoreSession(session); syncNotifications(); update(); });
+  for (const agent of ctx.agents.list()) restoreSession(agent.session, agent.status === 'running');
+  ctx.on('session/created', session => { restoreSession(session); syncNotifications(); update(); });
+  ctx.on('agent/created', ({ agent }) => { restoreSession(agent.session, agent.status === 'running'); syncNotifications(); update(); return undefined; });
   ctx.on('agent/status', ({ agent, status }) => { if (status === 'running') model.running(agent.session); else model.idle(agent.session.id); update(); });
   ctx.on('agent/assistant-stream', ({ agent, frame }) => {
     if (!model.stream(agent.session, frame) || streamUpdate) return;

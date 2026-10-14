@@ -284,8 +284,8 @@ try {
   await page.waitForSelector('#attention:not([hidden])');
   assert.equal(await page.locator('#chat-session-name').innerText(), '安装验证');
   await page.locator('#attention').click();
-  await page.locator('#conversation-list [data-session-id="host-other"]').click();
   await page.waitForFunction(() => document.getElementById('reader-text').textContent === '第二会话的最终回复。任务已完成。');
+  assert.equal(await page.locator('#chat-session-name').innerText(), '安装验证', 'reading a background result does not change the live chat target');
   await page.locator('#reader-session').click();
   await settings.getByRole('navigation', { name: '会话层级', exact: true }).filter({ hasText: '第二会话' }).waitFor();
   await openSessionPicker(page); await page.locator('#conversation-list [data-session-id="host-install"]').click();

@@ -59,3 +59,9 @@ npm 要求包已存在才能绑定 Trusted Publisher，见 [npm trust 前置条�
 **首次正式提交前确认固定 tarball URL 返回真实可安装的包**；发布流程准备阶段可用 draft PR，产物上线后再标记 ready。目录维护者合并后，市场按成功的目录构建更新；不能把提交 PR 或 npm publish 当作已经可搜索。npm 包的 `repository` 指回本仓库，目录会自动建立映射，市场优先使用 npm，再使用预构建 Release。
 
 截图可随后在仓库根声明 `screenshots.json`（1–8 张仓库内实际截图）；没有真实截图时不放占位图。新增版本不需要重复提交目录 PR，继续保持 npm metadata 和固定 Release URL 即可。
+
+## dshmarket 修改记录
+
+正式 GitHub Release 必须包含当前版本的完整修改说明，稳定标签与 npm 版本一致。`docs/release-notes.md` 是说明源，发布工作流只提取当前版本节写入 Release 正文，并随已验证压缩包附档；只上传 Markdown 附件而没有正文不能提供市场所需内容。README 的“最新修改记录”也指向正式 Release。
+
+当前市场从社区目录的每日更新探测读取 GitHub Release 正文与提交记录（`dsh-plugin-updates`／`updates.json`）。目录条目尚未合并时，npm 发布不保证市场显示详细修改记录；合并后还需等待目录探测发布新的记录。交付时分别核对 Release 正文、npm 身份、固定下载别名，以及在线目录和更新记录，保留待同步状态。

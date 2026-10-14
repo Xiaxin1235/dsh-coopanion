@@ -37,7 +37,7 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 .reader .conversation-heading strong { font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .reader-detail { display: block; color: var(--muted); margin: 8px 0 14px; font-size: 10px; }
 .reader-text { max-height: min(420px, calc(100vh - 310px)); overflow-y: auto; overscroll-behavior: contain; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 14px; line-height: 1.85; user-select: text; padding: 3px 10px 10px 2px; }
-.reader-footer { display: flex; align-items: center; gap: 10px; border-top: 1px dashed var(--line); padding-top: 12px; margin-top: 9px; }
+.reader-footer { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; border-top: 1px dashed var(--line); padding-top: 12px; margin-top: 9px; }
 .reader-footer>button:not(.session-link) { width: 25px; height: 25px; border-radius: 8px; color: var(--accent); background: var(--tint); font-size: 20px; }
 #reader-count { font-size: 10px; color: var(--muted); }
 #reader-session { margin-left: auto; }
@@ -161,18 +161,28 @@ h1 { font-size: clamp(32px, 4vw, 54px); font-weight: 500; line-height: 1.4; lett
 .interaction { width:min(360px,calc(100vw - 24px)); }
 .interaction strong { display:block; padding-right:22px; line-height:1.5; }
 .interaction .b-text { max-height:120px; overflow:auto; white-space:pre-wrap; overflow-wrap:anywhere; }
-.requests { width:min(420px,calc(100vw - 24px)); }
-.request-list { display:flex; flex-direction:column; gap:12px; max-height:45vh; overflow:auto; padding:2px; }
-.request-card { border:1px solid var(--line); border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:8px; }
+.requests { width:min(420px,calc(100vw - 24px)); max-height:calc(100vh - 24px); }
+.inbox-count { margin:9px 0 12px; color:var(--muted); font-size:11px; }
+.inbox-list { max-height:min(360px,calc(100vh - 220px)); overflow-y:auto; overscroll-behavior:contain; padding:3px; }
+.request-list, .inbox-section { display:flex; flex-direction:column; gap:10px; }
+.inbox-section:not([hidden]) { margin-top:10px; }
+.request-card, .inbox-card { border:1px solid var(--line); border-radius:14px; padding:12px; display:flex; flex-direction:column; gap:8px; background:var(--surface); font-size:13px; line-height:1.6; }
 .request-card p { margin:0; white-space:pre-wrap; overflow-wrap:anywhere; max-height:130px; overflow:auto; }
-.request-card small { overflow-wrap:anywhere; opacity:.7; }
-.request-card div { display:flex; flex-wrap:wrap; gap:8px; }
+.request-card small, .inbox-card small { overflow-wrap:anywhere; color:var(--muted); font-size:10px; }
+.request-card div, .inbox-card>div { display:flex; justify-content:flex-end; flex-wrap:wrap; gap:8px; }
+.inbox-card>strong, .inbox-content strong { overflow-wrap:anywhere; }
+.inbox-card p { margin:0; white-space:pre-wrap; overflow-wrap:anywhere; }
+.inbox-content { display:flex; flex-direction:column; gap:7px; width:100%; min-width:0; text-align:left; background:transparent; color:var(--text); padding:0; border-radius:5px; }
+.inbox-content:hover strong { color:var(--accent); }
+.inbox-preview { display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; white-space:pre-wrap; overflow-wrap:anywhere; }
+.inbox-content small:first-child { color:var(--accent); }
+.inbox-card:has(.inbox-content:hover) { background:var(--tint); }
+#inbox-empty { color:var(--muted); font-size:12px; line-height:1.6; }
+#inbox-focus { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--muted); font-size:10px; }
 .requests footer { margin-top:12px; }
 .requests #request-feedback:empty { display:none; }
 @media (prefers-reduced-motion:reduce) { .interaction { animation:none; transition:none; } }
-.requests header { margin-bottom:12px; }
-.request-card { font-size:13px; line-height:1.5; }
-.request-card button { background:var(--tint); color:var(--accent); border-radius:10px; padding:6px 10px; font-size:12px; }
+.request-card button, .inbox-card>div>button { background:var(--tint); color:var(--accent); border-radius:10px; padding:6px 10px; font-size:12px; }
 .requests footer { border-top:1px dashed var(--line); padding-top:12px; }
 .requests footer button { background:transparent; color:var(--accent); font-size:12px; padding:0; }
 .requests #request-feedback { font-size:12px; line-height:1.5; color:var(--muted); }
