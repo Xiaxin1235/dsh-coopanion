@@ -16,6 +16,7 @@ import { ElectronBridge, isRecord, type PetBridge, type DesktopOptions } from '.
 import { PetModel } from './model.ts';
 import { PetControls } from './controls.ts';
 import { z as wire } from 'zod';
+import { petLanguage } from '../web/locale.js';
 
 export const name = 'dsh-coopanion';
 export const inject = ['agents'];
@@ -50,7 +51,29 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
   ctx.inject(['settings'], child => { savePreference = (field, value) => child.settings.mutate('dsh-coopanion', [{ op: 'set', path: [field], value }]); });
   const currentOptions = (): DesktopOptions => ({ size: options.size.get(), roam: options.roam.get(), notifications: options.notifications.get(), bubbleDurationMs: options.bubbleDurationMs.get(), systemNotifications: options.systemNotifications.get(), reminders: options.reminders.get(), reminderDelayMs: options.reminderDelayMs.get(), electronPath: options.electronPath, locale, ...preferences });
   const controls = new PetControls(bridge, currentOptions);
-  let locale = 'zh';
+  let locale: string | undefined;
+  let clientLocale: string | undefined;
+  let dedicatedLocale = false;
+  let storedLocale: (() => string | undefined) | undefined;
+  const syncLocale = () => {
+    const preference = storedLocale?.();
+    const next = preference ? petLanguage(preference) : clientLocale;
+    if (next === locale) return;
+    locale = next; controls.configure();
+  };
+  const adoptClientLocale = (value: string) => { clientLocale = petLanguage(value); syncLocale(); };
+  ctx.inject(['settings'], child => {
+    const read = () => {
+      const value = child.settings.describe({ redactSecrets: true }).find(entry => entry.ns === 'locale')?.value;
+      const preference = isRecord(value) && typeof value.preference === 'string' ? value.preference.toLowerCase() : undefined;
+      // Only the Client knows additional registered languages and its resolved
+      // browser fallback. Bootstrap from the two built-in durable choices.
+      return preference === 'zh' || preference === 'en' ? preference : undefined;
+    };
+    storedLocale = read;
+    child.effect(() => () => { if (storedLocale === read) storedLocale = undefined; });
+    syncLocale();
+  });
   let navigation: { sessionId: string; expires: number } | undefined;
   ctx.provide('coopanion', controls);
   const update = () => {
@@ -99,11 +122,16 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
     const timer = setInterval(() => { if (model.settle()) update(); }, 250);
     timer.unref(); return () => clearInterval(timer);
   });
-  ctx.on('settings/document-updated', ns => { if (ns === 'dsh-coopanion') { broker.preferences(notificationPrefs()); controls.configure(); } });
+  ctx.on('settings/document-updated', ns => { if (ns === 'dsh-coopanion') { broker.preferences(notificationPrefs()); controls.configure(); } else if (ns === 'locale') syncLocale(); });
   ctx.inject(['connection'], child => {
     const dispatch = async (endpoint: string, payload: unknown, signal: AbortSignal) => {
       try {
         if (signal.aborted) throw new Error('请求已取消');
+        if (endpoint === 'locale') {
+          const input = wire.object({ locale: wire.enum(['zh', 'en']) }).strict().parse(payload);
+          dedicatedLocale = true;
+          adoptClientLocale(input.locale); return { ok: true, value: { locale } };
+        }
         if (endpoint === 'status') {
           wire.object({}).strict().parse(payload);
           return { ok: true, value: controls.status() };
@@ -114,7 +142,7 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
           navigation = undefined;
           return { ok: true, value };
         }
-        if (endpoint === 'notification-state') { const input = notificationRequests.state.parse(payload); if (input.locale && input.locale !== locale) { locale = input.locale; controls.configure(); } return { ok: true, value: broker.snapshot() }; }
+        if (endpoint === 'notification-state') { const input = notificationRequests.state.parse(payload); if (input.locale && !dedicatedLocale) adoptClientLocale(input.locale); return { ok: true, value: broker.snapshot() }; }
         if (endpoint === 'notification-claim') { const input = notificationRequests.claim.parse(payload); return { ok: true, value: broker.claim(input.clientId, input.generation) }; }
         if (endpoint === 'notification-receipt') { return { ok: true, value: { accepted: broker.receipt(notificationRequests.receipt.parse(payload)) } }; }
         if (endpoint === 'notification-snooze') { const input = notificationRequests.snooze.parse(payload); if (!broker.snooze(input.interactionId, input.generation)) throw new Error('待处理请求已变化或提醒暂不可用'); return { ok: true, value: { accepted: true } }; }
@@ -140,7 +168,7 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
     };
     // Exact Connection routes coexist with the Gateway's exclusive /api interceptor.
     // The Connection carrier applies its normal Host/Origin and authentication checks.
-    for (const endpoint of ['status', 'control', 'navigation', ...notificationEndpoints] as const) {
+    for (const endpoint of ['status', 'control', 'navigation', 'locale', ...notificationEndpoints] as const) {
       child.effect(() => child.connection.fetch.register({
         path: `/api/coopanion/${endpoint}`, methods: ['POST'], requestBody: 'buffered',
         fetch: async request => {

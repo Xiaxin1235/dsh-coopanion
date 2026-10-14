@@ -1,4 +1,5 @@
 import type { TaskNotice } from '../notification-contract.ts';
+import { petLanguage, appStatusBody } from '../../web/locale.js';
 
 const zh = {
   completed: '任务完成啦', approval: '下一步需要你确认', question: '有个问题想问你', error: '任务需要关注',
@@ -14,12 +15,12 @@ const en: typeof zh = {
 };
 /** Localize application copy while preserving source identity and user-authored previews exactly. */
 export function systemNotificationCopy(notice: TaskNotice, locale = 'zh'): TaskNotice {
-  const copy = /^zh/i.test(locale) ? zh : en;
+  const copy = petLanguage(locale) === 'zh' ? zh : en;
   if (notice.stage === 'reminder') {
     const summary = notice.requestIds.length > 1 ? copy.grouped(notice.requestIds.length) : copy.reminder;
     return { ...notice, title: summary, body: summary };
   }
   const title = copy[notice.category];
   const short = ['stopped', 'interrupted', 'blocked', 'max-tokens'].includes(notice.category);
-  return { ...notice, title, body: short ? title : notice.body };
+  return { ...notice, title, body: short ? title : appStatusBody(notice, locale) };
 }

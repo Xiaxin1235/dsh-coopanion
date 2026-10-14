@@ -3,6 +3,14 @@ import { createSpeech, replyPreview } from '../web/speech.js';
 import { shortSessionIds, sessionActivity, inboxContents } from '../web/session-ui.js';
 import tray from '../desktop/tray-state.cjs';
 
+it('uses the Harness language for native tray labels and preserves user session titles', () => {
+  const snapshot = { sessionId:'locale-source',mood:'thinking',active:true,sessions:[{id:'locale-source',label:'用户的中文会话',mood:'thinking',active:true}] };
+  const state = tray.trayState(snapshot, {}, { locale:'en' }, true);
+  expect(state.stateLabel).toBe('Thinking');
+  expect(state.tooltip).toContain('Focused: 用户的中文会话');
+  expect(state.sessionLabel).toBe('用户的中文会话');
+});
+
 it('keeps the visible Unicode prefix and punctuation pause when live speech is extended', () => {
   const node = { textContent: '' }, spoken = [];
   const speech = createSpeech({ text: '你好，', node, onCharacter: ch => spoken.push(ch) });
@@ -23,7 +31,7 @@ it('distinguishes host IDs with the same session prefix and collision-prone firs
 
 it('projects selected session, appearance, visibility and preferences into the macOS status bar', () => {
   const snapshot = { sessionId: 'b', mood: 'talking', active: true, sessions: [{ id: 'a', label: '菜单' }, { id: 'b', label: '修复同步', mood: 'talking' }] };
-  const state = tray.trayState(snapshot, { characterId: 'whale', scheme: 'harness', name: '大肥鱼', sleeping: true, sound: false }, { roam: false, notifications: false }, true);
+  const state = tray.trayState(snapshot, { characterId: 'whale', scheme: 'harness', name: '大肥鱼', sleeping: true, sound: false }, { locale: 'zh', roam: false, notifications: false }, true);
   expect(state).toMatchObject({ sessionId: 'b', sessionLabel: '修复同步', mood: 'talking', title: '', icon: 'talking', sleeping: false, characterId: 'whale', scheme: 'harness', visible: true, roam: false, notifications: false, sound: false });
   expect(state.sessions.map(s => s.selected)).toEqual([true, false]);
   expect(state.tooltip).toContain('正在回复');

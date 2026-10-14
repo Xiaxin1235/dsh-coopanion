@@ -5,7 +5,8 @@ const { once } = require('node:events');
 const { CharacterStore } = require('../dist/character-store.cjs');
 const { createPetServer } = require('../dist/figure-server.cjs');
 const { trayState } = require('./tray-state.cjs');
-app.setName('DeepSeek 大肥鱼');
+const { petCopy, petLanguage, automaticPetLanguage } = require('../web/locale.js');
+app.setName(petCopy('en').defaultName);
 if (process.env.DSH_PET_TEST_DATA_DIR) {
   app.setPath('userData', process.env.DSH_PET_TEST_DATA_DIR);
   app.setPath('crashDumps', join(process.env.DSH_PET_TEST_DATA_DIR, 'crashes'));
@@ -40,7 +41,10 @@ function show() { win?.showInactive(); syncTray(); }
 function act(action) { process.send?.({ type: 'action', action }); }
 function syncTray() {
   if (!tray || tray.isDestroyed()) return;
-  const state = trayState(lastFrame?.snapshot, presentation, options, win?.isVisible());
+  const locale = options.locale ?? presentation.locale ?? automaticPetLanguage(app.getPreferredSystemLanguages());
+  const state = trayState(lastFrame?.snapshot, presentation, { ...options, locale }, win?.isVisible());
+  const copy = petCopy(locale);
+  if (app.getName() !== copy.defaultName) app.setName(copy.defaultName);
   const key = JSON.stringify(state);
   if (key === lastTrayKey) return;
   lastTrayKey = key;
@@ -49,19 +53,19 @@ function syncTray() {
   tray.setContextMenu(Menu.buildFromTemplate([
     { label: `${state.name} · ${state.stateLabel}`, enabled: false },
     { label: state.sessionLabel, enabled: false },
-    { label: '回到当前会话', enabled: !!state.sessionId, click: () => act({ type: 'open-session', sessionId: state.sessionId }) },
-    { label: '切换陪伴会话', enabled: !!state.sessions.length, submenu: state.sessions.slice(0, 20).map(session => ({ type: 'radio', label: `${session.label} · ${session.id.replace(/^session[-_:]/, '').slice(-8)}${session.unread ? ` · ${session.unread} 份未读` : ''}${['waiting', 'error'].includes(session.mood) ? ' · 需要你' : ''}`, checked: session.selected, click: () => act({ type: 'select', sessionId: session.id }) })) },
-    { label: `待查看 · ${state.activity.unread} 份回复 · ${state.activity.waiting + state.activity.errors} 段需要你`, click: () => { show(); forward({ type: 'ui-control', command: 'sessions' }); } },
+    { label: copy.trayOpen, enabled: !!state.sessionId, click: () => act({ type: 'open-session', sessionId: state.sessionId }) },
+    { label: copy.traySwitch, enabled: !!state.sessions.length, submenu: state.sessions.slice(0, 20).map(session => ({ type: 'radio', label: `${session.label} · ${session.id.replace(/^session[-_:]/, '').slice(-8)}${session.unread ? copy.trayUnread(session.unread) : ''}${['waiting', 'error'].includes(session.mood) ? copy.trayNeeds : ''}`, checked: session.selected, click: () => act({ type: 'select', sessionId: session.id }) })) },
+    { label: copy.trayPending(state.activity.unread, state.activity.waiting + state.activity.errors), click: () => { show(); forward({ type: 'ui-control', command: 'sessions' }); } },
     { type: 'separator' },
-    { label: '说句话', click: () => { show(); forward({ type: 'ui-control', command: 'chat' }); } },
-    { label: '角色与配色', click: () => { show(); forward({ type: 'characters' }); } },
-    { label: '自在走动', type: 'checkbox', checked: state.roam, click: item => act({ type: 'preference', field: 'roam', value: item.checked }) },
-    { label: '休息一下（新任务会唤醒）', type: 'checkbox', checked: state.sleeping, enabled: !state.active, click: () => forward({ type: 'ui-control', command: 'sleep' }) },
-    { label: '任务提醒', type: 'checkbox', checked: state.notifications, click: item => act({ type: 'preference', field: 'notifications', value: item.checked }) },
-    { label: '动作与说话音效', type: 'checkbox', checked: state.sound, click: () => forward({ type: 'ui-control', command: 'sound' }) },
+    { label: copy.trayChat, click: () => { show(); forward({ type: 'ui-control', command: 'chat' }); } },
+    { label: copy.trayCharacters, click: () => { show(); forward({ type: 'characters' }); } },
+    { label: copy.trayRoam, type: 'checkbox', checked: state.roam, click: item => act({ type: 'preference', field: 'roam', value: item.checked }) },
+    { label: copy.traySleep, type: 'checkbox', checked: state.sleeping, enabled: !state.active, click: () => forward({ type: 'ui-control', command: 'sleep' }) },
+    { label: copy.trayNotices, type: 'checkbox', checked: state.notifications, click: item => act({ type: 'preference', field: 'notifications', value: item.checked }) },
+    { label: copy.traySound, type: 'checkbox', checked: state.sound, click: () => forward({ type: 'ui-control', command: 'sound' }) },
     { type: 'separator' },
-    { label: state.visible ? '暂时藏起来' : '显示伙伴', click: () => state.visible ? win.hide() : show() },
-    { label: '关闭桌宠', click: () => app.quit() },
+    { label: state.visible ? copy.hide : copy.trayShow, click: () => state.visible ? win.hide() : show() },
+    { label: copy.trayQuit, click: () => app.quit() },
   ]));
   process.send?.({ type: 'tray-state', state });
   const iconKey = `${state.characterId}:${state.scheme}:${state.iconReady}:${state.icon}`;
@@ -170,7 +174,7 @@ app.whenReady().then(async () => {
     if (action.type === 'move-display') { win.setBounds(bounds()); forward({ type: 'display-changed' }); return; }
     if (action.type === 'presentation') {
       if (typeof action.characterId !== 'string' || !/^[a-z0-9-]{1,32}$/.test(action.characterId) || typeof action.scheme !== 'string' || action.scheme.length > 200 || typeof action.name !== 'string' || action.name.length > 200 || typeof action.sleeping !== 'boolean' || typeof action.sound !== 'boolean') return;
-      presentation = { characterId: action.characterId, scheme: action.scheme, name: action.name, sleeping: action.sleeping, sound: action.sound, ready: action.ready === true }; syncTray(); return;
+      presentation = { characterId: action.characterId, scheme: action.scheme, name: action.name, locale: typeof action.locale === 'string' ? petLanguage(action.locale) : undefined, sleeping: action.sleeping, sound: action.sound, ready: action.ready === true }; syncTray(); return;
     }
     if (action.type === 'notification-snooze') { if (typeof action.interactionId === 'string' && action.interactionId.length <= 2048 && Number.isSafeInteger(action.generation)) act(action); return; }
     if (action.type !== 'chat' && action.type !== 'select' && action.type !== 'open-session' && action.type !== 'preference' && action.type !== 'read') return;

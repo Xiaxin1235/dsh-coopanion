@@ -12,6 +12,7 @@ import css from './settings.css';
 import type { BrowserNotificationApi } from './system-notifications.ts';
 import { NotificationClient } from './notification-client.ts';
 import { notificationPreferencesSchema, type DeliveryClaim, type NotificationSnapshot } from '../notification-contract.ts';
+import { syncPetLocale } from './locale-sync.ts';
 
 declare module '@deepseek-ai/dsh-client-ui-slots' { interface LocaleNamespaceMap { coopanion: LocaleKey; } }
 declare module '@deepseek-ai/cordis' { interface Context { connection: ConnectionHandle; } }
@@ -19,7 +20,24 @@ export const inject = ['slots', 'locale', 'configForms', 'connection'];
 
 /** A regular DSH settings section, using Host forms and the authenticated Connection carrier. */
 export function apply(ctx: Context): void {
+  const currentLocale = () => ctx.locale.resolveText({ zh: 'zh', en: 'en' });
   ctx.effect(() => ctx.locale.register('coopanion', { zh, en }));
+  ctx.effect(() => {
+    if (!ctx.connection.isLoopback) return () => {};
+    return syncPetLocale({
+      current: currentLocale,
+      subscribe: listener => {
+        const unsubscribe = ctx.locale.subscribe(() => listener());
+        const focus = () => { if (document.visibilityState !== 'hidden') listener(true); };
+        window.addEventListener('focus', focus); document.addEventListener('visibilitychange', focus);
+        return () => { unsubscribe(); window.removeEventListener('focus', focus); document.removeEventListener('visibilitychange', focus); };
+      },
+      send: async (locale, signal) => {
+        const response = await ctx.connection.rpc.call('/api', 'coopanion/locale', { locale }, signal);
+        if (!response.ok) throw new Error(response.error.message);
+      },
+    });
+  });
   ctx.effect(() => {
     const tag = document.createElement('style'); tag.dataset.plugin = 'dsh-coopanion'; tag.textContent = css;
     document.head.append(tag); return () => tag.remove();
@@ -48,10 +66,10 @@ export function apply(ctx: Context): void {
         return reply.value as T;
       };
       const client = new NotificationClient({
-        locale: () => ctx.locale.getLocale().active,
+        locale: currentLocale,
         api: globalThis.Notification as unknown as BrowserNotificationApi,
         transport: {
-          state: signal => request<NotificationSnapshot>('notification-state', { locale: ctx.locale.getLocale().active }, signal),
+          state: signal => request<NotificationSnapshot>('notification-state', {}, signal),
           claim: (payload, signal) => request<DeliveryClaim | null>('notification-claim', payload, signal),
           receipt: (payload, signal) => request('notification-receipt', payload, signal),
           snooze: (payload, signal) => request('notification-snooze', payload, signal),
@@ -62,7 +80,7 @@ export function apply(ctx: Context): void {
         },
         openSession: sessionId => { child.uiWorkspace.openSession(sessionId as SessionId); window.focus(); },
         testClaim: async (clientId, signal) => {
-          const state = await request<NotificationSnapshot>('notification-state', { locale: ctx.locale.getLocale().active }, signal);
+          const state = await request<NotificationSnapshot>('notification-state', {}, signal);
           return request<DeliveryClaim>('notification-test', { clientId, generation: state.runtime.generation }, signal);
         },
       });
