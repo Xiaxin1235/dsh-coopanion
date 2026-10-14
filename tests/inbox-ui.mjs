@@ -36,7 +36,7 @@ try {
   await resetActions();
   await page.locator('#attention').click();
   await page.locator('#reader:not([hidden])').waitFor();
-  assert.equal(await page.locator('#reader-text').textContent(), first.text, 'one reply opens in full with one click');
+  assert.equal(await page.locator('#reader-text').innerText(), first.text, 'one reply opens in full with one click');
   assert.equal(await page.locator('#conversations').isVisible(), false);
   assert.equal(await page.locator('#chat-session-name').innerText(), focus.label);
   assert.deepEqual(await actions(), [{ type: 'read', resultId: first.id }], 'reading acknowledges the exact reply and keeps chat focus');
@@ -68,14 +68,14 @@ try {
   await page.locator(`[data-result-id="${fourth.id}"][data-action=read]`).focus();
   assert.deepEqual(await actions(), [], 'keyboard focus on a summary does not mark it read');
   await page.keyboard.press('Enter');
-  assert.equal(await page.locator('#reader-text').textContent(), fourth.text);
+  assert.equal(await page.locator('#reader-text').innerText(), fourth.text);
   assert.equal(await page.locator('#reader-count').innerText(), '1 / 2');
   const incoming = reply('arrives-while-reading', b, 5, '读到一半新收到的回复。');
   await receive({ type: 'snapshot', snapshot: frame([waitingA, b, issue], [third, fourth, incoming]) });
-  assert.equal(await page.locator('#reader-text').textContent(), fourth.text, 'incoming messages cannot replace the open reply');
+  assert.equal(await page.locator('#reader-text').innerText(), fourth.text, 'incoming messages cannot replace the open reply');
   assert.equal(await page.locator('#reader-count').innerText(), '1 / 2', 'the active reading order remains stable');
   await page.locator('#reader-next').click();
-  assert.equal(await page.locator('#reader-text').textContent(), third.text, 'read consecutively across source sessions');
+  assert.equal(await page.locator('#reader-text').innerText(), third.text, 'read consecutively across source sessions');
   assert.equal(await page.locator('#chat-session-name').innerText(), focus.label);
   assert.ok(!(await actions()).some(action => action.type === 'select'));
   await page.locator('#reader-inbox').click();

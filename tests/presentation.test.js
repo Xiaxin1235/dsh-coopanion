@@ -1,6 +1,6 @@
 import { it, expect } from 'vitest';
 import { createSpeech, replyPreview } from '../web/speech.js';
-import { shortSessionIds, sessionActivity } from '../web/session-ui.js';
+import { shortSessionIds, sessionActivity, inboxContents } from '../web/session-ui.js';
 import tray from '../desktop/tray-state.cjs';
 
 it('keeps the visible Unicode prefix and punctuation pause when live speech is extended', () => {
@@ -44,10 +44,29 @@ it('bounds preview typing time while preserving full Unicode text for the reader
 
 it('shares background attention and active work between the character and tray without changing focus', () => {
   const snapshot = { sessionId: 'a', mood: 'thinking', active: true, sessions: [{ id: 'a', mood: 'thinking', active: true }, { id: 'b', mood: 'waiting', active: true, unread: 2 }, { id: 'c', mood: 'idle', unread: 1 }] };
-  expect(sessionActivity(snapshot)).toMatchObject({ mood: 'thinking', icon: 'waiting', waiting: 1, unread: 3, busy: 2, pending: 2 });
+  expect(sessionActivity(snapshot)).toMatchObject({ mood: 'thinking', icon: 'waiting', waiting: 1, unread: 2, busy: 2, pending: 2 });
   const state = tray.trayState(snapshot);
   expect(state.activity).toEqual(sessionActivity(snapshot)); expect(state.sessionId).toBe('a');
   expect(tray.trayState({ ...snapshot, mood: 'idle', active: false, sessions: snapshot.sessions.slice(1) }, { sleeping: true })).toMatchObject({ mood: 'waiting', sleeping: false });
+});
+
+it('coalesces unread turns by exact session identity without mutating retained history', () => {
+  const results = [
+    { id: 'b:1', sessionId: 'b', time: 3, read: false, text: 'other session' },
+    { id: 'a:2', sessionId: 'a', time: 2, read: false, text: 'newest' },
+    { id: 'a:1', sessionId: 'a', time: 1, read: false, text: 'oldest, delivered out of order' },
+    { id: 'a:3', sessionId: 'a', time: 2, read: false, text: 'later completion at the same timestamp' },
+    { id: 'a:0', sessionId: 'a', time: 0, read: true, text: 'already read' },
+  ];
+  const snapshot = { results, sessions: [{ id: 'a', unread: 3 }, { id: 'b', unread: 1 }] };
+  const contents = inboxContents(snapshot);
+  expect(contents.replies.map(reply => reply.id)).toEqual(['b:1', 'a:3']);
+  expect(contents.replies[1].unreadIds).toEqual(['a:2', 'a:1', 'a:3']);
+  expect(contents.total).toBe(2); expect(sessionActivity(snapshot).unread).toBe(2);
+  expect(inboxContents(snapshot, [], new Set(contents.replies[1].unreadIds)).replies.map(reply => reply.id)).toEqual(['b:1']);
+  expect(results.filter(result => !result.read)).toHaveLength(4);
+  expect(results.every(result => !('unreadIds' in result))).toBe(true);
+  expect(tray.trayState(snapshot).activity.unread).toBe(2);
 });
 
 import { notificationCopy, notificationPresentation, createNoticeQueue } from '../web/notification-ui.js';

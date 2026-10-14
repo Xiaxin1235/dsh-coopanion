@@ -36,7 +36,24 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 .reader .conversation-heading { min-width: 0; }
 .reader .conversation-heading strong { font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .reader-detail { display: block; color: var(--muted); margin: 8px 0 14px; font-size: 10px; }
-.reader-text { max-height: min(420px, calc(100vh - 310px)); overflow-y: auto; overscroll-behavior: contain; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 14px; line-height: 1.85; user-select: text; padding: 3px 10px 10px 2px; }
+.reader-text { max-height: min(420px, calc(100vh - 310px)); overflow: auto; overscroll-behavior: contain; overflow-wrap: anywhere; font-size: 14px; line-height: 1.85; user-select: text; padding: 3px 10px 10px 2px; }
+.reader-text>:first-child { margin-top: 0; }
+.reader-text>:last-child { margin-bottom: 0; }
+.reader-text p, .reader-text ul, .reader-text ol, .reader-text blockquote, .reader-text pre, .reader-text table { margin: 0 0 1em; }
+.reader-text h1, .reader-text h2, .reader-text h3, .reader-text h4, .reader-text h5, .reader-text h6 { margin: 1.2em 0 .5em; line-height: 1.4; font-size: 1.05em; }
+.reader-text h1 { font-size: 1.4em; }.reader-text h2 { font-size: 1.25em; }.reader-text h3 { font-size: 1.1em; }
+.reader-text strong { font-size: inherit; }
+.reader-text ul, .reader-text ol { padding-left: 1.5em; }
+.reader-text li>p { margin-bottom: .4em; }
+.reader-text blockquote { border-left: 3px solid var(--line); padding-left: 12px; color: var(--muted); }
+.reader-text code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: .9em; background: var(--tint); padding: 2px 4px; border-radius: 4px; }
+.reader-text pre { max-width: 100%; overflow-x: auto; white-space: pre; background: var(--tint); padding: 10px; border-radius: 10px; line-height: 1.6; }
+.reader-text pre code { background: transparent; padding: 0; }
+.reader-text table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; font-size: .9em; }
+.reader-text th, .reader-text td { border: 1px solid var(--line); padding: 6px 10px; min-width: 80px; }
+.reader-text th { background: var(--tint); text-align: left; }
+.reader-text a { color: var(--accent); text-underline-offset: 3px; }
+.reader-text hr { border: 0; border-top: 1px solid var(--line); margin: 1em 0; }
 .reader-footer { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; border-top: 1px dashed var(--line); padding-top: 12px; margin-top: 9px; }
 .reader-footer>button:not(.session-link) { width: 25px; height: 25px; border-radius: 8px; color: var(--accent); background: var(--tint); font-size: 20px; }
 #reader-count { font-size: 10px; color: var(--muted); }

@@ -53,7 +53,7 @@ try {
   await page.locator('#bubble-expand').click();
   await receive({ type: 'notice', notice: notice('reading-reminder', 'question', 'reminder') });
   await page.waitForTimeout(100); assert.equal(await page.locator('#interaction').isVisible(), false);
-  assert.equal(await page.locator('#reader-text').innerText(), reply.text);
+  assert.equal(await page.locator('#reader-text').innerText(), reply.text.trim());
   await page.keyboard.press('Escape'); await page.locator('#interaction:not([hidden])').waitFor();
   assert.equal(await page.locator('#interaction-title').innerText(), 'That earlier request is still waiting for you.');
   await page.locator('#interaction-close').click();

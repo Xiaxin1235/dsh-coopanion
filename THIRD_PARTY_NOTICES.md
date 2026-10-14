@@ -16,6 +16,10 @@ This integration follows the project user's existing statement that the communit
 
 Electron 44.7.0 is installed as a dependency and retains its MIT license and Chromium's accompanying notices. Runtime download and verification remain unchanged.
 
+## Marked 18.1.1 and DOMPurify 3.4.17
+
+The full-reply reader bundles [Marked](https://github.com/markedjs/marked) and [DOMPurify](https://github.com/cure53/DOMPurify) into `web/markdown-runtime.js` at build time. Marked is distributed under the MIT license; DOMPurify is used under its Apache-2.0 license option. Their complete upstream license and copyright notices are retained in [docs/licenses/marked.txt](docs/licenses/marked.txt) and [docs/licenses/dompurify.txt](docs/licenses/dompurify.txt). Neither dependency is modified.
+
 ## fflate 0.8.3
 
 MIT License

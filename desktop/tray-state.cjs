@@ -9,7 +9,7 @@ function trayState(snapshot = {}, presentation = {}, options = {}, visible = fal
   const name = presentation.name || 'DeepSeek 大肥鱼';
   return { name, characterId: presentation.characterId || 'whale', scheme: presentation.scheme || '', iconReady: !!presentation.ready, icon: mood === 'sleeping' ? 'sleeping' : activity.icon, mood, stateLabel: labels[mood] ?? labels.idle, activity, active, sleeping: mood === 'sleeping', visible, roam: options.roam ?? true, notifications: options.notifications ?? true, sound: presentation.sound ?? true,
     sessionId: snapshot.sessionId ?? null, sessionLabel: selected?.label ?? '还没有会话',
-    sessions: [...(snapshot.sessions ?? [])].sort((a, b) => Number(b.id === snapshot.sessionId) - Number(a.id === snapshot.sessionId) || (b.updatedAt ?? 0) - (a.updatedAt ?? 0)).map(session => ({ id: session.id, label: session.label, project: session.project, selected: session.id === snapshot.sessionId, mood: session.mood, unread: session.unread ?? 0 })),
+    sessions: [...(snapshot.sessions ?? [])].sort((a, b) => Number(b.id === snapshot.sessionId) - Number(a.id === snapshot.sessionId) || (b.updatedAt ?? 0) - (a.updatedAt ?? 0)).map(session => ({ id: session.id, label: session.label, project: session.project, selected: session.id === snapshot.sessionId, mood: session.mood, unread: Number(!!session.unread) })),
     tooltip: `${name} · ${labels[mood] ?? labels.idle}\n关注：${selected?.label ?? '还没有会话'}\n${activity.busy} 段进行中 · ${activity.waiting + activity.errors} 段需要你 · ${activity.unread} 份未读回复`,
     title: '',
   };
