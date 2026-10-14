@@ -1,6 +1,6 @@
 {
   "name": "@takboo/dsh-coopanion",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "description": "DeepSeek Whale desktop companion and task notifications for DeepSeek Harness",
   "type": "module",
   "license": "AGPL-3.0-or-later",
@@ -36,6 +36,7 @@
     "dist",
     "desktop",
     "web",
+    "web/markdown-runtime.js",
     "src",
     "scripts",
     "tests",
@@ -84,11 +85,13 @@
     "demo": "node scripts/demo.mjs",
     "prepack": "npm run build",
     "test:notification-ui": "node tests/notification-ui.mjs",
-    "test:inbox-ui": "node tests/inbox-ui.mjs"
+    "test:inbox-ui": "node tests/inbox-ui.mjs && node --test tests/session-replies-ui.mjs"
   },
   "dependencies": {
+    "dompurify": "3.4.17",
     "electron": "44.7.0",
     "fflate": "0.8.3",
+    "marked": "18.1.1",
     "zod": "4.6.5"
   },
   "peerDependencies": {

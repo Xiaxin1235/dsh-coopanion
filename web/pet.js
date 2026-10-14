@@ -2,7 +2,8 @@ import { loadBody, knownScheme } from './upstream/body-host.js';
 import { createSfx } from './upstream/sound.js';
 import { createSpeech, replyPreview } from './speech.js';
 import { createNoticeQueue, pendingInteractions, notificationPresentation, notificationCopy } from './notification-ui.js';
-import { shortSessionIds, sessionTime, sessionActivity, inboxContents } from './session-ui.js';
+import { shortSessionIds, sessionTime, sessionActivity, inboxContents, unreadReplies } from './session-ui.js';
+import { renderReplyMarkdown } from './markdown-runtime.js';
 const PACK_LIMIT = 128 * 1024 * 1024;
 import { browserCharacters } from './character-library.js';
 const BUILTIN_ID = 'whale';
@@ -111,7 +112,7 @@ function speak(result) {
 }
 function showNextReply() {
   if (!bubble.hidden || !interaction.hidden || panels.some(p => !p.hidden) || pressing || dragging) return;
-  const result = snapshot.results?.find(r => r.sessionId === snapshot.sessionId && !r.read && !shownResults.has(r.id));
+  const result = unreadReplies(snapshot, acknowledgedResults).find(r => r.sessionId === snapshot.sessionId && !shownResults.has(r.id));
   if (result) speak(result);
 }
 function completionHasReply(notice) {
@@ -119,8 +120,13 @@ function completionHasReply(notice) {
     snapshot.results?.some(result => result.id === `${notice.sessionId}:${notice.turn}:${notice.seq}`);
 }
 function acknowledge(result) {
-  if (!result || result.read || acknowledgedResults.has(result.id)) return;
-  acknowledgedResults.add(result.id); send({ type: 'read', resultId: result.id });
+  if (!result || result.read) return;
+  // Use the identities captured when this reply was shown. A new turn arriving
+  // during reading remains unread, even if it belongs to the same session.
+  for (const id of result.unreadIds ?? [result.id]) {
+    if (acknowledgedResults.has(id)) continue;
+    acknowledgedResults.add(id); send({ type: 'read', resultId: id });
+  }
 }
 function openReader(result, queue) {
   if (!result) return;
@@ -131,7 +137,7 @@ function openReader(result, queue) {
   const source = snapshot.sessions.find(s => s.id === result.sessionId);
   $('reader-title').textContent = source?.label ?? '会话回复';
   $('reader-detail').textContent = `${source?.project ?? ''} · ${sessionTime({ updatedAt: result.time })}`;
-  $('reader-text').textContent = result.text; $('reader-text').scrollTop = 0;
+  renderReplyMarkdown($('reader-text'), result.text); $('reader-text').scrollTop = 0;
   updateReaderNavigation(); acknowledge(result); updateMood(); position(); $('reader-text').focus();
 }
 function updateReaderNavigation() {
@@ -180,22 +186,24 @@ function render() {
   const previous = renderedSessionId;
   const selected = snapshot.sessions.find(session => session.id === snapshot.sessionId);
   const shortIds = shortSessionIds(snapshot.sessions);
+  const unreadSources = new Set(unreadReplies(snapshot, acknowledgedResults).map(result => result.sessionId));
+  const hasUnread = session => snapshot.results ? unreadSources.has(session.id) : !!session.unread;
   const list = $('conversation-list');
   const query = $('conversation-search').value.trim().toLocaleLowerCase();
   const needsYou = s => ['waiting', 'error'].includes(s.mood) || pendingRequests().some(item => item.sessionId === s.id);
-  const matches = snapshot.sessions.filter(session => (!pendingOnly || session.unread || needsYou(session)) && [session.label, session.project, session.cwd, session.prompt, session.id].join(' ').toLocaleLowerCase().includes(query));
-  matches.sort((a, b) => Number(needsYou(b)) - Number(needsYou(a)) || Number(!!b.unread) - Number(!!a.unread) || Number(b.id === snapshot.sessionId) - Number(a.id === snapshot.sessionId) || (b.updatedAt ?? 0) - (a.updatedAt ?? 0));
-  const listKey = JSON.stringify([query, pendingOnly, matches.map(session => [session.id, session.label, session.prompt, session.cwd, session.updatedAt, session.mood, session.unread, session.chatAvailable, session.id === snapshot.sessionId])]);
+  const matches = snapshot.sessions.filter(session => (!pendingOnly || hasUnread(session) || needsYou(session)) && [session.label, session.project, session.cwd, session.prompt, session.id].join(' ').toLocaleLowerCase().includes(query));
+  matches.sort((a, b) => Number(needsYou(b)) - Number(needsYou(a)) || Number(hasUnread(b)) - Number(hasUnread(a)) || Number(b.id === snapshot.sessionId) - Number(a.id === snapshot.sessionId) || (b.updatedAt ?? 0) - (a.updatedAt ?? 0));
+  const listKey = JSON.stringify([query, pendingOnly, matches.map(session => [session.id, session.label, session.prompt, session.cwd, session.updatedAt, session.mood, hasUnread(session), session.chatAvailable, session.id === snapshot.sessionId])]);
   if (list.dataset.key !== listKey) {
     const activeId = document.activeElement?.dataset?.sessionId;
     const entries = matches.map(session => {
       const card = document.createElement('button'); card.type = 'button'; card.className = 'conversation-card';
       card.dataset.sessionId = session.id; card.dataset.mood = session.mood; card.setAttribute('role', 'option'); card.setAttribute('aria-selected', String(session.id === snapshot.sessionId));
-      card.dataset.unread = String(!!session.unread);
+      card.dataset.unread = String(hasUnread(session));
       card.tabIndex = session.id === snapshot.sessionId ? 0 : -1;
       card.title = `${session.label}\n${session.prompt ?? ''}\n${session.cwd ?? session.project ?? ''}\n${session.id}`;
       const copy = document.createElement('span'), meta = document.createElement('small'), status = document.createElement('em'), time = document.createElement('span'), name = document.createElement('strong'), detail = document.createElement('small'), prompt = document.createElement('small'), mark = document.createElement('b');
-      meta.className = 'session-meta'; status.textContent = `${session.id === snapshot.sessionId ? '关注 · ' : ''}${labels[session.mood] ?? labels.idle}${session.unread ? ` · ${session.unread} 份未读` : ''}${session.chatAvailable === false ? ' · 未打开' : ''}`;
+      meta.className = 'session-meta'; status.textContent = `${session.id === snapshot.sessionId ? '关注 · ' : ''}${labels[session.mood] ?? labels.idle}${hasUnread(session) ? ' · 1 份未读' : ''}${session.chatAvailable === false ? ' · 未打开' : ''}`;
       time.textContent = sessionTime(session); meta.append(status, time);
       name.textContent = session.label; detail.className = 'session-detail'; detail.textContent = `${session.cwd || session.project || '会话'} · #${shortIds.get(session.id)}`;
       prompt.className = 'session-prompt'; prompt.textContent = session.prompt && session.prompt !== session.label ? `最近：${session.prompt}` : ''; prompt.hidden = !prompt.textContent;
@@ -209,7 +217,7 @@ function render() {
     if (activeId) list.querySelector(`[data-session-id="${CSS.escape(activeId)}"]`)?.focus();
   }
   const activity = sessionActivity(snapshot);
-  $('conversation-count').textContent = `${activity.busy} 段进行中 · ${activity.unread} 份未读回复`;
+  $('conversation-count').textContent = `${activity.busy} 段进行中 · ${snapshot.results ? unreadSources.size : activity.unread} 份未读回复`;
   $('sessions-all').setAttribute('aria-pressed', String(!pendingOnly)); $('sessions-pending').setAttribute('aria-pressed', String(pendingOnly));
   inboxState = inboxContents(snapshot, pendingRequests(), acknowledgedResults);
   const pendingCount = inboxState.requests.length + inboxState.issues.length;
@@ -464,7 +472,7 @@ $('chat-close').onclick = closePanels;
 $('dismiss').onclick = () => { bubble.hidden = true; acknowledge(bubbleResult); showNextReply(); };
 $('bubble-reveal').onclick = () => { speech?.finish(); };
 $('bubble-expand').onclick = () => openReader(bubbleResult);
-$('chat-read').onclick = () => openReader((snapshot.results ?? []).find(r => r.sessionId === snapshot.sessionId && !r.read) ?? (snapshot.results ?? []).find(r => r.id === snapshot.sessions.find(s => s.id === snapshot.sessionId)?.replyId));
+$('chat-read').onclick = () => openReader(unreadReplies(snapshot, acknowledgedResults).find(r => r.sessionId === snapshot.sessionId) ?? (snapshot.results ?? []).find(r => r.id === snapshot.sessions.find(s => s.id === snapshot.sessionId)?.replyId));
 $('reader-close').onclick = closePanels;
 for (const [id, offset] of [['reader-prev', -1], ['reader-next', 1]]) $(id).onclick = () => {
   const history = readerQueue ?? (snapshot.results ?? []).filter(r => r.sessionId === readerResult?.sessionId);
@@ -478,7 +486,7 @@ $('conversation-list').onclick = event => {
   if (!session) return;
   conversations.hidden = true;
   if (session.id !== snapshot.sessionId) send({ type: 'select', sessionId: session.id });
-  const result = snapshot.results?.find(r => r.sessionId === session.id && !r.read);
+  const result = unreadReplies(snapshot, acknowledgedResults).find(r => r.sessionId === session.id);
   if (result) openReader(result); else render();
 };
 function openSession(id) { if (id) { send({ type: 'open-session', sessionId: id }); closePanels(); bubble.hidden = true; } }

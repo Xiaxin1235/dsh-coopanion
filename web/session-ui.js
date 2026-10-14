@@ -18,8 +18,22 @@ export function inboxContents(snapshot, interactions = [], acknowledged = new Se
   const requests = interactions.filter(item => item.state !== 'settled');
   const requested = new Set(requests.map(item => item.sessionId));
   const issues = (snapshot.sessions ?? []).filter(session => session.mood === 'error' || session.mood === 'waiting' && !requested.has(session.id));
-  const replies = (snapshot.results ?? []).filter(result => !result.read && !acknowledged.has(result.id)).sort((a, b) => b.time - a.time);
+  const replies = unreadReplies(snapshot, acknowledged);
   return { requests, issues, replies, total: requests.length + issues.length + replies.length };
+}
+
+/** Keep one latest reply per source, with the exact unread identities it represents. */
+export function unreadReplies(snapshot, acknowledged = new Set()) {
+  const sources = new Map();
+  for (const result of snapshot.results ?? []) {
+    if (result.read || acknowledged.has(result.id)) continue;
+    const current = sources.get(result.sessionId);
+    const unreadIds = current?.unreadIds ?? [];
+    unreadIds.push(result.id);
+    // Results are retained in completion order; the later entry wins a timestamp tie.
+    sources.set(result.sessionId, { ...(current && current.time > result.time ? current : result), unreadIds });
+  }
+  return [...sources.values()].sort((a, b) => b.time - a.time);
 }
 
 /** One focus for chat, one aggregate signal for work happening elsewhere. */
@@ -27,7 +41,7 @@ export function sessionActivity(snapshot) {
   const sessions = snapshot.sessions ?? [];
   const waiting = sessions.filter(s => s.mood === 'waiting');
   const errors = sessions.filter(s => s.mood === 'error');
-  const unread = sessions.reduce((n, s) => n + (s.unread ?? 0), 0);
+  const unread = snapshot.results ? new Set(snapshot.results.filter(result => !result.read).map(result => result.sessionId)).size : sessions.filter(s => s.unread).length;
   const busy = sessions.filter(s => s.active ?? ['thinking', 'talking', 'working'].includes(s.mood));
   const focusedActive = snapshot.active ?? ['thinking', 'talking', 'working'].includes(snapshot.mood);
   const background = sessions.filter(s => s.id !== snapshot.sessionId);
