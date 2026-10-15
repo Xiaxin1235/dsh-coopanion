@@ -131,3 +131,28 @@ it.skipIf(process.platform === 'win32')('forwards exact chat receipts across the
     await bridge.dispose(); await rm(folder, { recursive: true, force: true });
   }
 });
+
+it.skipIf(process.platform === 'win32')('ready sends the latest complete preferences changed during startup', async () => {
+  const folder = await mkdtemp(join(tmpdir(), 'pet-latest-options-'));
+  const previous = process.env.WAYLAND_DISPLAY; process.env.WAYLAND_DISPLAY = 'test-only';
+  const bridge = new ElectronBridge();
+  try {
+    const binary = join(folder, 'delayed-peer');
+    await writeFile(binary, `#!${process.execPath}
+process.on('message', m => {
+  if (m.type === 'configure') process.send({type:'ready'});
+  if (m.type === 'init') process.send({type:'action',action:{type:'latest-init',options:m.options}});
+  if (m.type === 'quit') process.exit(0);
+});
+`, { mode: 0o700 });
+    const options: DesktopOptions = { size: 90, textScale: 1, dailyRhythm: false, roam: true, notifications: true, bubbleDurationMs: 12000, locale: 'zh', electronPath: binary };
+    const delivered = new Promise<any>(resolve => bridge.onAction(resolve));
+    const start = bridge.start(options);
+    bridge.configure({ ...options, size: 240, textScale: 1.5, dailyRhythm: true, locale: undefined });
+    await start;
+    expect(await delivered).toEqual({ type: 'latest-init', options: { ...options, size: 240, textScale: 1.5, dailyRhythm: true, locale: null } });
+  } finally {
+    await bridge.dispose(); await rm(folder, { recursive: true, force: true });
+    if (previous === undefined) delete process.env.WAYLAND_DISPLAY; else process.env.WAYLAND_DISPLAY = previous;
+  }
+});

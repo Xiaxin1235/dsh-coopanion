@@ -108,6 +108,8 @@ npm run character:pack -- examples/star paper-star.zip
 
 **Settings → 桌宠** 沿用 Harness 的主题、中英文与系统语言设置。可控制随 Harness 启动、闲时活动、任务通知、系统通知、待处理请求补提醒、等待时间、角色尺寸（90–240）、文字大小（100% / 125% / 150%）和气泡时长（2–60 秒）；数值按 Enter 或离开输入框保存。文字大小选择后立即保存并同步到当前桌宠，独立于角色尺寸，保留当前阅读、草稿与在途发送；旧配置默认 100%。
 
+**日常陪伴节奏** 默认关闭，旧配置沿用原有闲时动作。开启闲时走动及此偏好后，按系统本地时间在 07:00–22:00 每 45–90 秒尝试现有轻动作，夜间每 2–4 分钟仅轻点头或坐下；缺少动作时保持待机。任务、待办、阅读、输入、拖拽、用户休息及减少动态效果始终优先，占用解除后重新等待，动作结束恢复当前神态。偏好立即同步并持久保存，不增加模型请求或通知，详见[日常节奏契约](docs/daily-rhythm-contract.md)及[本地验证边界](docs/evidence/m6/README.md)。
+
 桌宠意外退出后按 1、3、10 秒间隔最多自动恢复三次，连续稳定运行 60 秒后清零。设置页显示恢复次数和诊断，可随时关闭或在失败后手动重启；主动关闭不触发恢复。隐藏的角色恢复后仍隐藏，关注会话、完整结果、未读和有效待办保留，旧结果不再次主动提醒。窗口内草稿与阅读位置会随进程退出丢失，恢复不会重发聊天或任务。缺少图形环境、无效运行时路径或未确认清理的进程直接反馈错误，详见[恢复契约](docs/desktop-recovery-contract.md)。
 
 ```yaml
@@ -116,6 +118,7 @@ npm run character:pack -- examples/star paper-star.zip
     autoStart: true
     size: 180
     roam: true
+    dailyRhythm: false
     notifications: true
     systemNotifications: false
     reminders: true

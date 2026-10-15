@@ -10,7 +10,7 @@ export { NativeStartError, type StartLifetime, type NativeLifecycle } from './de
 
 import type { TextScale } from '../web/text-scale.js';
 
-export interface DesktopOptions { size: number; textScale?: TextScale; roam: boolean; notifications: boolean; bubbleDurationMs: number; electronPath?: string; locale?: string; systemNotifications?: boolean; reminders?: boolean; reminderDelayMs?: number; }
+export interface DesktopOptions { size: number; textScale?: TextScale; roam: boolean; dailyRhythm?: boolean; notifications: boolean; bubbleDurationMs: number; electronPath?: string; locale?: string; systemNotifications?: boolean; reminders?: boolean; reminderDelayMs?: number; }
 export interface PetBridge {
   start(options: DesktopOptions, lifetime?: StartLifetime): Promise<void>;
   update(snapshot: PetSnapshot): void;
@@ -33,6 +33,7 @@ export interface PetBridge {
 export class ElectronBridge extends EventEmitter implements PetBridge {
   private child?: ChildProcess;
   private latest?: PetSnapshot;
+  private latestOptions?: DesktopOptions;
   private resultKey?: string;
   private closing = false;
 
@@ -47,6 +48,7 @@ export class ElectronBridge extends EventEmitter implements PetBridge {
   async start(options: DesktopOptions, lifetime?: StartLifetime): Promise<void> {
     if (this.child) throw new NativeStartError('Desktop pet is already running', false);
     if (lifetime?.signal.aborted) throw new Error('桌宠启动已取消');
+    this.latestOptions = { ...options };
     this.closing = false;
     this.generation = lifetime?.generation ?? this.generation + 1;
     this.visibilityRevision = 0; this.nativeVisible = false;
@@ -98,7 +100,7 @@ export class ElectronBridge extends EventEmitter implements PetBridge {
         }
         if (isRecord(message) && message.type === 'ready' && this.child === child && !lifetime?.signal.aborted) {
           this.resultKey = undefined;
-          this.send({ type: 'init', options, baseline: true, snapshot: this.latest && desktopSnapshot(this.latest, true) });
+          this.send({ type: 'init', options: { ...this.latestOptions, locale: this.latestOptions?.locale ?? null }, baseline: true, snapshot: this.latest && desktopSnapshot(this.latest, true) });
           if (this.lastNotificationState) this.notificationState(this.lastNotificationState);
           finish();
         }
@@ -132,7 +134,7 @@ export class ElectronBridge extends EventEmitter implements PetBridge {
   // JSON IPC omits undefined. An explicit null lets a cleared Harness
   // preference restore the renderer's automatic language instead of retaining
   // its previous locale during a merged configuration update.
-  configure(options: DesktopOptions): void { this.send({ type: 'configure', options: { ...options, locale: options.locale ?? null } }); }
+  configure(options: DesktopOptions): void { this.latestOptions = { ...options }; this.send({ type: 'configure', options: { ...options, locale: options.locale ?? null } }); }
   control(command: 'show' | 'hide' | 'characters'): void { this.send({ type: 'control', command }); }
   focusHarness(): void { this.send({ type: 'control', command: 'focus-harness' }); }
   onLifecycle(listener: (state: NativeLifecycle) => void): void { this.on('lifecycle', listener); }

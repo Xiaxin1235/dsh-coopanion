@@ -1,0 +1,51 @@
+import assert from 'node:assert/strict';
+import { createRequire } from 'node:module';
+import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
+import { execFileSync } from 'node:child_process';
+import { _electron } from 'playwright-core';
+import { petClick, nativeMeasurement } from './helpers/native-pointer.mjs';
+import { controlRhythmClock, advanceRhythm, recordBodyOrders, rhythmWords } from './helpers/daily-rhythm.mjs';
+
+const require = createRequire(import.meta.url), directory = await mkdtemp(join(tmpdir(), 'dsh-m6-native-'));
+let app;
+try {
+  app = await _electron.launch({ executablePath: require('electron'), args: ['--no-sandbox', resolve('desktop/main.cjs')], env: { ...process.env, DSH_PET_TEST_DATA_DIR: directory, DSH_PET_TEST_NO_SANDBOX: '1', DSH_PET_TEST_DEBUG_PORT: '0' } });
+  await mkdir('artifacts', { recursive: true });
+  const page = await app.firstWindow();
+  await page.waitForSelector('#pet[data-mode]');
+  await controlRhythmClock(page); await page.reload();
+  const snapshot = { mood: 'idle', active: false, sessionId: 'rhythm-native', sessions: [{ id: 'rhythm-native', label: 'Native rhythm', mood: 'idle', active: false, chatAvailable: true }], results: [] };
+  const options = { size: 180, textScale: 1, roam: true, dailyRhythm: true, locale: 'zh', notifications: true, bubbleDurationMs: 12000 };
+  const send = message => app.evaluate((_, message) => process.emit('message', message), message);
+  await send({ type: 'init', baseline: true, options, snapshot });
+  await page.waitForSelector('#pet[data-host-ready=true][data-mode]'); await page.mouse.move(0, 0);
+  await page.waitForFunction(() => window.rhythmState?.dueAt === 45000);
+  const body = await recordBodyOrders(page), actual = await nativeMeasurement(page, '#pet');
+  await advanceRhythm(page, 45000); assert.deepEqual(await rhythmWords(page), ['look']);
+  await advanceRhythm(page, 49000); await page.waitForSelector('#pet[data-mode=idle]');
+  await page.evaluate(() => { window.rhythmHour = 23; window.rhythmRandom = .999; });
+  await advanceRhythm(page, 50000);
+  const dueAt = await page.evaluate(() => window.rhythmState.dueAt);
+  await advanceRhythm(page, dueAt); assert.deepEqual(await rhythmWords(page), ['look', 'sit']);
+  await page.waitForSelector('#pet[data-mode=sit]');
+  // Real main -> preload -> renderer IPC preempts the policy-owned seated pose.
+  await send({ type: 'snapshot', snapshot: { ...snapshot, mood: 'thinking', active: true, sessions: snapshot.sessions.map(s => ({ ...s, mood: 'thinking', active: true })) } });
+  await page.waitForSelector('#pet[data-mood=thinking]'); await page.waitForFunction(() => document.querySelector('#pet').dataset.mode !== 'sit');
+  assert.equal((await body.evaluate(() => window.rhythmOrders.filter(e => e.t === 'do').at(-1))).word, 'thinking');
+  await advanceRhythm(page, dueAt + 150000); assert.deepEqual(await rhythmWords(page), ['look', 'sit']);
+  await send({ type: 'snapshot', snapshot });
+  await petClick(page, {}, true); await page.locator('#message').fill('native rhythm draft'); await page.locator('#message').evaluate(n => n.setSelectionRange(3, 8));
+  for (const dailyRhythm of [false, true, false, true]) await send({ type: 'configure', options: { ...options, dailyRhythm } });
+  await page.waitForFunction(() => window.rhythmInput?.enabled === true);
+  assert.deepEqual(await page.locator('#message').evaluate(n => [n.value, n === document.activeElement, n.selectionStart, n.selectionEnd]), ['native rhythm draft', true, 3, 8]);
+  const reply = { id: 'rhythm-native-result', sessionId: snapshot.sessionId, text: '## Native captured reader\n\n' + 'Native hot configuration keeps captured content.\n\n'.repeat(70), time: 1, read: false };
+  await send({ type: 'snapshot', snapshot: { ...snapshot, results: [reply], sessions: snapshot.sessions.map(s => ({ ...s, replyId: reply.id, reply: reply.text })) } });
+  await page.locator('#chat-read').click(); await page.locator('#reader-text').evaluate(n => { n.scrollTop = 120; window.rhythmNativeReader = n.firstChild; });
+  for (const dailyRhythm of [false, true]) await send({ type: 'configure', options: { ...options, dailyRhythm } });
+  assert.equal(await page.locator('#reader-text').evaluate(n => n.firstChild === window.rhythmNativeReader && n.scrollTop === 120), true);
+  await page.screenshot({ path: 'artifacts/daily-rhythm-native.png' });
+  await writeFile('artifacts/daily-rhythm-native.json', JSON.stringify({ sourceCommit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), platform: process.platform, arch: process.arch, actual, controlledPolicyClock: true, realPhysics: true, nativeMainIpc: true, taskPreemptsSit: true, draftFocusSelection: true, capturedReaderAndScroll: true, events: await page.evaluate(() => window.rhythmEvents), api2Orders: await body.evaluate(() => window.rhythmOrders.filter(e => e.t === 'do').map(e => e.word)) }, null, 2) + '\n');
+  console.log('M6 native API 2 rhythm, task preemption and hot configuration state checks passed.');
+} finally { await app?.close(); await rm(directory, { recursive: true, force: true }); }

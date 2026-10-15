@@ -7,6 +7,7 @@ import { renderReplyMarkdown } from './markdown-runtime.js';
 import { petLanguage, petCopy, localizedText, appNoticeCopy, automaticPetLanguage, sessionStateLabel } from './locale.js';
 import { textScale } from './text-scale.js';
 import { viewportPoint, panelPosition } from './display-geometry.js';
+import { DEFAULT_DAILY_RHYTHM, initialRhythm, rhythmPeriod, stepRhythm } from './daily-rhythm.js';
 const PACK_LIMIT = 128 * 1024 * 1024;
 import { browserCharacters } from './character-library.js';
 const BUILTIN_ID = 'whale';
@@ -31,7 +32,7 @@ const nameIn = names => localizedText(names, notificationLocale());
 const wordName = (word, view = previewCharacter) => word.names?.[notificationLocale()]?.[0] ?? (view?.builtin ? uiCopy().words[word.id] : undefined) ?? nameIn(word.names)?.[0] ?? word.id;
 let body, previewBody, previewCharacter, activeView, activeScheme, activeName = 'DeepSeek 大肥鱼', libraryState, libraryBusy = false;
 let appliedMood, appliedControls, speech, speechExpires = Infinity, pressing = false, dragStart, dragging = false, previewScheme = "", reducedNeedsStep = true;
-let options = { textScale: 1, size: 180, roam: true, notifications: true, bubbleDurationMs: 12000 };
+let options = { textScale: 1, size: 180, roam: true, dailyRhythm: DEFAULT_DAILY_RHYTHM, notifications: true, bubbleDurationMs: 12000 };
 let snapshot = { mood: 'idle', text: '你好。点点我，或双击和我说话。', sessionId: null, sessions: [] };
 let x = innerWidth * .68, y = innerHeight - 155, hovered = false, asleep = false, toastTimer, noticeSession;
 let cursorPoint, lastHit;
@@ -43,6 +44,7 @@ let stageWidth = innerWidth, pressedPointerId;
 const composer = new ChatComposer();
 const chatTimers = new Map();
 let draftSessionId;
+let rhythm = initialRhythm(), rhythmWords = [], rhythmRestorePending = false, localHour, hourCheckedAt = -Infinity;
 const shownResults = new Set(), acknowledgedResults = new Set();
 let renderedLocale;
 let characterFeedback = { key: 'characterHint', args: [] };
@@ -206,6 +208,24 @@ function react(mood) { reactionMood = mood; reactionUntil = performance.now() + 
 function act(actor, pack, word) {
   if (pack?.vocab.some(w => w.id === word) && (!actor.words || actor.words.includes(word))) actor.do(word);
 }
+function updateRhythm(now, mood, readingAttention, active) {
+  const enabled = options.dailyRhythm === true && options.roam;
+  if (enabled && (now < hourCheckedAt || now - hourCheckedAt >= 1000)) { localHour = new Date().getHours(); hourCheckedAt = now; }
+  const status = enabled ? rhythmPeriod(localHour) ?? 'off' : 'off';
+  if (pet.dataset.rhythm !== status) pet.dataset.rhythm = status;
+  if (!enabled && !rhythm.enabled) return;
+  const runtime = notificationState?.runtime;
+  const result = stepRhythm(rhythm, { enabled, now, hour: localHour, words: rhythmWords,
+    occupied: { task: active || mood !== 'idle', pending: pendingRequests().length > 0, reading: userInputOccupied() || !interaction.hidden || readingAttention,
+      input: [...composer.sessions.values()].some(s => !!s.text.trim() || s.phase === 'sending'), dragging: pressing || dragging,
+      bodyBusy: !body?.layout || body.layout.busy, hovered, resting: asleep, reduced,
+      hidden: document.hidden || !!runtime && (runtime.phase !== 'running' || !runtime.visible), suspended: runtime?.suspended === true } });
+  rhythm = result.state;
+  // Reapply Host truth below; its existing stand/wake path releases a seated pose.
+  // Physical busy states defer that path, and user rest continues to own sleep.
+  if (result.release) { appliedMood = undefined; rhythmRestorePending = true; reducedNeedsStep = true; }
+  if (result.word) { act(body, activeView, result.word); reducedNeedsStep = true; }
+}
 function updateMood(now = performance.now()) {
   const labels = uiCopy().labels;
   const activity = sessionActivity(snapshot), active = activity.active;
@@ -213,16 +233,18 @@ function updateMood(now = performance.now()) {
   const mood = now < reactionUntil && !userInputOccupied() ? reactionMood : active || activity.waiting || activity.errors ? activity.mood : pendingRequests().length ? 'waiting' : asleep ? 'sleeping' : activity.mood;
   pet.dataset.mood = mood;
   if (!body) return;
-  if (mood !== appliedMood && !body.layout?.busy) {
+  const dialogOpen = panels.some(p => !p.hidden);
+  const readingAttention = !$('attention').hidden && ($('attention').matches(':hover') || document.activeElement === $('attention'));
+  updateRhythm(now, mood, readingAttention, active);
+  if (mood !== appliedMood && !body.layout?.busy && (!rhythmRestorePending || !pressing && !dragging)) {
     reducedNeedsStep = true;
     if (mood !== 'sleeping' && (appliedMood === 'sleeping' || ['sleep', 'sit'].includes(body.layout?.mode))) act(body, activeView, 'stand');
     const word = { idle: 'neutral', thinking: 'thinking', talking: 'neutral', working: 'determined', waiting: 'worried', happy: 'happy', error: 'sad', sleeping: 'sleep' }[mood];
     if (word) act(body, activeView, word);
     appliedMood = mood;
+    rhythmRestorePending = false;
   }
-  const dialogOpen = panels.some(p => !p.hidden);
-  const readingAttention = !$('attention').hidden && ($('attention').matches(':hover') || document.activeElement === $('attention'));
-  const controls = { roam: options.roam && !reduced && !hovered && !readingAttention && !dialogOpen && bubble.hidden && interaction.hidden && mood === 'idle' ? 'calm' : 'off', dialogOpen: dialogOpen || !interaction.hidden, thinking: mood === 'thinking', thoughtShown: false, expression: { thinking: 'thinking', talking: 'determined', working: 'determined', waiting: 'worried', error: 'sad' }[mood] ?? null, listening: !chat.hidden && !active };
+  const controls = { roam: options.roam && !options.dailyRhythm && !reduced && !hovered && !readingAttention && !dialogOpen && bubble.hidden && interaction.hidden && mood === 'idle' ? 'calm' : 'off', dialogOpen: dialogOpen || !interaction.hidden, thinking: mood === 'thinking', thoughtShown: false, expression: { thinking: 'thinking', talking: 'determined', working: 'determined', waiting: 'worried', error: 'sad' }[mood] ?? null, listening: !chat.hidden && !active };
   const key = JSON.stringify(controls);
   if (key !== appliedControls) { if (controls.roam === 'off') body.stopWalk(0); body.set(controls); appliedControls = key; }
   $('toggle-roam').setAttribute('aria-checked', String(options.roam));
@@ -400,7 +422,7 @@ $('interaction-pending').onclick = () => openRequests(false);
 
 function applyOptions(value) {
   const previousSize = options.size;
-  options = { ...options, ...value, textScale: Object.hasOwn(value ?? {}, 'textScale') ? textScale(value.textScale) : options.textScale };
+  options = { ...options, ...value, dailyRhythm: Object.hasOwn(value ?? {}, 'dailyRhythm') ? value.dailyRhythm === true : options.dailyRhythm, textScale: Object.hasOwn(value ?? {}, 'textScale') ? textScale(value.textScale) : options.textScale };
   document.documentElement.style.setProperty('--size', `${options.size}px`);
   document.documentElement.style.setProperty('--text-scale', String(options.textScale));
   if (options.size !== previousSize) body?.set({ bounds: bounds() });
@@ -422,9 +444,10 @@ function receive(message) {
       pet.dataset.hostReady = 'true';
       body?.set({ bounds: bounds() }); render(); break;
     case 'configure': {
-      const changed = Object.keys(message.options ?? {}).some(key => key !== 'textScale' && key !== 'size' && options[key] !== message.options[key]);
+      const changed = Object.keys(message.options ?? {}).some(key => !['textScale', 'size', 'dailyRhythm'].includes(key) && options[key] !== message.options[key]);
       applyOptions(message.options);
       if (changed) render();
+      else updateMood();
       break;
     }
     case 'ui-control':
@@ -739,6 +762,7 @@ async function setCharacter(view, scheme = '') {
     onError: error => { characterStatus('bodyError', error.message); if (body === next && view.id !== BUILTIN_ID) void restoreBuiltin(); },
   });
   body?.dispose(); body = next; activeView = view; activeScheme = knownScheme(view, scheme); activeName = nameIn(view.name);
+  rhythm = initialRhythm(); rhythmRestorePending = false; rhythmWords = view.vocab.map(w => w.id).filter(w => next.words?.includes(w)); hourCheckedAt = -Infinity;
   // A new body has not reported its geometry yet. Retire the previous body's
   // input region until position() receives the new body's first frame.
   pet.hidden = true; delete pet.dataset.mode; delete pet.dataset.pressing;
