@@ -1,0 +1,480 @@
+{
+  "version": "0.4.9",
+  "tag": "v0.4.9",
+  "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+  "verifiedAt": "2026-10-15T09:13:31.515049+00:00",
+  "pullRequest": "https://github.com/takboo/dsh-coopanion/pull/11",
+  "mainCi": {
+    "url": "https://github.com/takboo/dsh-coopanion/actions/runs/38706065646",
+    "runAttempt": 1,
+    "checksPassed": 10
+  },
+  "releaseCi": {
+    "url": "https://github.com/takboo/dsh-coopanion/actions/runs/38708215499",
+    "runAttempt": 1,
+    "checksPassed": 13,
+    "jobs": [
+      {
+        "name": "Verify release tag",
+        "conclusion": "success"
+      },
+      {
+        "name": "Start tagged release from main",
+        "conclusion": "skipped"
+      },
+      {
+        "name": "Test release artifact / Test (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "name": "Test release artifact / Test (macos-latest)",
+        "conclusion": "success"
+      },
+      {
+        "name": "Test release artifact / Test (windows-latest)",
+        "conclusion": "success"
+      },
+      {
+        "name": "Test release artifact / workflow-syntax",
+        "conclusion": "success"
+      },
+      {
+        "name": "Test release artifact / Install (macos-latest, DSH 0.2.0-rc.2)",
+        "conclusion": "success"
+      },
+      {
+        "name": "Test release artifact / Install (macos-latest, DSH 0.2.1-alpha.1)",
+        "conclusion": "success"
+      },
+      {
+        "name": "Test release artifact / Install (ubuntu-latest, DSH 0.2.1-alpha.1)",
+        "conclusion": "success"
+      },
+      {
+        "name": "Test release artifact / Install (ubuntu-latest, DSH 0.2.0-rc.2)",
+        "conclusion": "success"
+      },
+      {
+        "name": "Test release artifact / Install (windows-latest, DSH 0.2.1-alpha.1)",
+        "conclusion": "success"
+      },
+      {
+        "name": "Test release artifact / Install (windows-latest, DSH 0.2.0-rc.2)",
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish verified tarball to npm",
+        "conclusion": "success"
+      },
+      {
+        "name": "Attach verified bytes to GitHub Release",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "package": {
+    "name": "@takboo/dsh-coopanion",
+    "version": "0.4.9",
+    "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+    "sha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269",
+    "integrity": "sha512-QL+tJ9tiR3U1NPCc4h8noDpaRAtaYNT5Dfkv5TDZ0Abdg8JAW0nAavzhFH7hZUo9RQScBrWmkEkIbAS5DQaHvw=="
+  },
+  "distribution": {
+    "version": "0.4.9",
+    "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+    "sha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269",
+    "integrity": "sha512-QL+tJ9tiR3U1NPCc4h8noDpaRAtaYNT5Dfkv5TDZ0Abdg8JAW0nAavzhFH7hZUo9RQScBrWmkEkIbAS5DQaHvw==",
+    "verifiedAt": "2026-10-15T09:10:30.393Z",
+    "release": "https://github.com/takboo/dsh-coopanion/releases/tag/v0.4.9",
+    "releaseBodyMatchesCurrentNotes": true,
+    "assets": [
+      {
+        "name": "dsh-coopanion-0.4.9.tgz",
+        "url": "https://github.com/takboo/dsh-coopanion/releases/download/v0.4.9/dsh-coopanion-0.4.9.tgz",
+        "sha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269",
+        "bytes": 21200754
+      },
+      {
+        "name": "dsh-coopanion.tgz",
+        "url": "https://github.com/takboo/dsh-coopanion/releases/download/v0.4.9/dsh-coopanion.tgz",
+        "sha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269",
+        "bytes": 21200754
+      },
+      {
+        "name": "paper-star.zip",
+        "url": "https://github.com/takboo/dsh-coopanion/releases/download/v0.4.9/paper-star.zip",
+        "sha256": "8fabe02356e4c5c933eb69b2c2389cedf6ee0b9dbd58e375d1a4ae495e457172",
+        "bytes": 1959
+      },
+      {
+        "name": "SHA256SUMS",
+        "url": "https://github.com/takboo/dsh-coopanion/releases/download/v0.4.9/SHA256SUMS",
+        "sha256": "1ce36a9d6c75452f90bd504879baa64b34ad3e9394def021faaa07e69e325508",
+        "bytes": 422
+      },
+      {
+        "name": "verification.json",
+        "url": "https://github.com/takboo/dsh-coopanion/releases/download/v0.4.9/verification.json",
+        "sha256": "c347cae46ffc72accd313b17d7d81700f9740c15ecd3e1ac7fc9fb676fcdfb3c",
+        "bytes": 316
+      },
+      {
+        "name": "release-notes.md",
+        "url": "https://github.com/takboo/dsh-coopanion/releases/download/v0.4.9/release-notes.md",
+        "sha256": "88ef2019460d959cbfff6c3fad08471eaa9f16f42127bda619664cc21cb50da8",
+        "bytes": 2316
+      }
+    ],
+    "npm": {
+      "url": "https://registry.npmjs.org/@takboo/dsh-coopanion/-/dsh-coopanion-0.4.9.tgz",
+      "latest": "0.4.9",
+      "identicalBytes": true,
+      "provenance": {
+        "url": "https://registry.npmjs.org/-/npm/v1/attestations/@takboo%2fdsh-coopanion@0.4.9",
+        "available": true,
+        "cryptographicallyVerifiedLocally": false
+      }
+    },
+    "latestAlias": {
+      "url": "https://github.com/takboo/dsh-coopanion/releases/latest/download/dsh-coopanion.tgz",
+      "identicalBytes": true
+    }
+  },
+  "installationEvidence": {
+    "matrices": 6,
+    "identityBoundReports": 48,
+    "reports": [
+      {
+        "matrix": "installation-Linux-0.2.0-rc.2",
+        "report": "install-0.2.0-rc.2.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Linux-0.2.0-rc.2",
+        "report": "goal-host-0.2.0-rc.2.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Linux-0.2.0-rc.2",
+        "report": "session-host-0.2.0-rc.2.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Linux-0.2.0-rc.2",
+        "report": "session-native-0.2.0-rc.2.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Linux-0.2.0-rc.2",
+        "report": "desktop-recovery-0.2.0-rc.2.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Linux-0.2.0-rc.2",
+        "report": "text-scale-installed-0.2.0-rc.2.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Linux-0.2.0-rc.2",
+        "report": "multi-display-installed-0.2.0-rc.2.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Linux-0.2.0-rc.2",
+        "report": "daily-rhythm-installed-0.2.0-rc.2.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Linux-0.2.1-alpha.1",
+        "report": "install-0.2.1-alpha.1.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Linux-0.2.1-alpha.1",
+        "report": "goal-host-0.2.1-alpha.1.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Linux-0.2.1-alpha.1",
+        "report": "session-host-0.2.1-alpha.1.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Linux-0.2.1-alpha.1",
+        "report": "session-native-0.2.1-alpha.1.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Linux-0.2.1-alpha.1",
+        "report": "desktop-recovery-0.2.1-alpha.1.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Linux-0.2.1-alpha.1",
+        "report": "text-scale-installed-0.2.1-alpha.1.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Linux-0.2.1-alpha.1",
+        "report": "multi-display-installed-0.2.1-alpha.1.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Linux-0.2.1-alpha.1",
+        "report": "daily-rhythm-installed-0.2.1-alpha.1.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Windows-0.2.0-rc.2",
+        "report": "install-0.2.0-rc.2.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Windows-0.2.0-rc.2",
+        "report": "goal-host-0.2.0-rc.2.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Windows-0.2.0-rc.2",
+        "report": "session-host-0.2.0-rc.2.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Windows-0.2.0-rc.2",
+        "report": "session-native-0.2.0-rc.2.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Windows-0.2.0-rc.2",
+        "report": "desktop-recovery-0.2.0-rc.2.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Windows-0.2.0-rc.2",
+        "report": "text-scale-installed-0.2.0-rc.2.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Windows-0.2.0-rc.2",
+        "report": "multi-display-installed-0.2.0-rc.2.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Windows-0.2.0-rc.2",
+        "report": "daily-rhythm-installed-0.2.0-rc.2.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Windows-0.2.1-alpha.1",
+        "report": "install-0.2.1-alpha.1.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Windows-0.2.1-alpha.1",
+        "report": "goal-host-0.2.1-alpha.1.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Windows-0.2.1-alpha.1",
+        "report": "session-host-0.2.1-alpha.1.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Windows-0.2.1-alpha.1",
+        "report": "session-native-0.2.1-alpha.1.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Windows-0.2.1-alpha.1",
+        "report": "desktop-recovery-0.2.1-alpha.1.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Windows-0.2.1-alpha.1",
+        "report": "text-scale-installed-0.2.1-alpha.1.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Windows-0.2.1-alpha.1",
+        "report": "multi-display-installed-0.2.1-alpha.1.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-Windows-0.2.1-alpha.1",
+        "report": "daily-rhythm-installed-0.2.1-alpha.1.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-macOS-0.2.0-rc.2",
+        "report": "install-0.2.0-rc.2.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-macOS-0.2.0-rc.2",
+        "report": "goal-host-0.2.0-rc.2.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-macOS-0.2.0-rc.2",
+        "report": "session-host-0.2.0-rc.2.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-macOS-0.2.0-rc.2",
+        "report": "session-native-0.2.0-rc.2.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-macOS-0.2.0-rc.2",
+        "report": "desktop-recovery-0.2.0-rc.2.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-macOS-0.2.0-rc.2",
+        "report": "text-scale-installed-0.2.0-rc.2.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-macOS-0.2.0-rc.2",
+        "report": "multi-display-installed-0.2.0-rc.2.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-macOS-0.2.0-rc.2",
+        "report": "daily-rhythm-installed-0.2.0-rc.2.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-macOS-0.2.1-alpha.1",
+        "report": "install-0.2.1-alpha.1.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-macOS-0.2.1-alpha.1",
+        "report": "goal-host-0.2.1-alpha.1.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-macOS-0.2.1-alpha.1",
+        "report": "session-host-0.2.1-alpha.1.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-macOS-0.2.1-alpha.1",
+        "report": "session-native-0.2.1-alpha.1.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-macOS-0.2.1-alpha.1",
+        "report": "desktop-recovery-0.2.1-alpha.1.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-macOS-0.2.1-alpha.1",
+        "report": "text-scale-installed-0.2.1-alpha.1.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-macOS-0.2.1-alpha.1",
+        "report": "multi-display-installed-0.2.1-alpha.1.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      },
+      {
+        "matrix": "installation-macOS-0.2.1-alpha.1",
+        "report": "daily-rhythm-installed-0.2.1-alpha.1.json",
+        "sourceCommit": "aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2",
+        "archiveSha256": "d1af828358bdf13870294bc9cbafcf1038d2001058ac39172e53fe0125818269"
+      }
+    ]
+  },
+  "branchCleanup": {
+    "local": [
+      "main"
+    ],
+    "remote": [
+      "main"
+    ],
+    "originalHistoryRetained": true,
+    "releaseBackupSha256": "7d8c8633dc8731551d573b3e67b11cf41fd0673b60c3d1a7204280cc0d6e5fe5"
+  },
+  "market": {
+    "submission": {
+      "mergedAt": null,
+      "state": "OPEN",
+      "url": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/7073"
+    },
+    "feeds": [
+      {
+        "url": "https://awesome-dsh-plugin.com/plugins.json",
+        "status": 200,
+        "containsPlugin": false,
+        "observedAt": "2026-10-15T09:09:53.922Z"
+      },
+      {
+        "url": "https://awesome-dsh-plugin.com/updates.json",
+        "status": 200,
+        "containsPlugin": false,
+        "observedAt": "2026-10-15T09:09:54.523Z"
+      }
+    ],
+    "status": "pending-catalog-merge"
+  },
+  "acceptanceBoundaries": [
+    "Physical multi-display and mixed DPI remain pending.",
+    "Long-term experience and resource observations remain pending.",
+    "Real-model quality and physical OS Notification Center delivery remain pending."
+  ],
+  "priorCandidateObservation": {
+    "run": "https://github.com/takboo/dsh-coopanion/actions/runs/38702437754",
+    "firstAttempt": "macOS alpha work-area height difference of 3 DIP",
+    "retest": "same commit, archive and assertions passed on attempt 2; root cause not fully resolved",
+    "mainAndReleaseCi": "both passed all checks on their first attempts"
+  }
+}

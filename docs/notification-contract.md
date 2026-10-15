@@ -1,10 +1,10 @@
-# 提醒接口：N0 / protocol 1
+# 提醒接口：protocol 1
 
-共享定义位于 [notification-contract.ts](../src/notification-contract.ts)，网页通知适配器位于 [system-notifications.ts](../src/client/system-notifications.ts)。本阶段以这些定义作为 N1／N2 的共同输入。
+共享定义位于 [notification-contract.ts](../src/notification-contract.ts)，网页通知适配器位于 [system-notifications.ts](../src/client/system-notifications.ts)。Host、DSH Client 与桌宠随同一安装包消费这些定义。
 
 ## 身份与事件
 
-提醒 id 使用 `[sessionId, turn, seq, category, stage]` 的 JSON 元组编码；请求 id 使用 `[sessionId, kind, nativeId]`。各字段保留完整值。后续稍后提醒增加可选调度轮次；无日志 callId 的运行请求使用完整 runtime UUID 并标记 `source: runtime`，上下文 turn／seq 保留已提交锚点。runtime 元组依次追加 UUID 与可选调度轮次。`stage` 区分 `initial` 和 `reminder`。
+提醒 id 使用 `[sessionId, turn, seq, category, stage]` 的 JSON 元组编码；请求 id 使用 `[sessionId, kind, nativeId]`。各字段保留完整值。稍后提醒使用可选调度轮次；无日志 callId 的运行请求使用完整 runtime UUID 并标记 `source: runtime`，上下文 turn／seq 保留已提交锚点。runtime 元组依次追加 UUID 与可选调度轮次。`stage` 区分 `initial` 和 `reminder`。
 
 类别为 `reply`、`goal-progress`、`completed`、`approval`、`question`、`error`、`stopped`、`interrupted`、`blocked`、`max-tokens`。每条提醒带标题、预览、源时间和对应请求 id 列表；合并互动通过请求列表关联各自的结算状态。
 
@@ -48,7 +48,7 @@ Host 按运行状态、显示状态及用户设置选择通道。系统投递需
 | `coopanion/notification-test` | clientId、generation | 用户操作创建或复用公开源会话，返回对应完整提醒的领取；角色运行且隐藏时可用 |
 | `coopanion/notification-snooze` | interactionId、generation | 为当前有效请求重新安排到期时间 |
 
-方法使用对应 `/api/coopanion/<endpoint>` 的公开 Connection 载体。请求按共享严格 schema 校验。Host 负责服务端领取令牌、单次领取、停止取消、迟到回执处理与请求结算；N1 实现这些方法，集成分支负责入口装配。
+方法使用对应 `/api/coopanion/<endpoint>` 的公开 Connection 载体。请求按共享严格 schema 校验。Host 负责服务端领取令牌、单次领取、停止取消、迟到回执处理与请求结算；入口装配见 [index.ts](../src/index.ts)。
 
 ## 网页通知
 
@@ -58,7 +58,7 @@ Host 按运行状态、显示状态及用户设置选择通道。系统投递需
 
 回执分为 `requested`、`shown`、`clicked`、`failed`、`unknown`。构造通知产生 requested；实际 onshow 产生 shown；实际 onclick 产生 clicked 并调用对应完整 sessionId 的会话操作；onerror 和构造失败产生 failed。回执字段完整关联原领取。OS 授权、通知中心留存及窗口激活以实机结果记录。
 
-`dispose()` 释放事件回调和本地引用，已送达通知由 OS 管理留存。N2 按 Host 运行代次管理适配器生命周期，并接入权限说明、测试反馈及状态刷新。
+`dispose()` 释放事件回调和本地引用，已送达通知由 OS 管理留存。Client 按 Host 运行代次管理适配器生命周期，并接入权限说明、测试反馈及状态刷新。
 
 ## 配置与动作
 

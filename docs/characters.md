@@ -87,7 +87,8 @@ talk(), setScheme(id, {fade}), dispose()
 | 思考 | thinking | thinking=true |
 | 生成 / 工具工作 | determined | expression=determined，生成时嘴部脉冲 |
 | 等待确认 | worried | expression=worried，停止闲时活动 |
-| 完成 | happy | 2.5 秒后回待机 |
+| 已提交目标完成 | happy | 2.5 秒后回待机 |
+| 普通回合／目标中间轮回复 | neutral | 保留全文及未读，不触发成功庆祝 |
 | 出错 | sad | expression=sad，停止闲时活动 |
 | 用户休息 | sleep | 唤醒时 stand |
 
@@ -101,7 +102,8 @@ talk(), setScheme(id, {fade}), dispose()
 
 | 事件 | 候选词（按优先级） | 提示／入口 |
 |---|---|---|
-| 完成 | happy → wave → neutral | 当前最终回复优先进入阅读气泡；其他完成可显示互动提示 |
+| 已提交目标完成 | happy → wave → neutral | 当前最终回复优先进入阅读气泡；其他目标完成可显示互动提示 |
+| 普通回合／目标中间轮回复 | 无庆祝动作 | 保留阅读气泡及未读，文案见[提醒契约](notification-contract.md) |
 | 审批 | worried → thinking → neutral | 下一步需要你确认；返回源会话处理 |
 | AI 提问 | curious → thinking → worried → neutral | 问题预览及待处理列表 |
 | 回合出错 | sad → worried → neutral | 返回源会话查看详情 |

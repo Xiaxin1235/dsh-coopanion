@@ -1,10 +1,12 @@
 # 角色提醒与系统通知执行计划
 
-更新：2026-10-13。状态：N0 已完成，N1／N2 已整合，N3 按用户确认的集成范围验收完成，N4 v0.4.5 交付已完成，npm 与 GitHub Release 已发布。接口见 [N0 共享契约](notification-contract.md)，检查结果见 [N0 验证记录](notification-n0.md)、[N1／N2 交接记录](notification-implementation.md)、[N3 验收记录](notification-n3.md)和 [N4 交付记录](notification-n4.md)。
+> 历史归档：下文状态、命令、分工和“下一步”仅适用于记录时的提交与测试包，不是当前执行指令。现行入口见[文档索引](../../README.md)，当前范围见[路线图](../../roadmap.md)。
+
+更新：2026-10-13。状态：N0 已完成，N1／N2 已整合，N3 按用户确认的集成范围验收完成，N4 v0.4.5 交付已完成，npm 与 GitHub Release 已发布。接口见 [N0 共享契约](../../notification-contract.md)，检查结果见 [N0 验证记录](notification-n0.md)、[N1／N2 交接记录](notification-implementation.md)、[N3 验收记录](notification-n3.md)和 [N4 交付记录](notification-n4.md)。
 
 本阶段交付一套由 Harness 事件驱动的提醒：角色显示时通过动作、表情、互动气泡和待处理信封呈现；角色隐藏时，通过 DSH 界面发送系统通知。实施基线为插件 v0.4.4，支持 DSH 0.2.0-rc.2 和 0.2.1-alpha.1。
 
-本文记录本阶段目标、接口、执行顺序和验收条件。已交付功能继续由 [README](../README.md) 说明，角色接口由 [角色对接文档](characters.md) 说明，发版按 [发布说明](releasing.md) 执行；0.4.5 的实际行为已同步到这些文档及 [版本记录](release-notes.md)。
+本文记录本阶段目标、接口、执行顺序和验收条件。已交付功能继续由 [README](../../../README.md) 说明，角色接口由 [角色对接文档](../../characters.md) 说明，发版按 [发布说明](../../releasing.md) 执行；0.4.5 的实际行为已同步到这些文档及 [版本记录](../../release-notes.md)。
 
 ## 交付目标
 

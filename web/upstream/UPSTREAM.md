@@ -1,5 +1,7 @@
 # Imported Coopanion runtime
 
+This file records the pinned import and adaptations. For the current plugin's dependencies and notices, read the root [third-party notices](../../THIRD_PARTY_NOTICES.md). The adjacent `THIRD_PARTY_NOTICES.md` is the original upstream notice: its speech-recognition dependencies, model paths and Electron version describe that upstream package. Its relative `LICENSE` link is supported by an identical copy of the root AGPL license here.
+
 Source: https://github.com/Pal-AI-Lab/Coopanion/tree/d7b1a0026fed3eb1975a6e0387527d806192cdbf/packages/cortico-world-desktop-pet
 
 Commit: `d7b1a0026fed3eb1975a6e0387527d806192cdbf` (pinned; no runtime download).

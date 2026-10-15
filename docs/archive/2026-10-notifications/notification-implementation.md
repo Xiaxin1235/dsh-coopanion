@@ -1,8 +1,10 @@
 # N1／N2 实现交接与 N3 准备
 
+> 历史归档：下文状态、命令、分工和“下一步”仅适用于记录时的提交与测试包，不是当前执行指令。现行入口见[文档索引](../../README.md)，当前范围见[路线图](../../roadmap.md)。
+
 日期：2026-10-12。状态：N1／N2 局部实现已交接，集成候选已完成入口装配；N3 验收进行中。版本保持 v0.4.4。
 
-执行顺序与文件归属见 [执行计划](notification-plan.md)，消息定义见 [共享契约](notification-contract.md)，N0 已验证基线见 [N0 记录](notification-n0.md)。
+执行顺序与文件归属见 [执行计划](notification-plan.md)，消息定义见 [共享契约](../../notification-contract.md)，N0 已验证基线见 [N0 记录](notification-n0.md)。
 
 ## 提交与实现
 

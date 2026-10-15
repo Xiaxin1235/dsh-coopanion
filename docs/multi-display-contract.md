@@ -1,6 +1,6 @@
 # 多屏几何契约（M5）
 
-产品保持 v0.4.8，支持 DSH 0.2.0-rc.2 / 0.2.1-alpha.1。一个透明原生窗口只覆盖一块显示器的 workArea；不使用所有屏幕的包围矩形，任务栏、菜单栏、负坐标、上下错位与工作区空洞不成为角色活动区域。保留 API 2 角色 frame、现有物理系统及脚本沙箱。
+支持 DSH 0.2.0-rc.2 / 0.2.1-alpha.1。一个透明原生窗口只覆盖一块显示器的 workArea；不使用所有屏幕的包围矩形，任务栏、菜单栏、负坐标、上下错位与工作区空洞不成为角色活动区域。保留 API 2 角色 frame、现有物理系统及脚本沙箱。
 
 ## 坐标与原生归属
 
@@ -20,10 +20,10 @@ Main → Renderer 使用同包消息 `display-changed { revision, displayId, wor
 
 切屏与布局变化只更新几何，不重建 Renderer、角色 frame 或正文，不调用内容 render；保留捕获阅读 DOM/正文、滚动像素偏移、草稿、焦点/选择、在途请求身份与气泡时钟，不增加 read/select/chat。不改变 M1 完成语义、M2 准入去重、M3 generation/visibilityRevision 和恢复基线、M4 文字配置；崩溃后的临时状态丢失边界保持。
 
-## 验证与进入条件
+## 验证边界
 
-基线为 M4 本地验收 `74fa3d0643652a1a8ff314ffa6b7e6280071c3b8`。M1–M4 已有本地证据；维护者审阅、远端 CI 和其他平台仍待验收，M3 三平台退出条件未满足。用户明确要求继续 M5，因此先固定受控复现再实施，不将这些外部边界抹去。
+实施基线与进入条件保留在 [M5 历史记录](evidence/m5/README.md)。后续发布 CI 状态见[文档索引](README.md)；物理多屏及混合 DPI 仍需独立验收。
 
-进入复现见 [baseline-reproduction.json](evidence/m5/baseline-reproduction.json)：上方竖屏松手未触发旧水平判断；混合缩放负原点暴露旧 Windows 测试光标的全局乘比错误。原生验证环境为当前 macOS arm64 / Electron 44.7.0，实际 screen 清单与 DPR 在原生报告中记录；物理多屏和混合 DPI 尚无验收证据。
+进入复现见 [baseline-reproduction.json](evidence/m5/baseline-reproduction.json)：上方竖屏松手未触发旧水平判断；混合缩放负原点暴露旧 Windows 测试光标的全局乘比错误。当时原生验证环境为 macOS arm64 / Electron 44.7.0，实际 screen 清单与 DPR 在原生报告中记录；物理多屏和混合 DPI 尚无验收证据。
 
 纯几何及原生控制器注入布局测试在 `npm test` 中运行；浏览器覆盖不规则布局、混合 DPR、状态保持与命中；原生/正式安装入口核对当前实际 screen、窗口、viewport、文字放大后点击及布局更新。三平台和两宿主六组 CI 矩阵沿用这些入口。Electron 坐标定义参见[官方 screen 文档](https://www.electronjs.org/docs/latest/api/screen)，并已与本地 Electron 44.7.0 声明及本机测量核对。完整提交、包摘要、执行范围与剩余边界见 [M5 证据](evidence/m5/README.md)。
