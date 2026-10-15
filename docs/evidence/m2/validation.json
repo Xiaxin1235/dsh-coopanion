@@ -1,0 +1,187 @@
+{
+  "date": "2026-10-15",
+  "milestone": "M2",
+  "status": "local-validation-passed-awaiting-maintainer-review",
+  "sourceCommit": "89d0fcbee7c51d0eea15ebf223b4e48fd3809a2c",
+  "sourceCleanWhenPacked": true,
+  "m1Ancestors": [
+    "df36f0dd138c48cac491a552bba3e1950dc48184",
+    "592cd7b6536c4e714f21d8ef92d01a7030dd8493"
+  ],
+  "package": {
+    "name": "@takboo/dsh-coopanion",
+    "version": "0.4.8",
+    "path": ".cache/m2/takboo-dsh-coopanion-0.4.8.tgz",
+    "sha256": "743ab7f4bcad0fe7785020c63bfd1c069d4b1755eb833591140286dec5219423",
+    "integrity": "sha512-nrOK6yQDM9FAlHORmI+tzSM4Q6OhwWhQG3TfgZdGitAhAoce5jabkJ5UvxTRVKlSaPYWYHL669ufsU4j5N/0dg==",
+    "released": false
+  },
+  "toolchain": {
+    "node": "24.21.0",
+    "npm": "11.19.1",
+    "electron": "44.7.0",
+    "chromium": "151.0.7922.34",
+    "platform": "macOS arm64"
+  },
+  "checks": {
+    "cleanNpmCiIgnoreScripts": "pass",
+    "electronSetup": "pass",
+    "typecheck": "pass",
+    "metadata": "pass",
+    "vitest": {
+      "status": "pass",
+      "files": 14,
+      "tests": 129
+    },
+    "nodeTests": {
+      "status": "pass",
+      "releaseAndClientBuild": 11,
+      "localeClient": 1
+    },
+    "build": "pass",
+    "api2CharacterPack": "pass",
+    "package": "pass",
+    "browser": {
+      "mainRuntime": "pass",
+      "localeTests": 3,
+      "notifications": "pass",
+      "inbox": "pass",
+      "sessionRepliesAndChatTests": 7
+    },
+    "nativeElectronStandalone": "pass",
+    "formalInstalls": {
+      "0.2.0-rc.2": {
+        "status": "pass",
+        "reports": {
+          "session-host": "session-host-0.2.0-rc.2.json",
+          "session-native": "session-native-0.2.0-rc.2.json",
+          "install": "install-0.2.0-rc.2.json",
+          "goal-host": "goal-host-0.2.0-rc.2.json",
+          "notification-host": "notification-host-0.2.0-rc.2.json",
+          "notification-integration": "notification-integration-0.2.0-rc.2.json",
+          "notification-source": "notification-source-0.2.0-rc.2.json"
+        },
+        "runtimeLock": "runtime-lock-0.2.0-rc.2.json.gz",
+        "runtimeLockSha256": "c798ab7627781d93d67e6e07695a36c3bc53cf6744fa13df77ff646809fa89b3"
+      },
+      "0.2.1-alpha.1": {
+        "status": "pass",
+        "reports": {
+          "session-host": "session-host-0.2.1-alpha.1.json",
+          "session-native": "session-native-0.2.1-alpha.1.json",
+          "install": "install-0.2.1-alpha.1.json",
+          "goal-host": "goal-host-0.2.1-alpha.1.json",
+          "notification-host": "notification-host-0.2.1-alpha.1.json",
+          "notification-integration": "notification-integration-0.2.1-alpha.1.json",
+          "notification-source": "notification-source-0.2.1-alpha.1.json"
+        },
+        "runtimeLock": "runtime-lock-0.2.1-alpha.1.json.gz",
+        "runtimeLockSha256": "ea885ebf6c4e0b4dcf954bef2cb83161d18b7b5a2bb8a75ba3a1c4cbb401412a"
+      }
+    },
+    "packageSourceContent": "pass"
+  },
+  "boundaries": {
+    "remoteCI": "not-run; no push authorized",
+    "linuxWindowsNative": "not-run; existing six-job matrix updated",
+    "realModelQuality": "not-run; controlled adapter only",
+    "physicalNotificationCenterDeliveryAndRetention": "not-run; controlled notification adapter does not prove OS delivery",
+    "competingWriter": "independent persistence write handle in same process, not a second OS process",
+    "posixPermissionFailure": "actual isolated persistence directory chmod 000, restored after test",
+    "draftPersistence": "in current renderer only; window reload persistence outside M2",
+    "acknowledgement": "queue admission, not task completion or durability flush barrier",
+    "published": false,
+    "M3ToM6": "not-started"
+  },
+  "files": {
+    "session-host-0.2.0-rc.2.json": {
+      "sha256": "75ea6a01ceca185b5bd59495125d0208a92720ad8949ee44a093869da775904d",
+      "bytes": 127530
+    },
+    "session-native-0.2.0-rc.2.json": {
+      "sha256": "17a6e69fb266e53cf48e69f4ded599718065784de6399ba7bf7eda1b23695899",
+      "bytes": 52176
+    },
+    "install-0.2.0-rc.2.json": {
+      "sha256": "9564ad4b72bc0011d7ed9adc7c6c3ca5330f0197ecae3cb119dd673ce3dffdc6",
+      "bytes": 931
+    },
+    "goal-host-0.2.0-rc.2.json": {
+      "sha256": "b9b31dca2864c431cfbabfa53d171d4ec7e4c4a4ca9ed8156c1eda0dd0aa613b",
+      "bytes": 25151
+    },
+    "notification-host-0.2.0-rc.2.json": {
+      "sha256": "9e2ef5a1fc07af104d7b067decfc79a23e0db6a6f2805446b76f1309308dcd48",
+      "bytes": 4438
+    },
+    "notification-integration-0.2.0-rc.2.json": {
+      "sha256": "665bba9b51b94beab2b04cb226618f44e0526ba836513a2dbdb8719571a61997",
+      "bytes": 3734
+    },
+    "notification-source-0.2.0-rc.2.json": {
+      "sha256": "41d46a5f7b7bc082c535c411fec706eaf72da89fb9c45b87167900bda445384f",
+      "bytes": 507
+    },
+    "runtime-lock-0.2.0-rc.2.json.gz": {
+      "sha256": "702d0aae38a8023ebf9ce291723f9ad46af82b5178c77bacad67477e57e9dcb6",
+      "bytes": 66693,
+      "uncompressedSha256": "c798ab7627781d93d67e6e07695a36c3bc53cf6744fa13df77ff646809fa89b3"
+    },
+    "session-host-0.2.1-alpha.1.json": {
+      "sha256": "4b433c67e1f1fd780ede835b0dac006814202f00d38d1b7f4f4379d4227a8505",
+      "bytes": 153487
+    },
+    "session-native-0.2.1-alpha.1.json": {
+      "sha256": "8892404857800e6577776b83711c9928db8c78c72681d2c93e74e4369a5956aa",
+      "bytes": 66362
+    },
+    "install-0.2.1-alpha.1.json": {
+      "sha256": "331a2a56e043573a824ed6b0c4f8f7cee5b94aa8381ec80b4c05be14f9bb1e4e",
+      "bytes": 934
+    },
+    "goal-host-0.2.1-alpha.1.json": {
+      "sha256": "8fda97a869924ea8625934f94ecfcdd345d7ad89c041203b1acea624b6dce1cd",
+      "bytes": 25154
+    },
+    "notification-host-0.2.1-alpha.1.json": {
+      "sha256": "aff7fab254ae475e8fbbd576a163e9b35e35040b0684ba701304176c02311c7a",
+      "bytes": 4441
+    },
+    "notification-integration-0.2.1-alpha.1.json": {
+      "sha256": "c4fe2964c5d2c871d56808c1edb01c5ab7a5356ec98a7de4d6ba664a7a83a418",
+      "bytes": 3737
+    },
+    "notification-source-0.2.1-alpha.1.json": {
+      "sha256": "f864991f2426afd54e5ce42ab95bff27970b8a7fd583bf951eca2df15dd5a3a7",
+      "bytes": 510
+    },
+    "runtime-lock-0.2.1-alpha.1.json.gz": {
+      "sha256": "a78775e2faa4bde511a81d9c8c7d12f553ad2c3933019c316a0abf57d1686b93",
+      "bytes": 69011,
+      "uncompressedSha256": "ea885ebf6c4e0b4dcf954bef2cb83161d18b7b5a2bb8a75ba3a1c4cbb401412a"
+    },
+    "package-verification.json": {
+      "sha256": "16ff74e4c12e9c75072e94ac48ab1797b6f2e2da3c19fa0a478d826dcbbef816"
+    },
+    "controller-0.2.0-rc.2.json": {
+      "sha256": "2cf99183399136765d1e515024a0115c1c2d4574f99bf2f501d1a6c289fe8a24",
+      "bytes": 62553
+    },
+    "controller-0.2.1-alpha.1.json": {
+      "sha256": "c2455857ed134380774934a697b627803735958de56dda5ca87acfed1448cdd4",
+      "bytes": 75240
+    },
+    "controller-probe.mjs": {
+      "sha256": "22fb2b96a8400c2dd74945325376fa81283c0ca3df15eb47864b9eb36b515319",
+      "bytes": 5045
+    },
+    "release-notes.md": {
+      "sha256": "bb4b971c7c926bd172f3c04842a2176711f0df4c466271404c4d6a4490eea6ec",
+      "bytes": 1189
+    },
+    "package-source-content.json": {
+      "sha256": "00bed4f4c91b2cdb066d8982c588f63f972aa81503c7f76d02f8e020f33e4772",
+      "bytes": 515
+    }
+  }
+}
