@@ -148,7 +148,7 @@ it('does not equate a browser show callback with Host acceptance or retry reject
 
 import { systemNotificationCopy } from '../src/client/notification-copy.ts';
 it('keeps initial completed/approval/question/error preview bytes and gives stop/recovery/reminder events bilingual short copy', () => {
-  for (const category of ['completed', 'approval', 'question', 'error'] as const) {
+  for (const category of ['reply', 'goal-progress', 'completed', 'approval', 'question', 'error'] as const) {
     const notice = { ...claim.notice, category, body: '用户原文 English\n🐳' };
     expect(systemNotificationCopy(notice, 'en').body).toBe(notice.body);
     expect(systemNotificationCopy(notice, 'zh').body).toBe(notice.body);
@@ -158,5 +158,12 @@ it('keeps initial completed/approval/question/error preview bytes and gives stop
     const zh = systemNotificationCopy(notice, 'zh'), en = systemNotificationCopy(notice, 'en');
     expect(zh.title).not.toBe(en.title); expect(en.body).toBe(en.title); expect(zh.body).toBe(zh.title);
     expect(en).toMatchObject({ id: notice.id, sessionId: notice.sessionId, requestIds: notice.requestIds });
+  }
+});
+
+it('localizes goal completion and round replies without losing exact goal provenance', () => {
+  for (const [category, title] of [['reply', 'This turn’s reply is ready'], ['goal-progress', 'Goal still in progress'], ['completed', 'Goal completed']] as const) {
+    const notice = { ...claim.notice, category, goal: { id: 'goal-complete-identity', revision: 17, round: 9 } };
+    expect(systemNotificationCopy(notice, 'en')).toMatchObject({ title, goal: notice.goal, id: notice.id });
   }
 });

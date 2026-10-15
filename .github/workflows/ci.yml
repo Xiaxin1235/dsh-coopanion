@@ -61,6 +61,8 @@ jobs:
         run: npm run test:n0
       - run: npm run build
       - run: npx playwright-core install --with-deps chromium
+      - uses: ./.github/actions/setup-linux-display
+        if: runner.os == 'Linux'
       - run: npm run character:pack -- examples/star paper-star.zip
       - run: npm run test:ui
       - run: npm run test:notification-ui
@@ -90,7 +92,12 @@ jobs:
         if: always()
         with:
           name: browser-and-desktop-${{ runner.os }}
-          path: artifacts/*.png
+          path: |
+            artifacts/*.png
+            artifacts/desktop-recovery.json
+            artifacts/text-scale-*.json
+            artifacts/multi-display-*.json
+            artifacts/daily-rhythm-*.json
           retention-days: 7
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
@@ -123,6 +130,8 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run verify:metadata
       - run: npx playwright-core install --with-deps chromium
+      - uses: ./.github/actions/setup-linux-display
+        if: runner.os == 'Linux'
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: desktop-pet
@@ -142,10 +151,18 @@ jobs:
         with:
           name: installation-${{ runner.os }}-${{ matrix.dsh }}
           path: |
+            artifacts/text-scale-*.json
+            artifacts/multi-display-*.json
+            artifacts/daily-rhythm-*.json
+            artifacts/text-scale-*.png
             artifacts/install-*.json
             artifacts/installed-*.png
             artifacts/settings-*.png
             artifacts/npm-runtime-*/
+            artifacts/session-native-*.json
+            artifacts/desktop-recovery-*.json
+            artifacts/session-host-*.json
+            artifacts/goal-host-*.json
             artifacts/notification-host-*.json
             artifacts/notification-source-*.json
             artifacts/notification-integration-*.json

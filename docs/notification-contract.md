@@ -6,15 +6,37 @@
 
 提醒 id 使用 `[sessionId, turn, seq, category, stage]` 的 JSON 元组编码；请求 id 使用 `[sessionId, kind, nativeId]`。各字段保留完整值。后续稍后提醒增加可选调度轮次；无日志 callId 的运行请求使用完整 runtime UUID 并标记 `source: runtime`，上下文 turn／seq 保留已提交锚点。runtime 元组依次追加 UUID 与可选调度轮次。`stage` 区分 `initial` 和 `reminder`。
 
-类别为 `completed`、`approval`、`question`、`error`、`stopped`、`interrupted`、`blocked`、`max-tokens`。每条提醒带标题、预览、源时间和对应请求 id 列表；合并互动通过请求列表关联各自的结算状态。
+类别为 `reply`、`goal-progress`、`completed`、`approval`、`question`、`error`、`stopped`、`interrupted`、`blocked`、`max-tokens`。每条提醒带标题、预览、源时间和对应请求 id 列表；合并互动通过请求列表关联各自的结算状态。
 
 审批从 `approval/asked` 与 `approval/decided` 的原生 id 配对。提问从公开 `user-questions/request` 获取运行中的提示，从 `ctx.sessionProjections.snapshot(session, ['userQuestions'])` 获取持久限时提问的 `open`、`continued` 和 `settled` 状态。具体请求由完整 `callId` 定位。
 
 限时提问返回 pending 后，回合结束仍保持 `continued`。接收 `user-question-reply` 的 user message 后结算对应问题；补提醒按投影中的有效请求安排。阻塞请求在其答复／取消信号结算时结束等待。Host 对恢复状态进行折叠，实时事件产生新的提醒。
 
+## M1 完成语义
+
+Host 的共享 `CompletionTracker` 使用支持版本的 `@deepseek-ai/dsh-goal` 公共 `applyGoalProjection` 严格折叠已提交事件，不读取工具调用参数或工具输出作为成功依据。该宿主包是新增 peer；目标服务未运行、历史缺失、未知版本或投影折叠失败时立即使用 `reply`，不等待目标状态。失败后的流保持保守降级。
+
+| 已提交事实 | 类别 / 角色 | 结果与文案 |
+|---|---|---|
+| 普通回合 completed、没有可确认的新目标完成 | reply / idle | 本轮回复已生成；保留全文、未读与继续入口 |
+| 当前目标 active，回合 completed | goal-progress / idle | 本轮回复已生成，目标仍在进行中 |
+| 本轮内同一完整目标身份提交 complete，回合 completed | completed / happy | 目标已完成；庆祝约 2.5 秒 |
+| 当前目标 paused / blocked | stopped / idle 或 blocked / waiting | 目标暂停或受阻；保留结果及异常入口 |
+| 回合 error / aborted / interrupted / blocked / max-tokens | 沿用相应异常类别 | 即使本轮提交过 complete，也不以回合结束报成功 |
+
+提醒可附带 `goal: { id, revision, round }`，每个字段保留完整值；`round` 为严格投影中已接纳轮数。`completed` 现在专指确认的新目标完成，`reply` 和 `goal-progress` 都不触发成功神态。目标完成身份只结算一次，历史终态不把后续普通回合变成成功。宿主在回合外提交终态（如自动轮数耗尽后 block）也更新角色和提醒，以该 `goal/change` 的 seq 为锚点。
+
+类别和可选 goal 字段是 protocol 1 的同包扩展，Host / Client / Electron 必须一起更新；不在持久配置中保存提醒，所以旧配置沿用默认值，旧通知不会迁移为新通知。历史恢复折叠目标及回复作为已读基线，不重放提醒。审批与 continued 提问仍独立结算，阅读和打开会话不代表审批或答复。角色、系统通知和托盘通过共享类别呈现，正文保持原文。
+
+两版实际 schema、事件样本、包身份与重复命令见 [M1 验收记录](evidence/m1/README.md)。
+
+M2 的发送接受回执独立于提醒与任务结果，详见[会话续接契约](session-chat-contract.md)。阅读结果不改变关注会话；显式点击“继续对话”才选择来源会话并打开输入框。审批与提问仍只由 Harness 的实际处理结算。
+
 ## 运行与领取
 
 `NotificationRuntime` 包含阶段、运行代次 `generation`、显示状态版本 `visibilityRevision`、原生可见性、休眠状态和有界错误。
+
+M3 同包增加 `recovering` 阶段与可选 `desiredVisible`、`recoveryAttempt`（0–3）、`retryAt`（Host 时间戳）。恢复等待不具备投递资格；显示意图不代表原生可见性。新代必须收到自己的 visibilityRevision，旧领取仅结算迟到证据，不再进入其他通道。具体启动、停止、锁屏及结果基线见[桌面恢复契约](desktop-recovery-contract.md)。旧配置没有新增持久字段，默认行为保持；Host / Client / Electron 随包同步。
 
 Host 按运行状态、显示状态及用户设置选择通道。系统投递需要 Host 颁发的 `DeliveryClaim`，其中包含不可推断的 token、完整提醒、客户端 id、运行代次、显示状态版本及过期时间。
 
@@ -49,3 +71,5 @@ Host 按运行状态、显示状态及用户设置选择通道。系统投递需
 `npm run test:n0` 检查共享协议和网页适配器，并构建私有原型。`npm run test:n0:host -- --runtime <runtime-dir> --version <dsh-version>` 在实际安装的宿主包上检查公开请求、投影、审批配对和取消语义。
 
 三平台 CI 执行共享检查并保留原型摘要；六组实际安装检查分别执行对应宿主版本的接口检查并上传报告。每份 Host 报告记录源码 commit、插件版本、包实现摘要及实际控制样本事件。
+
+M4 的独立 `textScale` 是呈现偏好，不改变类别、提醒身份、已读/结算或驻留时间；详见[文字契约](text-readability-contract.md)。

@@ -2,9 +2,12 @@ import { loadBody, knownScheme } from './upstream/body-host.js';
 import { createSfx } from './upstream/sound.js';
 import { createSpeech, replyPreview } from './speech.js';
 import { createNoticeQueue, pendingInteractions, notificationPresentation, notificationCopy } from './notification-ui.js';
-import { shortSessionIds, sessionTime, sessionActivity, inboxContents, unreadReplies } from './session-ui.js';
+import { ChatComposer, shortSessionIds, sessionTime, sessionActivity, inboxContents, unreadReplies } from './session-ui.js';
 import { renderReplyMarkdown } from './markdown-runtime.js';
-import { petLanguage, petCopy, localizedText, appNoticeCopy, automaticPetLanguage } from './locale.js';
+import { petLanguage, petCopy, localizedText, appNoticeCopy, automaticPetLanguage, sessionStateLabel } from './locale.js';
+import { textScale } from './text-scale.js';
+import { viewportPoint, panelPosition } from './display-geometry.js';
+import { DEFAULT_DAILY_RHYTHM, initialRhythm, rhythmPeriod, stepRhythm } from './daily-rhythm.js';
 const PACK_LIMIT = 128 * 1024 * 1024;
 import { browserCharacters } from './character-library.js';
 const BUILTIN_ID = 'whale';
@@ -29,14 +32,19 @@ const nameIn = names => localizedText(names, notificationLocale());
 const wordName = (word, view = previewCharacter) => word.names?.[notificationLocale()]?.[0] ?? (view?.builtin ? uiCopy().words[word.id] : undefined) ?? nameIn(word.names)?.[0] ?? word.id;
 let body, previewBody, previewCharacter, activeView, activeScheme, activeName = 'DeepSeek 大肥鱼', libraryState, libraryBusy = false;
 let appliedMood, appliedControls, speech, speechExpires = Infinity, pressing = false, dragStart, dragging = false, previewScheme = "", reducedNeedsStep = true;
-let options = { size: 180, roam: true, notifications: true, bubbleDurationMs: 12000 };
+let options = { textScale: 1, size: 180, roam: true, dailyRhythm: DEFAULT_DAILY_RHYTHM, notifications: true, bubbleDurationMs: 12000 };
 let snapshot = { mood: 'idle', text: '你好。点点我，或双击和我说话。', sessionId: null, sessions: [] };
 let x = innerWidth * .68, y = innerHeight - 155, hovered = false, asleep = false, toastTimer, noticeSession;
 let cursorPoint, lastHit;
 let renderedSessionId = null, reactionUntil = 0, reactionMood, bubbleSession, trayKey, touchTimer, touchBlockedUntil = 0;
 let bubbleResult, readerResult, pendingOnly = false, talkAt = 0;
 let readerQueue, inboxState = { requests: [], issues: [], replies: [], total: 0 };
-let resizeLayout;
+let resizeLayout, displayGeometry, pendingDisplayPlacement, resizeOrigin;
+let stageWidth = innerWidth, pressedPointerId;
+const composer = new ChatComposer();
+const chatTimers = new Map();
+let draftSessionId;
+let rhythm = initialRhythm(), rhythmWords = [], rhythmRestorePending = false, localHour, hourCheckedAt = -Infinity;
 const shownResults = new Set(), acknowledgedResults = new Set();
 let renderedLocale;
 let characterFeedback = { key: 'characterHint', args: [] };
@@ -123,8 +131,7 @@ function position() {
     if (!panelAnchors.has(panel)) panelAnchors.set(panel, { ...anchor });
     const panelAnchor = panelAnchors.get(panel);
     const pw = panel.offsetWidth, ph = panel.offsetHeight;
-    const px = Math.max(8, Math.min(innerWidth - pw - 8, panelAnchor.x - pw / 2));
-    const py = Math.max(8, Math.min(innerHeight - ph - 12, panelAnchor.y - ph - 18));
+    const { x: px, y: py } = panelPosition(panelAnchor, { width: pw, height: ph }, { width: innerWidth, height: innerHeight });
     panel.style.left = `${px}px`; panel.style.top = `${py}px`;
     panel.style.setProperty('--tail', `${Math.max(22, Math.min(pw - 22, panelAnchor.x - px))}px`);
   }
@@ -134,7 +141,7 @@ function position() {
   if (!holding) panelAnchors.delete(attention);
   else if (!panelAnchors.has(attention)) { const b = attention.getBoundingClientRect(); panelAnchors.set(attention, { x: b.x, y: b.y }); }
   const point = panelAnchors.get(attention) ?? { x: Math.max(8, Math.min(innerWidth - 55, anchor.x + options.size * .25)), y: Math.max(8, Math.min(innerHeight - 38, anchor.y + 15)) };
-  Object.assign(attention.style, { left: `${Math.round(point.x)}px`, top: `${Math.round(point.y)}px` });
+  Object.assign(attention.style, { left: `${Math.round(Math.max(8, Math.min(innerWidth - attention.offsetWidth - 8, point.x)))}px`, top: `${Math.round(Math.max(8, Math.min(innerHeight - attention.offsetHeight - 8, point.y)))}px` });
 }
 function speak(result) {
   const source = snapshot.sessions.find(session => session.id === result.sessionId);
@@ -160,7 +167,7 @@ function showNextReply() {
   if (result) speak(result);
 }
 function completionHasReply(notice) {
-  return notice?.category === 'completed' && notice.sessionId === snapshot.sessionId &&
+  return ['completed', 'reply', 'goal-progress'].includes(notice?.category) && notice.sessionId === snapshot.sessionId &&
     snapshot.results?.some(result => result.id === `${notice.sessionId}:${notice.turn}:${notice.seq}`);
 }
 function acknowledge(result) {
@@ -201,6 +208,24 @@ function react(mood) { reactionMood = mood; reactionUntil = performance.now() + 
 function act(actor, pack, word) {
   if (pack?.vocab.some(w => w.id === word) && (!actor.words || actor.words.includes(word))) actor.do(word);
 }
+function updateRhythm(now, mood, readingAttention, active) {
+  const enabled = options.dailyRhythm === true && options.roam;
+  if (enabled && (now < hourCheckedAt || now - hourCheckedAt >= 1000)) { localHour = new Date().getHours(); hourCheckedAt = now; }
+  const status = enabled ? rhythmPeriod(localHour) ?? 'off' : 'off';
+  if (pet.dataset.rhythm !== status) pet.dataset.rhythm = status;
+  if (!enabled && !rhythm.enabled) return;
+  const runtime = notificationState?.runtime;
+  const result = stepRhythm(rhythm, { enabled, now, hour: localHour, words: rhythmWords,
+    occupied: { task: active || mood !== 'idle', pending: pendingRequests().length > 0, reading: userInputOccupied() || !interaction.hidden || readingAttention,
+      input: [...composer.sessions.values()].some(s => !!s.text.trim() || s.phase === 'sending'), dragging: pressing || dragging,
+      bodyBusy: !body?.layout || body.layout.busy, hovered, resting: asleep, reduced,
+      hidden: document.hidden || !!runtime && (runtime.phase !== 'running' || !runtime.visible), suspended: runtime?.suspended === true } });
+  rhythm = result.state;
+  // Reapply Host truth below; its existing stand/wake path releases a seated pose.
+  // Physical busy states defer that path, and user rest continues to own sleep.
+  if (result.release) { appliedMood = undefined; rhythmRestorePending = true; reducedNeedsStep = true; }
+  if (result.word) { act(body, activeView, result.word); reducedNeedsStep = true; }
+}
 function updateMood(now = performance.now()) {
   const labels = uiCopy().labels;
   const activity = sessionActivity(snapshot), active = activity.active;
@@ -208,16 +233,18 @@ function updateMood(now = performance.now()) {
   const mood = now < reactionUntil && !userInputOccupied() ? reactionMood : active || activity.waiting || activity.errors ? activity.mood : pendingRequests().length ? 'waiting' : asleep ? 'sleeping' : activity.mood;
   pet.dataset.mood = mood;
   if (!body) return;
-  if (mood !== appliedMood && !body.layout?.busy) {
+  const dialogOpen = panels.some(p => !p.hidden);
+  const readingAttention = !$('attention').hidden && ($('attention').matches(':hover') || document.activeElement === $('attention'));
+  updateRhythm(now, mood, readingAttention, active);
+  if (mood !== appliedMood && !body.layout?.busy && (!rhythmRestorePending || !pressing && !dragging)) {
     reducedNeedsStep = true;
     if (mood !== 'sleeping' && (appliedMood === 'sleeping' || ['sleep', 'sit'].includes(body.layout?.mode))) act(body, activeView, 'stand');
     const word = { idle: 'neutral', thinking: 'thinking', talking: 'neutral', working: 'determined', waiting: 'worried', happy: 'happy', error: 'sad', sleeping: 'sleep' }[mood];
     if (word) act(body, activeView, word);
     appliedMood = mood;
+    rhythmRestorePending = false;
   }
-  const dialogOpen = panels.some(p => !p.hidden);
-  const readingAttention = !$('attention').hidden && ($('attention').matches(':hover') || document.activeElement === $('attention'));
-  const controls = { roam: options.roam && !reduced && !hovered && !readingAttention && !dialogOpen && bubble.hidden && interaction.hidden && mood === 'idle' ? 'calm' : 'off', dialogOpen: dialogOpen || !interaction.hidden, thinking: mood === 'thinking', thoughtShown: false, expression: { thinking: 'thinking', talking: 'determined', working: 'determined', waiting: 'worried', error: 'sad' }[mood] ?? null, listening: !chat.hidden && !active };
+  const controls = { roam: options.roam && !options.dailyRhythm && !reduced && !hovered && !readingAttention && !dialogOpen && bubble.hidden && interaction.hidden && mood === 'idle' ? 'calm' : 'off', dialogOpen: dialogOpen || !interaction.hidden, thinking: mood === 'thinking', thoughtShown: false, expression: { thinking: 'thinking', talking: 'determined', working: 'determined', waiting: 'worried', error: 'sad' }[mood] ?? null, listening: !chat.hidden && !active };
   const key = JSON.stringify(controls);
   if (key !== appliedControls) { if (controls.roam === 'off') body.stopWalk(0); body.set(controls); appliedControls = key; }
   $('toggle-roam').setAttribute('aria-checked', String(options.roam));
@@ -225,7 +252,7 @@ function updateMood(now = performance.now()) {
   $('toggle-sleep').disabled = active; $('toggle-sleep').title = active ? uiCopy().sleepBusy : uiCopy().sleepWake;
   $('toggle-notices').setAttribute('aria-checked', String(options.notifications));
   $('toggle-sound').setAttribute('aria-checked', String(sfx.isOn()));
-  $('menu-state').textContent = `${labels[mood] ?? labels.idle}${snapshot.sessionId ? ' · ' + uiCopy().connected : ''}`;
+  $('menu-state').textContent = `${sessionStateLabel(snapshot.sessions?.find(s => s.id === snapshot.sessionId), notificationLocale(), mood)}${snapshot.sessionId ? ' · ' + uiCopy().connected : ''}`;
   const presentation = { type: 'presentation', locale: notificationLocale(), characterId: activeView.id, scheme: activeScheme, name: activeName, mood, sleeping: asleep, sound: sfx.isOn(), ready: !!body.layout };
   const nextTrayKey = JSON.stringify(presentation);
   if (nextTrayKey !== trayKey) { trayKey = nextTrayKey; native?.action(presentation); }
@@ -253,7 +280,7 @@ function render() {
       card.tabIndex = session.id === snapshot.sessionId ? 0 : -1;
       card.title = `${session.label}\n${session.prompt ?? ''}\n${session.cwd ?? session.project ?? ''}\n${session.id}`;
       const copy = document.createElement('span'), meta = document.createElement('small'), status = document.createElement('em'), time = document.createElement('span'), name = document.createElement('strong'), detail = document.createElement('small'), prompt = document.createElement('small'), mark = document.createElement('b');
-      meta.className = 'session-meta'; status.textContent = `${session.id === snapshot.sessionId ? uiCopy().focused + ' · ' : ''}${labels[session.mood] ?? labels.idle}${hasUnread(session) ? ' · ' + uiCopy().unread : ''}${session.chatAvailable === false ? ' · ' + uiCopy().notOpen : ''}`;
+      meta.className = 'session-meta'; status.textContent = `${session.id === snapshot.sessionId ? uiCopy().focused + ' · ' : ''}${sessionStateLabel(session, notificationLocale())}${hasUnread(session) ? ' · ' + uiCopy().unread : ''}${session.chatAvailable === false ? ' · ' + uiCopy().notOpen : ''}`;
       time.textContent = sessionTime(session, notificationLocale()); meta.append(status, time);
       name.textContent = session.label; detail.className = 'session-detail'; detail.textContent = `${session.cwd || session.project || uiCopy().session} · #${shortIds.get(session.id)}`;
       prompt.className = 'session-prompt'; prompt.textContent = session.prompt && session.prompt !== session.label ? uiCopy().recent(session.prompt) : ''; prompt.hidden = !prompt.textContent;
@@ -277,17 +304,23 @@ function render() {
   $('attention').title = $('attention').ariaLabel = notificationCopy(notificationLocale()).inboxSummary(inboxState.replies.length, pendingCount);
   $('chat-current').disabled = !snapshot.sessions.length; $('chat-session-name').textContent = selected?.label ?? uiCopy().noSession;
   $('chat-current').setAttribute('aria-label', selected ? uiCopy().chatTarget(selected.label) : uiCopy().emptySessions);
-  $('chat-session-state').textContent = labels[selected?.mood] ?? labels.idle;
+  $('chat-session-state').textContent = sessionStateLabel(selected, notificationLocale());
   $('chat-session-detail').textContent = selected ? `${selected.cwd || selected.project || ''} · #${shortIds.get(selected.id)}` : '';
   const latestReply = snapshot.results?.find(r => r.id === selected?.replyId)?.text || selected?.reply || '';
   $('chat-reply').textContent = latestReply ? replyPreview(latestReply).text : ''; $('chat-reply').hidden = !latestReply;
   $('chat-read').hidden = !latestReply;
   const enabled = !!snapshot.sessionId && selected?.chatAvailable !== false;
-  $('message').disabled = !enabled; $('send').disabled = !enabled;
+  const draft = composer.state(snapshot.sessionId);
+  draftSessionId = snapshot.sessionId;
+  if ($('message').value !== draft.text) $('message').value = draft.text;
+  $('message').disabled = !enabled || draft.phase === 'sending'; $('send').disabled = !enabled || draft.phase === 'sending';
+  $('send').textContent = draft.phase === 'failed' ? uiCopy().retrySend : uiCopy().send;
+  $('chat-send-state').textContent = draft.phase === 'failed' ? uiCopy().sendFailure(draft.code) : uiCopy()[{ sending: 'sending', accepted: 'sendAccepted' }[draft.phase]] ?? '';
+  $('chat-send-state').dataset.state = draft.phase;
   $('conversation-open').disabled = !snapshot.sessionId; $('chat-session').disabled = !snapshot.sessionId;
   $('chat-help').textContent = enabled ? uiCopy().chatHelp(selected.label) : snapshot.sessionId ? uiCopy().unavailableChat : uiCopy().noChat;
   if (previous !== snapshot.sessionId) {
-    $('message').value = ''; bubble.hidden = true;
+    bubble.hidden = true;
     clearTimeout(touchTimer); reactionUntil = 0;
   }
   renderedSessionId = snapshot.sessionId;
@@ -365,7 +398,7 @@ function renderRequests() {
     preview.className = 'inbox-preview'; preview.textContent = replyPreview(result.text).text;
     detail.textContent = `${sourceDetail(result.sessionId)} · ${copy.readReply}`;
     content.append(meta, label, preview, detail);
-    open.textContent = copy.continue; open.dataset.resultId = result.id; open.dataset.inboxKey = result.id; open.dataset.action = 'open'; open.onclick = () => { acknowledge(result); openSession(result.sessionId); };
+    open.textContent = copy.continue; open.dataset.resultId = result.id; open.dataset.inboxKey = result.id; open.dataset.action = 'open'; open.onclick = () => { acknowledge(result); continueSession(result.sessionId); };
     actions.append(open); card.append(content, actions); return card;
   }));
 }
@@ -387,20 +420,36 @@ $('interaction-close').onclick = () => { interaction.hidden = true; currentNotic
 $('interaction-open').onclick = () => openSession(currentNotice?.sessionId);
 $('interaction-pending').onclick = () => openRequests(false);
 
+function applyOptions(value) {
+  const previousSize = options.size;
+  options = { ...options, ...value, dailyRhythm: Object.hasOwn(value ?? {}, 'dailyRhythm') ? value.dailyRhythm === true : options.dailyRhythm, textScale: Object.hasOwn(value ?? {}, 'textScale') ? textScale(value.textScale) : options.textScale };
+  document.documentElement.style.setProperty('--size', `${options.size}px`);
+  document.documentElement.style.setProperty('--text-scale', String(options.textScale));
+  if (options.size !== previousSize) body?.set({ bounds: bounds() });
+  // Keep DOM, captured reader result, composer, speech and expiry clocks intact.
+  position();
+}
+// Font reflow and async Markdown/locale layout changes need fresh panel bounds.
+const panelResize = new ResizeObserver(() => position());
+for (const panel of [bubble, interaction, ...panels, $('attention')]) panelResize.observe(panel);
+
 function receive(message) {
   if (!message || typeof message !== 'object') return;
   switch (message.type) {
     case 'init':
-      options = { ...options, ...message.options };
-      document.documentElement.style.setProperty('--size', `${options.size}px`);
+      applyOptions(message.options);
       if (message.snapshot) snapshot = message.snapshot;
+      // Recovery restores unread results as an inbox baseline, without speaking them again.
+      if (message.baseline) for (const result of snapshot.results ?? []) shownResults.add(result.id);
       pet.dataset.hostReady = 'true';
       body?.set({ bounds: bounds() }); render(); break;
-    case 'configure':
-      options = { ...options, ...message.options };
-      document.documentElement.style.setProperty('--size', `${options.size}px`);
-      body?.set({ bounds: bounds() });
-      render(); break;
+    case 'configure': {
+      const changed = Object.keys(message.options ?? {}).some(key => !['textScale', 'size', 'dailyRhythm'].includes(key) && options[key] !== message.options[key]);
+      applyOptions(message.options);
+      if (changed) render();
+      else updateMood();
+      break;
+    }
     case 'ui-control':
       if (message.command === 'chat') openChat();
       else if (message.command === 'sessions') openRequests();
@@ -409,6 +458,11 @@ function receive(message) {
       break;
     case 'characters': $('open-characters').click(); break;
     case 'snapshot': snapshot = { ...message.snapshot, results: message.snapshot.results ?? snapshot.results ?? [] }; render(); break;
+    case 'chat-result':
+      if (composer.receive(message)) {
+        clearTimeout(chatTimers.get(message.requestId)); chatTimers.delete(message.requestId); render();
+      }
+      break;
     case 'notification-state': {
       const value = message.snapshot;
       if (!value || value.protocol !== 1 || !Array.isArray(value.interactions)) break;
@@ -441,8 +495,28 @@ function receive(message) {
       toastTimer = setTimeout(() => { $('toast').hidden = true; }, options.bubbleDurationMs); break;
     }
     case 'hit-state': pet.dataset.nativeHit = String(message.active); break;
-    case 'cursor': hit(message.x, message.y); break;
-    case 'display-changed': body?.set({ bounds: bounds() }); body?.place(innerWidth * .6, 1); position(); break;
+    case 'cursor': {
+      if (!displayGeometry || message.revision !== displayGeometry.revision) break;
+      const point = viewportPoint(message, displayGeometry.contentBounds, { width: innerWidth, height: innerHeight });
+      hit(point.x, point.y); break;
+    }
+    case 'display-changed': {
+      if (!Number.isSafeInteger(message.revision) || message.revision <= (displayGeometry?.revision ?? 0)) break;
+      const interrupted = pressing || dragging || ['drag', 'air'].includes(body?.layout?.mode);
+      if (displayGeometry && (message.displayId !== displayGeometry.displayId || interrupted)) {
+        pendingDisplayPlacement = { ...(resizeOrigin ?? { ratio: (body?.layout?.x ?? stageWidth * .6) / stageWidth, facing: body?.layout?.facing ?? 1 }), drop: interrupted };
+      }
+      if (pressing) {
+        // API 2 drop clears its held pointer after the new bounds arrive.
+        // pointer(cancel) first would turn drag into air and make drop a no-op.
+        if (pressedPointerId !== undefined && pet.hasPointerCapture(pressedPointerId)) pet.releasePointerCapture(pressedPointerId);
+        pressing = false; dragging = false; pressedPointerId = undefined;
+      }
+      displayGeometry = message;
+      pet.dataset.displayId = String(message.displayId); pet.dataset.displayRevision = String(message.revision);
+      cursorPoint = undefined; lastHit = false; native?.hit(false);
+      resizeStage(); break;
+    }
   }
 }
 
@@ -470,14 +544,15 @@ pet.addEventListener('pointerdown', event => {
   if (event.button !== 0) return;
   touchBlockedUntil = 0; clearTimeout(touchTimer);
   sfx.unlock(); pressing = true; dragging = false; dragStart = { x: event.clientX, y: event.clientY };
-  pet.setPointerCapture(event.pointerId);
+  pressedPointerId = event.pointerId; pet.setPointerCapture(event.pointerId);
   body?.pointer('down', { x: event.clientX, y: event.clientY, t: event.timeStamp });
 });
 function release(event) {
   if (!pressing) return;
+  const moved = dragging;
   body?.pointer(event.type === 'pointercancel' ? 'cancel' : 'up', { x: event.clientX, y: event.clientY, t: event.timeStamp });
-  pressing = false; dragging = false;
-  if (event.type === 'pointerup' && native && (event.screenX < screen.availLeft || event.screenX > screen.availLeft + screen.availWidth)) send({ type: 'move-display' });
+  pressing = false; dragging = false; pressedPointerId = undefined;
+  if (event.type === 'pointerup' && native && moved) send({ type: 'move-display' });
 }
 pet.addEventListener('pointerup', release); pet.addEventListener('pointercancel', release);
 // The upstream body owns poke, stroke, wake, grab, drop and throw. Respond to its
@@ -531,7 +606,7 @@ for (const [id, offset] of [['reader-prev', -1], ['reader-next', 1]]) $(id).oncl
   openReader(history[history.findIndex(r => r.id === readerResult?.id) + offset], readerQueue);
 };
 $('reader-inbox').onclick = () => openRequests(false);
-$('reader-session').onclick = () => { acknowledge(readerResult); openSession(readerResult?.sessionId); };
+$('reader-session').onclick = () => { acknowledge(readerResult); continueSession(readerResult?.sessionId); };
 $('conversation-list').onclick = event => {
   const card = event.target.closest('[data-session-id]');
   const session = card && snapshot.sessions.find(item => item.id === card.dataset.sessionId);
@@ -541,19 +616,30 @@ $('conversation-list').onclick = event => {
   const result = unreadReplies(snapshot, acknowledgedResults).find(r => r.sessionId === session.id);
   if (result) openReader(result); else render();
 };
+function continueSession(id) {
+  if (!id || !snapshot.sessions.some(session => session.id === id)) return;
+  send({ type: 'select', sessionId: id }); snapshot = { ...snapshot, sessionId: id }; render(); openChat();
+}
 function openSession(id) { if (id) { send({ type: 'open-session', sessionId: id }); closePanels(); bubble.hidden = true; } }
 $('conversation-open').onclick = () => openSession(snapshot.sessionId);
 $('chat-session').onclick = () => openSession(snapshot.sessionId);
 $('bubble-session').onclick = () => { acknowledge(bubbleResult); openSession(bubbleSession); };
+$('message').oninput = () => { composer.edit(draftSessionId, $('message').value); };
 $('chat-form').onsubmit = event => {
-  event.preventDefault(); const text = $('message').value.trim();
-  if (!text || !snapshot.sessionId) return;
-  clearTimeout(touchTimer);
-  send({ type: 'chat', text, sessionId: snapshot.sessionId }); $('message').value = ''; chat.hidden = true;
+  event.preventDefault();
+  const sessionId = snapshot.sessionId;
+  if (!sessionId || snapshot.sessions.find(session => session.id === sessionId)?.chatAvailable === false) return;
+  composer.edit(sessionId, $('message').value);
+  const request = composer.begin(sessionId);
+  if (!request) return;
+  clearTimeout(touchTimer); render();
+  clearTimeout(chatTimers.get(request.requestId));
+  chatTimers.set(request.requestId, setTimeout(() => { chatTimers.delete(request.requestId); if (composer.expire(request)) render(); }, 15000));
+  send(request);
   if (!native) {
-    const sessionId = snapshot.sessionId;
+    receive({ type: 'chat-result', sessionId, requestId: request.requestId, status: 'accepted' });
     demoState(sessionId, 'thinking');
-    setTimeout(() => demoComplete(sessionId, uiCopy().demoReply(text)), 350);
+    setTimeout(() => demoComplete(sessionId, uiCopy().demoReply(request.text)), 350);
   }
 };
 function preference(field) {
@@ -583,7 +669,23 @@ document.addEventListener('pointerleave', () => {
   body?.pointer('leave', {});
   if (!pressing) { cursorPoint = undefined; lastHit = false; native?.hit(false); }
 });
-addEventListener('resize', () => { resizeLayout = body?.layout; body?.set({ bounds: bounds() }); previewBody?.set({ bounds: previewBounds() }); position(); });
+function resizeStage() {
+  if (innerWidth !== stageWidth) resizeOrigin ??= { ratio: (body?.layout?.x ?? stageWidth * .6) / stageWidth, facing: body?.layout?.facing ?? 1 };
+  stageWidth = innerWidth;
+  resizeLayout = body?.layout;
+  body?.set({ bounds: bounds() });
+  // Native geometry and viewport resize can arrive in either order. Placement
+  // waits until this viewport reflects the newly acknowledged content bounds.
+  if (pendingDisplayPlacement && innerWidth === displayGeometry?.contentBounds.width && innerHeight === displayGeometry?.contentBounds.height) {
+    const targetX = innerWidth * pendingDisplayPlacement.ratio;
+    if (pendingDisplayPlacement.drop) { const b = bounds(); body?.drop({ x: targetX, y: b.floorY - 220 * b.S }); }
+    else body?.place(targetX, pendingDisplayPlacement.facing);
+    pendingDisplayPlacement = undefined;
+  }
+  if (innerWidth === displayGeometry?.contentBounds.width && innerHeight === displayGeometry?.contentBounds.height) resizeOrigin = undefined;
+  previewBody?.set({ bounds: previewBounds() }); position();
+}
+addEventListener('resize', resizeStage);
 $('toggle-sound').onclick = () => { sfx.set(!sfx.isOn()); updateMood(); };
 
 
@@ -660,6 +762,7 @@ async function setCharacter(view, scheme = '') {
     onError: error => { characterStatus('bodyError', error.message); if (body === next && view.id !== BUILTIN_ID) void restoreBuiltin(); },
   });
   body?.dispose(); body = next; activeView = view; activeScheme = knownScheme(view, scheme); activeName = nameIn(view.name);
+  rhythm = initialRhythm(); rhythmRestorePending = false; rhythmWords = view.vocab.map(w => w.id).filter(w => next.words?.includes(w)); hourCheckedAt = -Infinity;
   // A new body has not reported its geometry yet. Retire the previous body's
   // input region until position() receives the new body's first frame.
   pet.hidden = true; delete pet.dataset.mode; delete pet.dataset.pressing;

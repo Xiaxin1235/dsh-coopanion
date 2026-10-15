@@ -59,8 +59,9 @@ try {
   assert.equal(await page.locator('#inbox-replies img').count(), 0, 'reply summaries are plain text');
   assert.deepEqual(await actions(), [], 'opening a list neither reads replies nor selects a conversation');
   await page.locator(`[data-result-id="${second.id}"][data-action=open]`).click();
-  assert.deepEqual(await actions(), [{ type: 'read', resultId: second.id }, { type: 'open-session', sessionId: a.id }], 'a row can directly open its source without selecting it first');
+  assert.deepEqual(await actions(), [{ type: 'read', resultId: second.id }, { type: 'select', sessionId: a.id }], 'a reply row continues its exact source in the composer');
 
+  await page.locator('#chat-close').click();
   const fourth = reply('multi-c-full', a, 4, '另一份完整回复。');
   await receive({ type: 'snapshot', snapshot: frame([waitingA, b, issue], [{ ...second, read: true }, third, fourth]) });
   await resetActions();

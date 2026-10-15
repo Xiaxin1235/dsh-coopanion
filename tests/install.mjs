@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import { spawn } from 'node:child_process';
+import { spawn, execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { once } from 'node:events';
 import { existsSync, realpathSync } from 'node:fs';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
@@ -10,10 +11,13 @@ import { pathToFileURL, fileURLToPath } from 'node:url';
 import { chromium } from 'playwright-core';
 import { importCharacter } from './helpers/characters.mjs';
 import { petClick } from './helpers/native-pointer.mjs';
+import { sampleNativeDisplay } from './helpers/multi-display-native.mjs';
 import { npmTarballName } from '../scripts/release-support.mjs';
 import { unzipSync } from 'fflate';
 import { prepareNotifications, verifyInstalledNotifications } from './helpers/installed-notifications.mjs';
+import { crashNative, connectRecovered, waitRecovery } from './helpers/desktop-recovery.mjs';
 
+const sourceCommit = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
 const version = process.env.DSH_TEST_VERSION ?? '0.2.0-rc.2';
 assert.ok(['0.2.0-rc.2', '0.2.1-alpha.1'].includes(version), 'test only advertised DSH versions');
 const project = fileURLToPath(new URL('../', import.meta.url));
@@ -34,6 +38,7 @@ const environment = {
   XDG_CONFIG_HOME: root, XDG_CACHE_HOME: join(root, 'cache'),
   XDG_DATA_HOME: join(root, 'data'), XDG_STATE_HOME: join(root, 'state'),
   PATH: `${join(project, 'node_modules', '.bin')}${process.platform === 'win32' ? ';' : ':'}${process.env.PATH}`,
+  COOPANION_TEST_MODULES: join(runtime, 'node_modules'),
   DSH_PET_TEST_DATA_DIR: join(root, 'pet'), DSH_PET_TEST_NO_SANDBOX: '1',
 };
 // Windows environment keys are case-insensitive; keep one PATH entry for spawn.
@@ -143,6 +148,9 @@ try {
   assert.equal(JSON.parse(await readFile(join(installed, 'package.json'), 'utf8')).version, manifest.version);
   await run(process.execPath, [join(project, 'tests/notification-host-contract.mjs'), '--runtime', runtime, '--version', version]);
 
+  await run(process.execPath, [join(project, 'tests/goal-host-contract.mjs'), '--runtime', runtime, '--version', version, '--package', archive]);
+  await run(process.execPath, [join(project, 'tests/session-host-contract.mjs'), '--verify-plugin', '--runtime', runtime, '--version', version, '--package', archive]);
+
   // Keep the observer in its own package. The Client loader identifies packages
   // from ancestor manifests; a fixture inside this repository can be mistaken
   // for a second active copy of the installed dsh-coopanion client.
@@ -237,7 +245,7 @@ try {
     host.on('message', receive);
   });
   host.send({ type: 'finish-task' });
-  await page.waitForFunction(() => document.getElementById('pet').dataset.mood === 'happy');
+  await page.waitForFunction(() => document.getElementById('pet').dataset.mood === 'idle');
   await page.waitForFunction(() => document.getElementById('bubble-text').textContent === '安装验证的最终回复。任务已完成。');
   assert.equal(await page.locator('#toast').isVisible(), false);
   assert.equal(await page.locator('#attention-count').innerText(), '1', 'a delivered final reply remains unread until the user acknowledges it');
@@ -287,6 +295,8 @@ try {
   await page.waitForFunction(() => document.getElementById('reader-text').textContent === '第二会话的最终回复。任务已完成。');
   assert.equal(await page.locator('#chat-session-name').innerText(), '安装验证', 'reading a background result does not change the live chat target');
   await page.locator('#reader-session').click();
+  assert.equal(await page.locator('#chat').isVisible(), true);
+  await page.locator('#chat-session').click();
   await settings.getByRole('navigation', { name: '会话层级', exact: true }).filter({ hasText: '第二会话' }).waitFor();
   await openSessionPicker(page); await page.locator('#conversation-list [data-session-id="host-install"]').click();
   await openSessionPicker(page); await page.locator('#conversation-open').click();
@@ -307,6 +317,38 @@ try {
   await surface.getByRole('status').filter({ hasText: '已保存' }).waitFor();
   await page.waitForFunction(() => getComputedStyle(document.documentElement).getPropertyValue('--size') === '180px');
   assert.match(await readFile(join(profile, 'cordis.patch.yml'), 'utf8'), /size: 180/, 'native Host settings persist the size');
+  assert.equal(await surface.getByRole('combobox', { name: '文字大小', exact: true }).inputValue(), '1', 'old installed config defaults to 100%');
+  assert.equal(await surface.getByRole('switch', { name: '日常陪伴节奏', exact: true }).getAttribute('aria-checked'), 'false', 'old installed config defaults daily rhythm off');
+  await page.waitForSelector('#pet[data-rhythm=off]');
+  await petClick(page, {}, true);
+  await page.locator('#message').fill('M4 installed draft');
+  await page.locator('#message').evaluate(n => { n.focus(); n.setSelectionRange(2, 7); window.m6InstalledFrame = document.querySelector('#body-layer iframe'); });
+  for (const dailyRhythm of [true, false, true]) {
+    await surface.getByRole('switch', { name: '日常陪伴节奏', exact: true }).click();
+    await waitProfile(new RegExp('dailyRhythm: ' + dailyRhythm));
+    await page.waitForFunction(enabled => (document.querySelector('#pet').dataset.rhythm !== 'off') === enabled, dailyRhythm);
+    assert.deepEqual(await page.locator('#message').evaluate(n => [n.value, n.selectionStart, n.selectionEnd, window.m6InstalledFrame === document.querySelector('#body-layer iframe')]), ['M4 installed draft', 2, 7, true], 'native hot preference preserves draft, selection and API 2 frame');
+  }
+  const textScaleSamples = [];
+  for (const size of [90, 240]) {
+    const input = surface.getByRole('spinbutton', { name: '角色尺寸', exact: true });
+    await input.fill(String(size)); await input.press('Enter');
+    await page.waitForFunction(size => getComputedStyle(document.documentElement).getPropertyValue('--size') === `${size}px`, size);
+    for (const textScale of [1, 1.25, 1.5]) {
+      await surface.getByRole('combobox', { name: '文字大小', exact: true }).selectOption(String(textScale));
+      await page.waitForFunction(scale => getComputedStyle(document.querySelector('#message')).fontSize === `${13 * scale}px`, textScale);
+      await waitProfile(new RegExp('textScale: ' + String(textScale).replace('.', '[.]') + '(?:\\s|$)'));
+      assert.equal(await page.locator('#message').inputValue(), 'M4 installed draft');
+      const rect = await page.locator('#chat').evaluate(n => { const r = n.getBoundingClientRect(); return { x: r.x, y: r.y, right: r.right, bottom: r.bottom, W: innerWidth, H: innerHeight }; });
+      assert.ok(rect.x >= 0 && rect.y >= 0 && rect.right <= rect.W && rect.bottom <= rect.H);
+      textScaleSamples.push({ size, textScale, rect, draft: true, persisted: true, display: await sampleNativeDisplay(page) });
+    }
+  }
+  await surface.getByRole('spinbutton', { name: '角色尺寸', exact: true }).fill('180');
+  await surface.getByRole('spinbutton', { name: '角色尺寸', exact: true }).press('Enter');
+  await page.waitForFunction(() => getComputedStyle(document.documentElement).getPropertyValue('--size') === '180px');
+  await page.screenshot({ path: join(project, 'artifacts', `text-scale-installed-${version}.png`) });
+  await page.locator('#message').fill(''); await page.keyboard.press('Escape');
   await settings.waitForFunction(() => document.querySelector('.dsh-coopanion-settings [role="switch"][aria-label="闲时走动"]').getAttribute('aria-checked') === 'true');
   await petClick(page, { button: 'right' });
   await page.locator('#toggle-roam').click();
@@ -326,6 +368,8 @@ try {
   const reopened = browser.contexts()[0].pages()[0];
   await reopened.waitForSelector('#pet[data-character=whale]');
   await reopened.waitForFunction(() => getComputedStyle(document.documentElement).getPropertyValue('--size') === '180px');
+  await reopened.waitForFunction(() => getComputedStyle(document.documentElement).getPropertyValue('--text-scale') === '1.5');
+  await reopened.waitForFunction(() => document.querySelector('#pet').dataset.rhythm !== 'off');
   await surface.getByRole('button', { name: '管理角色', exact: true }).click();
   await reopened.waitForSelector('#characters:not([hidden])');
   await surface.getByRole('switch', { name: '随 Harness 启动', exact: true }).click();
@@ -351,6 +395,8 @@ try {
   await surface.getByRole('switch', { name: 'Start with Harness', exact: true }).waitFor();
   await surface.getByRole('button', { name: 'Manage characters', exact: true }).waitFor();
   assert.equal(await surface.getByRole('spinbutton', { name: 'Character size', exact: true }).inputValue(), '180');
+  assert.equal(await surface.getByRole('combobox', { name: 'Text size', exact: true }).inputValue(), '1.5');
+  assert.equal(await surface.getByRole('switch', { name: 'Daily rhythm', exact: true }).getAttribute('aria-checked'), 'true');
   await settings.screenshot({ path: join(project, 'artifacts', `settings-en-${version}.png`) });
   await settings.getByRole('button', { name: 'General', exact: true }).click();
   await settings.getByRole('button', { name: 'English', exact: true }).click();
@@ -366,6 +412,8 @@ try {
   await openPetSettings(settings);
   await surface.getByTestId('pet-status').filter({ hasText: '已关闭' }).waitFor();
   assert.equal(await surface.getByRole('spinbutton', { name: '角色尺寸', exact: true }).inputValue(), '180');
+  assert.equal(await surface.getByRole('combobox', { name: '文字大小', exact: true }).inputValue(), '1.5', 'full Host restart preserves text scale');
+  assert.equal(await surface.getByRole('switch', { name: '日常陪伴节奏', exact: true }).getAttribute('aria-checked'), 'true', 'full Host restart preserves daily rhythm');
   assert.equal(await surface.getByRole('switch', { name: '随 Harness 启动', exact: true }).getAttribute('aria-checked'), 'false');
   assert.equal(await surface.getByRole('switch', { name: '系统通知', exact: true }).getAttribute('aria-checked'), 'true');
   assert.equal(await surface.getByRole('switch', { name: '待处理请求补提醒', exact: true }).getAttribute('aria-checked'), 'false');
@@ -383,6 +431,7 @@ try {
   await surface.getByTestId('pet-status').filter({ hasText: '正在显示' }).waitFor();
   browser = await chromium.connectOverCDP(`http://127.0.0.1:${port}`);
   await browser.contexts()[0].pages()[0].waitForSelector('#pet[data-character=whale]');
+  await browser.contexts()[0].pages()[0].waitForFunction(() => getComputedStyle(document.documentElement).getPropertyValue('--text-scale') === '1.5');
   await surface.getByRole('button', { name: '关闭桌宠', exact: true }).click();
   await surface.getByTestId('pet-status').filter({ hasText: '已关闭' }).waitFor();
   const languageReady = new Promise((resolveReady, reject) => {
@@ -412,6 +461,87 @@ try {
     } finally { await context.close(); }
   }
   assert.deepEqual(uiErrors, [], 'the native DSH module loader and settings renderer have no page errors');
+  const m2Command = (command, reply) => new Promise((resolveReply, reject) => {
+    const timer = setTimeout(() => { host.off('message', receive); reject(new Error(`M2 installed command timed out: ${command}`)); }, 10000);
+    const receive = message => { if (message?.type !== reply) return; clearTimeout(timer); host.off('message', receive); message.error ? reject(new Error(message.error)) : resolveReply(message); };
+    host.on('message', receive); host.send({ type: command });
+  });
+  assert.equal((await m2Command('prepare-m2-cold', 'm2-cold-ready')).cold, true);
+  await surface.getByRole('button', { name: /^(启动桌宠|Start pet)$/, exact: true }).click();
+  await surface.getByTestId('pet-status').filter({ hasText: /正在显示|Visible/ }).waitFor();
+  browser = await chromium.connectOverCDP(`http://127.0.0.1:${port}`);
+  const m2Page = browser.contexts()[0].pages()[0];
+  await m2Page.waitForSelector('#pet[data-character=whale][data-host-ready=true]');
+  await openSessionPicker(m2Page); await m2Page.locator('#conversation-list [data-session-id="m2-installed-cold-full"]').click();
+  await petClick(m2Page, {}, true);
+  await m2Page.locator('#message').fill('M2 原生精确消息 🐳\n继续旧会话');
+  await m2Page.locator('#send').click();
+  await m2Page.evaluate(() => document.getElementById('chat-form').requestSubmit());
+  await m2Page.waitForFunction(() => document.getElementById('chat-send-state').dataset.state === 'accepted');
+  assert.equal(await m2Page.locator('#message').inputValue(), '');
+  let m2Records = (await m2Command('read-m2-records', 'm2-records')).events;
+  let m2Messages = [...new Map(m2Records.flatMap(e => e.type === 'agent/inbox/spliced' ? e.data.inserted : e.type === 'user/message' ? [e.data] : []).filter(m => m.source.kind === 'user' && m.source.rpcId).map(m => [m.id, m])).values()];
+  assert.equal(m2Messages.length, 1, 'rapid native duplicate submit writes once');
+  assert.deepEqual(m2Messages[0].content, [{ type: 'text', text: 'M2 原生精确消息 🐳\n继续旧会话' }]);
+  assert.ok(m2Messages[0].source.rpcId); assert.ok(m2Messages[0].source.clientTimeZone);
+  await m2Page.locator('#chat-close').click();
+  await m2Page.waitForFunction(() => !document.getElementById('chat-read').hidden);
+  await petClick(m2Page, {}, true); await m2Page.locator('#chat-read').click();
+  await m2Page.waitForFunction(() => document.getElementById('reader-text').textContent === 'M2 installed full result 🐳');
+  await m2Page.locator('#reader-session').click();
+  assert.equal(await m2Page.locator('#chat').isVisible(), true);
+  await m2Page.locator('#message').fill('M2 读完整结果后继续'); await m2Page.locator('#send').click();
+  await m2Page.waitForFunction(() => document.getElementById('chat-send-state').dataset.state === 'accepted');
+  m2Records = (await m2Command('read-m2-records', 'm2-records')).events;
+  m2Messages = [...new Map(m2Records.flatMap(e => e.type === 'agent/inbox/spliced' ? e.data.inserted : e.type === 'user/message' ? [e.data] : []).filter(m => m.source.kind === 'user' && m.source.rpcId).map(m => [m.id, m])).values()];
+  assert.equal(m2Messages.length, 2); assert.notEqual(m2Messages[0].source.rpcId, m2Messages[1].source.rpcId);
+  await writeFile(join(project, 'artifacts', `session-native-${version}.json`), JSON.stringify({ dsh: version, sourceCommit, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), sessionId: 'm2-installed-cold-full', cases: { cold: true, nativeRendererMainHostReceipt: true, rapidDuplicateOnce: true, exactPersistedIdentity: true, readFullResultAndContinue: true }, messages: m2Messages, events: m2Records }, null, 2) + '\n');
+  // M3: crash the actual installed Electron main process while hidden. The
+  // official Host stays alive and rehydrates its current state without input replay.
+  const recoveryState = async () => {
+    const response = await settings.request.post(new URL('/api/coopanion/notification-state', hostUrl).href, { headers: { Origin: new URL(hostUrl).origin }, data: { type: 'client-request', rpcId: 'm3-runtime', method: 'coopanion/notification-state', payload: {} } });
+    assert.equal(response.status(), 200); const envelope = await response.json(); assert.equal(envelope.result.ok, true); return envelope.result.value;
+  };
+  await m2Page.waitForTimeout(300);
+  const focusBeforeRecovery = await m2Page.locator('#chat-session-name').innerText();
+  const actualApproval = await m2Command('prepare-m3-pending', 'm3-pending-ready');
+  const beforeRecovery = await recoveryState();
+  assert.ok(beforeRecovery.interactions.some(item => item.nativeId === actualApproval.approvalId), 'an actual public approval request is pending before the crash');
+  const messagesBeforeRecovery = m2Messages.map(message => message.id);
+  const notificationCount = await settings.evaluate(() => window.__notificationInstall?.objects.length ?? 0);
+  await m2Page.locator('#message').fill('M3 未发送的窗口草稿');
+  await surface.getByRole('button', { name: /^(隐藏桌宠|Hide pet)$/, exact: true }).click();
+  await waitRecovery(async () => { const state = await recoveryState(); return state.runtime.visible === false && state.runtime.desiredVisible === false; }, 'installed pet did not acknowledge hidden intent');
+  const crashedPid = await crashNative(browser); browser = undefined;
+  const recoveryStates = [];
+  await waitRecovery(async () => {
+    const state = await recoveryState(); recoveryStates.push(state.runtime);
+    assert.equal(host.exitCode, null, 'Harness remains available during native recovery');
+    return state.runtime.phase === 'running' && state.runtime.generation > beforeRecovery.runtime.generation && state.runtime.visibilityRevision > 0;
+  }, 'installed hidden process did not recover');
+  const afterRecovery = await recoveryState();
+  assert.equal(afterRecovery.runtime.visible, false); assert.equal(afterRecovery.runtime.desiredVisible, false);
+  assert.deepEqual(afterRecovery.interactions.map(item => [item.id, item.state]), beforeRecovery.interactions.map(item => [item.id, item.state]));
+  browser = await connectRecovered(port);
+  const recoveredPage = browser.contexts()[0].pages()[0];
+  recoveredPage.on('pageerror', error => uiErrors.push(error.message));
+  await recoveredPage.waitForSelector('#pet[data-host-ready=true]');
+  assert.equal(await recoveredPage.locator('#bubble').isVisible(), false);
+  assert.equal(await recoveredPage.locator('#message').inputValue(), '');
+  await surface.getByRole('button', { name: /^(显示桌宠|Show pet)$/, exact: true }).click();
+  await surface.getByTestId('pet-status').filter({ hasText: /正在显示|Visible/ }).waitFor();
+  await petClick(recoveredPage, {}, true);
+  assert.equal(await recoveredPage.locator('#chat-session-name').innerText(), focusBeforeRecovery);
+  await recoveredPage.locator('#chat-read').click();
+  await recoveredPage.waitForFunction(() => document.getElementById('reader-text').textContent === 'M2 installed full result 🐳');
+  const recordsAfterRecovery = (await m2Command('read-m2-records', 'm2-records')).events;
+  const messagesAfterRecovery = [...new Set(recordsAfterRecovery.flatMap(event => event.type === 'agent/inbox/spliced' ? event.data.inserted : event.type === 'user/message' ? [event.data] : []).filter(message => message.source.kind === 'user' && message.source.rpcId).map(message => message.id))];
+  assert.deepEqual(messagesAfterRecovery, messagesBeforeRecovery, 'native recovery does not resubmit M2 messages');
+  assert.equal(await settings.evaluate(() => window.__notificationInstall?.objects.length ?? 0), notificationCount, 'old results do not generate new system notifications');
+  await m2Command('cancel-m3-pending', 'm3-pending-cancelled');
+  assert.equal((await recoveryState()).interactions.some(item => item.nativeId === actualApproval.approvalId), false, 'only the original service cancellation settles the request');
+  await recoveredPage.keyboard.press('Escape');
+  await writeFile(join(project, 'artifacts', `desktop-recovery-${version}.json`), JSON.stringify({ dsh: version, sourceCommit, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), platform: process.platform, arch: process.arch, crashedPid, before: beforeRecovery, after: afterRecovery, observedRuntime: recoveryStates, persistedMessageIds: messagesAfterRecovery, cases: { actualInstalledProcessCrash: true, harnessAvailable: true, hiddenRecovery: true, fullResultAndFocus: true, validRequestsRetained: true, noChatReplay: true, noOldNotifications: true, rendererDraftLoss: true } }, null, 2) + '\n');
   const sourceResponse = await settings.request.post(new URL('/api/coopanion-notification-n0/probe', hostUrl).href, { headers: { Origin: new URL(hostUrl).origin }, data: { type: 'client-request', rpcId: 'n0-source', method: 'coopanion-notification-n0/probe', payload: { action: 'session' } } });
   assert.equal(sourceResponse.status(), 200, 'N0 public session creation is available');
   const sourceEnvelope = await sourceResponse.json(); assert.equal(sourceEnvelope.result.ok, true);
@@ -424,7 +554,10 @@ try {
   await writeFile(join(project, 'artifacts', `notification-source-${version}.json`), JSON.stringify({ dsh: version, pluginVersion: manifest.version, creation: 'sessionController.create', sessionId: sourceId, exportedHeader: header, status: 'pass' }, null, 2) + '\n');
   await stop(host);
   assert.equal(host.exitCode, 0, hostLog);
-  await writeFile(join(project, 'artifacts', `install-${version}.json`), JSON.stringify({ dsh: version, plugin: `${manifest.name}@${manifest.version}`, package: archive, installed: true, profileLoader: true, nativeWindow: true, customCharacter: true, builtinCharacterId: 'whale', sessionNotifications: true, multipleSessions: true, completionReturnsToIdle: true, notificationOpensSourceSession: true, nativeSettingsPage: true, darkTheme: true, closeAndRelaunch: true, hostRestartPersistence: true, autoStartDisabled: true, chineseAndEnglish: true, liveLocaleSwitch: true, automaticSystemLanguage: true, riskExemption: false, cleanShutdown: true }, null, 2) + '\n');
+  await writeFile(join(project, 'artifacts', `multi-display-installed-${version}.json`), JSON.stringify({ dsh: version, sourceCommit, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), platform: process.platform, arch: process.arch, physicalMultiDisplay: false, physicalMixedDpi: false, samples: textScaleSamples.map(({ size, textScale, display }) => ({ size, textScale, ...display })) }, null, 2) + '\n');
+  await writeFile(join(project, 'artifacts', `daily-rhythm-installed-${version}.json`), JSON.stringify({ dsh: version, sourceCommit, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), platform: process.platform, arch: process.arch, oldConfigDefaultOff: true, harnessVolatilePersistence: true, nativeHotSync: true, nativeRestart: true, hostRestart: true, draftSelectionAndFrame: true, englishLabel: true }, null, 2) + '\n');
+  await writeFile(join(project, 'artifacts', `text-scale-installed-${version}.json`), JSON.stringify({ dsh: version, sourceCommit, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), samples: textScaleSamples, oldConfigDefault: true, nativeRestart: true, hostRestart: true, englishLabel: true }, null, 2) + '\n');
+  await writeFile(join(project, 'artifacts', `install-${version}.json`), JSON.stringify({ dsh: version, sourceCommit, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), m3NativeRecovery: true, m2NativeContinuation: true, plugin: `${manifest.name}@${manifest.version}`, package: archive, installed: true, profileLoader: true, nativeWindow: true, customCharacter: true, builtinCharacterId: 'whale', sessionNotifications: true, multipleSessions: true, roundReplyWithoutGoalCelebration: true, notificationOpensSourceSession: true, nativeSettingsPage: true, darkTheme: true, closeAndRelaunch: true, hostRestartPersistence: true, autoStartDisabled: true, chineseAndEnglish: true, liveLocaleSwitch: true, automaticSystemLanguage: true, riskExemption: false, cleanShutdown: true }, null, 2) + '\n');
   console.log(`Installation smoke passed on DSH ${version}: admission, actual profile loader, native window, independent sessions, session navigation from notices, official settings UI, live persisted preferences, and reopening after native close.`);
 } catch (error) {
   if (browser) {

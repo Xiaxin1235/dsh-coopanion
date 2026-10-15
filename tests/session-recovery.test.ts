@@ -114,3 +114,23 @@ it('keeps a restored pending approval visible without claiming its Agent is runn
     expect(h.snapshot()).toMatchObject({ mood: 'idle', active: false });
   } finally { await h.dispose(); }
 });
+
+it('lists cold public sessions without activating agents, restores history as read and retains detached targets', async () => {
+  const ctx = new Context(); const agents: Agent[] = []; ctx.provide('agents', { list: () => agents });
+  const cold = Session.create(SessionId('cold-full'), history('cold-full'), { id: SessionId('cold-full'), version: 4, createdAt: 0, isSeeded: false, cwd: '/project' });
+  const prompt = vi.fn(async () => ({ accepted: true }));
+  ctx.provide('sessionController', { list: async () => ({ items: [{ sessionId: cold.id }, { sessionId: 'child', origin: 'subagent' }] }), prompt });
+  const observed = { header: cold.header, events: cold.snapshotEvents(), [Symbol.dispose]: vi.fn() };
+  const observeSession = vi.fn(async () => observed); ctx.provide('sessionQuery', { observeSession });
+  const bridge: PetBridge = { start: vi.fn(async () => {}), dispose: vi.fn(async () => {}), update: vi.fn(), notify: vi.fn(), onAction() {}, removeAction() {} };
+  const scope = ctx.plugin(child => mountPet(child, Config({ autoStart: false }), bridge));
+  try {
+    await scope.await(); await vi.waitFor(() => expect(bridge.update).toHaveBeenLastCalledWith(expect.objectContaining({ sessions: [expect.objectContaining({ id: cold.id, chatAvailable: true, unread: 0 })] })));
+    const snapshot = vi.mocked(bridge.update).mock.calls.at(-1)![0];
+    expect(snapshot.results).toHaveLength(2); expect(snapshot.results.every(r => r.read)).toBe(true);
+    expect(prompt).not.toHaveBeenCalled(); expect(agents).toHaveLength(0); expect(observeSession).toHaveBeenCalledTimes(1); expect(observed[Symbol.dispose]).toHaveBeenCalledOnce();
+    ctx.emit('api-session/removed', cold.id); ctx.emit('session/disposed', cold);
+    expect(bridge.update).toHaveBeenLastCalledWith(expect.objectContaining({ sessionId: cold.id, sessions: [expect.objectContaining({ id: cold.id })] }));
+    expect(bridge.notify).not.toHaveBeenCalled();
+  } finally { await scope.dispose(); await ctx.fiber.dispose(); }
+});

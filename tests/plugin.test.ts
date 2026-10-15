@@ -12,7 +12,7 @@ function nativeBridge(): PetBridge {
   const listeners = new Set<(state: NativeLifecycle) => void>(); let generation = 0, revision = 0;
   const bridge: PetBridge = {
     start: vi.fn(async (_options, lifetime) => { generation = lifetime?.generation ?? generation + 1; revision = 1; for (const fn of listeners) fn({ running: true, visible: true, generation, visibilityRevision: revision, suspended: false }); }),
-    update: vi.fn(), notify: vi.fn(), dispose: vi.fn(async () => {}), onAction: vi.fn(), removeAction: vi.fn(),
+    update: vi.fn(), chatResult: vi.fn(), notify: vi.fn(), dispose: vi.fn(async () => {}), onAction: vi.fn(), removeAction: vi.fn(),
     onLifecycle: fn => { listeners.add(fn); }, removeLifecycle: fn => { listeners.delete(fn); },
     control: vi.fn(command => { for (const fn of listeners) fn({ running: true, visible: command !== 'hide', generation, visibilityRevision: ++revision, suspended: false }); }),
     notificationState: vi.fn(), snoozeResult: vi.fn(),
@@ -43,6 +43,9 @@ it('uses the real Cordis event bus, delegates approval, logs user input through 
   const ctx = new Context();
   const session = { id: SessionId('live'), header: { origin: undefined, version: 4, id: SessionId('live'), createdAt: 0, isSeeded: false, cwd: '/project/live' } } as Session;
   const followup = vi.fn();
+  const prompt = vi.fn(async () => ({ accepted: true }));
+  ctx.provide('sessionController', { prompt, list: async () => ({ items: [] }), modelCatalog: async () => ({ default: { provider: 'test', model: 'test' }, groups: [{ id: 'test', models: [{ id: 'test' }] }] }) });
+  ctx.provide('sessionQuery', { observeSession: async () => ({ header: session.header, events: [], [Symbol.dispose]() {} }) });
   const agent: Agent = {
     id: session.id, session, followup, ctx, options: {}, status: 'idle',
     inbox: { nextTurn: [], nextStep: [], clear() {}, append() {}, prepend() {}, replace: () => false, remove: () => false, splice: () => [] },
@@ -73,12 +76,10 @@ it('uses the real Cordis event bus, delegates approval, logs user input through 
   expect(outcome).toEqual({ status: 'denied' }); expect(delegated).toHaveBeenCalledOnce();
   expect(bridge.notify).toHaveBeenCalledWith(expect.objectContaining({ title: 'live · 等你确认', category: 'approval', requestIds: ['[\"live\",\"approval\",\"native-approval\"]'] }));
   ctx.emit('session/event', session, { seq: SessionSeq(2), type: 'approval/decided', data: { id: ApprovalRequestId('native-approval'), outcome: 'rejected' }, time: 2 });
-  action?.({ type: 'chat', sessionId: 'live', text: '  你好  ' });
-  expect(followup).toHaveBeenCalledWith(expect.objectContaining({ role: 'user', source: { kind: 'user' }, content: [{ type: 'text', text: '你好' }] }));
-  expect(followup.mock.calls[0][0].id).toBeTruthy();
-  action?.({ type: 'chat', sessionId: 'missing', text: 'send somewhere else' });
-  action?.({ type: 'chat', sessionId: 'live', text: 'x'.repeat(2001) });
-  expect(followup).toHaveBeenCalledTimes(1);
+  action?.({ type: 'chat', sessionId: 'live', text: '  你好  ', requestId: 'full-client-1', clientTimeZone: 'Asia/Shanghai' });
+  await vi.waitFor(() => expect(prompt).toHaveBeenCalledWith(expect.objectContaining({ sessionId: 'live', requestId: 'full-client-1', mode: 'queue', content: [{ type: 'text', text: '你好' }], clientTimeZone: 'Asia/Shanghai' }), expect.anything()));
+  action?.({ type: 'chat', sessionId: 'live', text: 'x'.repeat(2001), requestId: 'invalid', clientTimeZone: 'UTC' });
+  expect(followup).not.toHaveBeenCalled(); expect(prompt).toHaveBeenCalledTimes(1);
   await fiber.dispose(); expect(action).toBeUndefined(); expect(bridge.dispose).toHaveBeenCalledOnce();
   await ctx.fiber.dispose();
 });
@@ -90,7 +91,7 @@ it('rejects invalid configuration before starting a desktop process', () => {
 
 it('keeps the plugin mounted when launch fails, and honors disabled auto-start', async () => {
   const ctx = new Context(); ctx.provide('agents', { list: () => [] });
-  const bridge: PetBridge = { start: vi.fn(async () => { throw new Error('test: no display'); }), update: vi.fn(), notify: vi.fn(), onAction: vi.fn(), removeAction: vi.fn(), dispose: vi.fn(async () => {}) };
+  const bridge: PetBridge = { start: vi.fn(async () => { throw new Error('test: no display'); }), update: vi.fn(), chatResult: vi.fn(), notify: vi.fn(), onAction: vi.fn(), removeAction: vi.fn(), dispose: vi.fn(async () => {}) };
   const fiber = ctx.plugin(async scope => mountPet(scope, Config({ autoStart: false }), bridge));
   await fiber.await(); expect(bridge.start).not.toHaveBeenCalled();
   expect(ctx.coopanion.status().phase).toBe('stopped');
@@ -102,7 +103,7 @@ it('keeps the plugin mounted when launch fails, and honors disabled auto-start',
 it('acknowledges desktop preference changes through the shared host configuration', async () => {
   const ctx = new Context(); ctx.provide('agents', { list: () => [] });
   let action: ((value: unknown) => void) | undefined;
-  const bridge: PetBridge = { start: vi.fn(async () => {}), update: vi.fn(), notify: vi.fn(), configure: vi.fn(), onAction: fn => { action = fn; }, removeAction: vi.fn(), dispose: vi.fn(async () => {}) };
+  const bridge: PetBridge = { start: vi.fn(async () => {}), update: vi.fn(), chatResult: vi.fn(), notify: vi.fn(), configure: vi.fn(), onAction: fn => { action = fn; }, removeAction: vi.fn(), dispose: vi.fn(async () => {}) };
   const fiber = ctx.plugin(scope => mountPet(scope, Config({ autoStart: false }), bridge)); await fiber.await();
   action?.({ type: 'preference', field: 'roam', value: false });
   await vi.waitFor(() => expect(bridge.configure).toHaveBeenLastCalledWith(expect.objectContaining({ roam: false, notifications: true })));
@@ -135,13 +136,13 @@ it('registers and disposes exact authenticated Connection routes without taking 
   expect((await language({ locale: 'zh' })).result).toEqual({ ok: true, value: { locale: 'zh' } });
   expect((await language({ locale: 'en' })).result).toEqual({ ok: true, value: { locale: 'en' } });
   await routes.get('/api/coopanion/notification-state')!.fetch(new Request('http://localhost/api/coopanion/notification-state', { method: 'POST', body: JSON.stringify({ type: 'client-request', rpcId: 'legacy', method: 'coopanion/notification-state', payload: { locale: 'zh' } }) }));
-  expect(await invoke({ command: 'start' })).toEqual({ type: 'server-response', rpcId: 'test', result: { ok: true, value: { phase: 'running', visible: true, generation: 1, visibilityRevision: 2, suspended: false } } });
+  expect(await invoke({ command: 'start' })).toEqual({ type: 'server-response', rpcId: 'test', result: { ok: true, value: { phase: 'running', visible: true, desiredVisible: true, recoveryAttempt: 0, generation: 1, visibilityRevision: 2, suspended: false } } });
   expect(bridge.start).toHaveBeenCalledWith(expect.objectContaining({ locale: 'en' }), expect.anything());
   const malformed = await routes.get('/api/coopanion/status')!.fetch(new Request('http://localhost/api/coopanion/status', { method: 'POST', body: '{}' }));
   expect(malformed.status).toBe(400);
   expect(bridge.update).toHaveBeenCalledWith(expect.objectContaining({ sessionId: 'existing' }));
-  action?.({ type: 'chat', sessionId: 'existing', text: '不能静默丢弃' });
-  expect(bridge.notify).toHaveBeenCalledWith(expect.objectContaining({ sessionId: 'existing', title: '会话尚未就绪' }));
+  action?.({ type: 'chat', sessionId: 'existing', text: '不能静默丢弃', requestId: 'service-missing-request', clientTimeZone: 'UTC' });
+  await vi.waitFor(() => expect(bridge.chatResult).toHaveBeenCalledWith(expect.objectContaining({ sessionId: 'existing', status: 'failed', code: 'coopanion/service-unavailable' })));
   const navigation = async () => (await routes.get('/api/coopanion/navigation')!.fetch(new Request('http://localhost/api/coopanion/navigation', { method: 'POST', body: JSON.stringify({ type: 'client-request', rpcId: 'nav', method: 'coopanion/navigation', payload: {} }) }))).json();
   action?.({ type: 'open-session', sessionId: 'unknown' }); expect((await navigation()).result.value).toBeNull();
   expect(bridge.focusHarness).not.toHaveBeenCalled();
@@ -150,4 +151,48 @@ it('registers and disposes exact authenticated Connection routes without taking 
   expect((await navigation()).result.value).toBeNull(); // Claimed only once.
   expect(bridge.focusHarness).toHaveBeenCalledOnce();
   await fiber.dispose(); expect(routes.size).toBe(0); await ctx.fiber.dispose();
+});
+
+
+it('defaults old configs to 100% and accepts only three independent text scales', async () => {
+  expect(Config().textScale.get()).toBe(1);
+  for (const textScale of [1, 1.25, 1.5] as const) for (const size of [90, 240]) {
+    const config = Config({ textScale, size });
+    expect(config.textScale.get()).toBe(textScale); expect(config.size.get()).toBe(size);
+  }
+  for (const textScale of [0, 1.1, 125, '1.25']) expect(() => Config({ textScale: textScale as never })).toThrow();
+  const ctx = new Context(); ctx.provide('agents', { list: () => [] });
+  let value: 1 | 1.25 | 1.5 = 1;
+  const config = Config({ size: 90 });
+  config.textScale = { get: () => value };
+  const bridge = { ...nativeBridge(), configure: vi.fn() };
+  const fiber = ctx.plugin(scope => mountPet(scope, config, bridge));
+  try {
+    await fiber.await(); await vi.waitFor(() => expect(bridge.start).toHaveBeenCalledOnce());
+    for (const next of [1.25, 1.5, 1] as const) {
+      value = next; ctx.emit('settings/document-updated', 'dsh-coopanion' as SettingsNamespace, 1);
+      expect(bridge.configure).toHaveBeenLastCalledWith(expect.objectContaining({ textScale: next, size: 90 }));
+    }
+    expect(bridge.start).toHaveBeenCalledOnce();
+  } finally { await fiber.dispose(); await ctx.fiber.dispose(); }
+});
+
+it('defaults daily rhythm off and hot-syncs complete durable preferences without restarting or notifying', async () => {
+  expect(Config().dailyRhythm.get()).toBe(false);
+  for (const dailyRhythm of ['true', 1, {}]) expect(() => Config({ dailyRhythm: dailyRhythm as never })).toThrow();
+  const ctx = new Context(); ctx.provide('agents', { list: () => [] });
+  let dailyRhythm = false;
+  const config = Config({ size: 90, textScale: 1.25, roam: true });
+  config.dailyRhythm = { get: () => dailyRhythm };
+  const bridge = { ...nativeBridge(), configure: vi.fn() };
+  const fiber = ctx.plugin(scope => mountPet(scope, config, bridge));
+  try {
+    await fiber.await(); await vi.waitFor(() => expect(bridge.start).toHaveBeenCalledOnce());
+    expect(bridge.start).toHaveBeenCalledWith(expect.objectContaining({ dailyRhythm: false }), expect.anything());
+    for (const next of [true, false, true]) {
+      dailyRhythm = next; ctx.emit('settings/document-updated', 'dsh-coopanion' as SettingsNamespace, 1);
+      expect(bridge.configure).toHaveBeenLastCalledWith(expect.objectContaining({ dailyRhythm: next, size: 90, textScale: 1.25, roam: true, notifications: true, reminders: true }));
+    }
+    expect(bridge.start).toHaveBeenCalledOnce(); expect(bridge.notify).not.toHaveBeenCalled();
+  } finally { await fiber.dispose(); await ctx.fiber.dispose(); }
 });

@@ -1,0 +1,23 @@
+import assert from 'node:assert/strict';
+import { _electron } from 'playwright-core';
+import { createRequire } from 'node:module';
+import { mkdtemp,rm,writeFile } from 'node:fs/promises';
+import { join,resolve } from 'node:path';
+import { tmpdir } from 'node:os';
+import { petClick } from './clean/tests/helpers/native-pointer.mjs';
+const require=createRequire(import.meta.url),samples=[];
+for(let iteration=0;iteration<8;iteration++){
+ const dir=await mkdtemp(join(tmpdir(),'m5-dbl-'));let app;
+ try{
+ app=await _electron.launch({executablePath:require('electron'),args:['--no-sandbox',resolve('.cache/m5/clean/desktop/main.cjs')],env:{...process.env,DSH_PET_TEST_DATA_DIR:dir,DSH_PET_TEST_NO_SANDBOX:'1',DSH_PET_TEST_DEBUG_PORT:'0'}});
+ const page=await app.firstWindow();
+ await app.evaluate(()=>process.emit('message',{type:'init',baseline:true,options:{size:180,textScale:1.5,roam:true,notifications:true},snapshot:{mood:'idle',sessionId:'dbl-test',results:[],sessions:[{id:'dbl-test',mood:'idle',label:'Native double click',chatAvailable:true}]}}));
+ await page.waitForSelector('#pet[data-character=whale][data-host-ready=true]');
+ const before=await page.locator('#pet').getAttribute('data-mode');
+ await petClick(page,{},true);
+ await page.waitForTimeout(150);
+ const sample={iteration,before,chatVisible:await page.locator('#chat').isVisible(),trace:await page.evaluate(()=>window.__nativeInputTrace)};samples.push(sample);console.log(JSON.stringify({iteration,before,chatVisible:sample.chatVisible}));
+ }finally{await app?.close();await rm(dir,{recursive:true,force:true});}
+}
+await writeFile('.cache/m5/double-click-loop.json',JSON.stringify({sourceCommit:'a392084f81d62b5ddcadb8c43836e453922f21a2',samples},null,2)+'\n');
+assert.ok(samples.every(s=>s.chatVisible),'native startup double-click must open chat');

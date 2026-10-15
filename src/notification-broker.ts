@@ -1,3 +1,4 @@
+import { CompletionTracker } from './completion.ts';
 import { randomUUID } from 'node:crypto';
 import type { Session, SessionEvent } from '@deepseek-ai/dsh-session';
 import type {} from '@deepseek-ai/dsh-user-approval';
@@ -35,7 +36,7 @@ type SourceKind = 'event' | 'runtime';
 type SourcedNotice = TaskNotice & { source?: SourceKind };
 interface RequestState extends PendingInteraction { source?: SourceKind; projected: boolean; snoozes: number; cleanup?: () => void; }
 interface QuestionOrigin { turn: number; seq: number; time: number; }
-interface SourceState { seq: number; turn: number; finalText: string; label: string; calls: Map<string, QuestionOrigin>; }
+interface SourceState { completion: CompletionTracker; ended: number; seq: number; turn: number; finalText: string; label: string; calls: Map<string, QuestionOrigin>; }
 interface Delivery {
   notice: TaskNotice; state: 'pending' | 'claimed' | DeliveryReceipt['state'] | 'role' | 'cancelled';
   claim?: DeliveryClaim; requested: boolean; receipts: DeliveryReceipt[];
@@ -46,11 +47,11 @@ const realClock: BrokerClock = {
   clearTimeout: timer => clearTimeout(timer as ReturnType<typeof setTimeout>),
 };
 const title: Record<TaskNotice['category'], string> = {
-  completed: '任务完成', approval: '等你确认', question: '有个问题想问你', error: '需要关注',
+  reply: '本轮回复已生成', 'goal-progress': '目标仍在进行中', completed: '目标已完成', approval: '等你确认', question: '有个问题想问你', error: '需要关注',
   stopped: '先停在这里', interrupted: '任务中断了', blocked: '任务暂时停下了', 'max-tokens': '输出达到上限',
 };
 const body: Record<TaskNotice['category'], string> = {
-  completed: '已完成，回到会话查看。', approval: '下一步需要你确认。', question: '有个问题想问你。', error: '任务遇到了问题，陪你回去看看。',
+  reply: '本轮回复已生成，回到会话查看。', 'goal-progress': '本轮回复已生成，目标仍在进行中。', completed: '目标已完成，回到会话查看。', approval: '下一步需要你确认。', question: '有个问题想问你。', error: '任务遇到了问题，陪你回去看看。',
   stopped: '先停在这里，随时继续。', interrupted: '这段任务中断了，陪你回去看看。', blocked: '看看下一步怎么继续。', 'max-tokens': '看看下一步怎么继续。',
 };
 
@@ -120,7 +121,7 @@ export class NotificationBroker {
     let state = this.sources.get(session.id);
     if (!state) {
       if (this.sources.size >= 100) this.remove(this.sources.keys().next().value!);
-      state = { seq: -1, turn: 0, finalText: '', calls: new Map(), label: session.header.cwd?.split(/[\\/]/).filter(Boolean).at(-1) ?? '会话' };
+      state = { completion: new CompletionTracker(), ended: -1, seq: -1, turn: 0, finalText: '', calls: new Map(), label: session.header.cwd?.split(/[\\/]/).filter(Boolean).at(-1) ?? '会话' };
       this.sources.set(session.id, state);
     }
     return state;
@@ -129,6 +130,10 @@ export class NotificationBroker {
     const source = this.source(session);
     if (event.seq <= source.seq) return;
     source.seq = event.seq;
+    const completion = source.completion.consume(event as SessionEvent);
+    if (event.type === 'goal/change' && completion && !completion.silent && live) {
+      this.enqueue({ ...this.notice(session.id, source.turn, event.seq, event.time, completion.category, completion.text), goal: completion.goal });
+    }
     // Request settlements from older turns remain meaningful and use exact native identity.
     if (event.type === 'approval/decided') { this.settle(interactionId(session.id, 'approval', event.data.id)); return; }
     if (event.type === 'user/message') {
@@ -137,7 +142,7 @@ export class NotificationBroker {
     }
     if ('turn' in event.data && event.data.turn !== undefined && event.data.turn < source.turn) return;
     switch (event.type) {
-      case 'turn/start': source.turn = event.data.turn; source.finalText = ''; break;
+      case 'turn/start': if (event.data.turn <= source.ended) break; source.turn = event.data.turn; source.finalText = ''; break;
       case 'tool/call':
         if (event.data.name === 'ask_user_question') this.origin(source, event.data.callId, event.data.turn, event.seq, event.time);
         break;
@@ -149,10 +154,12 @@ export class NotificationBroker {
       case 'approval/asked':
         this.open(session.id, 'approval', event.data.id, source.turn, event.seq, event.time, `${event.data.toolName}: ${event.data.reason ?? body.approval}`, false, live); break;
       case 'turn/end': {
+        if (event.data.turn <= source.ended) break;
+        source.ended = event.data.turn;
         source.turn = event.data.turn;
         if (event.data.reason.kind === 'forked') break;
-        const category: TaskNotice['category'] = event.data.reason.kind === 'aborted' ? 'stopped' : event.data.reason.kind;
-        if (live) this.enqueue(this.notice(session.id, source.turn, event.seq, event.time, category, source.finalText && category === 'completed' ? source.finalText : body[category]));
+        const category: TaskNotice['category'] = completion?.category ?? (event.data.reason.kind === 'aborted' ? 'stopped' : event.data.reason.kind);
+        if (live) this.enqueue({ ...this.notice(session.id, source.turn, event.seq, event.time, category, source.finalText && event.data.reason.kind === 'completed' ? source.finalText : completion?.text ?? body[category]), ...(completion?.goal ? { goal: completion.goal } : {}) });
         source.finalText = '';
         // Approvals are enclosed by a turn. Durable continued questions are independently projected.
         for (const r of this.requests.values()) if (r.sessionId === session.id && r.kind === 'approval' && r.turn <= source.turn) this.settle(r.id);

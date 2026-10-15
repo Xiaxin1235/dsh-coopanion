@@ -4,8 +4,9 @@ import type { ConfigForm } from '@deepseek-ai/dsh-client-ui-settings/client';
 import type { PropsLocale } from '@deepseek-ai/dsh-client-ui-slots';
 import type { PetCommand, PetStatus } from '../controls.ts';
 import type { NotificationSettings, NotificationClientStatus } from './notification-client.ts';
+import { TEXT_SCALES, textScale, type TextScale } from '../../web/text-scale.js';
 
-export interface Preferences { size: number; roam: boolean; notifications: boolean; systemNotifications: boolean; reminders: boolean; reminderDelayMs: number; bubbleDurationMs: number; autoStart: boolean; }
+export interface Preferences { size: number; textScale: TextScale; roam: boolean; dailyRhythm: boolean; notifications: boolean; systemNotifications: boolean; reminders: boolean; reminderDelayMs: number; bubbleDurationMs: number; autoStart: boolean; }
 export interface SettingsFace { form: ConfigForm<Preferences>; call: (command?: PetCommand, signal?: AbortSignal) => Promise<PetStatus>; local: boolean; notifier?: NotificationSettings; }
 export type SettingsProps = SettingsFace & PropsLocale<'coopanion'>;
 
@@ -53,7 +54,7 @@ export function Settings({ form, call, local, notifier, t }: SettingsProps) {
     return () => { active = false; abort.abort(); clearTimeout(timer); };
   }, [call, local]);
   const command = async (value: PetCommand) => {
-    if (busy) return;
+    if (busy && value !== 'stop') return;
     setBusy(true); setFailure('');
     try { setStatus(await call(value)); }
     catch (error) { setFailure(String(error instanceof Error ? error.message : error)); }
@@ -98,19 +99,27 @@ export function Settings({ form, call, local, notifier, t }: SettingsProps) {
         <Button variant="outline" disabled={disabled} onClick={() => void command(running ? 'show' : 'start')}>{t(running ? 'show' : 'start')}</Button>
         <Button variant="outline" disabled={disabled || !running} onClick={() => void command('hide')}>{t('hide')}</Button>
         <Button variant="outline" disabled={disabled} onClick={() => void command('restart')}>{t('restart')}</Button>
-        <Button disabled={disabled || !running} onClick={() => void command('stop')}>{t('stop')}</Button>
+        <Button disabled={!local || status?.phase === 'stopped' || status?.phase === 'stopping'} onClick={() => void command('stop')}>{t('stop')}</Button>
       </div>
+      {status?.recoveryAttempt ? <p role="status">{t('recoveryHint')}: {status.recoveryAttempt} / 3</p> : null}
       {failure || status?.error ? <p className="pet-error" role="alert">{failure || status?.error}</p> : null}
     </section>
     <section className="pet-card" aria-label={t('preferences')}>
       <h3>{t('preferences')}</h3>
       {!accepted.writable || !local ? <p>{t('unavailable')}</p> : null}
-      {(['autoStart', 'roam', 'notifications'] as const).map(field => <div className="pet-row" key={field}>
+      {(['autoStart', 'roam', 'dailyRhythm', 'notifications'] as const).map(field => <div className="pet-row" key={field}>
         <div className="pet-label"><strong>{t(field)}</strong><p>{t(`${field}Hint`)}</p></div>
         <Switch checked={prefs?.[field] ?? false} disabled={!ready || !local} label={t(field)} onChange={value => void save(field, value)} />
       </div>)}
       {prefs ? <>
         <NumberPreference id="coopanion-size" label={t('size')} hint={t('sizeHint')} invalidHint={t('invalid')} value={prefs.size} min={90} max={240} disabled={!ready || !local} save={value => void save('size', value)} />
+        <div className="pet-row">
+          <div className="pet-label"><label htmlFor="coopanion-text-scale">{t('textScale')}</label><p id="coopanion-text-scale-hint">{t('textScaleHint')}</p></div>
+          <select className="pet-number" id="coopanion-text-scale" aria-describedby="coopanion-text-scale-hint" value={textScale(prefs.textScale)} disabled={!ready || !local}
+            onChange={event => void save('textScale', textScale(Number(event.target.value)))}>
+            {TEXT_SCALES.map(value => <option key={value} value={value}>{value * 100}%</option>)}
+          </select>
+        </div>
         <NumberPreference id="coopanion-duration" label={t('duration')} hint={t('durationHint')} invalidHint={t('invalid')} value={prefs.bubbleDurationMs / 1000} min={2} max={60} disabled={!ready || !local} save={value => void save('bubbleDurationMs', value * 1000)} />
       </> : null}
       <p className="pet-feedback" role="status">{saving ? t('saving') : saveFailure || (feedback ? t(feedback) : '')}</p>

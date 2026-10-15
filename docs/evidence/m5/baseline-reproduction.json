@@ -1,0 +1,88 @@
+{
+  "sourceCommit": "74fa3d0643652a1a8ff314ffa6b7e6280071c3b8",
+  "controlled": true,
+  "physicalMultiDisplay": false,
+  "cases": [
+    {
+      "id": "vertical-offset-portrait",
+      "layout": [
+        {
+          "id": 1,
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 900
+          },
+          "scaleFactor": 2
+        },
+        {
+          "id": 2,
+          "bounds": {
+            "x": 200,
+            "y": -1920,
+            "width": 1080,
+            "height": 1920
+          },
+          "scaleFactor": 1
+        }
+      ],
+      "cursor": {
+        "x": 500,
+        "y": -500
+      },
+      "baselineRequestsMove": false,
+      "expectedRequestsMove": true
+    },
+    {
+      "id": "mixed-scale-negative-origin",
+      "layout": [
+        {
+          "id": 1,
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 900
+          },
+          "scaleFactor": 2
+        },
+        {
+          "id": 2,
+          "bounds": {
+            "x": -1280,
+            "y": 100,
+            "width": 1280,
+            "height": 800
+          },
+          "scaleFactor": 1.5
+        }
+      ],
+      "dip": {
+        "x": -600,
+        "y": 200
+      },
+      "origin": {
+        "x": -1280,
+        "y": 100
+      },
+      "nativeOrigin": {
+        "x": -1920,
+        "y": 200
+      },
+      "local": {
+        "x": 680,
+        "y": 100
+      },
+      "baselineWindowsHelper": {
+        "x": -900,
+        "y": 300
+      },
+      "displayRelativePhysical": {
+        "x": -900,
+        "y": 350
+      },
+      "explanation": "Multiplying a global DIP origin by the target scale is invalid across displays; use Electron platform conversion at the native seam."
+    }
+  ]
+}

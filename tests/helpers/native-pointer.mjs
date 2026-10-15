@@ -18,13 +18,15 @@ import ctypes, sys
 x11 = ctypes.CDLL('libX11.so.6')
 x11.XOpenDisplay.argtypes = [ctypes.c_char_p]
 x11.XOpenDisplay.restype = ctypes.c_void_p
+x11.XDefaultRootWindow.argtypes = [ctypes.c_void_p]
+x11.XDefaultRootWindow.restype = ctypes.c_ulong
 x11.XWarpPointer.argtypes = [ctypes.c_void_p, ctypes.c_ulong, ctypes.c_ulong, ctypes.c_int, ctypes.c_int, ctypes.c_uint, ctypes.c_uint, ctypes.c_int, ctypes.c_int]
 x11.XSync.argtypes = [ctypes.c_void_p, ctypes.c_int]
 x11.XCloseDisplay.argtypes = [ctypes.c_void_p]
 display = x11.XOpenDisplay(None)
 if not display:
     raise RuntimeError('Cannot open the native test display')
-x11.XWarpPointer(display, 0, 0, 0, 0, 0, 0, int(sys.argv[1]), int(sys.argv[2]))
+x11.XWarpPointer(display, 0, x11.XDefaultRootWindow(display), 0, 0, 0, 0, int(sys.argv[1]), int(sys.argv[2]))
 x11.XSync(display, 0)
 x11.XCloseDisplay(display)
 `;
@@ -70,17 +72,11 @@ export async function petClick(page, options = {}, twice = false) {
   if (process.platform === 'linux' && process.env.DISPLAY) {
     // CDP moves a virtual pointer. Enabling native input also generates X11
     // movement at the physical cursor; keep both at the same point as a user.
-    const point = await pet.evaluate(el => {
-      const b = el.getBoundingClientRect();
-      return { x: Math.round(screenX + b.x + b.width / 2), y: Math.round(screenY + b.y + b.height / 2) };
-    });
+    const { point } = await nativeMeasurement(page, '#pet');
     await run('python3', ['-c', warpCursor, String(point.x), String(point.y)]);
   }
   if (process.platform === 'win32') {
-    const point = await pet.evaluate(el => {
-      const b = el.getBoundingClientRect();
-      return { x: Math.round((screenX + b.x + b.width / 2) * devicePixelRatio), y: Math.round((screenY + b.y + b.height / 2) * devicePixelRatio) };
-    });
+    const { point } = await nativeMeasurement(page, '#pet');
     await run('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command',
       `Add-Type -TypeDefinition 'using System; using System.Runtime.InteropServices; public class PetCursor { [DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y); }'; if (-not [PetCursor]::SetCursorPos(${point.x}, ${point.y})) { throw 'Cannot move the native test cursor' }`,
     ]);
@@ -105,4 +101,36 @@ export async function petClick(page, options = {}, twice = false) {
     assert.ok(trace.some(event => event.type === 'contextmenu' && event.target === 'DIV#pet'), 'native right click opens the menu through contextmenu');
     if (process.env.DSH_PET_INPUT_TRACE === '1') console.log('Native pointer pass:', JSON.stringify(trace));
   }
+}
+
+/** Measurements and physical conversion come from the tested Electron instance. */
+export async function nativeMeasurement(page, selector) {
+  return page.locator(selector).evaluate(el => {
+    const b = el.getBoundingClientRect();
+    if (!window.dshPetBridge.testScreenPoint) throw new Error('Native measurement requires an isolated debug test profile');
+    const css = { x: b.x + b.width / 2, y: b.y + b.height / 2 };
+    return window.dshPetBridge.testScreenPoint({...css,width:innerWidth,height:innerHeight}).then(native => ({ ...native, css }));
+  });
+}
+
+/** Native OS cursor + CDP click on a panel's measured CSS hit region. */
+export async function nativeClick(page, selector) {
+  await page.bringToFront();
+  await page.locator(selector).click({ trial: true });
+  const measurement = await nativeMeasurement(page, selector), p = measurement.point;
+  if (process.platform === 'darwin') await run('python3', ['-c', warpMacCursor, String(p.x), String(p.y)]);
+  else if (process.platform === 'linux') await run('python3', ['-c', warpCursor, String(p.x), String(p.y)]);
+  else await run('powershell.exe', ['-NoProfile','-NonInteractive','-Command',
+    `Add-Type -TypeDefinition 'using System; using System.Runtime.InteropServices; public class PetPanelCursor { [DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y); }'; if (-not [PetPanelCursor]::SetCursorPos(${p.x}, ${p.y})) { throw 'Cannot move the native test cursor' }`]);
+  // A font/size update can reflow the panel while the OS helper starts. Keep
+  // CDP and the physical cursor on the same measured point rather than mixing
+  // two layout samples; locator trial above waits for actionability/stability.
+  const { x, y } = measurement.css;
+  await page.mouse.move(x, y);
+  await page.waitForSelector('#pet[data-native-hit=true]');
+  await page.mouse.click(x, y);
+  const observed = await nativeMeasurement(page, selector);
+  assert.ok(Math.hypot(observed.cursor.x - measurement.dip.x, observed.cursor.y - measurement.dip.y) <= 2,
+    `OS cursor reaches the measured DIP point: ${JSON.stringify({ measurement, observed })}`);
+  return { ...measurement, cursorAfterClick: observed.cursor };
 }

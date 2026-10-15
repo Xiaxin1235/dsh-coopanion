@@ -1,0 +1,32 @@
+import { chromium } from 'playwright-core';
+import { resolve, join as pathJoin } from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
+const checkout=resolve(process.argv[2]??'.');
+const { previewServer }=await import(pathToFileURL(pathJoin(checkout,'scripts/preview.mjs')).href);
+import { once } from 'node:events';
+import { mkdtemp, rm, writeFile, readFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+const dir=await mkdtemp(join(tmpdir(),'m5-drag-')),server=previewServer({dataDir:dir});server.listen(0,'127.0.0.1');await once(server,'listening');
+const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH,headless:true,args:['--no-sandbox','--enable-unsafe-swiftshader']});
+try{
+ const page=await browser.newPage({viewport:{width:980,height:720},reducedMotion:'reduce'});
+ await page.addInitScript(()=>window.dshPetBridge={subscribe(fn){window.receive=fn},action(){},hit(){}});
+ await page.goto(`http://127.0.0.1:${server.address().port}`);await page.waitForSelector('#pet[data-mode]');
+ const receive=m=>page.evaluate(m=>window.receive(m),m);
+ await receive({type:'init',baseline:true,options:{size:90,roam:false,textScale:1.5},snapshot:{mood:'idle',sessions:[],results:[]}});
+ await receive({type:'display-changed',revision:1,displayId:1,contentBounds:{x:0,y:25,width:980,height:720},scaleFactor:2});
+ await page.waitForFunction(()=>!['air','drag','crouch'].includes(document.querySelector('#pet').dataset.mode));
+ await page.waitForTimeout(200);
+ console.log('before',await page.locator('#pet').evaluate(n=>({mode:n.dataset.mode,b:n.getBoundingClientRect().toJSON()})));
+ const b=await page.locator('#pet').boundingBox();await page.mouse.move(b.x+b.width/2,b.y+b.height/2);await page.mouse.down();await page.mouse.move(920,300,{steps:10});console.log('after-pointer',await page.locator('#pet').evaluate(n=>({mode:n.dataset.mode,pressing:n.dataset.pressing,b:n.getBoundingClientRect().toJSON()})));await page.waitForSelector('#pet[data-mode=drag]',{timeout:3000});
+ await page.setViewportSize({width:420,height:640});
+ await receive({type:'display-changed',revision:2,displayId:2,contentBounds:{x:-420,y:25,width:420,height:640},scaleFactor:1});
+ await page.waitForTimeout(200);
+ const after=await page.locator('#pet').evaluate(n=>{const b=n.getBoundingClientRect();return {mode:n.dataset.mode,pressing:n.dataset.pressing,x:b.x,y:b.y,right:b.right,bottom:b.bottom,W:innerWidth,H:innerHeight}});
+ const sourceFiles=[];for(const path of ['web/pet.js','web/upstream/kit/body.js'])sourceFiles.push({path,sha256:createHash('sha256').update(await readFile(pathJoin(checkout,path))).digest('hex')});
+ const report={sourceFiles,sourceCommit:execFileSync('git',['rev-parse','HEAD'],{cwd:checkout,encoding:'utf8'}).trim(),controlled:true,case:'unplug-while-dragging',after,expected:'active drag cancelled and body inside surviving work area',reproduced:after.right>after.W||after.x<0};
+ if(process.argv[3]) await writeFile(process.argv[3],JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));
+}finally{await browser.close();await new Promise(r=>server.close(r));await rm(dir,{recursive:true,force:true});}

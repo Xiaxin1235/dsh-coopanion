@@ -54,7 +54,7 @@ export async function verifyInstalledNotifications({ page, surface, profile, ver
       const envelope = await (await response).json(); assert.equal(envelope.result.ok, true);
       const claim = envelope.result.value; claims.push(claim);
       assert.ok(claim.visibilityRevision > 0); assert.ok(claim.generation > 0);
-      assert.deepEqual(JSON.parse(claim.notice.id), [claim.notice.sessionId, claim.notice.turn, claim.notice.seq, 'completed', 'initial']);
+      assert.deepEqual(JSON.parse(claim.notice.id), [claim.notice.sessionId, claim.notice.turn, claim.notice.seq, 'reply', 'initial']);
       await page.waitForFunction(id => window.__notificationInstall.objects.some(value => value.options.tag === id), claim.notice.id);
       for (let attempt = 0; attempt < 100 && !receipts.some(value => value.receipt.token === claim.token && value.receipt.state === 'shown'); attempt++) await new Promise(resolve => setTimeout(resolve, 50));
       const delivered = receipts.filter(value => value.receipt.token === claim.token);

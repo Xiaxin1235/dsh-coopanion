@@ -52,3 +52,32 @@ export function sessionActivity(snapshot) {
   return { mood, active: focusedActive || busy.length > 0, waiting: waiting.length, errors: errors.length, unread, busy: busy.length, pending: pending.length,
     icon: errors.length ? 'error' : waiting.length ? 'waiting' : mood === 'idle' && unread ? 'unread' : mood };
 }
+
+/** Per-session drafts and immutable attempts. A timeout is uncertain delivery, so retry keeps its ID. */
+export class ChatComposer {
+  constructor({ id = () => crypto.randomUUID(), timeZone = () => Intl.DateTimeFormat().resolvedOptions().timeZone } = {}) { this.id = id; this.timeZone = timeZone; this.sessions = new Map(); }
+  state(sessionId) {
+    if (!this.sessions.has(sessionId)) this.sessions.set(sessionId, { text: '', phase: 'idle' });
+    return this.sessions.get(sessionId);
+  }
+  edit(sessionId, text) { const state = this.state(sessionId); if (state.phase === 'accepted') { state.phase = 'idle'; state.request = undefined; } state.text = text; }
+  begin(sessionId) {
+    const state = this.state(sessionId), text = state.text.trim();
+    if (!text || text.length > 2000 || state.phase === 'sending') return;
+    if (!state.request || state.request.text !== text) state.request = Object.freeze({ type: 'chat', sessionId, requestId: this.id(), text, clientTimeZone: this.timeZone() });
+    state.phase = 'sending'; state.code = undefined;
+    return state.request;
+  }
+  receive(receipt) {
+    if (!chatReceipt(receipt)) return false;
+    const state = this.sessions.get(receipt.sessionId);
+    if (!state?.request || state.request.requestId !== receipt.requestId) return false;
+    // Acceptance is monotonic: a late timeout/failure cannot undo it.
+    if (state.phase === 'accepted') return false;
+    state.phase = receipt.status; state.code = receipt.code;
+    if (receipt.status === 'accepted' && state.text.trim() === state.request.text) state.text = '';
+    return true;
+  }
+  expire(request) { return this.receive({ type: 'chat-result', sessionId: request.sessionId, requestId: request.requestId, status: 'failed', code: 'coopanion/no-receipt' }); }
+}
+import { chatReceipt } from './chat-contract.js';

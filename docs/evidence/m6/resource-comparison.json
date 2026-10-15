@@ -1,0 +1,228 @@
+{
+  "sourceCommit": "e45ee2e1cdb3822e30c6475159b2973d4bf43869",
+  "archiveSha256": "c96759f425d043bf2824d243cdedf1fcc584773cb7c2e1cc2538fc9e1d94106e",
+  "measurementHarnessSha256": "ab53551e3ba0e5319e69b6da502980b8c257608c4e0ea91c75f69ced970dee15",
+  "baselineSourceCommit": "a392084f81d62b5ddcadb8c43836e453922f21a2",
+  "budget": {
+    "baselineCommit": "a392084f81d62b5ddcadb8c43836e453922f21a2",
+    "baselineArchiveSha256": "1103686729eae380b790d019cda126d90152dd809cd512fd31217def7cee9fb5",
+    "setBeforeImplementation": true,
+    "baselineCpuPercentOneCore": 49.51089589577589,
+    "baselineRssMiB": 534.0959201388889,
+    "maxMeanCpuIncreasePercentagePoints": 5,
+    "maxMeanRssIncreaseMiB": 60,
+    "maxLastWindowRssGrowthOverFirstMiB": 30,
+    "comparison": "M6 off versus M5; M6 day/night versus M6 off; same machine, runtime, size and visible idle; sequential runs",
+    "observationLimit": "At least 20s warmup and three 60s windows per mode; bounded observation, not long-term or cross-platform acceptance"
+  },
+  "budgetPassed": true,
+  "checks": [
+    {
+      "mode": "off",
+      "comparedWith": "baseline",
+      "cpuIncreasePercentagePoints": -0.007123139493451447,
+      "rssIncreaseMiB": 16.189409722222194,
+      "lastVsFirstWindowRssGrowthMiB": -61.83072916666663,
+      "cpuPassed": true,
+      "rssPassed": true,
+      "growthPassed": true
+    },
+    {
+      "mode": "day",
+      "comparedWith": "off",
+      "cpuIncreasePercentagePoints": 0.653137142746381,
+      "rssIncreaseMiB": -9.322569444444412,
+      "lastVsFirstWindowRssGrowthMiB": -86.17656250000005,
+      "cpuPassed": true,
+      "rssPassed": true,
+      "growthPassed": true
+    },
+    {
+      "mode": "night",
+      "comparedWith": "off",
+      "cpuIncreasePercentagePoints": 2.6009137334689356,
+      "rssIncreaseMiB": -37.253009259259215,
+      "lastVsFirstWindowRssGrowthMiB": -103.91388888888889,
+      "cpuPassed": true,
+      "rssPassed": true,
+      "growthPassed": true
+    }
+  ],
+  "measurementProbeSha256": "9d27245162d78ef0db1ef2ab1b0f9761f4e163bdaf81a294970a6b42644e5e47",
+  "initialEntryBaselineKeptSeparate": true,
+  "groups": [
+    {
+      "mode": "baseline",
+      "sourceCommit": "a392084f81d62b5ddcadb8c43836e453922f21a2",
+      "measuredAt": "2026-10-15T06:00:03.930Z",
+      "warmupSeconds": 20,
+      "rounds": 3,
+      "secondsPerRound": 60,
+      "meanCpuPercentOneCore": 46.80722476385245,
+      "meanRssMiB": 529.8609375,
+      "windows": [
+        {
+          "round": 1,
+          "durationSeconds": 61.64981666700001,
+          "meanCpuPercentOneCore": 42.65103514216671,
+          "meanRssMiB": 581.5145833333333,
+          "maxRssMiB": 599.53125
+        },
+        {
+          "round": 2,
+          "durationSeconds": 61.85512429200001,
+          "meanCpuPercentOneCore": 47.16390479010663,
+          "meanRssMiB": 502.50546875,
+          "maxRssMiB": 506.34375
+        },
+        {
+          "round": 3,
+          "durationSeconds": 61.92140541599999,
+          "meanCpuPercentOneCore": 50.60673435928402,
+          "meanRssMiB": 505.56276041666666,
+          "maxRssMiB": 511.53125
+        }
+      ],
+      "meanRendererRafPerSecond": 59.99673158309966,
+      "trustedInputs": 0,
+      "measurementProbe": {
+        "probeSha256": "9d27245162d78ef0db1ef2ab1b0f9761f4e163bdaf81a294970a6b42644e5e47",
+        "templateSha256": "ab53551e3ba0e5319e69b6da502980b8c257608c4e0ea91c75f69ced970dee15",
+        "normalizedReload": true,
+        "inputShield": "CDP Input.setIgnoreInputEvents",
+        "frameCounter": "requestAnimationFrame, same extra callback in every group",
+        "generatedScriptSha256": "36ed1f23954096a2f322d608bb79640fa2d0af048705a05ac5d2c75ad56c9729"
+      }
+    },
+    {
+      "mode": "off",
+      "sourceCommit": "e45ee2e1cdb3822e30c6475159b2973d4bf43869",
+      "measuredAt": "2026-10-15T06:03:30.645Z",
+      "warmupSeconds": 20,
+      "rounds": 3,
+      "secondsPerRound": 60,
+      "meanCpuPercentOneCore": 46.800101624359,
+      "meanRssMiB": 546.0503472222222,
+      "windows": [
+        {
+          "round": 1,
+          "durationSeconds": 61.803129832999986,
+          "meanCpuPercentOneCore": 44.461507235637306,
+          "meanRssMiB": 577.8229166666666,
+          "maxRssMiB": 598.953125
+        },
+        {
+          "round": 2,
+          "durationSeconds": 61.80167808400002,
+          "meanCpuPercentOneCore": 47.50110406771341,
+          "meanRssMiB": 544.3359375,
+          "maxRssMiB": 598.234375
+        },
+        {
+          "round": 3,
+          "durationSeconds": 61.84740329099998,
+          "meanCpuPercentOneCore": 48.43769356972629,
+          "meanRssMiB": 515.9921875,
+          "maxRssMiB": 524.640625
+        }
+      ],
+      "meanRendererRafPerSecond": 59.99921027133109,
+      "trustedInputs": 0,
+      "measurementProbe": {
+        "probeSha256": "9d27245162d78ef0db1ef2ab1b0f9761f4e163bdaf81a294970a6b42644e5e47",
+        "templateSha256": "ab53551e3ba0e5319e69b6da502980b8c257608c4e0ea91c75f69ced970dee15",
+        "normalizedReload": true,
+        "inputShield": "CDP Input.setIgnoreInputEvents",
+        "frameCounter": "requestAnimationFrame, same extra callback in every group",
+        "generatedScriptSha256": "943a8a12bec84b296461102a27f64c790b921093dfefa2e669eac79217acd76a"
+      }
+    },
+    {
+      "mode": "day",
+      "sourceCommit": "e45ee2e1cdb3822e30c6475159b2973d4bf43869",
+      "measuredAt": "2026-10-15T06:06:56.914Z",
+      "warmupSeconds": 20,
+      "rounds": 3,
+      "secondsPerRound": 60,
+      "meanCpuPercentOneCore": 47.45323876710538,
+      "meanRssMiB": 536.7277777777778,
+      "windows": [
+        {
+          "round": 1,
+          "durationSeconds": 61.86865295799999,
+          "meanCpuPercentOneCore": 48.596049287671555,
+          "meanRssMiB": 574.8768229166667,
+          "maxRssMiB": 594.3125
+        },
+        {
+          "round": 2,
+          "durationSeconds": 61.744092792000004,
+          "meanCpuPercentOneCore": 46.76101296405382,
+          "meanRssMiB": 546.60625,
+          "maxRssMiB": 594.984375
+        },
+        {
+          "round": 3,
+          "durationSeconds": 61.812947040999994,
+          "meanCpuPercentOneCore": 47.002654049590774,
+          "meanRssMiB": 488.70026041666665,
+          "maxRssMiB": 496.46875
+        }
+      ],
+      "meanRendererRafPerSecond": 59.997091946121834,
+      "trustedInputs": 0,
+      "measurementProbe": {
+        "probeSha256": "9d27245162d78ef0db1ef2ab1b0f9761f4e163bdaf81a294970a6b42644e5e47",
+        "templateSha256": "ab53551e3ba0e5319e69b6da502980b8c257608c4e0ea91c75f69ced970dee15",
+        "normalizedReload": true,
+        "inputShield": "CDP Input.setIgnoreInputEvents",
+        "frameCounter": "requestAnimationFrame, same extra callback in every group",
+        "generatedScriptSha256": "943a8a12bec84b296461102a27f64c790b921093dfefa2e669eac79217acd76a"
+      }
+    },
+    {
+      "mode": "night",
+      "sourceCommit": "e45ee2e1cdb3822e30c6475159b2973d4bf43869",
+      "measuredAt": "2026-10-15T06:11:56.291Z",
+      "warmupSeconds": 20,
+      "rounds": 3,
+      "secondsPerRound": 90,
+      "meanCpuPercentOneCore": 49.40101535782794,
+      "meanRssMiB": 508.79733796296296,
+      "windows": [
+        {
+          "round": 1,
+          "durationSeconds": 92.88230787500002,
+          "meanCpuPercentOneCore": 49.237964761020024,
+          "meanRssMiB": 579.4126736111111,
+          "maxRssMiB": 593.0625
+        },
+        {
+          "round": 2,
+          "durationSeconds": 92.70106087499997,
+          "meanCpuPercentOneCore": 47.225061321643764,
+          "meanRssMiB": 471.48055555555555,
+          "maxRssMiB": 593.015625
+        },
+        {
+          "round": 3,
+          "durationSeconds": 92.81488475000002,
+          "meanCpuPercentOneCore": 51.74001999082004,
+          "meanRssMiB": 475.49878472222224,
+          "maxRssMiB": 483.65625
+        }
+      ],
+      "meanRendererRafPerSecond": 60.0002163734116,
+      "trustedInputs": 0,
+      "measurementProbe": {
+        "probeSha256": "9d27245162d78ef0db1ef2ab1b0f9761f4e163bdaf81a294970a6b42644e5e47",
+        "templateSha256": "ab53551e3ba0e5319e69b6da502980b8c257608c4e0ea91c75f69ced970dee15",
+        "normalizedReload": true,
+        "inputShield": "CDP Input.setIgnoreInputEvents",
+        "frameCounter": "requestAnimationFrame, same extra callback in every group",
+        "generatedScriptSha256": "943a8a12bec84b296461102a27f64c790b921093dfefa2e669eac79217acd76a"
+      }
+    }
+  ],
+  "limitation": "Bounded same-machine native observation. No long-term resource, physical daily-use or other-platform acceptance."
+}

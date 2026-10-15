@@ -1,0 +1,94 @@
+{
+  "date": "2026-10-15",
+  "milestone": "M1",
+  "status": "local-validation-passed-awaiting-maintainer-review",
+  "sourceCommit": "df36f0dd138c48cac491a552bba3e1950dc48184",
+  "package": {
+    "name": "@takboo/dsh-coopanion",
+    "version": "0.4.8",
+    "path": ".cache/m1/takboo-dsh-coopanion-0.4.8.tgz",
+    "sha256": "0abff21b1a4115208322e40378e806c34ce64fc006273d2e25e18d8e6a5682f2",
+    "released": false
+  },
+  "toolchain": {
+    "node": "24.21.0",
+    "npm": "11.19.1",
+    "electron": "44.7.0",
+    "chromium": "151.0.7922.34",
+    "platform": "macOS arm64"
+  },
+  "checks": {
+    "typecheck": "pass",
+    "vitest": {
+      "status": "pass",
+      "files": 13,
+      "tests": 120
+    },
+    "nodeTests": {
+      "status": "pass",
+      "releaseAndClientBuild": 11,
+      "localeClient": 1
+    },
+    "metadata": "pass",
+    "build": "pass",
+    "package": "pass",
+    "browser": {
+      "mainAndLocale": "pass",
+      "notificationsIncludingM1RoundReplies": "pass",
+      "inboxAndFullReplies": "pass"
+    },
+    "nativeElectron": "pass",
+    "formalInstalls": {
+      "0.2.0-rc.2": {
+        "status": "pass",
+        "goalHost": "goal-host-0.2.0-rc.2.json",
+        "nativeInstall": "install-0.2.0-rc.2.json",
+        "runtimeLock": "runtime-lock-0.2.0-rc.2.json.gz",
+        "runtimeLockSha256": "c798ab7627781d93d67e6e07695a36c3bc53cf6744fa13df77ff646809fa89b3"
+      },
+      "0.2.1-alpha.1": {
+        "status": "pass",
+        "goalHost": "goal-host-0.2.1-alpha.1.json",
+        "nativeInstall": "install-0.2.1-alpha.1.json",
+        "runtimeLock": "runtime-lock-0.2.1-alpha.1.json.gz",
+        "runtimeLockSha256": "ea885ebf6c4e0b4dcf954bef2cb83161d18b7b5a2bb8a75ba3a1c4cbb401412a"
+      }
+    }
+  },
+  "boundaries": {
+    "remoteThreePlatformCI": "not-run-no-push",
+    "realModel": "not-run-controlled-adapter",
+    "systemNotificationCenter": "not-proven-controlled-Web-Notification-adapter",
+    "otherMilestones": "not-started"
+  },
+  "files": {
+    "goal-host-0.2.0-rc.2.json": {
+      "sha256": "78f774ef981b606b541040822f9c13d0969df286c626e1133f903b27f6eeef72",
+      "bytes": 25151
+    },
+    "goal-host-0.2.1-alpha.1.json": {
+      "sha256": "46e261918c88ad1d358683a76dcfac85119cc2299a341ca97b2db96ca031663f",
+      "bytes": 25154
+    },
+    "install-0.2.0-rc.2.json": {
+      "sha256": "db9cb3b09232fd78c129917cf02aabd7fa90a568ffbfc7db6124d486378dd969",
+      "bytes": 750
+    },
+    "install-0.2.1-alpha.1.json": {
+      "sha256": "c1c329d61905993cc29f51e3b28445f190f969f6f72a74ec05fe4038db11637c",
+      "bytes": 753
+    },
+    "package-verification.json": {
+      "sha256": "2fd3a303550f1b34a30811aa7e1c630272548a29de1a89026c31fe40aeed1def",
+      "bytes": 316
+    },
+    "runtime-lock-0.2.0-rc.2.json.gz": {
+      "sha256": "702d0aae38a8023ebf9ce291723f9ad46af82b5178c77bacad67477e57e9dcb6",
+      "bytes": 66693
+    },
+    "runtime-lock-0.2.1-alpha.1.json.gz": {
+      "sha256": "a78775e2faa4bde511a81d9c8c7d12f553ad2c3933019c316a0abf57d1686b93",
+      "bytes": 69011
+    }
+  }
+}
