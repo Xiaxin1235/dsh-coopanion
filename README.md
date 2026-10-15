@@ -59,6 +59,8 @@ npm 安装的 dsh 不能管理 Desktop 所拥有的 profile。Desktop 完全退�
 
 ## 开发与验证
 
+后续改进的范围、实施顺序与验收条件见[桌面伙伴改进路线图](docs/roadmap.md)。
+
 通知阶段及交付状态见 [通知执行计划](docs/notification-plan.md)，本轮集成验收范围见 [N3 验收记录](docs/notification-n3.md)。
 
 开发工具链固定 Node.js 24.21.0 和 npm 11.19.1。Electron 支持 Windows、macOS、Linux；Linux 的窗口测试需要 X11 / XWayland 或 Xvfb，以及 Python 3 和 libX11，用于同步原生鼠标位置。原生网格需要 Chromium 的 WebGL 支持。
