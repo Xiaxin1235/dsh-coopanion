@@ -484,7 +484,8 @@ function receive(message) {
         pendingDisplayPlacement = { ...(resizeOrigin ?? { ratio: (body?.layout?.x ?? stageWidth * .6) / stageWidth, facing: body?.layout?.facing ?? 1 }), drop: interrupted };
       }
       if (pressing) {
-        body?.pointer('cancel', { x: 0, y: 0, t: performance.now() });
+        // API 2 drop clears its held pointer after the new bounds arrive.
+        // pointer(cancel) first would turn drag into air and make drop a no-op.
         if (pressedPointerId !== undefined && pet.hasPointerCapture(pressedPointerId)) pet.releasePointerCapture(pressedPointerId);
         pressing = false; dragging = false; pressedPointerId = undefined;
       }

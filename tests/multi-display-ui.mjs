@@ -25,7 +25,7 @@ const cases = [
 test('controlled irregular layout and mixed DPR preserve reading, draft, in-flight identity and hit areas', async t => {
   const page = await browser.newPage({viewport:{width:980,height:720},reducedMotion:'reduce'}); t.after(()=>page.close());
   const errors=[]; page.on('pageerror',e=>errors.push(e.message)); t.after(()=>assert.deepEqual(errors,[]));
-  await page.addInitScript(()=>{window.displayActions=[];window.displayHits=[];window.dshPetBridge={subscribe(fn){window.displayReceive=fn;},action(a){window.displayActions.push(a);},hit(b){window.displayHits.push(b);}};});
+  await page.addInitScript(()=>{window.displayActions=[];window.displayHits=[];window.m5DropEvents=[];window.addEventListener('message',e=>{if(e.source===document.querySelector('#body-layer iframe')?.contentWindow&&e.data?.t==='frame')for(const item of e.data.events??[])if(item.kind==='touch')window.m5DropEvents.push(item.detail.kind);});window.dshPetBridge={subscribe(fn){window.displayReceive=fn;},action(a){window.displayActions.push(a);},hit(b){window.displayHits.push(b);}};});
   await page.goto(`http://127.0.0.1:${server.address().port}`); await page.waitForSelector('#pet[data-mode]');
   const receive=m=>page.evaluate(m=>window.displayReceive(m),m);
   const reply={id:'m5-full-result',sessionId:'m5-session',time:1,read:false,text:'## M5 captured reply\n\n'+'捕获阅读与多屏。 Stable reader across displays.\n\n'.repeat(60)};
@@ -83,10 +83,13 @@ test('controlled irregular layout and mixed DPR preserve reading, draft, in-flig
   await page.waitForFunction(()=>!['air','drag','crouch'].includes(document.querySelector('#pet').dataset.mode));
   await page.locator('#pet').hover(); await page.mouse.down();
   await page.mouse.move(920,280,{steps:12}); await page.waitForSelector('#pet[data-mode=drag]');
+  await page.evaluate(()=>window.m5DropEvents=[]);
   await cdp.send('Emulation.setDeviceMetricsOverride',{width:420,height:640,deviceScaleFactor:1,mobile:false});
   await receive({type:'display-changed',...cases[1],contentBounds:{x:-420,y:25,width:420,height:640},revision:++revision});
   await page.waitForFunction(()=>{const n=document.querySelector('#pet'),b=n.getBoundingClientRect();return n.dataset.pressing==='false'&&b.width>20&&b.x>=0&&b.right<=innerWidth&&b.bottom<=innerHeight;});
   await page.mouse.up();
+  await page.waitForFunction(()=>window.m5DropEvents.includes('drop'));
+  assert.equal(await page.evaluate(()=>window.m5DropEvents.includes('throw')),false,'layout recovery drops without generating a throw');
   await page.waitForFunction(()=>!['air','drag'].includes(document.querySelector('#pet').dataset.mode));
   await writeFile('artifacts/multi-display-ui.json',JSON.stringify({controlled:true,physicalMultiDisplay:false,samples,readerDom:true,scrollRetained:true,draftRetained:true,inflightRetained:true,staleGeometryRejected:true,verticalDrag:true,unplugDuringDrag:true},null,2)+'\n');
 });

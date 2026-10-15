@@ -74,15 +74,18 @@ try {
   await petClick(page);await page.locator('#pet').hover();await page.mouse.down();
   const viewport=await page.evaluate(()=>({width:innerWidth,height:innerHeight}));
   await page.mouse.move(viewport.width-25,viewport.height*.4,{steps:12});await page.waitForSelector('#pet[data-mode=drag]');
+  await page.evaluate(()=>{window.m5DropEvents=[];window.addEventListener('message',e=>{if(e.source===document.querySelector('#body-layer iframe')?.contentWindow&&e.data?.t==='frame')for(const item of e.data.events??[])if(item.kind==='touch')window.m5DropEvents.push(item.detail.kind);});});
   await app.evaluate(({screen})=>{globalThis.m5Screen.layout=globalThis.m5Screen.layout.slice(0,1);screen.emit('display-removed',{},{});});
   await page.waitForSelector('#pet[data-display-id="91001"]');
   await page.waitForFunction(()=>{const n=document.querySelector('#pet'),b=n.getBoundingClientRect();return n.dataset.pressing==='false'&&b.width>20&&b.x>=0&&b.right<=innerWidth&&b.bottom<=innerHeight;});
   await page.mouse.up();
+  await page.waitForFunction(()=>window.m5DropEvents.includes('drop'));
+  assert.equal(await page.evaluate(()=>window.m5DropEvents.includes('throw')),false);
   await page.waitForFunction(()=>!['air','drag'].includes(document.querySelector('#pet').dataset.mode));
   await petClick(page,{},true);assert.equal(await page.locator('#message').inputValue(),'native M5 stable draft');
   const restored=await app.evaluate(({screen})=>{const s=globalThis.m5Screen;screen.getAllDisplays=s.original.all;screen.getPrimaryDisplay=s.original.primary;screen.getCursorScreenPoint=s.original.cursor;screen.emit('display-metrics-changed',{},s.real,['workArea']);return s.real;});
   await page.waitForSelector(`#pet[data-display-id="${restored.id}"]`); await page.screenshot({path:'artifacts/multi-display-native.png'});
   await mkdir('artifacts',{recursive:true});
-  await writeFile('artifacts/multi-display-native.json',JSON.stringify({sourceCommit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),platform:process.platform,arch:process.arch,actual,controlled,controlledNativeSubsets:true,physicalMultiDisplay:false,physicalMixedDpi:false,samples,unplugRecovered:true,readerDom:true,scrollRetained:true,draftRetained:true,hiddenMoveNoFlash:true,unplugDuringDrag:true},null,2)+'\n');
+  await writeFile('artifacts/multi-display-native.json',JSON.stringify({sourceCommit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),platform:process.platform,arch:process.arch,actual,controlled,controlledNativeSubsets:true,physicalMultiDisplay:false,physicalMixedDpi:false,samples,unplugRecovered:true,readerDom:true,scrollRetained:true,draftRetained:true,hiddenMoveNoFlash:true,unplugDuringDrag:true,api2DropWithoutThrow:true},null,2)+'\n');
   console.log('M5 native screen measurements, controlled work areas, unplug recovery and real OS cursor/CDP clicks passed.');
 } finally {await app?.close();await rm(root,{recursive:true,force:true});}
