@@ -70,17 +70,11 @@ export async function petClick(page, options = {}, twice = false) {
   if (process.platform === 'linux' && process.env.DISPLAY) {
     // CDP moves a virtual pointer. Enabling native input also generates X11
     // movement at the physical cursor; keep both at the same point as a user.
-    const point = await pet.evaluate(el => {
-      const b = el.getBoundingClientRect();
-      return { x: Math.round(screenX + b.x + b.width / 2), y: Math.round(screenY + b.y + b.height / 2) };
-    });
+    const { point } = await nativeMeasurement(page, '#pet');
     await run('python3', ['-c', warpCursor, String(point.x), String(point.y)]);
   }
   if (process.platform === 'win32') {
-    const point = await pet.evaluate(el => {
-      const b = el.getBoundingClientRect();
-      return { x: Math.round((screenX + b.x + b.width / 2) * devicePixelRatio), y: Math.round((screenY + b.y + b.height / 2) * devicePixelRatio) };
-    });
+    const { point } = await nativeMeasurement(page, '#pet');
     await run('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command',
       `Add-Type -TypeDefinition 'using System; using System.Runtime.InteropServices; public class PetCursor { [DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y); }'; if (-not [PetCursor]::SetCursorPos(${point.x}, ${point.y})) { throw 'Cannot move the native test cursor' }`,
     ]);
@@ -105,4 +99,30 @@ export async function petClick(page, options = {}, twice = false) {
     assert.ok(trace.some(event => event.type === 'contextmenu' && event.target === 'DIV#pet'), 'native right click opens the menu through contextmenu');
     if (process.env.DSH_PET_INPUT_TRACE === '1') console.log('Native pointer pass:', JSON.stringify(trace));
   }
+}
+
+/** Measurements and physical conversion come from the tested Electron instance. */
+export async function nativeMeasurement(page, selector) {
+  return page.locator(selector).evaluate(el => {
+    const b = el.getBoundingClientRect();
+    if (!window.dshPetBridge.testScreenPoint) throw new Error('Native measurement requires an isolated debug test profile');
+    return window.dshPetBridge.testScreenPoint({x:b.x+b.width/2,y:b.y+b.height/2,width:innerWidth,height:innerHeight});
+  });
+}
+
+/** Native OS cursor + CDP click on a panel's measured CSS hit region. */
+export async function nativeClick(page, selector) {
+  await page.bringToFront();
+  const measurement = await nativeMeasurement(page, selector), p = measurement.point;
+  if (process.platform === 'darwin') await run('python3', ['-c', warpMacCursor, String(p.x), String(p.y)]);
+  else if (process.platform === 'linux') await run('python3', ['-c', warpCursor, String(p.x), String(p.y)]);
+  else await run('powershell.exe', ['-NoProfile','-NonInteractive','-Command',
+    `Add-Type -TypeDefinition 'using System; using System.Runtime.InteropServices; public class PetPanelCursor { [DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y); }'; if (-not [PetPanelCursor]::SetCursorPos(${p.x}, ${p.y})) { throw 'Cannot move the native test cursor' }`]);
+  const b = await page.locator(selector).boundingBox();
+  await page.mouse.move(b.x+b.width/2,b.y+b.height/2);
+  await page.waitForSelector('#pet[data-native-hit=true]');
+  await page.mouse.click(b.x+b.width/2,b.y+b.height/2);
+  const observed = await nativeMeasurement(page, selector);
+  assert.ok(Math.hypot(observed.cursor.x - measurement.dip.x, observed.cursor.y - measurement.dip.y) <= 2, 'OS cursor reaches the measured DIP point');
+  return { ...measurement, cursorAfterClick: observed.cursor };
 }

@@ -5,6 +5,7 @@ const { once } = require('node:events');
 const { CharacterStore } = require('../dist/character-store.cjs');
 const { createPetServer } = require('../dist/figure-server.cjs');
 const { trayState, trayLocale } = require('./tray-state.cjs');
+const { createDisplayController } = require('./display-controller.cjs');
 const { petCopy, petLanguage } = require('../web/locale.js');
 app.setName(petCopy('en').defaultName);
 if (process.env.DSH_PET_TEST_DATA_DIR) {
@@ -22,7 +23,8 @@ if (process.env.DSH_PET_TEST_DEBUG_PORT) {
   app.commandLine.appendSwitch('remote-debugging-address', '127.0.0.1');
   app.commandLine.appendSwitch('remote-debugging-port', process.env.DSH_PET_TEST_DEBUG_PORT);
 }
-let win, tray, options, lastFrame, poll, assetServer, characters;
+const displayTest = process.env.DSH_PET_TEST_NO_SANDBOX === '1' && !!process.env.DSH_PET_TEST_DEBUG_PORT;
+let win, tray, options, lastFrame, poll, assetServer, characters, displays;
 let presentation = {}, lastTrayKey, lastIconKey, iconBase, iconAppearance;
 let interactive = null;
 const generation = Number(process.env.DSH_PET_GENERATION ?? 1);
@@ -48,7 +50,8 @@ function syncTray() {
   const state = trayState(lastFrame?.snapshot, presentation, { ...options, locale }, win?.isVisible());
   const copy = petCopy(locale);
   if (app.getName() !== copy.defaultName) app.setName(copy.defaultName);
-  const key = JSON.stringify(state);
+  const displayList = screen.getAllDisplays();
+  const key = JSON.stringify([state, displays?.state?.displayId, displayList.map(d => [d.id, d.label])]);
   if (key === lastTrayKey) return;
   lastTrayKey = key;
   tray.setToolTip(state.tooltip);
@@ -62,6 +65,7 @@ function syncTray() {
     { type: 'separator' },
     { label: copy.trayChat, click: () => { show(); forward({ type: 'ui-control', command: 'chat' }); } },
     { label: copy.trayCharacters, click: () => { show(); forward({ type: 'characters' }); } },
+    { label: copy.trayDisplay, submenu: displayList.map(d => ({ type: 'radio', label: `${d.label || copy.display} · ${d.id}`, checked: d.id === displays?.state?.displayId, click: () => displays.refresh({ displayId: d.id }) })) },
     { label: copy.trayRoam, type: 'checkbox', checked: state.roam, click: item => act({ type: 'preference', field: 'roam', value: item.checked }) },
     { label: copy.traySleep, type: 'checkbox', checked: state.sleeping, enabled: !state.active, click: () => forward({ type: 'ui-control', command: 'sleep' }) },
     { label: copy.trayNotices, type: 'checkbox', checked: state.notifications, click: item => act({ type: 'preference', field: 'notifications', value: item.checked }) },
@@ -101,11 +105,6 @@ async function syncIcon(state, key) {
     }
   } catch { /* Keep the packaged icon when a pack thumbnail cannot be rendered. */ }
 }
-function bounds() {
-  const display = screen.getDisplayNearestPoint(screen.getCursorScreenPoint());
-  return display.workArea;
-}
-
 process.on('message', message => {
   if (!message || typeof message !== 'object') return;
   if (message.type === 'quit') { app.quit(); return; }
@@ -158,7 +157,7 @@ app.whenReady().then(async () => {
     if (!(value instanceof ArrayBuffer)) throw new Error('请选择 API 2 ZIP 角色包');
     return characters.import(new Uint8Array(value));
   });
-  win = new BrowserWindow({ ...screen.getPrimaryDisplay().workArea, transparent: true, frame: false, resizable: false, skipTaskbar: true, hasShadow: false, show: false, alwaysOnTop: true, backgroundColor: '#00000000', webPreferences: { preload: join(__dirname, 'preload.cjs'), sandbox: true, contextIsolation: true, nodeIntegration: false } });
+  win = new BrowserWindow({ ...screen.getPrimaryDisplay().workArea, transparent: true, frame: false, resizable: false, skipTaskbar: true, hasShadow: false, show: false, alwaysOnTop: true, backgroundColor: '#00000000', webPreferences: { additionalArguments: displayTest ? ['--dsh-pet-display-test'] : [], preload: join(__dirname, 'preload.cjs'), sandbox: true, contextIsolation: true, nodeIntegration: false } });
   win.setAlwaysOnTop(true, 'floating');
   win.on('show', visibility); win.on('hide', visibility);
   win.webContents.on('render-process-gone', () => app.exit(1));
@@ -172,12 +171,16 @@ app.whenReady().then(async () => {
   win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
   win.webContents.on('will-navigate', event => event.preventDefault());
   win.webContents.session.setPermissionRequestHandler((_contents, _permission, callback) => callback(false));
-  win.webContents.on('did-finish-load', () => { if (lastFrame) forward(lastFrame); });
+  displays = createDisplayController({ screen, win, send: forward, changed: syncTray });
+  displays.refresh();
+  if (displayTest) require('./test-display-probe.cjs').installDisplayProbe({ ipcMain, screen, win, displays });
+  for (const event of ['resize', 'move']) win.on(event, () => setImmediate(() => { if (!win.isDestroyed()) displays.refresh(); }));
+  win.webContents.on('did-finish-load', () => { if (lastFrame) forward(lastFrame); displays.publish(); });
   ipcMain.on('pet:hit', (event, active) => { if (event.sender === win.webContents && event.senderFrame === win.webContents.mainFrame && typeof active === 'boolean') hit(active); });
   ipcMain.on('pet:action', (event, action) => {
     if (event.sender !== win.webContents || event.senderFrame !== win.webContents.mainFrame || !action || typeof action !== 'object') return;
     if (action.type === 'hide') { hide(); return; }
-    if (action.type === 'move-display') { win.setBounds(bounds()); forward({ type: 'display-changed' }); return; }
+    if (action.type === 'move-display') { displays.moveToCursor(); return; }
     if (action.type === 'presentation') {
       if (typeof action.characterId !== 'string' || !/^[a-z0-9-]{1,32}$/.test(action.characterId) || typeof action.scheme !== 'string' || action.scheme.length > 200 || typeof action.name !== 'string' || action.name.length > 200 || typeof action.sleeping !== 'boolean' || typeof action.sound !== 'boolean') return;
       presentation = { characterId: action.characterId, scheme: action.scheme, name: action.name, locale: typeof action.locale === 'string' ? petLanguage(action.locale) : undefined, sleeping: action.sleeping, sound: action.sound, ready: action.ready === true }; syncTray(); return;
@@ -195,17 +198,15 @@ app.whenReady().then(async () => {
   let lastCursor;
   const pollCursor = () => {
     if (!win || win.isDestroyed() || !win.isVisible()) return;
-    const p = screen.getCursorScreenPoint(), b = win.getBounds();
-    const next = { x: p.x - b.x, y: p.y - b.y };
-    if (next.x === lastCursor?.x && next.y === lastCursor?.y) return;
-    lastCursor = next; forward({ type: 'cursor', ...next });
+    const next = displays.cursor();
+    if (!next || (next.x === lastCursor?.x && next.y === lastCursor?.y && next.revision === lastCursor?.revision)) return;
+    lastCursor = next; forward(next);
   };
   pollCursor(); poll = setInterval(pollCursor, 100);
   const icon = nativeImage.createFromPath(join(__dirname, 'icon.png')).resize({ height: 24 });
   tray = new Tray(icon); syncTray();
   tray.on('click', show);
-  screen.on('display-removed', () => { win.setBounds(screen.getPrimaryDisplay().workArea); forward({ type: 'display-changed' }); });
-  screen.on('display-metrics-changed', () => { const b = win.getBounds(); win.setBounds(screen.getDisplayMatching(b).workArea); forward({ type: 'display-changed' }); });
+  for (const event of ['display-added', 'display-removed', 'display-metrics-changed']) screen.on(event, () => { displays.refresh(); lastTrayKey = undefined; syncTray(); });
   process.send?.({ type: 'ready' });
 }).catch(error => {
   console.error(error);

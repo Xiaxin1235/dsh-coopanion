@@ -6,6 +6,7 @@ import { ChatComposer, shortSessionIds, sessionTime, sessionActivity, inboxConte
 import { renderReplyMarkdown } from './markdown-runtime.js';
 import { petLanguage, petCopy, localizedText, appNoticeCopy, automaticPetLanguage, sessionStateLabel } from './locale.js';
 import { textScale } from './text-scale.js';
+import { viewportPoint, panelPosition } from './display-geometry.js';
 const PACK_LIMIT = 128 * 1024 * 1024;
 import { browserCharacters } from './character-library.js';
 const BUILTIN_ID = 'whale';
@@ -37,7 +38,8 @@ let cursorPoint, lastHit;
 let renderedSessionId = null, reactionUntil = 0, reactionMood, bubbleSession, trayKey, touchTimer, touchBlockedUntil = 0;
 let bubbleResult, readerResult, pendingOnly = false, talkAt = 0;
 let readerQueue, inboxState = { requests: [], issues: [], replies: [], total: 0 };
-let resizeLayout;
+let resizeLayout, displayGeometry, pendingDisplayPlacement, resizeOrigin;
+let stageWidth = innerWidth;
 const composer = new ChatComposer();
 const chatTimers = new Map();
 let draftSessionId;
@@ -127,8 +129,7 @@ function position() {
     if (!panelAnchors.has(panel)) panelAnchors.set(panel, { ...anchor });
     const panelAnchor = panelAnchors.get(panel);
     const pw = panel.offsetWidth, ph = panel.offsetHeight;
-    const px = Math.max(8, Math.min(innerWidth - pw - 8, panelAnchor.x - pw / 2));
-    const py = Math.max(8, Math.min(innerHeight - ph - 12, panelAnchor.y - ph - 18));
+    const { x: px, y: py } = panelPosition(panelAnchor, { width: pw, height: ph }, { width: innerWidth, height: innerHeight });
     panel.style.left = `${px}px`; panel.style.top = `${py}px`;
     panel.style.setProperty('--tail', `${Math.max(22, Math.min(pw - 22, panelAnchor.x - px))}px`);
   }
@@ -471,8 +472,21 @@ function receive(message) {
       toastTimer = setTimeout(() => { $('toast').hidden = true; }, options.bubbleDurationMs); break;
     }
     case 'hit-state': pet.dataset.nativeHit = String(message.active); break;
-    case 'cursor': hit(message.x, message.y); break;
-    case 'display-changed': body?.set({ bounds: bounds() }); body?.place(innerWidth * .6, 1); position(); break;
+    case 'cursor': {
+      if (!displayGeometry || message.revision !== displayGeometry.revision) break;
+      const point = viewportPoint(message, displayGeometry.contentBounds, { width: innerWidth, height: innerHeight });
+      hit(point.x, point.y); break;
+    }
+    case 'display-changed': {
+      if (!Number.isSafeInteger(message.revision) || message.revision <= (displayGeometry?.revision ?? 0)) break;
+      if (displayGeometry && message.displayId !== displayGeometry.displayId) {
+        pendingDisplayPlacement = resizeOrigin ?? { ratio: (body?.layout?.x ?? stageWidth * .6) / stageWidth, facing: body?.layout?.facing ?? 1 };
+      }
+      displayGeometry = message;
+      pet.dataset.displayId = String(message.displayId); pet.dataset.displayRevision = String(message.revision);
+      cursorPoint = undefined; lastHit = false; native?.hit(false);
+      resizeStage(); break;
+    }
   }
 }
 
@@ -505,9 +519,10 @@ pet.addEventListener('pointerdown', event => {
 });
 function release(event) {
   if (!pressing) return;
+  const moved = dragging;
   body?.pointer(event.type === 'pointercancel' ? 'cancel' : 'up', { x: event.clientX, y: event.clientY, t: event.timeStamp });
   pressing = false; dragging = false;
-  if (event.type === 'pointerup' && native && (event.screenX < screen.availLeft || event.screenX > screen.availLeft + screen.availWidth)) send({ type: 'move-display' });
+  if (event.type === 'pointerup' && native && moved) send({ type: 'move-display' });
 }
 pet.addEventListener('pointerup', release); pet.addEventListener('pointercancel', release);
 // The upstream body owns poke, stroke, wake, grab, drop and throw. Respond to its
@@ -624,7 +639,21 @@ document.addEventListener('pointerleave', () => {
   body?.pointer('leave', {});
   if (!pressing) { cursorPoint = undefined; lastHit = false; native?.hit(false); }
 });
-addEventListener('resize', () => { resizeLayout = body?.layout; body?.set({ bounds: bounds() }); previewBody?.set({ bounds: previewBounds() }); position(); });
+function resizeStage() {
+  if (innerWidth !== stageWidth) resizeOrigin ??= { ratio: (body?.layout?.x ?? stageWidth * .6) / stageWidth, facing: body?.layout?.facing ?? 1 };
+  stageWidth = innerWidth;
+  resizeLayout = body?.layout;
+  body?.set({ bounds: bounds() });
+  // Native geometry and viewport resize can arrive in either order. Placement
+  // waits until this viewport reflects the newly acknowledged content bounds.
+  if (pendingDisplayPlacement && innerWidth === displayGeometry?.contentBounds.width && innerHeight === displayGeometry?.contentBounds.height) {
+    body?.place(innerWidth * pendingDisplayPlacement.ratio, pendingDisplayPlacement.facing);
+    pendingDisplayPlacement = undefined;
+  }
+  if (innerWidth === displayGeometry?.contentBounds.width && innerHeight === displayGeometry?.contentBounds.height) resizeOrigin = undefined;
+  previewBody?.set({ bounds: previewBounds() }); position();
+}
+addEventListener('resize', resizeStage);
 $('toggle-sound').onclick = () => { sfx.set(!sfx.isOn()); updateMood(); };
 
 

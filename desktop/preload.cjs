@@ -5,6 +5,7 @@ async function characterCall(channel, value) {
   return result.value;
 }
 contextBridge.exposeInMainWorld('dshPetBridge', {
+  ...(process.argv.includes('--dsh-pet-display-test') ? { testScreenPoint: value => ipcRenderer.invoke('pet:test-screen-point', value) } : {}),
   subscribe(callback) {
     const listener = (_event, message) => callback(message);
     ipcRenderer.on('pet:update', listener);

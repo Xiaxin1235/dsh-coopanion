@@ -220,3 +220,6 @@ h1 { font-size: clamp(32px, 4vw, 54px); font-weight: 500; line-height: 1.4; lett
 .compose-footer button { flex-shrink: 0; }
 .reader-footer .session-link { max-width: 100%; overflow-wrap: anywhere; }
 .attention { max-width: calc(100vw - 16px); }
+
+/* Preserve explicit reader pixel offsets when a new work area rewraps text. */
+.reader-text, .inbox-list { overflow-anchor: none; }

@@ -30,6 +30,7 @@ assert.ok(!entries.some(path => path.includes('node_modules/') || path.includes(
 assert.ok(!entries.some(path => /character-runtime|character.schema|\/animation\.|\/character-pack\.(?:[cm]?[jt]s)(?:\.map)?$|\/web\/characters\//.test(path)), 'old engine and format must not be packaged');
 const bytes = readFileSync(archive);
 for (const required of ['src/desktop-lifecycle.ts', 'src/controls.ts', 'docs/desktop-recovery-contract.md', 'tests/fixtures/desktop-recovery.ts', 'tests/helpers/desktop-recovery.mjs']) assert.ok(entries.includes(`package/${required}`), `missing M3 recovery source ${required}`);
+for (const required of ['web/display-geometry.js', 'desktop/display-controller.cjs', 'desktop/test-display-probe.cjs', 'docs/multi-display-contract.md', 'tests/display-geometry.test.js', 'tests/multi-display-ui.mjs', 'tests/multi-display-native.mjs', 'tests/helpers/multi-display-native.mjs']) assert.ok(entries.includes(`package/${required}`), `missing M5 geometry source ${required}`);
 const sha256 = createHash('sha256').update(bytes).digest('hex');
 const integrity = `sha512-${createHash('sha512').update(bytes).digest('base64')}`;
 const notes = releaseNotes(unpack('docs/release-notes.md'), packed.version);

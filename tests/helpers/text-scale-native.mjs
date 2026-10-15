@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { writeFile } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
 import { petClick } from './native-pointer.mjs';
+import { sampleNativeDisplay } from './multi-display-native.mjs';
 
 export async function verifyNativeTextScale({ page, bridge, snapshot }) {
   const reply = { id: 'native-scale-result', sessionId: snapshot.sessionId, text: '## Native text scale\n\n' + '原生窗口阅读与字号独立。 Reading remains captured.\n\n'.repeat(25), time: 1, read: false };
@@ -19,7 +20,7 @@ export async function verifyNativeTextScale({ page, bridge, snapshot }) {
     assert.ok(rect.x >= 0 && rect.y >= 0 && rect.right <= rect.W && rect.bottom <= rect.H, 'native reader remains in current work area');
     assert.equal(await page.locator('#reader-text').innerHTML(), html);
     assert.equal(await page.locator('#reader-text').evaluate(n => n.scrollTop), 120);
-    samples.push({ locale, size, textScale, rect });
+    samples.push({ locale, size, textScale, rect, display: await sampleNativeDisplay(page, '#reader-text') });
   }
   await page.screenshot({ path: 'artifacts/text-scale-native.png' });
   await page.keyboard.press('Escape');

@@ -11,6 +11,7 @@ import { pathToFileURL, fileURLToPath } from 'node:url';
 import { chromium } from 'playwright-core';
 import { importCharacter } from './helpers/characters.mjs';
 import { petClick } from './helpers/native-pointer.mjs';
+import { sampleNativeDisplay } from './helpers/multi-display-native.mjs';
 import { npmTarballName } from '../scripts/release-support.mjs';
 import { unzipSync } from 'fflate';
 import { prepareNotifications, verifyInstalledNotifications } from './helpers/installed-notifications.mjs';
@@ -331,7 +332,7 @@ try {
       assert.equal(await page.locator('#message').inputValue(), 'M4 installed draft');
       const rect = await page.locator('#chat').evaluate(n => { const r = n.getBoundingClientRect(); return { x: r.x, y: r.y, right: r.right, bottom: r.bottom, W: innerWidth, H: innerHeight }; });
       assert.ok(rect.x >= 0 && rect.y >= 0 && rect.right <= rect.W && rect.bottom <= rect.H);
-      textScaleSamples.push({ size, textScale, rect, draft: true, persisted: true });
+      textScaleSamples.push({ size, textScale, rect, draft: true, persisted: true, display: await sampleNativeDisplay(page) });
     }
   }
   await surface.getByRole('spinbutton', { name: '角色尺寸', exact: true }).fill('180');
@@ -541,6 +542,7 @@ try {
   await writeFile(join(project, 'artifacts', `notification-source-${version}.json`), JSON.stringify({ dsh: version, pluginVersion: manifest.version, creation: 'sessionController.create', sessionId: sourceId, exportedHeader: header, status: 'pass' }, null, 2) + '\n');
   await stop(host);
   assert.equal(host.exitCode, 0, hostLog);
+  await writeFile(join(project, 'artifacts', `multi-display-installed-${version}.json`), JSON.stringify({ dsh: version, sourceCommit, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), platform: process.platform, arch: process.arch, physicalMultiDisplay: false, physicalMixedDpi: false, samples: textScaleSamples.map(({ size, textScale, display }) => ({ size, textScale, ...display })) }, null, 2) + '\n');
   await writeFile(join(project, 'artifacts', `text-scale-installed-${version}.json`), JSON.stringify({ dsh: version, sourceCommit, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), samples: textScaleSamples, oldConfigDefault: true, nativeRestart: true, hostRestart: true, englishLabel: true }, null, 2) + '\n');
   await writeFile(join(project, 'artifacts', `install-${version}.json`), JSON.stringify({ dsh: version, sourceCommit, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), m3NativeRecovery: true, m2NativeContinuation: true, plugin: `${manifest.name}@${manifest.version}`, package: archive, installed: true, profileLoader: true, nativeWindow: true, customCharacter: true, builtinCharacterId: 'whale', sessionNotifications: true, multipleSessions: true, roundReplyWithoutGoalCelebration: true, notificationOpensSourceSession: true, nativeSettingsPage: true, darkTheme: true, closeAndRelaunch: true, hostRestartPersistence: true, autoStartDisabled: true, chineseAndEnglish: true, liveLocaleSwitch: true, automaticSystemLanguage: true, riskExemption: false, cleanShutdown: true }, null, 2) + '\n');
   console.log(`Installation smoke passed on DSH ${version}: admission, actual profile loader, native window, independent sessions, session navigation from notices, official settings UI, live persisted preferences, and reopening after native close.`);
