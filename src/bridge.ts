@@ -2,6 +2,7 @@ import { spawn, type ChildProcess } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { EventEmitter } from 'node:events';
+import type { ChatReceipt } from '../web/chat-contract.js';
 import type { PetSnapshot, PetNotice } from './model.ts';
 import type { NotificationRuntime, NotificationSnapshot, TaskNotice } from './notification-contract.ts';
 
@@ -12,6 +13,7 @@ export interface DesktopOptions { size: number; roam: boolean; notifications: bo
 export interface PetBridge {
   start(options: DesktopOptions, lifetime?: StartLifetime): Promise<void>;
   update(snapshot: PetSnapshot): void;
+  chatResult?(receipt: ChatReceipt): void;
   notify(notice: PetNotice | TaskNotice): void;
   notificationState?(snapshot: NotificationSnapshot): void;
   snoozeResult?(interactionId: string, ok: boolean, error?: string): void;
@@ -111,6 +113,7 @@ export class ElectronBridge extends EventEmitter implements PetBridge {
     if (!this.child?.connected || this.closing || !this.nativeVisible || this.suspended || runtime.generation !== this.generation || runtime.visibilityRevision !== this.visibilityRevision || !runtime.visible) return false;
     this.send({ type: 'notice', notice, generation: runtime.generation, visibilityRevision: runtime.visibilityRevision }); return true;
   }
+  chatResult(receipt: ChatReceipt): void { this.send(receipt); }
   onAction(listener: (action: unknown) => void): void { this.on('action', listener); }
   removeAction(listener: (action: unknown) => void): void { this.off('action', listener); }
   // JSON IPC omits undefined. An explicit null lets a cleared Harness

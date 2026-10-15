@@ -27,9 +27,11 @@
         "@deepseek-ai/dsh-client-ui-settings": "0.2.0-rc.2",
         "@deepseek-ai/dsh-client-ui-slots": "0.2.0-rc.2",
         "@deepseek-ai/dsh-client-ui-workspace": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-goal": "0.2.0-rc.2",
         "@deepseek-ai/dsh-llm": "0.2.0-rc.2",
         "@deepseek-ai/dsh-session": "0.2.0-rc.2",
         "@deepseek-ai/dsh-session-projection": "0.2.0-rc.2",
+        "@deepseek-ai/dsh-session-query": "0.2.0-rc.2",
         "@deepseek-ai/dsh-settings": "0.2.0-rc.2",
         "@deepseek-ai/dsh-user-approval": "0.2.0-rc.2",
         "@deepseek-ai/dsh-user-questions": "0.2.0-rc.2",
@@ -43,8 +45,7 @@
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
         "typescript": "^5.9.3",
-        "vitest": "^3.2.4",
-        "@deepseek-ai/dsh-goal": "0.2.0-rc.2"
+        "vitest": "^3.2.4"
       },
       "engines": {
         "node": ">=22.19"
@@ -61,6 +62,7 @@
         "@deepseek-ai/dsh-client-ui-settings": "0.2.0-rc.2 || 0.2.1-alpha.1",
         "@deepseek-ai/dsh-client-ui-slots": "0.2.0-rc.2 || 0.2.1-alpha.1",
         "@deepseek-ai/dsh-client-ui-workspace": "0.2.0-rc.2 || 0.2.1-alpha.1",
+        "@deepseek-ai/dsh-goal": "0.2.0-rc.2 || 0.2.1-alpha.1",
         "@deepseek-ai/dsh-llm": "0.2.0-rc.2 || 0.2.1-alpha.1",
         "@deepseek-ai/dsh-session": "0.2.0-rc.2 || 0.2.1-alpha.1",
         "@deepseek-ai/dsh-session-projection": "0.2.0-rc.2 || 0.2.1-alpha.1",
@@ -68,7 +70,7 @@
         "@deepseek-ai/dsh-user-approval": "0.2.0-rc.2 || 0.2.1-alpha.1",
         "@deepseek-ai/dsh-user-questions": "0.2.0-rc.2 || 0.2.1-alpha.1",
         "@deepseek-ai/schemastery": ">=3.18.4 <4",
-        "@deepseek-ai/dsh-goal": "0.2.0-rc.2 || 0.2.1-alpha.1"
+        "@deepseek-ai/dsh-session-query": "0.2.0-rc.2 || 0.2.1-alpha.1"
       },
       "peerDependenciesMeta": {
         "@deepseek-ai/dsh-api-session-controller": {
@@ -105,6 +107,9 @@
           "optional": true
         },
         "@deepseek-ai/dsh-user-questions": {
+          "optional": true
+        },
+        "@deepseek-ai/dsh-session-query": {
           "optional": true
         }
       }
@@ -562,7 +567,6 @@
       "integrity": "sha512-aNX4glTxfengJnr26a8oxHaxjHgBEQxEKaoKXPINlASeBzbsJpCdPyQelTPpn5B/CgRFpw2p7oqlRLwGZjyYoA==",
       "dev": true,
       "license": "MIT",
-      "peer": true,
       "dependencies": {
         "@deepseek-ai/dsh-util-values": "0.2.0-rc.2"
       },
@@ -653,6 +657,7 @@
       "version": "0.2.0-rc.2",
       "resolved": "https://registry.npmjs.org/@deepseek-ai/dsh-goal/-/dsh-goal-0.2.0-rc.2.tgz",
       "integrity": "sha512-dxjUpSl1WAmg6GqO+m9dYGKPAV+whMR+0xqQCoapb8C60FEmeHa2YdopGKKRLziUzB9H5JoDXjtv5HsfuRQRjA==",
+      "dev": true,
       "license": "MIT",
       "dependencies": {
         "@deepseek-ai/schemastery": "~3.18.4",
@@ -830,7 +835,6 @@
       "integrity": "sha512-qdWtsJt1cLJbUAMCgzRBZ2LyW+XRJpetnle4N/0X/pkmJ9eOM6Y+QqwRQdcEcI4pWuEbPwuq7/HrnqoanVaiwg==",
       "dev": true,
       "license": "MIT",
-      "peer": true,
       "dependencies": {
         "@deepseek-ai/dsh-util-values": "0.2.0-rc.2"
       },
@@ -844,7 +848,6 @@
       "integrity": "sha512-wBGYOqel01uyjVyhKjttJeWH99MyuKaaZRrrlvNa5iLDBTysqKrc5AE5MNx3UvvBFmF6Gi/N8FoycZYWOPL6Ww==",
       "dev": true,
       "license": "MIT",
-      "peer": true,
       "dependencies": {
         "@deepseek-ai/dsh-compaction-image-offload": "0.2.0-rc.2",
         "@deepseek-ai/dsh-session-format": "0.2.0-rc.2",
@@ -864,7 +867,6 @@
       "integrity": "sha512-PPcfT7txn82/sZnFNxsuxEEUSSdEfBTkNTuOCaiu5ANDMmxUaxOOW6gXt+zBKndGJZRgCR/u9SoAdKv659FSZQ==",
       "dev": true,
       "license": "MIT",
-      "peer": true,
       "dependencies": {
         "@deepseek-ai/dsh-session-format": "0.2.0-rc.2",
         "@deepseek-ai/dsh-util-values": "0.2.0-rc.2"
@@ -879,7 +881,6 @@
       "integrity": "sha512-PBIsz4OBE0wNnapaD87lz6255em24Kn53BKV4K1AqiNH9OWf1+m29TLXs/ICtZ2xigk6TK5H9q6oOVBBmbZyVw==",
       "dev": true,
       "license": "MIT",
-      "peer": true,
       "dependencies": {
         "@deepseek-ai/dsh-llm": "0.2.0-rc.2",
         "@deepseek-ai/dsh-session-format": "0.2.0-rc.2",
@@ -896,7 +897,6 @@
       "integrity": "sha512-vrQQ1l3JgPIv/19mhm50FVD40hjro+tAkP3L1PNtGHrbBoYriNWXpR4QDOCQsHdPhg3vpnp9MmARMr8vZzl0Nw==",
       "dev": true,
       "license": "MIT",
-      "peer": true,
       "dependencies": {
         "@deepseek-ai/dsh-session-format": "0.2.0-rc.2",
         "@deepseek-ai/dsh-session-format-v0-to-v1": "0.2.0-rc.2",
@@ -912,7 +912,6 @@
       "integrity": "sha512-UkiNDdGS8cwJKqjvHs52BKi+3NuKhoziz/l0IrDoDYpSdgDfK8HrrXkvIxOi+QaBUgIxNTQzA6tsI+TAIMDsGQ==",
       "dev": true,
       "license": "MIT",
-      "peer": true,
       "dependencies": {
         "@deepseek-ai/dsh-session-format": "0.2.0-rc.2",
         "@deepseek-ai/dsh-session-format-v2-to-v3": "0.2.0-rc.2"
@@ -958,7 +957,6 @@
       "integrity": "sha512-seZkaK6E+L2KVUYbzQ5O3S9kKkINul/1WujXNsE7/9vE4NSg97hJjZxCwqYs81qlEO0Ei3f27+W61EtXOYYoGw==",
       "dev": true,
       "license": "MIT",
-      "peer": true,
       "dependencies": {
         "@deepseek-ai/dsh-session-format-catalog": "0.2.0-rc.2"
       },

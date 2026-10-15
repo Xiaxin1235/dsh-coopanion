@@ -10,7 +10,7 @@ import type {} from '@deepseek-ai/dsh-session-projection';
 import { SessionId, type Session } from '@deepseek-ai/dsh-session';
 import { NotificationBroker, type NotificationEvent } from './notification-broker.ts';
 import { notificationPreferencesSchema, notificationEndpoints, notificationRequests, noticeId } from './notification-contract.ts';
-import { createUserMessage } from '@deepseek-ai/dsh-llm';
+import { ChatSubmission } from './chat.ts';
 import z from '@deepseek-ai/schemastery';
 import { ElectronBridge, isRecord, type PetBridge, type DesktopOptions } from './bridge.ts';
 import { PetModel } from './model.ts';
@@ -37,7 +37,7 @@ export const Config = z.object({
   electronPath: z.string(),
 });
 
-/** Mounts the pet on public Harness events, delegates approvals, and routes explicit user chat to a selected live agent. */
+/** Mounts the pet on public Harness events, delegates approvals, and routes explicit user chat through the public Session Controller. */
 export async function apply(ctx: Context, config: Config): Promise<void> {
   ctx.inject(['settings'], child => { child.effect(() => child.settings.configure({ auto: false }, ctx.fiber)); });
   await mountPet(ctx, config, new ElectronBridge());
@@ -46,6 +46,9 @@ export async function apply(ctx: Context, config: Config): Promise<void> {
 /** Shared assembly used by integration tests with an IPC substitute for the native window. */
 export async function mountPet(ctx: Context, options: Config, bridge: PetBridge): Promise<void> {
   const model = new PetModel();
+  const chat = new ChatSubmission(ctx);
+  const chatLifetime = new AbortController();
+  ctx.effect(() => () => chatLifetime.abort());
   const preferences: Partial<Pick<DesktopOptions, 'roam' | 'notifications'>> = {};
   let savePreference: ((field: 'roam' | 'notifications', value: boolean) => Promise<void>) | undefined;
   ctx.inject(['settings'], child => { savePreference = (field, value) => child.settings.mutate('dsh-coopanion', [{ op: 'set', path: [field], value }]); });
@@ -77,8 +80,9 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
   let navigation: { sessionId: string; expires: number } | undefined;
   ctx.provide('coopanion', controls);
   const update = () => {
-    const snapshot = model.snapshot(), live = new Set<string>(ctx.agents.list().map(agent => agent.session.id));
-    bridge.update({ ...snapshot, sessions: snapshot.sessions.map(session => ({ ...session, chatAvailable: live.has(session.id) })) });
+    const snapshot = model.snapshot();
+    const available = !!ctx.get('sessionController') && !!ctx.get('sessionQuery');
+    bridge.update({ ...snapshot, sessions: snapshot.sessions.map(session => ({ ...session, chatAvailable: available })) });
   };
   let mounted = false;
   const notificationPrefs = () => notificationPreferencesSchema.parse({ notifications: currentOptions().notifications, systemNotifications: options.systemNotifications.get(), reminders: options.reminders.get(), reminderDelayMs: options.reminderDelayMs.get() });
@@ -187,6 +191,24 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
   };
   ctx.inject(['sessions'], child => { for (const session of child.sessions.list()) restoreSession(session); syncNotifications(); update(); });
   for (const agent of ctx.agents.list()) restoreSession(agent.session, agent.status === 'running');
+  ctx.inject(['sessionController', 'sessionQuery'], child => {
+    const lifetime = new AbortController(); child.effect(() => () => lifetime.abort());
+    void (async () => {
+      const { items } = await child.sessionController.list({}, lifetime.signal);
+      for (const item of items.filter(item => item.origin !== 'subagent').slice(0, 100)) {
+        if (lifetime.signal.aborted) return;
+        const observed = await child.sessionQuery.observeSession(item.sessionId, { signal: lifetime.signal });
+        try {
+          // A live event may arrive while the read is pending; restore is seq-aware.
+          const source = { id: observed.header.id, header: observed.header, snapshotEvents: () => observed.events };
+          model.restore(source); broker.restore(source, observed.projections?.values.userQuestions);
+          if (!ctx.agents.list().some(agent => agent.session.id === item.sessionId && agent.status === 'running')) model.idle(item.sessionId);
+        } finally { observed[Symbol.dispose](); }
+      }
+      syncNotifications(); update();
+    })().catch(error => { if (!lifetime.signal.aborted) child.logger.warn(`Desktop pet history unavailable: ${String(error).slice(0, 300)}`); });
+    update();
+  });
   ctx.on('session/created', session => { restoreSession(session); syncNotifications(); update(); });
   ctx.on('agent/created', ({ agent }) => { restoreSession(agent.session, agent.status === 'running'); syncNotifications(); update(); return undefined; });
   ctx.on('agent/status', ({ agent, status }) => { if (status === 'running') model.running(agent.session); else model.idle(agent.session.id); update(); });
@@ -197,7 +219,7 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
   });
   ctx.on('agent/disposed', ({ agent }) => { model.idle(agent.session.id); model.detached(agent.session.id); update(); });
   ctx.on('session/event', (session, event) => { broker.consume(session, event); model.consume(session, event); questions?.(session); syncNotifications(); update(); });
-  ctx.on('session/disposed', session => { broker.remove(session.id); model.remove(session.id); update(); });
+  ctx.on('session/disposed', session => { broker.remove(session.id); model.idle(session.id); model.detached(session.id); update(); });
   ctx.inject(['userQuestions'], child => {
     child.on('user-questions/request', async (request, next) => {
       const session = request.agent?.session;
@@ -238,21 +260,8 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
       navigation = { sessionId: action.sessionId, expires: Date.now() + 30000 };
       bridge.focusHarness?.(); update(); return;
     }
-    if (action.type !== 'chat' || typeof action.text !== 'string' || typeof action.sessionId !== 'string') return;
-    const text = action.text.trim();
-    if (!text || text.length > 2000 || !model.select(action.sessionId)) return;
-    const id = model.snapshot().sessionId;
-    const agent = ctx.agents.list().find(agent => agent.session.id === id);
-    if (!agent || agent.session.header.origin === 'subagent') {
-      bridge.notify({ title: '会话尚未就绪', body: '请先回到 Harness 打开这个会话，然后再发送消息。', sessionId: action.sessionId }); update(); return;
-    }
-    try {
-      ctx.agents.withInitiator(agent, () => agent.followup(createUserMessage({ content: [{ type: 'text', text }], source: { kind: 'user' } })));
-      update();
-    } catch (error) {
-      bridge.notify({ title: '消息未能发送', body: '请回到 Harness 检查会话状态。', sessionId: action.sessionId });
-      ctx.logger.warn(`Desktop pet chat failed: ${String(error)}`);
-    }
+    if (action.type !== 'chat') return;
+    void chat.submit(action, chatLifetime.signal).then(receipt => { if (receipt) bridge.chatResult?.(receipt); update(); });
   };
   ctx.effect(() => { bridge.onAction(onAction); return () => bridge.removeAction(onAction); });
   if (bridge instanceof ElectronBridge) {

@@ -116,6 +116,7 @@ process.on('message', message => {
     if (message.command === 'focus-harness' && process.env.DSH_PET_TEST_NO_SANDBOX !== '1') void shell.openExternal('dsh://open').catch(() => {});
   }
   if (message.type === 'snapshot') { lastFrame = { type: 'init', options, snapshot: { ...message.snapshot, results: message.snapshot.results ?? lastFrame?.snapshot?.results ?? [] } }; forward(message); syncTray(); }
+  if (message.type === 'chat-result') forward(message);
   if (message.type === 'notification-state' || message.type === 'notification-snooze-result') forward(message);
   if (message.type === 'notice') {
     if (message.generation !== undefined && (message.generation !== generation || message.visibilityRevision !== visibilityRevision || !win?.isVisible() || suspended)) return;
@@ -126,6 +127,7 @@ process.on('disconnect', () => app.quit());
 process.on('SIGTERM', () => app.quit());
 
 app.whenReady().then(async () => {
+  const { chatRequest } = await import('../web/chat-contract.js');
   const webRoot = join(__dirname, '../web');
   characters = new CharacterStore(join(app.getPath('userData'), 'figures-v2'), join(webRoot, 'upstream/whale'));
   const prefix = `/${randomBytes(24).toString('hex')}/`;
@@ -177,7 +179,8 @@ app.whenReady().then(async () => {
       presentation = { characterId: action.characterId, scheme: action.scheme, name: action.name, locale: typeof action.locale === 'string' ? petLanguage(action.locale) : undefined, sleeping: action.sleeping, sound: action.sound, ready: action.ready === true }; syncTray(); return;
     }
     if (action.type === 'notification-snooze') { if (typeof action.interactionId === 'string' && action.interactionId.length <= 2048 && Number.isSafeInteger(action.generation)) act(action); return; }
-    if (action.type !== 'chat' && action.type !== 'select' && action.type !== 'open-session' && action.type !== 'preference' && action.type !== 'read') return;
+    if (action.type === 'chat') { const request = chatRequest(action); if (request) act(request); return; }
+    if (action.type !== 'select' && action.type !== 'open-session' && action.type !== 'preference' && action.type !== 'read') return;
     process.send?.({ type: 'action', action });
   });
   hit(false);

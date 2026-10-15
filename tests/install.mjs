@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import { spawn } from 'node:child_process';
+import { spawn, execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { once } from 'node:events';
 import { existsSync, realpathSync } from 'node:fs';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
@@ -14,6 +15,7 @@ import { npmTarballName } from '../scripts/release-support.mjs';
 import { unzipSync } from 'fflate';
 import { prepareNotifications, verifyInstalledNotifications } from './helpers/installed-notifications.mjs';
 
+const sourceCommit = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
 const version = process.env.DSH_TEST_VERSION ?? '0.2.0-rc.2';
 assert.ok(['0.2.0-rc.2', '0.2.1-alpha.1'].includes(version), 'test only advertised DSH versions');
 const project = fileURLToPath(new URL('../', import.meta.url));
@@ -34,6 +36,7 @@ const environment = {
   XDG_CONFIG_HOME: root, XDG_CACHE_HOME: join(root, 'cache'),
   XDG_DATA_HOME: join(root, 'data'), XDG_STATE_HOME: join(root, 'state'),
   PATH: `${join(project, 'node_modules', '.bin')}${process.platform === 'win32' ? ';' : ':'}${process.env.PATH}`,
+  COOPANION_TEST_MODULES: join(runtime, 'node_modules'),
   DSH_PET_TEST_DATA_DIR: join(root, 'pet'), DSH_PET_TEST_NO_SANDBOX: '1',
 };
 // Windows environment keys are case-insensitive; keep one PATH entry for spawn.
@@ -144,6 +147,7 @@ try {
   await run(process.execPath, [join(project, 'tests/notification-host-contract.mjs'), '--runtime', runtime, '--version', version]);
 
   await run(process.execPath, [join(project, 'tests/goal-host-contract.mjs'), '--runtime', runtime, '--version', version, '--package', archive]);
+  await run(process.execPath, [join(project, 'tests/session-host-contract.mjs'), '--verify-plugin', '--runtime', runtime, '--version', version, '--package', archive]);
 
   // Keep the observer in its own package. The Client loader identifies packages
   // from ancestor manifests; a fixture inside this repository can be mistaken
@@ -289,6 +293,8 @@ try {
   await page.waitForFunction(() => document.getElementById('reader-text').textContent === '第二会话的最终回复。任务已完成。');
   assert.equal(await page.locator('#chat-session-name').innerText(), '安装验证', 'reading a background result does not change the live chat target');
   await page.locator('#reader-session').click();
+  assert.equal(await page.locator('#chat').isVisible(), true);
+  await page.locator('#chat-session').click();
   await settings.getByRole('navigation', { name: '会话层级', exact: true }).filter({ hasText: '第二会话' }).waitFor();
   await openSessionPicker(page); await page.locator('#conversation-list [data-session-id="host-install"]').click();
   await openSessionPicker(page); await page.locator('#conversation-open').click();
@@ -414,6 +420,42 @@ try {
     } finally { await context.close(); }
   }
   assert.deepEqual(uiErrors, [], 'the native DSH module loader and settings renderer have no page errors');
+  const m2Command = (command, reply) => new Promise((resolveReply, reject) => {
+    const timer = setTimeout(() => { host.off('message', receive); reject(new Error(`M2 installed command timed out: ${command}`)); }, 10000);
+    const receive = message => { if (message?.type !== reply) return; clearTimeout(timer); host.off('message', receive); message.error ? reject(new Error(message.error)) : resolveReply(message); };
+    host.on('message', receive); host.send({ type: command });
+  });
+  assert.equal((await m2Command('prepare-m2-cold', 'm2-cold-ready')).cold, true);
+  await surface.getByRole('button', { name: /^(启动桌宠|Start pet)$/, exact: true }).click();
+  await surface.getByTestId('pet-status').filter({ hasText: /正在显示|Visible/ }).waitFor();
+  browser = await chromium.connectOverCDP(`http://127.0.0.1:${port}`);
+  const m2Page = browser.contexts()[0].pages()[0];
+  await m2Page.waitForSelector('#pet[data-character=whale][data-host-ready=true]');
+  await openSessionPicker(m2Page); await m2Page.locator('#conversation-list [data-session-id="m2-installed-cold-full"]').click();
+  await petClick(m2Page, {}, true);
+  await m2Page.locator('#message').fill('M2 原生精确消息 🐳\n继续旧会话');
+  await m2Page.locator('#send').click();
+  await m2Page.evaluate(() => document.getElementById('chat-form').requestSubmit());
+  await m2Page.waitForFunction(() => document.getElementById('chat-send-state').dataset.state === 'accepted');
+  assert.equal(await m2Page.locator('#message').inputValue(), '');
+  let m2Records = (await m2Command('read-m2-records', 'm2-records')).events;
+  let m2Messages = [...new Map(m2Records.flatMap(e => e.type === 'agent/inbox/spliced' ? e.data.inserted : e.type === 'user/message' ? [e.data] : []).filter(m => m.source.kind === 'user' && m.source.rpcId).map(m => [m.id, m])).values()];
+  assert.equal(m2Messages.length, 1, 'rapid native duplicate submit writes once');
+  assert.deepEqual(m2Messages[0].content, [{ type: 'text', text: 'M2 原生精确消息 🐳\n继续旧会话' }]);
+  assert.ok(m2Messages[0].source.rpcId); assert.ok(m2Messages[0].source.clientTimeZone);
+  await m2Page.locator('#chat-close').click();
+  await m2Page.waitForFunction(() => !document.getElementById('chat-read').hidden);
+  await petClick(m2Page, {}, true); await m2Page.locator('#chat-read').click();
+  await m2Page.waitForFunction(() => document.getElementById('reader-text').textContent === 'M2 installed full result 🐳');
+  await m2Page.locator('#reader-session').click();
+  assert.equal(await m2Page.locator('#chat').isVisible(), true);
+  await m2Page.locator('#message').fill('M2 读完整结果后继续'); await m2Page.locator('#send').click();
+  await m2Page.waitForFunction(() => document.getElementById('chat-send-state').dataset.state === 'accepted');
+  m2Records = (await m2Command('read-m2-records', 'm2-records')).events;
+  m2Messages = [...new Map(m2Records.flatMap(e => e.type === 'agent/inbox/spliced' ? e.data.inserted : e.type === 'user/message' ? [e.data] : []).filter(m => m.source.kind === 'user' && m.source.rpcId).map(m => [m.id, m])).values()];
+  assert.equal(m2Messages.length, 2); assert.notEqual(m2Messages[0].source.rpcId, m2Messages[1].source.rpcId);
+  await writeFile(join(project, 'artifacts', `session-native-${version}.json`), JSON.stringify({ dsh: version, sourceCommit, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), sessionId: 'm2-installed-cold-full', cases: { cold: true, nativeRendererMainHostReceipt: true, rapidDuplicateOnce: true, exactPersistedIdentity: true, readFullResultAndContinue: true }, messages: m2Messages, events: m2Records }, null, 2) + '\n');
+  await m2Page.locator('#chat-close').click();
   const sourceResponse = await settings.request.post(new URL('/api/coopanion-notification-n0/probe', hostUrl).href, { headers: { Origin: new URL(hostUrl).origin }, data: { type: 'client-request', rpcId: 'n0-source', method: 'coopanion-notification-n0/probe', payload: { action: 'session' } } });
   assert.equal(sourceResponse.status(), 200, 'N0 public session creation is available');
   const sourceEnvelope = await sourceResponse.json(); assert.equal(sourceEnvelope.result.ok, true);
@@ -426,7 +468,7 @@ try {
   await writeFile(join(project, 'artifacts', `notification-source-${version}.json`), JSON.stringify({ dsh: version, pluginVersion: manifest.version, creation: 'sessionController.create', sessionId: sourceId, exportedHeader: header, status: 'pass' }, null, 2) + '\n');
   await stop(host);
   assert.equal(host.exitCode, 0, hostLog);
-  await writeFile(join(project, 'artifacts', `install-${version}.json`), JSON.stringify({ dsh: version, plugin: `${manifest.name}@${manifest.version}`, package: archive, installed: true, profileLoader: true, nativeWindow: true, customCharacter: true, builtinCharacterId: 'whale', sessionNotifications: true, multipleSessions: true, roundReplyWithoutGoalCelebration: true, notificationOpensSourceSession: true, nativeSettingsPage: true, darkTheme: true, closeAndRelaunch: true, hostRestartPersistence: true, autoStartDisabled: true, chineseAndEnglish: true, liveLocaleSwitch: true, automaticSystemLanguage: true, riskExemption: false, cleanShutdown: true }, null, 2) + '\n');
+  await writeFile(join(project, 'artifacts', `install-${version}.json`), JSON.stringify({ dsh: version, sourceCommit, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), m2NativeContinuation: true, plugin: `${manifest.name}@${manifest.version}`, package: archive, installed: true, profileLoader: true, nativeWindow: true, customCharacter: true, builtinCharacterId: 'whale', sessionNotifications: true, multipleSessions: true, roundReplyWithoutGoalCelebration: true, notificationOpensSourceSession: true, nativeSettingsPage: true, darkTheme: true, closeAndRelaunch: true, hostRestartPersistence: true, autoStartDisabled: true, chineseAndEnglish: true, liveLocaleSwitch: true, automaticSystemLanguage: true, riskExemption: false, cleanShutdown: true }, null, 2) + '\n');
   console.log(`Installation smoke passed on DSH ${version}: admission, actual profile loader, native window, independent sessions, session navigation from notices, official settings UI, live persisted preferences, and reopening after native close.`);
 } catch (error) {
   if (browser) {

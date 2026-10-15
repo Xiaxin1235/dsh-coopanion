@@ -1,7 +1,8 @@
 /** Test-only app mounted by the published DSH CLI, using its real session store. */
 import { randomUUID } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
-export const inject = ['sessions', 'appReady', 'appExit', 'webServer', 'connection', 'settings', 'sessionController'];
+import { join } from 'node:path';
+export const inject = ['sessions', 'appReady', 'appExit', 'webServer', 'connection', 'settings', 'sessionController', 'agents', 'llm', 'sessionPersistence'];
 
 export function apply(ctx) {
   let session;
@@ -9,6 +10,25 @@ export function apply(ctx) {
   const action = async message => {
     if (message?.type === 'shutdown-host') {
       ctx.appExit(0);
+    } else if (message?.type === 'prepare-m2-cold') {
+      try {
+        const { LlmAdapter } = await import(pathToFileURL(join(process.env.COOPANION_TEST_MODULES, '@deepseek-ai/dsh-llm/lib/index.js')).href);
+        class Controlled extends LlmAdapter {
+          async listModels() { return [{ provider: 'm2-installed', id: 'controlled', name: 'M2 installed controlled' }]; }
+          async *stream() { yield { type: 'block-end', index: 0, block: { type: 'text', text: 'M2 installed full result 🐳' } }; yield { type: 'finish', reason: { kind: 'stop' } }; }
+        }
+        ctx.llm.registerAdapter(['m2-installed'], new Controlled());
+        const owned = await ctx.agents.create({ sessionId: 'm2-installed-cold-full', meta: { cwd: process.env.DSH_HOME }, agentOptions: { provider: 'm2-installed', model: 'controlled' } });
+        await ctx.sessionController.selectModel({ sessionId: owned.agent.id, provider: 'm2-installed', model: 'controlled' });
+        await ctx.sessions.flush(owned.agent.session); await owned.dispose();
+        process.send?.({ type: 'm2-cold-ready', cold: ctx.agents.get('m2-installed-cold-full') === undefined });
+      } catch (error) { process.send?.({ type: 'm2-cold-ready', error: String(error.stack ?? error) }); }
+    } else if (message?.type === 'read-m2-records') {
+      try {
+        const session = ctx.sessions.get('m2-installed-cold-full'); if (session) await ctx.sessions.flush(session);
+        const read = await ctx.sessionPersistence.open('m2-installed-cold-full', 'read');
+        try { process.send?.({ type: 'm2-records', events: (await read.read()).events }); } finally { await read.close(); }
+      } catch (error) { process.send?.({ type: 'm2-records', error: String(error.stack ?? error) }); }
     } else if (message?.type === 'verify-installed-services') {
       try {
         const { verifyInstalledServices } = await import(pathToFileURL(message.helper).href);

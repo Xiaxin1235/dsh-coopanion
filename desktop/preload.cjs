@@ -10,6 +10,7 @@ contextBridge.exposeInMainWorld('dshPetBridge', {
     ipcRenderer.on('pet:update', listener);
     return () => ipcRenderer.removeListener('pet:update', listener);
   },
+  // Chat carries its immutable target and client request identity unchanged.
   action(value) { ipcRenderer.send('pet:action', value); },
   hit(active) { ipcRenderer.send('pet:hit', active); },
   characters: {

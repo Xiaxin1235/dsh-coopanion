@@ -35,3 +35,20 @@ it.skipIf(process.platform === 'win32')('aborts a live startup and confirms its 
     await bridge.dispose(); await rm(folder, { recursive: true, force: true });
   }
 });
+
+it.skipIf(process.platform === 'win32')('forwards exact chat receipts across the child-process bridge', async () => {
+  const folder = await mkdtemp(join(tmpdir(), 'pet-chat-ipc-'));
+  const previous = process.env.WAYLAND_DISPLAY; process.env.WAYLAND_DISPLAY = 'test-only';
+  const bridge = new ElectronBridge();
+  try {
+    const binary = join(folder, 'chat-peer');
+    await writeFile(binary, `#!${process.execPath}\nprocess.on('message', m => { if (m.type === 'chat-result') process.send({type:'action',action:m}); if (m.type === 'quit') process.exit(0); }); process.send({type:'ready'});\n`, { mode: 0o700 });
+    await bridge.start({ size: 150, roam: false, notifications: false, bubbleDurationMs: 12000, electronPath: binary });
+    const receipt = { type: 'chat-result' as const, sessionId: 'fixed-full-session', requestId: 'full-client-request-01', status: 'accepted' as const };
+    const delivered = new Promise(resolve => bridge.onAction(resolve)); bridge.chatResult(receipt);
+    await expect(delivered).resolves.toEqual(receipt);
+  } finally {
+    if (previous === undefined) delete process.env.WAYLAND_DISPLAY; else process.env.WAYLAND_DISPLAY = previous;
+    await bridge.dispose(); await rm(folder, { recursive: true, force: true });
+  }
+});

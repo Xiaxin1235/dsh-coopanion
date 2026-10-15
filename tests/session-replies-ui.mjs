@@ -106,3 +106,62 @@ test('reply markup cannot inject HTML, active URLs or external images', async t 
   assert.ok((await page.locator('#reader-text').innerText()).includes('<img src=x onerror="window.injected=true">'), 'raw HTML remains readable content');
   assert.equal(await page.evaluate(() => window.injected), undefined);
 });
+
+test('chat freezes the target, keeps per-session drafts and retries a lost receipt with the same request ID', async t => {
+  const { page, receive } = await fixture(t, []);
+  await page.evaluate(() => window.replyReceive({ type: 'ui-control', command: 'chat' }));
+  await page.locator('#message').fill('准确发送 🐳\n第二行');
+  await page.locator('#send').click();
+  await page.evaluate(() => document.getElementById('chat-form').requestSubmit());
+  const first = await page.evaluate(() => window.replyActions.filter(a => a.type === 'chat'));
+  assert.equal(first.length, 1); assert.ok(first[0].requestId); assert.ok(first[0].clientTimeZone);
+  assert.equal(first[0].sessionId, focus.id); assert.equal(first[0].text, '准确发送 🐳\n第二行');
+  assert.equal(await page.locator('#message').inputValue(), first[0].text); assert.equal(await page.locator('#send').isDisabled(), true);
+  await receive({ ...frame([]), sessionId: source.id });
+  await page.locator('#message').fill('另一段草稿');
+  await page.evaluate(request => window.replyReceive({ type: 'chat-result', sessionId: request.sessionId, requestId: request.requestId, status: 'failed', code: 'coopanion/no-receipt' }), first[0]);
+  assert.equal(await page.locator('#message').inputValue(), '另一段草稿');
+  await receive(frame([]));
+  assert.equal(await page.locator('#message').inputValue(), first[0].text);
+  await page.locator('#send').click();
+  const retries = await page.evaluate(() => window.replyActions.filter(a => a.type === 'chat'));
+  assert.deepEqual(retries[1], first[0]);
+  await page.evaluate(request => window.replyReceive({ type: 'chat-result', sessionId: 'other', requestId: request.requestId, status: 'accepted' }), first[0]);
+  assert.equal(await page.locator('#message').inputValue(), first[0].text);
+  await page.evaluate(request => window.replyReceive({ type: 'chat-result', sessionId: request.sessionId, requestId: request.requestId, status: 'accepted' }), first[0]);
+  assert.equal(await page.locator('#message').inputValue(), '');
+  assert.equal(await page.locator('#chat-send-state').getAttribute('data-state'), 'accepted');
+  await page.locator('#message').fill(first[0].text); await page.locator('#send').click();
+  const next = await page.evaluate(() => window.replyActions.filter(a => a.type === 'chat').at(-1));
+  assert.notEqual(next.requestId, first[0].requestId);
+  await receive({ ...frame([]), sessionId: source.id });
+  assert.equal(await page.locator('#message').inputValue(), '另一段草稿');
+});
+
+test('full-result continue opens the exact source composer without replacing the reading snapshot', async t => {
+  const old = reply('source:1:3', source.id, 1, '完整旧正文');
+  const { page, receive } = await fixture(t, [old]);
+  await page.locator('#attention').click();
+  await page.waitForFunction(() => !document.getElementById('reader').hidden);
+  const newer = reply('source:2:9', source.id, 2, '新的结果');
+  await receive(frame([{ ...old, read: true }, newer]));
+  assert.equal(await page.locator('#reader-text').innerText(), '完整旧正文');
+  await page.locator('#reader-session').click();
+  assert.equal(await page.locator('#chat').isVisible(), true);
+  assert.equal(await page.locator('#chat-session-name').innerText(), source.label);
+  await page.locator('#message').fill('继续来源会话'); await page.locator('#send').click();
+  const actions = await page.evaluate(() => window.replyActions);
+  assert.equal(actions.filter(a => a.type === 'chat').at(-1).sessionId, source.id);
+  assert.equal(actions.some(a => a.type === 'read' && a.resultId === newer.id), false);
+});
+
+test('composer timeout preserves identity and acceptance remains monotonic', async () => {
+  const { ChatComposer } = await import('../web/session-ui.js');
+  let sequence = 0; const composer = new ChatComposer({ id: () => `id-${++sequence}`, timeZone: () => 'Asia/Shanghai' });
+  composer.edit('a', 'draft'); const first = composer.begin('a');
+  assert.equal(composer.begin('a'), undefined); composer.expire(first);
+  assert.equal(composer.state('a').text, 'draft'); assert.deepEqual(composer.begin('a'), first);
+  composer.receive({ type: 'chat-result', sessionId: 'a', requestId: first.requestId, status: 'accepted' });
+  composer.expire(first); assert.equal(composer.state('a').phase, 'accepted');
+  composer.edit('a', 'draft'); assert.notEqual(composer.begin('a').requestId, first.requestId);
+});

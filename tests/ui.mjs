@@ -73,6 +73,8 @@ try {
   await page.locator('[data-demo=error]').click(); assert.equal(await page.locator('#bubble').isVisible(), false);
   await page.locator('[data-demo=happy]').click(); assert.equal(await page.locator('#pet').getAttribute('data-mood'), 'happy');
   await petClick({}, true); await page.locator('#message').fill('<img src=x onerror="throw 1">'); await page.locator('#send').click();
+  await page.waitForFunction(() => document.getElementById('chat-send-state').dataset.state === 'accepted');
+  await page.locator('#chat-close').click();
   await page.waitForFunction(() => document.getElementById('bubble-text').textContent.includes('这是演示回复')); await speechDone(page);
   assert.match(await page.locator('#bubble-text').innerText(), /<img/); assert.equal(await page.locator('#bubble-text img').count(), 0);
   await petClick({ button: 'right' }); await page.locator('#toggle-sleep').click();

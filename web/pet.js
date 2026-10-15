@@ -2,7 +2,7 @@ import { loadBody, knownScheme } from './upstream/body-host.js';
 import { createSfx } from './upstream/sound.js';
 import { createSpeech, replyPreview } from './speech.js';
 import { createNoticeQueue, pendingInteractions, notificationPresentation, notificationCopy } from './notification-ui.js';
-import { shortSessionIds, sessionTime, sessionActivity, inboxContents, unreadReplies } from './session-ui.js';
+import { ChatComposer, shortSessionIds, sessionTime, sessionActivity, inboxContents, unreadReplies } from './session-ui.js';
 import { renderReplyMarkdown } from './markdown-runtime.js';
 import { petLanguage, petCopy, localizedText, appNoticeCopy, automaticPetLanguage, sessionStateLabel } from './locale.js';
 const PACK_LIMIT = 128 * 1024 * 1024;
@@ -37,6 +37,9 @@ let renderedSessionId = null, reactionUntil = 0, reactionMood, bubbleSession, tr
 let bubbleResult, readerResult, pendingOnly = false, talkAt = 0;
 let readerQueue, inboxState = { requests: [], issues: [], replies: [], total: 0 };
 let resizeLayout;
+const composer = new ChatComposer();
+const chatTimers = new Map();
+let draftSessionId;
 const shownResults = new Set(), acknowledgedResults = new Set();
 let renderedLocale;
 let characterFeedback = { key: 'characterHint', args: [] };
@@ -283,11 +286,17 @@ function render() {
   $('chat-reply').textContent = latestReply ? replyPreview(latestReply).text : ''; $('chat-reply').hidden = !latestReply;
   $('chat-read').hidden = !latestReply;
   const enabled = !!snapshot.sessionId && selected?.chatAvailable !== false;
-  $('message').disabled = !enabled; $('send').disabled = !enabled;
+  const draft = composer.state(snapshot.sessionId);
+  draftSessionId = snapshot.sessionId;
+  if ($('message').value !== draft.text) $('message').value = draft.text;
+  $('message').disabled = !enabled || draft.phase === 'sending'; $('send').disabled = !enabled || draft.phase === 'sending';
+  $('send').textContent = draft.phase === 'failed' ? uiCopy().retrySend : uiCopy().send;
+  $('chat-send-state').textContent = draft.phase === 'failed' ? uiCopy().sendFailure(draft.code) : uiCopy()[{ sending: 'sending', accepted: 'sendAccepted' }[draft.phase]] ?? '';
+  $('chat-send-state').dataset.state = draft.phase;
   $('conversation-open').disabled = !snapshot.sessionId; $('chat-session').disabled = !snapshot.sessionId;
   $('chat-help').textContent = enabled ? uiCopy().chatHelp(selected.label) : snapshot.sessionId ? uiCopy().unavailableChat : uiCopy().noChat;
   if (previous !== snapshot.sessionId) {
-    $('message').value = ''; bubble.hidden = true;
+    bubble.hidden = true;
     clearTimeout(touchTimer); reactionUntil = 0;
   }
   renderedSessionId = snapshot.sessionId;
@@ -365,7 +374,7 @@ function renderRequests() {
     preview.className = 'inbox-preview'; preview.textContent = replyPreview(result.text).text;
     detail.textContent = `${sourceDetail(result.sessionId)} · ${copy.readReply}`;
     content.append(meta, label, preview, detail);
-    open.textContent = copy.continue; open.dataset.resultId = result.id; open.dataset.inboxKey = result.id; open.dataset.action = 'open'; open.onclick = () => { acknowledge(result); openSession(result.sessionId); };
+    open.textContent = copy.continue; open.dataset.resultId = result.id; open.dataset.inboxKey = result.id; open.dataset.action = 'open'; open.onclick = () => { acknowledge(result); continueSession(result.sessionId); };
     actions.append(open); card.append(content, actions); return card;
   }));
 }
@@ -409,6 +418,11 @@ function receive(message) {
       break;
     case 'characters': $('open-characters').click(); break;
     case 'snapshot': snapshot = { ...message.snapshot, results: message.snapshot.results ?? snapshot.results ?? [] }; render(); break;
+    case 'chat-result':
+      if (composer.receive(message)) {
+        clearTimeout(chatTimers.get(message.requestId)); chatTimers.delete(message.requestId); render();
+      }
+      break;
     case 'notification-state': {
       const value = message.snapshot;
       if (!value || value.protocol !== 1 || !Array.isArray(value.interactions)) break;
@@ -531,7 +545,7 @@ for (const [id, offset] of [['reader-prev', -1], ['reader-next', 1]]) $(id).oncl
   openReader(history[history.findIndex(r => r.id === readerResult?.id) + offset], readerQueue);
 };
 $('reader-inbox').onclick = () => openRequests(false);
-$('reader-session').onclick = () => { acknowledge(readerResult); openSession(readerResult?.sessionId); };
+$('reader-session').onclick = () => { acknowledge(readerResult); continueSession(readerResult?.sessionId); };
 $('conversation-list').onclick = event => {
   const card = event.target.closest('[data-session-id]');
   const session = card && snapshot.sessions.find(item => item.id === card.dataset.sessionId);
@@ -541,19 +555,30 @@ $('conversation-list').onclick = event => {
   const result = unreadReplies(snapshot, acknowledgedResults).find(r => r.sessionId === session.id);
   if (result) openReader(result); else render();
 };
+function continueSession(id) {
+  if (!id || !snapshot.sessions.some(session => session.id === id)) return;
+  send({ type: 'select', sessionId: id }); snapshot = { ...snapshot, sessionId: id }; render(); openChat();
+}
 function openSession(id) { if (id) { send({ type: 'open-session', sessionId: id }); closePanels(); bubble.hidden = true; } }
 $('conversation-open').onclick = () => openSession(snapshot.sessionId);
 $('chat-session').onclick = () => openSession(snapshot.sessionId);
 $('bubble-session').onclick = () => { acknowledge(bubbleResult); openSession(bubbleSession); };
+$('message').oninput = () => { composer.edit(draftSessionId, $('message').value); };
 $('chat-form').onsubmit = event => {
-  event.preventDefault(); const text = $('message').value.trim();
-  if (!text || !snapshot.sessionId) return;
-  clearTimeout(touchTimer);
-  send({ type: 'chat', text, sessionId: snapshot.sessionId }); $('message').value = ''; chat.hidden = true;
+  event.preventDefault();
+  const sessionId = snapshot.sessionId;
+  if (!sessionId || snapshot.sessions.find(session => session.id === sessionId)?.chatAvailable === false) return;
+  composer.edit(sessionId, $('message').value);
+  const request = composer.begin(sessionId);
+  if (!request) return;
+  clearTimeout(touchTimer); render();
+  clearTimeout(chatTimers.get(request.requestId));
+  chatTimers.set(request.requestId, setTimeout(() => { chatTimers.delete(request.requestId); if (composer.expire(request)) render(); }, 15000));
+  send(request);
   if (!native) {
-    const sessionId = snapshot.sessionId;
+    receive({ type: 'chat-result', sessionId, requestId: request.requestId, status: 'accepted' });
     demoState(sessionId, 'thinking');
-    setTimeout(() => demoComplete(sessionId, uiCopy().demoReply(text)), 350);
+    setTimeout(() => demoComplete(sessionId, uiCopy().demoReply(request.text)), 350);
   }
 };
 function preference(field) {

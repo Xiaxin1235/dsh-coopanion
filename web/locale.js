@@ -19,11 +19,11 @@ const zh = {
   stage:'桌宠活动区域', dismiss:'收起气泡', reveal:'立即显示', expand:'展开完整回复 ↗', back:'回到会话 ↗', readerClose:'收起完整回复',
   conversationsCaption:'一起工作的片段', conversationsTitle:'这次，陪哪一段？', conversationsClose:'收起对话气泡', conversationsIntro:'固定陪着你选的这段。后台继续工作，回复留在这里，遇到要紧事就叫你。',
   all:'全部', pending:'待查看', searchPlaceholder:'找提问、项目或编号…', searchLabel:'搜索会话', switchConversation:'切换当前对话', openCurrent:'打开当前会话 ↗',
-  chatTitle:'我在，慢慢说。', chatClose:'关闭聊天', changeConversation:'换一段 ›', readFull:'读完整回复 ↗', interact:'和角色互动', wave:'打个招呼', cheer:'给我打气', messagePlaceholder:'接着这段对话说点什么…', messageLabel:'消息', sendHint:'⌘ / Ctrl + Enter 发送', send:'捎给这段对话 ↗',
+  chatTitle:'我在，慢慢说。', chatClose:'关闭聊天', changeConversation:'换一段 ›', readFull:'读完整回复 ↗', interact:'和角色互动', wave:'打个招呼', cheer:'给我打气', messagePlaceholder:'接着这段对话说点什么…', messageLabel:'消息', sendHint:'⌘ / Ctrl + Enter 发送', send:'捎给这段对话 ↗', retrySend:'重试发送 ↗', sending:'发送中…', sendAccepted:'已进入这段会话的收件队列。回复将继续显示在这里。', sendFailure:code=>`发送未确认：${chatFailure(code, 'zh')}。草稿已保留，可重试。`,
   companion:'桌上的小伙伴', menuClose:'收起伙伴菜单', appearance:'换个模样', appearanceHint:'角色 · 配色 · 动作', say:'说句话', sayHint:'接着你的会话聊', roam:'散散步', roamHint:'自在走动', sleep:'歇一会', sleepHint:'忙起来会醒', notices:'提醒我', noticesHint:'要紧事不漏掉', sound:'小小声', soundHint:'动作与说话音效', hide:'暂时藏起来', source:'源码 · AGPL ↗', sourceHint:'下载当前版本完整对应源码',
   characters:'角色与动画', charactersClose:'关闭角色面板', selectCharacter:'选择角色', character:'角色', outfit:'配色 / 换装', characterScheme:'角色配色', preview:'角色动画预览', previewAction:'预览动作', play:'播放动作', useCharacter:'使用角色', import:'导入角色包', remove:'删除', characterHint:'支持 Coopanion API 2 ZIP 角色包；角色和配色会在重启后保留。',
   using:'正在使用', useScheme:'使用这个配色', useOutfit:'使用这个搭配', customOutfit:'自定义搭配', defaultScheme:'默认', imported:'已导入。预览满意后点击使用角色。', switched:'已切换，重启后会保留这个角色和配色。', removed:'已删除本地角色包。', packTooLarge:'角色包不能超过 128 MiB',
-  noSession:'还没有对话', noConversation:'还没有会话', session:'会话', sessionReply:'会话回复', focused:'关注', unread:'1 份未读', notOpen:'未打开', connected:'有会话相伴', emptySearch:'没找到这段对话。试试提问里的词或项目名？', emptyPending:'都看过啦，安心做手边的事。', emptySessions:'还没有可用的对话。先在 Harness 中打开一段对话，我就能听见它。', noChat:'先在 Harness 中打开一段对话，就可以从这里和我说话。', unavailableChat:'这段对话尚未在 Harness 中打开，请先回去打开它。', sleepBusy:'正在忙，完成后再休息', sleepWake:'有新的任务会自动醒来',
+  noSession:'还没有对话', noConversation:'还没有会话', session:'会话', sessionReply:'会话回复', focused:'关注', unread:'1 份未读', notOpen:'未打开', connected:'有会话相伴', emptySearch:'没找到这段对话。试试提问里的词或项目名？', emptyPending:'都看过啦，安心做手边的事。', emptySessions:'还没有可用的对话。先在 Harness 中打开一段对话，我就能听见它。', noChat:'先在 Harness 中打开一段对话，就可以从这里和我说话。', unavailableChat:'会话服务暂不可用，请在 Harness 中检查。', sleepBusy:'正在忙，完成后再休息', sleepWake:'有新的任务会自动醒来',
   issueError:'任务遇到了问题，请回到 Harness 查看详情。', issueWaiting:'任务暂时停下了，请回到 Harness 看看。', timeUnknown:'时间未记录',
   petLabel:name=>`${name}，点击互动，双击聊天，右键菜单，拖动移动`, finalReply:name=>`${name}的最终回复`, recent:text=>`最近：${text}`, chatTarget:label=>`当前对话：${label}。点击切换`, chatHelp:label=>`消息交给「${label}」，完成后只展示最终回复。`, activity:(busy,unread)=>`${busy} 段进行中 · ${unread} 份未读回复`,
   authorCredit:(author,credits,license)=>`作者：${author} · ${credits} · 许可：${license}`, unknownAuthor:'未注明', builtinLicense:'代码 AGPL-3.0-or-later；素材见权利声明', authorLicense:'由角色作者注明',
@@ -45,11 +45,11 @@ const en = {
   stage:'Desktop pet activity area', dismiss:'Dismiss bubble', reveal:'Show now', expand:'Read full reply ↗', back:'Back to conversation ↗', readerClose:'Close full reply',
   conversationsCaption:'Working together', conversationsTitle:'Which conversation shall we join?', conversationsClose:'Close conversations', conversationsIntro:'Stay with the conversation you choose. Background work continues, replies stay here, and important requests get your attention.',
   all:'All', pending:'Inbox', searchPlaceholder:'Find a prompt, project or ID…', searchLabel:'Search conversations', switchConversation:'Switch current conversation', openCurrent:'Open current conversation ↗',
-  chatTitle:'I’m here. Take your time.', chatClose:'Close chat', changeConversation:'Switch ›', readFull:'Read full reply ↗', interact:'Interact with the character', wave:'Say hello', cheer:'Cheer me on', messagePlaceholder:'Continue this conversation…', messageLabel:'Message', sendHint:'⌘ / Ctrl + Enter to send', send:'Send to this conversation ↗',
+  chatTitle:'I’m here. Take your time.', chatClose:'Close chat', changeConversation:'Switch ›', readFull:'Read full reply ↗', interact:'Interact with the character', wave:'Say hello', cheer:'Cheer me on', messagePlaceholder:'Continue this conversation…', messageLabel:'Message', sendHint:'⌘ / Ctrl + Enter to send', send:'Send to this conversation ↗', retrySend:'Retry send ↗', sending:'Sending…', sendAccepted:'Accepted into this conversation’s inbox. Replies will appear here.', sendFailure:code=>`Send unconfirmed: ${chatFailure(code, 'en')}. Draft kept; you can retry.`,
   companion:'Your desktop companion', menuClose:'Close companion menu', appearance:'Change appearance', appearanceHint:'Character · Colours · Actions', say:'Say something', sayHint:'Continue your conversation', roam:'Take a walk', roamHint:'Roam freely', sleep:'Take a rest', sleepHint:'Wake when work starts', notices:'Keep me posted', noticesHint:'Remember important requests', sound:'A little sound', soundHint:'Action and reply sounds', hide:'Hide for now', source:'Source · AGPL ↗', sourceHint:'Download the complete source for this version',
   characters:'Characters and animation', charactersClose:'Close character panel', selectCharacter:'Select character', character:'Character', outfit:'Colours / Outfit', characterScheme:'Character colours', preview:'Character animation preview', previewAction:'Preview action', play:'Play action', useCharacter:'Use character', import:'Import character pack', remove:'Delete', characterHint:'Coopanion API 2 ZIP packs. Characters and colours survive restarts.',
   using:'In use', useScheme:'Use these colours', useOutfit:'Use this outfit', customOutfit:'Custom outfit', defaultScheme:'Default', imported:'Imported. Preview the character, then choose Use character.', switched:'Changed. This character and its colours will survive restarts.', removed:'Local character pack deleted.', packTooLarge:'Character packs cannot exceed 128 MiB',
-  noSession:'No conversation yet', noConversation:'No conversation yet', session:'Conversation', sessionReply:'Conversation reply', focused:'Focused', unread:'1 unread reply', notOpen:'Not open', connected:'Conversation connected', emptySearch:'No matching conversation. Try a word from the prompt or project name.', emptyPending:'All read. Carry on with your work.', emptySessions:'No conversation is available. Open one in Harness to get started.', noChat:'Open a conversation in Harness to chat here.', unavailableChat:'This conversation is not open in Harness. Open it there first.', sleepBusy:'Working now. Rest when it is done.', sleepWake:'Wake automatically when new work starts.',
+  noSession:'No conversation yet', noConversation:'No conversation yet', session:'Conversation', sessionReply:'Conversation reply', focused:'Focused', unread:'1 unread reply', notOpen:'Not open', connected:'Conversation connected', emptySearch:'No matching conversation. Try a word from the prompt or project name.', emptyPending:'All read. Carry on with your work.', emptySessions:'No conversation is available. Open one in Harness to get started.', noChat:'Open a conversation in Harness to chat here.', unavailableChat:'The conversation service is unavailable. Check Harness.', sleepBusy:'Working now. Rest when it is done.', sleepWake:'Wake automatically when new work starts.',
   issueError:'The task needs attention. Open Harness for details.', issueWaiting:'The task paused. Open Harness to check the next step.', timeUnknown:'Time not recorded',
   petLabel:name=>`${name}, click to interact, double-click to chat, right-click for the menu, drag to move`, finalReply:name=>`Final reply from ${name}`, recent:text=>`Recent: ${text}`, chatTarget:label=>`Current conversation: ${label}. Click to switch`, chatHelp:label=>`Send to “${label}”. Each turn’s full reply is kept here.`, activity:(busy,unread)=>`${busy} active · ${unread} unread replies`,
   authorCredit:(author,credits,license)=>`Author: ${author} · ${credits} · License: ${license}`, unknownAuthor:'Not specified', builtinLicense:'Code: AGPL-3.0-or-later; see artwork rights notice', authorLicense:'Specified by the character author',
@@ -86,4 +86,21 @@ export function sessionStateLabel(session, locale, mood = session?.mood) {
     if (key) return copy[key];
   }
   return copy.labels[mood] ?? copy.labels.idle;
+}
+
+function chatFailure(code, language) {
+  const reasons = {
+    'session/not-found': ['会话不存在或已删除', 'conversation missing or deleted'],
+    'session/writer-held': ['会话正由其他进程占用', 'conversation held by another writer'],
+    'session/subagent-owned': ['子代理会话不能直接续接', 'subagent conversation cannot be continued here'],
+    'session/model-unavailable': ['会话没有可用模型', 'no available model for this conversation'],
+    'session/provider-credentials-unavailable': ['会话的模型凭据不可用', 'model credentials unavailable'],
+    'gateway/forbidden': ['没有此会话的操作权限', 'permission denied'],
+    'gateway/cancelled': ['提交已取消', 'submission cancelled'],
+    'coopanion/service-unavailable': ['会话服务缺失', 'conversation service unavailable'],
+    'coopanion/request-conflict': ['请求身份与原消息不一致', 'request identity conflicts with the original message'],
+    'coopanion/no-receipt': ['未收到接受回执，重试会复用原请求身份', 'no acceptance receipt; retry uses the same request identity'],
+    'session/agent-busy': ['会话暂时不能接收消息', 'conversation cannot accept the message now'],
+  };
+  return reasons[code]?.[language === 'zh' ? 0 : 1] ?? (language === 'zh' ? `会话暂不可用 (${code ?? 'unknown'})` : `conversation unavailable (${code ?? 'unknown'})`);
 }

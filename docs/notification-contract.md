@@ -30,6 +30,8 @@ Host 的共享 `CompletionTracker` 使用支持版本的 `@deepseek-ai/dsh-goal`
 
 两版实际 schema、事件样本、包身份与重复命令见 [M1 验收记录](evidence/m1/README.md)。
 
+M2 的发送接受回执独立于提醒与任务结果，详见[会话续接契约](session-chat-contract.md)。阅读结果不改变关注会话；显式点击“继续对话”才选择来源会话并打开输入框。审批与提问仍只由 Harness 的实际处理结算。
+
 ## 运行与领取
 
 `NotificationRuntime` 包含阶段、运行代次 `generation`、显示状态版本 `visibilityRevision`、原生可见性、休眠状态和有界错误。
