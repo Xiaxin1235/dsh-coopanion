@@ -6,7 +6,7 @@
 
 本次更新改进目标完成判断、历史会话续接、异常恢复、文字大小与多屏定位，并新增默认关闭的日常陪伴节奏。查看 [最新修改记录](https://github.com/takboo/dsh-coopanion/releases/latest) 或 [完整版本记录](docs/release-notes.md)。
 
-v0.4.9 为发布候选，尚未发布。M1–M6 的实现与本地验收记录已归档：[完成语义](docs/evidence/m1/README.md)、[会话续接](docs/evidence/m2/README.md)、[异常恢复](docs/evidence/m3/README.md)、[文字可读性](docs/evidence/m4/README.md)、[多屏适配](docs/evidence/m5/README.md)及[日常陪伴节奏](docs/evidence/m6/README.md)。这些历史记录绑定当时的源码与 v0.4.8 测试包；v0.4.9 候选产物由本次 CI 单独验证。物理多屏 / 混合 DPI、长期体验与资源表现、真实模型及系统通知中心验收仍待完成。
+M1–M6 的实现与本地验收记录已归档：[完成语义](docs/evidence/m1/README.md)、[会话续接](docs/evidence/m2/README.md)、[异常恢复](docs/evidence/m3/README.md)、[文字可读性](docs/evidence/m4/README.md)、[多屏适配](docs/evidence/m5/README.md)及[日常陪伴节奏](docs/evidence/m6/README.md)。这些历史记录绑定当时的源码与 v0.4.8 测试包；v0.4.9 分发产物由 CI 单独验证。物理多屏 / 混合 DPI、长期体验与资源表现、真实模型及系统通知中心验收仍待完成。
 
 ## 功能
 
