@@ -1,0 +1,306 @@
+{
+  "date": "2026-10-15",
+  "milestone": "M3",
+  "status": "local-validation-passed-cross-platform-acceptance-pending",
+  "sourceCommit": "15abf97f3b3522c648f7bd8b69f9e095f3a3c664",
+  "sourceCleanWhenPacked": true,
+  "continuedFromM2": "7b6b987d51b52c614b8c1acd81650acb483c042e",
+  "package": {
+    "name": "@takboo/dsh-coopanion",
+    "version": "0.4.8",
+    "sourceCommit": "15abf97f3b3522c648f7bd8b69f9e095f3a3c664",
+    "sha256": "076e0904f19d0ce1931a89e46698538a236005197f004eb669772cf1b9b528d9",
+    "integrity": "sha512-a2ojpYOMaLTzqvmnfVh01yIgWCPdh39tRwP2o6epXTi2BZ4erPAhQdcTvzrIkbPA7C2HAvl5yk3HVTQ8/jLH4g==",
+    "path": ".cache/m3/takboo-dsh-coopanion-0.4.8.tgz",
+    "released": false
+  },
+  "toolchain": {
+    "node": "24.21.0",
+    "npm": "11.19.1",
+    "electron": "44.7.0",
+    "chromium": "151.0.7922.34",
+    "platform": "macOS arm64"
+  },
+  "checks": {
+    "cleanNpmCiIgnoreScripts": "pass",
+    "electronSetup": "pass",
+    "typecheck": "pass",
+    "metadata": "pass",
+    "vitest": {
+      "files": 14,
+      "passed": 142,
+      "skipped": 1,
+      "skipReason": "Linux-only missing graphical environment check on macOS"
+    },
+    "nodeTests": {
+      "releaseAndClientBuild": 11,
+      "localeClient": 1
+    },
+    "build": "pass",
+    "api2CharacterPack": "pass",
+    "package": "pass",
+    "packageSourceContent": {
+      "trackedFiles": 602,
+      "generatedFiles": 10,
+      "status": "byte-equal"
+    },
+    "browser": {
+      "mainRuntime": "pass",
+      "localeTests": 3,
+      "notifications": "pass",
+      "inbox": "pass",
+      "sessionRepliesAndChatTests": 8
+    },
+    "nativeStandalone": {
+      "status": "pass",
+      "injectedRetryDelaysMs": [
+        100,
+        300,
+        1000
+      ],
+      "cases": {
+        "hiddenNoFlash": true,
+        "visibleRecovery": true,
+        "fullResults": true,
+        "validRequests": true,
+        "noChatReplay": true,
+        "noOldReplySpeech": true,
+        "stopDuringBackoff": true,
+        "unloadDuringBackoff": true,
+        "rendererDraftLoss": true
+      }
+    },
+    "defaultClockRecovery": {
+      "status": "pass",
+      "retryDelaysMs": [
+        1000,
+        3000,
+        10000
+      ],
+      "maximumAutomaticAttempts": 3,
+      "stableMs": 60000,
+      "clock": "Vitest fake timers"
+    },
+    "formalInstalls": {
+      "0.2.0-rc.2": {
+        "status": "pass",
+        "reports": {
+          "goal-host": "goal-host-0.2.0-rc.2.json",
+          "session-host": "session-host-0.2.0-rc.2.json",
+          "session-native": "session-native-0.2.0-rc.2.json",
+          "install": "install-0.2.0-rc.2.json",
+          "desktop-recovery": "desktop-recovery-0.2.0-rc.2.json",
+          "notification-host": "notification-host-0.2.0-rc.2.json",
+          "notification-source": "notification-source-0.2.0-rc.2.json",
+          "notification-integration": "notification-integration-0.2.0-rc.2.json"
+        },
+        "runtimeLock": "runtime-lock-0.2.0-rc.2.json.gz",
+        "runtimeLockSha256": "c798ab7627781d93d67e6e07695a36c3bc53cf6744fa13df77ff646809fa89b3",
+        "runtimeLockGzipSha256": "702d0aae38a8023ebf9ce291723f9ad46af82b5178c77bacad67477e57e9dcb6"
+      },
+      "0.2.1-alpha.1": {
+        "status": "pass",
+        "reports": {
+          "goal-host": "goal-host-0.2.1-alpha.1.json",
+          "session-host": "session-host-0.2.1-alpha.1.json",
+          "session-native": "session-native-0.2.1-alpha.1.json",
+          "install": "install-0.2.1-alpha.1.json",
+          "desktop-recovery": "desktop-recovery-0.2.1-alpha.1.json",
+          "notification-host": "notification-host-0.2.1-alpha.1.json",
+          "notification-source": "notification-source-0.2.1-alpha.1.json",
+          "notification-integration": "notification-integration-0.2.1-alpha.1.json"
+        },
+        "runtimeLock": "runtime-lock-0.2.1-alpha.1.json.gz",
+        "runtimeLockSha256": "ea885ebf6c4e0b4dcf954bef2cb83161d18b7b5a2bb8a75ba3a1c4cbb401412a",
+        "runtimeLockGzipSha256": "a78775e2faa4bde511a81d9c8c7d12f553ad2c3933019c316a0abf57d1686b93"
+      }
+    },
+    "ciYaml": "parsed; three-platform tests and six installation jobs preserved"
+  },
+  "boundaries": {
+    "remoteCI": "not-run; no push",
+    "linuxWindowsNative": "not-run; existing CI matrix wired",
+    "physicalLockSleepResume": "not-run; controlled lifecycle and IPC state transfer only",
+    "realModelQuality": "not-run; controlled adapter",
+    "physicalNotificationCenter": "not-run; controlled Web Notification adapter",
+    "draftPersistence": "renderer only; lost across process exit; no replay or fabricated acceptance",
+    "approvalProbe": "actual public approval service in a controlled open audit turn; original signal cancellation settles it",
+    "acknowledgement": "queue admission, not task completion or flush barrier",
+    "published": false,
+    "M4ToM6": "not-started"
+  },
+  "files": {
+    "desktop-recovery-0.2.0-rc.2.json": {
+      "bytes": 16354,
+      "sha256": "5d14b8513d61f06470889621d9f241a83b883bafb610563a7930179111db3ffa"
+    },
+    "desktop-recovery-0.2.1-alpha.1.json": {
+      "bytes": 16728,
+      "sha256": "9f81e94f303813fef087a6a90c39e19b1f84594198d6dd7b9363822eac4b2b26"
+    },
+    "desktop-recovery.json": {
+      "bytes": 16408,
+      "sha256": "b14f0c0456424905a858a3b4010293ce063083e3e83d5a3aa959994e75385b5c"
+    },
+    "goal-host-0.2.0-rc.2.json": {
+      "bytes": 25151,
+      "sha256": "a313d1b47c3fdb8463b313a8fecd23c7b125d197e11240cbd4c7e89ce5a5f16b"
+    },
+    "goal-host-0.2.1-alpha.1.json": {
+      "bytes": 25154,
+      "sha256": "10ce21af168c6139e0eddb1a436bac184f8617279cea71bdace0632bd6120508"
+    },
+    "install-0.2.0-rc.2.json": {
+      "bytes": 959,
+      "sha256": "16d96f69b0ab581e607cc7cecafb9e24cd794ad2e90a3e0436660e3b48908af1"
+    },
+    "install-0.2.1-alpha.1.json": {
+      "bytes": 962,
+      "sha256": "bd5c16d130dd26a7ecc267dd148be5a6dab9b966c754e4bd6d598d5b2093453e"
+    },
+    "notification-host-0.2.0-rc.2.json": {
+      "bytes": 4438,
+      "sha256": "579ec8264938f82030c7e10e4ed19129b895f6fd2fa00c7c6dd3d787a31bd15d"
+    },
+    "notification-host-0.2.1-alpha.1.json": {
+      "bytes": 4441,
+      "sha256": "bd31385f948ca96060d4713840fcb03cbd7193aa24f083ad282de6a204a95eac"
+    },
+    "notification-integration-0.2.0-rc.2.json": {
+      "bytes": 3734,
+      "sha256": "5e775aa9ecb2b1b79a067e01183d499f00c413cecb43c8f4c092d83723e11ea3"
+    },
+    "notification-integration-0.2.1-alpha.1.json": {
+      "bytes": 3737,
+      "sha256": "ccf6900be6d97e64f192ecf52a39bf6892c1769f1351dad0e567f345b2e7a565"
+    },
+    "notification-source-0.2.0-rc.2.json": {
+      "bytes": 507,
+      "sha256": "8c69a3d2437bd9cda7a8a1a48ea398a1bbff685a8352271878d6398a874bba84"
+    },
+    "notification-source-0.2.1-alpha.1.json": {
+      "bytes": 510,
+      "sha256": "818da1a05ceffb940c3f2e687e75a947bffba1160ff17ac9bbcfe8888c4116ab"
+    },
+    "package-source-content.json": {
+      "bytes": 110078,
+      "sha256": "915a3f0b4c2d174f6d819328e73c3e84a9af4504c19de74f3c112587373e6c50"
+    },
+    "package-verification.json": {
+      "bytes": 316,
+      "sha256": "099d32e4ca882e219bdc9fd12b817ad7fc3ff2693404ad1ef290cb0c25cc94f4"
+    },
+    "release-notes.md": {
+      "bytes": 1189,
+      "sha256": "bb4b971c7c926bd172f3c04842a2176711f0df4c466271404c4d6a4490eea6ec"
+    },
+    "runtime-lock-0.2.0-rc.2.json.gz": {
+      "bytes": 66693,
+      "sha256": "702d0aae38a8023ebf9ce291723f9ad46af82b5178c77bacad67477e57e9dcb6"
+    },
+    "runtime-lock-0.2.1-alpha.1.json.gz": {
+      "bytes": 69011,
+      "sha256": "a78775e2faa4bde511a81d9c8c7d12f553ad2c3933019c316a0abf57d1686b93"
+    },
+    "session-host-0.2.0-rc.2.json": {
+      "bytes": 127530,
+      "sha256": "0b3af3408d7a75ae15c30a21bc46fd721abeec81b9195dbee27bde17d0a4f6fe"
+    },
+    "session-host-0.2.1-alpha.1.json": {
+      "bytes": 153487,
+      "sha256": "fe7f42a33e63259060be86c191823117f336d80f0e693244124ebbba3daf15a8"
+    },
+    "session-native-0.2.0-rc.2.json": {
+      "bytes": 51515,
+      "sha256": "0cd2975e8c6457f5329eef5d4850602a1f98368c147016b7a3215df1dc24c8b2"
+    },
+    "session-native-0.2.1-alpha.1.json": {
+      "bytes": 64202,
+      "sha256": "766f40f3941eae5652043cfbbf4f4ad52bd3f8f433f6d1ebaaef11ab0309f5f7"
+    },
+    "install-alpha.log.gz": {
+      "bytes": 511,
+      "sha256": "8c13ec6aea327d0f780dba1da1b7cdc1617035dd6a8a48a5ffa04431d278f184",
+      "rawBytes": 1591,
+      "rawSha256": "8031e0f192f821c674ce955e4e83ce5e6e8f88344acde2d71079a16cd49d98be"
+    },
+    "ui.log.gz": {
+      "bytes": 496,
+      "sha256": "26aa6bd7e6feae21dfaf207920917a7e6b7557a43f9af4bfa40192ad7e7c4106",
+      "rawBytes": 851,
+      "rawSha256": "dfeaafe0dad4e8f5cdffd85e653b55f1d7b70837e8ab0dc8beb8265c8e6553c6"
+    },
+    "test.log.gz": {
+      "bytes": 1127,
+      "sha256": "acca6c180ef8cf663ab0b0a982c338c0aa80a88abb2eeb882f1f4a18cec9470c",
+      "rawBytes": 2479,
+      "rawSha256": "a53417a2f82287b9774f337d020bf233e3e4b20ded576a2f241b8314a84460b0"
+    },
+    "inbox-ui.log.gz": {
+      "bytes": 708,
+      "sha256": "1d102661b9e0e87aa07927c635b2f52d5e918f8ca618997fc1a9c8fa317ec67b",
+      "rawBytes": 1199,
+      "rawSha256": "3714b7320977e6edc8c08c658092fdbc5e047405dc238ef2b1e2cff9d406588d"
+    },
+    "typecheck.log.gz": {
+      "bytes": 101,
+      "sha256": "0f371e2737d1f0e9a397e9f76a105cc5700214dd0cb2db24f38ec4e35e2f1e48",
+      "rawBytes": 97,
+      "rawSha256": "72561f93b53157b9520ca3f1118e3fd1f381a1f894a0033f595c23aa11084bdf"
+    },
+    "electron-setup.log.gz": {
+      "bytes": 97,
+      "sha256": "bcd55570bf186430a406ac60906372da48b49465cff2d4f41fd5125ef0354f1d",
+      "rawBytes": 87,
+      "rawSha256": "2441abe7c0ad938e3de089b824288d4271eff23431c1e76ba66c39c9f7653405"
+    },
+    "install-rc.log.gz": {
+      "bytes": 509,
+      "sha256": "f7b3d66a1cba2efe7681f5346dd43b5f04eba5f8cc69882ab016f875c6df2338",
+      "rawBytes": 1579,
+      "rawSha256": "a37848f7bae3357c5b48917b8f19b0afccec97532a2e8257dfc0ca2f1f8ef1f2"
+    },
+    "character-pack.log.gz": {
+      "bytes": 216,
+      "sha256": "bed6d4259182e574896240dd51c877961e3cb09f6ca691baf13a6f7701757c38",
+      "rawBytes": 232,
+      "rawSha256": "14832c3d3115e6e8f854acba7d4a46a57209259f23c24fa3361ca054c3d219fc"
+    },
+    "metadata.log.gz": {
+      "bytes": 112,
+      "sha256": "b46dbe06997aa66de1828e56d379a0844326bad402a3a50f9130711ace3169c6",
+      "rawBytes": 138,
+      "rawSha256": "95ba564444045f63a6f1c76f55d5d27d94ba2937cfd525e3bfca5205a214a19e"
+    },
+    "notification-ui.log.gz": {
+      "bytes": 239,
+      "sha256": "65e85c562ea216d6b588e0105c728969004a4fb16c173768f0234c1e077e5b21",
+      "rawBytes": 328,
+      "rawSha256": "f796fc488961224bb5ac45dfbe80f7e626839af69491815691d9bc6b85fbfe2c"
+    },
+    "desktop.log.gz": {
+      "bytes": 287,
+      "sha256": "f01fb54077f44b8e3ce599d4c0a1917db877c238380ccf7d02a5b85fba65628e",
+      "rawBytes": 416,
+      "rawSha256": "bf259d3b37c751883c468422746baa6c8ef50067181b2b6d960ed6fde63ed238"
+    },
+    "ci.log.gz": {
+      "bytes": 201,
+      "sha256": "1e676f577a4f41d2f8f377cb7adbc6f3dbf5807483657ae9541afe6b4ed5408d",
+      "rawBytes": 282,
+      "rawSha256": "453acf4d3e233d7e4a60e2f364983b2b613e214c6b5794dbeb8e4e8e55b321a8"
+    },
+    "package.log.gz": {
+      "bytes": 159,
+      "sha256": "88bffeecd5b3e3118b8176c90baac7ac6bd03e4b2daf694316744cf8d513dcf3",
+      "rawBytes": 168,
+      "rawSha256": "af81e833c2f86862fe3040f409e2aa9788b061d8061b5b1e2242ae98dbb8239c"
+    },
+    "build.log.gz": {
+      "bytes": 80,
+      "sha256": "98b4a1d02f9e1520f4b519bdfc9c1409c3d9c6a7eee01a0d8cfaaa4914ce0c9c",
+      "rawBytes": 63,
+      "rawSha256": "ca1496908b0ab5a639670873453d4b2431b39a4ffadc15d06cc1e7c17343a4e6"
+    }
+  }
+}
