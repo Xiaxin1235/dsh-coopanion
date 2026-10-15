@@ -6,7 +6,7 @@
 
 本次更新统一桌宠与 Harness 的中英文语言，覆盖桌面菜单、聊天、收件箱、角色面板和原生托盘；切换立即生效，回复原文与当前配色保持不变。查看 [最新修改记录](https://github.com/takboo/dsh-coopanion/releases/latest) 或 [完整版本记录](docs/release-notes.md)。
 
-当前工作分支包含 M1 完成语义、M2 会话直接续接、M3 桌面异常恢复和 M4 文字可读性，尚未发布；宿主契约与验证范围见 [M1 验收记录](docs/evidence/m1/README.md)、[M2 验收记录](docs/evidence/m2/README.md)、[M3 本地验收](docs/evidence/m3/README.md)及 [M4 文字契约](docs/text-readability-contract.md)。
+当前工作分支包含 M1 完成语义、M2 会话直接续接、M3 桌面异常恢复和 M4 文字可读性，尚未发布；宿主契约与验证范围见 [M1 验收记录](docs/evidence/m1/README.md)、[M2 验收记录](docs/evidence/m2/README.md)、[M3 本地验收](docs/evidence/m3/README.md)及 [M4 本地验收](docs/evidence/m4/README.md)；文字配置与状态规则见[文字契约](docs/text-readability-contract.md)。
 
 ## 功能
 
