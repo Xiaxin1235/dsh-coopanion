@@ -39,7 +39,7 @@ let renderedSessionId = null, reactionUntil = 0, reactionMood, bubbleSession, tr
 let bubbleResult, readerResult, pendingOnly = false, talkAt = 0;
 let readerQueue, inboxState = { requests: [], issues: [], replies: [], total: 0 };
 let resizeLayout, displayGeometry, pendingDisplayPlacement, resizeOrigin;
-let stageWidth = innerWidth;
+let stageWidth = innerWidth, pressedPointerId;
 const composer = new ChatComposer();
 const chatTimers = new Map();
 let draftSessionId;
@@ -479,8 +479,14 @@ function receive(message) {
     }
     case 'display-changed': {
       if (!Number.isSafeInteger(message.revision) || message.revision <= (displayGeometry?.revision ?? 0)) break;
-      if (displayGeometry && message.displayId !== displayGeometry.displayId) {
-        pendingDisplayPlacement = resizeOrigin ?? { ratio: (body?.layout?.x ?? stageWidth * .6) / stageWidth, facing: body?.layout?.facing ?? 1 };
+      const interrupted = pressing || dragging || ['drag', 'air'].includes(body?.layout?.mode);
+      if (displayGeometry && (message.displayId !== displayGeometry.displayId || interrupted)) {
+        pendingDisplayPlacement = { ...(resizeOrigin ?? { ratio: (body?.layout?.x ?? stageWidth * .6) / stageWidth, facing: body?.layout?.facing ?? 1 }), drop: interrupted };
+      }
+      if (pressing) {
+        body?.pointer('cancel', { x: 0, y: 0, t: performance.now() });
+        if (pressedPointerId !== undefined && pet.hasPointerCapture(pressedPointerId)) pet.releasePointerCapture(pressedPointerId);
+        pressing = false; dragging = false; pressedPointerId = undefined;
       }
       displayGeometry = message;
       pet.dataset.displayId = String(message.displayId); pet.dataset.displayRevision = String(message.revision);
@@ -514,14 +520,14 @@ pet.addEventListener('pointerdown', event => {
   if (event.button !== 0) return;
   touchBlockedUntil = 0; clearTimeout(touchTimer);
   sfx.unlock(); pressing = true; dragging = false; dragStart = { x: event.clientX, y: event.clientY };
-  pet.setPointerCapture(event.pointerId);
+  pressedPointerId = event.pointerId; pet.setPointerCapture(event.pointerId);
   body?.pointer('down', { x: event.clientX, y: event.clientY, t: event.timeStamp });
 });
 function release(event) {
   if (!pressing) return;
   const moved = dragging;
   body?.pointer(event.type === 'pointercancel' ? 'cancel' : 'up', { x: event.clientX, y: event.clientY, t: event.timeStamp });
-  pressing = false; dragging = false;
+  pressing = false; dragging = false; pressedPointerId = undefined;
   if (event.type === 'pointerup' && native && moved) send({ type: 'move-display' });
 }
 pet.addEventListener('pointerup', release); pet.addEventListener('pointercancel', release);
@@ -647,7 +653,9 @@ function resizeStage() {
   // Native geometry and viewport resize can arrive in either order. Placement
   // waits until this viewport reflects the newly acknowledged content bounds.
   if (pendingDisplayPlacement && innerWidth === displayGeometry?.contentBounds.width && innerHeight === displayGeometry?.contentBounds.height) {
-    body?.place(innerWidth * pendingDisplayPlacement.ratio, pendingDisplayPlacement.facing);
+    const targetX = innerWidth * pendingDisplayPlacement.ratio;
+    if (pendingDisplayPlacement.drop) { const b = bounds(); body?.drop({ x: targetX, y: b.floorY - 220 * b.S }); }
+    else body?.place(targetX, pendingDisplayPlacement.facing);
     pendingDisplayPlacement = undefined;
   }
   if (innerWidth === displayGeometry?.contentBounds.width && innerHeight === displayGeometry?.contentBounds.height) resizeOrigin = undefined;

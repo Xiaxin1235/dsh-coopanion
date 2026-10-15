@@ -80,5 +80,13 @@ test('controlled irregular layout and mixed DPR preserve reading, draft, in-flig
   const b=await page.locator('#pet').boundingBox(); await page.mouse.move(b.x+b.width/2,b.y+b.height/2); await page.mouse.down();
   await page.mouse.move(b.x+b.width/2,-180,{steps:8}); await page.mouse.up();
   assert.ok((await page.evaluate(()=>window.displayActions)).some(a=>a.type==='move-display'),'vertical release requests native display selection');
-  await writeFile('artifacts/multi-display-ui.json',JSON.stringify({controlled:true,physicalMultiDisplay:false,samples,readerDom:true,scrollRetained:true,draftRetained:true,inflightRetained:true,staleGeometryRejected:true,verticalDrag:true},null,2)+'\n');
+  await page.waitForFunction(()=>!['air','drag','crouch'].includes(document.querySelector('#pet').dataset.mode));
+  await page.locator('#pet').hover(); await page.mouse.down();
+  await page.mouse.move(920,280,{steps:12}); await page.waitForSelector('#pet[data-mode=drag]');
+  await cdp.send('Emulation.setDeviceMetricsOverride',{width:420,height:640,deviceScaleFactor:1,mobile:false});
+  await receive({type:'display-changed',...cases[1],contentBounds:{x:-420,y:25,width:420,height:640},revision:++revision});
+  await page.waitForFunction(()=>{const n=document.querySelector('#pet'),b=n.getBoundingClientRect();return n.dataset.pressing==='false'&&b.width>20&&b.x>=0&&b.right<=innerWidth&&b.bottom<=innerHeight;});
+  await page.mouse.up();
+  await page.waitForFunction(()=>!['air','drag'].includes(document.querySelector('#pet').dataset.mode));
+  await writeFile('artifacts/multi-display-ui.json',JSON.stringify({controlled:true,physicalMultiDisplay:false,samples,readerDom:true,scrollRetained:true,draftRetained:true,inflightRetained:true,staleGeometryRejected:true,verticalDrag:true,unplugDuringDrag:true},null,2)+'\n');
 });
