@@ -117,7 +117,10 @@ test('hot preference keeps reader DOM/scroll, draft/focus/selection, request ide
   assert.equal(await page.locator('#message').inputValue(), ''); assert.equal(await page.evaluate(() => window.rhythmActions.filter(a => a.type === 'chat').length), 1);
   await page.keyboard.press('Escape'); await configure({ bubbleDurationMs: 2000 });
   await receive({ type: 'snapshot', snapshot: snapshot({ results: [{ ...reply, id: 'rhythm-short', text: 'Short reply' }] }) });
-  await page.locator('#bubble-reveal').click(); await page.mouse.move(0, 0); await page.locator('#pet').focus();
+  // Short speech can finish during the entrance animation, hiding Show now
+  // before a real click becomes actionable. Expiry starts at speech completion.
+  await page.waitForSelector('#bubble[data-typing=false]');
+  await page.mouse.move(0, 0); await page.locator('#pet').focus();
   await page.waitForTimeout(1200); for (const dailyRhythm of [false, true, false, true]) await configure({ dailyRhythm });
   await page.locator('#bubble').waitFor({ state: 'hidden', timeout: 1500 });
 });
