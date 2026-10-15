@@ -1,0 +1,29 @@
+name: Setup managed X11 test display
+description: Run native Linux checks in Xvfb with an EWMH window manager.
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        sudo apt-get install -y --no-install-recommends openbox x11-utils
+        export DISPLAY=:99
+        Xvfb "$DISPLAY" -screen 0 1200x800x24 -nolisten tcp > "$RUNNER_TEMP/coopanion-xvfb.log" 2>&1 &
+        display_pid=$!
+        for attempt in {1..100}; do
+          kill -0 "$display_pid"
+          if xdpyinfo -display "$DISPLAY" > /dev/null 2>&1; then break; fi
+          sleep .1
+        done
+        xdpyinfo -display "$DISPLAY" > /dev/null
+        openbox > "$RUNNER_TEMP/coopanion-openbox.log" 2>&1 &
+        manager_pid=$!
+        for attempt in {1..100}; do
+          kill -0 "$manager_pid"
+          if xprop -root _NET_SUPPORTING_WM_CHECK | grep -q 'window id'; then
+            echo "DISPLAY=$DISPLAY" >> "$GITHUB_ENV"
+            exit 0
+          fi
+          sleep .1
+        done
+        cat "$RUNNER_TEMP/coopanion-openbox.log"
+        exit 1

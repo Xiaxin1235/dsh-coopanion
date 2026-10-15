@@ -18,13 +18,15 @@ import ctypes, sys
 x11 = ctypes.CDLL('libX11.so.6')
 x11.XOpenDisplay.argtypes = [ctypes.c_char_p]
 x11.XOpenDisplay.restype = ctypes.c_void_p
+x11.XDefaultRootWindow.argtypes = [ctypes.c_void_p]
+x11.XDefaultRootWindow.restype = ctypes.c_ulong
 x11.XWarpPointer.argtypes = [ctypes.c_void_p, ctypes.c_ulong, ctypes.c_ulong, ctypes.c_int, ctypes.c_int, ctypes.c_uint, ctypes.c_uint, ctypes.c_int, ctypes.c_int]
 x11.XSync.argtypes = [ctypes.c_void_p, ctypes.c_int]
 x11.XCloseDisplay.argtypes = [ctypes.c_void_p]
 display = x11.XOpenDisplay(None)
 if not display:
     raise RuntimeError('Cannot open the native test display')
-x11.XWarpPointer(display, 0, 0, 0, 0, 0, 0, int(sys.argv[1]), int(sys.argv[2]))
+x11.XWarpPointer(display, 0, x11.XDefaultRootWindow(display), 0, 0, 0, 0, int(sys.argv[1]), int(sys.argv[2]))
 x11.XSync(display, 0)
 x11.XCloseDisplay(display)
 `;
