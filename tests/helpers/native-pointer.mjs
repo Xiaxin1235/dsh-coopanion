@@ -106,23 +106,29 @@ export async function nativeMeasurement(page, selector) {
   return page.locator(selector).evaluate(el => {
     const b = el.getBoundingClientRect();
     if (!window.dshPetBridge.testScreenPoint) throw new Error('Native measurement requires an isolated debug test profile');
-    return window.dshPetBridge.testScreenPoint({x:b.x+b.width/2,y:b.y+b.height/2,width:innerWidth,height:innerHeight});
+    const css = { x: b.x + b.width / 2, y: b.y + b.height / 2 };
+    return window.dshPetBridge.testScreenPoint({...css,width:innerWidth,height:innerHeight}).then(native => ({ ...native, css }));
   });
 }
 
 /** Native OS cursor + CDP click on a panel's measured CSS hit region. */
 export async function nativeClick(page, selector) {
   await page.bringToFront();
+  await page.locator(selector).click({ trial: true });
   const measurement = await nativeMeasurement(page, selector), p = measurement.point;
   if (process.platform === 'darwin') await run('python3', ['-c', warpMacCursor, String(p.x), String(p.y)]);
   else if (process.platform === 'linux') await run('python3', ['-c', warpCursor, String(p.x), String(p.y)]);
   else await run('powershell.exe', ['-NoProfile','-NonInteractive','-Command',
     `Add-Type -TypeDefinition 'using System; using System.Runtime.InteropServices; public class PetPanelCursor { [DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y); }'; if (-not [PetPanelCursor]::SetCursorPos(${p.x}, ${p.y})) { throw 'Cannot move the native test cursor' }`]);
-  const b = await page.locator(selector).boundingBox();
-  await page.mouse.move(b.x+b.width/2,b.y+b.height/2);
+  // A font/size update can reflow the panel while the OS helper starts. Keep
+  // CDP and the physical cursor on the same measured point rather than mixing
+  // two layout samples; locator trial above waits for actionability/stability.
+  const { x, y } = measurement.css;
+  await page.mouse.move(x, y);
   await page.waitForSelector('#pet[data-native-hit=true]');
-  await page.mouse.click(b.x+b.width/2,b.y+b.height/2);
+  await page.mouse.click(x, y);
   const observed = await nativeMeasurement(page, selector);
-  assert.ok(Math.hypot(observed.cursor.x - measurement.dip.x, observed.cursor.y - measurement.dip.y) <= 2, 'OS cursor reaches the measured DIP point');
+  assert.ok(Math.hypot(observed.cursor.x - measurement.dip.x, observed.cursor.y - measurement.dip.y) <= 2,
+    `OS cursor reaches the measured DIP point: ${JSON.stringify({ measurement, observed })}`);
   return { ...measurement, cursorAfterClick: observed.cursor };
 }
