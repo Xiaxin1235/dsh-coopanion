@@ -6,7 +6,7 @@
 
 已有 calm 漫游在持续空闲时自行选择动作，不能表达夜间更安静、活动间隔更长的偏好。本项提供可选的本地时段策略，减少夜间活动，工作和阅读始终优先。它没有模型请求、前台内容采集、额外通知或新素材。
 
-持久字段 `dailyRhythm: boolean` 默认 `false`，旧配置保持原有 calm 行为。Harness **Settings → 桌宠 → 日常陪伴节奏** 保存至现有 volatile 配置，经完整 `DesktopOptions` → `PetControls.configure` → `ElectronBridge` → 原生 main → 当前 Renderer 热同步；原生及完整 Host 重启使用同一持久值。`roam=false`、用户休息和系统减少动态效果设置始终禁用闲时策略。无效非布尔值不接受。
+持久字段 `dailyRhythm: boolean` 默认 `false`，旧配置保持原有 calm 行为。缺失/空值遵循既有 Harness schema 的默认行为，其他非布尔值拒绝保存。Harness **Settings → 桌宠 → 日常陪伴节奏** 保存至现有 volatile 配置，经完整 `DesktopOptions` → `PetControls.configure` → `ElectronBridge` → 原生 main → 当前 Renderer 热同步；原生及完整 Host 重启使用同一持久值。`roam=false`、用户休息和系统减少动态效果设置始终禁用闲时策略。
 
 启动握手期间收到的新 configure 同时更新桥接层完整配置缓存，ready 的 baseline 使用最新配置，避免旧启动参数盖回新偏好；locale 清空仍显式传 null。generation、原生显示回执、最新 Host 全文快照及通知资格判断保持原协议。
 
