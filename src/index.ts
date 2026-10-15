@@ -17,16 +17,18 @@ import { PetModel } from './model.ts';
 import { PetControls } from './controls.ts';
 import { z as wire } from 'zod';
 import { petLanguage } from '../web/locale.js';
+import { DEFAULT_TEXT_SCALE, TEXT_SCALES, type TextScale } from '../web/text-scale.js';
 
 export const name = 'dsh-coopanion';
 export const inject = ['agents'];
 export interface Config {
-  size: Volatile<number>; roam: Volatile<boolean>; notifications: Volatile<boolean>;
+  size: Volatile<number>; textScale: Volatile<TextScale>; roam: Volatile<boolean>; notifications: Volatile<boolean>;
   systemNotifications: Volatile<boolean>; reminders: Volatile<boolean>; reminderDelayMs: Volatile<number>;
   bubbleDurationMs: Volatile<number>; autoStart: Volatile<boolean>; electronPath?: string;
 }
 export const Config = z.object({
   size: z.number().min(90).max(240).default(180).volatile(),
+  textScale: z.union(TEXT_SCALES.map(value => z.const(value))).default(DEFAULT_TEXT_SCALE).volatile(),
   roam: z.boolean().default(true).volatile(),
   notifications: z.boolean().default(true).volatile(),
   systemNotifications: z.boolean().default(false).volatile(),
@@ -52,7 +54,7 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
   const preferences: Partial<Pick<DesktopOptions, 'roam' | 'notifications'>> = {};
   let savePreference: ((field: 'roam' | 'notifications', value: boolean) => Promise<void>) | undefined;
   ctx.inject(['settings'], child => { savePreference = (field, value) => child.settings.mutate('dsh-coopanion', [{ op: 'set', path: [field], value }]); });
-  const currentOptions = (): DesktopOptions => ({ size: options.size.get(), roam: options.roam.get(), notifications: options.notifications.get(), bubbleDurationMs: options.bubbleDurationMs.get(), systemNotifications: options.systemNotifications.get(), reminders: options.reminders.get(), reminderDelayMs: options.reminderDelayMs.get(), electronPath: options.electronPath, locale, ...preferences });
+  const currentOptions = (): DesktopOptions => ({ size: options.size.get(), textScale: options.textScale.get(), roam: options.roam.get(), notifications: options.notifications.get(), bubbleDurationMs: options.bubbleDurationMs.get(), systemNotifications: options.systemNotifications.get(), reminders: options.reminders.get(), reminderDelayMs: options.reminderDelayMs.get(), electronPath: options.electronPath, locale, ...preferences });
   const controls = new PetControls(bridge, currentOptions);
   let locale: string | undefined;
   let clientLocale: string | undefined;

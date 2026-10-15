@@ -152,3 +152,27 @@ it('registers and disposes exact authenticated Connection routes without taking 
   expect(bridge.focusHarness).toHaveBeenCalledOnce();
   await fiber.dispose(); expect(routes.size).toBe(0); await ctx.fiber.dispose();
 });
+
+
+it('defaults old configs to 100% and accepts only three independent text scales', async () => {
+  expect(Config().textScale.get()).toBe(1);
+  for (const textScale of [1, 1.25, 1.5] as const) for (const size of [90, 240]) {
+    const config = Config({ textScale, size });
+    expect(config.textScale.get()).toBe(textScale); expect(config.size.get()).toBe(size);
+  }
+  for (const textScale of [0, 1.1, 125, '1.25']) expect(() => Config({ textScale: textScale as never })).toThrow();
+  const ctx = new Context(); ctx.provide('agents', { list: () => [] });
+  let value: 1 | 1.25 | 1.5 = 1;
+  const config = Config({ size: 90 });
+  config.textScale = { get: () => value };
+  const bridge = { ...nativeBridge(), configure: vi.fn() };
+  const fiber = ctx.plugin(scope => mountPet(scope, config, bridge));
+  try {
+    await fiber.await(); await vi.waitFor(() => expect(bridge.start).toHaveBeenCalledOnce());
+    for (const next of [1.25, 1.5, 1] as const) {
+      value = next; ctx.emit('settings/document-updated', 'dsh-coopanion' as SettingsNamespace, 1);
+      expect(bridge.configure).toHaveBeenLastCalledWith(expect.objectContaining({ textScale: next, size: 90 }));
+    }
+    expect(bridge.start).toHaveBeenCalledOnce();
+  } finally { await fiber.dispose(); await ctx.fiber.dispose(); }
+});

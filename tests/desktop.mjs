@@ -13,6 +13,7 @@ import { ElectronBridge } from '../dist/bridge.js';
 import { importCharacter } from './helpers/characters.mjs';
 import { petClick } from './helpers/native-pointer.mjs';
 import { unzipSync } from 'fflate';
+import { verifyNativeTextScale } from './helpers/text-scale-native.mjs';
 import { crashNative, connectRecovered, waitRecovery } from './helpers/desktop-recovery.mjs';
 
 let display, browser;
@@ -94,6 +95,7 @@ try {
   await page.locator('#bubble-session').click();
   for (let n = 0; n < 30 && !actions.some(a => a.type === 'open-session'); n++) await pause(50);
   assert.deepEqual(actions.find(a => a.type === 'open-session'), { type: 'open-session', sessionId: 'native-test' });
+  await verifyNativeTextScale({ page, bridge, snapshot: finalFrame });
   const idleFrame = { ...snapshot, mood: 'idle', active: false, revision: 2, sessions: [{ ...snapshot.sessions[0], mood: 'idle', active: false }] };
   bridge.update({ ...idleFrame, sessions: [...idleFrame.sessions, { id: 'second-test', label: '另一会话', mood: 'working', active: true, text: '正在运行命令', reply: '', revision: 1 }] });
   await page.waitForSelector('#pet[data-mood=working]');

@@ -6,7 +6,7 @@
 
 本次更新统一桌宠与 Harness 的中英文语言，覆盖桌面菜单、聊天、收件箱、角色面板和原生托盘；切换立即生效，回复原文与当前配色保持不变。查看 [最新修改记录](https://github.com/takboo/dsh-coopanion/releases/latest) 或 [完整版本记录](docs/release-notes.md)。
 
-当前工作分支包含 M1 完成语义、M2 会话直接续接和 M3 桌面异常恢复，尚未发布；宿主契约与验证范围见 [M1 验收记录](docs/evidence/m1/README.md)、[M2 验收记录](docs/evidence/m2/README.md)及 [M3 本地验收](docs/evidence/m3/README.md)。
+当前工作分支包含 M1 完成语义、M2 会话直接续接、M3 桌面异常恢复和 M4 文字可读性，尚未发布；宿主契约与验证范围见 [M1 验收记录](docs/evidence/m1/README.md)、[M2 验收记录](docs/evidence/m2/README.md)、[M3 本地验收](docs/evidence/m3/README.md)及 [M4 文字契约](docs/text-readability-contract.md)。
 
 ## 功能
 
@@ -105,7 +105,7 @@ npm run character:pack -- examples/star paper-star.zip
 
 ## 配置与会话
 
-**Settings → 桌宠** 沿用 Harness 的主题、中英文与系统语言设置。可控制随 Harness 启动、闲时活动、任务通知、系统通知、待处理请求补提醒、等待时间、角色尺寸（90–240）和气泡时长（2–60 秒）；数值按 Enter 或离开输入框保存。
+**Settings → 桌宠** 沿用 Harness 的主题、中英文与系统语言设置。可控制随 Harness 启动、闲时活动、任务通知、系统通知、待处理请求补提醒、等待时间、角色尺寸（90–240）、文字大小（100% / 125% / 150%）和气泡时长（2–60 秒）；数值按 Enter 或离开输入框保存。文字大小选择后立即保存并同步到当前桌宠，独立于角色尺寸，保留当前阅读、草稿与在途发送；旧配置默认 100%。
 
 桌宠意外退出后按 1、3、10 秒间隔最多自动恢复三次，连续稳定运行 60 秒后清零。设置页显示恢复次数和诊断，可随时关闭或在失败后手动重启；主动关闭不触发恢复。隐藏的角色恢复后仍隐藏，关注会话、完整结果、未读和有效待办保留，旧结果不再次主动提醒。窗口内草稿与阅读位置会随进程退出丢失，恢复不会重发聊天或任务。缺少图形环境、无效运行时路径或未确认清理的进程直接反馈错误，详见[恢复契约](docs/desktop-recovery-contract.md)。
 

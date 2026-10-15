@@ -316,6 +316,29 @@ try {
   await surface.getByRole('status').filter({ hasText: '已保存' }).waitFor();
   await page.waitForFunction(() => getComputedStyle(document.documentElement).getPropertyValue('--size') === '180px');
   assert.match(await readFile(join(profile, 'cordis.patch.yml'), 'utf8'), /size: 180/, 'native Host settings persist the size');
+  assert.equal(await surface.getByRole('combobox', { name: '文字大小', exact: true }).inputValue(), '1', 'old installed config defaults to 100%');
+  await petClick(page, {}, true);
+  await page.locator('#message').fill('M4 installed draft');
+  const textScaleSamples = [];
+  for (const size of [90, 240]) {
+    const input = surface.getByRole('spinbutton', { name: '角色尺寸', exact: true });
+    await input.fill(String(size)); await input.press('Enter');
+    await page.waitForFunction(size => getComputedStyle(document.documentElement).getPropertyValue('--size') === `${size}px`, size);
+    for (const textScale of [1, 1.25, 1.5]) {
+      await surface.getByRole('combobox', { name: '文字大小', exact: true }).selectOption(String(textScale));
+      await page.waitForFunction(scale => getComputedStyle(document.querySelector('#message')).fontSize === `${13 * scale}px`, textScale);
+      await waitProfile(new RegExp('textScale: ' + String(textScale).replace('.', '[.]') + '(?:\\s|$)'));
+      assert.equal(await page.locator('#message').inputValue(), 'M4 installed draft');
+      const rect = await page.locator('#chat').evaluate(n => { const r = n.getBoundingClientRect(); return { x: r.x, y: r.y, right: r.right, bottom: r.bottom, W: innerWidth, H: innerHeight }; });
+      assert.ok(rect.x >= 0 && rect.y >= 0 && rect.right <= rect.W && rect.bottom <= rect.H);
+      textScaleSamples.push({ size, textScale, rect, draft: true, persisted: true });
+    }
+  }
+  await surface.getByRole('spinbutton', { name: '角色尺寸', exact: true }).fill('180');
+  await surface.getByRole('spinbutton', { name: '角色尺寸', exact: true }).press('Enter');
+  await page.waitForFunction(() => getComputedStyle(document.documentElement).getPropertyValue('--size') === '180px');
+  await page.screenshot({ path: join(project, 'artifacts', `text-scale-installed-${version}.png`) });
+  await page.locator('#message').fill(''); await page.keyboard.press('Escape');
   await settings.waitForFunction(() => document.querySelector('.dsh-coopanion-settings [role="switch"][aria-label="闲时走动"]').getAttribute('aria-checked') === 'true');
   await petClick(page, { button: 'right' });
   await page.locator('#toggle-roam').click();
@@ -335,6 +358,7 @@ try {
   const reopened = browser.contexts()[0].pages()[0];
   await reopened.waitForSelector('#pet[data-character=whale]');
   await reopened.waitForFunction(() => getComputedStyle(document.documentElement).getPropertyValue('--size') === '180px');
+  await reopened.waitForFunction(() => getComputedStyle(document.documentElement).getPropertyValue('--text-scale') === '1.5');
   await surface.getByRole('button', { name: '管理角色', exact: true }).click();
   await reopened.waitForSelector('#characters:not([hidden])');
   await surface.getByRole('switch', { name: '随 Harness 启动', exact: true }).click();
@@ -360,6 +384,7 @@ try {
   await surface.getByRole('switch', { name: 'Start with Harness', exact: true }).waitFor();
   await surface.getByRole('button', { name: 'Manage characters', exact: true }).waitFor();
   assert.equal(await surface.getByRole('spinbutton', { name: 'Character size', exact: true }).inputValue(), '180');
+  assert.equal(await surface.getByRole('combobox', { name: 'Text size', exact: true }).inputValue(), '1.5');
   await settings.screenshot({ path: join(project, 'artifacts', `settings-en-${version}.png`) });
   await settings.getByRole('button', { name: 'General', exact: true }).click();
   await settings.getByRole('button', { name: 'English', exact: true }).click();
@@ -375,6 +400,7 @@ try {
   await openPetSettings(settings);
   await surface.getByTestId('pet-status').filter({ hasText: '已关闭' }).waitFor();
   assert.equal(await surface.getByRole('spinbutton', { name: '角色尺寸', exact: true }).inputValue(), '180');
+  assert.equal(await surface.getByRole('combobox', { name: '文字大小', exact: true }).inputValue(), '1.5', 'full Host restart preserves text scale');
   assert.equal(await surface.getByRole('switch', { name: '随 Harness 启动', exact: true }).getAttribute('aria-checked'), 'false');
   assert.equal(await surface.getByRole('switch', { name: '系统通知', exact: true }).getAttribute('aria-checked'), 'true');
   assert.equal(await surface.getByRole('switch', { name: '待处理请求补提醒', exact: true }).getAttribute('aria-checked'), 'false');
@@ -392,6 +418,7 @@ try {
   await surface.getByTestId('pet-status').filter({ hasText: '正在显示' }).waitFor();
   browser = await chromium.connectOverCDP(`http://127.0.0.1:${port}`);
   await browser.contexts()[0].pages()[0].waitForSelector('#pet[data-character=whale]');
+  await browser.contexts()[0].pages()[0].waitForFunction(() => getComputedStyle(document.documentElement).getPropertyValue('--text-scale') === '1.5');
   await surface.getByRole('button', { name: '关闭桌宠', exact: true }).click();
   await surface.getByTestId('pet-status').filter({ hasText: '已关闭' }).waitFor();
   const languageReady = new Promise((resolveReady, reject) => {
@@ -514,6 +541,7 @@ try {
   await writeFile(join(project, 'artifacts', `notification-source-${version}.json`), JSON.stringify({ dsh: version, pluginVersion: manifest.version, creation: 'sessionController.create', sessionId: sourceId, exportedHeader: header, status: 'pass' }, null, 2) + '\n');
   await stop(host);
   assert.equal(host.exitCode, 0, hostLog);
+  await writeFile(join(project, 'artifacts', `text-scale-installed-${version}.json`), JSON.stringify({ dsh: version, sourceCommit, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), samples: textScaleSamples, oldConfigDefault: true, nativeRestart: true, hostRestart: true, englishLabel: true }, null, 2) + '\n');
   await writeFile(join(project, 'artifacts', `install-${version}.json`), JSON.stringify({ dsh: version, sourceCommit, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), m3NativeRecovery: true, m2NativeContinuation: true, plugin: `${manifest.name}@${manifest.version}`, package: archive, installed: true, profileLoader: true, nativeWindow: true, customCharacter: true, builtinCharacterId: 'whale', sessionNotifications: true, multipleSessions: true, roundReplyWithoutGoalCelebration: true, notificationOpensSourceSession: true, nativeSettingsPage: true, darkTheme: true, closeAndRelaunch: true, hostRestartPersistence: true, autoStartDisabled: true, chineseAndEnglish: true, liveLocaleSwitch: true, automaticSystemLanguage: true, riskExemption: false, cleanShutdown: true }, null, 2) + '\n');
   console.log(`Installation smoke passed on DSH ${version}: admission, actual profile loader, native window, independent sessions, session navigation from notices, official settings UI, live persisted preferences, and reopening after native close.`);
 } catch (error) {

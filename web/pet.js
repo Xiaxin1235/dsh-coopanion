@@ -5,6 +5,7 @@ import { createNoticeQueue, pendingInteractions, notificationPresentation, notif
 import { ChatComposer, shortSessionIds, sessionTime, sessionActivity, inboxContents, unreadReplies } from './session-ui.js';
 import { renderReplyMarkdown } from './markdown-runtime.js';
 import { petLanguage, petCopy, localizedText, appNoticeCopy, automaticPetLanguage, sessionStateLabel } from './locale.js';
+import { textScale } from './text-scale.js';
 const PACK_LIMIT = 128 * 1024 * 1024;
 import { browserCharacters } from './character-library.js';
 const BUILTIN_ID = 'whale';
@@ -29,7 +30,7 @@ const nameIn = names => localizedText(names, notificationLocale());
 const wordName = (word, view = previewCharacter) => word.names?.[notificationLocale()]?.[0] ?? (view?.builtin ? uiCopy().words[word.id] : undefined) ?? nameIn(word.names)?.[0] ?? word.id;
 let body, previewBody, previewCharacter, activeView, activeScheme, activeName = 'DeepSeek 大肥鱼', libraryState, libraryBusy = false;
 let appliedMood, appliedControls, speech, speechExpires = Infinity, pressing = false, dragStart, dragging = false, previewScheme = "", reducedNeedsStep = true;
-let options = { size: 180, roam: true, notifications: true, bubbleDurationMs: 12000 };
+let options = { textScale: 1, size: 180, roam: true, notifications: true, bubbleDurationMs: 12000 };
 let snapshot = { mood: 'idle', text: '你好。点点我，或双击和我说话。', sessionId: null, sessions: [] };
 let x = innerWidth * .68, y = innerHeight - 155, hovered = false, asleep = false, toastTimer, noticeSession;
 let cursorPoint, lastHit;
@@ -137,7 +138,7 @@ function position() {
   if (!holding) panelAnchors.delete(attention);
   else if (!panelAnchors.has(attention)) { const b = attention.getBoundingClientRect(); panelAnchors.set(attention, { x: b.x, y: b.y }); }
   const point = panelAnchors.get(attention) ?? { x: Math.max(8, Math.min(innerWidth - 55, anchor.x + options.size * .25)), y: Math.max(8, Math.min(innerHeight - 38, anchor.y + 15)) };
-  Object.assign(attention.style, { left: `${Math.round(point.x)}px`, top: `${Math.round(point.y)}px` });
+  Object.assign(attention.style, { left: `${Math.round(Math.max(8, Math.min(innerWidth - attention.offsetWidth - 8, point.x)))}px`, top: `${Math.round(Math.max(8, Math.min(innerHeight - attention.offsetHeight - 8, point.y)))}px` });
 }
 function speak(result) {
   const source = snapshot.sessions.find(session => session.id === result.sessionId);
@@ -396,22 +397,35 @@ $('interaction-close').onclick = () => { interaction.hidden = true; currentNotic
 $('interaction-open').onclick = () => openSession(currentNotice?.sessionId);
 $('interaction-pending').onclick = () => openRequests(false);
 
+function applyOptions(value) {
+  const previousSize = options.size;
+  options = { ...options, ...value, textScale: Object.hasOwn(value ?? {}, 'textScale') ? textScale(value.textScale) : options.textScale };
+  document.documentElement.style.setProperty('--size', `${options.size}px`);
+  document.documentElement.style.setProperty('--text-scale', String(options.textScale));
+  if (options.size !== previousSize) body?.set({ bounds: bounds() });
+  // Keep DOM, captured reader result, composer, speech and expiry clocks intact.
+  position();
+}
+// Font reflow and async Markdown/locale layout changes need fresh panel bounds.
+const panelResize = new ResizeObserver(() => position());
+for (const panel of [bubble, interaction, ...panels, $('attention')]) panelResize.observe(panel);
+
 function receive(message) {
   if (!message || typeof message !== 'object') return;
   switch (message.type) {
     case 'init':
-      options = { ...options, ...message.options };
-      document.documentElement.style.setProperty('--size', `${options.size}px`);
+      applyOptions(message.options);
       if (message.snapshot) snapshot = message.snapshot;
       // Recovery restores unread results as an inbox baseline, without speaking them again.
       if (message.baseline) for (const result of snapshot.results ?? []) shownResults.add(result.id);
       pet.dataset.hostReady = 'true';
       body?.set({ bounds: bounds() }); render(); break;
-    case 'configure':
-      options = { ...options, ...message.options };
-      document.documentElement.style.setProperty('--size', `${options.size}px`);
-      body?.set({ bounds: bounds() });
-      render(); break;
+    case 'configure': {
+      const changed = Object.keys(message.options ?? {}).some(key => key !== 'textScale' && key !== 'size' && options[key] !== message.options[key]);
+      applyOptions(message.options);
+      if (changed) render();
+      break;
+    }
     case 'ui-control':
       if (message.command === 'chat') openChat();
       else if (message.command === 'sessions') openRequests();
