@@ -403,6 +403,8 @@ function receive(message) {
       options = { ...options, ...message.options };
       document.documentElement.style.setProperty('--size', `${options.size}px`);
       if (message.snapshot) snapshot = message.snapshot;
+      // Recovery restores unread results as an inbox baseline, without speaking them again.
+      if (message.baseline) for (const result of snapshot.results ?? []) shownResults.add(result.id);
       pet.dataset.hostReady = 'true';
       body?.set({ bounds: bounds() }); render(); break;
     case 'configure':

@@ -36,6 +36,8 @@ M2 的发送接受回执独立于提醒与任务结果，详见[会话续接契�
 
 `NotificationRuntime` 包含阶段、运行代次 `generation`、显示状态版本 `visibilityRevision`、原生可见性、休眠状态和有界错误。
 
+M3 同包增加 `recovering` 阶段与可选 `desiredVisible`、`recoveryAttempt`（0–3）、`retryAt`（Host 时间戳）。恢复等待不具备投递资格；显示意图不代表原生可见性。新代必须收到自己的 visibilityRevision，旧领取仅结算迟到证据，不再进入其他通道。具体启动、停止、锁屏及结果基线见[桌面恢复契约](desktop-recovery-contract.md)。旧配置没有新增持久字段，默认行为保持；Host / Client / Electron 随包同步。
+
 Host 按运行状态、显示状态及用户设置选择通道。系统投递需要 Host 颁发的 `DeliveryClaim`，其中包含不可推断的 token、完整提醒、客户端 id、运行代次、显示状态版本及过期时间。
 
 | Connection 方法 | 请求 | Host 返回／行为 |

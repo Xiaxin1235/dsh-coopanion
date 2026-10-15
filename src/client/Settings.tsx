@@ -53,7 +53,7 @@ export function Settings({ form, call, local, notifier, t }: SettingsProps) {
     return () => { active = false; abort.abort(); clearTimeout(timer); };
   }, [call, local]);
   const command = async (value: PetCommand) => {
-    if (busy) return;
+    if (busy && value !== 'stop') return;
     setBusy(true); setFailure('');
     try { setStatus(await call(value)); }
     catch (error) { setFailure(String(error instanceof Error ? error.message : error)); }
@@ -98,8 +98,9 @@ export function Settings({ form, call, local, notifier, t }: SettingsProps) {
         <Button variant="outline" disabled={disabled} onClick={() => void command(running ? 'show' : 'start')}>{t(running ? 'show' : 'start')}</Button>
         <Button variant="outline" disabled={disabled || !running} onClick={() => void command('hide')}>{t('hide')}</Button>
         <Button variant="outline" disabled={disabled} onClick={() => void command('restart')}>{t('restart')}</Button>
-        <Button disabled={disabled || !running} onClick={() => void command('stop')}>{t('stop')}</Button>
+        <Button disabled={!local || status?.phase === 'stopped' || status?.phase === 'stopping'} onClick={() => void command('stop')}>{t('stop')}</Button>
       </div>
+      {status?.recoveryAttempt ? <p role="status">{t('recoveryHint')}: {status.recoveryAttempt} / 3</p> : null}
       {failure || status?.error ? <p className="pet-error" role="alert">{failure || status?.error}</p> : null}
     </section>
     <section className="pet-card" aria-label={t('preferences')}>

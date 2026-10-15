@@ -2,7 +2,18 @@ import { it, expect } from 'vitest';
 import { mkdtemp, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { ElectronBridge } from '../src/bridge.ts';
+import { ElectronBridge, type DesktopOptions } from '../src/bridge.ts';
+import type { ChildProcess } from 'node:child_process';
+import type { PetSnapshot } from '../src/model.ts';
+import type { NotificationSnapshot } from '../src/notification-contract.ts';
+
+it.skipIf(process.platform !== 'linux')('fails directly without a graphical environment', async () => {
+  const display = process.env.DISPLAY, wayland = process.env.WAYLAND_DISPLAY;
+  delete process.env.DISPLAY; delete process.env.WAYLAND_DISPLAY;
+  const bridge = new ElectronBridge();
+  try { await expect(bridge.start({ size: 150, roam: false, notifications: false, bubbleDurationMs: 12000 })).rejects.toMatchObject({ recoverable: false, message: '桌宠需要桌面显示环境。' }); }
+  finally { if (display !== undefined) process.env.DISPLAY = display; if (wayland !== undefined) process.env.WAYLAND_DISPLAY = wayland; await bridge.dispose(); }
+});
 
 it.skipIf(process.platform === 'win32')('releases a process that exits by signal before the ready handshake', async () => {
   const folder = await mkdtemp(join(tmpdir(), 'pet-failure-'));
@@ -12,11 +23,79 @@ it.skipIf(process.platform === 'win32')('releases a process that exits by signal
   try {
     const binary = join(folder, 'exits-before-ready');
     await writeFile(binary, '#!/bin/sh\nkill -TERM $$\n', { mode: 0o700 });
-    await expect(bridge.start({ size: 150, roam: false, notifications: false, bubbleDurationMs: 12000, electronPath: binary })).rejects.toThrow('SIGTERM');
+    await expect(bridge.start({ size: 150, roam: false, notifications: false, bubbleDurationMs: 12000, electronPath: binary })).rejects.toMatchObject({ recoverable: true, message: expect.stringContaining('SIGTERM') });
     await expect(bridge.dispose()).resolves.toBeUndefined();
   } finally {
     if (previous === undefined) delete process.env.WAYLAND_DISPLAY; else process.env.WAYLAND_DISPLAY = previous;
     await bridge.dispose(); await rm(folder, { recursive: true, force: true });
+  }
+});
+
+it.skipIf(process.platform === 'win32')('classifies an invalid runtime as deterministic', async () => {
+  const bridge = new ElectronBridge();
+  const previous = process.env.WAYLAND_DISPLAY; process.env.WAYLAND_DISPLAY = 'test-only';
+  try {
+    await expect(bridge.start({ size: 150, roam: false, notifications: false, bubbleDurationMs: 12000, electronPath: '/missing/coopanion-runtime' })).rejects.toMatchObject({ recoverable: false });
+  } finally {
+    await bridge.dispose(); if (previous === undefined) delete process.env.WAYLAND_DISPLAY; else process.env.WAYLAND_DISPLAY = previous;
+  }
+});
+
+it.skipIf(process.platform === 'win32')('honors explicit native startup failure classification instead of retrying every exception', async () => {
+  const folder = await mkdtemp(join(tmpdir(), 'pet-classification-'));
+  const previous = process.env.WAYLAND_DISPLAY; process.env.WAYLAND_DISPLAY = 'test-only';
+  const bridge = new ElectronBridge();
+  try {
+    const binary = join(folder, 'declared-failure');
+    await writeFile(binary, `#!${process.execPath}\nprocess.send({type:'startup-error',error:'native deterministic failure',recoverable:false}); setInterval(()=>{},1000);\n`, { mode: 0o700 });
+    await expect(bridge.start({ size: 150, roam: false, notifications: false, bubbleDurationMs: 12000, electronPath: binary })).rejects.toMatchObject({ recoverable: false, message: 'native deterministic failure' });
+  } finally {
+    await bridge.dispose(); await rm(folder, { recursive: true, force: true });
+    if (previous === undefined) delete process.env.WAYLAND_DISPLAY; else process.env.WAYLAND_DISPLAY = previous;
+  }
+});
+
+it.skipIf(process.platform === 'win32')('rehydrates full Host snapshots silently, initializes hidden, and isolates old process messages', async () => {
+  const folder = await mkdtemp(join(tmpdir(), 'pet-recovery-ipc-'));
+  const previous = process.env.WAYLAND_DISPLAY; process.env.WAYLAND_DISPLAY = 'test-only';
+  const bridge = new ElectronBridge();
+    const opts: DesktopOptions = { size: 150, roam: false, notifications: true, bubbleDurationMs: 12000 };
+  const actions: unknown[] = [], states: unknown[] = [];
+  bridge.onAction(action => actions.push(action)); bridge.onLifecycle(state => states.push(state));
+  try {
+    const binary = join(folder, 'recovery-peer');
+    await writeFile(binary, `#!${process.execPath}
+process.on('message', m => {
+  if (m.type === 'init') process.send({type:'action',action:{type:'init-observed',frame:m,env:{visible:process.env.DSH_PET_VISIBLE,locked:process.env.DSH_PET_SCREEN_LOCKED,asleep:process.env.DSH_PET_SYSTEM_ASLEEP}}});
+  if (m.type === 'notification-state') process.send({type:'action',action:{type:'requests-observed',snapshot:m.snapshot}});
+  if (m.type === 'quit') process.exit(0);
+}); process.send({type:'ready'});
+`, { mode: 0o700 });
+    opts.electronPath = binary;
+    const frame = { mood: 'idle', text: '', active: false, sessionId: 'full-focus', sessions: [{ id: 'full-focus', label: 'Full focus', mood: 'idle', text: '', reply: '', unread: 1 }], results: [{ id: 'full-result', sessionId: 'full-focus', text: '全文\n' + 'long'.repeat(1000), read: false, time: 1 }] } as PetSnapshot;
+    bridge.update(frame);
+    const notifications: NotificationSnapshot = { protocol: 1, runtime: { phase: 'running', generation: 1, visibilityRevision: 1, visible: false, suspended: false }, interactions: [{ id: 'pending-full', sessionId: 'full-focus', nativeId: 'native-full', kind: 'approval', turn: 1, seq: 2, createdAt: 1, preview: 'still pending', state: 'open', dueAt: null, automaticReminders: 0 }] };
+    bridge.notificationState(notifications);
+    await bridge.start(opts);
+    const old = (bridge as unknown as { child: ChildProcess }).child;
+    old.emit('message', { type: 'visibility', generation: 1, visibilityRevision: 1, visible: false, suspended: true, screenLocked: true, systemAsleep: true });
+    await bridge.dispose();
+    bridge.update({ ...frame, text: 'latest while down' });
+    const secondInit = new Promise<Record<string, any>>(resolve => { const listener = (value: any) => { if (value.type === 'init-observed' && value.env.visible === '0') { bridge.removeAction(listener); resolve(value); } }; bridge.onAction(listener); });
+    await bridge.start(opts, { signal: new AbortController().signal, generation: 2, visible: false });
+    const received = await secondInit;
+    expect(received.env).toEqual({ visible: '0', locked: '1', asleep: '1' });
+    expect(received.frame).toMatchObject({ type: 'init', baseline: true, snapshot: { sessionId: 'full-focus', text: 'latest while down', results: frame.results } });
+    const count = actions.length, stateCount = states.length;
+    old.emit('message', { type: 'action', action: { type: 'chat', text: 'must not replay' } });
+    old.emit('message', { type: 'visibility', generation: 1, visibilityRevision: 999, visible: true });
+    old.emit('exit', 1, null);
+    expect(actions).toHaveLength(count); expect(states).toHaveLength(stateCount);
+    await new Promise(resolve => setTimeout(resolve, 30));
+    expect(actions).toContainEqual({ type: 'requests-observed', snapshot: notifications });
+  } finally {
+    await bridge.dispose(); await rm(folder, { recursive: true, force: true });
+    if (previous === undefined) delete process.env.WAYLAND_DISPLAY; else process.env.WAYLAND_DISPLAY = previous;
   }
 });
 

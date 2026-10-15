@@ -66,6 +66,19 @@ test('unread replies coalesce by session and reading does not expose old turns a
   assert.equal(await page.locator('#inbox-replies .inbox-reply').count(), 1, 'acknowledged older turns never resurface');
 });
 
+test('native recovery baseline preserves unread results without speaking or acknowledging them again', async t => {
+  const previous = reply('focus:1:3', focus.id, 1, '恢复前已经提示过的完整结果');
+  const { page } = await fixture(t, []);
+  await page.evaluate(snapshot => window.replyReceive({ type: 'init', baseline: true, options: { notifications: true }, snapshot }), frame([previous]));
+  await page.waitForTimeout(200);
+  assert.equal(await page.locator('#bubble').isVisible(), false);
+  assert.equal(await page.locator('#attention').isVisible(), true);
+  assert.deepEqual(await page.evaluate(() => window.replyActions.filter(action => action.type === 'read')), []);
+  await page.locator('#attention').click();
+  assert.equal(await page.locator('#reader-text').innerText(), previous.text);
+  assert.deepEqual(await page.evaluate(() => window.replyActions.filter(action => action.type === 'read')), [{ type: 'read', resultId: previous.id }]);
+});
+
 test('full replies render Markdown headings, emphasis, tables and fenced code', async t => {
   const text = '## Docker vs VM\n\n**已经直连**，看看 `opencode.ai`。\n\n| 诉求 | 方案 |\n| --- | --- |\n| 隔离 | VM |\n\n```sh\necho "🐳"\n```\n\n- 第一项\n- 第二项\n\n[官方文档](https://example.com/docs)';
   const { page } = await fixture(t, [reply('source:1:3', source.id, 1, text)]);

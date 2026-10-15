@@ -40,9 +40,10 @@ export const interactionSchema = z.object({
 }).strict();
 export type PendingInteraction = z.infer<typeof interactionSchema>;
 export const runtimeSchema = z.object({
-  phase: z.enum(['stopped', 'starting', 'running', 'stopping', 'error']),
+  phase: z.enum(['stopped', 'starting', 'running', 'stopping', 'recovering', 'error']),
   generation: counter, visibilityRevision: counter, visible: z.boolean(),
   suspended: z.boolean(), error: z.string().max(600).optional(),
+  desiredVisible: z.boolean().optional(), recoveryAttempt: counter.max(3).optional(), retryAt: counter.optional(),
 }).strict();
 export type NotificationRuntime = z.infer<typeof runtimeSchema>;
 export const deliveryClaimSchema = z.object({

@@ -80,6 +80,8 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
   let navigation: { sessionId: string; expires: number } | undefined;
   ctx.provide('coopanion', controls);
   const update = () => {
+    // The bridge caches Host truth across native generations. Recovery only
+    // rehydrates this view; it must not restore sessions or submit chat again.
     const snapshot = model.snapshot();
     const available = !!ctx.get('sessionController') && !!ctx.get('sessionQuery');
     bridge.update({ ...snapshot, sessions: snapshot.sessions.map(session => ({ ...session, chatAvailable: available })) });

@@ -90,7 +90,9 @@ jobs:
         if: always()
         with:
           name: browser-and-desktop-${{ runner.os }}
-          path: artifacts/*.png
+          path: |
+            artifacts/*.png
+            artifacts/desktop-recovery.json
           retention-days: 7
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
@@ -147,6 +149,7 @@ jobs:
             artifacts/settings-*.png
             artifacts/npm-runtime-*/
             artifacts/session-native-*.json
+            artifacts/desktop-recovery-*.json
             artifacts/session-host-*.json
             artifacts/goal-host-*.json
             artifacts/notification-host-*.json

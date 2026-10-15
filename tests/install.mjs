@@ -14,6 +14,7 @@ import { petClick } from './helpers/native-pointer.mjs';
 import { npmTarballName } from '../scripts/release-support.mjs';
 import { unzipSync } from 'fflate';
 import { prepareNotifications, verifyInstalledNotifications } from './helpers/installed-notifications.mjs';
+import { crashNative, connectRecovered, waitRecovery } from './helpers/desktop-recovery.mjs';
 
 const sourceCommit = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
 const version = process.env.DSH_TEST_VERSION ?? '0.2.0-rc.2';
@@ -455,7 +456,52 @@ try {
   m2Messages = [...new Map(m2Records.flatMap(e => e.type === 'agent/inbox/spliced' ? e.data.inserted : e.type === 'user/message' ? [e.data] : []).filter(m => m.source.kind === 'user' && m.source.rpcId).map(m => [m.id, m])).values()];
   assert.equal(m2Messages.length, 2); assert.notEqual(m2Messages[0].source.rpcId, m2Messages[1].source.rpcId);
   await writeFile(join(project, 'artifacts', `session-native-${version}.json`), JSON.stringify({ dsh: version, sourceCommit, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), sessionId: 'm2-installed-cold-full', cases: { cold: true, nativeRendererMainHostReceipt: true, rapidDuplicateOnce: true, exactPersistedIdentity: true, readFullResultAndContinue: true }, messages: m2Messages, events: m2Records }, null, 2) + '\n');
-  await m2Page.locator('#chat-close').click();
+  // M3: crash the actual installed Electron main process while hidden. The
+  // official Host stays alive and rehydrates its current state without input replay.
+  const recoveryState = async () => {
+    const response = await settings.request.post(new URL('/api/coopanion/notification-state', hostUrl).href, { headers: { Origin: new URL(hostUrl).origin }, data: { type: 'client-request', rpcId: 'm3-runtime', method: 'coopanion/notification-state', payload: {} } });
+    assert.equal(response.status(), 200); const envelope = await response.json(); assert.equal(envelope.result.ok, true); return envelope.result.value;
+  };
+  await m2Page.waitForTimeout(300);
+  const focusBeforeRecovery = await m2Page.locator('#chat-session-name').innerText();
+  const actualApproval = await m2Command('prepare-m3-pending', 'm3-pending-ready');
+  const beforeRecovery = await recoveryState();
+  assert.ok(beforeRecovery.interactions.some(item => item.nativeId === actualApproval.approvalId), 'an actual public approval request is pending before the crash');
+  const messagesBeforeRecovery = m2Messages.map(message => message.id);
+  const notificationCount = await settings.evaluate(() => window.__notificationInstall?.objects.length ?? 0);
+  await m2Page.locator('#message').fill('M3 未发送的窗口草稿');
+  await surface.getByRole('button', { name: /^(隐藏桌宠|Hide pet)$/, exact: true }).click();
+  await waitRecovery(async () => { const state = await recoveryState(); return state.runtime.visible === false && state.runtime.desiredVisible === false; }, 'installed pet did not acknowledge hidden intent');
+  const crashedPid = await crashNative(browser); browser = undefined;
+  const recoveryStates = [];
+  await waitRecovery(async () => {
+    const state = await recoveryState(); recoveryStates.push(state.runtime);
+    assert.equal(host.exitCode, null, 'Harness remains available during native recovery');
+    return state.runtime.phase === 'running' && state.runtime.generation > beforeRecovery.runtime.generation && state.runtime.visibilityRevision > 0;
+  }, 'installed hidden process did not recover');
+  const afterRecovery = await recoveryState();
+  assert.equal(afterRecovery.runtime.visible, false); assert.equal(afterRecovery.runtime.desiredVisible, false);
+  assert.deepEqual(afterRecovery.interactions.map(item => [item.id, item.state]), beforeRecovery.interactions.map(item => [item.id, item.state]));
+  browser = await connectRecovered(port);
+  const recoveredPage = browser.contexts()[0].pages()[0];
+  recoveredPage.on('pageerror', error => uiErrors.push(error.message));
+  await recoveredPage.waitForSelector('#pet[data-host-ready=true]');
+  assert.equal(await recoveredPage.locator('#bubble').isVisible(), false);
+  assert.equal(await recoveredPage.locator('#message').inputValue(), '');
+  await surface.getByRole('button', { name: /^(显示桌宠|Show pet)$/, exact: true }).click();
+  await surface.getByTestId('pet-status').filter({ hasText: /正在显示|Visible/ }).waitFor();
+  await petClick(recoveredPage, {}, true);
+  assert.equal(await recoveredPage.locator('#chat-session-name').innerText(), focusBeforeRecovery);
+  await recoveredPage.locator('#chat-read').click();
+  await recoveredPage.waitForFunction(() => document.getElementById('reader-text').textContent === 'M2 installed full result 🐳');
+  const recordsAfterRecovery = (await m2Command('read-m2-records', 'm2-records')).events;
+  const messagesAfterRecovery = [...new Set(recordsAfterRecovery.flatMap(event => event.type === 'agent/inbox/spliced' ? event.data.inserted : event.type === 'user/message' ? [event.data] : []).filter(message => message.source.kind === 'user' && message.source.rpcId).map(message => message.id))];
+  assert.deepEqual(messagesAfterRecovery, messagesBeforeRecovery, 'native recovery does not resubmit M2 messages');
+  assert.equal(await settings.evaluate(() => window.__notificationInstall?.objects.length ?? 0), notificationCount, 'old results do not generate new system notifications');
+  await m2Command('cancel-m3-pending', 'm3-pending-cancelled');
+  assert.equal((await recoveryState()).interactions.some(item => item.nativeId === actualApproval.approvalId), false, 'only the original service cancellation settles the request');
+  await recoveredPage.keyboard.press('Escape');
+  await writeFile(join(project, 'artifacts', `desktop-recovery-${version}.json`), JSON.stringify({ dsh: version, sourceCommit, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), platform: process.platform, arch: process.arch, crashedPid, before: beforeRecovery, after: afterRecovery, observedRuntime: recoveryStates, persistedMessageIds: messagesAfterRecovery, cases: { actualInstalledProcessCrash: true, harnessAvailable: true, hiddenRecovery: true, fullResultAndFocus: true, validRequestsRetained: true, noChatReplay: true, noOldNotifications: true, rendererDraftLoss: true } }, null, 2) + '\n');
   const sourceResponse = await settings.request.post(new URL('/api/coopanion-notification-n0/probe', hostUrl).href, { headers: { Origin: new URL(hostUrl).origin }, data: { type: 'client-request', rpcId: 'n0-source', method: 'coopanion-notification-n0/probe', payload: { action: 'session' } } });
   assert.equal(sourceResponse.status(), 200, 'N0 public session creation is available');
   const sourceEnvelope = await sourceResponse.json(); assert.equal(sourceEnvelope.result.ok, true);
@@ -468,7 +514,7 @@ try {
   await writeFile(join(project, 'artifacts', `notification-source-${version}.json`), JSON.stringify({ dsh: version, pluginVersion: manifest.version, creation: 'sessionController.create', sessionId: sourceId, exportedHeader: header, status: 'pass' }, null, 2) + '\n');
   await stop(host);
   assert.equal(host.exitCode, 0, hostLog);
-  await writeFile(join(project, 'artifacts', `install-${version}.json`), JSON.stringify({ dsh: version, sourceCommit, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), m2NativeContinuation: true, plugin: `${manifest.name}@${manifest.version}`, package: archive, installed: true, profileLoader: true, nativeWindow: true, customCharacter: true, builtinCharacterId: 'whale', sessionNotifications: true, multipleSessions: true, roundReplyWithoutGoalCelebration: true, notificationOpensSourceSession: true, nativeSettingsPage: true, darkTheme: true, closeAndRelaunch: true, hostRestartPersistence: true, autoStartDisabled: true, chineseAndEnglish: true, liveLocaleSwitch: true, automaticSystemLanguage: true, riskExemption: false, cleanShutdown: true }, null, 2) + '\n');
+  await writeFile(join(project, 'artifacts', `install-${version}.json`), JSON.stringify({ dsh: version, sourceCommit, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), m3NativeRecovery: true, m2NativeContinuation: true, plugin: `${manifest.name}@${manifest.version}`, package: archive, installed: true, profileLoader: true, nativeWindow: true, customCharacter: true, builtinCharacterId: 'whale', sessionNotifications: true, multipleSessions: true, roundReplyWithoutGoalCelebration: true, notificationOpensSourceSession: true, nativeSettingsPage: true, darkTheme: true, closeAndRelaunch: true, hostRestartPersistence: true, autoStartDisabled: true, chineseAndEnglish: true, liveLocaleSwitch: true, automaticSystemLanguage: true, riskExemption: false, cleanShutdown: true }, null, 2) + '\n');
   console.log(`Installation smoke passed on DSH ${version}: admission, actual profile loader, native window, independent sessions, session navigation from notices, official settings UI, live persisted preferences, and reopening after native close.`);
 } catch (error) {
   if (browser) {

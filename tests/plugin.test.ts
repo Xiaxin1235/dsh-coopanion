@@ -136,7 +136,7 @@ it('registers and disposes exact authenticated Connection routes without taking 
   expect((await language({ locale: 'zh' })).result).toEqual({ ok: true, value: { locale: 'zh' } });
   expect((await language({ locale: 'en' })).result).toEqual({ ok: true, value: { locale: 'en' } });
   await routes.get('/api/coopanion/notification-state')!.fetch(new Request('http://localhost/api/coopanion/notification-state', { method: 'POST', body: JSON.stringify({ type: 'client-request', rpcId: 'legacy', method: 'coopanion/notification-state', payload: { locale: 'zh' } }) }));
-  expect(await invoke({ command: 'start' })).toEqual({ type: 'server-response', rpcId: 'test', result: { ok: true, value: { phase: 'running', visible: true, generation: 1, visibilityRevision: 2, suspended: false } } });
+  expect(await invoke({ command: 'start' })).toEqual({ type: 'server-response', rpcId: 'test', result: { ok: true, value: { phase: 'running', visible: true, desiredVisible: true, recoveryAttempt: 0, generation: 1, visibilityRevision: 2, suspended: false } } });
   expect(bridge.start).toHaveBeenCalledWith(expect.objectContaining({ locale: 'en' }), expect.anything());
   const malformed = await routes.get('/api/coopanion/status')!.fetch(new Request('http://localhost/api/coopanion/status', { method: 'POST', body: '{}' }));
   expect(malformed.status).toBe(400);

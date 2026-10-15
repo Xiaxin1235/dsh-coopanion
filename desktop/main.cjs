@@ -26,8 +26,10 @@ let win, tray, options, lastFrame, poll, assetServer, characters;
 let presentation = {}, lastTrayKey, lastIconKey, iconBase, iconAppearance;
 let interactive = null;
 const generation = Number(process.env.DSH_PET_GENERATION ?? 1);
-let visibilityRevision = 0, suspended = false, screenLocked = false, systemAsleep = false;
-function visibility() { if (win && !win.isDestroyed()) { process.send?.({ type: 'visibility', generation, visibilityRevision: ++visibilityRevision, visible: win.isVisible(), suspended }); syncTray(); } }
+let visibilityRevision = 0, screenLocked = process.env.DSH_PET_SCREEN_LOCKED === '1', systemAsleep = process.env.DSH_PET_SYSTEM_ASLEEP === '1';
+let suspended = screenLocked || systemAsleep;
+let desiredVisible = process.env.DSH_PET_VISIBLE !== '0', userClosed = false;
+function visibility() { if (win && !win.isDestroyed()) { process.send?.({ type: 'visibility', generation, visibilityRevision: ++visibilityRevision, visible: win.isVisible(), desiredVisible, suspended, screenLocked, systemAsleep }); syncTray(); } }
 function forward(message) { if (win && !win.isDestroyed()) win.webContents.send('pet:update', message); }
 function hit(active) {
   if (!win || win.isDestroyed()) return;
@@ -37,7 +39,8 @@ function hit(active) {
   }
   forward({ type: 'hit-state', active, focused: win.isFocused(), visible: win.isVisible() });
 }
-function show() { win?.showInactive(); syncTray(); }
+function show() { desiredVisible = true; win?.showInactive(); visibility(); }
+function hide() { desiredVisible = false; win?.hide(); visibility(); }
 function act(action) { process.send?.({ type: 'action', action }); }
 function syncTray() {
   if (!tray || tray.isDestroyed()) return;
@@ -64,8 +67,8 @@ function syncTray() {
     { label: copy.trayNotices, type: 'checkbox', checked: state.notifications, click: item => act({ type: 'preference', field: 'notifications', value: item.checked }) },
     { label: copy.traySound, type: 'checkbox', checked: state.sound, click: () => forward({ type: 'ui-control', command: 'sound' }) },
     { type: 'separator' },
-    { label: state.visible ? copy.hide : copy.trayShow, click: () => state.visible ? win.hide() : show() },
-    { label: copy.trayQuit, click: () => app.quit() },
+    { label: state.visible ? copy.hide : copy.trayShow, click: () => state.visible ? hide() : show() },
+    { label: copy.trayQuit, click: () => { userClosed = true; app.quit(); } },
   ]));
   process.send?.({ type: 'tray-state', state });
   const iconKey = `${state.characterId}:${state.scheme}:${state.iconReady}:${state.icon}`;
@@ -109,13 +112,13 @@ process.on('message', message => {
   if (message.type === 'init') { options = message.options; lastFrame = message; forward(message); syncTray(); }
   if (message.type === 'configure') { options = message.options; if (lastFrame) lastFrame.options = options; forward(message); syncTray(); }
   if (message.type === 'control') {
-    if (message.command === 'hide') win?.hide();
+    if (message.command === 'hide') hide();
     if (message.command === 'show' || message.command === 'characters') show();
     if (message.command === 'characters') forward({ type: 'characters' });
     // Fixed public Desktop protocol; no renderer-supplied URL or private shell IPC.
     if (message.command === 'focus-harness' && process.env.DSH_PET_TEST_NO_SANDBOX !== '1') void shell.openExternal('dsh://open').catch(() => {});
   }
-  if (message.type === 'snapshot') { lastFrame = { type: 'init', options, snapshot: { ...message.snapshot, results: message.snapshot.results ?? lastFrame?.snapshot?.results ?? [] } }; forward(message); syncTray(); }
+  if (message.type === 'snapshot') { lastFrame = { type: 'init', baseline: true, options, snapshot: { ...message.snapshot, results: message.snapshot.results ?? lastFrame?.snapshot?.results ?? [] } }; forward(message); syncTray(); }
   if (message.type === 'chat-result') forward(message);
   if (message.type === 'notification-state' || message.type === 'notification-snooze-result') forward(message);
   if (message.type === 'notice') {
@@ -158,6 +161,7 @@ app.whenReady().then(async () => {
   win = new BrowserWindow({ ...screen.getPrimaryDisplay().workArea, transparent: true, frame: false, resizable: false, skipTaskbar: true, hasShadow: false, show: false, alwaysOnTop: true, backgroundColor: '#00000000', webPreferences: { preload: join(__dirname, 'preload.cjs'), sandbox: true, contextIsolation: true, nodeIntegration: false } });
   win.setAlwaysOnTop(true, 'floating');
   win.on('show', visibility); win.on('hide', visibility);
+  win.webContents.on('render-process-gone', () => app.exit(1));
   const suspendState = () => { suspended = screenLocked || systemAsleep; visibility(); };
   powerMonitor.on('suspend', () => { systemAsleep = true; suspendState(); });
   powerMonitor.on('resume', () => { systemAsleep = false; suspendState(); });
@@ -172,7 +176,7 @@ app.whenReady().then(async () => {
   ipcMain.on('pet:hit', (event, active) => { if (event.sender === win.webContents && event.senderFrame === win.webContents.mainFrame && typeof active === 'boolean') hit(active); });
   ipcMain.on('pet:action', (event, action) => {
     if (event.sender !== win.webContents || event.senderFrame !== win.webContents.mainFrame || !action || typeof action !== 'object') return;
-    if (action.type === 'hide') { win.hide(); return; }
+    if (action.type === 'hide') { hide(); return; }
     if (action.type === 'move-display') { win.setBounds(bounds()); forward({ type: 'display-changed' }); return; }
     if (action.type === 'presentation') {
       if (typeof action.characterId !== 'string' || !/^[a-z0-9-]{1,32}$/.test(action.characterId) || typeof action.scheme !== 'string' || action.scheme.length > 200 || typeof action.name !== 'string' || action.name.length > 200 || typeof action.sleeping !== 'boolean' || typeof action.sound !== 'boolean') return;
@@ -185,7 +189,7 @@ app.whenReady().then(async () => {
   });
   hit(false);
   await win.loadURL(`http://127.0.0.1:${assetServer.address().port}${prefix}`);
-  show();
+  if (desiredVisible) show(); else visibility();
   // Restore input when a click-through window misses movement, without repeatedly
   // overriding the renderer's newer pointer event with a stationary OS cursor.
   let lastCursor;
@@ -203,7 +207,11 @@ app.whenReady().then(async () => {
   screen.on('display-removed', () => { win.setBounds(screen.getPrimaryDisplay().workArea); forward({ type: 'display-changed' }); });
   screen.on('display-metrics-changed', () => { const b = win.getBounds(); win.setBounds(screen.getDisplayMatching(b).workArea); forward({ type: 'display-changed' }); });
   process.send?.({ type: 'ready' });
-}).catch(error => { console.error(error); app.exit(1); });
+}).catch(error => {
+  console.error(error);
+  const failure = { type: 'startup-error', error: String(error?.message ?? error).slice(0, 600), recoverable: ['EADDRINUSE', 'EAGAIN', 'ENOMEM'].includes(error?.code) };
+  if (process.connected) process.send(failure, () => app.exit(1)); else app.exit(1);
+});
 
-app.on('before-quit', () => { clearInterval(poll); assetServer?.close(); tray?.destroy(); });
-app.on('window-all-closed', () => app.quit());
+app.on('before-quit', () => { if (userClosed) process.send?.({ type: 'closed' }); clearInterval(poll); assetServer?.close(); tray?.destroy(); });
+app.on('window-all-closed', () => { userClosed = true; app.quit(); });

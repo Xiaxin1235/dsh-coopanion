@@ -5,9 +5,8 @@ import { EventEmitter } from 'node:events';
 import type { ChatReceipt } from '../web/chat-contract.js';
 import type { PetSnapshot, PetNotice } from './model.ts';
 import type { NotificationRuntime, NotificationSnapshot, TaskNotice } from './notification-contract.ts';
-
-export interface StartLifetime { signal: AbortSignal; generation: number; }
-export interface NativeLifecycle { running: boolean; visible: boolean; error?: string; generation?: number; visibilityRevision?: number; suspended?: boolean; }
+import { NativeStartError, type StartLifetime, type NativeLifecycle } from './desktop-lifecycle.ts';
+export { NativeStartError, type StartLifetime, type NativeLifecycle } from './desktop-lifecycle.ts';
 
 export interface DesktopOptions { size: number; roam: boolean; notifications: boolean; bubbleDurationMs: number; electronPath?: string; locale?: string; systemNotifications?: boolean; reminders?: boolean; reminderDelayMs?: number; }
 export interface PetBridge {
@@ -39,42 +38,51 @@ export class ElectronBridge extends EventEmitter implements PetBridge {
   private visibilityRevision = 0;
   private nativeVisible = false;
   private suspended = false;
+  private screenLocked = false;
+  private systemAsleep = false;
   private lastNotificationState?: NotificationSnapshot;
 
   async start(options: DesktopOptions, lifetime?: StartLifetime): Promise<void> {
-    if (this.child) throw new Error('Desktop pet is already running');
+    if (this.child) throw new NativeStartError('Desktop pet is already running', false);
     if (lifetime?.signal.aborted) throw new Error('桌宠启动已取消');
     this.closing = false;
     this.generation = lifetime?.generation ?? this.generation + 1;
-    this.visibilityRevision = 0; this.nativeVisible = false; this.suspended = false;
-    if (process.platform === 'linux' && !process.env.DISPLAY && !process.env.WAYLAND_DISPLAY) throw new Error('桌宠需要桌面显示环境。');
-    const executable: string = options.electronPath ?? createRequire(import.meta.url)('electron');
-    const env: NodeJS.ProcessEnv = { ...process.env, DSH_PET_GENERATION: String(this.generation) };
+    this.visibilityRevision = 0; this.nativeVisible = false;
+    if (process.platform === 'linux' && !process.env.DISPLAY && !process.env.WAYLAND_DISPLAY) throw new NativeStartError('桌宠需要桌面显示环境。', false);
+    let executable: string;
+    try { executable = options.electronPath ?? createRequire(import.meta.url)('electron'); }
+    catch (error) { throw new NativeStartError(String(error).slice(0, 600), false); }
+    const env: NodeJS.ProcessEnv = { ...process.env, DSH_PET_GENERATION: String(this.generation), DSH_PET_VISIBLE: lifetime?.visible === false ? '0' : '1', DSH_PET_SCREEN_LOCKED: this.screenLocked ? '1' : '0', DSH_PET_SYSTEM_ASLEEP: this.systemAsleep ? '1' : '0' };
     delete (env as NodeJS.ProcessEnv).ELECTRON_RUN_AS_NODE;
     const args = [fileURLToPath(new URL('../desktop/main.cjs', import.meta.url))];
     if (env.DSH_PET_TEST_NO_SANDBOX === '1') args.unshift('--no-sandbox');
     const child = spawn(executable, args, { env, stdio: ['ignore', 'pipe', 'pipe', 'ipc'] });
     const generation = this.generation; this.child = child;
-    let diagnostic = '';
+    let diagnostic = '', userClosed = false;
     child.stderr?.on('data', data => { diagnostic = (diagnostic + data.toString()).slice(-4000); });
     child.on('message', message => {
-      if (this.child !== child || !isRecord(message)) return;
+      if (this.child !== child || this.closing || lifetime?.signal.aborted || !isRecord(message)) return;
+      if (message.type === 'closed') userClosed = true;
       if (message.type === 'action') this.emit('action', message.action);
       if (message.type === 'tray-state') this.emit('tray-state', message.state);
       if (message.type === 'tray-icon') this.emit('tray-icon', message);
       if (message.type === 'visibility' && message.generation === generation && typeof message.visible === 'boolean' && Number.isSafeInteger(message.visibilityRevision) && (message.visibilityRevision as number) > this.visibilityRevision) {
         this.visibilityRevision = message.visibilityRevision as number;
         this.nativeVisible = message.visible; this.suspended = message.suspended === true;
-        this.emit('lifecycle', { running: true, visible: this.nativeVisible, generation, visibilityRevision: this.visibilityRevision, suspended: this.suspended });
+        if (typeof message.screenLocked === 'boolean') this.screenLocked = message.screenLocked;
+        if (typeof message.systemAsleep === 'boolean') this.systemAsleep = message.systemAsleep;
+        this.emit('lifecycle', { running: true, visible: this.nativeVisible, generation, visibilityRevision: this.visibilityRevision, suspended: this.suspended, ...(typeof message.desiredVisible === 'boolean' ? { desiredVisible: message.desiredVisible } : {}) });
       }
     });
     child.once('exit', (code, signal) => {
       if (this.child !== child) return;
       this.child = undefined; this.nativeVisible = false;
-      const error = !this.closing && (code !== 0 || signal) ? `桌宠进程已退出 (${signal ?? code})` : undefined;
-      this.emit('lifecycle', { running: false, visible: false, generation, visibilityRevision: ++this.visibilityRevision, suspended: false, ...(error ? { error } : {}) });
+      const unexpected = !this.closing && !userClosed && !lifetime?.signal.aborted;
+      const error = unexpected ? `桌宠进程已退出 (${signal ?? code}): ${diagnostic}`.slice(0, 600) : undefined;
+      this.emit('lifecycle', { running: false, visible: false, generation, visibilityRevision: ++this.visibilityRevision, suspended: false, unexpected, ...(error ? { error } : {}) });
       if (error) this.emit('failure', new Error(error));
     });
+    child.on('error', error => { if (this.child === child && !this.closing && !lifetime?.signal.aborted) this.emit('failure', error); });
     await new Promise<void>((resolve, reject) => {
       let done = false;
       const finish = (error?: Error) => {
@@ -83,21 +91,24 @@ export class ElectronBridge extends EventEmitter implements PetBridge {
         if (error) { child.kill(); reject(error); } else resolve();
       };
       const ready = (message: unknown) => {
+        if (isRecord(message) && message.type === 'startup-error' && this.child === child && typeof message.error === 'string') {
+          finish(new NativeStartError(message.error.slice(0, 600), message.recoverable === true)); return;
+        }
         if (isRecord(message) && message.type === 'ready' && this.child === child && !lifetime?.signal.aborted) {
-          this.send({ type: 'init', options, snapshot: this.latest && desktopSnapshot(this.latest, true) });
+          this.resultKey = undefined;
+          this.send({ type: 'init', options, baseline: true, snapshot: this.latest && desktopSnapshot(this.latest, true) });
           if (this.lastNotificationState) this.notificationState(this.lastNotificationState);
           finish();
         }
       };
-      const failed = (error: Error) => finish(error);
-      const exited = (code: number | null, signal: string | null) => finish(new Error(`桌宠启动失败 (${signal ?? code}): ${diagnostic}`));
+      const failed = (error: NodeJS.ErrnoException) => finish(new NativeStartError(error.message.slice(0, 600), error.code === 'EAGAIN' || error.code === 'ENOMEM'));
+      const exited = (code: number | null, signal: string | null) => finish(new NativeStartError(`桌宠启动失败 (${signal ?? code}): ${diagnostic}`.slice(0, 600), true));
       const aborted = () => finish(new Error('桌宠启动已取消'));
-      const timer = setTimeout(() => finish(new Error(`桌宠未能在 20 秒内启动: ${diagnostic}`)), 20000);
+      const timer = setTimeout(() => finish(new NativeStartError(`桌宠未能在 20 秒内启动: ${diagnostic}`.slice(0, 600), true)), 20000);
       child.on('message', ready); child.once('error', failed); child.once('exit', exited);
       lifetime?.signal.addEventListener('abort', aborted, { once: true });
       if (lifetime?.signal.aborted) aborted();
     });
-    child.on('error', error => { if (this.child === child && !this.closing) this.emit('failure', error); });
   }
 
   update(snapshot: PetSnapshot): void {
@@ -125,7 +136,8 @@ export class ElectronBridge extends EventEmitter implements PetBridge {
   onLifecycle(listener: (state: NativeLifecycle) => void): void { this.on('lifecycle', listener); }
   removeLifecycle(listener: (state: NativeLifecycle) => void): void { this.off('lifecycle', listener); }
   private send(message: object): void {
-    if (this.child?.connected) this.child.send(message, error => { if (error && !this.closing) this.emit('failure', error); });
+    const child = this.child;
+    if (child?.connected && !this.closing) child.send(message, error => { if (error && this.child === child && !this.closing) this.emit('failure', error); });
   }
 
   async dispose(): Promise<void> {

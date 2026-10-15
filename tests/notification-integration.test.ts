@@ -18,7 +18,7 @@ function setup() {
   let lifecycle: ((state: NativeLifecycle) => void) | undefined, generation = 0, revision = 0;
   const role = vi.fn(() => true);
   const bridge: PetBridge = {
-    start: async (_options, life) => { generation = life!.generation; lifecycle?.({ running: true, visible: true, generation, visibilityRevision: ++revision }); },
+    start: async (_options, life) => { generation = life!.generation; revision = 0; lifecycle?.({ running: true, visible: life!.visible !== false, generation, visibilityRevision: ++revision }); },
     control: command => lifecycle?.({ running: true, visible: command !== 'hide', generation, visibilityRevision: ++revision }),
     onLifecycle: fn => { lifecycle = fn; }, removeLifecycle: () => { lifecycle = undefined; },
     onAction: vi.fn(), removeAction: vi.fn(), update: vi.fn(), notify: vi.fn(), notificationState: vi.fn(), presentRole: role, dispose: vi.fn(async () => {}),
@@ -27,8 +27,56 @@ function setup() {
     const response = await routes.get(`/api/coopanion/${endpoint}`)!.fetch(new Request(`http://localhost/api/coopanion/${endpoint}`, { method: 'POST', body: JSON.stringify({ type: 'client-request', rpcId: 'integration', method: `coopanion/${endpoint}`, payload }) }));
     return (await response.json()).result;
   };
-  return { ctx, session, agent, bridge, role, routes, invoke };
+  return { ctx, session, agent, bridge, role, routes, invoke, lifecycle: (state: NativeLifecycle) => lifecycle?.(state) };
 }
+
+it('recovers Host state without replay and requires fresh native receipts for post-recovery claims', async () => {
+  const { ctx, session, bridge, role, invoke, lifecycle } = setup();
+  const scope = ctx.plugin(child => mountPet(child, Config({ autoStart: false, systemNotifications: true, reminders: false }), bridge));
+  await scope.await(); vi.useFakeTimers();
+  try {
+    await ctx.coopanion.command('start'); await ctx.coopanion.command('hide');
+    session.append('turn/start', { turn: 1 });
+    session.append('assistant/message', { turn: 1, step: 1, stream: [], message: { role: 'assistant', id: 'full-recovery-message', content: [{ type: 'text', text: '完整恢复结果\n' + '🐳'.repeat(2000) }] } } as never, { surfaceOp: 'append' });
+    session.append('turn/end', { turn: 1, reason: { kind: 'completed' } });
+    const initial = (await invoke('notification-claim', { clientId: 'before-crash', generation: 1 })).value;
+    session.append('approval/asked', { id: ApprovalRequestId('pending-across-crash'), toolName: 'bash' });
+    const before = vi.mocked(bridge.update).mock.calls.at(-1)![0];
+    expect(before.results).toHaveLength(1);
+    const pending = (await invoke('notification-state')).value.interactions;
+    lifecycle({ running: false, visible: false, generation: 1, visibilityRevision: 100, unexpected: true });
+    await vi.advanceTimersByTimeAsync(0); expect(ctx.coopanion.status().phase).toBe('recovering');
+    expect((await invoke('notification-claim', { clientId: 'during-crash', generation: 1 })).value).toBeNull();
+    // Readiness without a visibility receipt grants no channel, even when hidden was desired.
+    bridge.start = vi.fn(async () => {}); bridge.control = vi.fn();
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(ctx.coopanion.status()).toMatchObject({ phase: 'running', generation: 2, visibilityRevision: 0, desiredVisible: false });
+    expect((await invoke('notification-claim', { clientId: 'after-crash', generation: 2 })).value).toBeNull();
+    lifecycle({ running: true, visible: false, generation: 1, visibilityRevision: 999 });
+    expect(ctx.coopanion.status().visibilityRevision).toBe(0);
+    lifecycle({ running: true, visible: false, generation: 2, visibilityRevision: 1, suspended: true });
+    expect((await invoke('notification-claim', { clientId: 'after-crash', generation: 2 })).value).toBeNull();
+    lifecycle({ running: true, visible: false, generation: 2, visibilityRevision: 2, suspended: false });
+    const after = vi.mocked(bridge.update).mock.calls.at(-1)![0];
+    expect(after.sessionId).toBe(before.sessionId); expect(after.results).toEqual(before.results);
+    expect(after.sessions[0]!.unread).toBe(before.sessions[0]!.unread);
+    expect((await invoke('notification-state')).value.interactions).toEqual(pending);
+    expect((await invoke('notification-claim', { clientId: 'after-crash', generation: 2 })).value).toBeNull();
+    const base = { token: initial.token, clientId: initial.clientId, noticeId: initial.notice.id, generation: initial.generation, time: Date.now() };
+    expect((await invoke('notification-receipt', { ...base, state: 'requested' })).value.accepted).toBe(true);
+    expect((await invoke('notification-receipt', { ...base, state: 'shown' })).value.accepted).toBe(true);
+    session.append('approval/asked', { id: ApprovalRequestId('new-after-resume'), toolName: 'bash' });
+    const fresh = (await invoke('notification-claim', { clientId: 'after-crash', generation: 2 })).value;
+    expect(fresh).toMatchObject({ generation: 2, visibilityRevision: 2 });
+    expect(fresh.notice.id).not.toBe(initial.notice.id);
+    lifecycle({ running: true, visible: false, generation: 2, visibilityRevision: 3, suspended: true });
+    lifecycle({ running: true, visible: false, generation: 2, visibilityRevision: 4, suspended: false });
+    expect((await invoke('notification-claim', { clientId: 'another-client', generation: 2 })).value).toBeNull();
+    expect(role).not.toHaveBeenCalled();
+    session.append('approval/decided', { id: ApprovalRequestId('pending-across-crash'), outcome: 'allowed-once' });
+    expect((await invoke('notification-state')).value.interactions).toHaveLength(1);
+  } finally { await scope.dispose(); await ctx.fiber.dispose(); vi.useRealTimers(); }
+});
 
 it('mounts Harness without waiting for native startup and cancels startup on unload', async () => {
   const { ctx, bridge } = setup(); let aborted = false;

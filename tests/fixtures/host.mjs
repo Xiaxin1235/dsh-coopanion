@@ -6,6 +6,8 @@ export const inject = ['sessions', 'appReady', 'appExit', 'webServer', 'connecti
 
 export function apply(ctx) {
   let session;
+  let m3Abort, m3Approval, m3Agent, m3Turn;
+  ctx.on('approval/request', (request, next) => request.callId === 'm3-installed-pending-full' ? new Promise(() => {}) : next(), { prepend: true });
   const sessions = new Map();
   const action = async message => {
     if (message?.type === 'shutdown-host') {
@@ -23,6 +25,23 @@ export function apply(ctx) {
         await ctx.sessions.flush(owned.agent.session); await owned.dispose();
         process.send?.({ type: 'm2-cold-ready', cold: ctx.agents.get('m2-installed-cold-full') === undefined });
       } catch (error) { process.send?.({ type: 'm2-cold-ready', error: String(error.stack ?? error) }); }
+    } else if (message?.type === 'prepare-m3-pending') {
+      try {
+        const agent = ctx.agents.get('m2-installed-cold-full');
+        if (!agent || !ctx.get('approval')) throw new Error('M3 approval service unavailable');
+        m3Agent = agent; m3Turn = (agent.session.snapshotEvents().findLast(event => event.type === 'turn/start')?.data.turn ?? 0) + 1;
+        agent.session.append('turn/start', { turn: m3Turn });
+        m3Abort = new AbortController();
+        m3Approval = ctx.get('approval').request({ agent, toolName: 'bash', callId: 'm3-installed-pending-full', signal: m3Abort.signal });
+        await new Promise(resolve => setTimeout(resolve, 20));
+        const event = agent.session.snapshotEvents().findLast(event => event.type === 'approval/asked');
+        if (!event || event.data.callId !== 'm3-installed-pending-full') throw new Error('M3 approval was not recorded');
+        process.send?.({ type: 'm3-pending-ready', approvalId: event.data.id });
+      } catch (error) { process.send?.({ type: 'm3-pending-ready', error: String(error.stack ?? error) }); }
+    } else if (message?.type === 'cancel-m3-pending') {
+      m3Abort?.abort(); await m3Approval;
+      m3Agent.session.append('turn/end', { turn: m3Turn, reason: { kind: 'aborted' } });
+      process.send?.({ type: 'm3-pending-cancelled' });
     } else if (message?.type === 'read-m2-records') {
       try {
         const session = ctx.sessions.get('m2-installed-cold-full'); if (session) await ctx.sessions.flush(session);
