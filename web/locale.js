@@ -9,7 +9,7 @@ const zh = {
   defaultName: 'DeepSeek 大肥鱼', title: 'DeepSeek 大肥鱼 · Harness',
   words:{neutral:'平静',happy:'开心',wink:'眨眼',love:'喜欢',shy:'害羞',surprised:'惊讶',angry:'生气',sad:'难过',sleepy:'犯困',thinking:'思考',smug:'得意',pout:'嘟嘴',worried:'担心',determined:'认真',flustered:'慌张',scared:'害怕',excited:'期待',cry:'大哭',confused:'疑惑',stand:'站起',jump:'跳',hop:'小跳',look:'张望',turn:'转身',nod:'点头',shake:'摇头',spin:'转圈',sit:'坐下',sleep:'睡觉',dizzy:'晕',walk:'散步',run:'跑',wave:'招手',bow:'鞠躬',shiver:'发抖',flap:'扑腾',dance:'跳舞'},
   settingFailed:'设置未能保存', settingFailedBody:'请回到 Harness 检查插件设置。', sessionUnavailable:'会话尚未就绪', sessionUnavailableBody:'请先回到 Harness 打开这个会话，然后再发送消息。', messageFailed:'消息未能发送', messageFailedBody:'请回到 Harness 检查会话状态。',
-  stoppedBody:'先停在这里，随时继续。', interruptedBody:'这段任务中断了，陪你回去看看。',
+  replyBody:'本轮回复已生成，回到会话查看。', progressBody:'本轮回复已生成，目标仍在进行中。', completeBody:'目标已完成，回到会话查看。', goalPausedBody:'目标已暂停，回到会话查看。', goalBlockedBody:'目标遇到阻碍，回到会话查看。', stoppedBody:'先停在这里，随时继续。', interruptedBody:'这段任务中断了，陪你回去看看。',
   demoTitle:'工作的时候，\n大肥鱼陪着。', demoIntro:'住在桌面上的 DeepSeek 大肥鱼。\n点点她、拖着她走，或和她说句话。', demoStatus:'浏览器演示 · 模拟 Harness 事件', demoHint:'桌面插件会订阅真实任务，无需另填 API Key。',
   demoButtons:{thinking:'思考',talking:'回复',working:'工作',waiting:'等你确认',happy:'任务完成',error:'遇到问题',idle:'空闲',long:'长回复',background:'后台完成'},
   demoSession:'演示会话', demoOther:'另一个想法', demoPrompt:'让角色在思考与回复时做出对应的动作', demoOtherPrompt:'重做角色菜单与会话选择，让它更像伙伴',
@@ -35,7 +35,7 @@ const en = {
   defaultName: 'DeepSeek Whale', title: 'DeepSeek Whale · Harness',
   words:{neutral:'Neutral',happy:'Happy',wink:'Wink',love:'Love',shy:'Shy',surprised:'Surprised',angry:'Angry',sad:'Sad',sleepy:'Sleepy',thinking:'Thinking',smug:'Smug',pout:'Pout',worried:'Worried',determined:'Determined',flustered:'Flustered',scared:'Scared',excited:'Excited',cry:'Cry',confused:'Confused',stand:'Stand',jump:'Jump',hop:'Hop',look:'Look around',turn:'Turn',nod:'Nod',shake:'Shake head',spin:'Spin',sit:'Sit',sleep:'Sleep',dizzy:'Dizzy',walk:'Walk',run:'Run',wave:'Wave',bow:'Bow',shiver:'Shiver',flap:'Flap',dance:'Dance'},
   settingFailed:'Settings were not saved', settingFailedBody:'Open Harness to check the plugin settings.', sessionUnavailable:'Conversation not ready', sessionUnavailableBody:'Open this conversation in Harness before sending a message.', messageFailed:'Message was not sent', messageFailedBody:'Open Harness to check the conversation state.',
-  stoppedBody:'Paused here. Continue whenever you are ready.', interruptedBody:'This task was interrupted. Open the conversation to check it.',
+  replyBody:'This turn’s reply is ready. Open the conversation to read it.', progressBody:'This turn’s reply is ready. The goal is still in progress.', completeBody:'Goal completed. Open the conversation to read it.', goalPausedBody:'The goal is paused. Open the conversation for details.', goalBlockedBody:'The goal is blocked. Open the conversation for details.', stoppedBody:'Paused here. Continue whenever you are ready.', interruptedBody:'This task was interrupted. Open the conversation to check it.',
   demoTitle:'While you work,\nWhale keeps you company.', demoIntro:'Your DeepSeek Whale desktop companion.\nSay hello, drag her around, or continue a conversation.', demoStatus:'Browser demo · Simulated Harness events', demoHint:'The desktop plugin follows real tasks. No extra API key is needed.',
   demoButtons:{thinking:'Think',talking:'Reply',working:'Work',waiting:'Approval',happy:'Finished',error:'Error',idle:'Idle',long:'Long reply',background:'Background reply'},
   demoSession:'Demo conversation', demoOther:'Another idea', demoPrompt:'Match the character’s actions to thinking and replying', demoOtherPrompt:'Make the character menu and conversation picker feel like a companion',
@@ -51,7 +51,7 @@ const en = {
   using:'In use', useScheme:'Use these colours', useOutfit:'Use this outfit', customOutfit:'Custom outfit', defaultScheme:'Default', imported:'Imported. Preview the character, then choose Use character.', switched:'Changed. This character and its colours will survive restarts.', removed:'Local character pack deleted.', packTooLarge:'Character packs cannot exceed 128 MiB',
   noSession:'No conversation yet', noConversation:'No conversation yet', session:'Conversation', sessionReply:'Conversation reply', focused:'Focused', unread:'1 unread reply', notOpen:'Not open', connected:'Conversation connected', emptySearch:'No matching conversation. Try a word from the prompt or project name.', emptyPending:'All read. Carry on with your work.', emptySessions:'No conversation is available. Open one in Harness to get started.', noChat:'Open a conversation in Harness to chat here.', unavailableChat:'This conversation is not open in Harness. Open it there first.', sleepBusy:'Working now. Rest when it is done.', sleepWake:'Wake automatically when new work starts.',
   issueError:'The task needs attention. Open Harness for details.', issueWaiting:'The task paused. Open Harness to check the next step.', timeUnknown:'Time not recorded',
-  petLabel:name=>`${name}, click to interact, double-click to chat, right-click for the menu, drag to move`, finalReply:name=>`Final reply from ${name}`, recent:text=>`Recent: ${text}`, chatTarget:label=>`Current conversation: ${label}. Click to switch`, chatHelp:label=>`Send to “${label}”. Only the final reply is shown when the task completes.`, activity:(busy,unread)=>`${busy} active · ${unread} unread replies`,
+  petLabel:name=>`${name}, click to interact, double-click to chat, right-click for the menu, drag to move`, finalReply:name=>`Final reply from ${name}`, recent:text=>`Recent: ${text}`, chatTarget:label=>`Current conversation: ${label}. Click to switch`, chatHelp:label=>`Send to “${label}”. Each turn’s full reply is kept here.`, activity:(busy,unread)=>`${busy} active · ${unread} unread replies`,
   authorCredit:(author,credits,license)=>`Author: ${author} · ${credits} · License: ${license}`, unknownAuthor:'Not specified', builtinLicense:'Code: AGPL-3.0-or-later; see artwork rights notice', authorLicense:'Specified by the character author',
   operationError:detail=>`Operation failed: ${detail}`, bodyError:detail=>`Character runtime failed: ${detail}`, builtinError:detail=>`Cannot load the built-in character: ${detail}`, previewError:detail=>`Preview failed: ${detail}`, restoreError:detail=>`Built-in Whale restored: ${detail}`, loadError:detail=>`Character failed to load: ${detail}`,
   trayOpen:'Open current conversation', traySwitch:'Choose companion conversation', trayChat:'Say something', trayCharacters:'Characters and colours', trayRoam:'Roam freely', traySleep:'Rest (new work wakes the pet)', trayNotices:'Task reminders', traySound:'Action and reply sounds', trayShow:'Show companion', trayQuit:'Close desktop pet', trayNeeds:' · Needs attention',
@@ -70,7 +70,20 @@ export function appNoticeCopy(notice, locale) {
   return { title: notice.title, body: notice.body };
 }
 export function appStatusBody(notice, locale) {
+  for (const key of ['replyBody', 'progressBody', 'completeBody', 'goalPausedBody', 'goalBlockedBody']) {
+    if (notice.body === zh[key] || notice.body === en[key]) return petCopy(locale)[key];
+  }
   const key = {error:'issueError',blocked:'issueWaiting','max-tokens':'issueWaiting',stopped:'stoppedBody',interrupted:'interruptedBody'}[notice.category];
   if (!key || notice.body !== zh[key] && notice.body !== en[key]) return notice.body;
   return petCopy(locale)[key];
+}
+
+/** The Host category determines completion labels in menus and the native tray. */
+export function sessionStateLabel(session, locale, mood = session?.mood) {
+  const copy = petCopy(locale);
+  if (!session?.active && mood === session?.mood && session?.completion) {
+    const key = { reply: 'replyBody', 'goal-progress': 'progressBody', completed: 'completeBody' }[session.completion];
+    if (key) return copy[key];
+  }
+  return copy.labels[mood] ?? copy.labels.idle;
 }

@@ -108,6 +108,24 @@ try {
   await receive({ type: 'notice', notice: { ...completed, id: 'completion-after-result' } });
   assert.equal(await page.locator('#interaction').isVisible(), false, 'the reverse arrival order does not produce a second completion prompt');
 
+  // Round replies and active-goal replies remain readable, without success reactions.
+  for (const [category, title] of [['reply', '本轮回复已生成。'], ['goal-progress', '本轮回复已生成，目标仍在进行中。']]) {
+    const middle = { ...completed, id: `m1-${category}`, category, turn: 5, seq: category === 'reply' ? 8 : 9, body: 'Full intermediate reply, preserved verbatim.' };
+    await receive({ type: 'notice', notice: middle });
+    await page.locator('#interaction:not([hidden])').waitFor();
+    assert.equal(await page.locator('#interaction-title').innerText(), title);
+    await page.waitForFunction(() => document.querySelector('#pet').dataset.mood === 'idle');
+    await page.locator('#interaction-close').click();
+    const middleReply = { id: `${source}:${middle.turn}:${middle.seq}`, sessionId: source, time: 5, text: middle.body, read: false };
+    await receive({ type: 'snapshot', snapshot: { ...finalSnapshot, mood: 'idle', sessions: [{ id: source, mood: 'idle', completion: category, label: 'Goal source', unread: 1 }], results: [middleReply] } });
+    await page.locator('#bubble:not([hidden])').waitFor();
+    assert.equal(await page.locator('#bubble-text').innerText(), middle.body);
+    await page.locator('#dismiss').click();
+    await receive({ type: 'notice', notice: { ...middle, id: middle.id + '-late' } });
+    assert.equal(await page.locator('#interaction').isVisible(), false, 'late round notices cannot duplicate an existing full reply');
+    await page.screenshot({ path: `artifacts/m1-${category}.png` });
+  }
+
   // An unrelated prompt expiring must release a waiting reply without another Host update.
   await receive({ type: 'configure', options: { bubbleDurationMs: 2000 } });
   await receive({ type: 'notice', notice: notice('expires-before-reply', 'error', 'initial', []) });

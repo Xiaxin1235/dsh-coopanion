@@ -13,7 +13,8 @@ export const notificationPreferencesSchema = z.object({
 export type NotificationPreferences = z.infer<typeof notificationPreferencesSchema>;
 export const noticeSchema = z.object({
   id, sessionId: id, turn: counter, seq: counter, time: counter,
-  category: z.enum(['completed', 'approval', 'question', 'error', 'stopped', 'interrupted', 'blocked', 'max-tokens']),
+  category: z.enum(['reply', 'goal-progress', 'completed', 'approval', 'question', 'error', 'stopped', 'interrupted', 'blocked', 'max-tokens']),
+  goal: z.object({ id, revision: counter.positive(), round: counter }).strict().optional(),
   stage: z.enum(['initial', 'reminder']),
   title: z.string().max(256), body: z.string().max(2048),
   requestIds: z.array(id).max(100).default([]), source: z.enum(['event', 'runtime']).optional(),

@@ -104,3 +104,14 @@ it('holds deduplicated character prompts during reading and drops settled reques
   expect(queue.size).toBe(2); expect(queue.next(false, undefined).id).toBe('three');
   queue.clear(); expect(queue.next(false)).toBeUndefined();
 });
+
+it('uses round, progress and goal success categories consistently in role and native tray copy', async () => {
+  const { notificationPresentation } = await import('../web/notification-ui.js');
+  for (const [category, mood, fragment] of [['reply', 'idle', 'reply is ready'], ['goal-progress', 'idle', 'still in progress'], ['completed', 'happy', 'Goal completed']]) {
+    const role = notificationPresentation({ category, stage: 'initial', body: 'Unchanged user result', requestIds: [] }, 'en', ['happy','neutral']);
+    expect(role.mood).toBe(mood); expect(role.title).toContain(fragment); expect(role.body).toBe('Unchanged user result');
+    const selected = { id: 'full', label: '用户标题', mood, completion: category, active: false };
+    const state = tray.trayState({ sessionId: selected.id, mood, sessions: [selected] }, {}, { locale: 'en' });
+    expect(state.stateLabel).toContain(fragment); expect(state.mood).toBe(mood);
+  }
+});

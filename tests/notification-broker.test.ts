@@ -141,7 +141,7 @@ it('classifies actual turn outcomes, drops subagents/duplicates/forked, and cont
     const e = event('turn/end', i + 1, { turn: i + 1, reason: kind === 'error' ? { kind, error: { code: 'UNKNOWN', message: 'failed' } } : kind === 'aborted' ? { kind, reason: { kind: 'user' } } : { kind } });
     broker.consume(s, e); broker.consume(s, e);
   }
-  expect(broker.history().map(h => h.notice.category)).toEqual(['completed', 'error', 'stopped', 'interrupted', 'blocked', 'max-tokens']);
+  expect(broker.history().map(h => h.notice.category)).toEqual(['reply', 'error', 'stopped', 'interrupted', 'blocked', 'max-tokens']);
   broker.consume({ ...session('child'), header: { ...s.header, origin: 'subagent' } }, event('turn/end', 1, { turn: 1, reason: { kind: 'completed' } }));
   expect(broker.history()).toHaveLength(6);
 });

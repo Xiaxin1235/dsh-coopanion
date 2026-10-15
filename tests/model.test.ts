@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { PetModel } from '../src/model.ts';
 import { SessionId, SessionSeq, type SessionEvent, type Session } from '@deepseek-ai/dsh-session';
 import { ApprovalRequestId } from '@deepseek-ai/dsh-user-approval/types';
+import { GoalId } from '@deepseek-ai/dsh-goal';
 import { interactionId, type PendingInteraction } from '../src/notification-contract.ts';
 import { createAssistantMessage, createUserMessage, createToolResultMessage, ToolCallId, LlmAttemptId } from '@deepseek-ai/dsh-llm';
 
@@ -12,6 +13,13 @@ let seq = 0;
 function event<T extends SessionEvent['type']>(type: T, data: Extract<SessionEvent, { type: T }>['data']): SessionEvent {
   return { type, data, seq: SessionSeq(seq++), time: 0 } as SessionEvent;
 }
+
+function commitGoal(m: PetModel, s: Pick<Session, 'id' | 'header'>) {
+  for (const [operation, phase, revision] of [['create', 'active', 1], ['complete', 'complete', 2]] as const) {
+    m.consume(s, event('goal/change', { kind: 'goal/change', version: 1, operation, goal: { id: GoalId('goal-complete'), revision, phase, objective: 'Finish', maxGoalRounds: 8 }, roundsStarted: 0, createdAt: 0, updatedAt: revision }));
+  }
+}
+
 describe('Harness task presentation', () => {
   it('restores distinct human prompts for sessions in the same project without replaying task states', () => {
     const m = new PetModel(), first = session('session-aaa111'), second = session('session-bbb222');
@@ -39,7 +47,7 @@ describe('Harness task presentation', () => {
     m.consume(s, event('assistant/message', { turn: 1, step: 1, message: createAssistantMessage({ content: [{ type: 'text', text: '你好，正在输出' }, { type: 'text', text: '第二段' }], source: { provider: 'test', model: 'test' } }), stream: [] }));
     expect(m.snapshot()).toMatchObject({ mood: 'talking', streaming: false, speechId: attemptId });
     m.consume(s, event('turn/end', { turn: 1, reason: { kind: 'completed' } }));
-    expect(m.snapshot()).toMatchObject({ mood: 'happy', active: false });
+    expect(m.snapshot()).toMatchObject({ mood: 'idle', active: false });
     expect(m.snapshot().results[0].text).toBe('你好，正在输出\n第二段');
     expect(m.stream(s, { type: 'start', attemptId, revision: 1, turn: 1, step: 1 })).toBe(false);
     expect(m.stream(s, { type: 'chunk', attemptId, revision: 1, index: 3, time: 3, chunk: { type: 'text-delta', index: 1, text: '迟到' } })).toBe(false);
@@ -54,7 +62,7 @@ describe('Harness task presentation', () => {
     const message = createAssistantMessage({ content: [{ type: 'text', text: '做好了！' }], source: { provider: 'test', model: 'test' } });
     m.consume(s, event('assistant/message', { turn: 1, step: 1, message, stream: [] }));
     expect(m.consume(s, event('turn/end', { turn: 1, reason: { kind: 'completed' } }))?.body).toBe('做好了！');
-    expect(m.snapshot().mood).toBe('happy');
+    expect(m.snapshot().mood).toBe('idle');
   });
   it('keeps background sessions and subagents from changing the selected task', () => {
     const m = new PetModel(), a = session('one'), b = session('two');
@@ -63,7 +71,7 @@ describe('Harness task presentation', () => {
     expect(n?.sessionId).toBe('two'); expect(m.snapshot().sessionId).toBe('one'); expect(m.snapshot().mood).toBe('thinking');
     m.consume(session('child', 'subagent'), event('turn/start', { turn: 1 }));
     expect(m.snapshot().sessions).toHaveLength(2); expect(m.select('missing')).toBe(false);
-    m.select('two'); expect(m.snapshot().mood).toBe('happy');
+    m.select('two'); expect(m.snapshot().mood).toBe('idle');
     m.remove('two'); expect(m.snapshot().sessionId).toBe('one');
   });
   it('keeps explicit focus when new sessions start, and selects the first available session', () => {
@@ -116,14 +124,16 @@ describe('Harness task presentation', () => {
     const m = new PetModel(), s = session('one'); m.observe(s);
     expect(m.approval('one', 'bash')?.title).toContain('确认');
     m.consume(s, event('turn/end', { turn: 1, reason: { kind: 'completed' } }));
-    m.approvalSettled('one'); expect(m.snapshot().mood).toBe('happy');
+    m.approvalSettled('one'); expect(m.snapshot().mood).toBe('idle');
   });
   it('returns to idle after completion without extending its deadline on selection or background activity', () => {
     let now = 1000;
     const m = new PetModel(() => now), a = session('one'), b = session('two');
     m.consume(a, event('turn/start', { turn: 1 }));
+    commitGoal(m, a);
     const completed = event('turn/end', { turn: 1, reason: { kind: 'completed' } });
     expect(m.consume(a, completed)?.sessionId).toBe('one');
+    expect(m.snapshot().mood).toBe('happy');
     const revision = m.snapshot().revision;
     expect(m.consume(a, completed)).toBeUndefined();
     now += 1500; m.consume(b, event('turn/start', { turn: 1 }));
@@ -135,6 +145,7 @@ describe('Harness task presentation', () => {
   it('starts with the current running task and cancels a previous celebration when a new turn begins', () => {
     let now = 1000; const m = new PetModel(() => now), s = session('one');
     m.running(s); expect(m.snapshot().mood).toBe('thinking');
+    m.consume(s, event('turn/start', { turn: 1 })); commitGoal(m, s);
     m.consume(s, event('turn/end', { turn: 1, reason: { kind: 'completed' } }));
     m.consume(s, event('turn/start', { turn: 2 }));
     now += 10000; expect(m.settle()).toBe(false); expect(m.snapshot().mood).toBe('thinking');

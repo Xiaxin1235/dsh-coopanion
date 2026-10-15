@@ -157,7 +157,7 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
           session.append('turn/start', { turn: turn + 1 });
           session.append('turn/end', { turn: turn + 1, reason: { kind: 'completed' } });
           const event = session.snapshotEvents().at(-1)!;
-          const claim = broker.claim(input.clientId, input.generation, noticeId(session.id, turn + 1, event.seq, 'completed', 'initial'));
+          const claim = broker.claim(input.clientId, input.generation, noticeId(session.id, turn + 1, event.seq, 'reply', 'initial'));
           if (!claim) throw new Error('测试通知未能领取，请稍后重试');
           return { ok: true, value: claim };
         }

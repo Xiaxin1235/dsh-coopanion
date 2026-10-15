@@ -2,7 +2,7 @@ import { petLanguage, appStatusBody } from './locale.js';
 /** Pure presentation policy; request truth and delivery selection remain owned by Host. */
 const messages = {
   zh: {
-    completed: '完成啦，要看看结果吗？', approval: '下一步需要你确认。', question: '有个问题想问你。',
+    reply: '本轮回复已生成。', 'goal-progress': '本轮回复已生成，目标仍在进行中。', completed: '目标完成啦，要看看结果吗？', approval: '下一步需要你确认。', question: '有个问题想问你。',
     error: '遇到一点问题，陪你回去看看。', stopped: '先停在这里，随时继续。', interrupted: '这段任务中断了，陪你回去看看。',
     blocked: '任务暂时停下了，看看下一步怎么继续。', 'max-tokens': '这次回复到达上限了，看看下一步怎么继续。',
     reminder: '刚才那件事，还等你看看。', grouped: n => `有 ${n} 件事，还等你看看。`,
@@ -12,7 +12,7 @@ const messages = {
     inboxSummary: (replies, pending) => `${pending} 件待处理 · ${replies} 份未读回复`, focus: label => `正在聊：${label}`, inboxEmpty: '都看过啦，安心做手边的事。',
   },
   en: {
-    completed: 'Finished. Shall we look at the result?', approval: 'The next step needs your approval.', question: 'There is a question for you.',
+    reply: 'This turn’s reply is ready.', 'goal-progress': 'This turn’s reply is ready. The goal is still in progress.', completed: 'Goal completed. Shall we look at the result?', approval: 'The next step needs your approval.', question: 'There is a question for you.',
     error: 'Something went wrong. Let’s look together.', stopped: 'Paused here. Continue whenever you are ready.', interrupted: 'This task was interrupted. Let’s look together.',
     blocked: 'The task paused. Let’s check the next step.', 'max-tokens': 'This reply reached its limit. Let’s check the next step.',
     reminder: 'That earlier request is still waiting for you.', grouped: n => `${n} requests are still waiting for you.`,
@@ -27,7 +27,7 @@ export function pendingInteractions(snapshot) { return (snapshot?.interactions ?
 export function notificationPresentation(notice, locale, words = []) {
   const copy = notificationCopy(locale);
   const title = notice.stage === 'reminder' ? notice.requestIds.length > 1 ? copy.grouped(notice.requestIds.length) : copy.reminder : copy[notice.category] ?? notice.title;
-  const mood = { completed: 'happy', approval: 'waiting', question: 'waiting', error: 'error', stopped: 'idle', interrupted: 'waiting', blocked: 'waiting', 'max-tokens': 'waiting' }[notice.category] ?? 'idle';
+  const mood = { reply: 'idle', 'goal-progress': 'idle', completed: 'happy', approval: 'waiting', question: 'waiting', error: 'error', stopped: 'idle', interrupted: 'waiting', blocked: 'waiting', 'max-tokens': 'waiting' }[notice.category] ?? 'idle';
   const candidates = notice.stage === 'reminder' ? ['wave', 'worried', 'neutral'] : {
     completed: ['happy', 'wave', 'neutral'], approval: ['worried', 'thinking', 'neutral'], question: ['curious', 'thinking', 'worried', 'neutral'],
     error: ['sad', 'worried', 'neutral'], stopped: ['nod', 'neutral'], interrupted: ['confused', 'worried', 'neutral'], blocked: ['worried', 'thinking', 'neutral'], 'max-tokens': ['worried', 'thinking', 'neutral'],

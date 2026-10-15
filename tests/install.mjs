@@ -143,6 +143,8 @@ try {
   assert.equal(JSON.parse(await readFile(join(installed, 'package.json'), 'utf8')).version, manifest.version);
   await run(process.execPath, [join(project, 'tests/notification-host-contract.mjs'), '--runtime', runtime, '--version', version]);
 
+  await run(process.execPath, [join(project, 'tests/goal-host-contract.mjs'), '--runtime', runtime, '--version', version, '--package', archive]);
+
   // Keep the observer in its own package. The Client loader identifies packages
   // from ancestor manifests; a fixture inside this repository can be mistaken
   // for a second active copy of the installed dsh-coopanion client.
@@ -237,7 +239,7 @@ try {
     host.on('message', receive);
   });
   host.send({ type: 'finish-task' });
-  await page.waitForFunction(() => document.getElementById('pet').dataset.mood === 'happy');
+  await page.waitForFunction(() => document.getElementById('pet').dataset.mood === 'idle');
   await page.waitForFunction(() => document.getElementById('bubble-text').textContent === '安装验证的最终回复。任务已完成。');
   assert.equal(await page.locator('#toast').isVisible(), false);
   assert.equal(await page.locator('#attention-count').innerText(), '1', 'a delivered final reply remains unread until the user acknowledges it');
@@ -424,7 +426,7 @@ try {
   await writeFile(join(project, 'artifacts', `notification-source-${version}.json`), JSON.stringify({ dsh: version, pluginVersion: manifest.version, creation: 'sessionController.create', sessionId: sourceId, exportedHeader: header, status: 'pass' }, null, 2) + '\n');
   await stop(host);
   assert.equal(host.exitCode, 0, hostLog);
-  await writeFile(join(project, 'artifacts', `install-${version}.json`), JSON.stringify({ dsh: version, plugin: `${manifest.name}@${manifest.version}`, package: archive, installed: true, profileLoader: true, nativeWindow: true, customCharacter: true, builtinCharacterId: 'whale', sessionNotifications: true, multipleSessions: true, completionReturnsToIdle: true, notificationOpensSourceSession: true, nativeSettingsPage: true, darkTheme: true, closeAndRelaunch: true, hostRestartPersistence: true, autoStartDisabled: true, chineseAndEnglish: true, liveLocaleSwitch: true, automaticSystemLanguage: true, riskExemption: false, cleanShutdown: true }, null, 2) + '\n');
+  await writeFile(join(project, 'artifacts', `install-${version}.json`), JSON.stringify({ dsh: version, plugin: `${manifest.name}@${manifest.version}`, package: archive, installed: true, profileLoader: true, nativeWindow: true, customCharacter: true, builtinCharacterId: 'whale', sessionNotifications: true, multipleSessions: true, roundReplyWithoutGoalCelebration: true, notificationOpensSourceSession: true, nativeSettingsPage: true, darkTheme: true, closeAndRelaunch: true, hostRestartPersistence: true, autoStartDisabled: true, chineseAndEnglish: true, liveLocaleSwitch: true, automaticSystemLanguage: true, riskExemption: false, cleanShutdown: true }, null, 2) + '\n');
   console.log(`Installation smoke passed on DSH ${version}: admission, actual profile loader, native window, independent sessions, session navigation from notices, official settings UI, live persisted preferences, and reopening after native close.`);
 } catch (error) {
   if (browser) {

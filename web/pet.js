@@ -4,7 +4,7 @@ import { createSpeech, replyPreview } from './speech.js';
 import { createNoticeQueue, pendingInteractions, notificationPresentation, notificationCopy } from './notification-ui.js';
 import { shortSessionIds, sessionTime, sessionActivity, inboxContents, unreadReplies } from './session-ui.js';
 import { renderReplyMarkdown } from './markdown-runtime.js';
-import { petLanguage, petCopy, localizedText, appNoticeCopy, automaticPetLanguage } from './locale.js';
+import { petLanguage, petCopy, localizedText, appNoticeCopy, automaticPetLanguage, sessionStateLabel } from './locale.js';
 const PACK_LIMIT = 128 * 1024 * 1024;
 import { browserCharacters } from './character-library.js';
 const BUILTIN_ID = 'whale';
@@ -160,7 +160,7 @@ function showNextReply() {
   if (result) speak(result);
 }
 function completionHasReply(notice) {
-  return notice?.category === 'completed' && notice.sessionId === snapshot.sessionId &&
+  return ['completed', 'reply', 'goal-progress'].includes(notice?.category) && notice.sessionId === snapshot.sessionId &&
     snapshot.results?.some(result => result.id === `${notice.sessionId}:${notice.turn}:${notice.seq}`);
 }
 function acknowledge(result) {
@@ -225,7 +225,7 @@ function updateMood(now = performance.now()) {
   $('toggle-sleep').disabled = active; $('toggle-sleep').title = active ? uiCopy().sleepBusy : uiCopy().sleepWake;
   $('toggle-notices').setAttribute('aria-checked', String(options.notifications));
   $('toggle-sound').setAttribute('aria-checked', String(sfx.isOn()));
-  $('menu-state').textContent = `${labels[mood] ?? labels.idle}${snapshot.sessionId ? ' · ' + uiCopy().connected : ''}`;
+  $('menu-state').textContent = `${sessionStateLabel(snapshot.sessions?.find(s => s.id === snapshot.sessionId), notificationLocale(), mood)}${snapshot.sessionId ? ' · ' + uiCopy().connected : ''}`;
   const presentation = { type: 'presentation', locale: notificationLocale(), characterId: activeView.id, scheme: activeScheme, name: activeName, mood, sleeping: asleep, sound: sfx.isOn(), ready: !!body.layout };
   const nextTrayKey = JSON.stringify(presentation);
   if (nextTrayKey !== trayKey) { trayKey = nextTrayKey; native?.action(presentation); }
@@ -253,7 +253,7 @@ function render() {
       card.tabIndex = session.id === snapshot.sessionId ? 0 : -1;
       card.title = `${session.label}\n${session.prompt ?? ''}\n${session.cwd ?? session.project ?? ''}\n${session.id}`;
       const copy = document.createElement('span'), meta = document.createElement('small'), status = document.createElement('em'), time = document.createElement('span'), name = document.createElement('strong'), detail = document.createElement('small'), prompt = document.createElement('small'), mark = document.createElement('b');
-      meta.className = 'session-meta'; status.textContent = `${session.id === snapshot.sessionId ? uiCopy().focused + ' · ' : ''}${labels[session.mood] ?? labels.idle}${hasUnread(session) ? ' · ' + uiCopy().unread : ''}${session.chatAvailable === false ? ' · ' + uiCopy().notOpen : ''}`;
+      meta.className = 'session-meta'; status.textContent = `${session.id === snapshot.sessionId ? uiCopy().focused + ' · ' : ''}${sessionStateLabel(session, notificationLocale())}${hasUnread(session) ? ' · ' + uiCopy().unread : ''}${session.chatAvailable === false ? ' · ' + uiCopy().notOpen : ''}`;
       time.textContent = sessionTime(session, notificationLocale()); meta.append(status, time);
       name.textContent = session.label; detail.className = 'session-detail'; detail.textContent = `${session.cwd || session.project || uiCopy().session} · #${shortIds.get(session.id)}`;
       prompt.className = 'session-prompt'; prompt.textContent = session.prompt && session.prompt !== session.label ? uiCopy().recent(session.prompt) : ''; prompt.hidden = !prompt.textContent;
@@ -277,7 +277,7 @@ function render() {
   $('attention').title = $('attention').ariaLabel = notificationCopy(notificationLocale()).inboxSummary(inboxState.replies.length, pendingCount);
   $('chat-current').disabled = !snapshot.sessions.length; $('chat-session-name').textContent = selected?.label ?? uiCopy().noSession;
   $('chat-current').setAttribute('aria-label', selected ? uiCopy().chatTarget(selected.label) : uiCopy().emptySessions);
-  $('chat-session-state').textContent = labels[selected?.mood] ?? labels.idle;
+  $('chat-session-state').textContent = sessionStateLabel(selected, notificationLocale());
   $('chat-session-detail').textContent = selected ? `${selected.cwd || selected.project || ''} · #${shortIds.get(selected.id)}` : '';
   const latestReply = snapshot.results?.find(r => r.id === selected?.replyId)?.text || selected?.reply || '';
   $('chat-reply').textContent = latestReply ? replyPreview(latestReply).text : ''; $('chat-reply').hidden = !latestReply;
