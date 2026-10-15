@@ -2,11 +2,11 @@
 
 给 [DeepSeek Harness Desktop](https://github.com/deepseek-ai/deepseek-harness) 加一只桌面伙伴。她会陪你工作，在回复生成、目标完成、出错或需要确认时提醒你；双击角色，可以继续选中的 Harness 普通会话，包括尚未打开的历史会话。
 
-**v0.4.8 使用 Coopanion 的原生动画与角色运行时，组合程序采用 AGPL-3.0-or-later。** 大肥鱼的网格变形、弹簧动作、动态五官、物理拖拽和八套配色直接复用上游固定版本。角色贴图保留独立权利声明，见 [第三方声明](THIRD_PARTY_NOTICES.md) 和 [上游版本记录](web/upstream/UPSTREAM.md)。
+**v0.4.9 使用 Coopanion 的原生动画与角色运行时，组合程序采用 AGPL-3.0-or-later。** 大肥鱼的网格变形、弹簧动作、动态五官、物理拖拽和八套配色直接复用上游固定版本。角色贴图保留独立权利声明，见 [第三方声明](THIRD_PARTY_NOTICES.md) 和 [上游版本记录](web/upstream/UPSTREAM.md)。
 
-本次更新统一桌宠与 Harness 的中英文语言，覆盖桌面菜单、聊天、收件箱、角色面板和原生托盘；切换立即生效，回复原文与当前配色保持不变。查看 [最新修改记录](https://github.com/takboo/dsh-coopanion/releases/latest) 或 [完整版本记录](docs/release-notes.md)。
+本次更新改进目标完成判断、历史会话续接、异常恢复、文字大小与多屏定位，并新增默认关闭的日常陪伴节奏。查看 [最新修改记录](https://github.com/takboo/dsh-coopanion/releases/latest) 或 [完整版本记录](docs/release-notes.md)。
 
-当前工作分支包含 M1 完成语义、M2 会话直接续接、M3 桌面异常恢复、M4 文字可读性和 M5 多屏适配，尚未发布；宿主契约与验证范围见 [M1 验收记录](docs/evidence/m1/README.md)、[M2 验收记录](docs/evidence/m2/README.md)、[M3 本地验收](docs/evidence/m3/README.md)及 [M4 本地验收](docs/evidence/m4/README.md)；文字配置与状态规则见[文字契约](docs/text-readability-contract.md)，多屏坐标与验证边界见[多屏契约](docs/multi-display-contract.md)及 [M5 记录](docs/evidence/m5/README.md)。
+v0.4.9 为发布候选，尚未发布。M1–M6 的实现与本地验收记录已归档：[完成语义](docs/evidence/m1/README.md)、[会话续接](docs/evidence/m2/README.md)、[异常恢复](docs/evidence/m3/README.md)、[文字可读性](docs/evidence/m4/README.md)、[多屏适配](docs/evidence/m5/README.md)及[日常陪伴节奏](docs/evidence/m6/README.md)。这些历史记录绑定当时的源码与 v0.4.8 测试包；v0.4.9 候选产物由本次 CI 单独验证。物理多屏 / 混合 DPI、长期体验与资源表现、真实模型及系统通知中心验收仍待完成。
 
 ## 功能
 
@@ -47,7 +47,7 @@ v0.4.0 移除了旧 Canvas 关键帧引擎、`dsh-character` v1 协议、`.dshpe
 
 支持 **DSH 0.2.0-rc.2 和 0.2.1-alpha.1**；其他版本未声明兼容。
 
-1. 下载对应 [Release](https://github.com/takboo/dsh-coopanion/releases) 的 `dsh-coopanion-0.4.8.tgz`，或按下面步骤构建 `takboo-dsh-coopanion-0.4.8.tgz`。npm 包名为 `@takboo/dsh-coopanion`；本地 `npm pack` 的文件名包含 scope。
+1. 下载对应 [Release](https://github.com/takboo/dsh-coopanion/releases) 的 `dsh-coopanion-0.4.9.tgz`，或按下面步骤构建 `takboo-dsh-coopanion-0.4.9.tgz`。npm 包名为 `@takboo/dsh-coopanion`；本地 `npm pack` 的文件名包含 scope。
 2. 在 Harness 侧边栏 **插件** 页安装压缩包的绝对路径，启用 `dsh-coopanion`。
 3. 完全退出再重新打开 Harness。首次启动时会下载并校验 Electron 44 运行时。
 4. 打开一段 Harness 会话，双击角色聊天，或从 **Settings → 桌宠** 管理角色。
@@ -55,7 +55,7 @@ v0.4.0 移除了旧 Canvas 关键帧引擎、`dsh-character` v1 协议、`.dshpe
 也可使用 Desktop 自带的 CLI。先启动 Desktop 一次初始化 profile，完全退出应用，再执行：
 
 ```bash
-dsh plugin --profile desktop add /absolute/path/dsh-coopanion-0.4.8.tgz
+dsh plugin --profile desktop add /absolute/path/dsh-coopanion-0.4.9.tgz
 ```
 
 npm 安装的 dsh 不能管理 Desktop 所拥有的 profile。Desktop 完全退出后执行包管理命令，再重新打开应用。
