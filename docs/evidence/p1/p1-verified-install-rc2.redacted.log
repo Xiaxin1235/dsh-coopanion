@@ -1,0 +1,35 @@
+
+> @takboo/dsh-coopanion@0.4.9 test:install
+> node tests/install.mjs
+
+Preparing published DSH 0.2.0-rc.2 in an isolated test directory…
+Published DSH 0.2.0-rc.2 prepared in 13s.
+Installing @takboo/dsh-coopanion@0.4.9 with the real DSH 0.2.0-rc.2 plugin command…
+Starting the installed bundle through the published DSH 0.2.0-rc.2 profile loader…
+Official DSH settings page loaded; checking controls and persisted preferences…
+DSH preference mutation: {"request":{"args":{"ns":"dsh-coopanion","ops":[{"op":"set","path":["reminderDelayMs"],"value":60000}],"expectedRevision":0}},"ok":true}
+DSH preference mutation: {"request":{"args":{"ns":"dsh-coopanion","ops":[{"op":"set","path":["reminders"],"value":false}],"expectedRevision":1}},"ok":true}
+DSH preference mutation: {"request":{"args":{"ns":"dsh-coopanion","ops":[{"op":"set","path":["systemNotifications"],"value":true}],"expectedRevision":2}},"ok":true}
+DSH preference mutation: {"request":{"args":{"ns":"dsh-coopanion","ops":[{"op":"set","path":["size"],"value":180}],"expectedRevision":3}},"ok":true}
+DSH preference mutation: {"request":{"args":{"ns":"dsh-coopanion","ops":[{"op":"set","path":["dailyRhythm"],"value":true}],"expectedRevision":4}},"ok":true}
+DSH preference mutation: {"request":{"args":{"ns":"dsh-coopanion","ops":[{"op":"set","path":["dailyRhythm"],"value":false}],"expectedRevision":5}},"ok":true}
+DSH preference mutation: {"request":{"args":{"ns":"dsh-coopanion","ops":[{"op":"set","path":["dailyRhythm"],"value":true}],"expectedRevision":6}},"ok":true}
+DSH preference mutation: {"request":{"args":{"ns":"dsh-coopanion","ops":[{"op":"set","path":["companionship"],"value":"quiet"}],"expectedRevision":7}},"ok":true}
+DSH preference mutation: {"request":{"args":{"ns":"dsh-coopanion","ops":[{"op":"set","path":["companionship"],"value":"interactive"}],"expectedRevision":8}},"ok":true}
+DSH preference mutation: {"request":{"args":{"ns":"dsh-coopanion","ops":[{"op":"set","path":["companionship"],"value":"off"}],"expectedRevision":9}},"ok":true}
+DSH preference mutation: {"request":{"args":{"ns":"dsh-coopanion","ops":[{"op":"set","path":["size"],"value":90}],"expectedRevision":10}},"ok":true}
+DSH preference mutation: {"request":{"args":{"ns":"dsh-coopanion","ops":[{"op":"set","path":["textScale"],"value":1}],"expectedRevision":11}},"ok":true}
+DSH preference mutation: {"request":{"args":{"ns":"dsh-coopanion","ops":[{"op":"set","path":["textScale"],"value":1.25}],"expectedRevision":12}},"ok":true}
+DSH preference mutation: {"request":{"args":{"ns":"dsh-coopanion","ops":[{"op":"set","path":["textScale"],"value":1.5}],"expectedRevision":13}},"ok":true}
+DSH preference mutation: {"request":{"args":{"ns":"dsh-coopanion","ops":[{"op":"set","path":["size"],"value":240}],"expectedRevision":14}},"ok":true}
+DSH preference mutation: {"request":{"args":{"ns":"dsh-coopanion","ops":[{"op":"set","path":["textScale"],"value":1}],"expectedRevision":15}},"ok":true}
+DSH preference mutation: {"request":{"args":{"ns":"dsh-coopanion","ops":[{"op":"set","path":["textScale"],"value":1.25}],"expectedRevision":16}},"ok":true}
+DSH preference mutation: {"request":{"args":{"ns":"dsh-coopanion","ops":[{"op":"set","path":["textScale"],"value":1.5}],"expectedRevision":17}},"ok":true}
+DSH preference mutation: {"request":{"args":{"ns":"dsh-coopanion","ops":[{"op":"set","path":["size"],"value":180}],"expectedRevision":18}},"ok":true}
+DSH preference mutation: {"request":{"args":{"ns":"dsh-coopanion","ops":[{"op":"set","path":["roam"],"value":true}],"expectedRevision":20}},"ok":true}
+DSH preference mutation: {"request":{"args":{"ns":"dsh-coopanion","ops":[{"op":"set","path":["autoStart"],"value":false}],"expectedRevision":21}},"ok":true}
+Settings response diagnostic: Error: response.json: Protocol error (Network.getResponseBody): No data found for resource with given identifier
+Response body is not available for a response that was navigated away from. Read response.body() before triggering any navigation.
+Starting the installed bundle through the published DSH 0.2.0-rc.2 profile loader…
+DSH preference mutation: {"request":{"args":{"ns":"dsh-coopanion","ops":[{"op":"set","path":["companionship"],"value":"off"}],"expectedRevision":0}},"ok":true}
+Installation smoke passed on DSH 0.2.0-rc.2: admission, actual profile loader, native window, independent sessions, session navigation from notices, official settings UI, live persisted preferences, and reopening after native close.

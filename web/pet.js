@@ -1,3 +1,6 @@
+import { createCompanionStroke } from './companion-touch.js';
+import { initialCompanionship, stepCompanionship, companionshipMode } from './companionship.js';
+import { CompanionClient, browserCompanionship } from './companion-client.js';
 import { loadBody, knownScheme } from './upstream/body-host.js';
 import { createSfx } from './upstream/sound.js';
 import { createSpeech, replyPreview } from './speech.js';
@@ -15,6 +18,7 @@ const $ = id => document.getElementById(id);
 const native = window.dshPetBridge;
 const pet = $('pet'), bubble = $('bubble'), conversations = $('conversations'), chat = $('chat'), menu = $('menu'), characters = $('characters'), reader = $('reader');
 const interaction = $('interaction'), requests = $('requests');
+const companionInvitation = $('companion-invitation'), companionFeedback = $('companion-feedback');
 const panels = [conversations, chat, menu, characters, reader, requests];
 const noticeQueue = createNoticeQueue();
 let notificationState, currentNotice, interactionExpires = 0;
@@ -32,7 +36,7 @@ const nameIn = names => localizedText(names, notificationLocale());
 const wordName = (word, view = previewCharacter) => word.names?.[notificationLocale()]?.[0] ?? (view?.builtin ? uiCopy().words[word.id] : undefined) ?? nameIn(word.names)?.[0] ?? word.id;
 let body, previewBody, previewCharacter, activeView, activeScheme, activeName = 'DeepSeek 大肥鱼', libraryState, libraryBusy = false;
 let appliedMood, appliedControls, speech, speechExpires = Infinity, pressing = false, dragStart, dragging = false, previewScheme = "", reducedNeedsStep = true;
-let options = { textScale: 1, size: 180, roam: true, dailyRhythm: DEFAULT_DAILY_RHYTHM, notifications: true, bubbleDurationMs: 12000 };
+let options = { textScale: 1, size: 180, roam: true, dailyRhythm: DEFAULT_DAILY_RHYTHM, companionship: 'off', notifications: true, bubbleDurationMs: 12000 };
 let snapshot = { mood: 'idle', text: '你好。点点我，或双击和我说话。', sessionId: null, sessions: [] };
 let x = innerWidth * .68, y = innerHeight - 155, hovered = false, asleep = false, toastTimer, noticeSession;
 let cursorPoint, lastHit;
@@ -45,12 +49,15 @@ const composer = new ChatComposer();
 const chatTimers = new Map();
 let draftSessionId;
 let rhythm = initialRhythm(), rhythmWords = [], rhythmRestorePending = false, localHour, hourCheckedAt = -Infinity;
+let companion = initialCompanionship(), companionAction, companionManualId, companionFeedbackUntil = 0, companionReadAt = 0;
+const companionStroke = createCompanionStroke();
+const companionClient = new CompanionClient(native?.companionship ?? browserCompanionship, () => refreshCompanionCopy());
 const shownResults = new Set(), acknowledgedResults = new Set();
 let renderedLocale;
 let characterFeedback = { key: 'characterHint', args: [] };
 const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
 let reduced = motionPreference.matches;
-motionPreference.addEventListener('change', event => { reduced = event.matches; });
+motionPreference.addEventListener('change', event => { reduced = event.matches; if (reduced && companion.active) companionAction = 'dismiss'; });
 
 function send(action) {
   if (native) { native.action(action); return; }
@@ -102,6 +109,7 @@ function applyLocale() {
     $('interaction-title').textContent = value.title; $('interaction-preview').textContent = value.body;
   }
   if (toastNotice && !$('toast').hidden) { const value = appNoticeCopy(toastNotice, locale); $('toast-title').textContent = value.title; $('toast-body').textContent = value.body; }
+  refreshCompanionCopy();
   trayKey = undefined;
 }
 
@@ -112,7 +120,7 @@ function position() {
   const box = layout?.box;
   // Bounds are applied inside the figure frame. Reanchor once its new geometry arrives.
   if (resizeLayout && layout !== resizeLayout && box?.w > 0 && box?.h > 0) {
-    for (const panel of [bubble, interaction, ...panels, $('attention')]) panelAnchors.delete(panel);
+    for (const panel of [bubble, interaction, companionInvitation, companionFeedback, ...panels, $('attention')]) panelAnchors.delete(panel);
     resizeLayout = undefined;
   }
   if (box) {
@@ -126,7 +134,7 @@ function position() {
     pet.style.cursor = layout.cursor || 'grab';
   }
   const anchor = layout?.bubble ?? { x: x + options.size / 2, y };
-  for (const panel of [bubble, interaction, ...panels]) {
+  for (const panel of [bubble, interaction, companionInvitation, companionFeedback, ...panels]) {
     if (panel.hidden) { panelAnchors.delete(panel); continue; }
     if (!panelAnchors.has(panel)) panelAnchors.set(panel, { ...anchor });
     const panelAnchor = panelAnchors.get(panel);
@@ -209,7 +217,7 @@ function act(actor, pack, word) {
   if (pack?.vocab.some(w => w.id === word) && (!actor.words || actor.words.includes(word))) actor.do(word);
 }
 function updateRhythm(now, mood, readingAttention, active) {
-  const enabled = options.dailyRhythm === true && options.roam;
+  const enabled = options.companionship === 'off' && options.dailyRhythm === true && options.roam;
   if (enabled && (now < hourCheckedAt || now - hourCheckedAt >= 1000)) { localHour = new Date().getHours(); hourCheckedAt = now; }
   const status = enabled ? rhythmPeriod(localHour) ?? 'off' : 'off';
   if (pet.dataset.rhythm !== status) pet.dataset.rhythm = status;
@@ -226,6 +234,77 @@ function updateRhythm(now, mood, readingAttention, active) {
   if (result.release) { appliedMood = undefined; rhythmRestorePending = true; reducedNeedsStep = true; }
   if (result.word) { act(body, activeView, result.word); reducedNeedsStep = true; }
 }
+function refreshCompanionCopy() {
+  const copy = uiCopy(), summary = companionClient.summary;
+  const text = options.companionship === 'off' ? copy.companionDisabled : companionClient.error ? copy.companionUnavailable : summary?.relation.unlocked ? copy.companionFamiliar : summary?.relation.total ? copy.companionProgress(summary.relation.total) : copy.companionNew;
+  if ($('companion-status').textContent !== text) $('companion-status').textContent = text;
+  if ($('companion-mode').value !== options.companionship) $('companion-mode').value = options.companionship;
+  const disabled = options.companionship === 'off' || !!companion.active?.manual;
+  if ($('companion-play').disabled !== disabled) $('companion-play').disabled = disabled;
+  const hidden = !summary?.invitation.quiet && !(summary?.invitation.laterUntil > Date.now());
+  if ($('companion-resume').hidden !== hidden) $('companion-resume').hidden = hidden;
+}
+function companionBlocked(manual, mood, readingAttention, active) {
+  const runtime = notificationState?.runtime, layout = body?.layout;
+  return active || mood !== 'idle' || pendingRequests().length > 0 || userInputOccupied() || !interaction.hidden || readingAttention ||
+    [...composer.sessions.values()].some(s => !!s.text.trim() || s.phase === 'sending') || pressing || dragging || asleep ||
+    !layout || ['air', 'drag', 'crouch'].includes(layout.mode) || layout.busy && !companion.active || hovered && !manual ||
+    document.hidden || !!runtime && (runtime.phase !== 'running' || !runtime.visible || runtime.suspended);
+}
+function companionMessage(text, now = performance.now()) {
+  companionFeedback.textContent = text; companionFeedback.hidden = false; companionFeedbackUntil = now + 3000; panelAnchors.delete(companionFeedback);
+}
+function updateCompanion(now, mood, readingAttention, active) {
+  const mode = options.companionship;
+  if (mode === 'off' && companion.mode === 'off') return;
+  if (now < hourCheckedAt || now - hourCheckedAt >= 1000) { localHour = new Date().getHours(); hourCheckedAt = now; }
+  const manual = companionAction === 'play' || companion.active?.manual;
+  const blocked = companionBlocked(manual, mood, readingAttention, active);
+  const summary = companionClient.summary;
+  const eligible = !!summary?.writable && !companionClient.error && summary.invitation.remaining > 0 && !summary.invitation.quiet && Date.now() >= summary.invitation.laterUntil;
+  const result = stepCompanionship(companion, { mode, now, hour: localHour, words: rhythmWords, occupied: blocked, motionBusy: !!body?.layout?.moving, automatic: options.roam && !reduced, eligible, unlocked: summary?.relation.unlocked, action: companionAction });
+  companionAction = undefined; companion = result.state;
+  pet.dataset.companionship = mode; pet.dataset.companionActivity = companion.active?.kind ?? 'idle';
+  if (result.hideInvitation || mode === 'off') companionInvitation.hidden = true;
+  if (result.release) {
+    if (!result.completed) companionManualId = undefined;
+    if (!pressing && !dragging && !['air', 'drag', 'crouch'].includes(body?.layout?.mode)) act(body, activeView, 'stand');
+    appliedMood = undefined; rhythmRestorePending = true; reducedNeedsStep = true;
+  }
+  if (result.word && !reduced) { act(body, activeView, result.word); reducedNeedsStep = true; }
+  if (result.showInvitation) { companionInvitation.hidden = false; panelAnchors.delete(companionInvitation); }
+  if (result.reserveInvitation) {
+    const epoch = companionClient.epoch;
+    void companionClient.request('invite').then(receipt => { if (epoch === companionClient.epoch && companion.invitation === 'pending') companionAction = receipt?.applied ? 'reserved' : 'failed'; });
+  }
+  if (result.completed && companionManualId) {
+    const id = companionManualId; companionManualId = undefined;
+    companionMessage(uiCopy().companionPlayed, now); void companionClient.request('play', id);
+  }
+  // A stroke necessarily hovers the pet. Keep its feedback visible while still
+  // yielding to work, reading, input and physical interaction.
+  if (companionBlocked(true, sessionActivity(snapshot).mood, readingAttention, active) || mode === 'off' || now >= companionFeedbackUntil) companionFeedback.hidden = true;
+  if (mode !== 'off' && activeView && now >= companionReadAt) { companionReadAt = now + 60000; void companionClient.request('read'); }
+  refreshCompanionCopy();
+}
+function startCompanionPlay() {
+  closePanels();
+  const activity = sessionActivity(snapshot);
+  if (options.companionship === 'off' || companionBlocked(true, activity.mood, false, activity.active)) { companionMessage(uiCopy().companionBusy); return; }
+  companionInvitation.hidden = true; companionAction = 'play'; companionManualId = crypto.randomUUID();
+  companionMessage(uiCopy().companionPlaying); updateMood();
+  if (!companion.active?.manual) { companionManualId = undefined; companionMessage(uiCopy().companionNoActivity); }
+}
+$('companion-play').onclick = startCompanionPlay;
+$('companion-accept').onclick = startCompanionPlay;
+for (const [id, type] of [['companion-later', 'later'], ['companion-quiet', 'quiet']]) $(id).onclick = () => {
+  companionAction = type; companionInvitation.hidden = true; void companionClient.request(type); updateMood();
+};
+$('companion-resume').onclick = () => { void companionClient.request('resume'); };
+$('companion-mode').onchange = event => {
+  const value = companionshipMode(event.target.value);
+  if (native) send({ type: 'preference', field: 'companionship', value }); else { applyOptions({ companionship: value }); updateMood(); }
+};
 function updateMood(now = performance.now()) {
   const labels = uiCopy().labels;
   const activity = sessionActivity(snapshot), active = activity.active;
@@ -236,7 +315,8 @@ function updateMood(now = performance.now()) {
   const dialogOpen = panels.some(p => !p.hidden);
   const readingAttention = !$('attention').hidden && ($('attention').matches(':hover') || document.activeElement === $('attention'));
   updateRhythm(now, mood, readingAttention, active);
-  if (mood !== appliedMood && !body.layout?.busy && (!rhythmRestorePending || !pressing && !dragging)) {
+  updateCompanion(now, mood, readingAttention, active);
+  if (mood !== appliedMood && !companion.active && !body.layout?.busy && (!rhythmRestorePending || !pressing && !dragging)) {
     reducedNeedsStep = true;
     if (mood !== 'sleeping' && (appliedMood === 'sleeping' || ['sleep', 'sit'].includes(body.layout?.mode))) act(body, activeView, 'stand');
     const word = { idle: 'neutral', thinking: 'thinking', talking: 'neutral', working: 'determined', waiting: 'worried', happy: 'happy', error: 'sad', sleeping: 'sleep' }[mood];
@@ -244,7 +324,7 @@ function updateMood(now = performance.now()) {
     appliedMood = mood;
     rhythmRestorePending = false;
   }
-  const controls = { roam: options.roam && !options.dailyRhythm && !reduced && !hovered && !readingAttention && !dialogOpen && bubble.hidden && interaction.hidden && mood === 'idle' ? 'calm' : 'off', dialogOpen: dialogOpen || !interaction.hidden, thinking: mood === 'thinking', thoughtShown: false, expression: { thinking: 'thinking', talking: 'determined', working: 'determined', waiting: 'worried', error: 'sad' }[mood] ?? null, listening: !chat.hidden && !active };
+  const controls = { roam: options.roam && options.companionship === 'off' && !options.dailyRhythm && !reduced && !hovered && !readingAttention && !dialogOpen && bubble.hidden && interaction.hidden && mood === 'idle' ? 'calm' : 'off', dialogOpen: dialogOpen || !interaction.hidden, thinking: mood === 'thinking', thoughtShown: false, expression: { thinking: 'thinking', talking: 'determined', working: 'determined', waiting: 'worried', error: 'sad' }[mood] ?? null, listening: !chat.hidden && !active };
   const key = JSON.stringify(controls);
   if (key !== appliedControls) { if (controls.roam === 'off') body.stopWalk(0); body.set(controls); appliedControls = key; }
   $('toggle-roam').setAttribute('aria-checked', String(options.roam));
@@ -421,17 +501,18 @@ $('interaction-open').onclick = () => openSession(currentNotice?.sessionId);
 $('interaction-pending').onclick = () => openRequests(false);
 
 function applyOptions(value) {
-  const previousSize = options.size;
-  options = { ...options, ...value, dailyRhythm: Object.hasOwn(value ?? {}, 'dailyRhythm') ? value.dailyRhythm === true : options.dailyRhythm, textScale: Object.hasOwn(value ?? {}, 'textScale') ? textScale(value.textScale) : options.textScale };
+  const previousSize = options.size, previousCompanionship = options.companionship;
+  options = { ...options, ...value, companionship: Object.hasOwn(value ?? {}, 'companionship') ? companionshipMode(value.companionship) : options.companionship, dailyRhythm: Object.hasOwn(value ?? {}, 'dailyRhythm') ? value.dailyRhythm === true : options.dailyRhythm, textScale: Object.hasOwn(value ?? {}, 'textScale') ? textScale(value.textScale) : options.textScale };
   document.documentElement.style.setProperty('--size', `${options.size}px`);
   document.documentElement.style.setProperty('--text-scale', String(options.textScale));
+  if (options.companionship !== previousCompanionship && activeView) { void companionClient.load(activeView.id); companionReadAt = performance.now() + 60000; }
   if (options.size !== previousSize) body?.set({ bounds: bounds() });
   // Keep DOM, captured reader result, composer, speech and expiry clocks intact.
   position();
 }
 // Font reflow and async Markdown/locale layout changes need fresh panel bounds.
 const panelResize = new ResizeObserver(() => position());
-for (const panel of [bubble, interaction, ...panels, $('attention')]) panelResize.observe(panel);
+for (const panel of [bubble, interaction, companionInvitation, companionFeedback, ...panels, $('attention')]) panelResize.observe(panel);
 
 function receive(message) {
   if (!message || typeof message !== 'object') return;
@@ -444,7 +525,7 @@ function receive(message) {
       pet.dataset.hostReady = 'true';
       body?.set({ bounds: bounds() }); render(); break;
     case 'configure': {
-      const changed = Object.keys(message.options ?? {}).some(key => !['textScale', 'size', 'dailyRhythm'].includes(key) && options[key] !== message.options[key]);
+      const changed = Object.keys(message.options ?? {}).some(key => !['textScale', 'size', 'dailyRhythm', 'companionship'].includes(key) && options[key] !== message.options[key]);
       applyOptions(message.options);
       if (changed) render();
       else updateMood();
@@ -663,6 +744,9 @@ document.addEventListener('pointermove', event => {
   if (pressing && !dragging && Math.hypot(point.x - dragStart.x, point.y - dragStart.y) > 6) {
     dragging = true; clearTimeout(touchTimer); closePanels(); bubble.hidden = true;
   }
+  const activity = sessionActivity(snapshot);
+  const canCare = options.companionship !== 'off' && !activity.active && activity.mood === 'idle' && !pendingRequests().length && !userInputOccupied() && !asleep && interaction.hidden && ['idle', 'look', 'sit'].includes(body?.layout?.mode);
+  if (companionStroke.move(point, { trusted: event.isTrusted, over: canCare && !!body?.hit(point), pressing, now: performance.now() })) { void companionClient.request('pet'); companionMessage(uiCopy().companionPetThanks); }
   body?.pointer('move', point); hit(point.x, point.y);
 });
 document.addEventListener('pointerleave', () => {
@@ -689,7 +773,7 @@ addEventListener('resize', resizeStage);
 $('toggle-sound').onclick = () => { sfx.set(!sfx.isOn()); updateMood(); };
 
 
-let last = performance.now();
+let last = performance.now(), companionFrameAt = -Infinity, companionElapsed = 0;
 function animate(now) {
   const dt = Math.min((now - last) / 1000, .05); last = now;
   for (const [id, pending] of snoozing) if (now >= pending.expiresAt) { snoozing.delete(id); $('request-feedback').textContent = notificationCopy(notificationLocale()).unavailable; renderRequests(); }
@@ -701,7 +785,14 @@ function animate(now) {
   presentNextNotice();
   updateMood(now);
   if (!reduced && pet.dataset.mood === 'talking' && now >= talkAt) { body?.talk(); talkAt = now + 180; }
-  body?.tick(reduced && !reducedNeedsStep && !pressing && !['air', 'drag', 'wake'].includes(body.layout?.mode) ? 0 : dt); reducedNeedsStep = false;
+  // Only P1's fully idle pose renders at 30fps. Work and input retain the original cadence.
+  // Accumulate real dt so rendering fewer frames never slows physics.
+  const companionIdle = options.companionship !== 'off' && pet.dataset.mood === 'idle' && !companion.active && !hovered && !pressing && !dragging && !reducedNeedsStep && body?.layout && !body.layout.moving && !userInputOccupied() && ![...composer.sessions.values()].some(s => !!s.text.trim() || s.phase === 'sending') && interaction.hidden && companionInvitation.hidden;
+  companionElapsed = Math.min(.05, companionElapsed + dt);
+  if (!companionIdle || now - companionFrameAt >= 1000 / 30) {
+    body?.tick(reduced && !reducedNeedsStep && !pressing && !['air', 'drag', 'wake'].includes(body.layout?.mode) ? 0 : companionElapsed);
+    companionFrameAt = now; companionElapsed = 0; reducedNeedsStep = false;
+  }
   if (!characters.hidden || libraryBusy) previewBody?.tick(reduced ? 0 : dt);
   if (speech && !bubble.hidden) {
     if (reduced) speech.finish(); else speech.step(dt);
@@ -761,12 +852,14 @@ async function setCharacter(view, scheme = '') {
     onEvent: (kind, detail) => { if (body === next) onBody(kind, detail); },
     onError: error => { characterStatus('bodyError', error.message); if (body === next && view.id !== BUILTIN_ID) void restoreBuiltin(); },
   });
+  companionStroke.reset(); companion = initialCompanionship(); companionAction = companionManualId = undefined; companionInvitation.hidden = companionFeedback.hidden = true;
   body?.dispose(); body = next; activeView = view; activeScheme = knownScheme(view, scheme); activeName = nameIn(view.name);
   rhythm = initialRhythm(); rhythmRestorePending = false; rhythmWords = view.vocab.map(w => w.id).filter(w => next.words?.includes(w)); hourCheckedAt = -Infinity;
   // A new body has not reported its geometry yet. Retire the previous body's
   // input region until position() receives the new body's first frame.
   pet.hidden = true; delete pet.dataset.mode; delete pet.dataset.pressing;
   appliedMood = appliedControls = undefined;
+  if (options.companionship !== 'off') { void companionClient.load(view.id); companionReadAt = performance.now() + 60000; } else { companionClient.epoch++; companionClient.characterId = view.id; companionClient.summary = null; }
   sfx.usePack(view.base, view.sounds);
   pet.dataset.character = view.id; pet.dataset.scheme = activeScheme;
   applyAppearance();

@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, powerMonitor, screen, Menu, Tray, nativeIma
 const { join } = require('node:path');
 const { randomBytes } = require('node:crypto');
 const { once } = require('node:events');
+const { CompanionStore, companionRequest } = require('../dist/companion-store.cjs');
 const { CharacterStore } = require('../dist/character-store.cjs');
 const { createPetServer } = require('../dist/figure-server.cjs');
 const { trayState, trayLocale } = require('./tray-state.cjs');
@@ -24,7 +25,7 @@ if (process.env.DSH_PET_TEST_DEBUG_PORT) {
   app.commandLine.appendSwitch('remote-debugging-port', process.env.DSH_PET_TEST_DEBUG_PORT);
 }
 const displayTest = process.env.DSH_PET_TEST_NO_SANDBOX === '1' && !!process.env.DSH_PET_TEST_DEBUG_PORT;
-let win, tray, options, lastFrame, poll, assetServer, characters, displays;
+let win, tray, options, lastFrame, poll, assetServer, characters, companions, displays;
 let presentation = {}, lastTrayKey, lastIconKey, iconBase, iconAppearance;
 let interactive = null;
 const generation = Number(process.env.DSH_PET_GENERATION ?? 1);
@@ -133,6 +134,8 @@ app.whenReady().then(async () => {
   const webRoot = join(__dirname, '../web');
   characters = new CharacterStore(join(app.getPath('userData'), 'figures-v2'), join(webRoot, 'upstream/whale'));
   const prefix = `/${randomBytes(24).toString('hex')}/`;
+  companions = new CompanionStore(join(app.getPath('userData'), 'companionship-v1'));
+  process.once('exit', () => companions.release());
   assetServer = createPetServer({ webRoot, store: characters, prefix });
   assetServer.listen(0, '127.0.0.1'); await once(assetServer, 'listening');
   let characterOperation = Promise.resolve();
@@ -146,13 +149,25 @@ app.whenReady().then(async () => {
     return result;
   });
   const characterId = value => { if (typeof value !== 'string') throw new Error('无效的角色 id'); return value; };
+  characterCall('pet:companionship', async value => {
+    const request = companionRequest.parse(value);
+    if (request.type === 'remove') throw new Error('Unsupported companionship request');
+    await characters.load(request.characterId);
+    return companions.request(request);
+  });
   characterCall('pet:characters:list', () => characters.list());
   characterCall('pet:characters:load', value => characters.load(characterId(value)));
   characterCall('pet:characters:select', value => {
     if (!value || typeof value.scheme !== 'string') throw new Error('无效的角色配色');
     return characters.select(characterId(value.id), value.scheme);
   });
-  characterCall('pet:characters:remove', value => characters.remove(characterId(value)));
+  characterCall('pet:characters:remove', async value => {
+    const id = characterId(value); if (id === 'whale') throw new Error('内置角色不能删除');
+    await characters.load(id);
+    const state = await companions.request({ type: 'read', characterId: id });
+    await companions.request({ type: 'remove', characterId: id, revision: state.revision, requestId: `remove-${id}-${Date.now()}` });
+    return characters.remove(id);
+  });
   characterCall('pet:characters:import', value => {
     if (!(value instanceof ArrayBuffer)) throw new Error('请选择 API 2 ZIP 角色包');
     return characters.import(new Uint8Array(value));

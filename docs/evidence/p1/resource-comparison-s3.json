@@ -1,0 +1,33 @@
+{
+  "snapshot": "P1 S3",
+  "packageSha256": "e050c17636d4d73052ad1b787200c3f65205c468b30513060ded98e8cd68a542",
+  "sourceInputsMatch": true,
+  "runtime": "extracted verified package, original locked Electron dependency, isolated native profiles",
+  "method": "separate native processes; fixed seed 17; 20s warmup, 3x60s per mode; process tree excludes DSH host and sampler",
+  "budget": {
+    "cpuPercentagePoints": 1,
+    "rssMiB": 32
+  },
+  "off": {
+    "cpu": 71.80762071041853,
+    "rssMiB": 498.32083333333327
+  },
+  "groups": [
+    {
+      "mode": "day",
+      "cpu": 35.6189461465722,
+      "rssMiB": 463.97335069444443,
+      "cpuDelta": -36.188674563846334,
+      "rssDeltaMiB": -34.347482638888835,
+      "pass": true
+    },
+    {
+      "mode": "night",
+      "cpu": 34.4596960275173,
+      "rssMiB": 474.43949652777775,
+      "cpuDelta": -37.34792468290123,
+      "rssDeltaMiB": -23.88133680555552,
+      "pass": true
+    }
+  ]
+}

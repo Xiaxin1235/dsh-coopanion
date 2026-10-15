@@ -329,6 +329,15 @@ try {
     await page.waitForFunction(enabled => (document.querySelector('#pet').dataset.rhythm !== 'off') === enabled, dailyRhythm);
     assert.deepEqual(await page.locator('#message').evaluate(n => [n.value, n.selectionStart, n.selectionEnd, window.m6InstalledFrame === document.querySelector('#body-layer iframe')]), ['M4 installed draft', 2, 7, true], 'native hot preference preserves draft, selection and API 2 frame');
   }
+  assert.equal(await surface.getByRole('combobox', { name: '自主陪伴', exact: true }).inputValue(), 'off');
+  for (const companionship of ['quiet', 'interactive', 'off']) {
+    await surface.getByRole('combobox', { name: '自主陪伴', exact: true }).selectOption(companionship);
+    await waitProfile(new RegExp('companionship: ' + companionship));
+    await page.waitForFunction(mode => document.querySelector('#pet').dataset.companionship === mode, companionship);
+    assert.equal(await page.locator('#message').inputValue(), 'M4 installed draft');
+  }
+  const p1Summary = await page.evaluate(() => window.dshPetBridge.companionship({ type: 'read', characterId: 'whale' }));
+  assert.equal(p1Summary.writable, true); assert.equal(p1Summary.relation.total, 0);
   const textScaleSamples = [];
   for (const size of [90, 240]) {
     const input = surface.getByRole('spinbutton', { name: '角色尺寸', exact: true });
@@ -406,6 +415,9 @@ try {
   assert.equal(await reopened.locator('#chat-title').textContent(), '我在，慢慢说。');
   assert.equal(await reopened.locator('#menu-name').textContent(), 'DeepSeek 大肥鱼');
   await waitProfile(/preference: zh/);
+  await settings.getByRole('button', { name: '桌宠', exact: true }).click();
+  await surface.getByRole('combobox', { name: '自主陪伴', exact: true }).selectOption('interactive');
+  await waitProfile(/companionship: interactive/);
   await stop(host); assert.equal(host.exitCode, 0, hostLog);
   await bootHost();
   await settings.goto(hostUrl);
@@ -414,6 +426,9 @@ try {
   assert.equal(await surface.getByRole('spinbutton', { name: '角色尺寸', exact: true }).inputValue(), '180');
   assert.equal(await surface.getByRole('combobox', { name: '文字大小', exact: true }).inputValue(), '1.5', 'full Host restart preserves text scale');
   assert.equal(await surface.getByRole('switch', { name: '日常陪伴节奏', exact: true }).getAttribute('aria-checked'), 'true', 'full Host restart preserves daily rhythm');
+  assert.equal(await surface.getByRole('combobox', { name: '自主陪伴', exact: true }).inputValue(), 'interactive', 'full Host restart preserves companionship');
+  await surface.getByRole('combobox', { name: '自主陪伴', exact: true }).selectOption('off');
+  await waitProfile(/companionship: off/); // Continue the original M6 recovery checks on their legacy path.
   assert.equal(await surface.getByRole('switch', { name: '随 Harness 启动', exact: true }).getAttribute('aria-checked'), 'false');
   assert.equal(await surface.getByRole('switch', { name: '系统通知', exact: true }).getAttribute('aria-checked'), 'true');
   assert.equal(await surface.getByRole('switch', { name: '待处理请求补提醒', exact: true }).getAttribute('aria-checked'), 'false');
@@ -556,6 +571,7 @@ try {
   assert.equal(host.exitCode, 0, hostLog);
   await writeFile(join(project, 'artifacts', `multi-display-installed-${version}.json`), JSON.stringify({ dsh: version, sourceCommit, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), platform: process.platform, arch: process.arch, physicalMultiDisplay: false, physicalMixedDpi: false, samples: textScaleSamples.map(({ size, textScale, display }) => ({ size, textScale, ...display })) }, null, 2) + '\n');
   await writeFile(join(project, 'artifacts', `daily-rhythm-installed-${version}.json`), JSON.stringify({ dsh: version, sourceCommit, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), platform: process.platform, arch: process.arch, oldConfigDefaultOff: true, harnessVolatilePersistence: true, nativeHotSync: true, nativeRestart: true, hostRestart: true, draftSelectionAndFrame: true, englishLabel: true }, null, 2) + '\n');
+  await writeFile(join(project, 'artifacts', `companionship-installed-${version}.json`), JSON.stringify({ dsh: version, sourceCommit, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), platform: process.platform, arch: process.arch, defaultOff: true, enumHotSync: true, draftSelectionAndFrame: true, nativeStoreIpc: p1Summary.writable, hostRestartPersistence: true, independentRuntime: false }, null, 2) + '\n');
   await writeFile(join(project, 'artifacts', `text-scale-installed-${version}.json`), JSON.stringify({ dsh: version, sourceCommit, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), samples: textScaleSamples, oldConfigDefault: true, nativeRestart: true, hostRestart: true, englishLabel: true }, null, 2) + '\n');
   await writeFile(join(project, 'artifacts', `install-${version}.json`), JSON.stringify({ dsh: version, sourceCommit, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), m3NativeRecovery: true, m2NativeContinuation: true, plugin: `${manifest.name}@${manifest.version}`, package: archive, installed: true, profileLoader: true, nativeWindow: true, customCharacter: true, builtinCharacterId: 'whale', sessionNotifications: true, multipleSessions: true, roundReplyWithoutGoalCelebration: true, notificationOpensSourceSession: true, nativeSettingsPage: true, darkTheme: true, closeAndRelaunch: true, hostRestartPersistence: true, autoStartDisabled: true, chineseAndEnglish: true, liveLocaleSwitch: true, automaticSystemLanguage: true, riskExemption: false, cleanShutdown: true }, null, 2) + '\n');
   console.log(`Installation smoke passed on DSH ${version}: admission, actual profile loader, native window, independent sessions, session navigation from notices, official settings UI, live persisted preferences, and reopening after native close.`);

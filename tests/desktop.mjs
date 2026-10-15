@@ -268,6 +268,7 @@ try {
   if (browser) { await browser.close(); browser = undefined; }
   await import('./multi-display-native.mjs');
   await import('./daily-rhythm-native.mjs');
+  await import('./companionship-native.mjs');
   console.log('Native recovery passed: hidden and visible crashes, full Host state, no replay, stop and unload during backoff.');
   console.log('Native smoke passed: Electron ready handshake, isolated renderer, two-way chat IPC, host reply, notification, and clean shutdown.');
   console.log('Native character smoke passed: import, selection, disk persistence across process restart, and removal.');

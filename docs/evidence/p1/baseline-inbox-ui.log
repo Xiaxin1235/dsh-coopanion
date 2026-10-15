@@ -1,0 +1,15 @@
+
+> @takboo/dsh-coopanion@0.4.9 test:inbox-ui
+> node tests/inbox-ui.mjs && node --test tests/session-replies-ui.mjs tests/text-scale-ui.mjs && node --test tests/multi-display-ui.mjs && node --test tests/daily-rhythm-ui.mjs
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+browserType.launch: Failed to launch chromium because executable doesn't exist at /Volumes/M2ExHome/rockman/Library/Caches/ms-playwright/chromium-1248/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing
+    at /Volumes/M2ExHome/rockman/Documents/codespace/personal-projects/dsh-plugins/dsh-coopanion/tests/inbox-ui.mjs:14:28 {
+  log: [],
+  name: 'Error'
+}
+
+Node.js v24.21.0

@@ -1,0 +1,47 @@
+
+> @takboo/dsh-coopanion@0.4.9 test:inbox-ui
+> node tests/inbox-ui.mjs && node --test tests/session-replies-ui.mjs tests/text-scale-ui.mjs && node --test tests/multi-display-ui.mjs && node --test tests/daily-rhythm-ui.mjs
+
+Inbox UI passed: one-click full reply, direct source actions, mixed pending items, stable chat focus and reading order, Unicode/text safety, bilingual copy and narrow layout.
+✔ unread replies coalesce by session and reading does not expose old turns again (3418.547666ms)
+✔ native recovery baseline preserves unread results without speaking or acknowledging them again (827.698209ms)
+✔ full replies render Markdown headings, emphasis, tables and fenced code (854.25825ms)
+✔ multiple turns of a single session still open directly with one click (404.784709ms)
+✔ reply markup cannot inject HTML, active URLs or external images (359.11175ms)
+✔ chat freezes the target, keeps per-session drafts and retries a lost receipt with the same request ID (432.083375ms)
+✔ full-result continue opens the exact source composer without replacing the reading snapshot (429.077209ms)
+✔ composer timeout preserves identity and acceptance remains monotonic (1.494541ms)
+✔ zh-CN: all text scales × character extremes keep reader, inbox and draft usable (2531.05575ms)
+✔ en-US: all text scales × character extremes keep reader, inbox and draft usable (1438.619084ms)
+✔ text scaling keeps final bubble font and original dismissal clock (2458.781208ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6978.72375
+✔ controlled irregular layout and mixed DPR preserve reading, draft, in-flight identity and hit areas (2293.586958ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2655.131
+✔ legacy default uses calm; optional day/night scheduling emits API 2 words and restores without notifications (5605.898875ms)
+✔ task, pending requests, input, reader, reduced motion and user rest preempt idle activity (5989.379625ms)
+✔ hot preference keeps reader DOM/scroll, draft/focus/selection, request identity and bubble expiry (3480.463833ms)
+✔ roam off, native hidden/suspended and pointer dragging each suppress scheduling (5946.83625ms)
+✔ missing manifest vocabulary falls back to idle without issuing unsupported words (3145.696708ms)
+✔ renderer observes changed system local hours while monotonic deadlines survive midnight (3762.145417ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 28189.890583

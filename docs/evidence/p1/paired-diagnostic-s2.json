@@ -1,0 +1,61 @@
+{
+  "purpose": "Diagnostic only; isolates mode-loop overhead without automatic body motion; does not replace the 3x60s resource gate.",
+  "warmupSeconds": 30,
+  "windowSeconds": 20,
+  "roam": false,
+  "sameProcess": true,
+  "samples": [
+    {
+      "mode": "off",
+      "elapsed": 20.021732999999998,
+      "cpuPercentOneCore": 74.71880680858145,
+      "renderer": {
+        "TaskDuration": 1.438438,
+        "ScriptDuration": 0.559825,
+        "LayoutDuration": 0.010407000000000001,
+        "RecalcStyleDuration": 0.33282100000000003,
+        "LayoutCount": 137,
+        "RecalcStyleCount": 2479
+      }
+    },
+    {
+      "mode": "quiet",
+      "elapsed": 20.025331333999993,
+      "cpuPercentOneCore": 71.90892255326118,
+      "renderer": {
+        "TaskDuration": 1.4644350000000004,
+        "ScriptDuration": 0.604968,
+        "LayoutDuration": 0.009662,
+        "RecalcStyleDuration": 0.34382999999999997,
+        "LayoutCount": 138,
+        "RecalcStyleCount": 2477
+      }
+    },
+    {
+      "mode": "off",
+      "elapsed": 20.024045625,
+      "cpuPercentOneCore": 74.51041752208354,
+      "renderer": {
+        "TaskDuration": 1.4236149999999999,
+        "ScriptDuration": 0.5541419999999997,
+        "LayoutDuration": 0.009897999999999997,
+        "RecalcStyleDuration": 0.3288709999999999,
+        "LayoutCount": 137,
+        "RecalcStyleCount": 2478
+      }
+    },
+    {
+      "mode": "quiet",
+      "elapsed": 20.02794725000001,
+      "cpuPercentOneCore": 72.94806510936857,
+      "renderer": {
+        "TaskDuration": 1.5030960000000002,
+        "ScriptDuration": 0.6271279999999999,
+        "LayoutDuration": 0.009839,
+        "RecalcStyleDuration": 0.35272899999999985,
+        "LayoutCount": 137,
+        "RecalcStyleCount": 2480
+      }
+    }
+  ]
+}

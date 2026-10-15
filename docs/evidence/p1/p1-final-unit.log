@@ -1,0 +1,68 @@
+
+> @takboo/dsh-coopanion@0.4.9 test
+> vitest run && node --test tests/release-checks.mjs tests/client-build.mjs && node --test tests/locale-client.mjs
+
+
+ RUN  v3.2.7 /Volumes/M2ExHome/rockman/Documents/codespace/personal-projects/dsh-plugins/dsh-coopanion
+
+ ✓ tests/companionship.test.js (9 tests) 102ms
+ ✓ tests/chat.test.ts (7 tests) 60ms
+ ✓ tests/notification-client.test.ts (15 tests) 50ms
+ ✓ tests/locale-sync.test.ts (4 tests) 162ms
+ ✓ tests/session-recovery.test.ts (6 tests) 56ms
+ ✓ tests/plugin.test.ts (9 tests) 243ms
+ ✓ tests/daily-rhythm.test.js (22 tests) 100ms
+ ✓ tests/companion-store.test.ts (8 tests) 417ms
+ ✓ tests/notification-broker.test.ts (18 tests) 27ms
+ ✓ tests/companion-http.test.ts (1 test) 88ms
+ ✓ tests/controls.test.ts (15 tests) 31ms
+ ✓ tests/notification-integration.test.ts (8 tests) 523ms
+   ✓ keeps the original question answerer usable when reminder tracking reaches capacity  403ms
+ ✓ tests/model.test.ts (18 tests) 10ms
+ ✓ tests/completion.test.ts (17 tests) 15ms
+ ✓ tests/presentation.test.js (11 tests) 11ms
+ ✓ tests/notification-contract.test.ts (5 tests) 32ms
+ ✓ tests/companion-client.test.js (3 tests) 3ms
+ ✓ tests/companion-touch.test.js (1 test) 4ms
+ ✓ tests/display-geometry.test.js (6 tests) 5ms
+ ✓ tests/text-scale.test.ts (1 test) 1ms
+ ✓ tests/bridge.test.ts (8 tests | 1 skipped) 1597ms
+   ✓ honors explicit native startup failure classification instead of retrying every exception  327ms
+   ✓ rehydrates full Host snapshots silently, initializes hidden, and isolates old process messages  493ms
+   ✓ ready sends the latest complete preferences changed during startup  314ms
+ ✓ tests/figures.test.ts (6 tests) 1639ms
+   ✓ serves the frame with an opaque-origin CSP, rejects cross-origin mutations and offers matching source  1519ms
+
+ Test Files  22 passed (22)
+      Tests  197 passed | 1 skipped (198)
+   Start at  22:21:43
+   Duration  2.15s (transform 982ms, setup 0ms, collect 2.52s, tests 5.18s, environment 3ms, prepare 1.65s)
+
+✔ activates the built Client factory using only DSH public peers and React seeds (117.713583ms)
+✔ verifies a real stable tag and exports its immutable commit (199.967375ms)
+✔ rejects a prerelease tag instead of publishing it to latest (104.712875ms)
+✔ rejects a tag whose package version differs (142.618083ms)
+✔ rejects a release outside main ancestry (157.736834ms)
+✔ rejects a tag moved after candidate verification (111.799166ms)
+✔ rejects shrinkwrap metadata and missing release notes (275.311041ms)
+✔ release notes contain only the target version and reject duplicates (0.625333ms)
+✔ npm preflight distinguishes unused, identical, conflicting and unavailable versions (9.927916ms)
+✔ post-publish verification waits for the registry to expose identical bytes (3.423625ms)
+✔ post-publish verification has a deadline and fails immediately on conflicts or registry errors (0.603042ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1040.791709
+✔ the real Client factory synchronizes resolved Harness locale without workspace or notifications (124.031333ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 157.154875

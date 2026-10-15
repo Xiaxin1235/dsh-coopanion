@@ -8,9 +8,10 @@ import type { NotificationRuntime, NotificationSnapshot, TaskNotice } from './no
 import { NativeStartError, type StartLifetime, type NativeLifecycle } from './desktop-lifecycle.ts';
 export { NativeStartError, type StartLifetime, type NativeLifecycle } from './desktop-lifecycle.ts';
 
+import type { CompanionshipMode } from '../web/companionship.js';
 import type { TextScale } from '../web/text-scale.js';
 
-export interface DesktopOptions { size: number; textScale?: TextScale; roam: boolean; dailyRhythm?: boolean; notifications: boolean; bubbleDurationMs: number; electronPath?: string; locale?: string; systemNotifications?: boolean; reminders?: boolean; reminderDelayMs?: number; }
+export interface DesktopOptions { size: number; textScale?: TextScale; roam: boolean; dailyRhythm?: boolean; companionship?: CompanionshipMode; notifications: boolean; bubbleDurationMs: number; electronPath?: string; locale?: string; systemNotifications?: boolean; reminders?: boolean; reminderDelayMs?: number; }
 export interface PetBridge {
   start(options: DesktopOptions, lifetime?: StartLifetime): Promise<void>;
   update(snapshot: PetSnapshot): void;

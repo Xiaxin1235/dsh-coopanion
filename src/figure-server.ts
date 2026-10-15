@@ -2,14 +2,15 @@ import { createServer, type IncomingMessage } from 'node:http';
 import { readFile, readdir } from 'node:fs/promises';
 import { extname, join } from 'node:path';
 import { zipSync } from 'fflate';
+import { CompanionStore, companionRequest } from './companion-store.ts';
 import { CharacterStore, PACK_LIMIT, safePath } from './character-store.ts';
 
 const MIME: Record<string, string> = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.png': 'image/png', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.svg': 'image/svg+xml', '.ogg': 'audio/ogg', '.mp3': 'audio/mpeg', '.wav': 'audio/wav', '.md': 'text/plain; charset=utf-8' };
-async function requestBytes(req: IncomingMessage): Promise<Buffer> {
+async function requestBytes(req: IncomingMessage, limit = PACK_LIMIT): Promise<Buffer> {
   const chunks: Buffer[] = []; let size = 0;
   for await (const chunk of req) {
     size += chunk.length;
-    if (size > PACK_LIMIT) throw new Error('请求不能超过 128 MiB');
+    if (size > limit) throw new Error('请求不能超过 128 MiB');
     chunks.push(chunk);
   }
   return Buffer.concat(chunks);
@@ -31,7 +32,7 @@ async function sourceArchive(project: string): Promise<Uint8Array> {
 }
 
 /** Loopback asset host for the opaque-origin sandbox. Mutations require the trusted page's origin. */
-export function createPetServer({ webRoot, store, prefix = '/' }: { webRoot: string; store: CharacterStore; prefix?: string }) {
+export function createPetServer({ webRoot, store, companions, prefix = '/' }: { webRoot: string; store: CharacterStore; companions?: CompanionStore; prefix?: string }) {
   let operation = Promise.resolve();
   const server = createServer(async (req, res) => {
     const origin = `http://127.0.0.1:${(server.address() as { port: number }).port}`;
@@ -41,6 +42,13 @@ export function createPetServer({ webRoot, store, prefix = '/' }: { webRoot: str
       const path = decodeURIComponent(new URL(req.url!, origin).pathname);
       if (!path.startsWith(prefix)) { res.writeHead(404).end(); return; }
       const relative = path.slice(prefix.length);
+      if (relative === 'api/companionship' && companions) {
+        if (req.method !== 'POST' || req.headers.origin !== origin) { res.writeHead(403).end(); return; }
+        const request = companionRequest.parse(JSON.parse((await requestBytes(req, 8192)).toString('utf8')));
+        if (request.type === 'remove') throw new Error('Unsupported companionship request');
+        await store.load(request.characterId);
+        json({ ok: true, value: await companions.request(request) }); return;
+      }
       if (relative.startsWith('api/characters/')) {
         if (req.headers.origin && req.headers.origin !== origin) { res.writeHead(403).end(); return; }
         const command = relative.slice('api/characters/'.length);
@@ -53,7 +61,12 @@ export function createPetServer({ webRoot, store, prefix = '/' }: { webRoot: str
           if (typeof data.id !== 'string' || (data.scheme !== undefined && typeof data.scheme !== 'string')) throw new Error('无效的角色请求');
           if (command === 'load') return store.load(data.id);
           if (command === 'select') return store.select(data.id, data.scheme);
-          if (command === 'remove') return store.remove(data.id);
+          if (command === 'remove') {
+            if (data.id === 'whale') throw new Error('内置角色不能删除');
+            await store.load(data.id);
+            if (companions) { const state = await companions.request({ type: 'read', characterId: data.id }); await companions.request({ type: 'remove', characterId: data.id, revision: state.revision, requestId: `remove-${data.id}-${Date.now()}` }); }
+            return store.remove(data.id);
+          }
           throw new Error('无效的角色操作');
         });
         operation = result.then(() => undefined, () => undefined);
@@ -79,5 +92,6 @@ export function createPetServer({ webRoot, store, prefix = '/' }: { webRoot: str
       json({ ok: false, error: String((error as Error).message).slice(0, 400) }, missing ? 404 : 400);
     }
   });
+  server.once('close', () => { void companions?.close(); });
   return server;
 }

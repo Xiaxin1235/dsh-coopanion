@@ -4,6 +4,7 @@
 
 | 记录 | 适用范围 |
 |---|---|
+| [P1 自主陪伴](p1/README.md) | 未发布工作区实现；固定基线、快照／测试包摘要、本机功能与资源验证，长期与跨平台范围分别标记 |
 | [v0.4.9 正式交付](releases/v0.4.9/README.md) | main／Release CI、六组安装、npm 与 Release 同包身份 |
 | [M1](m1/README.md)、[M2](m2/README.md)、[M3](m3/README.md)、[M4](m4/README.md)、[M5](m5/README.md)、[M6](m6/README.md) | 六个不同实现提交上的 v0.4.8 本地测试包；均不是已发布 v0.4.8 或 v0.4.9 的分发身份 |
 | [N0 说明](../archive/2026-10-notifications/notification-n0.md)、[CI 汇总](notification-n0/ci-final-summary.json) | 私有原型及单实例 macOS 系统通知实机；不能外推为后续分发包通过 |

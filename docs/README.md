@@ -4,15 +4,16 @@
 
 ## 当前交付
 
-v0.4.9 已合并并发布，源码为 `aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2`。[main CI](https://github.com/takboo/dsh-coopanion/actions/runs/38706065646) 的 10 项检查和[发布 CI](https://github.com/takboo/dsh-coopanion/actions/runs/38708215499) 的 13 项检查通过，覆盖三平台测试及两版宿主的六组同包安装。npm、Release 版本包与固定别名的字节身份见 [v0.4.9 交付记录](evidence/releases/v0.4.9/README.md)。本次文档整理不属于该已发布源码或产物。
+v0.4.9 已合并并发布，源码为 `aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2`。[main CI](https://github.com/takboo/dsh-coopanion/actions/runs/38706065646) 的 10 项检查和[发布 CI](https://github.com/takboo/dsh-coopanion/actions/runs/38708215499) 的 13 项检查通过，覆盖三平台测试及两版宿主的六组同包安装。npm、Release 版本包与固定别名的字节身份见 [v0.4.9 交付记录](evidence/releases/v0.4.9/README.md)。本轮工作区改动不属于该已发布源码或产物。
 
-M1–M6 的实现已纳入 v0.4.9；旧记录中的“未推送／未发布”“远端 CI 未执行”“后续里程碑未启动”只适用于各自固定提交。发布 CI 补充了跨平台自动化证据；下表实机边界仍独立保留。后续候选与产品范围见[路线图](roadmap.md)，候选尚无执行授权。
+M1–M6 的实现已纳入 v0.4.9；旧记录中的“未推送／未发布”“远端 CI 未执行”“后续里程碑未启动”只适用于各自固定提交。发布 CI 补充了跨平台自动化证据；下表实机边界仍独立保留。后续方向已整理为[自主陪伴与养成路线图](roadmap.md)及[GPT 辅助素材与建模计划](character-art-pipeline.md)：P1 代码、本机回归、两版宿主同包安装及短时资源预算已完成，远端矩阵／实机／长期体验仍待验收；当前工作区的接口见[自主陪伴契约](companionship-contract.md)，实际结果见[P1 记录](evidence/p1/README.md)。P2／P3 与 A1–A3 尚未实施，不包含独立运行；新功能尚未发布，不改变 v0.4.9 的产物身份。
 
 | 范围 | 现有证据 | 尚待验证 |
 |---|---|---|
 | 目标完成、会话续接、异常恢复、字号 | 本地记录及 v0.4.9 三平台／两版宿主 CI | 真实模型会话、物理锁屏和休眠恢复 |
 | 多屏与 DPI | 纯几何、受控布局、浏览器、原生及安装检查 | 物理多屏、混合 DPI 与真实跨屏点击 |
 | 日常节奏与资源 | 策略／界面／原生／安装检查，M6 本机有界资源对照 | 长期日常体验、长期资源表现、其他平台资源测量 |
+| P1 自主陪伴与关系 | 本机策略／存档／UI／原生、两版宿主同包安装及三组短时资源预算通过 | 本轮远端矩阵、物理设备、两小时资源观察与七天实用 |
 | 系统通知 | N0 私有原型的单实例 macOS 实机记录，后续受控投递与服务集成 | 当前分发包的物理通知中心送达、留存、点击及跨平台实机验收 |
 | 社区市场 | 目录 [PR #7073](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/7073) 在核对时仍 open、未合并 | 合并后的在线目录、市场搜索与修改记录可见性 |
 
@@ -25,13 +26,15 @@ M1–M6 的实现已纳入 v0.4.9；旧记录中的“未推送／未发布”�
 | 产品介绍与快速开始 | [项目首页](../README.md) |
 | 安装、操作、配置与阅读规则 | [使用指南](usage.md) |
 | 本地开发、构建与验证 | [开发指南](development.md) |
-| 产品范围、后续候选与验收条件 | [路线图](roadmap.md) |
+| 自主日常、主动互动、长期养成的分阶段实施与 P1 验收 | [路线图](roadmap.md) |
+| GPT 辅助母版、分件、绑定及角色包的素材计划 | [素材与建模计划](character-art-pipeline.md) |
 | 完成判断、提醒身份、领取和请求结算 | [提醒契约](notification-contract.md) |
 | 冷会话续接、请求去重、草稿与接受回执 | [会话契约](session-chat-contract.md) |
 | 退出、有限恢复、运行代次与临时状态边界 | [恢复契约](desktop-recovery-contract.md) |
 | 独立字号与阅读／输入状态保持 | [文字契约](text-readability-contract.md) |
 | 显示器归属、坐标转换与切屏 | [多屏契约](multi-display-contract.md) |
-| 默认关闭的本地时段动作策略 | [日常节奏契约](daily-rhythm-contract.md) |
+| 自主日常、低频邀请、关系存档与旧模式兼容 | [自主陪伴契约](companionship-contract.md) |
+| 默认关闭的旧本地时段动作策略 | [日常节奏契约](daily-rhythm-contract.md) |
 | 角色制作、API 2 与动作回退 | [角色接口](characters.md) |
 | CI、同包验证、发布与市场流程 | [发布流程](releasing.md) |
 | 各版本修改内容 | [版本记录](release-notes.md) |

@@ -46,3 +46,9 @@ npm 使用已配置的 Trusted Publisher；dshmarket 通过社区目录 PR 收�
 高频流式事件仅发送动画元数据，完整结果只在结果列表或已读状态变化时传输，避免长回复和多会话拖慢桌面更新。
 
 角色脚本在 `sandbox="allow-scripts"` 的 opaque-origin iframe 中运行，只通过受控消息协议与宿主交互；没有 Node、Electron 桥、外部网络连接或顶层导航权限。本地资源服务只监听 `127.0.0.1`，桌面实例使用随机路径，API 写入要求可信页面来源。
+
+## P1 自主陪伴验证
+
+`test:inbox-ui` 已包含 P1 真实 API 2 日常、邀请、输入轨迹、成长、热设置和阅读回归；`test:desktop` 额外串行运行真实时间的 P1 原生点击／存档重启验证。`test:install` 在两版宿主中检查新枚举保存和原生 IPC，不要求独立运行。
+
+资源采样入口增加 `--mode companion-day`／`companion-night`，与同轮 `off` 使用相同固定种子和真实物理时钟。P1 的预算、原始基线、实际执行范围见[本轮记录](evidence/p1/README.md)。

@@ -196,3 +196,16 @@ it('defaults daily rhythm off and hot-syncs complete durable preferences without
     expect(bridge.start).toHaveBeenCalledOnce(); expect(bridge.notify).not.toHaveBeenCalled();
   } finally { await fiber.dispose(); await ctx.fiber.dispose(); }
 });
+
+it('companionship defaults off, validates its enum, and joins complete hot Host configuration', async () => {
+  expect(Config().companionship.get()).toBe('off');
+  for (const value of [true, 1, 'loud', {}]) expect(() => Config({ companionship: value as never })).toThrow();
+  const ctx = new Context(), config = Config({ autoStart: true }); ctx.provide('agents', { list: () => [] });
+  let companionship: 'off' | 'quiet' | 'interactive' = 'off'; config.companionship = { get: () => companionship };
+  const bridge = { ...nativeBridge(), configure: vi.fn() };
+  const fiber = ctx.plugin(scope => mountPet(scope, config, bridge));
+  try {
+    await fiber.await(); await vi.waitFor(() => expect(bridge.start).toHaveBeenCalledWith(expect.objectContaining({ companionship: 'off' }), expect.anything()));
+    for (const mode of ['quiet', 'interactive', 'off'] as const) { companionship = mode; ctx.emit('settings/document-updated', 'dsh-coopanion' as SettingsNamespace, 1); expect(bridge.configure).toHaveBeenLastCalledWith(expect.objectContaining({ companionship: mode, dailyRhythm: false })); }
+  } finally { await fiber.dispose(); await ctx.fiber.dispose(); }
+});

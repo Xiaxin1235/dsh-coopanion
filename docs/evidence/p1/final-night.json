@@ -1,0 +1,8394 @@
+{
+  "schema": 1,
+  "sourceCommit": "e2c7e39b97723f69fd77a209d93958a8e04aea30",
+  "measuredAt": "2026-10-15T14:47:07.084Z",
+  "mode": "companion-night",
+  "platform": "darwin",
+  "arch": "arm64",
+  "osRelease": "24.6.0",
+  "cpu": "Apple M4",
+  "logicalCpus": 10,
+  "node": "v24.21.0",
+  "electron": "44.7.0",
+  "display": {
+    "point": {
+      "x": 0,
+      "y": 25
+    },
+    "dip": {
+      "x": 0,
+      "y": 25
+    },
+    "geometry": {
+      "displayId": 3,
+      "workArea": {
+        "x": 0,
+        "y": 25,
+        "width": 2304,
+        "height": 1271
+      },
+      "contentBounds": {
+        "x": 0,
+        "y": 25,
+        "width": 2304,
+        "height": 1271
+      },
+      "scaleFactor": 2,
+      "revision": 1
+    },
+    "contentBounds": {
+      "x": 0,
+      "y": 25,
+      "width": 2304,
+      "height": 1271
+    },
+    "cursor": {
+      "x": 290,
+      "y": 153
+    },
+    "displays": [
+      {
+        "id": 3,
+        "label": "LG TV SSCR2",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 2304,
+          "height": 1296
+        },
+        "workArea": {
+          "x": 0,
+          "y": 25,
+          "width": 2304,
+          "height": 1271
+        },
+        "scaleFactor": 2,
+        "rotation": 0
+      }
+    ],
+    "electron": "44.7.0"
+  },
+  "size": 180,
+  "roam": true,
+  "warmupSeconds": 20,
+  "rounds": 3,
+  "secondsPerRound": 60,
+  "sources": {
+    "web/pet.js": "21ffab697b0a7eba09cbe8ac750b2b415c5a7bc2d77e1f8a98e0bb53e2d68c27",
+    "web/companionship.js": "77bfb1f1a764bbeafb7fa93674cb68a50ca5a82ac4c2cd423cc41125d65d8ed3",
+    "web/companion-client.js": "fb45563f0a7c061805976521acd8012c6dc9c978f5e5af26fa14925b4c95540c",
+    "web/companion-touch.js": "83b0f804fc24ef78ef5a6432e0ae3708538e12b40fb97c1a52b34153d29ef062",
+    "src/companion-store.ts": "04fbfa245f67c6c837a4a6515fa0787e9b9bae32330208230324609ce2b49d04",
+    "web/upstream/kit/body.js": "ad6e9d87e61dead1948919e7fcc59c41b4199d6dfbd5f2bc42d9f922a53dc599",
+    "dist/bridge.js": "dcab7435c95f8d27407672a749883076714fc9f0f238db2c54aae6a484fb7a48"
+  },
+  "method": "ps cumulative CPU deltas of Electron main and all descendants; 100% is one core; summed resident memory may count shared pages more than once; sampler process excluded; controlled local hour and fixed RNG seed 17 for off/day/night/companion modes; no frame acceleration",
+  "windows": [
+    {
+      "round": 1,
+      "durationSeconds": 61.45905149999998,
+      "meanCpuPercentOneCore": 84.05352947823913,
+      "meanRssMiB": 602.0901041666667,
+      "maxRssMiB": 617.78125
+    },
+    {
+      "round": 2,
+      "durationSeconds": 61.44000600000003,
+      "meanCpuPercentOneCore": 84.2416578133565,
+      "meanRssMiB": 606.63359375,
+      "maxRssMiB": 610.78125
+    },
+    {
+      "round": 3,
+      "durationSeconds": 61.471946542000005,
+      "meanCpuPercentOneCore": 83.92150693594206,
+      "meanRssMiB": 516.7705729166667,
+      "maxRssMiB": 610.578125
+    }
+  ],
+  "meanCpuPercentOneCore": 84.07223140917922,
+  "meanRssMiB": 575.1647569444445,
+  "samples": [
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0233255419999987,
+      "cpuPercentOneCore": 80.13090325072731,
+      "rssMiB": 587.125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 1.36,
+          "rssKiB": 195104
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 9.06,
+          "rssKiB": 81920
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41056
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 2.36,
+          "rssKiB": 128512
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 5.97,
+          "rssKiB": 154624
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 8346629
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.022176374999999,
+      "cpuPercentOneCore": 83.15590350050898,
+      "rssMiB": 589.65625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 1.41,
+          "rssKiB": 195104
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 9.48,
+          "rssKiB": 81920
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41056
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 2.46,
+          "rssKiB": 129280
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 6.25,
+          "rssKiB": 156448
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 8361517
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0253771670000025,
+      "cpuPercentOneCore": 78.02007161331673,
+      "rssMiB": 592.015625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 1.45,
+          "rssKiB": 195104
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 9.89,
+          "rssKiB": 81920
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41056
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 2.56,
+          "rssKiB": 130032
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 6.5,
+          "rssKiB": 158112
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 8347453
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.024840333,
+      "cpuPercentOneCore": 83.91551076864184,
+      "rssMiB": 594.390625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 1.49,
+          "rssKiB": 195104
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 10.33,
+          "rssKiB": 81936
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41056
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 2.66,
+          "rssKiB": 130800
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 6.78,
+          "rssKiB": 159760
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 8327277
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0297669999999999,
+      "cpuPercentOneCore": 86.42731802436859,
+      "rssMiB": 597.34375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 1.54,
+          "rssKiB": 195104
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 10.77,
+          "rssKiB": 81952
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41056
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 2.77,
+          "rssKiB": 132064
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 7.07,
+          "rssKiB": 161504
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 8345633
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0310889169999973,
+      "cpuPercentOneCore": 79.52757385714408,
+      "rssMiB": 599.671875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 1.58,
+          "rssKiB": 195104
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 11.19,
+          "rssKiB": 81952
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41056
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 2.87,
+          "rssKiB": 132784
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 7.33,
+          "rssKiB": 163168
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 8990181
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0261515830000025,
+      "cpuPercentOneCore": 89.65537014622508,
+      "rssMiB": 604.65625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 1.63,
+          "rssKiB": 195104
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 11.65,
+          "rssKiB": 81952
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41056
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 2.98,
+          "rssKiB": 133584
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 7.63,
+          "rssKiB": 167472
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 8969321
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0261546669999988,
+      "cpuPercentOneCore": 83.8080289118834,
+      "rssMiB": 607.25,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 1.67,
+          "rssKiB": 195104
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 12.09,
+          "rssKiB": 81952
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41056
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 3.09,
+          "rssKiB": 134576
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 7.9,
+          "rssKiB": 169136
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 8955853
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0165788749999993,
+      "cpuPercentOneCore": 80.66270312768405,
+      "rssMiB": 609.75,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 1.71,
+          "rssKiB": 195104
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 12.51,
+          "rssKiB": 81952
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41056
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 3.19,
+          "rssKiB": 135424
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 8.16,
+          "rssKiB": 170848
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 8967857
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0232172500000014,
+      "cpuPercentOneCore": 79.1620743297672,
+      "rssMiB": 604.609375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 1.79,
+          "rssKiB": 187360
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 12.9,
+          "rssKiB": 81984
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 3.29,
+          "rssKiB": 136144
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 8.4,
+          "rssKiB": 172560
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 8980401
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.016246874999997,
+      "cpuPercentOneCore": 85.6091193392355,
+      "rssMiB": 606.859375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 1.84,
+          "rssKiB": 187360
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 13.34,
+          "rssKiB": 81984
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 3.39,
+          "rssKiB": 136832
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 8.68,
+          "rssKiB": 174176
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 8986053
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0258079580000012,
+      "cpuPercentOneCore": 77.01246552427304,
+      "rssMiB": 609.265625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 1.88,
+          "rssKiB": 187376
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 13.74,
+          "rssKiB": 81984
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 3.49,
+          "rssKiB": 137552
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 8.93,
+          "rssKiB": 175904
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 8994965
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0255265,
+      "cpuPercentOneCore": 77.03360176455703,
+      "rssMiB": 611.984375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 1.92,
+          "rssKiB": 187376
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 14.14,
+          "rssKiB": 82000
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 3.59,
+          "rssKiB": 138656
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 9.18,
+          "rssKiB": 177568
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 8973173
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0239485419999983,
+      "cpuPercentOneCore": 91.80148820408216,
+      "rssMiB": 615.203125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 1.97,
+          "rssKiB": 187392
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 14.6,
+          "rssKiB": 82016
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 3.7,
+          "rssKiB": 139392
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 9.5,
+          "rssKiB": 180096
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 8958281
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0220962500000024,
+      "cpuPercentOneCore": 88.05432952131459,
+      "rssMiB": 616.03125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 2.01,
+          "rssKiB": 187392
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 15.05,
+          "rssKiB": 82016
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 3.81,
+          "rssKiB": 140144
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 9.8,
+          "rssKiB": 180192
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 9596509
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0250959999999978,
+      "cpuPercentOneCore": 83.89458158065209,
+      "rssMiB": 616.953125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 2.06,
+          "rssKiB": 187392
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 15.48,
+          "rssKiB": 82016
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 3.92,
+          "rssKiB": 140880
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 10.07,
+          "rssKiB": 180400
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 9577029
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0243340830000016,
+      "cpuPercentOneCore": 85.9094717831426,
+      "rssMiB": 617.78125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 2.1,
+          "rssKiB": 187408
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 15.93,
+          "rssKiB": 82016
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 4.03,
+          "rssKiB": 141664
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 10.35,
+          "rssKiB": 180448
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 9565005
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0233621249999996,
+      "cpuPercentOneCore": 89.89975078469922,
+      "rssMiB": 599.625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 2.15,
+          "rssKiB": 187424
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 16.37,
+          "rssKiB": 82352
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 4.17,
+          "rssKiB": 122544
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 10.64,
+          "rssKiB": 180624
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4193126
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0226446250000008,
+      "cpuPercentOneCore": 76.2728303588356,
+      "rssMiB": 595.859375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 2.19,
+          "rssKiB": 187440
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 16.76,
+          "rssKiB": 82352
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 4.28,
+          "rssKiB": 118624
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 10.88,
+          "rssKiB": 180672
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4818730
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0262255000000005,
+      "cpuPercentOneCore": 82.82779954308272,
+      "rssMiB": 596.796875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 2.23,
+          "rssKiB": 187456
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 17.19,
+          "rssKiB": 82352
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 4.38,
+          "rssKiB": 119056
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 11.16,
+          "rssKiB": 181184
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4769590
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0240231669999993,
+      "cpuPercentOneCore": 77.14669213142906,
+      "rssMiB": 597.171875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 2.27,
+          "rssKiB": 187488
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 17.59,
+          "rssKiB": 82352
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 4.48,
+          "rssKiB": 119392
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 11.41,
+          "rssKiB": 181200
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4796950
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.022296583000003,
+      "cpuPercentOneCore": 82.16793579950745,
+      "rssMiB": 597.53125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 2.32,
+          "rssKiB": 187504
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 18.01,
+          "rssKiB": 82352
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 4.58,
+          "rssKiB": 119744
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 11.68,
+          "rssKiB": 181200
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4806130
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0153920419999996,
+      "cpuPercentOneCore": 83.71150893853469,
+      "rssMiB": 598.15625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 2.36,
+          "rssKiB": 187504
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 18.44,
+          "rssKiB": 82352
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 4.69,
+          "rssKiB": 120368
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 11.95,
+          "rssKiB": 181216
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4781458
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0217367079999968,
+      "cpuPercentOneCore": 70.46825217911221,
+      "rssMiB": 599.296875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 2.4,
+          "rssKiB": 187520
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 18.81,
+          "rssKiB": 82352
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 4.77,
+          "rssKiB": 121472
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 12.18,
+          "rssKiB": 181264
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4794734
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.025448292000001,
+      "cpuPercentOneCore": 87.76649266679955,
+      "rssMiB": 600.3125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 2.44,
+          "rssKiB": 187536
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 19.27,
+          "rssKiB": 82352
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 4.88,
+          "rssKiB": 122080
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 12.47,
+          "rssKiB": 181680
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4782026
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.024025999999998,
+      "cpuPercentOneCore": 86.91185575366276,
+      "rssMiB": 600.8125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 2.49,
+          "rssKiB": 187536
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 19.71,
+          "rssKiB": 82352
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 4.99,
+          "rssKiB": 122592
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 12.76,
+          "rssKiB": 181680
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5423086
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0266447909999987,
+      "cpuPercentOneCore": 82.79397192207635,
+      "rssMiB": 601.4375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 2.53,
+          "rssKiB": 187552
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 20.14,
+          "rssKiB": 82352
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 5.1,
+          "rssKiB": 123216
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 13.03,
+          "rssKiB": 181680
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5435650
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.025237000000001,
+      "cpuPercentOneCore": 83.88304362796121,
+      "rssMiB": 602.09375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 2.58,
+          "rssKiB": 187552
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 20.57,
+          "rssKiB": 82352
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 5.2,
+          "rssKiB": 123888
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 13.31,
+          "rssKiB": 181680
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5448790
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0250447920000005,
+      "cpuPercentOneCore": 85.84990693752998,
+      "rssMiB": 602.40625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 2.62,
+          "rssKiB": 187568
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 21.02,
+          "rssKiB": 82352
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 5.31,
+          "rssKiB": 124192
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 13.59,
+          "rssKiB": 181680
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5428722
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0270981670000037,
+      "cpuPercentOneCore": 88.59912608528654,
+      "rssMiB": 602.78125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 2.67,
+          "rssKiB": 187584
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 21.47,
+          "rssKiB": 82352
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 5.43,
+          "rssKiB": 124560
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 13.88,
+          "rssKiB": 181680
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4600702
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0285832909999955,
+      "cpuPercentOneCore": 88.47120189122403,
+      "rssMiB": 602.875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 2.72,
+          "rssKiB": 187600
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 21.92,
+          "rssKiB": 82352
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 5.55,
+          "rssKiB": 124624
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 14.17,
+          "rssKiB": 181696
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4528042
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0270790000000052,
+      "cpuPercentOneCore": 85.67987467371019,
+      "rssMiB": 603,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 2.76,
+          "rssKiB": 187616
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 22.37,
+          "rssKiB": 82352
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 5.65,
+          "rssKiB": 124736
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 14.46,
+          "rssKiB": 181696
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4556394
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0252362499999945,
+      "cpuPercentOneCore": 78.03079534107422,
+      "rssMiB": 603.21875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 2.8,
+          "rssKiB": 187680
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 22.78,
+          "rssKiB": 82352
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 5.75,
+          "rssKiB": 124896
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 14.71,
+          "rssKiB": 181696
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4568722
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0274623750000027,
+      "cpuPercentOneCore": 89.54099170784666,
+      "rssMiB": 603.84375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 2.85,
+          "rssKiB": 187696
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 23.24,
+          "rssKiB": 82352
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 5.86,
+          "rssKiB": 125520
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 15.01,
+          "rssKiB": 181696
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4583518
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0256229170000006,
+      "cpuPercentOneCore": 90.67660097926623,
+      "rssMiB": 603.859375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 2.9,
+          "rssKiB": 187712
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 23.7,
+          "rssKiB": 82352
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 5.98,
+          "rssKiB": 125520
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 15.31,
+          "rssKiB": 181696
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5226330
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0242965419999963,
+      "cpuPercentOneCore": 88.84145974203642,
+      "rssMiB": 603.890625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 2.95,
+          "rssKiB": 187712
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 24.15,
+          "rssKiB": 82352
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 6.09,
+          "rssKiB": 125520
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 15.61,
+          "rssKiB": 181728
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5235390
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0228962080000055,
+      "cpuPercentOneCore": 87.98546645897812,
+      "rssMiB": 604.40625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 2.99,
+          "rssKiB": 187728
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 24.6,
+          "rssKiB": 82352
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 6.21,
+          "rssKiB": 126016
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 15.9,
+          "rssKiB": 181744
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5228706
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0248058329999985,
+      "cpuPercentOneCore": 87.82151418531218,
+      "rssMiB": 604.421875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 3.04,
+          "rssKiB": 187728
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 25.05,
+          "rssKiB": 82352
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 6.32,
+          "rssKiB": 126016
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 16.19,
+          "rssKiB": 181760
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5161334
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.025625291999997,
+      "cpuPercentOneCore": 89.70137604601905,
+      "rssMiB": 604.53125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 3.09,
+          "rssKiB": 187920
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 25.5,
+          "rssKiB": 82352
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41072
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 6.44,
+          "rssKiB": 125984
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 16.48,
+          "rssKiB": 181712
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5110506
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0231369580000027,
+      "cpuPercentOneCore": 83.0778316972886,
+      "rssMiB": 604.578125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 3.13,
+          "rssKiB": 187936
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 25.94,
+          "rssKiB": 82352
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 6.54,
+          "rssKiB": 125984
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 16.75,
+          "rssKiB": 181728
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5088186
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.017692624999996,
+      "cpuPercentOneCore": 89.41796153823957,
+      "rssMiB": 604.578125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 3.18,
+          "rssKiB": 187952
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 26.38,
+          "rssKiB": 82352
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 6.67,
+          "rssKiB": 125952
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 17.04,
+          "rssKiB": 181744
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4419406
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0254704170000042,
+      "cpuPercentOneCore": 66.31103040391241,
+      "rssMiB": 604.578125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 3.21,
+          "rssKiB": 187952
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 26.74,
+          "rssKiB": 82352
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 6.75,
+          "rssKiB": 125952
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 17.25,
+          "rssKiB": 181744
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4299674
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0252170419999966,
+      "cpuPercentOneCore": 86.81088623573673,
+      "rssMiB": 599.953125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 3.26,
+          "rssKiB": 184784
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 27.18,
+          "rssKiB": 80784
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 6.87,
+          "rssKiB": 125952
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 17.53,
+          "rssKiB": 181744
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4896014
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0245195000000094,
+      "cpuPercentOneCore": 89.79819320178778,
+      "rssMiB": 599.640625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 3.31,
+          "rssKiB": 184784
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 27.64,
+          "rssKiB": 80784
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 6.98,
+          "rssKiB": 125632
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 17.83,
+          "rssKiB": 181744
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4853434
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0191694579999895,
+      "cpuPercentOneCore": 82.42005226965989,
+      "rssMiB": 599.71875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 3.35,
+          "rssKiB": 184800
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 28.06,
+          "rssKiB": 80784
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 7.09,
+          "rssKiB": 125696
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 18.1,
+          "rssKiB": 181744
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4792690
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0277631249999977,
+      "cpuPercentOneCore": 79.78492125799922,
+      "rssMiB": 599.796875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 3.39,
+          "rssKiB": 184816
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 28.48,
+          "rssKiB": 80784
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 7.19,
+          "rssKiB": 125760
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 18.36,
+          "rssKiB": 181744
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4770134
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.026764458000005,
+      "cpuPercentOneCore": 86.68005530047236,
+      "rssMiB": 599.796875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 3.44,
+          "rssKiB": 184816
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 28.92,
+          "rssKiB": 80784
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 7.3,
+          "rssKiB": 125760
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 18.65,
+          "rssKiB": 181744
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4713278
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.027322417000003,
+      "cpuPercentOneCore": 87.60638190181706,
+      "rssMiB": 599.796875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 3.48,
+          "rssKiB": 184800
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 29.37,
+          "rssKiB": 80784
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 7.41,
+          "rssKiB": 125760
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 18.95,
+          "rssKiB": 181760
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5300578
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.027892292000004,
+      "cpuPercentOneCore": 89.50354109669631,
+      "rssMiB": 599.796875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 3.53,
+          "rssKiB": 184800
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 29.83,
+          "rssKiB": 80784
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 7.52,
+          "rssKiB": 125760
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 19.25,
+          "rssKiB": 181760
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5248794
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0274277079999883,
+      "cpuPercentOneCore": 86.62409949333532,
+      "rssMiB": 599.8125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 3.58,
+          "rssKiB": 184816
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 30.28,
+          "rssKiB": 80784
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 7.63,
+          "rssKiB": 125760
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 19.53,
+          "rssKiB": 181760
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5195558
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0199260829999985,
+      "cpuPercentOneCore": 66.67149819326639,
+      "rssMiB": 599.828125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 3.61,
+          "rssKiB": 184832
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 30.63,
+          "rssKiB": 80784
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 7.71,
+          "rssKiB": 125760
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 19.75,
+          "rssKiB": 181760
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5131962
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.023471292000002,
+      "cpuPercentOneCore": 82.07362595960355,
+      "rssMiB": 599.859375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 3.65,
+          "rssKiB": 184832
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 31.05,
+          "rssKiB": 80784
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 7.83,
+          "rssKiB": 125792
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 20.01,
+          "rssKiB": 181760
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4225514
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0279707920000074,
+      "cpuPercentOneCore": 87.5511256743949,
+      "rssMiB": 599.875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 3.7,
+          "rssKiB": 184848
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 31.5,
+          "rssKiB": 80784
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 7.94,
+          "rssKiB": 125792
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 20.3,
+          "rssKiB": 181760
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4816246
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0242952499999955,
+      "cpuPercentOneCore": 88.84157180266197,
+      "rssMiB": 599.890625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 3.74,
+          "rssKiB": 184864
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 31.96,
+          "rssKiB": 80784
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 8.05,
+          "rssKiB": 125792
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 20.6,
+          "rssKiB": 181760
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4687658
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0223212910000001,
+      "cpuPercentOneCore": 89.99127848546313,
+      "rssMiB": 599.90625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 3.79,
+          "rssKiB": 184880
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 32.41,
+          "rssKiB": 80784
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 8.17,
+          "rssKiB": 125792
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 20.9,
+          "rssKiB": 181760
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4648058
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0232112500000077,
+      "cpuPercentOneCore": 80.13985381806512,
+      "rssMiB": 601.0625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 3.83,
+          "rssKiB": 184880
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 32.83,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 8.27,
+          "rssKiB": 125792
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 21.16,
+          "rssKiB": 182352
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4588618
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.020496499999994,
+      "cpuPercentOneCore": 89.17228035569059,
+      "rssMiB": 601.078125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 3.88,
+          "rssKiB": 184896
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 33.28,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 8.38,
+          "rssKiB": 125792
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 21.46,
+          "rssKiB": 182352
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5171350
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0212727920000033,
+      "cpuPercentOneCore": 82.2503063412656,
+      "rssMiB": 601.09375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 3.92,
+          "rssKiB": 184912
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 33.71,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 8.48,
+          "rssKiB": 125792
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 21.73,
+          "rssKiB": 182352
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5119622
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0259682919999904,
+      "cpuPercentOneCore": 86.74732025734036,
+      "rssMiB": 601.09375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 3.97,
+          "rssKiB": 184912
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 34.16,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 8.59,
+          "rssKiB": 125792
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 22.01,
+          "rssKiB": 182352
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5094802
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0252205410000024,
+      "cpuPercentOneCore": 82.90899040814298,
+      "rssMiB": 600.796875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 4.01,
+          "rssKiB": 184928
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 34.59,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 8.69,
+          "rssKiB": 125472
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 22.29,
+          "rssKiB": 182352
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5049774
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0266734169999983,
+      "cpuPercentOneCore": 84.73970257671544,
+      "rssMiB": 600.84375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 4.05,
+          "rssKiB": 184928
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 35.03,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 8.8,
+          "rssKiB": 125520
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 22.57,
+          "rssKiB": 182352
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4991762
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0227973330000095,
+      "cpuPercentOneCore": 87.9939721156846,
+      "rssMiB": 601.375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 4.1,
+          "rssKiB": 184944
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 35.48,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 8.91,
+          "rssKiB": 126048
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 22.86,
+          "rssKiB": 182352
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4937662
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.021045916999996,
+      "cpuPercentOneCore": 85.20674589799167,
+      "rssMiB": 601.390625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 4.14,
+          "rssKiB": 184960
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 35.92,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 9.02,
+          "rssKiB": 126048
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 23.14,
+          "rssKiB": 182352
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5523402
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.023802416999999,
+      "cpuPercentOneCore": 88.88433792396462,
+      "rssMiB": 601.390625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 4.19,
+          "rssKiB": 184960
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 36.37,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 9.14,
+          "rssKiB": 126048
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 23.43,
+          "rssKiB": 182352
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4660498
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0158670830000047,
+      "cpuPercentOneCore": 75.79731766936325,
+      "rssMiB": 601.40625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 4.23,
+          "rssKiB": 184976
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 36.77,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 9.23,
+          "rssKiB": 126048
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 23.67,
+          "rssKiB": 182352
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4560082
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0256908750000002,
+      "cpuPercentOneCore": 83.84592482603452,
+      "rssMiB": 601.40625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 4.27,
+          "rssKiB": 184976
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 37.2,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 9.34,
+          "rssKiB": 126048
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 23.95,
+          "rssKiB": 182352
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4544110
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.024751166999995,
+      "cpuPercentOneCore": 85.87450576672538,
+      "rssMiB": 601.421875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 4.31,
+          "rssKiB": 184992
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 37.65,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 9.45,
+          "rssKiB": 126048
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 24.23,
+          "rssKiB": 182352
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4510526
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0234724160000042,
+      "cpuPercentOneCore": 85.98179943522801,
+      "rssMiB": 601.421875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 4.36,
+          "rssKiB": 184992
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 38.09,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 9.55,
+          "rssKiB": 126048
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 24.52,
+          "rssKiB": 182352
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5098634
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.024348708999998,
+      "cpuPercentOneCore": 87.8607052552058,
+      "rssMiB": 601.4375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 4.4,
+          "rssKiB": 185008
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 38.54,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 9.67,
+          "rssKiB": 126048
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 24.81,
+          "rssKiB": 182352
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5037062
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.024943625,
+      "cpuPercentOneCore": 88.78537100028318,
+      "rssMiB": 601.453125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 4.45,
+          "rssKiB": 185024
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 39,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 9.77,
+          "rssKiB": 126048
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 25.11,
+          "rssKiB": 182352
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5007574
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0185420000000014,
+      "cpuPercentOneCore": 77.56184821048097,
+      "rssMiB": 601.453125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 4.49,
+          "rssKiB": 185024
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 39.4,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 9.87,
+          "rssKiB": 126048
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 25.36,
+          "rssKiB": 182352
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4973386
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0265538329999981,
+      "cpuPercentOneCore": 80.85304182971224,
+      "rssMiB": 601.46875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 4.53,
+          "rssKiB": 185040
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 39.83,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 9.97,
+          "rssKiB": 126048
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 25.62,
+          "rssKiB": 182352
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4946058
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0274307919999992,
+      "cpuPercentOneCore": 86.62383947706367,
+      "rssMiB": 601.46875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 4.58,
+          "rssKiB": 185040
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 40.27,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 10.08,
+          "rssKiB": 126048
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 25.91,
+          "rssKiB": 182352
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4887554
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0273882080000039,
+      "cpuPercentOneCore": 88.57411374921976,
+      "rssMiB": 601.484375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 4.62,
+          "rssKiB": 185056
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 40.73,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 10.19,
+          "rssKiB": 126048
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 26.21,
+          "rssKiB": 182352
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5474850
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0262485420000012,
+      "cpuPercentOneCore": 86.72363112599697,
+      "rssMiB": 601.53125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 4.67,
+          "rssKiB": 185072
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 41.17,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 10.31,
+          "rssKiB": 126080
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 26.49,
+          "rssKiB": 182352
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4283918
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0258308749999996,
+      "cpuPercentOneCore": 87.73376020681752,
+      "rssMiB": 601.5625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 4.72,
+          "rssKiB": 185072
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 41.62,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 10.42,
+          "rssKiB": 126112
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 26.78,
+          "rssKiB": 182352
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4871502
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0245950000000013,
+      "cpuPercentOneCore": 91.74356697036417,
+      "rssMiB": 602.578125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 4.76,
+          "rssKiB": 185088
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 42.09,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 10.54,
+          "rssKiB": 126192
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 27.09,
+          "rssKiB": 183296
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4747202
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.023294790999993,
+      "cpuPercentOneCore": 89.90566629396632,
+      "rssMiB": 607.65625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 4.81,
+          "rssKiB": 185088
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 42.55,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 10.66,
+          "rssKiB": 126192
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 27.38,
+          "rssKiB": 188496
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4705950
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0238596249999974,
+      "cpuPercentOneCore": 84.97258596362842,
+      "rssMiB": 607.6875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 4.86,
+          "rssKiB": 185120
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 42.99,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 10.76,
+          "rssKiB": 126192
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 27.66,
+          "rssKiB": 188496
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4646878
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0182564170000115,
+      "cpuPercentOneCore": 86.42223955657983,
+      "rssMiB": 607.71875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 4.9,
+          "rssKiB": 185120
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 43.44,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 10.87,
+          "rssKiB": 126192
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 27.94,
+          "rssKiB": 188528
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4583762
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0252874579999915,
+      "cpuPercentOneCore": 86.80492412694768,
+      "rssMiB": 607.734375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 4.94,
+          "rssKiB": 185136
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 43.89,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 10.98,
+          "rssKiB": 126192
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 28.23,
+          "rssKiB": 188528
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5170722
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0253891670000013,
+      "cpuPercentOneCore": 90.69727181933447,
+      "rssMiB": 607.75,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 4.99,
+          "rssKiB": 185152
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 44.35,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 11.1,
+          "rssKiB": 126192
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 28.53,
+          "rssKiB": 188528
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5113810
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0245653750000057,
+      "cpuPercentOneCore": 83.93803079671649,
+      "rssMiB": 607.828125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 5.03,
+          "rssKiB": 185152
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 44.78,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 11.21,
+          "rssKiB": 126192
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 28.81,
+          "rssKiB": 188608
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5061126
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0257317919999913,
+      "cpuPercentOneCore": 85.79240761214544,
+      "rssMiB": 607.890625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 5.08,
+          "rssKiB": 185216
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 45.23,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 11.31,
+          "rssKiB": 126192
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 29.09,
+          "rssKiB": 188608
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5002422
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0203351660000044,
+      "cpuPercentOneCore": 87.22623993143814,
+      "rssMiB": 607.890625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 5.12,
+          "rssKiB": 185216
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 45.68,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 11.42,
+          "rssKiB": 126192
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 29.38,
+          "rssKiB": 188608
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4943926
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.022462249999997,
+      "cpuPercentOneCore": 74.33037258832812,
+      "rssMiB": 607.90625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 5.16,
+          "rssKiB": 185232
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 46.07,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 11.52,
+          "rssKiB": 126192
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 29.61,
+          "rssKiB": 188608
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5525738
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0273412919999974,
+      "cpuPercentOneCore": 85.65799962024715,
+      "rssMiB": 607.90625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 5.21,
+          "rssKiB": 185232
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 46.51,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 11.63,
+          "rssKiB": 126192
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 29.89,
+          "rssKiB": 188608
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4660782
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0245956670000014,
+      "cpuPercentOneCore": 87.83952821459685,
+      "rssMiB": 608.28125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 5.25,
+          "rssKiB": 185232
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 46.96,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 11.74,
+          "rssKiB": 126192
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 30.19,
+          "rssKiB": 188992
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4538526
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0233203750000102,
+      "cpuPercentOneCore": 86.97178535118914,
+      "rssMiB": 608.296875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 5.3,
+          "rssKiB": 185248
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 47.41,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 11.85,
+          "rssKiB": 126192
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 30.47,
+          "rssKiB": 188992
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4492626
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0241609159999934,
+      "cpuPercentOneCore": 82.99477032572224,
+      "rssMiB": 608.296875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 5.34,
+          "rssKiB": 185248
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 47.84,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 11.96,
+          "rssKiB": 126192
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 30.74,
+          "rssKiB": 188992
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5078854
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0263507919999975,
+      "cpuPercentOneCore": 82.81768832112935,
+      "rssMiB": 608.3125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 5.38,
+          "rssKiB": 185264
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 48.28,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 12.06,
+          "rssKiB": 126192
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 31.01,
+          "rssKiB": 188992
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5023622
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.023729999999996,
+      "cpuPercentOneCore": 85.96016527795429,
+      "rssMiB": 608.3125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 5.43,
+          "rssKiB": 185264
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 48.71,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 12.17,
+          "rssKiB": 126192
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 31.3,
+          "rssKiB": 188992
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4997658
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0250698750000011,
+      "cpuPercentOneCore": 78.04346020801708,
+      "rssMiB": 608.328125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 5.47,
+          "rssKiB": 185280
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 49.12,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 12.27,
+          "rssKiB": 126192
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 31.55,
+          "rssKiB": 188992
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4968242
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0264512920000124,
+      "cpuPercentOneCore": 84.75804032598882,
+      "rssMiB": 608.34375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 5.51,
+          "rssKiB": 185296
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 49.56,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 12.38,
+          "rssKiB": 126192
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 31.83,
+          "rssKiB": 188992
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4937966
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0241881659999927,
+      "cpuPercentOneCore": 83.96894521431196,
+      "rssMiB": 608.34375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 5.56,
+          "rssKiB": 185296
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 49.99,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 12.48,
+          "rssKiB": 126192
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 32.11,
+          "rssKiB": 188992
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4901938
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0245813749999944,
+      "cpuPercentOneCore": 87.84075349798394,
+      "rssMiB": 608.375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 5.6,
+          "rssKiB": 185312
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 50.45,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 12.59,
+          "rssKiB": 126208
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 32.4,
+          "rssKiB": 188992
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5488494
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0239013340000092,
+      "cpuPercentOneCore": 85.94578117816879,
+      "rssMiB": 608.375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 5.65,
+          "rssKiB": 185312
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 50.89,
+          "rssKiB": 81376
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 12.7,
+          "rssKiB": 126208
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 32.68,
+          "rssKiB": 188992
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5430154
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0156644999999989,
+      "cpuPercentOneCore": 74.8278590026531,
+      "rssMiB": 608.65625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 5.69,
+          "rssKiB": 185456
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 51.27,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 12.81,
+          "rssKiB": 126272
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 32.91,
+          "rssKiB": 188992
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4483210
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0204958749999933,
+      "cpuPercentOneCore": 78.3932615112245,
+      "rssMiB": 608.65625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 5.73,
+          "rssKiB": 185456
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 51.67,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 12.91,
+          "rssKiB": 126272
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 33.17,
+          "rssKiB": 188992
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4360850
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0243990830000111,
+      "cpuPercentOneCore": 85.90402066964617,
+      "rssMiB": 608.671875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 5.77,
+          "rssKiB": 185472
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 52.12,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 13.02,
+          "rssKiB": 126272
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 33.45,
+          "rssKiB": 188992
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4944558
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0227693329999892,
+      "cpuPercentOneCore": 86.04090596056335,
+      "rssMiB": 608.6875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 5.81,
+          "rssKiB": 185488
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 52.57,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 13.12,
+          "rssKiB": 126272
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 33.74,
+          "rssKiB": 188992
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4930158
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0243753340000112,
+      "cpuPercentOneCore": 83.95360288907428,
+      "rssMiB": 608.6875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 5.86,
+          "rssKiB": 185488
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 53,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 13.23,
+          "rssKiB": 126272
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 34.01,
+          "rssKiB": 188992
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4882866
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0248458329999994,
+      "cpuPercentOneCore": 85.86657345563935,
+      "rssMiB": 608.703125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 5.9,
+          "rssKiB": 185504
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 53.45,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 13.34,
+          "rssKiB": 126272
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 34.29,
+          "rssKiB": 188992
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4825746
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0230590830000001,
+      "cpuPercentOneCore": 85.03907686825143,
+      "rssMiB": 608.703125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 5.95,
+          "rssKiB": 185504
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 53.89,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 13.44,
+          "rssKiB": 126272
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 34.57,
+          "rssKiB": 188992
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4799606
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.025489499999996,
+      "cpuPercentOneCore": 70.21037270493723,
+      "rssMiB": 608.71875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 5.98,
+          "rssKiB": 185520
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 54.26,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 13.53,
+          "rssKiB": 126272
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 34.8,
+          "rssKiB": 188992
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4771038
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0233717919999907,
+      "cpuPercentOneCore": 86.96741565063707,
+      "rssMiB": 608.71875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 6.03,
+          "rssKiB": 185520
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 54.71,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 13.64,
+          "rssKiB": 126272
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 35.08,
+          "rssKiB": 188992
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5358150
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0253713750000024,
+      "cpuPercentOneCore": 78.99576872818392,
+      "rssMiB": 608.734375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 6.07,
+          "rssKiB": 185536
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 55.12,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 13.74,
+          "rssKiB": 126272
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 35.34,
+          "rssKiB": 188992
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5327242
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0225874999999942,
+      "cpuPercentOneCore": 83.1224711821732,
+      "rssMiB": 608.75,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 6.11,
+          "rssKiB": 185552
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 55.56,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 13.84,
+          "rssKiB": 126272
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 35.61,
+          "rssKiB": 188992
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5274110
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0239056670000137,
+      "cpuPercentOneCore": 85.9454174697902,
+      "rssMiB": 608.6875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 6.16,
+          "rssKiB": 185552
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 55.99,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 13.96,
+          "rssKiB": 126208
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 35.89,
+          "rssKiB": 188992
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4270846
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0239091659999977,
+      "cpuPercentOneCore": 80.08522896649156,
+      "rssMiB": 608.703125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 6.2,
+          "rssKiB": 185568
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 56.4,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 14.06,
+          "rssKiB": 126208
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 36.16,
+          "rssKiB": 188992
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4858710
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0224594170000054,
+      "cpuPercentOneCore": 78.24271425337159,
+      "rssMiB": 608.703125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 6.24,
+          "rssKiB": 185568
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 56.81,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 14.16,
+          "rssKiB": 126208
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 36.41,
+          "rssKiB": 188992
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4736530
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0216123329999973,
+      "cpuPercentOneCore": 83.20181467503922,
+      "rssMiB": 608.71875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 6.28,
+          "rssKiB": 185584
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 57.24,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 14.27,
+          "rssKiB": 126208
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 36.68,
+          "rssKiB": 188992
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4686738
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.027216958999983,
+      "cpuPercentOneCore": 81.7743508457804,
+      "rssMiB": 608.734375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 6.32,
+          "rssKiB": 185600
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 57.67,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 14.37,
+          "rssKiB": 126208
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 36.95,
+          "rssKiB": 188992
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4632762
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0245663330000243,
+      "cpuPercentOneCore": 80.03386150694274,
+      "rssMiB": 608.734375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 6.36,
+          "rssKiB": 185600
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 58.09,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 14.47,
+          "rssKiB": 126208
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 37.21,
+          "rssKiB": 188992
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4582110
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0267488329999905,
+      "cpuPercentOneCore": 82.78558228465982,
+      "rssMiB": 610.28125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 6.4,
+          "rssKiB": 185616
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 58.5,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 14.6,
+          "rssKiB": 127760
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 37.48,
+          "rssKiB": 189008
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5228806
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.023354250000004,
+      "cpuPercentOneCore": 86.96890641730384,
+      "rssMiB": 610.65625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 6.45,
+          "rssKiB": 185616
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 58.94,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 14.71,
+          "rssKiB": 127920
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 37.77,
+          "rssKiB": 189232
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5157054
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0290008340000059,
+      "cpuPercentOneCore": 83.57621991975894,
+      "rssMiB": 610.765625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 6.49,
+          "rssKiB": 185632
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 59.37,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 14.81,
+          "rssKiB": 127920
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 38.06,
+          "rssKiB": 189328
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5102638
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0248114579999819,
+      "cpuPercentOneCore": 81.96629667269171,
+      "rssMiB": 610.765625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 6.53,
+          "rssKiB": 185632
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 59.79,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 14.91,
+          "rssKiB": 127920
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 38.34,
+          "rssKiB": 189328
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5021710
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0231669580000162,
+      "cpuPercentOneCore": 86.98482618512999,
+      "rssMiB": 610.78125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 6.58,
+          "rssKiB": 185648
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 60.24,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 15.02,
+          "rssKiB": 127920
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 38.62,
+          "rssKiB": 189328
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5573686
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0239692499999946,
+      "cpuPercentOneCore": 85.94008072019786,
+      "rssMiB": 610.46875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 6.62,
+          "rssKiB": 185664
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 60.67,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 15.14,
+          "rssKiB": 127360
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 38.91,
+          "rssKiB": 189552
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4254650
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0209710839999897,
+      "cpuPercentOneCore": 77.37731385152642,
+      "rssMiB": 610.546875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 6.66,
+          "rssKiB": 185664
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 61.07,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 15.23,
+          "rssKiB": 127360
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 39.17,
+          "rssKiB": 189632
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4805006
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0216375410000036,
+      "cpuPercentOneCore": 80.2632995648695,
+      "rssMiB": 610.5625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 6.7,
+          "rssKiB": 185680
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 61.49,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 15.33,
+          "rssKiB": 127360
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 39.43,
+          "rssKiB": 189632
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4653858
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0251918749999895,
+      "cpuPercentOneCore": 84.86216299753731,
+      "rssMiB": 610.5625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 6.75,
+          "rssKiB": 185680
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 61.93,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 15.44,
+          "rssKiB": 127360
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 39.7,
+          "rssKiB": 189632
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4588526
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.026032084000006,
+      "cpuPercentOneCore": 83.81804169780587,
+      "rssMiB": 610.578125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 6.79,
+          "rssKiB": 185696
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 62.37,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 41088
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 15.54,
+          "rssKiB": 127360
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 39.98,
+          "rssKiB": 189632
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4537126
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0273382909999929,
+      "cpuPercentOneCore": 99.28569867741993,
+      "rssMiB": 528.515625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 7.03,
+          "rssKiB": 152128
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 62.77,
+          "rssKiB": 72624
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 37792
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 15.68,
+          "rssKiB": 113776
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 40.22,
+          "rssKiB": 164880
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4628478
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0204254590000201,
+      "cpuPercentOneCore": 75.45872098825977,
+      "rssMiB": 515.796875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 7.14,
+          "rssKiB": 143712
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 63.12,
+          "rssKiB": 69952
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35680
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 15.78,
+          "rssKiB": 113712
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 40.43,
+          "rssKiB": 165120
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "sit",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "rest",
+        "heapBytes": 5340325
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.017426749999984,
+      "cpuPercentOneCore": 76.66399571271512,
+      "rssMiB": 499.359375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 7.21,
+          "rssKiB": 141200
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 63.52,
+          "rssKiB": 69472
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 15.87,
+          "rssKiB": 109136
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 40.65,
+          "rssKiB": 155872
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "sit",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "rest",
+        "heapBytes": 5339161
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0147909579999979,
+      "cpuPercentOneCore": 84.74651781436182,
+      "rssMiB": 498.671875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 7.38,
+          "rssKiB": 141328
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 63.88,
+          "rssKiB": 69472
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 15.99,
+          "rssKiB": 108496
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 40.86,
+          "rssKiB": 155680
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "sit",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "rest",
+        "heapBytes": 4343352
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0138994170000077,
+      "cpuPercentOneCore": 71.01296123932845,
+      "rssMiB": 499.0625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 7.52,
+          "rssKiB": 141600
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 64.19,
+          "rssKiB": 69472
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 16.08,
+          "rssKiB": 108624
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 41.04,
+          "rssKiB": 155680
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "sit",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "rest",
+        "heapBytes": 5029424
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0241661660000099,
+      "cpuPercentOneCore": 81.04153676953186,
+      "rssMiB": 498.984375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 7.56,
+          "rssKiB": 141552
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 64.6,
+          "rssKiB": 69472
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 16.19,
+          "rssKiB": 108144
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 41.31,
+          "rssKiB": 156128
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "sit",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "rest",
+        "heapBytes": 4948456
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.024141042000003,
+      "cpuPercentOneCore": 79.09066884168521,
+      "rssMiB": 501.40625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 7.6,
+          "rssKiB": 141552
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 65.01,
+          "rssKiB": 70672
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 16.29,
+          "rssKiB": 108208
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 41.57,
+          "rssKiB": 157344
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "sit",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "rest",
+        "heapBytes": 4948932
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0247122079999826,
+      "cpuPercentOneCore": 73.19128181988165,
+      "rssMiB": 501.53125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 7.63,
+          "rssKiB": 141552
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 65.39,
+          "rssKiB": 70688
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 16.39,
+          "rssKiB": 108208
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 41.81,
+          "rssKiB": 157456
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "wake",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "rest",
+        "heapBytes": 4908028
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0239762090000148,
+      "cpuPercentOneCore": 88.869252234745,
+      "rssMiB": 501.28125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 7.68,
+          "rssKiB": 140992
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 65.84,
+          "rssKiB": 70816
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 16.52,
+          "rssKiB": 108256
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 42.09,
+          "rssKiB": 157584
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4910016
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.027738458000007,
+      "cpuPercentOneCore": 87.57091777526884,
+      "rssMiB": 501.375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 7.73,
+          "rssKiB": 140992
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 66.29,
+          "rssKiB": 70816
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 16.63,
+          "rssKiB": 108352
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 42.38,
+          "rssKiB": 157584
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4915228
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0250550419999926,
+      "cpuPercentOneCore": 90.72683533027208,
+      "rssMiB": 501.421875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 7.78,
+          "rssKiB": 140992
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 66.74,
+          "rssKiB": 70816
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 16.75,
+          "rssKiB": 108368
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 42.69,
+          "rssKiB": 157616
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4885320
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0267896659999969,
+      "cpuPercentOneCore": 80.83447150704075,
+      "rssMiB": 510.359375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 7.82,
+          "rssKiB": 140992
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 67.16,
+          "rssKiB": 70800
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 16.85,
+          "rssKiB": 108864
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 42.96,
+          "rssKiB": 166288
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4910012
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0258508340000116,
+      "cpuPercentOneCore": 89.68165443826945,
+      "rssMiB": 510.53125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 7.86,
+          "rssKiB": 140992
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 67.63,
+          "rssKiB": 70800
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 16.97,
+          "rssKiB": 109040
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 43.25,
+          "rssKiB": 166288
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5542040
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0280443749999977,
+      "cpuPercentOneCore": 88.5175797980515,
+      "rssMiB": 510.609375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 7.91,
+          "rssKiB": 140992
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 68.08,
+          "rssKiB": 70800
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 17.09,
+          "rssKiB": 109120
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 43.54,
+          "rssKiB": 166288
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4421898
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.025479457999987,
+      "cpuPercentOneCore": 83.86321084161769,
+      "rssMiB": 510.609375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 7.95,
+          "rssKiB": 140992
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 68.51,
+          "rssKiB": 70800
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 17.2,
+          "rssKiB": 109120
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 43.82,
+          "rssKiB": 166288
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4999902
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0238243329999968,
+      "cpuPercentOneCore": 87.90570520655933,
+      "rssMiB": 510.078125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 7.99,
+          "rssKiB": 140992
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 68.96000000000001,
+          "rssKiB": 70800
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 17.31,
+          "rssKiB": 108576
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 44.12,
+          "rssKiB": 166288
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4881734
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0295187500000174,
+      "cpuPercentOneCore": 90.33346891447964,
+      "rssMiB": 509.28125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 8.04,
+          "rssKiB": 140160
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 69.43,
+          "rssKiB": 70800
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 17.42,
+          "rssKiB": 108592
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 44.42,
+          "rssKiB": 166288
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4846242
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.024524333999987,
+      "cpuPercentOneCore": 90.77383222017193,
+      "rssMiB": 509.28125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 8.09,
+          "rssKiB": 140160
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 69.88,
+          "rssKiB": 70800
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 17.54,
+          "rssKiB": 108592
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 44.73,
+          "rssKiB": 166288
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4791206
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0243434159999887,
+      "cpuPercentOneCore": 87.8611592501342,
+      "rssMiB": 509.53125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 8.13,
+          "rssKiB": 140160
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 70.34,
+          "rssKiB": 70800
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 17.65,
+          "rssKiB": 108848
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 45.02,
+          "rssKiB": 166288
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4765842
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0239345840000023,
+      "cpuPercentOneCore": 83.98974050084306,
+      "rssMiB": 510.03125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 8.17,
+          "rssKiB": 140160
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 70.77,
+          "rssKiB": 70800
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 17.76,
+          "rssKiB": 109360
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 45.3,
+          "rssKiB": 166288
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5326758
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.024707041000016,
+      "cpuPercentOneCore": 89.7817584138175,
+      "rssMiB": 510.140625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 8.22,
+          "rssKiB": 140176
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 71.23,
+          "rssKiB": 70800
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 17.87,
+          "rssKiB": 109424
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 45.6,
+          "rssKiB": 166320
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5246590
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0249658749999944,
+      "cpuPercentOneCore": 86.8321591682265,
+      "rssMiB": 510.171875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 8.26,
+          "rssKiB": 140192
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 71.68,
+          "rssKiB": 70800
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 17.98,
+          "rssKiB": 109440
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 45.89,
+          "rssKiB": 166320
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5198502
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.024498209000012,
+      "cpuPercentOneCore": 86.87179657138732,
+      "rssMiB": 510.171875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 8.31,
+          "rssKiB": 140192
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 72.12,
+          "rssKiB": 70800
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 18.09,
+          "rssKiB": 109440
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 46.18,
+          "rssKiB": 166320
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5150058
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0254529159999801,
+      "cpuPercentOneCore": 87.76609690775913,
+      "rssMiB": 510.25,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 8.35,
+          "rssKiB": 140208
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 72.57,
+          "rssKiB": 70800
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 18.2,
+          "rssKiB": 109456
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 46.48,
+          "rssKiB": 166368
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5065738
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.026834124999994,
+      "cpuPercentOneCore": 96.41284564827097,
+      "rssMiB": 511.5625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 8.5,
+          "rssKiB": 140432
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 73.01,
+          "rssKiB": 70800
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 18.34,
+          "rssKiB": 110560
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 46.74,
+          "rssKiB": 166384
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4428838
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0515747499999997,
+      "cpuPercentOneCore": 74.17447024093981,
+      "rssMiB": 511.84375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 8.64,
+          "rssKiB": 140688
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 73.35,
+          "rssKiB": 70800
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 18.44,
+          "rssKiB": 110560
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 46.94,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5074878
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0291481670000067,
+      "cpuPercentOneCore": 68.01741697121511,
+      "rssMiB": 511.875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 8.67,
+          "rssKiB": 140688
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 73.71000000000001,
+          "rssKiB": 70800
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 18.53,
+          "rssKiB": 110592
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 47.16,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4897766
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0251014169999981,
+      "cpuPercentOneCore": 86.82067795834405,
+      "rssMiB": 511.90625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 8.72,
+          "rssKiB": 140704
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 74.16,
+          "rssKiB": 70800
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 18.64,
+          "rssKiB": 110608
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 47.44,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4835482
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0270420830000075,
+      "cpuPercentOneCore": 86.65662437125218,
+      "rssMiB": 511.90625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 8.76,
+          "rssKiB": 140704
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 74.61,
+          "rssKiB": 70800
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 18.75,
+          "rssKiB": 110608
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 47.73,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4770234
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0247607499999867,
+      "cpuPercentOneCore": 85.8737027154885,
+      "rssMiB": 512,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 8.81,
+          "rssKiB": 140720
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 75.05,
+          "rssKiB": 70880
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 18.86,
+          "rssKiB": 110608
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 48.01,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4669634
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0240462920000137,
+      "cpuPercentOneCore": 83.98057848736275,
+      "rssMiB": 512.03125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 8.85,
+          "rssKiB": 140736
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 75.49,
+          "rssKiB": 70896
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 18.96,
+          "rssKiB": 110608
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 48.29,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5206318
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0215585410000059,
+      "cpuPercentOneCore": 84.18509223741133,
+      "rssMiB": 512.0625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 8.89,
+          "rssKiB": 140752
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 75.92,
+          "rssKiB": 70896
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 19.07,
+          "rssKiB": 110624
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 48.57,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5141006
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0238237499999814,
+      "cpuPercentOneCore": 84.97556342095092,
+      "rssMiB": 512.34375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 8.94,
+          "rssKiB": 140960
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 76.35,
+          "rssKiB": 70896
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 19.18,
+          "rssKiB": 110704
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 48.85,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5048310
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0237162499999977,
+      "cpuPercentOneCore": 84.00765348796703,
+      "rssMiB": 512.28125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 8.98,
+          "rssKiB": 140960
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 76.78,
+          "rssKiB": 70896
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 19.29,
+          "rssKiB": 110640
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 49.13,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4951878
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0227992090000189,
+      "cpuPercentOneCore": 86.03839270274382,
+      "rssMiB": 512.46875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 9.03,
+          "rssKiB": 141152
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 77.22,
+          "rssKiB": 70896
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 19.41,
+          "rssKiB": 110640
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 49.4,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4329738
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0253139159999847,
+      "cpuPercentOneCore": 84.85206202936314,
+      "rssMiB": 512.46875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 9.07,
+          "rssKiB": 141152
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 77.66,
+          "rssKiB": 70896
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 19.52,
+          "rssKiB": 110640
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 49.68,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4867194
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0279870000000229,
+      "cpuPercentOneCore": 89.49529517396456,
+      "rssMiB": 512.484375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 9.12,
+          "rssKiB": 141168
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 78.12,
+          "rssKiB": 70896
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 19.63,
+          "rssKiB": 110640
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 49.98,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4735858
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0237069999999948,
+      "cpuPercentOneCore": 85.96209657646216,
+      "rssMiB": 512.484375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 9.17,
+          "rssKiB": 141168
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 78.56,
+          "rssKiB": 70896
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 19.74,
+          "rssKiB": 110640
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 50.26,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4680930
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0225717500000029,
+      "cpuPercentOneCore": 84.1016779507158,
+      "rssMiB": 511.921875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 9.21,
+          "rssKiB": 141168
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 79,
+          "rssKiB": 70896
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 19.84,
+          "rssKiB": 110064
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 50.54,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5215402
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0184566669999913,
+      "cpuPercentOneCore": 70.6952021945975,
+      "rssMiB": 512.34375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 9.25,
+          "rssKiB": 141184
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 79.37,
+          "rssKiB": 70896
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 19.93,
+          "rssKiB": 110480
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 50.76,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5140342
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0254971249999945,
+      "cpuPercentOneCore": 78.98608199413594,
+      "rssMiB": 512.53125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 9.29,
+          "rssKiB": 141184
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 79.78,
+          "rssKiB": 70928
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 20.03,
+          "rssKiB": 110640
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 51.02,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5049362
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0260718749999942,
+      "cpuPercentOneCore": 85.76397243126873,
+      "rssMiB": 512.546875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 9.33,
+          "rssKiB": 141200
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 80.23,
+          "rssKiB": 70928
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 20.14,
+          "rssKiB": 110640
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 51.3,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4986638
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0241535000000148,
+      "cpuPercentOneCore": 81.04253903345445,
+      "rssMiB": 511.75,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 9.37,
+          "rssKiB": 140384
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 80.65,
+          "rssKiB": 70928
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 20.24,
+          "rssKiB": 110640
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 51.57,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4890630
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0231464169999818,
+      "cpuPercentOneCore": 83.07706364181237,
+      "rssMiB": 511.765625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 9.42,
+          "rssKiB": 140400
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 81.08,
+          "rssKiB": 70928
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 20.34,
+          "rssKiB": 110640
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 51.84,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5428222
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0243126660000126,
+      "cpuPercentOneCore": 86.88753244412106,
+      "rssMiB": 511.84375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 9.46,
+          "rssKiB": 140480
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 81.53,
+          "rssKiB": 70928
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 20.45,
+          "rssKiB": 110640
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 52.13,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5330206
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0215908340000024,
+      "cpuPercentOneCore": 88.09789301613861,
+      "rssMiB": 511.859375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 9.51,
+          "rssKiB": 140496
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 81.98,
+          "rssKiB": 70928
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 20.56,
+          "rssKiB": 110640
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 52.42,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5269730
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0252778749999998,
+      "cpuPercentOneCore": 84.85504478480976,
+      "rssMiB": 511.875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 9.55,
+          "rssKiB": 140512
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 82.41,
+          "rssKiB": 70928
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 20.68,
+          "rssKiB": 110640
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 52.7,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4680714
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.020295041000005,
+      "cpuPercentOneCore": 76.44847506418463,
+      "rssMiB": 511.890625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 9.59,
+          "rssKiB": 140512
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 82.8,
+          "rssKiB": 70944
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 20.78,
+          "rssKiB": 110640
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 52.95,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4512994
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0225050420000044,
+      "cpuPercentOneCore": 76.28324242532156,
+      "rssMiB": 511.90625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 9.63,
+          "rssKiB": 140528
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 83.19,
+          "rssKiB": 70944
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 20.87,
+          "rssKiB": 110640
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 53.21,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5050634
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0237792499999923,
+      "cpuPercentOneCore": 75.21152631292394,
+      "rssMiB": 511.90625,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 9.67,
+          "rssKiB": 140528
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 83.58,
+          "rssKiB": 70944
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 20.97,
+          "rssKiB": 110640
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 53.45,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4968802
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.024997000000003,
+      "cpuPercentOneCore": 87.80513503941958,
+      "rssMiB": 511.921875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 9.72,
+          "rssKiB": 140544
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 84.03,
+          "rssKiB": 70944
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 21.08,
+          "rssKiB": 110640
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 53.74,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4905206
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0252452920000068,
+      "cpuPercentOneCore": 82.90698885745175,
+      "rssMiB": 511.9375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 9.76,
+          "rssKiB": 140560
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 84.47,
+          "rssKiB": 70944
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 21.18,
+          "rssKiB": 110640
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 54.01,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 4812674
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.026466665999993,
+      "cpuPercentOneCore": 84.75677085455449,
+      "rssMiB": 511.9375,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 9.8,
+          "rssKiB": 140560
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 84.91,
+          "rssKiB": 70944
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 21.29,
+          "rssKiB": 110640
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 54.29,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5350418
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0218629169999913,
+      "cpuPercentOneCore": 88.07443591771008,
+      "rssMiB": 511.953125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 9.85,
+          "rssKiB": 140576
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 85.36,
+          "rssKiB": 70944
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 21.4,
+          "rssKiB": 110640
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 54.58,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5252270
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0232193750000151,
+      "cpuPercentOneCore": 86.00306263747085,
+      "rssMiB": 511.953125,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 9.89,
+          "rssKiB": 140576
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 85.8,
+          "rssKiB": 70944
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 21.51,
+          "rssKiB": 110640
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 54.87,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5191238
+      }
+    },
+    {
+      "round": 3,
+      "elapsedSeconds": 1.0256476249999833,
+      "cpuPercentOneCore": 83.84946048112886,
+      "rssMiB": 511.96875,
+      "tree": [
+        {
+          "pid": 81074,
+          "ppid": 77614,
+          "cpuSeconds": 9.94,
+          "rssKiB": 140592
+        },
+        {
+          "pid": 81075,
+          "ppid": 81074,
+          "cpuSeconds": 86.24,
+          "rssKiB": 70944
+        },
+        {
+          "pid": 81076,
+          "ppid": 81074,
+          "cpuSeconds": 0.11,
+          "rssKiB": 35664
+        },
+        {
+          "pid": 81078,
+          "ppid": 81074,
+          "cpuSeconds": 21.61,
+          "rssKiB": 110640
+        },
+        {
+          "pid": 81081,
+          "ppid": 81074,
+          "cpuSeconds": 55.14,
+          "rssKiB": 166416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "companionship": "quiet",
+        "activity": "idle",
+        "heapBytes": 5126622
+      }
+    }
+  ],
+  "limitations": "Bounded same-machine observation, not long-term idle acceptance or other-platform evidence. Other desktop workloads and macOS GPU accounting can affect results."
+}

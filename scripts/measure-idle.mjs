@@ -13,7 +13,7 @@ import { chromium } from 'playwright-core';
 const args = process.argv.slice(2), arg = (key, fallback) => args.includes(key) ? args[args.indexOf(key) + 1] : fallback;
 const root = resolve(arg('--checkout', '.')), output = resolve(arg('--output', 'artifacts/idle-resource.json'));
 const mode = arg('--mode', 'baseline'), rounds = Number(arg('--rounds', '3')), seconds = Number(arg('--seconds', '60'));
-assert.ok(['baseline', 'off', 'day', 'night'].includes(mode));
+assert.ok(['baseline', 'off', 'day', 'night', 'companion-day', 'companion-night'].includes(mode));
 assert.ok(Number.isInteger(rounds) && rounds >= 1 && seconds >= 10);
 assert.ok(['darwin', 'linux'].includes(platform()), 'ps sampling currently supports macOS/Linux only');
 const { ElectronBridge } = await import(pathToFileURL(join(root, 'dist/bridge.js')).href);
@@ -38,12 +38,12 @@ const mean = a => a.reduce((s, n) => s + n, 0) / a.length;
 const sourceCommit = execFileSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
 try {
   bridge.update({ mood: 'idle', active: false, text: '', sessionId: null, sessions: [], results: [] });
-  await bridge.start({ size: 180, textScale: 1, locale: 'zh', roam: true, dailyRhythm: ['day', 'night'].includes(mode), notifications: true, bubbleDurationMs: 12000 });
+  await bridge.start({ size: 180, textScale: 1, locale: 'zh', roam: true, dailyRhythm: ['day', 'night'].includes(mode), companionship: mode.startsWith('companion-') ? 'quiet' : 'off', notifications: true, bubbleDurationMs: 12000 });
   browser = await chromium.connectOverCDP(`http://127.0.0.1:${process.env.DSH_PET_TEST_DEBUG_PORT}`);
   const page = browser.contexts()[0].pages()[0];
   if (mode !== 'baseline') {
     // Control local hour only; RAF, Date.now, physics and CPU all advance in real time.
-    await page.addInitScript(hour => { const OriginalDate = Date; window.Date = class extends OriginalDate { getHours() { return hour; } }; }, mode === 'night' ? 23 : 12);
+    await page.addInitScript(hour => { const OriginalDate = Date; window.Date = class extends OriginalDate { getHours() { return hour; } }; let seed = 17; Math.random = () => { seed = seed * 16807 % 2147483647; return (seed - 1) / 2147483646; }; }, mode.endsWith('night') ? 23 : 12);
     await page.reload();
   }
   await page.waitForSelector('#pet[data-host-ready=true][data-mode]');
@@ -59,7 +59,7 @@ try {
       await pause(1000);
       const tree = sampleTree(pid), now = performance.now(), elapsed = (now - at) / 1000;
       const cpuSeconds = tree.reduce((total, row) => { const old = previous.find(p => p.pid === row.pid); return total + (old ? Math.max(0, row.cpuSeconds - old.cpuSeconds) : 0); }, 0);
-      const renderer = await page.evaluate(() => ({ mood: document.querySelector('#pet').dataset.mood, mode: document.querySelector('#pet').dataset.mode, rhythm: document.querySelector('#pet').dataset.rhythm, heapBytes: performance.memory?.usedJSHeapSize }));
+      const renderer = await page.evaluate(() => ({ mood: document.querySelector('#pet').dataset.mood, mode: document.querySelector('#pet').dataset.mode, rhythm: document.querySelector('#pet').dataset.rhythm, companionship: document.querySelector('#pet').dataset.companionship, activity: document.querySelector('#pet').dataset.companionActivity, heapBytes: performance.memory?.usedJSHeapSize }));
       samples.push({ round: round + 1, elapsedSeconds: elapsed, cpuPercentOneCore: cpuSeconds / elapsed * 100, rssMiB: tree.reduce((n, p) => n + p.rssKiB, 0) / 1024, tree, renderer });
       assert.equal(renderer.mood, 'idle');
       previous = tree; at = now;
@@ -68,8 +68,8 @@ try {
     windows.push(entry); console.log(JSON.stringify(entry));
   }
   const report = { schema: 1, sourceCommit, measuredAt: new Date().toISOString(), mode, platform: platform(), arch: arch(), osRelease: release(), cpu: cpus()[0].model, logicalCpus: cpus().length, node: process.version, electron: display.electron, display, size: 180, roam: true, warmupSeconds: 20, rounds, secondsPerRound: seconds,
-    sources: Object.fromEntries(await Promise.all(['web/pet.js', 'web/upstream/kit/body.js', 'dist/bridge.js'].map(async f => [f, createHash('sha256').update(await readFile(join(root, f))).digest('hex')]))),
-    method: 'ps cumulative CPU deltas of Electron main and all descendants; 100% is one core; summed resident memory may count shared pages more than once; sampler process excluded; controlled local hour for off/day/night only; no frame acceleration',
+    sources: Object.fromEntries(await Promise.all(['web/pet.js', 'web/companionship.js', 'web/companion-client.js', 'web/companion-touch.js', 'src/companion-store.ts', 'web/upstream/kit/body.js', 'dist/bridge.js'].map(async f => [f, createHash('sha256').update(await readFile(join(root, f))).digest('hex')]))),
+    method: 'ps cumulative CPU deltas of Electron main and all descendants; 100% is one core; summed resident memory may count shared pages more than once; sampler process excluded; controlled local hour and fixed RNG seed 17 for off/day/night/companion modes; no frame acceleration',
     windows, meanCpuPercentOneCore: mean(windows.map(w => w.meanCpuPercentOneCore)), meanRssMiB: mean(windows.map(w => w.meanRssMiB)), samples,
     limitations: 'Bounded same-machine observation, not long-term idle acceptance or other-platform evidence. Other desktop workloads and macOS GPU accounting can affect results.' };
   await writeFile(output, JSON.stringify(report, null, 2) + '\n');
