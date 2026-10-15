@@ -29,7 +29,13 @@ try {
   const installTimer = setTimeout(() => installer.kill('SIGKILL'), 240000);
   let installation = ''; installer.stdout.on('data', c => installation += c); installer.stderr.on('data', c => installation += c);
   try { assert.equal((await once(installer, 'exit'))[0], 0, installation); } finally { clearTimeout(installTimer); }
-  await writeFile(join(profile, 'cordis.patch.yml'), `- insert:\n    - id: m1-contract\n      name: ${JSON.stringify(resolve('tests/fixtures/goal-host.mjs'))}\n- id: dsh-coopanion\n  config:\n    autoStart: false\n`);
+  // The Client loader identifies a fixture's package through ancestor manifests.
+  // Isolate it so an unbuilt checkout cannot become a second plugin instance.
+  const observer = join(root, 'observer'), fixture = join(observer, 'host.mjs');
+  await mkdir(observer, { recursive: true });
+  await writeFile(join(observer, 'package.json'), JSON.stringify({ name: 'coopanion-m1-observer', private: true, type: 'module' }));
+  await writeFile(fixture, await readFile(resolve('tests/fixtures/goal-host.mjs')));
+  await writeFile(join(profile, 'cordis.patch.yml'), `- insert:\n    - id: m1-contract\n      name: ${JSON.stringify(fixture)}\n- id: dsh-coopanion\n  config:\n    autoStart: false\n`);
   host = spawn(process.execPath, [cli, '--profile', 'm1', '--no-open', '--port', '0'], { env, cwd: root, stdio: ['ignore', 'pipe', 'pipe', 'ipc'] });
   host.stdout.on('data', c => logs = (logs + c).slice(-20000)); host.stderr.on('data', c => logs = (logs + c).slice(-20000));
   const result = await new Promise((res, rej) => {

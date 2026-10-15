@@ -30,7 +30,12 @@ try {
   const installTimer = setTimeout(() => installer.kill('SIGKILL'), 240000);
   let installation = ''; installer.stdout.on('data', c => installation += c); installer.stderr.on('data', c => installation += c);
   try { assert.equal((await once(installer, 'exit'))[0], 0, installation); } finally { clearTimeout(installTimer); }
-  await writeFile(join(profile, 'cordis.patch.yml'), `- insert:\n    - id: m2-contract\n      name: ${JSON.stringify(probe)}\n- id: dsh-coopanion\n  config:\n    autoStart: false\n`);
+  // Keep the probe outside the source package, as in the native install observer.
+  const observer = join(root, 'observer'), fixture = join(observer, 'host.mjs');
+  await mkdir(observer, { recursive: true });
+  await writeFile(join(observer, 'package.json'), JSON.stringify({ name: 'coopanion-m2-observer', private: true, type: 'module' }));
+  await writeFile(fixture, await readFile(probe));
+  await writeFile(join(profile, 'cordis.patch.yml'), `- insert:\n    - id: m2-contract\n      name: ${JSON.stringify(fixture)}\n- id: dsh-coopanion\n  config:\n    autoStart: false\n`);
   host = spawn(process.execPath, [cli, '--profile', 'm2', '--no-open', '--port', '0'], { env, cwd: root, stdio: ['ignore', 'pipe', 'pipe', 'ipc'] });
   host.stdout.on('data', c => logs = (logs + c).slice(-20000)); host.stderr.on('data', c => logs = (logs + c).slice(-20000));
   const result = await new Promise((res, rej) => {
