@@ -31,9 +31,13 @@ Windows 源码注册仅键盘 Raw Input 到消息窗口，只更新聚合活动�
 | 固定包 Linux X11 | helper 可用；XTest 合成键盘→active→idle，持续鼠标移动／点击保持 idle；[报告](package-linux-keyboard.json)。另以[ARM64 同包 helper](package-linux-arm64-helper.log)复验通过；不是物理键盘或 GPU 资源验收 |
 | 两版 Host 同包安装 | [0.2.0-rc.2](install-0.2.0-rc.2.json)、[0.2.1-alpha.1](install-0.2.1-alpha.1.json) 均通过，报告包摘要完全一致；原日志分别保留 |
 | Windows | 后端源码、选择／协议／失败回归和三平台 CI 探针已接入；本轮没有 Windows 原生运行或物理输入证据，远端 CI 未执行 |
-| 人工输入 | 先前聊天提示条件未成立，见[无效尝试说明](invalid-attempts/README.md)；已准备可见开始按钮／倒计时面板；本次存档时尚未收到开始信号，人工复验待完成，不将旧尝试判为通过或接口失败 |
+| 固定包本机物理输入 | 用户确认可见面板并点击开始；真实输入 10 秒内 active 16／idle 4／unknown 0，桌宠相应 input 退让；停键缓冲后，仅鼠标 30 秒 idle 60／active 0／unknown 0，连续 idle 约 29.7 秒。无受控感知，随后自然经历 resume→home→prepare→outbound→observe→return；结束时仍在返回，未据此宣称自然返回抵达。见[原报告](physical-panel-package.json)、[原日志](physical-panel.log)。输入来自临时面板，脚本不读取输入内容；跨应用／安全输入／锁屏／休眠及其他设备另验收。先前尝试不计入，见[说明](invalid-attempts/README.md) |
 | 历史保护 | 新记录建立前，955 份历史 evidence／archive／upstream／第三方声明文件逐字节不变，[报告](protected-bytes.json)；随后只更新 evidence 索引以链接本记录 |
 
 命令入口来自仓库配置：`typecheck`、`npm test`、`test:inbox-ui`、`test:desktop`、`test:keyboard-native`、两版 `test:install`。Linux 合成输入仅在隔离 Xvfb 中启用 `DSH_KEYBOARD_TEST_X11_INPUT=1`。本轮可见人工探针脚本按原字节保留为 [初次面板](physical-panel-probe.mjs)和[聚焦面板](physical-panel-focused-probe.mjs)，它的绝对／相对路径只描述当时工作区，不作为换机执行入口。
 
-未做远端三平台 CI、Windows 实机、各平台锁屏／休眠／远程输入完整验收、完整资源预算、两小时新包采样或自然体验验收；不发布、不推送、不改日用 Desktop，不重启旧长期采样。后续先完成各平台物理输入与自然恢复，再做资源与体验门槛。
+未做远端三平台 CI、Windows 实机、各平台锁屏／休眠／远程输入完整验收、完整资源预算、两小时新包采样或自然体验验收；不发布、不推送、不改日用 Desktop，不重启旧长期采样。后续补 Windows 原生与 Windows／Linux 物理输入、跨应用和生命周期场景，再做资源与体验门槛。`physical-panel-waiting.log` 保留上一次本地文档提交时尚待点击的快照，本条记录是后续完成结果，不回写那份原始快照。
+
+## 后续物理初验记录
+
+聚焦面板的本机物理初验已通过，[结算记录](physical-acceptance.json)与原报告分别保存。`validation.json`、`physical-panel-waiting.log` 和 `SHA256SUMS` 保留 e820baf 初始快照原字节，其中待点击状态已由本次结果补充，不回写原报告。原始 README 同摘要副本为 [initial-record-at-e820baf.md](initial-record-at-e820baf.md)；旧清单的 README 条目验证该副本，当前 README 作为索引继续维护。新增物理报告与副本的校验见 [physical-acceptance-SHA256SUMS](physical-acceptance-SHA256SUMS)。

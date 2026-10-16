@@ -66,7 +66,7 @@ dsh plugin --profile desktop add /absolute/path/dsh-coopanion.tgz
 
 **Settings → 桌宠 → 小窝横向位置／探索范围** 可调整相对当前显示器工作区的百分比，默认 85%／30%；角色实际边界、尺寸及工作区会进一步收紧范围。小窝是底部的点击穿透程序标记，尚无实体家具。也可从菜单临时隐藏、关闭自动活动或手动拖动；拖出当前活动段后先安静停留，拖回或调整位置／范围后恢复。正文阅读和手动操作始终优先。
 
-鼠标靠近先停；最近键盘活动时暂停外出和邀请，必要时视觉收拢，保留未完成目标。稳定空闲至少 12 秒后重新观察再继续，短暂停顿不会反复冒头。当前本地修订包含 macOS 聚合事件时间、Windows Raw Input 通知和 Linux X11／XInput2 适配，辅助进程仅输出 active／idle／unknown；不能区分打字与快捷键，也不读取具体按键或其他应用内容。Windows 需要系统 Windows PowerShell；X11 需要 `/usr/bin/python3`、libX11 与 libXi。Wayland（含 Xwayland）、无图形会话、非交互／远程 Windows、接口或依赖不可用均为 unknown，此时安静停留。macOS 不再将“事件监听授权”误当成聚合时间接口的前置条件，无需先授予额外权限。若辅助进程失效，可关闭再开启陪伴重试；诊断中的 keyboardBackend／keyboardStatus 可区分不支持、缺依赖、失败与过期。三平台物理键盘与资源验收仍分别待验证。
+鼠标靠近先停；最近键盘活动时暂停外出和邀请，必要时视觉收拢，保留未完成目标。稳定空闲至少 12 秒后重新观察再继续，短暂停顿不会反复冒头。当前本地修订包含 macOS 聚合事件时间、Windows Raw Input 通知和 Linux X11／XInput2 适配，辅助进程仅输出 active／idle／unknown；不能区分打字与快捷键，也不读取具体按键或其他应用内容。Windows 需要系统 Windows PowerShell；X11 需要 `/usr/bin/python3`、libX11 与 libXi。Wayland（含 Xwayland）、无图形会话、非交互／远程 Windows、接口或依赖不可用均为 unknown，此时安静停留。macOS 不再将“事件监听授权”误当成聚合时间接口的前置条件，无需先授予额外权限。若辅助进程失效，可关闭再开启陪伴重试；诊断中的 keyboardBackend／keyboardStatus 可区分不支持、缺依赖、失败与过期。macOS 本机输入面板初验已通过；Windows／Linux 物理键盘、跨应用／锁屏场景及各平台资源仍需分别验证。
 
 无需 DSH 在前台或先打开会话。新工作、异常和审批优先；已呈现的长期待办保留入口，可允许小窝内安静观察。任务与 NPC 情绪各自保留。关闭闲时走动、用户休息、隐藏、锁屏／休眠及减少动态效果暂停自动路径，宿主退出后桌宠仍退出。详见[日常契约](companionship-contract.md)与[本轮边界](npc-daily-life-plan.md)。
 

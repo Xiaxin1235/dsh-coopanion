@@ -14,7 +14,7 @@
 
 | 平台 | 适配路径 | 降级边界 |
 |---|---|---|
-| macOS | 系统 osascript／CoreGraphics [聚合事件时间接口](https://developer.apple.com/documentation/coregraphics/cgeventsource/secondssincelasteventtype(_:eventtype:))，查询当前登录会话 keyDown／keyUp 两类事件的最近时间 | 不安装 event tap；监听授权与聚合时间查询是不同能力，不以前者作前置门槛。负数、非有限值、无历史哨兵或 API 异常为 unknown；物理键盘仍须实测 |
+| macOS | 系统 osascript／CoreGraphics [聚合事件时间接口](https://developer.apple.com/documentation/coregraphics/cgeventsource/secondssincelasteventtype(_:eventtype:))，查询当前登录会话 keyDown／keyUp 两类事件的最近时间 | 不安装 event tap；监听授权与聚合时间查询是不同能力，不以前者作前置门槛。负数、非有限值、无历史哨兵或 API 异常为 unknown；物理键盘能力按设备与场景单独验收 |
 | Windows | 系统 Windows PowerShell 以 STA 加载包内 C#，注册仅键盘的 [Raw Input](https://learn.microsoft.com/en-us/windows/win32/inputdev/about-raw-input) 到不可见消息窗口；仅 WM_INPUT 更新聚合活动时间 | 不调用 GetRawInputData，不拦截／抑制系统输入。注册失败、非交互／远程会话、安全桌面不可读为 unknown；不更改执行策略。源码已接入，原生编译、实机输入与资源待 Windows 验收 |
 | Linux X11 | `/usr/bin/python3` 标准库 ctypes 加载 libX11／libXi，订阅 [XInput2](https://www.x.org/releases/X11R7.7/doc/inputproto/XI2proto.txt) 的 RawKeyPress／RawKeyRelease 类别；不取 cookie 内容 | 需要 Python 3 与 X11／XI2 库和当前 DISPLAY（XI2 至少 2.1，以覆盖其他应用抓取期间的事件）；不打开 evdev、不要求 root、不读取键位图。源码已接入，真实 X11 输入与资源待 Linux 验收 |
 | Wayland／Xwayland、无 DISPLAY 或普通浏览器预览 | unknown | 不绕过 compositor 的全局输入隔离，不启用宽权限 portal 或综合空闲替代 |
