@@ -1,10 +1,10 @@
 # GPT 辅助角色素材与建模计划
 
-更新：2026-10-15（Asia/Shanghai）。这是[陪伴路线图](roadmap.md)的素材实施计划，当前尚未生成新图、制作新模型或更新上游运行时。现行包格式和导入规则仍以[角色接口](characters.md)为准。
+这是[陪伴路线图](roadmap.md)的后续素材计划；A1–A3 尚未实施，阶段状态统一见[文档索引](README.md)。现行包格式和导入规则仍以[角色接口](characters.md)为准，下文目录和流程均为拟议内容。
 
 ## 依据与当前能力
 
-用户指定的[上游鲸鱼 README（main）](https://github.com/Pal-AI-Lab/Coopanion/blob/main/packages/cortico-world-desktop-pet/examples/whale/README.md)说明了 ChatGPT 辅助制图、分件和网格驱动的方法；本次阅读时该文件最后修改提交为 `bd1743b96251f195b9d68cf70723c64281a03e17`，复核用[固定文件链接](https://github.com/Pal-AI-Lab/Coopanion/blob/bd1743b96251f195b9d68cf70723c64281a03e17/packages/cortico-world-desktop-pet/examples/whale/README.md)。
+2026-10-15 规划时参考的[上游鲸鱼 README 固定版本](https://github.com/Pal-AI-Lab/Coopanion/blob/bd1743b96251f195b9d68cf70723c64281a03e17/packages/cortico-world-desktop-pet/examples/whale/README.md)说明了 ChatGPT 辅助制图、分件和网格驱动的方法。该 SHA 固定规划依据，不代表上游 main 当前版本；新实施需要重查时另记来源。
 
 上游的制作要点是：先固定母版，再编辑补出遮挡区域，配准后分件，尽量保留母版可见区域的原像素；最终由贴图网格、变形器和共享身体驱动。这提供了制作思路，不能保证任意新角色一次出图即能绑定。下面的分阶段、质检阈值和样板范围是本项目的计划。
 

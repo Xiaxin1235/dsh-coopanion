@@ -1,6 +1,6 @@
 # 使用指南
 
-安装后的操作、设置及故障边界在本页维护。产品介绍见[项目首页](../README.md)，开发和验证见[开发指南](development.md)。
+安装后的操作、设置及故障边界在本页维护。npm／Release 当前分发版与本地候选的身份见[文档索引](README.md#当前交付)；下文单独标注尚未发布的候选功能。产品介绍见[项目首页](../README.md)，开发和验证见[开发指南](development.md)。
 
 ## 安装到 Desktop
 
@@ -49,9 +49,20 @@ dsh plugin --profile desktop add /absolute/path/dsh-coopanion.tgz
 
 **日常陪伴节奏** 默认关闭，旧配置沿用原有闲时动作。开启闲时走动及此偏好后，按系统本地时间在 07:00–22:00 每 45–90 秒尝试现有轻动作，夜间每 2–4 分钟仅轻点头或坐下；缺少动作时保持待机。任务、待办、阅读、输入、拖拽、用户休息及减少动态效果始终优先，占用解除后重新等待，动作结束恢复当前神态。偏好立即同步并持久保存，不增加模型请求或通知，详见[日常节奏契约](daily-rhythm-contract.md)及[本地验证边界](evidence/m6/README.md)。
 
-### 自主陪伴（P1 工作区功能，尚未发布）
+### 自主陪伴（P1 候选功能，尚未发布）
 
 在 **Settings → 桌宠 → 自主陪伴** 或角色右键菜单中选择“安静陪伴”或“互动陪伴”。默认关闭，沿用原有节奏；安静模式会观察、自娱和坐下休息，互动模式额外在白天低频邀请，每天最多两次。新模式开启时接管闲时动作，关闭后恢复原日常节奏配置。
+
+试用自主行为与邀请时使用以下组合；英文界面的开关名称一并列出：
+
+| 设置 | 试用值 | 作用 |
+|---|---|---|
+| 闲时走动／Roam when idle | 开启 | 当前也是自主行为和邀请的总许可；关闭后即使选了互动陪伴也不会自动活动或邀请 |
+| 日常陪伴节奏／Daily rhythm | 关闭 | 旧模式策略，仅在自主陪伴关闭时生效；新模式不需要开启它 |
+| 自主陪伴／Companionship | 互动陪伴／Interactive | 开启新日常与低频邀请 |
+| 本地诊断／Local diagnostics | 仅需外部采样时开启 | 允许读取状态；开关本身不启用自主行为 |
+
+当前 P1 不主动自由走动或跳跃；“闲时走动”名称沿用旧设置，这里同时控制自动活动许可。选择“安静陪伴”时仍需开启它才能观察日常，但不会收到邀请。
 
 无需保持 DSH 在前台，也不需要先打开会话。任务、待办、阅读、草稿、拖拽和用户休息优先；关闭闲时走动或开启减少动态效果会停用自动活动／邀请。宿主退出后桌宠仍退出。
 
@@ -68,8 +79,9 @@ dsh plugin --profile desktop add /absolute/path/dsh-coopanion.tgz
     size: 180
     roam: true
     dailyRhythm: false
-    # P1 工作区配置（已发布 v0.4.9 尚不支持）
+    # 0.4.10 候选配置（已发布 v0.4.9 尚不支持）
     companionship: off  # quiet / interactive
+    diagnostics: false
     notifications: true
     systemNotifications: false
     reminders: true
@@ -94,19 +106,21 @@ dsh plugin --profile desktop add /absolute/path/dsh-coopanion.tgz
 
 ## 本地诊断与试用采样
 
-0.4.10 候选包在 **Settings → 桌宠 → 本地诊断** 提供默认关闭的开关。开启后允许独立采样器读取有限的活动／邀请、队列和存档规模，不上传数据或读取聊天正文。它与自主陪伴独立；试用邀请需另选“互动陪伴”。关闭诊断清空诊断计数并撤下接口，不清除关系存档。
+0.4.10 候选包在 **Settings → 桌宠 → 本地诊断** 提供默认关闭的开关。开启后允许独立采样器读取有限的活动／邀请、队列和存档规模，不上传数据或读取聊天正文。它与自主陪伴独立；试用前先核对上方开关组合。关闭诊断清空诊断计数并撤下接口，不清除关系存档。
 
 macOS／Linux 可直接运行候选包内的 Node 脚本，无需开发环境或调试端口。Desktop 默认安装路径示例：
 
 ```bash
 node "$HOME/.dsh/profiles/desktop/node_modules/@takboo/dsh-coopanion/scripts/sample-companion.mjs" --list
 node "$HOME/.dsh/profiles/desktop/node_modules/@takboo/dsh-coopanion/scripts/sample-companion.mjs" \
-  --output "$HOME/dsh-companion-samples/trial-unique" --seconds 604800 --interval 10
+  --output "$HOME/dsh-companion-samples/trial-unique" --seconds 604800 --interval 30
 ```
 
 输出目录须尚不存在。发现多个实例时加入 `--instance <list 显示的实例>`，避免混入测试 profile。采样不操作鼠标、不抢焦点、不截图、不防休眠；重启、休眠缺口和关闭诊断会分段记录。关闭接口时采样器可等待恢复，按 Ctrl+C 结束并写报告。日志默认上限 128 MiB，达到后明确停止，不静默丢弃记录。
 
-原始数据为 `samples.ndjson`，每分钟状态为 `progress.json`，结束报告为 `summary.json`。日常模式的 `recorded` 只表示记录完成，不代表七天体验或两小时稳定性通过。每天仍需记录后台无工作占用时长、看到的行为、邀请回应、重复感及日常感／打扰评分。Windows 命名管道接口本轮未验证，独立 OS 资源采样尚未支持。数据范围及鉴权见[诊断契约](diagnostics-contract.md)。
+示例每 30 秒采样，适合日常趋势；脚本默认间隔为 10 秒。`--seconds` 使用进程的单调时钟；跨系统休眠时墙钟结束可能延后，如要求固定日历截止，应另用外部控制进程停止。前台终端退出或系统重启后不保证继续运行，七天任务应独立托管并核对进程；不为此阻止正常休眠。
+
+原始数据为 `samples.ndjson`，数据可读时约每分钟更新 `progress.json`，接口不可用等变化写入 `events.ndjson`，结束报告为 `summary.json`。日常模式的 `recorded` 只表示数据已记录；关闭 `roam`、陪伴模式未开启或持续工作占用的时间不能作为自主陪伴有效体验。七天实用仍须本人按[路线图 P1-J](roadmap.md#p1验收标准)记录后台无任务时长、行为、邀请回应、重复感及每日评分。Windows 命名管道接口尚待单独验证，独立 OS 资源采样尚未支持。数据范围及鉴权见[诊断契约](diagnostics-contract.md)。
 
 ## 新角色
 

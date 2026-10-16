@@ -51,13 +51,15 @@ npm 使用已配置的 Trusted Publisher；dshmarket 通过社区目录 PR 收�
 
 `test:inbox-ui` 已包含 P1 真实 API 2 日常、邀请、输入轨迹、成长、热设置和阅读回归；`test:desktop` 额外串行运行真实时间的 P1 原生点击／存档重启验证。`test:install` 在两版宿主中检查新枚举保存和原生 IPC，不要求独立运行。
 
-资源采样入口增加 `--mode companion-day`／`companion-night`，与同轮 `off` 使用相同固定种子和真实物理时钟。P1 的预算、原始基线、实际执行范围见[本轮记录](evidence/p1/README.md)。
+短时资源对照入口 `scripts/measure-idle.mjs` 支持 `--mode companion-day`／`companion-night`，与同轮 `off` 使用相同固定种子和真实物理时钟。初始预算及基线见[P1 固定记录](evidence/p1/README.md)，最新候选和实际执行状态从[文档索引](README.md)读取；旧记录中的“最终候选”只代表对应快照。
 
 ### 隔离 Linux 长时观察
 
 `sample-companion.mjs` 是随包提供的独立 Node 采样器，仅使用本地诊断接口与 OS 进程指标，不依赖 Electron、Playwright 或 CDP。日常使用见[使用指南](usage.md)，诊断开关和数据范围见[诊断契约](diagnostics-contract.md)。
 
 `observe-companion.mjs` 负责受控 VM 的正式安装、启动和场景验证，将周期采样交给上述同一程序；不再注入测试专用活动／请求计数。它先核对采样器与候选包内脚本摘要一致，再按版本和产品摘要约束目标。CDP 只用于开始时的随机源、窗口及实际渲染证明，普通安装不启用。
+
+启动前按[使用指南](usage.md#自主陪伴p1-候选功能尚未发布)确认实际 profile 的自动活动许可。VM 启动器会生成独立 profile 并配置 `roam=true`、`companionship=interactive`、`diagnostics=true`；日常 Desktop 设置不随 VM 改变。七天日常采样与两小时受控观察分别记录，按[诊断契约](diagnostics-contract.md)解释时间、缺口及结果。
 
 VM 建议 Ubuntu 24.04 x86_64、4 vCPU、固定 8 GiB 内存与 50 GiB 磁盘。按仓库固定 Node／npm 准备依赖、Electron 和 Chromium，另安装 `xvfb openbox x11-utils dbus-x11 libgtk-3-0t64 python3 procps`；Chromium 的依赖不保证包含 GTK 3。
 
