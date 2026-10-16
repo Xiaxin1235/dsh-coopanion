@@ -43,6 +43,7 @@ try {
   assert.deepEqual(resumed.lifecycle, { locks: 1, unlocks: 1, suspends: 1, resumes: 1 });
   const sampleOutput = join(root, 'passive-sampler');
   const collector = spawn(process.execPath, [resolve('scripts/sample-companion.mjs'), '--registry', registry, '--output', sampleOutput, '--seconds', '8', '--interval', '1', '--window', '10'], { stdio: ['ignore', 'pipe', 'pipe'] });
+  const collectorExit = once(collector, 'exit');
   let collectorLog = '';
   collector.stdout.on('data', chunk => { collectorLog = (collectorLog + chunk).slice(-8000); });
   collector.stderr.on('data', chunk => { collectorLog = (collectorLog + chunk).slice(-8000); });
@@ -53,12 +54,19 @@ try {
   await send({ type: 'configure', options: { ...options, diagnostics: true } });
   for (let i = 0; i < 50; i++) { [endpoint] = await listDiagnostics(registry); if (endpoint) break; await pause(50); }
   assert.deepEqual((await readDiagnostics(endpoint)).value.runtime.lifecycle, { locks: 0, unlocks: 0, suspends: 0, resumes: 0 });
-  const [collectorCode] = await once(collector, 'exit');
-  assert.equal(collectorCode, 0, collectorLog);
-  const collectorSummary = JSON.parse(await (await import('node:fs/promises')).readFile(join(sampleOutput, 'summary.json'), 'utf8'));
-  assert.ok(collectorSummary.samples >= 2); assert.ok(collectorSummary.segments.length >= 2, 'Diagnostic disable/re-enable is a new segment'); assert.equal(collectorSummary.fullTwoHourObservation, false);
-  const sampleText = await (await import('node:fs/promises')).readFile(join(sampleOutput, 'samples.ndjson'), 'utf8');
-  assert.ok(!sampleText.includes(endpoint.token) && !sampleText.includes('diagnostic private draft'));
+  const [collectorCode] = await collectorExit;
+  const resourceCollectorSupported = process.platform !== 'win32';
+  assert.equal(collectorCode, resourceCollectorSupported ? 0 : 1, collectorLog);
+  let collectorSummary = null;
+  if (resourceCollectorSupported) {
+    collectorSummary = JSON.parse(await (await import('node:fs/promises')).readFile(join(sampleOutput, 'summary.json'), 'utf8'));
+    assert.ok(collectorSummary.samples >= 2); assert.ok(collectorSummary.segments.length >= 2, 'Diagnostic disable/re-enable is a new segment'); assert.equal(collectorSummary.fullTwoHourObservation, false);
+    const sampleText = await (await import('node:fs/promises')).readFile(join(sampleOutput, 'samples.ndjson'), 'utf8');
+    assert.ok(!sampleText.includes(endpoint.token) && !sampleText.includes('diagnostic private draft'));
+  } else {
+    assert.match(collectorLog, /OS process sampling currently supports Linux\/macOS/);
+    assert.ok(!(await (await import('node:fs/promises')).readdir(root)).includes('passive-sampler'), 'Unsupported OS must not create a misleading sample report');
+  }
   const before = first.value.store.revision;
   for (let i = 0; i < 5; i++) await readDiagnostics(endpoint);
   assert.equal((await readDiagnostics(endpoint)).value.store.revision, before);
@@ -69,6 +77,6 @@ try {
   assert.deepEqual(await listDiagnostics(registry), []);
   assert.deepEqual(await page.locator('#message').evaluate(n => [n.value, n.selectionStart, n.selectionEnd]), ['diagnostic private draft', 2, 8]);
   await mkdir('artifacts', { recursive: true });
-  await writeFile('artifacts/diagnostics-native.json', JSON.stringify({ version: first.version, build: first.build, defaultOff: true, controlledLifecycleCounters: true, lifecycleClearsOnDisable: true, hotTogglePreservesDraft: true, readOnlyStoreRevision: true, tokenAndDraftOmitted: true, sandboxIsolated: true, interfaceWithdrawn: true, standaloneSampler: { samples: collectorSummary.samples, textAndTokenOmitted: true, fullTwoHourObservation: false } }, null, 2) + '\n');
+  await writeFile('artifacts/diagnostics-native.json', JSON.stringify({ version: first.version, build: first.build, defaultOff: true, controlledLifecycleCounters: true, lifecycleClearsOnDisable: true, hotTogglePreservesDraft: true, readOnlyStoreRevision: true, tokenAndDraftOmitted: true, sandboxIsolated: true, interfaceWithdrawn: true, standaloneSampler: { supported: resourceCollectorSupported, samples: collectorSummary?.samples ?? 0, textAndTokenOmitted: resourceCollectorSupported, fullTwoHourObservation: false } }, null, 2) + '\n');
   console.log('Native diagnostics: default off, authenticated read, no draft text, hot toggle, read-only archive and sandbox isolation passed.');
 } finally { await app?.close(); await rm(root, { recursive: true, force: true }); }
