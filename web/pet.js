@@ -37,7 +37,7 @@ const library = native?.characters ?? browserCharacters;
 const sfx = createSfx({ storageKey: 'dsh-pet.sound.v2', volume: .35 });
 const nameIn = names => localizedText(names, notificationLocale());
 const wordName = (word, view = previewCharacter) => word.names?.[notificationLocale()]?.[0] ?? (view?.builtin ? uiCopy().words[word.id] : undefined) ?? nameIn(word.names)?.[0] ?? word.id;
-let npc = initialNpc(1), npcGeneration = 1, npcEvent, keyboardActivity = 'unknown', keyboardAt = -Infinity, npcCompact = false, npcSoundUntil = 0, npcGeometry, npcSeated = false;
+let npc = initialNpc(1), npcGeneration = 1, npcEvent, keyboardActivity = 'unknown', keyboardAt = -Infinity, keyboardBackend = 'none', keyboardStatus = 'disabled', npcCompact = false, npcSoundUntil = 0, npcGeometry, npcSeated = false;
 const homeMarker = document.createElement('div'); homeMarker.id = 'npc-home'; homeMarker.hidden = true; homeMarker.setAttribute('aria-hidden', 'true'); document.body.appendChild(homeMarker);
 let body, previewBody, previewCharacter, activeView, activeScheme, activeName = 'DeepSeek 大肥鱼', libraryState, libraryBusy = false;
 let appliedMood, appliedControls, speech, speechExpires = Infinity, pressing = false, dragStart, dragging = false, previewScheme = "", reducedNeedsStep = true;
@@ -575,12 +575,16 @@ function receive(message) {
       break;
     }
     case 'keyboard-activity':
-      if (['idle', 'active', 'unknown'].includes(message.value)) { keyboardActivity = message.value; keyboardAt = performance.now(); }
+      if (['idle', 'active', 'unknown'].includes(message.value)) {
+        keyboardActivity = message.value; keyboardAt = performance.now();
+        keyboardBackend = ['macos', 'windows', 'x11', 'none'].includes(message.backend) ? message.backend : 'none';
+        keyboardStatus = ['disabled', 'starting', 'available', 'unsupported-platform', 'unsupported-session', 'missing-dependency', 'failed', 'stale', 'unavailable', 'protocol-error'].includes(message.status) ? message.status : 'unavailable';
+      }
       break;
     case 'diagnostics-read':
       if (options.diagnostics === true && typeof message.requestId === 'string' && /^[a-f0-9]{32}$/.test(message.requestId)) {
         native?.diagnosticsRespond?.({ requestId: message.requestId, value: {
-          npc: { phase: npc.phase, reason: npc.reason, keyboard: performance.now() - keyboardAt <= 2500 ? keyboardActivity : 'unknown', targetValid: !!npcGeometry && npc.target !== null && npc.target >= npcGeometry.min - .01 && npc.target <= npcGeometry.max + .01, compact: npcCompact },
+          npc: { phase: npc.phase, reason: npc.reason, keyboard: performance.now() - keyboardAt <= 2500 ? keyboardActivity : 'unknown', keyboardBackend, keyboardStatus: performance.now() - keyboardAt <= 2500 ? keyboardStatus : 'stale', targetValid: !!npcGeometry && npc.target !== null && npc.target >= npcGeometry.min - .01 && npc.target <= npcGeometry.max + .01, compact: npcCompact },
           mode: options.companionship, activity: companion.active?.kind ?? 'idle', invitation: companion.invitation ?? 'none',
           mood: sessionActivity(snapshot).mood, careUnavailable: !!companionClient.error, hidden: document.hidden, hour: new Date().getHours(),
           queues: { carePending: companionClient.pending, pendingInteractions: pendingRequests().length, composerSessions: composer.sessions.size,

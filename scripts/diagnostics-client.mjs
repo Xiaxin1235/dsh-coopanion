@@ -47,7 +47,9 @@ export function sanitizeSnapshot(raw, endpoint) {
   if (cleanRenderer && renderer.npc) {
     const n = renderer.npc;
     if (!['home', 'prepare', 'outbound', 'observe', 'return', 'yield', 'resume'].includes(n.phase) || !['none', 'disabled', 'input', 'unknown', 'pointer', 'work', 'user', 'lifecycle', 'geometry', 'capability'].includes(n.reason) || !['active', 'idle', 'unknown'].includes(n.keyboard) || typeof n.targetValid !== 'boolean' || typeof n.compact !== 'boolean') throw new Error('Invalid NPC diagnostics');
-    cleanRenderer.npc = { phase: n.phase, reason: n.reason, keyboard: n.keyboard, targetValid: n.targetValid, compact: n.compact };
+    if (n.keyboardBackend !== undefined && !['macos', 'windows', 'x11', 'none'].includes(n.keyboardBackend)) throw new Error('Invalid keyboard backend');
+    if (n.keyboardStatus !== undefined && !['disabled', 'starting', 'available', 'unsupported-platform', 'unsupported-session', 'missing-dependency', 'failed', 'stale', 'unavailable', 'protocol-error'].includes(n.keyboardStatus)) throw new Error('Invalid keyboard status');
+    cleanRenderer.npc = { phase: n.phase, reason: n.reason, keyboard: n.keyboard, targetValid: n.targetValid, compact: n.compact, ...(n.keyboardBackend === undefined ? {} : { keyboardBackend: n.keyboardBackend }), ...(n.keyboardStatus === undefined ? {} : { keyboardStatus: n.keyboardStatus }) };
   }
   const productDigest = raw.build?.productDigest;
   if (!/^[a-f0-9]{64}$/.test(productDigest) || !(raw.build.commit === null || /^[a-f0-9]{40}$/.test(raw.build.commit)) || ![true, false, null].includes(raw.build.dirty)) throw new Error('Invalid build identity');

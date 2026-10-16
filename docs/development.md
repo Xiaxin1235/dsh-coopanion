@@ -77,3 +77,9 @@ bash scripts/run-resource-observation.sh \
 每次使用尚不存在的输出目录，不覆盖失败记录。默认预热 20 秒、真实采样至少 7200 秒、每 5 秒一次，比较首／末 1800 秒的时间加权 RSS 均值，增量仍须 ≤20 MiB。场景为真实白天 `interactive`、种子 17、无工作占用；期间不注入输入，邀请自然忽略。另检查三类片段、邀请落盘、存档边界和请求排空。
 
 可加 `--seconds 60 --window 20` 做短检；`fullTwoHourObservation` 仍为 false。原始采样和报告在 `sampling/` 内，安装／启动元数据及总报告在上一层。PVE／软件渲染、RSS 共享页重复、短暂子进程 CPU 漏计及环境争用须随结果披露。旧的测试页面注入观察器保留在原证据目录，不用于新候选包验收。
+
+## 粗粒度键盘适配验证
+
+`npm run test:keyboard-native` 在当前系统运行真实辅助进程约 10–20 秒，检查启动、固定枚举输出和停用清理，报告写入 `artifacts/keyboard-activity-native.json`。macOS 与可用 X11 环境需取得 active／idle；非交互或远程 Windows 可保守 unknown，报告的 usable=false 必须保留。它不模拟或验收物理键盘。三平台 CI 在图形环境准备后执行此入口，并保留报告；Linux CI 在隔离 Xvfb 中额外设 `DSH_KEYBOARD_TEST_X11_INPUT=1`，以 XTest 合成输入验证键盘触发、仅鼠标不触发与恢复 idle，日常图形会话不要开启该测试开关；本地未运行的系统不能记为通过。
+
+定向回归：`npx vitest run tests/keyboard-activity.test.js tests/npc-life.test.js tests/diagnostics.test.js`。覆盖 macOS 授权误门槛、无效聚合值、三平台启动选择、Wayland／Xwayland、依赖失败、协议边界、旧进程回包与数据过期；完整 UI 检查还须运行 `npm run test:inbox-ui`。真实键盘／仅鼠标／停止输入后恢复，以及锁屏、休眠、远程会话和资源开销另行记录。

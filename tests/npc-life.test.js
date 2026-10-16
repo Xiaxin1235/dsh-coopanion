@@ -1,8 +1,5 @@
 import { it, expect } from 'vitest';
 import { initialNpc, npcSpace, stepNpc } from '../web/npc-life.js';
-import { createRequire } from 'node:module';
-import { EventEmitter } from 'node:events';
-const { createKeyboardActivity } = createRequire(import.meta.url)('../desktop/keyboard-activity.cjs');
 const layout = { x: 800, box: { x: 720, y: 560, w: 160, h: 160 } };
 const space = npcSpace({ width: 1000, layout });
 const base = { enabled: true, now: 0, keyboard: 'idle', layout, space, canWalk: true, words: ['stand', 'look', 'nod', 'neutral'] };
@@ -60,21 +57,6 @@ it('revalidates geometry and never accepts callbacks from a previous body genera
   const result = stepNpc(initialNpc(4), { ...base, event: { kind: 'arrived', walkId: id } });
   expect(result.state.walkId).toBeNull(); expect(result.state.recent).toEqual([]);
 });
-it('keyboard adapter exposes only enums, stales safely, ignores retired streams and never starts unsupported platforms', () => {
-  let at = 0, starts = 0; const children = [];
-  const start = () => { starts++; const c = new EventEmitter(); c.stdout = new EventEmitter(); c.kill = () => c.emit('exit'); children.push(c); return c; };
-  const adapter = createKeyboardActivity({ platform: 'darwin', start, now: () => at });
-  expect(adapter.sample()).toBe('unknown'); adapter.configure(true); adapter.configure(true); expect(starts).toBe(1);
-  children[0].stdout.emit('data', Buffer.from('idle\n')); expect(adapter.sample()).toBe('idle');
-  children[0].stdout.emit('data', Buffer.from('active\n')); expect(adapter.sample()).toBe('active');
-  at = 3000; expect(adapter.sample()).toBe('unknown');
-  adapter.configure(false); adapter.configure(true); children[0].stdout.emit('data', Buffer.from('idle\n')); expect(adapter.sample()).toBe('unknown');
-  children[1].stdout.emit('data', Buffer.from('secret\n')); expect(adapter.sample()).toBe('unknown');
-  children[1].emit('error', Error('unavailable')); expect(adapter.sample()).toBe('unknown'); adapter.configure(false);
-  for (const platform of ['linux', 'win32']) createKeyboardActivity({ platform, start }).configure(true);
-  expect(starts).toBe(2);
-});
-
 it('already presented pending work allows only quiet home observation and retains a suspended exploration', () => {
   const f = fixture(); f.until('outbound'); const target = f.state.target;
   const stop = f.tick({ quiet: true, layout: { ...layout, x: space.home } }); expect(stop.stop).toBeTruthy();

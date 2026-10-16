@@ -10,7 +10,16 @@
 
 持久字段 `npcHome` 默认 0.85，范围 0.05–0.95；`npcRange` 默认 0.30，范围 0.10–0.60，步长均 0.01。两者相对当前显示器 workArea 的横向比例，不保存显示器 ID 或全局坐标。Settings 以百分比提供编辑。锚点在工作区底部，活动区从小窝朝屏幕内侧展开；依据当前真实身体左右边界、尺寸安全余量及可用宽度夹取，不缩小整个原生窗口。过窄工作区停止移动；用户把角色拖出当前活动段后也停止自动移动，需拖回或调整小窝／范围，不横穿段外空间。轻量椭圆标记点击穿透，不是新实体家具。
 
-感知仅包含位置、鼠标、粗粒度键盘活动、本地时间、DSH 工作事实和显式互动。macOS 适配器以系统 osascript／CoreGraphics [聚合事件时间接口](https://developer.apple.com/documentation/coregraphics/cgeventsource/secondssincelasteventtype(_:eventtype:)) 查询当前登录会话的 keyDown／keyUp 两类事件的最近时间；先只读检查监听权限，不请求授权、不安装 event tap、不读取事件对象、按键／组合键、屏幕或其他应用内容。辅助进程只输出 active／idle／unknown，500ms 采样，最近 1.5 秒有键盘事件为 active；权限不足、API 失败、进程退出、超过 2.5 秒未更新均为 unknown。它不能区分打字、快捷键和持续按键；不读取系统综合空闲时间。Linux、Windows 及普通浏览器预览目前返回 unknown，采用保守安静行为。macOS 物理键盘、授权归属和其他平台支持需另验收。
+感知仅包含位置、鼠标、粗粒度键盘活动、本地时间、DSH 工作事实和显式互动。键盘辅助进程每 500ms 仅输出 active／idle／unknown，最近 1.5 秒有键盘事件为 active；超过 2.5 秒未更新为 unknown，启动超过 15 秒未响应停止该进程。未知时保留目标、安静停留，不能用鼠标或综合空闲替代。它不能区分打字、快捷键和持续按键；不解析按键码、组合键、文本、设备身份、屏幕或其他应用内容，不保存逐键事件和输入序列，不申请额外系统权限。
+
+| 平台 | 适配路径 | 降级边界 |
+|---|---|---|
+| macOS | 系统 osascript／CoreGraphics [聚合事件时间接口](https://developer.apple.com/documentation/coregraphics/cgeventsource/secondssincelasteventtype(_:eventtype:))，查询当前登录会话 keyDown／keyUp 两类事件的最近时间 | 不安装 event tap；监听授权与聚合时间查询是不同能力，不以前者作前置门槛。负数、非有限值、无历史哨兵或 API 异常为 unknown；物理键盘仍须实测 |
+| Windows | 系统 Windows PowerShell 以 STA 加载包内 C#，注册仅键盘的 [Raw Input](https://learn.microsoft.com/en-us/windows/win32/inputdev/about-raw-input) 到不可见消息窗口；仅 WM_INPUT 更新聚合活动时间 | 不调用 GetRawInputData，不拦截／抑制系统输入。注册失败、非交互／远程会话、安全桌面不可读为 unknown；不更改执行策略。源码已接入，原生编译、实机输入与资源待 Windows 验收 |
+| Linux X11 | `/usr/bin/python3` 标准库 ctypes 加载 libX11／libXi，订阅 [XInput2](https://www.x.org/releases/X11R7.7/doc/inputproto/XI2proto.txt) 的 RawKeyPress／RawKeyRelease 类别；不取 cookie 内容 | 需要 Python 3 与 X11／XI2 库和当前 DISPLAY（XI2 至少 2.1，以覆盖其他应用抓取期间的事件）；不打开 evdev、不要求 root、不读取键位图。源码已接入，真实 X11 输入与资源待 Linux 验收 |
+| Wayland／Xwayland、无 DISPLAY 或普通浏览器预览 | unknown | 不绕过 compositor 的全局输入隔离，不启用宽权限 portal 或综合空闲替代 |
+
+Windows／X11 注册完成后至少观察 1.5 秒才允许 idle。所有辅助进程随父进程退出；禁用陪伴、隐藏或休眠时停止。失败不在轮询中反复重启，可关闭后重新开启陪伴或隐藏后再显示重试。诊断仅增加固定 backend／status 枚举；权限拒绝不能仅凭 unknown 推断。各平台自动协议／策略检查与实物输入验收分别报告。
 
 辅助进程只在原生窗口可见、未挂起且新模式启用时运行，关闭／隐藏／挂起／退出时停止；不持久保存输入历史。诊断开关独立，不启用自动活动。配置组合见[使用指南](usage.md#自主陪伴p1-候选功能尚未发布)。
 

@@ -8,7 +8,7 @@
 
 关闭时不提供诊断接口，不保存活动历史。开启时仅维护固定大小的活动／邀请计数，由外部请求拉取当前摘要；不新增周期采样定时器。关闭立即停止受理读请求，撤下发现文件和本地 socket，清空诊断活动计数；关系存档不受影响。
 
-本轮增加可选 `npc` 固定字段：phase=home／prepare／outbound／observe／return／yield／resume；reason=none／disabled／input／unknown／pointer／work／user／lifecycle／geometry／capability；keyboard=active／idle／unknown；targetValid 与 compact 为布尔值。不输出具体坐标、目标身份、按键内容或输入历史。旧采样结果没有这些字段，不能据此推断 NPC 行为。
+本轮增加可选 `npc` 固定字段：phase=home／prepare／outbound／observe／return／yield／resume；reason=none／disabled／input／unknown／pointer／work／user／lifecycle／geometry／capability；keyboard=active／idle／unknown；targetValid 与 compact 为布尔值。不输出具体坐标、目标身份、按键内容或输入历史。另有可选 keyboardBackend=macos／windows／x11／none 和 keyboardStatus=disabled／starting／available／unsupported-platform／unsupported-session／missing-dependency／failed／stale／unavailable／protocol-error；仅说明适配器状态，不代表物理输入验收或已获某项权限。旧采样结果没有这些字段，不能据此推断 NPC 行为。
 
 摘要只含运行可见性／挂起、当前陪伴模式与片段、邀请状态、固定活动计数、有限队列／集合规模、存档修订与规模、Renderer 堆／DOM 数量及包版本／构建摘要。不得包含聊天／草稿正文、会话／互动身份、角色名字、文件内容、提示词或凭证。计数为有限诊断范围，不证明所有对象、定时器或队列。
 

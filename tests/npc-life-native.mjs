@@ -20,7 +20,10 @@ try {
   await page.waitForSelector('#pet[data-mode]'); await parkNativePointer(page);
   let endpoint;
   for (let i = 0; i < 50; i++) { [endpoint] = await listDiagnostics(join(root, 'diagnostics')); if (endpoint) break; await new Promise(r => setTimeout(r, 100)); }
-  const actual = await readDiagnostics(endpoint); assert.ok(['active', 'idle', 'unknown'].includes(actual.value.renderer.npc.keyboard));
+  let actual;
+  for (let i = 0; i < 30; i++) { actual = await readDiagnostics(endpoint); if (actual.value.renderer.npc.keyboardStatus !== 'starting') break; await new Promise(r => setTimeout(r, 500)); }
+  if (process.platform === 'darwin') { assert.equal(actual.value.renderer.npc.keyboardBackend, 'macos'); assert.equal(actual.value.renderer.npc.keyboardStatus, 'available'); }
+  assert.ok(['active', 'idle', 'unknown'].includes(actual.value.renderer.npc.keyboard));
   // Perception-only controls from here; native IPC, sandbox, body physics and rendering are real.
   await controlNpc(page); await page.reload(); await page.waitForSelector('#pet[data-mode][data-display-revision]'); await parkNativePointer(page);
   await npcUntil(page, 'outbound');
@@ -44,6 +47,6 @@ try {
   assert.equal(await page.locator('#body-layer iframe').contentFrame().locator('body').evaluate(() => typeof window.dshPetBridge), 'undefined');
   assert.deepEqual(errors, []);
   await mkdir('artifacts', { recursive: true });
-  await writeFile('artifacts/npc-life-native.json', JSON.stringify({ build: JSON.parse(await readFile(join(packageRoot, 'dist/build-info.json'), 'utf8')), electron: await app.evaluate(() => process.versions.electron), platform: process.platform, arch: process.arch, actualKeyboard: actual.value.renderer.npc.keyboard, controlledPerceptionForMovement: true, realNativeWalkArrivalReturn: true, interruptionRetainsTarget: true, stableRecovery: true, hotRelativeSettings: true, lifecyclePause: true, sandboxIsolated: true, physicalTypingValidated: false }, null, 2) + '\n');
+  await writeFile('artifacts/npc-life-native.json', JSON.stringify({ build: JSON.parse(await readFile(join(packageRoot, 'dist/build-info.json'), 'utf8')), electron: await app.evaluate(() => process.versions.electron), platform: process.platform, arch: process.arch, actualKeyboard: actual.value.renderer.npc.keyboard, keyboardBackend: actual.value.renderer.npc.keyboardBackend, keyboardStatus: actual.value.renderer.npc.keyboardStatus, controlledPerceptionForMovement: true, realNativeWalkArrivalReturn: true, interruptionRetainsTarget: true, stableRecovery: true, hotRelativeSettings: true, lifecyclePause: true, sandboxIsolated: true, physicalTypingValidated: false }, null, 2) + '\n');
   console.log('NPC isolated native cycle, interruption, arrival, return, relative settings and diagnostics passed.');
 } catch (error) { console.error('NPC native state:', JSON.stringify(await page?.evaluate(() => ({ state: window.npcState, input: window.npcInput, events: window.npcEvents?.slice(-8), trace: window.npcTrace, mode: document.querySelector('#pet').dataset.mode })).catch(() => null))); throw error; } finally { await app?.close(); await rm(root, { recursive: true, force: true }); }
