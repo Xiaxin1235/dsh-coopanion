@@ -2,6 +2,8 @@
 
 本文定义已实现的 P1 候选行为；已发布版本、候选身份与验收进度统一见[文档索引](README.md)。支持的 Host 版本沿 `package.json` 与 CI 矩阵。独立运行、在线模型闲聊与新图片制作不属于 P1。
 
+用户已认可的[有限空间 NPC 日常修订](npc-daily-life-plan.md)仍是待实现方案，将增加受控移动及忙碌后的状态接续；本文下述原地片段和强退让继续准确描述当前候选。实现新方案时再同步相应契约和验收，不将规划写成当前能力。
+
 ## 配置与运行
 
 新增持久枚举 `companionship: off | quiet | interactive`，默认 `off`。`off` 完整保留旧 `dailyRhythm`／calm 路径；`quiet` 使用本地日常和显式互动；`interactive` 额外允许低频邀请。新模式独占闲时调度。设置沿 Host schema、Settings、完整 DesktopOptions、ready baseline、configure 热同步；热切不重建角色、阅读或输入 DOM。通知、音效、陪伴独立配置。`roam=false` 及减少动态效果禁用自主行为和邀请，用户仍可从菜单主动互动；减少动态效果只保留文字反馈；切换时取消当时未完成的活动且不计成长。

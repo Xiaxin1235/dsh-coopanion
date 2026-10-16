@@ -1,0 +1,180 @@
+{
+  "schema": 1,
+  "checkedAt": "2026-10-16T07:11:33.418Z",
+  "node": "v24.21.0",
+  "instrumentation": "Read-only data-probe-face attribute added to whale draw through test-only HTTP route; motion/render logic unchanged.",
+  "repoCommit": "a1c1b43b3427bf9391d00b42dae0da45a021837f",
+  "scope": "Existing whale primitives in actual API 2 opaque iframe and headless Chromium; no product changes, native desktop input or new NPC policy. Sound requests verified; no speaker playback/subjective visual acceptance.",
+  "graphics": {
+    "webgl2": true,
+    "canvas": true
+  },
+  "checks": {
+    "directedWalkAndArrival": true,
+    "walkIdScopedStop": true,
+    "lookCompletion": true,
+    "sitAndStand": true,
+    "persistentExpression": true,
+    "turnFacing": true,
+    "happyExpression": true,
+    "sleepAndWake": true,
+    "soundRequests": true
+  },
+  "signals": {
+    "events": [
+      {
+        "kind": "mode",
+        "detail": {
+          "mode": "walk"
+        }
+      },
+      {
+        "kind": "mode",
+        "detail": {
+          "mode": "idle"
+        }
+      },
+      {
+        "kind": "arrived",
+        "detail": {
+          "walkId": 701,
+          "x": 279
+        }
+      },
+      {
+        "kind": "mode",
+        "detail": {
+          "mode": "walk"
+        }
+      },
+      {
+        "kind": "interrupted",
+        "detail": {
+          "walkId": 702,
+          "x": 306,
+          "by": "idle"
+        }
+      },
+      {
+        "kind": "mode",
+        "detail": {
+          "mode": "idle"
+        }
+      },
+      {
+        "kind": "mode",
+        "detail": {
+          "mode": "look"
+        }
+      },
+      {
+        "kind": "mode",
+        "detail": {
+          "mode": "idle"
+        }
+      },
+      {
+        "kind": "mode",
+        "detail": {
+          "mode": "sit"
+        }
+      },
+      {
+        "kind": "mode",
+        "detail": {
+          "mode": "wake"
+        }
+      },
+      {
+        "kind": "mode",
+        "detail": {
+          "mode": "idle"
+        }
+      },
+      {
+        "kind": "mode",
+        "detail": {
+          "mode": "sleep"
+        }
+      },
+      {
+        "kind": "mode",
+        "detail": {
+          "mode": "wake"
+        }
+      },
+      {
+        "kind": "mode",
+        "detail": {
+          "mode": "idle"
+        }
+      }
+    ],
+    "sounds": [
+      {
+        "name": "step",
+        "kind": "move"
+      },
+      {
+        "name": "step",
+        "kind": "move"
+      },
+      {
+        "name": "step",
+        "kind": "move"
+      },
+      {
+        "name": "step",
+        "kind": "move"
+      },
+      {
+        "name": "step",
+        "kind": "move"
+      },
+      {
+        "name": "step",
+        "kind": "move"
+      },
+      {
+        "name": "step",
+        "kind": "move"
+      },
+      {
+        "name": "look",
+        "kind": "move"
+      },
+      {
+        "name": "yawn",
+        "kind": "face"
+      },
+      {
+        "name": "tick",
+        "kind": "move"
+      },
+      {
+        "name": "happy",
+        "kind": "face"
+      },
+      {
+        "name": "snore",
+        "kind": "snore"
+      },
+      {
+        "name": "yawn",
+        "kind": "face"
+      }
+    ],
+    "error": null
+  },
+  "sourceHashes": {
+    "web/upstream/whale/figure.json": "bff57b10e748111e41c250341f5b61b0a1040bfc31034f3831585b0756bb1139",
+    "web/upstream/whale/figure.js": "270faf110ef377045c1201617343246309674387522f2d9f44e694d95afe3f49",
+    "web/upstream/whale/model.json": "3c3e2138572da144bac96e62573d420f45da181bf29aacfbc8246e974e655890",
+    "web/upstream/kit/body.js": "ad6e9d87e61dead1948919e7fcc59c41b4199d6dfbd5f2bc42d9f922a53dc599",
+    "web/upstream/body-host.js": "5aa01e6552b4edef59f3be06815bb60db739e046bf713a2575d298d10ffac8e7",
+    "web/upstream/figure-frame.js": "33235a8f541b161356286f57f3f00448f999be3ce55e79ee8a6779c7b3ab8f3f",
+    "web/upstream/sound.js": "5d31e661c4932357f784d30917008b6f080e150a5ec131732d11e9ea7e79e4e3",
+    "web/pet.js": "c78c934e35e98128cf162d1c2a7820a996b22a0e32994bc0b17adb0b8f441e7d",
+    "web/companionship.js": "77bfb1f1a764bbeafb7fa93674cb68a50ca5a82ac4c2cd423cc41125d65d8ed3"
+  }
+}

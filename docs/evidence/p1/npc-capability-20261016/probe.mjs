@@ -1,0 +1,56 @@
+import assert from 'node:assert/strict';
+import { once } from 'node:events';
+import { readFile,writeFile,mkdtemp,rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join,resolve } from 'node:path';
+import { createRequire } from 'node:module';
+import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
+import { chromium } from 'playwright-core';
+const require=createRequire(import.meta.url),{CharacterStore}=require('../../dist/character-store.cjs'),{createPetServer}=require('../../dist/figure-server.cjs');
+const directory=await mkdtemp(join(tmpdir(),'dsh-npc-capability-'));
+const server=createPetServer({webRoot:resolve('web'),store:new CharacterStore(directory,resolve('web/upstream/whale'))});
+server.listen(0,'127.0.0.1');await once(server,'listening');
+let browser;
+try{
+ browser=await chromium.launch({headless:true,args:['--no-sandbox','--enable-unsafe-swiftshader']});
+ const page=await browser.newPage({viewport:{width:1000,height:650}});page.setDefaultTimeout(15000);
+ const origin='http://127.0.0.1:'+server.address().port;
+ await page.route(origin+'/',r=>r.fulfill({contentType:'text/html',body:'<!doctype html><html><body style="margin:0"><div id="stage" style="position:absolute;inset:0"></div></body></html>'}));
+ await page.route('**/upstream/whale/figure.js',async route=>{
+  const response=await route.fetch(),source=await response.text();
+  const marker='function draw(petG, fc, o) {';assert.ok(source.includes(marker));
+  await route.fulfill({response,body:source.replace(marker,marker+" petG.dataset.probeFace = o.face || 'neutral';")});
+ });
+ await page.goto(origin+'/');
+ const manifest=JSON.parse(await readFile('web/upstream/whale/figure.json','utf8'));
+ await page.evaluate(async({manifest,origin})=>{
+  const {loadBody}=await import('/upstream/body-host.js');
+  window.probeEvents=[];window.probeSounds=[];
+  window.probeBody=await loadBody({layer:document.getElementById('stage'),pack:{...manifest,base:origin+'/upstream/whale/'},start:{x:180,facing:1,scheme:'deepseek'},theme:'light',bounds:{W:1000,H:650,floorY:626,S:180/256},onEvent:(kind,detail)=>probeEvents.push({kind,detail}),onSound:(name,kind)=>probeSounds.push({name,kind}),onError:e=>{window.probeError=e.message}});
+  probeBody.set({roam:'off'});let previous=performance.now();function tick(now){probeBody.tick(Math.min(.05,(now-previous)/1000));previous=now;requestAnimationFrame(tick)}requestAnimationFrame(tick);
+ },{manifest,origin});
+ await page.waitForFunction(()=>probeBody.layout?.box.w>0);
+ const frame=page.frames().find(f=>f!==page.mainFrame());
+ const graphics=await frame.evaluate(()=>{const gl=document.querySelector('canvas')?.getContext('webgl2');return {webgl2:!!gl,canvas:!!document.querySelector('canvas')}});assert.equal(graphics.webgl2,true);
+ await page.evaluate(()=>probeBody.walk(280,false,701));
+ await page.waitForFunction(()=>probeEvents.some(e=>e.kind==='arrived'&&e.detail.walkId===701));
+ const arrival=await page.evaluate(()=>({x:probeBody.layout.x,mode:probeBody.layout.mode}));assert.ok(Math.abs(arrival.x-280)<2);
+ await page.evaluate(()=>probeBody.walk(650,false,702));await page.waitForFunction(()=>probeBody.layout.mode==='walk'&&probeBody.layout.x>290);
+ await page.evaluate(()=>probeBody.stopWalk(999));await page.waitForFunction(()=>probeBody.layout.x>305);assert.equal(await page.evaluate(()=>probeBody.layout.mode),'walk');
+ await page.evaluate(()=>probeBody.stopWalk(702));await page.waitForFunction(()=>probeBody.layout.mode==='idle');
+ const stopped=await page.evaluate(()=>probeBody.layout.x);await page.waitForTimeout(180);assert.ok(Math.abs(await page.evaluate(()=>probeBody.layout.x)-stopped)<.1);
+ await page.evaluate(()=>probeBody.do('look'));await page.waitForFunction(()=>probeBody.layout.mode==='look');await page.waitForFunction(()=>probeBody.layout.mode==='idle');
+ await page.evaluate(()=>probeBody.do('sit'));await page.waitForFunction(()=>probeBody.layout.mode==='sit');
+ await page.evaluate(()=>probeBody.do('stand'));await page.waitForFunction(()=>probeBody.layout.mode==='idle');
+ await page.evaluate(()=>probeBody.set({expression:'thinking'}));await page.waitForTimeout(3600);assert.equal(await frame.locator('[data-probe-face]').first().getAttribute('data-probe-face'),'thinking');
+ await page.evaluate(()=>probeBody.set({expression:null}));await page.waitForFunction(()=>!probeBody.layout.moving);
+ const beforeTurn=await page.evaluate(()=>probeBody.layout.facing);await page.evaluate(()=>probeBody.do('turn'));await page.waitForFunction(f=>probeBody.layout.facing===-f,beforeTurn);
+ await page.evaluate(()=>probeBody.do('happy'));await page.waitForTimeout(150);assert.equal(await frame.locator('[data-probe-face]').first().getAttribute('data-probe-face'),'happy');
+ await page.evaluate(()=>probeBody.do('sleep'));await page.waitForFunction(()=>probeBody.layout.mode==='sleep');await page.evaluate(()=>probeBody.do('stand'));await page.waitForFunction(()=>probeBody.layout.mode==='idle');
+ const signals=await page.evaluate(()=>({events:probeEvents,sounds:probeSounds,error:window.probeError??null}));assert.equal(signals.error,null);assert.ok(signals.sounds.some(s=>s.name==='step'));assert.ok(signals.sounds.some(s=>s.name==='look'));assert.ok(signals.sounds.some(s=>s.name==='happy'));
+ const names=['web/upstream/whale/figure.json','web/upstream/whale/figure.js','web/upstream/whale/model.json','web/upstream/kit/body.js','web/upstream/body-host.js','web/upstream/figure-frame.js','web/upstream/sound.js','web/pet.js','web/companionship.js'];
+ const sourceHashes=Object.fromEntries(await Promise.all(names.map(async n=>[n,createHash('sha256').update(await readFile(n)).digest('hex')])));
+ const report={schema:1,checkedAt:new Date().toISOString(),node:process.version,instrumentation:'Read-only data-probe-face attribute added to whale draw through test-only HTTP route; motion/render logic unchanged.',repoCommit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),scope:'Existing whale primitives in actual API 2 opaque iframe and headless Chromium; no product changes, native desktop input or new NPC policy. Sound requests verified; no speaker playback/subjective visual acceptance.',graphics,checks:{directedWalkAndArrival:true,walkIdScopedStop:true,lookCompletion:true,sitAndStand:true,persistentExpression:true,turnFacing:true,happyExpression:true,sleepAndWake:true,soundRequests:true},signals,sourceHashes};
+ await writeFile('artifacts/npc-capability-20261016/report-02.json',JSON.stringify(report,null,2)+'\n',{flag:'wx'});console.log(JSON.stringify({status:'pass',checks:report.checks,graphics}));
+}finally{await browser?.close();await new Promise(r=>server.close(r));await rm(directory,{recursive:true,force:true})}

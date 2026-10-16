@@ -49,6 +49,8 @@ npm 使用已配置的 Trusted Publisher；dshmarket 通过社区目录 PR 收�
 
 ## P1 自主陪伴验证
 
+下一轮 [NPC 日常修订](npc-daily-life-plan.md)已完成现有动作／表情／音效／物件评估与[隔离原语检查](evidence/p1/npc-capability-20261016/README.md)，尚未实现。后续先验证键盘活动适配和受控移动的打断，再接入完整日常循环；这些检查与当前候选回归、资源观察分别结算。
+
 `test:inbox-ui` 已包含 P1 真实 API 2 日常、邀请、输入轨迹、成长、热设置和阅读回归；`test:desktop` 额外串行运行真实时间的 P1 原生点击／存档重启验证。`test:install` 在两版宿主中检查新枚举保存和原生 IPC，不要求独立运行。
 
 短时资源对照入口 `scripts/measure-idle.mjs` 支持 `--mode companion-day`／`companion-night`，与同轮 `off` 使用相同固定种子和真实物理时钟。初始预算及基线见[P1 固定记录](evidence/p1/README.md)，最新候选和实际执行状态从[文档索引](README.md)读取；旧记录中的“最终候选”只代表对应快照。
