@@ -59,7 +59,7 @@ npm 使用已配置的 Trusted Publisher；dshmarket 通过社区目录 PR 收�
 
 `observe-companion.mjs` 负责受控 VM 的正式安装、启动和场景验证，将周期采样交给上述同一程序；不再注入测试专用活动／请求计数。它先核对采样器与候选包内脚本摘要一致，再按版本和产品摘要约束目标。CDP 只用于开始时的随机源、窗口及实际渲染证明，普通安装不启用。
 
-启动前按[使用指南](usage.md#自主陪伴p1-候选功能尚未发布)确认实际 profile 的自动活动许可。VM 启动器会生成独立 profile 并配置 `roam=true`、`companionship=interactive`、`diagnostics=true`；日常 Desktop 设置不随 VM 改变。七天日常采样与两小时受控观察分别记录，按[诊断契约](diagnostics-contract.md)解释时间、缺口及结果。
+启动前按[使用指南](usage.md#自主陪伴p1-候选功能尚未发布)确认实际 profile 的自动活动许可。VM 启动器会生成独立 profile 并配置 `roam=true`、`companionship=interactive`、`diagnostics=true`；日常 Desktop 设置不随 VM 改变。可选日常采样与两小时受控观察分别记录，按[诊断契约](diagnostics-contract.md)解释时间、缺口及结果。当前体验采用短时可见检查和自然反馈，不要求用户七天试用、填表或评分。
 
 VM 建议 Ubuntu 24.04 x86_64、4 vCPU、固定 8 GiB 内存与 50 GiB 磁盘。按仓库固定 Node／npm 准备依赖、Electron 和 Chromium，另安装 `xvfb openbox x11-utils dbus-x11 libgtk-3-0t64 python3 procps`；Chromium 的依赖不保证包含 GTK 3。
 

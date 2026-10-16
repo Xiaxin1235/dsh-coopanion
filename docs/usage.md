@@ -113,14 +113,14 @@ macOS／Linux 可直接运行候选包内的 Node 脚本，无需开发环境或
 ```bash
 node "$HOME/.dsh/profiles/desktop/node_modules/@takboo/dsh-coopanion/scripts/sample-companion.mjs" --list
 node "$HOME/.dsh/profiles/desktop/node_modules/@takboo/dsh-coopanion/scripts/sample-companion.mjs" \
-  --output "$HOME/dsh-companion-samples/trial-unique" --seconds 604800 --interval 30
+  --output "$HOME/dsh-companion-samples/trial-unique" --seconds 600 --interval 30 --window 60
 ```
 
 输出目录须尚不存在。发现多个实例时加入 `--instance <list 显示的实例>`，避免混入测试 profile。采样不操作鼠标、不抢焦点、不截图、不防休眠；重启、休眠缺口和关闭诊断会分段记录。关闭接口时采样器可等待恢复，按 Ctrl+C 结束并写报告。日志默认上限 128 MiB，达到后明确停止，不静默丢弃记录。
 
-示例每 30 秒采样，适合日常趋势；脚本默认间隔为 10 秒。`--seconds` 使用进程的单调时钟；跨系统休眠时墙钟结束可能延后，如要求固定日历截止，应另用外部控制进程停止。前台终端退出或系统重启后不保证继续运行，七天任务应独立托管并核对进程；不为此阻止正常休眠。
+上例是可选的十分钟工程采样，每 30 秒一条，首／末窗口各 60 秒，不等同于两小时资源验收。脚本默认间隔为 10 秒，默认时长七天仅是工具参数，体验验证无需采用它。`--seconds` 使用进程的单调时钟；跨系统休眠时墙钟结束可能延后，如要求固定日历截止，应另用外部控制进程停止。前台终端退出或系统重启后不保证继续运行，长时工程任务需独立托管并核对进程；不为此阻止正常休眠。
 
-原始数据为 `samples.ndjson`，数据可读时约每分钟更新 `progress.json`，接口不可用等变化写入 `events.ndjson`，结束报告为 `summary.json`。日常模式的 `recorded` 只表示数据已记录；关闭 `roam`、陪伴模式未开启或持续工作占用的时间不能作为自主陪伴有效体验。七天实用仍须本人按[路线图 P1-J](roadmap.md#p1验收标准)记录后台无任务时长、行为、邀请回应、重复感及每日评分。Windows 命名管道接口尚待单独验证，独立 OS 资源采样尚未支持。数据范围及鉴权见[诊断契约](diagnostics-contract.md)。
+原始数据为 `samples.ndjson`，数据可读时约每分钟更新 `progress.json`，接口不可用等变化写入 `events.ndjson`，结束报告为 `summary.json`。日常模式的 `recorded` 只表示数据已记录；关闭 `roam`、陪伴模式未开启或持续工作占用的时间不能作为自主陪伴有效体验。采样是可选的工程诊断，不要求用户运行七天、填表或每日打分；体验按[路线图 P1-J](roadmap.md#p1验收标准)通过短时可见演示和自然反馈判断，明显无感即可停止并进入调整。Windows 命名管道接口尚待单独验证，独立 OS 资源采样尚未支持。数据范围及鉴权见[诊断契约](diagnostics-contract.md)。
 
 ## 新角色
 
