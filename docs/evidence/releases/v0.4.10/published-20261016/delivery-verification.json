@@ -1,0 +1,871 @@
+{
+  "version": "0.4.10",
+  "tag": "v0.4.10",
+  "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+  "verifiedAt": "2026-10-16T14:22:23.962340+00:00",
+  "package": {
+    "name": "@takboo/dsh-coopanion",
+    "version": "0.4.10",
+    "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+    "sha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88",
+    "integrity": "sha512-Vc/w9H4dRp7glfKGwheEpl2eWJLZmmi7OBR3IEX4lxIPiOAR3vAjIIp4J61U8K946jk6g85jv6fnLveNAvSPXg=="
+  },
+  "release": "https://github.com/takboo/dsh-coopanion/releases/tag/v0.4.10",
+  "releasePublishedAt": "2026-10-16T14:04:46Z",
+  "releaseBodyMatchesCurrentNotes": true,
+  "assets": [
+    {
+      "name": "dsh-coopanion-0.4.10.tgz",
+      "url": "https://github.com/takboo/dsh-coopanion/releases/download/v0.4.10/dsh-coopanion-0.4.10.tgz",
+      "sha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88",
+      "bytes": 23252646
+    },
+    {
+      "name": "dsh-coopanion.tgz",
+      "url": "https://github.com/takboo/dsh-coopanion/releases/download/v0.4.10/dsh-coopanion.tgz",
+      "sha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88",
+      "bytes": 23252646
+    },
+    {
+      "name": "paper-star.zip",
+      "url": "https://github.com/takboo/dsh-coopanion/releases/download/v0.4.10/paper-star.zip",
+      "sha256": "5e320f6ba0c1279c2f1d5a350158029d8f9e362ac8e258f30ac278f5c2472164",
+      "bytes": 1959
+    },
+    {
+      "name": "SHA256SUMS",
+      "url": "https://github.com/takboo/dsh-coopanion/releases/download/v0.4.10/SHA256SUMS",
+      "sha256": "a1c928daa0ab18831dc16aa44df14b9190cf1dbad6ff58a03a2b9a3dd37bd921",
+      "bytes": 423
+    },
+    {
+      "name": "verification.json",
+      "url": "https://github.com/takboo/dsh-coopanion/releases/download/v0.4.10/verification.json",
+      "sha256": "07cf9f2d9ccdc56b12852dbde1ee125453c8bfb0c08e9ed9181e30ba9cbf2a0a",
+      "bytes": 317
+    },
+    {
+      "name": "release-notes.md",
+      "url": "https://github.com/takboo/dsh-coopanion/releases/download/v0.4.10/release-notes.md",
+      "sha256": "93c769f30c921a0e42ea8d94cd44ccbcdc0c5c2da04bf4e43a5c2396ff9d4ff9",
+      "bytes": 1947
+    }
+  ],
+  "npm": {
+    "latest": "0.4.10",
+    "url": "https://registry.npmjs.org/@takboo/dsh-coopanion/-/dsh-coopanion-0.4.10.tgz",
+    "identicalBytes": true,
+    "provenance": {
+      "available": true,
+      "url": "https://registry.npmjs.org/-/npm/v1/attestations/@takboo%2fdsh-coopanion@0.4.10",
+      "subjectDigestMatches": true,
+      "sourceCommitMatches": true,
+      "workflow": {
+        "ref": "refs/heads/main",
+        "repository": "https://github.com/takboo/dsh-coopanion",
+        "path": ".github/workflows/release.yml"
+      },
+      "invocationId": "https://github.com/takboo/dsh-coopanion/actions/runs/38902873948/attempts/4",
+      "cryptographicallyVerifiedLocally": false
+    }
+  },
+  "latestAlias": {
+    "url": "https://github.com/takboo/dsh-coopanion/releases/latest/download/dsh-coopanion.tgz",
+    "identicalBytes": true
+  },
+  "mainCi": {
+    "url": "https://github.com/takboo/dsh-coopanion/actions/runs/38895406936",
+    "runAttempt": 3,
+    "headSha": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+    "conclusion": "success",
+    "checksPassed": 10,
+    "jobs": [
+      {
+        "name": "Test (macos-latest)",
+        "conclusion": "success",
+        "databaseId": 116969825636
+      },
+      {
+        "name": "workflow-syntax",
+        "conclusion": "success",
+        "databaseId": 116969827396
+      },
+      {
+        "name": "Test (windows-latest)",
+        "conclusion": "success",
+        "databaseId": 116969828011
+      },
+      {
+        "name": "Test (ubuntu-latest)",
+        "conclusion": "success",
+        "databaseId": 116969860350
+      },
+      {
+        "name": "Install (windows-latest, DSH 0.2.1-alpha.1)",
+        "conclusion": "success",
+        "databaseId": 116974060745
+      },
+      {
+        "name": "Install (windows-latest, DSH 0.2.0-rc.2)",
+        "conclusion": "success",
+        "databaseId": 116974060812
+      },
+      {
+        "name": "Install (ubuntu-latest, DSH 0.2.0-rc.2)",
+        "conclusion": "success",
+        "databaseId": 116974060824
+      },
+      {
+        "name": "Install (macos-latest, DSH 0.2.1-alpha.1)",
+        "conclusion": "success",
+        "databaseId": 116974060865
+      },
+      {
+        "name": "Install (macos-latest, DSH 0.2.0-rc.2)",
+        "conclusion": "success",
+        "databaseId": 116974060867
+      },
+      {
+        "name": "Install (ubuntu-latest, DSH 0.2.1-alpha.1)",
+        "conclusion": "success",
+        "databaseId": 116974060890
+      }
+    ]
+  },
+  "releaseCi": {
+    "url": "https://github.com/takboo/dsh-coopanion/actions/runs/38902873948",
+    "runAttempt": 4,
+    "headSha": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+    "conclusion": "success",
+    "checksPassed": 13,
+    "jobs": [
+      {
+        "name": "Start tagged release from main",
+        "conclusion": "skipped",
+        "databaseId": 117007026871
+      },
+      {
+        "name": "Verify release tag",
+        "conclusion": "success",
+        "databaseId": 117007027108
+      },
+      {
+        "name": "Test release artifact / Install (windows-latest, DSH 0.2.1-alpha.1)",
+        "conclusion": "success",
+        "databaseId": 117007027920
+      },
+      {
+        "name": "Test release artifact / Install (macos-latest, DSH 0.2.1-alpha.1)",
+        "conclusion": "success",
+        "databaseId": 117007027936
+      },
+      {
+        "name": "Test release artifact / Install (windows-latest, DSH 0.2.0-rc.2)",
+        "conclusion": "success",
+        "databaseId": 117007027941
+      },
+      {
+        "name": "Test release artifact / Install (ubuntu-latest, DSH 0.2.0-rc.2)",
+        "conclusion": "success",
+        "databaseId": 117007027985
+      },
+      {
+        "name": "Test release artifact / workflow-syntax",
+        "conclusion": "success",
+        "databaseId": 117007027991
+      },
+      {
+        "name": "Test release artifact / Install (ubuntu-latest, DSH 0.2.1-alpha.1)",
+        "conclusion": "success",
+        "databaseId": 117007028004
+      },
+      {
+        "name": "Test release artifact / Install (macos-latest, DSH 0.2.0-rc.2)",
+        "conclusion": "success",
+        "databaseId": 117007028130
+      },
+      {
+        "name": "Test release artifact / Test (macos-latest)",
+        "conclusion": "success",
+        "databaseId": 117007028500
+      },
+      {
+        "name": "Test release artifact / Test (ubuntu-latest)",
+        "conclusion": "success",
+        "databaseId": 117007028504
+      },
+      {
+        "name": "Test release artifact / Test (windows-latest)",
+        "conclusion": "success",
+        "databaseId": 117007029384
+      },
+      {
+        "name": "Publish verified tarball to npm",
+        "conclusion": "success",
+        "databaseId": 117010874882
+      },
+      {
+        "name": "Attach verified bytes to GitHub Release",
+        "conclusion": "success",
+        "databaseId": 117012680405
+      }
+    ]
+  },
+  "localInstallation": {
+    "dailyInstalledCanonicalIdentical": true,
+    "installedFilesPreviouslyCompared": 1232,
+    "activeBuildMatchesSourceAndProductDigest": true,
+    "dsh": "0.2.0-rc.2",
+    "normalSandboxLaunchPreviouslyVerified": true,
+    "installedFilesPreviouslyComparedAt": "2026-10-16T11:57:04.740170Z"
+  },
+  "weekendObservation": {
+    "started": true,
+    "completed": false,
+    "until": "2026-10-19T09:00:00+08:00",
+    "intervalSeconds": 30,
+    "rawDataLocalOnly": true,
+    "normalSleepPermitted": true,
+    "originalSevenDayRunRemainsCancelled": true
+  },
+  "market": {
+    "submission": {
+      "state": "open",
+      "mergedAt": null,
+      "url": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/7073"
+    },
+    "feeds": [
+      {
+        "url": "https://awesome-dsh-plugin.com/plugins.json",
+        "status": 200,
+        "containsPlugin": false,
+        "sha256": "4fc25a33331b8e491868b531dadda474b105d76694b4b9f0ff5f58ad991dba77",
+        "observedAt": "2026-10-16T14:13:56.741Z"
+      },
+      {
+        "url": "https://awesome-dsh-plugin.com/updates.json",
+        "status": 200,
+        "containsPlugin": false,
+        "sha256": "d7c786314650fdaa6223f128057a5111b6366ef5b584b2bff8d0872fcd285c0b",
+        "observedAt": "2026-10-16T14:13:56.913Z"
+      }
+    ]
+  },
+  "acceptanceBoundaries": [
+    "Natural weekend lifecycle/resource acceptance is pending; current collection is ongoing.",
+    "Windows/Linux physical input and physical multi-display/DPI remain separate from CI and VM tests.",
+    "Windows native helper had two startup failures; unchanged formal retry passed with unknown/unavailable output only; root cause remains unconfirmed.",
+    "The release install matrix briefly failed on newly published upstream loader/cordis requiring then-unavailable stable schemastery; later official publication recovered it without package or dependency overrides.",
+    "npm provenance fields/digests/source were inspected without local cryptographic signature verification."
+  ],
+  "cleanup": {
+    "diagnosticWorktreeArchived": true,
+    "remoteDiagnosticBranchRetained": true,
+    "branch": "codex/windows-keyboard-startup-debug"
+  },
+  "installationEvidence": {
+    "matrices": 6,
+    "identityBoundReports": 60,
+    "selection": "Artifact creation time bound to the current successful job start/completion; duplicate artifact names from failed attempts excluded.",
+    "artifacts": [
+      {
+        "name": "installation-Linux-0.2.0-rc.2",
+        "id": 12050970749,
+        "jobId": 117007027985,
+        "createdAt": "2026-10-16T13:54:59Z",
+        "digest": "sha256:3421cd97b4570a3cc64b895e0727200265ea03212073895867eb833175b79a10",
+        "downloadSha256": "3421cd97b4570a3cc64b895e0727200265ea03212073895867eb833175b79a10"
+      },
+      {
+        "name": "installation-Linux-0.2.1-alpha.1",
+        "id": 12050372717,
+        "jobId": 117007028004,
+        "createdAt": "2026-10-16T13:54:51Z",
+        "digest": "sha256:f77ac84b8d3f51ce14e627792ae56acca6484f6d73575bb62aff15748506c59c",
+        "downloadSha256": "f77ac84b8d3f51ce14e627792ae56acca6484f6d73575bb62aff15748506c59c"
+      },
+      {
+        "name": "installation-macOS-0.2.0-rc.2",
+        "id": 12050267950,
+        "jobId": 117007028130,
+        "createdAt": "2026-10-16T13:55:42Z",
+        "digest": "sha256:bcd5d7168f563fdfac5198dff7d7fc1e654f71d2eac35ba43091a1bdf6a4f532",
+        "downloadSha256": "bcd5d7168f563fdfac5198dff7d7fc1e654f71d2eac35ba43091a1bdf6a4f532"
+      },
+      {
+        "name": "installation-macOS-0.2.1-alpha.1",
+        "id": 12050566958,
+        "jobId": 117007027936,
+        "createdAt": "2026-10-16T13:55:49Z",
+        "digest": "sha256:8f3a73e9a0baa13d222acc1a6384f70b3acfb29b8a91df3bb3bcd5bf55309c3f",
+        "downloadSha256": "8f3a73e9a0baa13d222acc1a6384f70b3acfb29b8a91df3bb3bcd5bf55309c3f"
+      },
+      {
+        "name": "installation-Windows-0.2.0-rc.2",
+        "id": 12050084098,
+        "jobId": 117007027941,
+        "createdAt": "2026-10-16T14:00:26Z",
+        "digest": "sha256:a0b344076dfc57fe9da6135b7fcc51e0b94219d0530a15e318d9c310cab7bca4",
+        "downloadSha256": "a0b344076dfc57fe9da6135b7fcc51e0b94219d0530a15e318d9c310cab7bca4"
+      },
+      {
+        "name": "installation-Windows-0.2.1-alpha.1",
+        "id": 12050966243,
+        "jobId": 117007027920,
+        "createdAt": "2026-10-16T13:57:23Z",
+        "digest": "sha256:f23ae16a87c5fe49bb35f32ca291a2e228290d2205b2fd9de9feef43d19deee0",
+        "downloadSha256": "f23ae16a87c5fe49bb35f32ca291a2e228290d2205b2fd9de9feef43d19deee0"
+      }
+    ],
+    "reports": [
+      {
+        "matrix": "installation-Linux-0.2.0-rc.2",
+        "artifactId": 12050970749,
+        "jobId": 117007027985,
+        "report": "install-0.2.0-rc.2.json",
+        "reportSha256": "e5796cfcd78cd0ebdbc308ca6c3e9cc9a70d611ce281012ebac50ebf60206825",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Linux-0.2.0-rc.2",
+        "artifactId": 12050970749,
+        "jobId": 117007027985,
+        "report": "goal-host-0.2.0-rc.2.json",
+        "reportSha256": "cd90fdb1dd047dcb4e16fff3ec70bd262ba251589f9f2de782e855603cfaab10",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Linux-0.2.0-rc.2",
+        "artifactId": 12050970749,
+        "jobId": 117007027985,
+        "report": "session-host-0.2.0-rc.2.json",
+        "reportSha256": "d28f28503301b7d5ae4378a8407fc876b4416e7be2e6ad8715d2c9447784d99f",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Linux-0.2.0-rc.2",
+        "artifactId": 12050970749,
+        "jobId": 117007027985,
+        "report": "session-native-0.2.0-rc.2.json",
+        "reportSha256": "e5d9554f804a919f09e552d5810fb6612739c89d83ccbc9ad7d40384936d5051",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Linux-0.2.0-rc.2",
+        "artifactId": 12050970749,
+        "jobId": 117007027985,
+        "report": "desktop-recovery-0.2.0-rc.2.json",
+        "reportSha256": "053bcc5ba84e485a7d2adab42284d5e33819d4aae1b4c23effd354fa32c30bd9",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Linux-0.2.0-rc.2",
+        "artifactId": 12050970749,
+        "jobId": 117007027985,
+        "report": "text-scale-installed-0.2.0-rc.2.json",
+        "reportSha256": "87a632c94fe834310b3ae98474f3734465a3948853dbc0e15b01155b7a66c927",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Linux-0.2.0-rc.2",
+        "artifactId": 12050970749,
+        "jobId": 117007027985,
+        "report": "multi-display-installed-0.2.0-rc.2.json",
+        "reportSha256": "c39e8dd79bc81f64375fd9a2636480c023509efc9dce5afc1f09422e563c0f3c",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Linux-0.2.0-rc.2",
+        "artifactId": 12050970749,
+        "jobId": 117007027985,
+        "report": "daily-rhythm-installed-0.2.0-rc.2.json",
+        "reportSha256": "c4388a6900510d309116b2d481833ab9925ca452ff3618efac7cb064f48b2813",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Linux-0.2.0-rc.2",
+        "artifactId": 12050970749,
+        "jobId": 117007027985,
+        "report": "companionship-installed-0.2.0-rc.2.json",
+        "reportSha256": "da53eb70ce9ad49af55754072cae34802d490e002de06c1689e10fb4045e283c",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Linux-0.2.0-rc.2",
+        "artifactId": 12050970749,
+        "jobId": 117007027985,
+        "report": "diagnostics-installed-0.2.0-rc.2.json",
+        "reportSha256": "3abcd677a61ffef64741c0b9f2dbdfe265062db4b6026a6ddfbe26a08fe17710",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Linux-0.2.1-alpha.1",
+        "artifactId": 12050372717,
+        "jobId": 117007028004,
+        "report": "install-0.2.1-alpha.1.json",
+        "reportSha256": "e569eaba945fb7e47d79aeb4c1bb817d124c713452e5e7e398e3fc0cb2a8c9db",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Linux-0.2.1-alpha.1",
+        "artifactId": 12050372717,
+        "jobId": 117007028004,
+        "report": "goal-host-0.2.1-alpha.1.json",
+        "reportSha256": "ed4108f74e7ed3eaa30f8b3b0195a5aed363e9c48a0a3bfde20890f1964ec353",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Linux-0.2.1-alpha.1",
+        "artifactId": 12050372717,
+        "jobId": 117007028004,
+        "report": "session-host-0.2.1-alpha.1.json",
+        "reportSha256": "13784026007b534872279a90665237970598484ae5eea5ef148b28a1786d00d6",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Linux-0.2.1-alpha.1",
+        "artifactId": 12050372717,
+        "jobId": 117007028004,
+        "report": "session-native-0.2.1-alpha.1.json",
+        "reportSha256": "9c5b106cddda5bfaeba9ff75399cf158128d6116777e5912efb39e35713530e3",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Linux-0.2.1-alpha.1",
+        "artifactId": 12050372717,
+        "jobId": 117007028004,
+        "report": "desktop-recovery-0.2.1-alpha.1.json",
+        "reportSha256": "a6899d3fb10dfd03b28afd91ff8c1be2aba1a06873ffc713f0d21a31483accc9",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Linux-0.2.1-alpha.1",
+        "artifactId": 12050372717,
+        "jobId": 117007028004,
+        "report": "text-scale-installed-0.2.1-alpha.1.json",
+        "reportSha256": "6f65e4328ed5f2fcac29a2e082e3a919ec7397491af4032316289b39a00faf4f",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Linux-0.2.1-alpha.1",
+        "artifactId": 12050372717,
+        "jobId": 117007028004,
+        "report": "multi-display-installed-0.2.1-alpha.1.json",
+        "reportSha256": "2d22fd6c3fc77e562954ff43bf98e34cb26f5afe0f63ed3911b286fd0e345018",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Linux-0.2.1-alpha.1",
+        "artifactId": 12050372717,
+        "jobId": 117007028004,
+        "report": "daily-rhythm-installed-0.2.1-alpha.1.json",
+        "reportSha256": "890eb43a52d1b522debaa625e243628440269d2d7db425cf84fb58afee9ffa73",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Linux-0.2.1-alpha.1",
+        "artifactId": 12050372717,
+        "jobId": 117007028004,
+        "report": "companionship-installed-0.2.1-alpha.1.json",
+        "reportSha256": "de079672333a10b491a734de0abe9384f56480e202b051305fa6218c7611dccb",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Linux-0.2.1-alpha.1",
+        "artifactId": 12050372717,
+        "jobId": 117007028004,
+        "report": "diagnostics-installed-0.2.1-alpha.1.json",
+        "reportSha256": "0794237c7b9bd07175f089447c289507a3a6f87ef40f2dab2f058a08d6942154",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-macOS-0.2.0-rc.2",
+        "artifactId": 12050267950,
+        "jobId": 117007028130,
+        "report": "install-0.2.0-rc.2.json",
+        "reportSha256": "cf9ebb18857556c4789bb830754ead0ca48f036aad6f455f794034d0609af54a",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-macOS-0.2.0-rc.2",
+        "artifactId": 12050267950,
+        "jobId": 117007028130,
+        "report": "goal-host-0.2.0-rc.2.json",
+        "reportSha256": "a2bcda8e233720d7b1e1a80968ee82c084983ac2d23add0e0d564c5077b10f35",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-macOS-0.2.0-rc.2",
+        "artifactId": 12050267950,
+        "jobId": 117007028130,
+        "report": "session-host-0.2.0-rc.2.json",
+        "reportSha256": "4fc3174eb92002bed7536f6894570c583f76fa108b88be73c80341c7821688a2",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-macOS-0.2.0-rc.2",
+        "artifactId": 12050267950,
+        "jobId": 117007028130,
+        "report": "session-native-0.2.0-rc.2.json",
+        "reportSha256": "e9b777078c3fb8ca6fc76e595148974caafe4077c45249f6f5dddba905d7027c",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-macOS-0.2.0-rc.2",
+        "artifactId": 12050267950,
+        "jobId": 117007028130,
+        "report": "desktop-recovery-0.2.0-rc.2.json",
+        "reportSha256": "eb8bd01e07cd02b99a07d0eac0df7e6d907a92caedf0aa4f92dceff47a72d0e3",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-macOS-0.2.0-rc.2",
+        "artifactId": 12050267950,
+        "jobId": 117007028130,
+        "report": "text-scale-installed-0.2.0-rc.2.json",
+        "reportSha256": "00f11fe3fcfe19dca739b65d327e25e9f3f3020f15619a584ad614d1a4b746d6",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-macOS-0.2.0-rc.2",
+        "artifactId": 12050267950,
+        "jobId": 117007028130,
+        "report": "multi-display-installed-0.2.0-rc.2.json",
+        "reportSha256": "b5d208f32b1330affbfe5cb9be109d064785d35621654e0bf1b4221fe9d4f699",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-macOS-0.2.0-rc.2",
+        "artifactId": 12050267950,
+        "jobId": 117007028130,
+        "report": "daily-rhythm-installed-0.2.0-rc.2.json",
+        "reportSha256": "149608f109ef17b12f637c7ab41e15464a64ca9e5a8bebf3306e1e17fe65e048",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-macOS-0.2.0-rc.2",
+        "artifactId": 12050267950,
+        "jobId": 117007028130,
+        "report": "companionship-installed-0.2.0-rc.2.json",
+        "reportSha256": "f78beecf981330593e57c9376708485801c8c053b65796241c7449e0ef334b5b",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-macOS-0.2.0-rc.2",
+        "artifactId": 12050267950,
+        "jobId": 117007028130,
+        "report": "diagnostics-installed-0.2.0-rc.2.json",
+        "reportSha256": "3abcd677a61ffef64741c0b9f2dbdfe265062db4b6026a6ddfbe26a08fe17710",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-macOS-0.2.1-alpha.1",
+        "artifactId": 12050566958,
+        "jobId": 117007027936,
+        "report": "install-0.2.1-alpha.1.json",
+        "reportSha256": "1fcf4f541cc2e1d2f8473faeed6e3af42e53eee870c594c75cbeb25d6b852b06",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-macOS-0.2.1-alpha.1",
+        "artifactId": 12050566958,
+        "jobId": 117007027936,
+        "report": "goal-host-0.2.1-alpha.1.json",
+        "reportSha256": "59004b3410f274867a8f9a2de79ad4362dc11324ee31615a01aee05cfe8ce058",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-macOS-0.2.1-alpha.1",
+        "artifactId": 12050566958,
+        "jobId": 117007027936,
+        "report": "session-host-0.2.1-alpha.1.json",
+        "reportSha256": "4bf37c380c3bbbd1ec608fd567411352a93f8c95e80f2617684139ac9cd1b112",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-macOS-0.2.1-alpha.1",
+        "artifactId": 12050566958,
+        "jobId": 117007027936,
+        "report": "session-native-0.2.1-alpha.1.json",
+        "reportSha256": "cab26a649d2d994e5393107202f9552b19c9ff1ac61dad6b857b251261d05b18",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-macOS-0.2.1-alpha.1",
+        "artifactId": 12050566958,
+        "jobId": 117007027936,
+        "report": "desktop-recovery-0.2.1-alpha.1.json",
+        "reportSha256": "3fdde9daf344e76232b8e2f7a52fb439220aae6ce60881126bd68a4d5b2c7ab6",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-macOS-0.2.1-alpha.1",
+        "artifactId": 12050566958,
+        "jobId": 117007027936,
+        "report": "text-scale-installed-0.2.1-alpha.1.json",
+        "reportSha256": "6963ed03a603d1f6e4a52a36101c5411efd1ce6cff637d408c5017c98f379507",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-macOS-0.2.1-alpha.1",
+        "artifactId": 12050566958,
+        "jobId": 117007027936,
+        "report": "multi-display-installed-0.2.1-alpha.1.json",
+        "reportSha256": "f060c73d533e96201aa89b90fb780cab3b0a1e5502ca92dbebc63cdda73bb546",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-macOS-0.2.1-alpha.1",
+        "artifactId": 12050566958,
+        "jobId": 117007027936,
+        "report": "daily-rhythm-installed-0.2.1-alpha.1.json",
+        "reportSha256": "25375b1ceefaaaec0fc8d9358c9cc966c58ee1bc9b6c8cdd8b1be5da3bc67fe4",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-macOS-0.2.1-alpha.1",
+        "artifactId": 12050566958,
+        "jobId": 117007027936,
+        "report": "companionship-installed-0.2.1-alpha.1.json",
+        "reportSha256": "7ef3ecd0d042a764f7f558b51aab57d8c5c4ab017627bfc735299d60c7225b0b",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-macOS-0.2.1-alpha.1",
+        "artifactId": 12050566958,
+        "jobId": 117007027936,
+        "report": "diagnostics-installed-0.2.1-alpha.1.json",
+        "reportSha256": "0794237c7b9bd07175f089447c289507a3a6f87ef40f2dab2f058a08d6942154",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Windows-0.2.0-rc.2",
+        "artifactId": 12050084098,
+        "jobId": 117007027941,
+        "report": "install-0.2.0-rc.2.json",
+        "reportSha256": "ef55b140e0fabd5f2da5d2b3d589a5e3bd266e60c532492945b29ce0cceb68b3",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Windows-0.2.0-rc.2",
+        "artifactId": 12050084098,
+        "jobId": 117007027941,
+        "report": "goal-host-0.2.0-rc.2.json",
+        "reportSha256": "864796cb3666c3ae6b2f05b24a8cb55b75a78442839dc8b9976d727686fa9607",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Windows-0.2.0-rc.2",
+        "artifactId": 12050084098,
+        "jobId": 117007027941,
+        "report": "session-host-0.2.0-rc.2.json",
+        "reportSha256": "b9bf87e773bb44d842fd2a7546ed099a4d16651283a9564d88685c7d59521bfc",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Windows-0.2.0-rc.2",
+        "artifactId": 12050084098,
+        "jobId": 117007027941,
+        "report": "session-native-0.2.0-rc.2.json",
+        "reportSha256": "095937a1509a9ed65b78b865e48aa22a041d66af0b42d377d589478b70b56d1b",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Windows-0.2.0-rc.2",
+        "artifactId": 12050084098,
+        "jobId": 117007027941,
+        "report": "desktop-recovery-0.2.0-rc.2.json",
+        "reportSha256": "aa99e8e40ffefa24a0f52dc0330ffc0f7cf183e5d3a3d57c24bb79f7be8df6e2",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Windows-0.2.0-rc.2",
+        "artifactId": 12050084098,
+        "jobId": 117007027941,
+        "report": "text-scale-installed-0.2.0-rc.2.json",
+        "reportSha256": "0a327cfbb9d5028ed01bbf338b4294d95f96c2d10a6ee39f76a065cd93345030",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Windows-0.2.0-rc.2",
+        "artifactId": 12050084098,
+        "jobId": 117007027941,
+        "report": "multi-display-installed-0.2.0-rc.2.json",
+        "reportSha256": "2d0f83fdb0a446c7e18e80ec898be63ecbf2f05ed65edb2140ba388cb1d5e811",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Windows-0.2.0-rc.2",
+        "artifactId": 12050084098,
+        "jobId": 117007027941,
+        "report": "daily-rhythm-installed-0.2.0-rc.2.json",
+        "reportSha256": "0853f88b295ae4524a52975b058178777e53ffcfda6a130fb16dba38d3566175",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Windows-0.2.0-rc.2",
+        "artifactId": 12050084098,
+        "jobId": 117007027941,
+        "report": "companionship-installed-0.2.0-rc.2.json",
+        "reportSha256": "79f85cc2bedf5ba7d191d90d7bfef87d4db19a7db4ae5708bbafe6c7adcb9671",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Windows-0.2.0-rc.2",
+        "artifactId": 12050084098,
+        "jobId": 117007027941,
+        "report": "diagnostics-installed-0.2.0-rc.2.json",
+        "reportSha256": "3abcd677a61ffef64741c0b9f2dbdfe265062db4b6026a6ddfbe26a08fe17710",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Windows-0.2.1-alpha.1",
+        "artifactId": 12050966243,
+        "jobId": 117007027920,
+        "report": "install-0.2.1-alpha.1.json",
+        "reportSha256": "97847c09de44b8d8d9345561d542a5efbf4a5ef8db335da27d7571c0aa5baba4",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Windows-0.2.1-alpha.1",
+        "artifactId": 12050966243,
+        "jobId": 117007027920,
+        "report": "goal-host-0.2.1-alpha.1.json",
+        "reportSha256": "e03c54d7d66292a87f81f601a860372a7df2b245cb97851ee717dff8158434d4",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Windows-0.2.1-alpha.1",
+        "artifactId": 12050966243,
+        "jobId": 117007027920,
+        "report": "session-host-0.2.1-alpha.1.json",
+        "reportSha256": "30c8a5ee7e5345cef5d44e5496e7f997c0ec44a2dee9b893198defd2b53bcc72",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Windows-0.2.1-alpha.1",
+        "artifactId": 12050966243,
+        "jobId": 117007027920,
+        "report": "session-native-0.2.1-alpha.1.json",
+        "reportSha256": "9dcfebda9fa347ce4e546443d58233a87a6ab773bf21ddc6b9114f4b6364c2c5",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Windows-0.2.1-alpha.1",
+        "artifactId": 12050966243,
+        "jobId": 117007027920,
+        "report": "desktop-recovery-0.2.1-alpha.1.json",
+        "reportSha256": "3b5d9da94c17ebca8d47a529aff8eb6736a917938ed0e1cda67e33abdf861f66",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Windows-0.2.1-alpha.1",
+        "artifactId": 12050966243,
+        "jobId": 117007027920,
+        "report": "text-scale-installed-0.2.1-alpha.1.json",
+        "reportSha256": "00e9eb14e4fc8066b1aef68c93b9240d3b129ca2b1f4ab3afc343d381bcccbe9",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Windows-0.2.1-alpha.1",
+        "artifactId": 12050966243,
+        "jobId": 117007027920,
+        "report": "multi-display-installed-0.2.1-alpha.1.json",
+        "reportSha256": "5aff98394916b388bdb07cae5290becaba01a0466c4f2309a09a83ddb6bafa54",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Windows-0.2.1-alpha.1",
+        "artifactId": 12050966243,
+        "jobId": 117007027920,
+        "report": "daily-rhythm-installed-0.2.1-alpha.1.json",
+        "reportSha256": "2eb1e27bd3582f5f34213df0cacf38918051006a4fecd86987c9e6690464a52e",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Windows-0.2.1-alpha.1",
+        "artifactId": 12050966243,
+        "jobId": 117007027920,
+        "report": "companionship-installed-0.2.1-alpha.1.json",
+        "reportSha256": "dbe9cbe7dd0caf18e75271dd930743725bff9ef294e36a9931d591633193d01f",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      },
+      {
+        "matrix": "installation-Windows-0.2.1-alpha.1",
+        "artifactId": 12050966243,
+        "jobId": 117007027920,
+        "report": "diagnostics-installed-0.2.1-alpha.1.json",
+        "reportSha256": "0794237c7b9bd07175f089447c289507a3a6f87ef40f2dab2f058a08d6942154",
+        "sourceCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+        "archiveSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88"
+      }
+    ],
+    "rawReportsArchive": {
+      "url": "https://github.com/takboo/dsh-coopanion/releases/download/v0.4.10/installation-reports.zip",
+      "sha256": "5945248cccf120b24c51fb293d4f74c13030d0bd4d6d9d7097edebf1b42c45ba",
+      "bytes": 297203,
+      "reportBytesPreserved": true
+    },
+    "verifiedAt": "2026-10-16T14:22:23.962340+00:00"
+  },
+  "distributionObservedAt": "2026-10-16T14:13:56.914Z"
+}
