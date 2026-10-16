@@ -11,6 +11,7 @@ import { pathToFileURL, fileURLToPath } from 'node:url';
 import { chromium } from 'playwright-core';
 import { importCharacter } from './helpers/characters.mjs';
 import { petClick } from './helpers/native-pointer.mjs';
+import { listDiagnostics, readDiagnostics } from '../scripts/diagnostics-client.mjs';
 import { sampleNativeDisplay } from './helpers/multi-display-native.mjs';
 import { npmTarballName } from '../scripts/release-support.mjs';
 import { unzipSync } from 'fflate';
@@ -39,7 +40,7 @@ const environment = {
   XDG_DATA_HOME: join(root, 'data'), XDG_STATE_HOME: join(root, 'state'),
   PATH: `${join(project, 'node_modules', '.bin')}${process.platform === 'win32' ? ';' : ':'}${process.env.PATH}`,
   COOPANION_TEST_MODULES: join(runtime, 'node_modules'),
-  DSH_PET_TEST_DATA_DIR: join(root, 'pet'), DSH_PET_TEST_NO_SANDBOX: '1',
+  DSH_PET_TEST_DATA_DIR: join(root, 'pet'), DSH_PET_TEST_DIAGNOSTICS_DIR: join(root, 'diagnostics'), DSH_PET_TEST_NO_SANDBOX: '1',
 };
 // Windows environment keys are case-insensitive; keep one PATH entry for spawn.
 if (process.platform === 'win32') {
@@ -338,6 +339,22 @@ try {
   }
   const p1Summary = await page.evaluate(() => window.dshPetBridge.companionship({ type: 'read', characterId: 'whale' }));
   assert.equal(p1Summary.writable, true); assert.equal(p1Summary.relation.total, 0);
+  assert.equal(await surface.getByRole('switch', { name: '本地诊断', exact: true }).getAttribute('aria-checked'), 'false');
+  assert.deepEqual(await listDiagnostics(environment.DSH_PET_TEST_DIAGNOSTICS_DIR), []);
+  await surface.getByRole('switch', { name: '本地诊断', exact: true }).click();
+  await waitProfile(/diagnostics: true/);
+  let diagnosticEndpoint;
+  for (let attempt = 0; attempt < 100; attempt++) { [diagnosticEndpoint] = await listDiagnostics(environment.DSH_PET_TEST_DIAGNOSTICS_DIR); if (diagnosticEndpoint) break; await pause(50); }
+  assert.ok(diagnosticEndpoint);
+  const diagnosticSnapshot = await readDiagnostics(diagnosticEndpoint);
+  assert.equal(diagnosticSnapshot.version, manifest.version);
+  assert.ok(!JSON.stringify(diagnosticSnapshot).includes('M4 installed draft'));
+  assert.deepEqual(await page.locator('#message').evaluate(n => [n.value, n.selectionStart, n.selectionEnd]), ['M4 installed draft', 2, 7]);
+  await surface.getByRole('switch', { name: '本地诊断', exact: true }).click();
+  await waitProfile(/diagnostics: false/);
+  for (let attempt = 0; attempt < 100 && (await listDiagnostics(environment.DSH_PET_TEST_DIAGNOSTICS_DIR)).length; attempt++) await pause(50);
+  assert.deepEqual(await listDiagnostics(environment.DSH_PET_TEST_DIAGNOSTICS_DIR), []);
+  await writeFile(join(project, 'artifacts', 'diagnostics-installed-' + version + '.json'), JSON.stringify({ dsh: version, pluginVersion: manifest.version, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), build: diagnosticSnapshot.build, defaultOff: true, settingsHotSync: true, draftOmittedAndPreserved: true, interfaceWithdrawn: true }, null, 2) + '\n');
   const textScaleSamples = [];
   for (const size of [90, 240]) {
     const input = surface.getByRole('spinbutton', { name: '角色尺寸', exact: true });

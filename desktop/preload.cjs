@@ -14,6 +14,7 @@ contextBridge.exposeInMainWorld('dshPetBridge', {
   // Chat carries its immutable target and client request identity unchanged.
   action(value) { ipcRenderer.send('pet:action', value); },
   hit(active) { ipcRenderer.send('pet:hit', active); },
+  diagnosticsRespond: value => ipcRenderer.send('pet:diagnostics-response', value),
   companionship: value => characterCall('pet:companionship', value),
   characters: {
     list: () => characterCall('pet:characters:list'),

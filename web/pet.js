@@ -1,3 +1,5 @@
+import { advanceRenderCadence } from './render-cadence.js';
+import { createDiagnosticCounters } from './diagnostics.js';
 import { createCompanionStroke } from './companion-touch.js';
 import { initialCompanionship, stepCompanionship, companionshipMode } from './companionship.js';
 import { CompanionClient, browserCompanionship } from './companion-client.js';
@@ -51,6 +53,7 @@ let draftSessionId;
 let rhythm = initialRhythm(), rhythmWords = [], rhythmRestorePending = false, localHour, hourCheckedAt = -Infinity;
 let companion = initialCompanionship(), companionAction, companionManualId, companionFeedbackUntil = 0, companionReadAt = 0;
 const companionStroke = createCompanionStroke();
+const diagnosticCounters = createDiagnosticCounters();
 const companionClient = new CompanionClient(native?.companionship ?? browserCompanionship, () => refreshCompanionCopy());
 const shownResults = new Set(), acknowledgedResults = new Set();
 let renderedLocale;
@@ -263,7 +266,10 @@ function updateCompanion(now, mood, readingAttention, active) {
   const summary = companionClient.summary;
   const eligible = !!summary?.writable && !companionClient.error && summary.invitation.remaining > 0 && !summary.invitation.quiet && Date.now() >= summary.invitation.laterUntil;
   const result = stepCompanionship(companion, { mode, now, hour: localHour, words: rhythmWords, occupied: blocked, motionBusy: !!body?.layout?.moving, automatic: options.roam && !reduced, eligible, unlocked: summary?.relation.unlocked, action: companionAction });
+  if (result.showInvitation) diagnosticCounters.event('invitationsShown');
+  if (result.hideInvitation && companion.invitation === 'shown' && now >= companion.invitationUntil) diagnosticCounters.event('invitationsExpired');
   companionAction = undefined; companion = result.state;
+  diagnosticCounters.activity(companion.active?.kind ?? 'idle');
   pet.dataset.companionship = mode; pet.dataset.companionActivity = companion.active?.kind ?? 'idle';
   if (result.hideInvitation || mode === 'off') companionInvitation.hidden = true;
   if (result.release) {
@@ -291,6 +297,7 @@ function startCompanionPlay() {
   closePanels();
   const activity = sessionActivity(snapshot);
   if (options.companionship === 'off' || companionBlocked(true, activity.mood, false, activity.active)) { companionMessage(uiCopy().companionBusy); return; }
+  if (!companionInvitation.hidden) diagnosticCounters.event('invitationsAccepted');
   companionInvitation.hidden = true; companionAction = 'play'; companionManualId = crypto.randomUUID();
   companionMessage(uiCopy().companionPlaying); updateMood();
   if (!companion.active?.manual) { companionManualId = undefined; companionMessage(uiCopy().companionNoActivity); }
@@ -298,6 +305,7 @@ function startCompanionPlay() {
 $('companion-play').onclick = startCompanionPlay;
 $('companion-accept').onclick = startCompanionPlay;
 for (const [id, type] of [['companion-later', 'later'], ['companion-quiet', 'quiet']]) $(id).onclick = () => {
+  diagnosticCounters.event(type === 'later' ? 'invitationsLater' : 'invitationsQuiet');
   companionAction = type; companionInvitation.hidden = true; void companionClient.request(type); updateMood();
 };
 $('companion-resume').onclick = () => { void companionClient.request('resume'); };
@@ -503,6 +511,7 @@ $('interaction-pending').onclick = () => openRequests(false);
 function applyOptions(value) {
   const previousSize = options.size, previousCompanionship = options.companionship;
   options = { ...options, ...value, companionship: Object.hasOwn(value ?? {}, 'companionship') ? companionshipMode(value.companionship) : options.companionship, dailyRhythm: Object.hasOwn(value ?? {}, 'dailyRhythm') ? value.dailyRhythm === true : options.dailyRhythm, textScale: Object.hasOwn(value ?? {}, 'textScale') ? textScale(value.textScale) : options.textScale };
+  diagnosticCounters.configure(options.diagnostics === true);
   document.documentElement.style.setProperty('--size', `${options.size}px`);
   document.documentElement.style.setProperty('--text-scale', String(options.textScale));
   if (options.companionship !== previousCompanionship && activeView) { void companionClient.load(activeView.id); companionReadAt = performance.now() + 60000; }
@@ -525,12 +534,23 @@ function receive(message) {
       pet.dataset.hostReady = 'true';
       body?.set({ bounds: bounds() }); render(); break;
     case 'configure': {
-      const changed = Object.keys(message.options ?? {}).some(key => !['textScale', 'size', 'dailyRhythm', 'companionship'].includes(key) && options[key] !== message.options[key]);
+      const changed = Object.keys(message.options ?? {}).some(key => !['textScale', 'size', 'dailyRhythm', 'companionship', 'diagnostics'].includes(key) && options[key] !== message.options[key]);
       applyOptions(message.options);
       if (changed) render();
       else updateMood();
       break;
     }
+    case 'diagnostics-read':
+      if (options.diagnostics === true && typeof message.requestId === 'string' && /^[a-f0-9]{32}$/.test(message.requestId)) {
+        native?.diagnosticsRespond?.({ requestId: message.requestId, value: {
+          mode: options.companionship, activity: companion.active?.kind ?? 'idle', invitation: companion.invitation ?? 'none',
+          mood: sessionActivity(snapshot).mood, careUnavailable: !!companionClient.error, hidden: document.hidden, hour: new Date().getHours(),
+          queues: { carePending: companionClient.pending, pendingInteractions: pendingRequests().length, composerSessions: composer.sessions.size,
+            chatTimers: chatTimers.size, snoozing: snoozing.size, shownResults: shownResults.size, acknowledgedResults: acknowledgedResults.size },
+          counts: diagnosticCounters.snapshot(), heapBytes: performance.memory?.usedJSHeapSize ?? 0, nodes: document.getElementsByTagName('*').length,
+        } });
+      }
+      break;
     case 'ui-control':
       if (message.command === 'chat') openChat();
       else if (message.command === 'sessions') openRequests();
@@ -773,7 +793,7 @@ addEventListener('resize', resizeStage);
 $('toggle-sound').onclick = () => { sfx.set(!sfx.isOn()); updateMood(); };
 
 
-let last = performance.now(), companionFrameAt = -Infinity, companionElapsed = 0;
+let last = performance.now(), companionCadence = { at: -Infinity, elapsed: 0 };
 function animate(now) {
   const dt = Math.min((now - last) / 1000, .05); last = now;
   for (const [id, pending] of snoozing) if (now >= pending.expiresAt) { snoozing.delete(id); $('request-feedback').textContent = notificationCopy(notificationLocale()).unavailable; renderRequests(); }
@@ -788,10 +808,10 @@ function animate(now) {
   // Only P1's fully idle pose renders at 30fps. Work and input retain the original cadence.
   // Accumulate real dt so rendering fewer frames never slows physics.
   const companionIdle = options.companionship !== 'off' && pet.dataset.mood === 'idle' && !companion.active && !hovered && !pressing && !dragging && !reducedNeedsStep && body?.layout && !body.layout.moving && !userInputOccupied() && ![...composer.sessions.values()].some(s => !!s.text.trim() || s.phase === 'sending') && interaction.hidden && companionInvitation.hidden;
-  companionElapsed = Math.min(.05, companionElapsed + dt);
-  if (!companionIdle || now - companionFrameAt >= 1000 / 30) {
-    body?.tick(reduced && !reducedNeedsStep && !pressing && !['air', 'drag', 'wake'].includes(body.layout?.mode) ? 0 : companionElapsed);
-    companionFrameAt = now; companionElapsed = 0; reducedNeedsStep = false;
+  companionCadence = advanceRenderCadence(companionCadence, now, dt, companionIdle);
+  if (companionCadence.paint) {
+    body?.tick(reduced && !reducedNeedsStep && !pressing && !['air', 'drag', 'wake'].includes(body.layout?.mode) ? 0 : companionCadence.dt);
+    reducedNeedsStep = false;
   }
   if (!characters.hidden || libraryBusy) previewBody?.tick(reduced ? 0 : dt);
   if (speech && !bubble.hidden) {

@@ -92,7 +92,24 @@ dsh plugin --profile desktop add /absolute/path/dsh-coopanion.tgz
 
 网页权限“允许”、已请求和收到显示回执分别表示不同步骤；系统送达需在通知中心核对，并点击检查源会话。macOS 在 **系统设置 → 通知 → DeepSeek Harness** 管理授权；Windows 在 **设置 → 系统 → 通知**，Linux 在桌面通知设置中管理。权限或客户端不可用时，待处理入口仍保留；恢复显示不会补发旧系统通知。
 
+## 本地诊断与试用采样
+
+0.4.10 候选包在 **Settings → 桌宠 → 本地诊断** 提供默认关闭的开关。开启后允许独立采样器读取有限的活动／邀请、队列和存档规模，不上传数据或读取聊天正文。它与自主陪伴独立；试用邀请需另选“互动陪伴”。关闭诊断清空诊断计数并撤下接口，不清除关系存档。
+
+macOS／Linux 可直接运行候选包内的 Node 脚本，无需开发环境或调试端口。Desktop 默认安装路径示例：
+
+```bash
+node "$HOME/.dsh/profiles/desktop/node_modules/@takboo/dsh-coopanion/scripts/sample-companion.mjs" --list
+node "$HOME/.dsh/profiles/desktop/node_modules/@takboo/dsh-coopanion/scripts/sample-companion.mjs" \
+  --output "$HOME/dsh-companion-samples/trial-unique" --seconds 604800 --interval 10
+```
+
+输出目录须尚不存在。发现多个实例时加入 `--instance <list 显示的实例>`，避免混入测试 profile。采样不操作鼠标、不抢焦点、不截图、不防休眠；重启、休眠缺口和关闭诊断会分段记录。关闭接口时采样器可等待恢复，按 Ctrl+C 结束并写报告。日志默认上限 128 MiB，达到后明确停止，不静默丢弃记录。
+
+原始数据为 `samples.ndjson`，每分钟状态为 `progress.json`，结束报告为 `summary.json`。日常模式的 `recorded` 只表示记录完成，不代表七天体验或两小时稳定性通过。每天仍需记录后台无工作占用时长、看到的行为、邀请回应、重复感及日常感／打扰评分。Windows 命名管道接口本轮未验证，独立 OS 资源采样尚未支持。数据范围及鉴权见[诊断契约](diagnostics-contract.md)。
+
 ## 新角色
+
 
 右键角色 → **换个模样** → **导入角色包**，选择包含 `figure.json` 的 API 2 ZIP。预览、试播动作、选择配色或搭配，再点击 **使用角色**。删除正在使用的自定义角色会恢复内置大肥鱼。
 
