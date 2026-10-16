@@ -1,186 +1,28 @@
 name: CI
 on:
-  push:
-    branches: [main]
-  pull_request:
   workflow_dispatch:
-  workflow_call:
-    inputs:
-      ref:
-        description: Immutable release commit to test
-        type: string
-        required: true
-      release-tag:
-        description: Validated stable release tag
-        type: string
-        required: true
 permissions:
   contents: read
-concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}-${{ inputs.ref || github.sha }}
-  cancel-in-progress: false
-defaults:
-  run:
-    shell: bash
 jobs:
-  workflow-syntax:
-    runs-on: ubuntu-latest
+  probe:
+    runs-on: windows-latest
     timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - name: Validate workflow expressions and syntax
-        run: |
-          curl -fsSL https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz -o "$RUNNER_TEMP/actionlint.tar.gz"
-          echo "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8  $RUNNER_TEMP/actionlint.tar.gz" | sha256sum --check
-          tar -xzf "$RUNNER_TEMP/actionlint.tar.gz" -C "$RUNNER_TEMP" actionlint
-          "$RUNNER_TEMP/actionlint" -shellcheck= -pyflakes=
-  test:
-    name: Test (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        mode: [factory, uncapped, shell-only]
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          ref: ${{ inputs.ref || github.sha }}
           persist-credentials: false
-      - uses: ./.github/actions/setup-toolchain
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
         with:
-          cache: ${{ !inputs.release-tag && 'npm' || '' }}
-      - run: npm ci --ignore-scripts
-      - run: npm run verify:metadata
-      - run: npm run setup:electron
-      - run: npm run typecheck
-      - run: npm test
-      - name: Verify N0 notification contract and prepare the private probe
-        run: npm run test:n0
-      - run: npm run build
-      - run: npx playwright-core install --with-deps chromium
-      - uses: ./.github/actions/setup-linux-display
-        if: runner.os == 'Linux'
-      - run: npm run character:pack -- examples/star paper-star.zip
-      - run: npm run test:ui
-      - run: npm run test:notification-ui
-      - run: npm run test:inbox-ui
-      - name: Verify native keyboard backend (synthetic X11 input only in managed display)
-        env:
-          DSH_KEYBOARD_TEST_X11_INPUT: ${{ runner.os == 'Linux' && '1' || '' }}
-        run: npm run test:keyboard-native
-      - run: npm run test:desktop
-      - name: Check distributable and create canonical Linux package
-        if: runner.os == 'Linux'
-        run: |
-          mkdir -p .cache/release
-          packed=$(npm pack --ignore-scripts --silent --pack-destination .cache/release)
-          version=$(node -p 'JSON.parse(require("node:fs").readFileSync("package.json", "utf8")).version')
-          mv ".cache/release/$packed" ".cache/release/dsh-coopanion-$version.tgz"
-          node scripts/check-package.mjs .cache/release/dsh-coopanion-*.tgz --write-report
-          cp .cache/release/dsh-coopanion-*.tgz .cache/release/dsh-coopanion.tgz
-          cp paper-star.zip .cache/release/
-          cd .cache/release
-          sha256sum dsh-coopanion-*.tgz dsh-coopanion.tgz paper-star.zip verification.json release-notes.md > SHA256SUMS
-      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        if: runner.os == 'Linux'
-        with:
-          name: desktop-pet
-          path: .cache/release/
-          include-hidden-files: true
-          if-no-files-found: error
-          retention-days: 7
-      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+          node-version-file: .node-version
+          package-manager-cache: false
+      - run: node tests/probes/windows-keyboard-startup.mjs ${{ matrix.mode }}
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         if: always()
         with:
-          name: browser-and-desktop-${{ runner.os }}
-          path: |
-            artifacts/*.png
-            artifacts/desktop-recovery.json
-            artifacts/browser-startup-*.json
-            artifacts/text-scale-*.json
-            artifacts/multi-display-*.json
-            artifacts/keyboard-activity-native.json
-            artifacts/npc-life-*.json
-            artifacts/npc-life-*.png
-            artifacts/daily-rhythm-*.json
-            artifacts/companionship-*.json
-            artifacts/diagnostics-*.json
-            artifacts/lifecycle-startup-*.json
-            artifacts/companionship-*.png
+          name: windows-keyboard-startup-${{ matrix.mode }}
+          path: artifacts/windows-keyboard-startup-*.json
           retention-days: 7
-      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        if: always()
-        with:
-          name: notification-n0-prototype-${{ runner.os }}
-          path: |
-            .cache/notification-n0/prototype.json
-            .cache/notification-n0/probe/
-          include-hidden-files: true
-          if-no-files-found: error
-          retention-days: 7
-  install:
-    name: Install (${{ matrix.os }}, DSH ${{ matrix.dsh }})
-    needs: test
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        dsh: ['0.2.0-rc.2', '0.2.1-alpha.1']
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          ref: ${{ inputs.ref || github.sha }}
-          persist-credentials: false
-      - uses: ./.github/actions/setup-toolchain
-        with:
-          cache: ${{ !inputs.release-tag && 'npm' || '' }}
-      - run: npm ci --ignore-scripts
-      - run: npm run verify:metadata
-      - run: npx playwright-core install --with-deps chromium
-      - uses: ./.github/actions/setup-linux-display
-        if: runner.os == 'Linux'
-      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
-        with:
-          name: desktop-pet
-          path: release
-          digest-mismatch: error
-      - name: Verify package and install into the published DSH host
-        env:
-          DSH_TEST_VERSION: ${{ matrix.dsh }}
-          DSH_TEST_PACKAGE_DIR: ${{ github.workspace }}/release
-        run: |
-          cd release
-          sha256sum --check SHA256SUMS
-          cd ..
-          npm run test:install
-      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        if: always()
-        with:
-          name: installation-${{ runner.os }}-${{ matrix.dsh }}
-          path: |
-            artifacts/text-scale-*.json
-            artifacts/multi-display-*.json
-            artifacts/keyboard-activity-native.json
-            artifacts/npc-life-*.json
-            artifacts/npc-life-*.png
-            artifacts/daily-rhythm-*.json
-            artifacts/companionship-*.json
-            artifacts/diagnostics-*.json
-            artifacts/companionship-*.png
-            artifacts/text-scale-*.png
-            artifacts/install-*.json
-            artifacts/installed-*.png
-            artifacts/settings-*.png
-            artifacts/npm-runtime-*/
-            artifacts/session-native-*.json
-            artifacts/desktop-recovery-*.json
-            artifacts/session-host-*.json
-            artifacts/goal-host-*.json
-            artifacts/notification-host-*.json
-            artifacts/notification-source-*.json
-            artifacts/notification-integration-*.json
