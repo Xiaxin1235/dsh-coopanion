@@ -11,7 +11,7 @@ import { linuxSnapshot, linuxEnvironment, processCpu, ResourceWindow, companionC
 
 const { values: args } = parseArgs({ options: {
   registry: { type: 'string' }, instance: { type: 'string' }, output: { type: 'string' }, seconds: { type: 'string' },
-  interval: { type: 'string' }, window: { type: 'string' }, 'max-mib': { type: 'string' },
+  until: { type: 'string' }, interval: { type: 'string' }, window: { type: 'string' }, 'max-mib': { type: 'string' },
   'expect-version': { type: 'string' }, 'expect-product-digest': { type: 'string' },
   strict: { type: 'boolean', default: false }, list: { type: 'boolean', default: false },
 } });
@@ -22,6 +22,8 @@ if (args.list) {
   if (!args.output) throw new Error('--output is required');
   if (!['linux', 'darwin'].includes(process.platform)) throw new Error('OS process sampling currently supports Linux/macOS');
   const seconds = Number(args.seconds ?? 604800), interval = Number(args.interval ?? 10), windowSeconds = Number(args.window ?? 1800);
+  const deadline = args.until === undefined ? null : Date.parse(args.until);
+  if (deadline !== null && (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2})$/.test(args.until) || !Number.isFinite(deadline) || deadline <= Date.now())) throw new Error('--until requires a future ISO timestamp with timezone');
   const maxBytes = Number(args['max-mib'] ?? 128) * 1048576;
   if (![seconds, interval, windowSeconds, maxBytes].every(Number.isFinite) || seconds < 1 || interval < 1 || interval > 60 || windowSeconds < 10 || maxBytes < 1048576) throw new Error('Invalid sampling limits');
   const output = resolve(args.output);
@@ -30,7 +32,7 @@ if (args.list) {
   const started = performance.now(), startedAt = new Date().toISOString();
   const scriptNames = ['sample-companion.mjs', 'diagnostics-client.mjs', 'resource-observation.mjs'];
   const collectorHashes = Object.fromEntries(await Promise.all(scriptNames.map(async name => [name, createHash('sha256').update(await readFile(fileURLToPath(new URL('./' + name, import.meta.url)))).digest('hex')])));
-  const metadata = { schema: 1, startedAt, platform: process.platform, arch: process.arch, node: process.version, requestedSeconds: seconds, intervalSeconds: interval, windowSeconds, maxBytes, strict: args.strict, collectorHashes,
+  const metadata = { schema: 1, startedAt, platform: process.platform, arch: process.arch, node: process.version, requestedSeconds: seconds, intervalSeconds: interval, windowSeconds, maxBytes, wallDeadline: deadline === null ? null : new Date(deadline).toISOString(), strict: args.strict, collectorHashes,
     method: 'External OS process-tree RSS/CPU and authenticated read-only local socket. No UI input, screen capture, CDP or clock changes. RSS may double-count shared pages; CPU can miss exited/new children.',
   };
   await writeFile(join(output, 'metadata.json'), JSON.stringify(metadata, null, 2) + '\n', { flag: 'wx' });
@@ -41,6 +43,7 @@ if (args.list) {
   process.on('SIGINT', signal); process.on('SIGTERM', signal);
   const event = async value => { const line = JSON.stringify({ at: new Date().toISOString(), ...value }) + '\n'; await events.write(line); console.log(line.trim()); };
   const checkpoint = async value => { const path = join(output, 'progress.json'); await writeFile(path + '.tmp', JSON.stringify(value, null, 2) + '\n'); await rename(path + '.tmp', path); };
+  const pause = () => new Promise(r => setTimeout(r, Math.max(1, Math.min(interval * 1000, deadline === null ? Infinity : deadline - Date.now()))));
   const ticks = process.platform === 'linux' ? Number(execFileSync('getconf', ['CLK_TCK'], { encoding: 'utf8' }).trim()) : 100;
   async function tree(pid) {
     if (process.platform === 'linux') return linuxSnapshot(pid);
@@ -69,12 +72,13 @@ if (args.list) {
   let checkpointAt = 60, unavailable = false, failure = null, targetInstance = args.instance;
   try {
     while (!stop && (performance.now() - started) / 1000 < seconds + Math.max(interval, 30)) {
+      if (deadline !== null && Date.now() >= deadline) { reason = 'deadline'; break; }
       const candidates = (await listDiagnostics(registry)).filter(endpoint => !targetInstance || endpoint.instance === targetInstance);
       if (candidates.length > 1) throw new Error('Multiple diagnostic instances: select one with --instance');
       if (!candidates.length) {
         if (args.strict) throw new Error('Diagnostic endpoint unavailable');
         if (!unavailable) { reason = 'unavailable'; finishSegment(false); await event({ type: 'unavailable' }); unavailable = true; }
-        await new Promise(r => setTimeout(r, interval * 1000)); continue;
+        await pause(); continue;
       }
       const endpoint = candidates[0];
       let snapshot;
@@ -82,8 +86,9 @@ if (args.list) {
       catch (error) {
         if (args.strict) throw error;
         if (!unavailable) { reason = 'unavailable'; finishSegment(false); await event({ type: 'unavailable', reason: 'read-failed' }); unavailable = true; }
-        await new Promise(r => setTimeout(r, interval * 1000)); continue;
+        await pause(); continue;
       }
+      if (deadline !== null && Date.now() >= deadline) { reason = 'deadline'; break; }
       if (args['expect-version'] && snapshot.version !== args['expect-version']) throw new Error('Candidate version mismatch');
       if (args['expect-product-digest'] && snapshot.build.productDigest !== args['expect-product-digest']) throw new Error('Candidate product digest mismatch');
       targetInstance ??= snapshot.instance;
@@ -128,7 +133,7 @@ if (args.list) {
         previousTree = rows; previousAt = now; previousWall = wall; previousEnvironment = env;
         if (atSeconds >= seconds) { reason = 'duration'; break; }
       }
-      await new Promise(r => setTimeout(r, interval * 1000));
+      await pause();
     }
   } catch (error) { errors++; firstError = String(error.message ?? error); reason = reason === 'size-limit' ? reason : 'error'; failure = firstError; }
   finally {

@@ -33,6 +33,14 @@ try {
   assert.equal(first.value.renderer.queues.carePending, 0);
   assert.ok(!JSON.stringify(first).includes('diagnostic private draft'));
   assert.deepEqual(await page.locator('#message').evaluate(n => [n.value, n.selectionStart, n.selectionEnd]), ['diagnostic private draft', 2, 8]);
+  assert.deepEqual(first.value.runtime.lifecycle, { locks: 0, unlocks: 0, suspends: 0, resumes: 0 });
+  await app.evaluate(({ powerMonitor }) => { powerMonitor.emit('lock-screen'); powerMonitor.emit('suspend'); });
+  assert.deepEqual((await readDiagnostics(endpoint)).value.runtime, { generation: 1, visible: true, suspended: true,
+    screenLocked: true, systemAsleep: true, lifecycle: { locks: 1, unlocks: 0, suspends: 1, resumes: 0 } });
+  await app.evaluate(({ powerMonitor }) => { powerMonitor.emit('resume'); powerMonitor.emit('unlock-screen'); });
+  const resumed = (await readDiagnostics(endpoint)).value.runtime;
+  assert.equal(resumed.suspended, false); assert.equal(resumed.screenLocked, false); assert.equal(resumed.systemAsleep, false);
+  assert.deepEqual(resumed.lifecycle, { locks: 1, unlocks: 1, suspends: 1, resumes: 1 });
   const sampleOutput = join(root, 'passive-sampler');
   const collector = spawn(process.execPath, [resolve('scripts/sample-companion.mjs'), '--registry', registry, '--output', sampleOutput, '--seconds', '8', '--interval', '1', '--window', '10'], { stdio: ['ignore', 'pipe', 'pipe'] });
   let collectorLog = '';
@@ -44,6 +52,7 @@ try {
   await pause(1500);
   await send({ type: 'configure', options: { ...options, diagnostics: true } });
   for (let i = 0; i < 50; i++) { [endpoint] = await listDiagnostics(registry); if (endpoint) break; await pause(50); }
+  assert.deepEqual((await readDiagnostics(endpoint)).value.runtime.lifecycle, { locks: 0, unlocks: 0, suspends: 0, resumes: 0 });
   const [collectorCode] = await once(collector, 'exit');
   assert.equal(collectorCode, 0, collectorLog);
   const collectorSummary = JSON.parse(await (await import('node:fs/promises')).readFile(join(sampleOutput, 'summary.json'), 'utf8'));
@@ -60,6 +69,6 @@ try {
   assert.deepEqual(await listDiagnostics(registry), []);
   assert.deepEqual(await page.locator('#message').evaluate(n => [n.value, n.selectionStart, n.selectionEnd]), ['diagnostic private draft', 2, 8]);
   await mkdir('artifacts', { recursive: true });
-  await writeFile('artifacts/diagnostics-native.json', JSON.stringify({ version: first.version, build: first.build, defaultOff: true, hotTogglePreservesDraft: true, readOnlyStoreRevision: true, tokenAndDraftOmitted: true, sandboxIsolated: true, interfaceWithdrawn: true, standaloneSampler: { samples: collectorSummary.samples, textAndTokenOmitted: true, fullTwoHourObservation: false } }, null, 2) + '\n');
+  await writeFile('artifacts/diagnostics-native.json', JSON.stringify({ version: first.version, build: first.build, defaultOff: true, controlledLifecycleCounters: true, lifecycleClearsOnDisable: true, hotTogglePreservesDraft: true, readOnlyStoreRevision: true, tokenAndDraftOmitted: true, sandboxIsolated: true, interfaceWithdrawn: true, standaloneSampler: { samples: collectorSummary.samples, textAndTokenOmitted: true, fullTwoHourObservation: false } }, null, 2) + '\n');
   console.log('Native diagnostics: default off, authenticated read, no draft text, hot toggle, read-only archive and sandbox isolation passed.');
 } finally { await app?.close(); await rm(root, { recursive: true, force: true }); }

@@ -1,6 +1,6 @@
 # 本地诊断与独立采样契约
 
-本契约适用于 0.4.10 候选包。诊断只用于解释资源与活动状态，不参与工作、互动、预算、成长或完成结算。发布状态以文档索引为准。
+本契约适用于 0.4.10。诊断只用于解释资源与活动状态，不参与工作、互动、预算、成长或完成结算。发布状态以文档索引为准。
 
 ## 开关与数据
 
@@ -9,6 +9,8 @@
 关闭时不提供诊断接口，不保存活动历史。开启时仅维护固定大小的活动／邀请计数，由外部请求拉取当前摘要；不新增周期采样定时器。关闭立即停止受理读请求，撤下发现文件和本地 socket，清空诊断活动计数；关系存档不受影响。
 
 本轮增加可选 `npc` 固定字段：phase=home／prepare／outbound／observe／return／yield／resume；reason=none／disabled／input／unknown／pointer／work／user／lifecycle／geometry／capability；keyboard=active／idle／unknown；targetValid 与 compact 为布尔值。不输出具体坐标、目标身份、按键内容或输入历史。另有可选 keyboardBackend=macos／windows／x11／none 和 keyboardStatus=disabled／starting／available／unsupported-platform／unsupported-session／missing-dependency／failed／stale／unavailable／protocol-error；仅说明适配器状态，不代表物理输入验收或已获某项权限。旧采样结果没有这些字段，不能据此推断 NPC 行为。
+
+运行状态保留 screenLocked／systemAsleep 布尔值；启用诊断后用固定 locks／unlocks／suspends／resumes 计数记录系统事件，关闭诊断清零，进程重启另段结算。计数能反映两次读取之间的锁屏／休眠／唤醒，但不提供事件精确发生时间；休眠期间未采到的时间仍记为缺口。旧包缺少这些字段时不推断状态。
 
 摘要只含运行可见性／挂起、当前陪伴模式与片段、邀请状态、固定活动计数、有限队列／集合规模、存档修订与规模、Renderer 堆／DOM 数量及包版本／构建摘要。不得包含聊天／草稿正文、会话／互动身份、角色名字、文件内容、提示词或凭证。计数为有限诊断范围，不证明所有对象、定时器或队列。
 
@@ -28,7 +30,7 @@
 
 默认每 10 秒采样，默认请求时长 604800 秒（七天）；`--seconds` 可显式指定其他时长，并非硬性七天上限。原始日志默认上限 128 MiB，达到上限停止并明确标记。原始数据流式落盘，只在内存保留有界首／末窗口及至多 64 段摘要。数据可读时约每分钟更新 `progress.json`，不可用等状态变化写入 `events.ndjson`；最终 `summary.json` 记录完成、手动停止、缺口或失败。
 
-采样时长与资源差分使用单调时钟；该时钟在部分平台的系统休眠中可能停走，因此固定日历截止需要外部控制进程按墙钟停止。脚本不安装后台服务或开机恢复；终端关闭、主机重启及托管方式属于启动方的责任。
+采样时长与资源差分使用单调时钟；该时钟在部分平台的系统休眠中可能停走，固定日历截止可使用 `--until <含时区的 ISO 时间>`；到期按墙钟停止，包括接口不可用时，休眠跨过截止则在首次唤醒后停止。`--until` 和 `--seconds` 谁先到达谁结束；日历截止标为 reason=deadline，不能据此声明连续资源验收通过。脚本不安装后台服务或开机恢复；终端关闭、主机重启及托管方式属于启动方的责任。
 
 日常模式的 `recorded` 只表示已记录数据，不是 P1 验收通过；`fullTwoHourObservation` 表示时长、单段与窗口要求满足，也须结合 `status`、活动／邀请覆盖、队列边界和环境审阅。自主陪伴观察开始前，另从 Host 设置核对[开关组合](usage.md#自主陪伴p1-候选功能尚未发布)及实际活动可用性；当前诊断摘要不提供 `roam` 字段，仅凭 mode=interactive 或进程存活不能确认。配置漏开或持续占用的时间只保留为资源记录，不能补记为有效体验。
 

@@ -51,11 +51,19 @@ export function sanitizeSnapshot(raw, endpoint) {
     if (n.keyboardStatus !== undefined && !['disabled', 'starting', 'available', 'unsupported-platform', 'unsupported-session', 'missing-dependency', 'failed', 'stale', 'unavailable', 'protocol-error'].includes(n.keyboardStatus)) throw new Error('Invalid keyboard status');
     cleanRenderer.npc = { phase: n.phase, reason: n.reason, keyboard: n.keyboard, targetValid: n.targetValid, compact: n.compact, ...(n.keyboardBackend === undefined ? {} : { keyboardBackend: n.keyboardBackend }), ...(n.keyboardStatus === undefined ? {} : { keyboardStatus: n.keyboardStatus }) };
   }
+  const runtime = { visible: data.runtime.visible, suspended: data.runtime.suspended, generation: count(data.runtime.generation) };
+  for (const key of ['screenLocked', 'systemAsleep']) {
+    if (data.runtime[key] !== undefined) {
+      if (typeof data.runtime[key] !== 'boolean') throw new Error('Invalid lifecycle state');
+      runtime[key] = data.runtime[key];
+    }
+  }
+  if (data.runtime.lifecycle !== undefined) runtime.lifecycle = pickCounts(data.runtime.lifecycle, ['locks', 'unlocks', 'suspends', 'resumes']);
   const productDigest = raw.build?.productDigest;
   if (!/^[a-f0-9]{64}$/.test(productDigest) || !(raw.build.commit === null || /^[a-f0-9]{40}$/.test(raw.build.commit)) || ![true, false, null].includes(raw.build.dirty)) throw new Error('Invalid build identity');
   return { schema: 1, instance: raw.instance, session: raw.session, pid: raw.pid, startedAt: raw.startedAt, measuredAt: raw.measuredAt, version: raw.version,
     build: { schema: 1, commit: raw.build.commit, dirty: raw.build.dirty, productDigest },
-    value: { runtime: { visible: data.runtime.visible, suspended: data.runtime.suspended, generation: count(data.runtime.generation) },
+    value: { runtime,
       store: { initialized: data.store.initialized === true, writable: data.store.writable === true, failed: data.store.failed === true,
         ...pickCounts(data.store, ['bytes', 'revision', 'recentCount', 'characterCount', 'invitations', 'pending']) }, renderer: cleanRenderer },
   };

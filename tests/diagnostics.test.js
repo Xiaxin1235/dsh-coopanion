@@ -3,6 +3,9 @@ import { mkdtemp, readdir, readFile, rm, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { request } from 'node:http';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+import { fileURLToPath } from 'node:url';
 import { Diagnostics } from '../src/diagnostics.ts';
 import { CompanionStore } from '../src/companion-store.ts';
 import { listDiagnostics, readDiagnostics, sanitizeSnapshot } from '../scripts/diagnostics-client.mjs';
@@ -94,3 +97,37 @@ it('keeps activity counters fixed-size and clears them when diagnostics are disa
   counters.configure(false); counters.configure(true);
   expect(counters.snapshot().invitationsShown).toBe(0);
 });
+
+it('keeps only fixed lifecycle state and counters, including events between reads', async () => fixture(async f => {
+  await f.api.configure(true); const [endpoint] = await listDiagnostics(f.registry);
+  const snapshot = await readDiagnostics(endpoint);
+  snapshot.value.runtime = { ...snapshot.value.runtime, screenLocked: true, systemAsleep: false,
+    lifecycle: { locks: 2, unlocks: 1, suspends: 1, resumes: 1, text: 'private' } };
+  expect(sanitizeSnapshot(snapshot, endpoint).value.runtime).toEqual({ generation: 1, visible: true, suspended: false,
+    screenLocked: true, systemAsleep: false, lifecycle: { locks: 2, unlocks: 1, suspends: 1, resumes: 1 } });
+  snapshot.value.runtime.screenLocked = 'private';
+  expect(() => sanitizeSnapshot(snapshot, endpoint)).toThrow('lifecycle');
+  snapshot.value.runtime.screenLocked = true; snapshot.value.runtime.lifecycle.resumes = -1;
+  expect(() => sanitizeSnapshot(snapshot, endpoint)).toThrow('number');
+}));
+it.skipIf(process.platform === 'win32')('honors a wall deadline even while the diagnostic endpoint is unavailable', async () => fixture(async f => {
+  const output = join(f.root, 'deadline');
+  const deadline = new Date(Date.now() + 1500).toISOString();
+  await promisify(execFile)(process.execPath, [fileURLToPath(new URL('../scripts/sample-companion.mjs', import.meta.url)),
+    '--registry', f.registry, '--output', output, '--seconds', '600', '--interval', '1', '--until', deadline], { timeout: 10000 });
+  const summary = JSON.parse(await readFile(join(output, 'summary.json'), 'utf8'));
+  expect(summary).toMatchObject({ reason: 'deadline', status: 'recorded', samples: 0, fullTwoHourObservation: false });
+  expect(Date.parse(summary.endedAt)).toBeGreaterThanOrEqual(Date.parse(deadline));
+  const metadata = JSON.parse(await readFile(join(output, 'metadata.json'), 'utf8'));
+  expect(metadata.wallDeadline).toBe(deadline);
+}), 15000);
+it.skipIf(process.platform === 'win32')('a calendar deadline never grants continuous-resource acceptance', async () => fixture(async f => {
+  await f.api.configure(true);
+  const output = join(f.root, 'live-deadline');
+  await promisify(execFile)(process.execPath, [fileURLToPath(new URL('../scripts/sample-companion.mjs', import.meta.url)),
+    '--registry', f.registry, '--output', output, '--seconds', '7200', '--interval', '1', '--window', '1800',
+    '--until', new Date(Date.now() + 2500).toISOString()], { timeout: 10000 });
+  const summary = JSON.parse(await readFile(join(output, 'summary.json'), 'utf8'));
+  expect(summary).toMatchObject({ reason: 'deadline', status: 'recorded', fullTwoHourObservation: false });
+  expect(summary.samples).toBeGreaterThan(0);
+}), 15000);

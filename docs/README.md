@@ -4,6 +4,8 @@
 
 ## 当前交付
 
+**本轮交付范围（2026-10-16）：** 用户已要求本地安装、重新采集周末数据并发布补丁版本，取代早先仅本地候选、不发布的限制；原七天采样仍保持停止，不恢复。准备 v0.4.10，增加固定日历截止、锁屏／休眠独立状态与事件计数；计划覆盖本周末至 10 月 19 日 09:00（Asia/Shanghai），允许正常休眠和缺口。下方旧候选的安装和验证身份均保留；实际新包安装、采样启动、远端 CI 与发布结果在完成后另行追加记录。
+
 **已发布：v0.4.9**，源码 `aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2`。M1–M6 已纳入该版本；[main CI](https://github.com/takboo/dsh-coopanion/actions/runs/38706065646) 的 10 项检查、[发布 CI](https://github.com/takboo/dsh-coopanion/actions/runs/38708215499) 的 13 项检查通过，覆盖三平台与两版宿主六组安装。npm／Release 同包身份见[交付记录](evidence/releases/v0.4.9/README.md)。10 月 16 日早先的只读查询显示当时最新 Release 为 v0.4.9，结果见[远端核对快照](evidence/p1/diagnostics-followup-20261016/remote-delivery-check.json)。
 
 **日用旧候选：0.4.10**，源码 `3a93a369bfa72f53941bd8a5c45c3cdd6ca58e07`，包 SHA-256 `56d55538d0f30e0f677e4ff0748fa23991990434724ff7371c48a01cfa476ec1`。本机日用 Desktop 保留这个包，候选核验与安装证据见[固定记录](evidence/p1/diagnostics-20261016/README.md)，配置纠正和运行状态见[后续核对](evidence/p1/diagnostics-followup-20261016/README.md)。它的原始包与证据保持不变。

@@ -34,7 +34,14 @@ if (process.env.DSH_PET_TEST_DEBUG_PORT) {
 const displayTest = process.env.DSH_PET_TEST_NO_SANDBOX === '1' && !!process.env.DSH_PET_TEST_DEBUG_PORT;
 const keyboardActivity = require('./keyboard-activity.cjs').createKeyboardActivity();
 let win, tray, options, lastFrame, poll, assetServer, characters, companions, displays, diagnostics, diagnosticRead;
-const configureDiagnostics = () => { if (options?.diagnostics !== true && diagnosticRead) { clearTimeout(diagnosticRead.timer); diagnosticRead.resolve(null); diagnosticRead = undefined; } void diagnostics?.configure(options?.diagnostics === true).catch(() => console.error('Local diagnostics unavailable')); };
+let lifecycle = { locks: 0, unlocks: 0, suspends: 0, resumes: 0 };
+const configureDiagnostics = () => {
+  if (options?.diagnostics !== true) {
+    lifecycle = { locks: 0, unlocks: 0, suspends: 0, resumes: 0 };
+    if (diagnosticRead) { clearTimeout(diagnosticRead.timer); diagnosticRead.resolve(null); diagnosticRead = undefined; }
+  }
+  void diagnostics?.configure(options?.diagnostics === true).catch(() => console.error('Local diagnostics unavailable'));
+};
 function readRendererDiagnostics() {
   if (options?.diagnostics !== true || !win || win.isDestroyed() || diagnosticRead) return Promise.resolve(null);
   return new Promise(resolve => {
@@ -156,7 +163,7 @@ app.whenReady().then(async () => {
   const build = JSON.parse(readFileSync(join(__dirname, '../dist/build-info.json'), 'utf8'));
   diagnostics = new Diagnostics({ registry: process.env.DSH_PET_TEST_DIAGNOSTICS_DIR ?? join(homedir(), '.dsh-coopanion', 'diagnostics'),
     profile: app.getPath('userData'), version: manifest.version, build,
-    read: async () => ({ runtime: { generation, visible: !!win && !win.isDestroyed() && win.isVisible(), suspended, screenLocked, systemAsleep },
+    read: async () => ({ runtime: { generation, visible: !!win && !win.isDestroyed() && win.isVisible(), suspended, screenLocked, systemAsleep, lifecycle: { ...lifecycle } },
       store: companions.inspect(), renderer: await readRendererDiagnostics() }),
   });
   configureDiagnostics();
@@ -201,11 +208,11 @@ app.whenReady().then(async () => {
   win.setAlwaysOnTop(true, 'floating');
   win.on('show', visibility); win.on('hide', visibility);
   win.webContents.on('render-process-gone', () => app.exit(1));
-  const suspendState = () => { suspended = screenLocked || systemAsleep; visibility(); };
-  powerMonitor.on('suspend', () => { systemAsleep = true; suspendState(); });
-  powerMonitor.on('resume', () => { systemAsleep = false; suspendState(); });
-  powerMonitor.on('lock-screen', () => { screenLocked = true; suspendState(); });
-  powerMonitor.on('unlock-screen', () => { screenLocked = false; suspendState(); });
+  const suspendState = key => { if (options?.diagnostics === true) lifecycle[key] = Math.min(Number.MAX_SAFE_INTEGER, lifecycle[key] + 1); suspended = screenLocked || systemAsleep; visibility(); };
+  powerMonitor.on('suspend', () => { systemAsleep = true; suspendState('suspends'); });
+  powerMonitor.on('resume', () => { systemAsleep = false; suspendState('resumes'); });
+  powerMonitor.on('lock-screen', () => { screenLocked = true; suspendState('locks'); });
+  powerMonitor.on('unlock-screen', () => { screenLocked = false; suspendState('unlocks'); });
   win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
   if (process.platform === 'darwin') app.dock?.hide();
   win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
