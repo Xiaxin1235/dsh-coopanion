@@ -17,7 +17,7 @@ before(async () => { await mkdir('artifacts', { recursive: true }); browser = aw
 after(async () => { await browser?.close(); });
 const session = { id: 'companion-focus', label: 'Companion focus', mood: 'idle', active: false, chatAvailable: true };
 const snapshot = patch => ({ mood: 'idle', active: false, sessionId: session.id, sessions: [session], results: [], ...patch });
-async function fixture(t, mode = 'interactive', vocab, star = false) {
+async function fixture(t, mode = 'interactive', vocab, star = false, realClock = false) {
   const directory = await mkdtemp(join(tmpdir(), 'dsh-companion-ui-'));
   let ownerNow = new Date(2026, 9, 15, 12).getTime();
   const store = new CompanionStore(join(directory, 'care'), () => ownerNow);
@@ -32,7 +32,11 @@ async function fixture(t, mode = 'interactive', vocab, star = false) {
   const page = await browser.newPage({ viewport: { width: 1000, height: 750 } }); page.setDefaultTimeout(10000);
   t.after(async () => { await page.close(); await new Promise(r => server.close(r)); await store.close(); await rm(directory, { recursive: true, force: true }); });
   const errors = []; page.on('pageerror', e => errors.push(e.message)); t.after(() => assert.deepEqual(errors, []));
-  await controlCompanionClock(page); await controlNpc(page);
+  if (realClock) {
+    // A frame timestamp can precede a click callback's performance.now().
+    // Keep real event time and physics; expose that ordering deterministically.
+    await page.addInitScript(() => { const raf = requestAnimationFrame.bind(window); window.requestAnimationFrame = callback => raf(time => callback(time - 100)); });
+  } else { await controlCompanionClock(page); await controlNpc(page); }
   if (vocab) await page.route('**/api/characters/load', async route => { const response = await route.fetch(), result = await response.json(); result.value.vocab = result.value.vocab.filter(w => vocab.includes(w.id)); await route.fulfill({ response, json: result }); });
   await page.addInitScript(() => { window.actions = []; addEventListener('message', e => { if (e.data?.t === 'frame' && e.data.layout) window.lastNpcLayout = e.data.layout; }); window.dshPetBridge = { subscribe(fn) { window.receive = fn; }, action(a) { window.actions.push(a); }, hit() {} }; });
   await page.goto(`http://127.0.0.1:${server.address().port}`);
@@ -40,7 +44,8 @@ async function fixture(t, mode = 'interactive', vocab, star = false) {
   const receive = msg => page.evaluate(msg => window.receive(msg), msg);
   await receive({ type: 'init', baseline: true, options: { companionship: mode, roam: true, dailyRhythm: true, locale: 'zh' }, snapshot: snapshot() });
   await page.mouse.move(0, 0);
-  await page.waitForFunction(() => window.companionState?.blocked === false);
+  if (realClock) await page.waitForSelector('#pet[data-mode=idle]');
+  else await page.waitForFunction(() => window.companionState?.blocked === false);
   const body = await recordBodyOrders(page);
   return { page, directory, store, receive, setDay: (day, minutes = 0) => { ownerNow = new Date(2026, 9, day, 12).getTime() + minutes * 60000; }, read: () => store.request({ type: 'read', characterId: 'whale' }), configure: options => receive({ type: 'configure', options }), body };
 }
@@ -282,4 +287,15 @@ test('native NPC waits for acknowledged workArea before establishing home', asyn
   await receive({ type: 'display-changed', revision: 1, displayId: 2, workArea: { x: -1000, y: 0, width: 1000, height: 750 }, contentBounds: { x: -1000, y: 0, width: 1000, height: 750 }, scaleFactor: 2 });
   await npcUntil(page, 'outbound');
   assert.ok(await page.evaluate(() => window.npcEvents.some(e => e.place !== undefined && Math.abs(e.place - 850) < 1)));
+});
+
+test('manual interaction survives a frame timestamp preceding the click event clock', async t => {
+  const { page, read, configure } = await fixture(t, 'quiet', undefined, false, true);
+  await configure({ roam: false });
+  await menu(page); await page.locator('#companion-play').click(); await page.mouse.move(0, 0);
+  await page.waitForTimeout(200);
+  assert.equal(await page.locator('#pet').getAttribute('data-companion-activity'), 'play', 'A stale frame timestamp must not cancel explicit play');
+  assert.equal((await read()).relation.total, 0, 'Starting still does not grant growth');
+  await page.waitForFunction(() => document.querySelector('#companion-status').textContent.includes('1'));
+  assert.equal((await read()).relation.total, 1);
 });

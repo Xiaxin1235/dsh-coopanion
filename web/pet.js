@@ -345,7 +345,10 @@ $('companion-mode').onchange = event => {
   const value = companionshipMode(event.target.value);
   if (native) send({ type: 'preference', field: 'companionship', value }); else { applyOptions({ companionship: value }); updateMood(); }
 };
-function updateMood(now = performance.now()) {
+function updateMood() {
+  // Event callbacks and animation frames must share one live monotonic clock.
+  // A requestAnimationFrame timestamp can predate an already processed click.
+  const now = performance.now();
   const labels = uiCopy().labels;
   const activity = sessionActivity(snapshot), active = activity.active;
   if (active || activity.waiting || activity.errors) asleep = false;
@@ -850,7 +853,7 @@ function animate(now) {
     if (now >= interactionExpires) { interaction.hidden = true; currentNotice = undefined; showNextReply(); }
   }
   presentNextNotice();
-  updateMood(now);
+  updateMood();
   if (!reduced && pet.dataset.mood === 'talking' && now >= talkAt) { body?.talk(); talkAt = now + 180; }
   // Only P1's fully idle pose renders at 30fps. Work and input retain the original cadence.
   // Accumulate real dt so rendering fewer frames never slows physics.
