@@ -31,13 +31,14 @@ async function fixture(t, locale = 'zh-CN') {
   try { await page.waitForSelector('#pet[data-mode]'); }
   catch (error) {
     const startup = { locale, console: startupConsole, frames: [] };
-    for (const frame of page.frames()) startup.frames.push(await frame.evaluate(() => ({
+    console.error('Text-scale startup timeout:', JSON.stringify({ locale, console: startupConsole }));
+    for (const frame of page.frames()) startup.frames.push(await Promise.race([frame.evaluate(() => ({
       readyState: document.readyState, pet: document.querySelector('#pet') ? { hidden: document.querySelector('#pet').hidden, ...document.querySelector('#pet').dataset } : null,
       characterStatus: document.querySelector('#character-status')?.textContent,
-      canvas: [...document.querySelectorAll('canvas')].map(canvas => { const gl = canvas.getContext('webgl2'); return { width: canvas.width, height: canvas.height, webgl: !!gl, lost: gl?.isContextLost() }; }),
-    })).catch(() => ({ unavailable: true })));
+      canvas: [...document.querySelectorAll('canvas')].map(canvas => ({ width: canvas.width, height: canvas.height })),
+    })).catch(() => ({ unavailable: true })), new Promise(resolve => setTimeout(() => resolve({ timeout: true }), 1500))]));
     await writeFile(`artifacts/text-scale-startup-${locale}.json`, JSON.stringify(startup, null, 2) + '\n');
-    await page.screenshot({ path: `artifacts/text-scale-startup-${locale}.png` }).catch(() => {});
+    await page.screenshot({ path: `artifacts/text-scale-startup-${locale}.png`, timeout: 2000 }).catch(() => {});
     console.error('Text-scale startup state:', JSON.stringify(startup));
     throw error;
   }

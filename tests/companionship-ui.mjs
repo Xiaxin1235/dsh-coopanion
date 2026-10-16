@@ -17,7 +17,7 @@ before(async () => { await mkdir('artifacts', { recursive: true }); browser = aw
 after(async () => { await browser?.close(); });
 const session = { id: 'companion-focus', label: 'Companion focus', mood: 'idle', active: false, chatAvailable: true };
 const snapshot = patch => ({ mood: 'idle', active: false, sessionId: session.id, sessions: [session], results: [], ...patch });
-async function fixture(t, mode = 'interactive', vocab, star = false, realClock = false) {
+async function fixture(t, mode = 'interactive', vocab, star = false, timing = null) {
   const directory = await mkdtemp(join(tmpdir(), 'dsh-companion-ui-'));
   let ownerNow = new Date(2026, 9, 15, 12).getTime();
   const store = new CompanionStore(join(directory, 'care'), () => ownerNow);
@@ -32,10 +32,10 @@ async function fixture(t, mode = 'interactive', vocab, star = false, realClock =
   const page = await browser.newPage({ viewport: { width: 1000, height: 750 } }); page.setDefaultTimeout(10000);
   t.after(async () => { await page.close(); await new Promise(r => server.close(r)); await store.close(); await rm(directory, { recursive: true, force: true }); });
   const errors = []; page.on('pageerror', e => errors.push(e.message)); t.after(() => assert.deepEqual(errors, []));
-  if (realClock) {
+  if (timing) {
     // A frame timestamp can precede a click callback's performance.now().
     // Keep real event time and physics; expose that ordering deterministically.
-    await page.addInitScript(() => { const raf = requestAnimationFrame.bind(window); window.requestAnimationFrame = callback => raf(time => callback(time - 100)); });
+    await page.addInitScript(lag => { const raf = requestAnimationFrame.bind(window); window.requestAnimationFrame = callback => raf(time => callback(time - lag)); }, timing.frameLag ?? 0);
   } else { await controlCompanionClock(page); await controlNpc(page); }
   if (vocab) await page.route('**/api/characters/load', async route => { const response = await route.fetch(), result = await response.json(); result.value.vocab = result.value.vocab.filter(w => vocab.includes(w.id)); await route.fulfill({ response, json: result }); });
   await page.addInitScript(() => { window.actions = []; addEventListener('message', e => { if (e.data?.t === 'frame' && e.data.layout) window.lastNpcLayout = e.data.layout; }); window.dshPetBridge = { subscribe(fn) { window.receive = fn; }, action(a) { window.actions.push(a); }, hit() {} }; });
@@ -44,7 +44,7 @@ async function fixture(t, mode = 'interactive', vocab, star = false, realClock =
   const receive = msg => page.evaluate(msg => window.receive(msg), msg);
   await receive({ type: 'init', baseline: true, options: { companionship: mode, roam: true, dailyRhythm: true, locale: 'zh' }, snapshot: snapshot() });
   await page.mouse.move(0, 0);
-  if (realClock) await page.waitForSelector('#pet[data-mode=idle]');
+  if (timing) await page.waitForSelector('#pet[data-mode=idle]');
   else await page.waitForFunction(() => window.companionState?.blocked === false);
   const body = await recordBodyOrders(page);
   return { page, directory, store, receive, setDay: (day, minutes = 0) => { ownerNow = new Date(2026, 9, day, 12).getTime() + minutes * 60000; }, read: () => store.request({ type: 'read', characterId: 'whale' }), configure: options => receive({ type: 'configure', options }), body };
@@ -290,7 +290,7 @@ test('native NPC waits for acknowledged workArea before establishing home', asyn
 });
 
 test('manual interaction survives a frame timestamp preceding the click event clock', async t => {
-  const { page, read, configure } = await fixture(t, 'quiet', undefined, false, true);
+  const { page, read, configure } = await fixture(t, 'quiet', undefined, false, { frameLag: 100 });
   await configure({ roam: false });
   await menu(page); await page.locator('#companion-play').click(); await page.mouse.move(0, 0);
   await page.waitForTimeout(200);
@@ -298,4 +298,18 @@ test('manual interaction survives a frame timestamp preceding the click event cl
   assert.equal((await read()).relation.total, 0, 'Starting still does not grant growth');
   await page.waitForFunction(() => document.querySelector('#companion-status').textContent.includes('1'));
   assert.equal((await read()).relation.total, 1);
+});
+
+test('manual interaction follows a real poke reaction while actual work still preempts it', async t => {
+  const { page, read, receive, configure } = await fixture(t, 'quiet', undefined, false, {});
+  await configure({ roam: false });
+  await page.locator('#pet').click(); await page.mouse.move(0, 0);
+  await page.waitForSelector('#pet[data-mood=happy]');
+  await menu(page); await page.locator('#companion-play').click(); await page.mouse.move(0, 0);
+  await page.waitForTimeout(200);
+  assert.equal(await page.locator('#pet').getAttribute('data-companion-activity'), 'play', 'A brief poke expression is not task occupancy');
+  assert.equal((await read()).relation.total, 0);
+  await receive({ type: 'snapshot', snapshot: snapshot({ mood: 'working', active: true, sessions: [{ ...session, mood: 'working', active: true }] }) });
+  await page.waitForSelector('#pet[data-companion-activity=idle][data-mood=working]');
+  assert.equal((await read()).relation.total, 0, 'Work interruption never grants growth');
 });

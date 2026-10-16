@@ -265,7 +265,8 @@ function updateCompanion(now, mood, readingAttention, active) {
   if (mode === 'off' && companion.mode === 'off') return;
   if (now < hourCheckedAt || now - hourCheckedAt >= 1000) { localHour = new Date().getHours(); hourCheckedAt = now; }
   const manual = companionAction === 'play' || companion.active?.manual;
-  const blocked = companionBlocked(manual, mood, readingAttention, active);
+  // A poke's short expression is presentation, not a busy Host session.
+  const blocked = companionBlocked(manual, manual ? sessionActivity(snapshot).mood : mood, readingAttention, active);
   const summary = companionClient.summary;
   const eligible = !!summary?.writable && !companionClient.error && summary.invitation.remaining > 0 && !summary.invitation.quiet && Date.now() >= summary.invitation.laterUntil;
   const inputQuiet = keyboardActivity !== 'idle' || performance.now() - keyboardAt > 2500;
