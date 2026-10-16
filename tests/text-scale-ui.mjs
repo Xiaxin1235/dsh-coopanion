@@ -7,6 +7,7 @@ import { join } from 'node:path';
 import { after, before, test } from 'node:test';
 import { chromium } from 'playwright-core';
 import { previewServer } from '../scripts/preview.mjs';
+import { observeBodyReady } from './helpers/body-startup.mjs';
 
 let directory, server, browser;
 before(async () => {
@@ -24,24 +25,11 @@ const snapshot = results => ({ mood: 'idle', active: false, sessionId: focus.id,
 async function fixture(t, locale = 'zh-CN') {
   const page = await browser.newPage({ locale, viewport: { width: 320, height: 640 }, reducedMotion: 'reduce' });
   page.setDefaultTimeout(5000); t.after(() => page.close());
-  const startupConsole = []; page.on('console', message => { if (['error', 'warning'].includes(message.type()) && startupConsole.length < 12) startupConsole.push(message.text().slice(0, 500)); });
+  const waitForBody = observeBodyReady(page, `text-scale-${locale}`);
   const errors = []; page.on('pageerror', error => errors.push(error.message)); t.after(() => assert.deepEqual(errors, []));
   await page.addInitScript(() => { window.scaleActions = []; window.dshPetBridge = { subscribe(fn) { window.scaleReceive = fn; }, action(a) { window.scaleActions.push(a); }, hit() {} }; });
   await page.goto(`http://127.0.0.1:${server.address().port}`);
-  try { await page.waitForSelector('#pet[data-mode]'); }
-  catch (error) {
-    const startup = { locale, console: startupConsole, frames: [] };
-    console.error('Text-scale startup timeout:', JSON.stringify({ locale, console: startupConsole }));
-    for (const frame of page.frames()) startup.frames.push(await Promise.race([frame.evaluate(() => ({
-      readyState: document.readyState, pet: document.querySelector('#pet') ? { hidden: document.querySelector('#pet').hidden, ...document.querySelector('#pet').dataset } : null,
-      characterStatus: document.querySelector('#character-status')?.textContent,
-      canvas: [...document.querySelectorAll('canvas')].map(canvas => ({ width: canvas.width, height: canvas.height })),
-    })).catch(() => ({ unavailable: true })), new Promise(resolve => setTimeout(() => resolve({ timeout: true }), 1500))]));
-    await writeFile(`artifacts/text-scale-startup-${locale}.json`, JSON.stringify(startup, null, 2) + '\n');
-    await page.screenshot({ path: `artifacts/text-scale-startup-${locale}.png`, timeout: 2000 }).catch(() => {});
-    console.error('Text-scale startup state:', JSON.stringify(startup));
-    throw error;
-  }
+  await waitForBody();
   const receive = message => page.evaluate(message => window.scaleReceive(message), message);
   await receive({ type: 'init', baseline: true, options: { size: 90, textScale: 1, roam: false, locale: locale.startsWith('zh') ? 'zh' : 'en' }, snapshot: snapshot([result]) });
   return { page, receive, configure: options => receive({ type: 'configure', options }) };

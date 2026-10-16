@@ -7,6 +7,7 @@ import { join } from 'node:path';
 import { after, before, test } from 'node:test';
 import { chromium } from 'playwright-core';
 import { previewServer } from '../scripts/preview.mjs';
+import { observeBodyReady } from './helpers/body-startup.mjs';
 
 let directory, server, browser;
 before(async () => {
@@ -28,6 +29,7 @@ async function fixture(t, results) {
   const page = await browser.newPage({ locale: 'zh-CN', viewport: { width: 1000, height: 800 }, reducedMotion: 'reduce' });
   t.after(() => page.close());
   page.setDefaultTimeout(5000);
+  const waitForBody = observeBodyReady(page, 'session-replies');
   const errors = []; page.on('pageerror', error => errors.push(error.message));
   t.after(() => assert.deepEqual(errors, []));
   await page.addInitScript(() => {
@@ -35,7 +37,7 @@ async function fixture(t, results) {
     window.dshPetBridge = { subscribe(fn) { window.replyReceive = fn; }, action(action) { window.replyActions.push(action); }, hit() {} };
   });
   await page.goto(`http://127.0.0.1:${server.address().port}`);
-  await page.waitForSelector('#pet[data-character=whale][data-mode]');
+  await waitForBody('#pet[data-character=whale][data-mode]');
   const receive = snapshot => page.evaluate(snapshot => window.replyReceive({ type: 'snapshot', snapshot }), snapshot);
   await receive(frame(results));
   return { page, receive };

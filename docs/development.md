@@ -51,6 +51,8 @@ npm 使用已配置的 Trusted Publisher；dshmarket 通过社区目录 PR 收�
 
 本轮 [NPC 日常修订](npc-daily-life-plan.md)已接入本地源码：macOS 保守键盘适配、workArea 小窝与范围、逐代受控移动及意图恢复。`tests/npc-life.test.js` 验证纯状态／几何／输入适配，`tests/npc-life-native.mjs` 使用隔离 profile 验证原生循环；其中控制时钟与输入枚举，实际身体与 arrived／interrupted 保持真实。物理键盘和监听权限逐平台另验收，原语探针与旧资源结果不能代替本轮行为验证。
 
+`test:inbox-ui` 将会话回复与字号两份浏览器用例串行执行，避免并发冷启动争用；保留原有断言和 5 秒就绪等待。就绪失败时保留有界页面状态、控制台摘要和截图，辅助区分初始化与功能断言失败。
+
 `test:inbox-ui` 已包含 P1 真实 API 2 日常、邀请、输入轨迹、成长、热设置和阅读回归；`test:desktop` 额外串行运行真实时间的 P1 原生点击／存档重启验证。`test:install` 在两版宿主中检查新枚举保存和原生 IPC，不要求独立运行。
 
 短时资源对照入口 `scripts/measure-idle.mjs` 支持 `--mode companion-day`／`companion-night`，与同轮 `off` 使用相同固定种子和真实物理时钟。初始预算及基线见[P1 固定记录](evidence/p1/README.md)，最新候选和实际执行状态从[文档索引](README.md)读取；旧记录中的“最终候选”只代表对应快照。
