@@ -1,0 +1,134 @@
+{
+  "schema": 1,
+  "startedAt": "2026-10-16T05:29:52.861Z",
+  "endedAt": "2026-10-16T05:30:53.291Z",
+  "reason": "duration",
+  "status": "pass",
+  "fullTwoHourObservation": false,
+  "samples": 12,
+  "rawBytes": 25530,
+  "errors": 0,
+  "bounds": {
+    "maxPendingRequests": 0,
+    "maxStorePending": 0,
+    "requestsDrained": true
+  },
+  "coverage": {
+    "routines": false,
+    "invitation": false
+  },
+  "environment": {
+    "maxStealPercent": 0,
+    "maxSwapUsedMiB": 0
+  },
+  "segments": [
+    {
+      "instance": "6dec5913a65f3c1a0f0b",
+      "session": "8894bb9786b36522a61607af3cd18e65",
+      "version": "0.4.10",
+      "build": {
+        "schema": 1,
+        "commit": "3a93a369bfa72f53941bd8a5c45c3cdd6ca58e07",
+        "dirty": false,
+        "productDigest": "0aa015b2080da47056915b57b7c5ad28434d72b4bf9652c007ca0409962d3596"
+      },
+      "startedAt": "2026-10-16T05:29:52.872Z",
+      "reason": "duration",
+      "resource": {
+        "status": "pass",
+        "durationSeconds": 60.367247395999996,
+        "requestedSeconds": 60,
+        "windowSeconds": 20,
+        "largestGapSeconds": 5.035695099999999,
+        "firstWindow": {
+          "mean": 751.1888898320174,
+          "coveredSeconds": 20
+        },
+        "lastWindow": {
+          "mean": 765.2358599294234,
+          "coveredSeconds": 20.000000000000007
+        },
+        "rssDeltaMiB": 14.046970097406074,
+        "rssBudgetMiB": 20,
+        "meanCpuPercentOneCore": 54.582578171658206,
+        "maxRssMiB": 767.90625,
+        "scope": "RSS stability only; queues, archive bounds, rendering coverage and environment require separate checks",
+        "samples": 12
+      },
+      "lastSnapshot": {
+        "schema": 1,
+        "instance": "6dec5913a65f3c1a0f0b",
+        "session": "8894bb9786b36522a61607af3cd18e65",
+        "pid": 11495,
+        "startedAt": "2026-10-16T05:29:31.821Z",
+        "measuredAt": "2026-10-16T05:30:53.259Z",
+        "version": "0.4.10",
+        "build": {
+          "schema": 1,
+          "commit": "3a93a369bfa72f53941bd8a5c45c3cdd6ca58e07",
+          "dirty": false,
+          "productDigest": "0aa015b2080da47056915b57b7c5ad28434d72b4bf9652c007ca0409962d3596"
+        },
+        "value": {
+          "runtime": {
+            "visible": true,
+            "suspended": false,
+            "generation": 1
+          },
+          "store": {
+            "initialized": true,
+            "writable": true,
+            "failed": false,
+            "bytes": 0,
+            "revision": 0,
+            "recentCount": 0,
+            "characterCount": 0,
+            "invitations": 0,
+            "pending": 0
+          },
+          "renderer": {
+            "mode": "interactive",
+            "activity": "idle",
+            "invitation": "none",
+            "mood": "idle",
+            "careUnavailable": false,
+            "hidden": false,
+            "hour": 13,
+            "queues": {
+              "carePending": 0,
+              "pendingInteractions": 0,
+              "composerSessions": 1,
+              "chatTimers": 0,
+              "snoozing": 0,
+              "shownResults": 0,
+              "acknowledgedResults": 0
+            },
+            "counts": {
+              "routines": {
+                "observe": 0,
+                "play": 0,
+                "rest": 1,
+                "greeting": 0
+              },
+              "invitationsShown": 0,
+              "invitationsExpired": 0,
+              "invitationsAccepted": 0,
+              "invitationsLater": 0,
+              "invitationsQuiet": 0
+            },
+            "heapBytes": 5423767,
+            "nodes": 236
+          }
+        }
+      }
+    }
+  ],
+  "limitations": "Passive local observation; seven-day subjective value, physical delivery, GPU power and other platforms require separate evidence. Diagnostic counters cover finite known queues, not all timers/objects.",
+  "sourceCommit": "3a93a369bfa72f53941bd8a5c45c3cdd6ca58e07",
+  "archiveSha256": "56d55538d0f30e0f677e4ff0748fa23991990434724ff7371c48a01cfa476ec1",
+  "dshVersion": "0.2.0-rc.2",
+  "graphics": {
+    "webgl2": true,
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+  }
+}
