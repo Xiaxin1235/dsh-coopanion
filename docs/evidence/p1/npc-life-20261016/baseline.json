@@ -1,0 +1,1029 @@
+{
+  "schema": 1,
+  "controlledKeyboardIdle": false,
+  "physicalTypingValidated": false,
+  "sourceCommit": "ac5938fd0b7bbdf1b716a023a48cab3c6004e77a",
+  "measuredAt": "2026-10-16T08:08:37.611Z",
+  "mode": "baseline",
+  "platform": "darwin",
+  "arch": "arm64",
+  "osRelease": "24.6.0",
+  "cpu": "Apple M4 Pro",
+  "logicalCpus": 12,
+  "node": "v24.21.0",
+  "electron": "44.7.0",
+  "display": {
+    "point": {
+      "x": 0,
+      "y": 25
+    },
+    "dip": {
+      "x": 0,
+      "y": 25
+    },
+    "geometry": {
+      "displayId": 3,
+      "workArea": {
+        "x": 0,
+        "y": 25,
+        "width": 2048,
+        "height": 1127
+      },
+      "contentBounds": {
+        "x": 0,
+        "y": 25,
+        "width": 2048,
+        "height": 1127
+      },
+      "scaleFactor": 2,
+      "revision": 1
+    },
+    "contentBounds": {
+      "x": 0,
+      "y": 25,
+      "width": 2048,
+      "height": 1127
+    },
+    "cursor": {
+      "x": 4,
+      "y": 0
+    },
+    "displays": [
+      {
+        "id": 3,
+        "label": "P272U PRO",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 2048,
+          "height": 1152
+        },
+        "workArea": {
+          "x": 0,
+          "y": 25,
+          "width": 2048,
+          "height": 1127
+        },
+        "scaleFactor": 2,
+        "rotation": 0
+      }
+    ],
+    "electron": "44.7.0"
+  },
+  "size": 180,
+  "roam": true,
+  "warmupSeconds": 20,
+  "rounds": 2,
+  "secondsPerRound": 10,
+  "sources": {
+    "web/pet.js": "8ea923e4cc941d26681dcd31dcceebd7258f1cc5e15d3bbb5e21f93687edf919",
+    "web/companionship.js": "8b087ff5d08d9c19b88f4477d502fa2a037b0f7c6840f296cb4662947434fc09",
+    "web/companion-client.js": "eca2785375f103ff89ac7c4828bd8ceee885ba66d952ceb33906b1b93418efca",
+    "web/companion-touch.js": "83b0f804fc24ef78ef5a6432e0ae3708538e12b40fb97c1a52b34153d29ef062",
+    "src/companion-store.ts": "9b6202722b938cc39d55c84ccb6ae36d4c776d8e79f53eb452c4650b6c8cc6c9",
+    "web/upstream/kit/body.js": "ad6e9d87e61dead1948919e7fcc59c41b4199d6dfbd5f2bc42d9f922a53dc599",
+    "dist/bridge.js": "dcab7435c95f8d27407672a749883076714fc9f0f238db2c54aae6a484fb7a48"
+  },
+  "method": "ps cumulative CPU deltas of Electron main and all descendants; 100% is one core; summed resident memory may count shared pages more than once; sampler process excluded; controlled local hour and fixed RNG seed 17 for off/day/night/companion modes; no frame acceleration; npc-controlled forces only the aggregate keyboard enum to idle, not physical input",
+  "windows": [
+    {
+      "round": 1,
+      "durationSeconds": 10.270971833,
+      "meanCpuPercentOneCore": 44.80009303230109,
+      "meanRssMiB": 572.2828125,
+      "maxRssMiB": 579.71875
+    },
+    {
+      "round": 2,
+      "durationSeconds": 10.288565375000003,
+      "meanCpuPercentOneCore": 45.77834979206273,
+      "meanRssMiB": 558.1921875,
+      "maxRssMiB": 561.953125
+    }
+  ],
+  "meanCpuPercentOneCore": 45.28922141218191,
+  "meanRssMiB": 565.2375,
+  "samples": [
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0303878329999971,
+      "cpuPercentOneCore": 40.76135087670437,
+      "rssMiB": 571.203125,
+      "tree": [
+        {
+          "pid": 51751,
+          "ppid": 51742,
+          "cpuSeconds": 2.07,
+          "rssKiB": 202032
+        },
+        {
+          "pid": 51752,
+          "ppid": 51751,
+          "cpuSeconds": 4.13,
+          "rssKiB": 81968
+        },
+        {
+          "pid": 51753,
+          "ppid": 51751,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41056
+        },
+        {
+          "pid": 51764,
+          "ppid": 51751,
+          "cpuSeconds": 1.25,
+          "rssKiB": 122240
+        },
+        {
+          "pid": 51769,
+          "ppid": 51751,
+          "cpuSeconds": 2.36,
+          "rssKiB": 137616
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "sit",
+        "rhythm": "off",
+        "npcPhase": "yield",
+        "npcReason": "disabled",
+        "heapBytes": 6522503
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0254087080000027,
+      "cpuPercentOneCore": 49.7362657466333,
+      "rssMiB": 572.40625,
+      "tree": [
+        {
+          "pid": 51751,
+          "ppid": 51742,
+          "cpuSeconds": 2.1,
+          "rssKiB": 202032
+        },
+        {
+          "pid": 51752,
+          "ppid": 51751,
+          "cpuSeconds": 4.38,
+          "rssKiB": 81600
+        },
+        {
+          "pid": 51753,
+          "ppid": 51751,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41056
+        },
+        {
+          "pid": 51764,
+          "ppid": 51751,
+          "cpuSeconds": 1.32,
+          "rssKiB": 122864
+        },
+        {
+          "pid": 51769,
+          "ppid": 51751,
+          "cpuSeconds": 2.52,
+          "rssKiB": 138592
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "npcPhase": "yield",
+        "npcReason": "disabled",
+        "heapBytes": 6250395
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.024062458999997,
+      "cpuPercentOneCore": 37.107111647376676,
+      "rssMiB": 573.890625,
+      "tree": [
+        {
+          "pid": 51751,
+          "ppid": 51742,
+          "cpuSeconds": 2.12,
+          "rssKiB": 202032
+        },
+        {
+          "pid": 51752,
+          "ppid": 51751,
+          "cpuSeconds": 4.59,
+          "rssKiB": 81776
+        },
+        {
+          "pid": 51753,
+          "ppid": 51751,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41056
+        },
+        {
+          "pid": 51764,
+          "ppid": 51751,
+          "cpuSeconds": 1.36,
+          "rssKiB": 123280
+        },
+        {
+          "pid": 51769,
+          "ppid": 51751,
+          "cpuSeconds": 2.63,
+          "rssKiB": 139520
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "npcPhase": "yield",
+        "npcReason": "disabled",
+        "heapBytes": 6664911
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0337645410000005,
+      "cpuPercentOneCore": 41.59554549859531,
+      "rssMiB": 575.484375,
+      "tree": [
+        {
+          "pid": 51751,
+          "ppid": 51742,
+          "cpuSeconds": 2.14,
+          "rssKiB": 202032
+        },
+        {
+          "pid": 51752,
+          "ppid": 51751,
+          "cpuSeconds": 4.82,
+          "rssKiB": 82064
+        },
+        {
+          "pid": 51753,
+          "ppid": 51751,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41056
+        },
+        {
+          "pid": 51764,
+          "ppid": 51751,
+          "cpuSeconds": 1.41,
+          "rssKiB": 123744
+        },
+        {
+          "pid": 51769,
+          "ppid": 51751,
+          "cpuSeconds": 2.76,
+          "rssKiB": 140400
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "npcPhase": "yield",
+        "npcReason": "disabled",
+        "heapBytes": 6422575
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0198917500000024,
+      "cpuPercentOneCore": 52.94679557904052,
+      "rssMiB": 577.625,
+      "tree": [
+        {
+          "pid": 51751,
+          "ppid": 51742,
+          "cpuSeconds": 2.23,
+          "rssKiB": 202096
+        },
+        {
+          "pid": 51752,
+          "ppid": 51751,
+          "cpuSeconds": 5.07,
+          "rssKiB": 82096
+        },
+        {
+          "pid": 51753,
+          "ppid": 51751,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41056
+        },
+        {
+          "pid": 51764,
+          "ppid": 51751,
+          "cpuSeconds": 1.48,
+          "rssKiB": 124896
+        },
+        {
+          "pid": 51769,
+          "ppid": 51751,
+          "cpuSeconds": 2.89,
+          "rssKiB": 141344
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "npcPhase": "yield",
+        "npcReason": "disabled",
+        "heapBytes": 6862523
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0298032919999969,
+      "cpuPercentOneCore": 46.61084342309535,
+      "rssMiB": 579.71875,
+      "tree": [
+        {
+          "pid": 51751,
+          "ppid": 51742,
+          "cpuSeconds": 2.33,
+          "rssKiB": 202160
+        },
+        {
+          "pid": 51752,
+          "ppid": 51751,
+          "cpuSeconds": 5.28,
+          "rssKiB": 82128
+        },
+        {
+          "pid": 51753,
+          "ppid": 51751,
+          "cpuSeconds": 0.1,
+          "rssKiB": 41056
+        },
+        {
+          "pid": 51764,
+          "ppid": 51751,
+          "cpuSeconds": 1.54,
+          "rssKiB": 126016
+        },
+        {
+          "pid": 51769,
+          "ppid": 51751,
+          "cpuSeconds": 3,
+          "rssKiB": 142272
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "npcPhase": "yield",
+        "npcReason": "disabled",
+        "heapBytes": 6678923
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0292654580000016,
+      "cpuPercentOneCore": 43.72049955649042,
+      "rssMiB": 572.078125,
+      "tree": [
+        {
+          "pid": 51751,
+          "ppid": 51742,
+          "cpuSeconds": 2.47,
+          "rssKiB": 192832
+        },
+        {
+          "pid": 51752,
+          "ppid": 51751,
+          "cpuSeconds": 5.42,
+          "rssKiB": 81440
+        },
+        {
+          "pid": 51753,
+          "ppid": 51751,
+          "cpuSeconds": 0.1,
+          "rssKiB": 40144
+        },
+        {
+          "pid": 51764,
+          "ppid": 51751,
+          "cpuSeconds": 1.6,
+          "rssKiB": 128176
+        },
+        {
+          "pid": 51769,
+          "ppid": 51751,
+          "cpuSeconds": 3.11,
+          "rssKiB": 143216
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "npcPhase": "yield",
+        "npcReason": "disabled",
+        "heapBytes": 6469587
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.030982250000001,
+      "cpuPercentOneCore": 33.94820812870442,
+      "rssMiB": 573.25,
+      "tree": [
+        {
+          "pid": 51751,
+          "ppid": 51742,
+          "cpuSeconds": 2.51,
+          "rssKiB": 192848
+        },
+        {
+          "pid": 51752,
+          "ppid": 51751,
+          "cpuSeconds": 5.57,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 51753,
+          "ppid": 51751,
+          "cpuSeconds": 0.1,
+          "rssKiB": 40144
+        },
+        {
+          "pid": 51764,
+          "ppid": 51751,
+          "cpuSeconds": 1.65,
+          "rssKiB": 128640
+        },
+        {
+          "pid": 51769,
+          "ppid": 51751,
+          "cpuSeconds": 3.22,
+          "rssKiB": 143920
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "npcPhase": "yield",
+        "npcReason": "disabled",
+        "heapBytes": 6888103
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.021314542,
+      "cpuPercentOneCore": 46.99825374659159,
+      "rssMiB": 575.0625,
+      "tree": [
+        {
+          "pid": 51751,
+          "ppid": 51742,
+          "cpuSeconds": 2.63,
+          "rssKiB": 193008
+        },
+        {
+          "pid": 51752,
+          "ppid": 51751,
+          "cpuSeconds": 5.74,
+          "rssKiB": 81456
+        },
+        {
+          "pid": 51753,
+          "ppid": 51751,
+          "cpuSeconds": 0.1,
+          "rssKiB": 40144
+        },
+        {
+          "pid": 51764,
+          "ppid": 51751,
+          "cpuSeconds": 1.72,
+          "rssKiB": 129536
+        },
+        {
+          "pid": 51769,
+          "ppid": 51751,
+          "cpuSeconds": 3.34,
+          "rssKiB": 144720
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "npcPhase": "yield",
+        "npcReason": "disabled",
+        "heapBytes": 6650971
+      }
+    },
+    {
+      "round": 1,
+      "elapsedSeconds": 1.0260910000000003,
+      "cpuPercentOneCore": 54.576056119778904,
+      "rssMiB": 552.109375,
+      "tree": [
+        {
+          "pid": 51751,
+          "ppid": 51742,
+          "cpuSeconds": 2.71,
+          "rssKiB": 183760
+        },
+        {
+          "pid": 51752,
+          "ppid": 51751,
+          "cpuSeconds": 5.98,
+          "rssKiB": 81616
+        },
+        {
+          "pid": 51753,
+          "ppid": 51751,
+          "cpuSeconds": 0.1,
+          "rssKiB": 40160
+        },
+        {
+          "pid": 51764,
+          "ppid": 51751,
+          "cpuSeconds": 1.81,
+          "rssKiB": 114080
+        },
+        {
+          "pid": 51769,
+          "ppid": 51751,
+          "cpuSeconds": 3.49,
+          "rssKiB": 145744
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "look",
+        "rhythm": "off",
+        "npcPhase": "yield",
+        "npcReason": "disabled",
+        "heapBytes": 4484845
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0264548749999995,
+      "cpuPercentOneCore": 45.788666550002986,
+      "rssMiB": 553.953125,
+      "tree": [
+        {
+          "pid": 51751,
+          "ppid": 51742,
+          "cpuSeconds": 2.73,
+          "rssKiB": 183760
+        },
+        {
+          "pid": 51752,
+          "ppid": 51751,
+          "cpuSeconds": 6.23,
+          "rssKiB": 82240
+        },
+        {
+          "pid": 51753,
+          "ppid": 51751,
+          "cpuSeconds": 0.1,
+          "rssKiB": 40160
+        },
+        {
+          "pid": 51764,
+          "ppid": 51751,
+          "cpuSeconds": 1.87,
+          "rssKiB": 114528
+        },
+        {
+          "pid": 51769,
+          "ppid": 51751,
+          "cpuSeconds": 3.63,
+          "rssKiB": 146560
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "look",
+        "rhythm": "off",
+        "npcPhase": "yield",
+        "npcReason": "disabled",
+        "heapBytes": 4907481
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.033719124999996,
+      "cpuPercentOneCore": 47.40165758275987,
+      "rssMiB": 555.09375,
+      "tree": [
+        {
+          "pid": 51751,
+          "ppid": 51742,
+          "cpuSeconds": 2.76,
+          "rssKiB": 183760
+        },
+        {
+          "pid": 51752,
+          "ppid": 51751,
+          "cpuSeconds": 6.49,
+          "rssKiB": 82112
+        },
+        {
+          "pid": 51753,
+          "ppid": 51751,
+          "cpuSeconds": 0.1,
+          "rssKiB": 40160
+        },
+        {
+          "pid": 51764,
+          "ppid": 51751,
+          "cpuSeconds": 1.93,
+          "rssKiB": 115024
+        },
+        {
+          "pid": 51769,
+          "ppid": 51751,
+          "cpuSeconds": 3.77,
+          "rssKiB": 147360
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "look",
+        "rhythm": "off",
+        "npcPhase": "yield",
+        "npcReason": "disabled",
+        "heapBytes": 4625677
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0285397920000032,
+      "cpuPercentOneCore": 46.668102073779416,
+      "rssMiB": 555.96875,
+      "tree": [
+        {
+          "pid": 51751,
+          "ppid": 51742,
+          "cpuSeconds": 2.78,
+          "rssKiB": 183776
+        },
+        {
+          "pid": 51752,
+          "ppid": 51751,
+          "cpuSeconds": 6.75,
+          "rssKiB": 82112
+        },
+        {
+          "pid": 51753,
+          "ppid": 51751,
+          "cpuSeconds": 0.1,
+          "rssKiB": 40160
+        },
+        {
+          "pid": 51764,
+          "ppid": 51751,
+          "cpuSeconds": 1.99,
+          "rssKiB": 115024
+        },
+        {
+          "pid": 51769,
+          "ppid": 51751,
+          "cpuSeconds": 3.91,
+          "rssKiB": 148240
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "idle",
+        "rhythm": "off",
+        "npcPhase": "yield",
+        "npcReason": "disabled",
+        "heapBytes": 5054433
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.031226290999999,
+      "cpuPercentOneCore": 52.3648402598767,
+      "rssMiB": 557.109375,
+      "tree": [
+        {
+          "pid": 51751,
+          "ppid": 51742,
+          "cpuSeconds": 2.81,
+          "rssKiB": 183776
+        },
+        {
+          "pid": 51752,
+          "ppid": 51751,
+          "cpuSeconds": 7.03,
+          "rssKiB": 82128
+        },
+        {
+          "pid": 51753,
+          "ppid": 51751,
+          "cpuSeconds": 0.1,
+          "rssKiB": 40160
+        },
+        {
+          "pid": 51764,
+          "ppid": 51751,
+          "cpuSeconds": 2.06,
+          "rssKiB": 115280
+        },
+        {
+          "pid": 51769,
+          "ppid": 51751,
+          "cpuSeconds": 4.07,
+          "rssKiB": 149136
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "sit",
+        "rhythm": "off",
+        "npcPhase": "yield",
+        "npcReason": "disabled",
+        "heapBytes": 4797704
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.026758084000001,
+      "cpuPercentOneCore": 38.95757006769274,
+      "rssMiB": 558.453125,
+      "tree": [
+        {
+          "pid": 51751,
+          "ppid": 51742,
+          "cpuSeconds": 2.83,
+          "rssKiB": 183744
+        },
+        {
+          "pid": 51752,
+          "ppid": 51751,
+          "cpuSeconds": 7.24,
+          "rssKiB": 82128
+        },
+        {
+          "pid": 51753,
+          "ppid": 51751,
+          "cpuSeconds": 0.1,
+          "rssKiB": 40160
+        },
+        {
+          "pid": 51764,
+          "ppid": 51751,
+          "cpuSeconds": 2.11,
+          "rssKiB": 115696
+        },
+        {
+          "pid": 51769,
+          "ppid": 51751,
+          "cpuSeconds": 4.19,
+          "rssKiB": 150128
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "sit",
+        "rhythm": "off",
+        "npcPhase": "yield",
+        "npcReason": "disabled",
+        "heapBytes": 5223832
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0340258749999993,
+      "cpuPercentOneCore": 44.48631423270721,
+      "rssMiB": 559.59375,
+      "tree": [
+        {
+          "pid": 51751,
+          "ppid": 51742,
+          "cpuSeconds": 2.85,
+          "rssKiB": 183744
+        },
+        {
+          "pid": 51752,
+          "ppid": 51751,
+          "cpuSeconds": 7.49,
+          "rssKiB": 82288
+        },
+        {
+          "pid": 51753,
+          "ppid": 51751,
+          "cpuSeconds": 0.1,
+          "rssKiB": 40160
+        },
+        {
+          "pid": 51764,
+          "ppid": 51751,
+          "cpuSeconds": 2.16,
+          "rssKiB": 115920
+        },
+        {
+          "pid": 51769,
+          "ppid": 51751,
+          "cpuSeconds": 4.33,
+          "rssKiB": 150912
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "sit",
+        "rhythm": "off",
+        "npcPhase": "yield",
+        "npcReason": "disabled",
+        "heapBytes": 4961972
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0194204580000006,
+      "cpuPercentOneCore": 51.00937458329871,
+      "rssMiB": 560.8125,
+      "tree": [
+        {
+          "pid": 51751,
+          "ppid": 51742,
+          "cpuSeconds": 2.88,
+          "rssKiB": 183760
+        },
+        {
+          "pid": 51752,
+          "ppid": 51751,
+          "cpuSeconds": 7.76,
+          "rssKiB": 82336
+        },
+        {
+          "pid": 51753,
+          "ppid": 51751,
+          "cpuSeconds": 0.1,
+          "rssKiB": 40160
+        },
+        {
+          "pid": 51764,
+          "ppid": 51751,
+          "cpuSeconds": 2.23,
+          "rssKiB": 116176
+        },
+        {
+          "pid": 51769,
+          "ppid": 51751,
+          "cpuSeconds": 4.48,
+          "rssKiB": 151840
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "sit",
+        "rhythm": "off",
+        "npcPhase": "yield",
+        "npcReason": "disabled",
+        "heapBytes": 4695672
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0272837500000023,
+      "cpuPercentOneCore": 35.043871763765274,
+      "rssMiB": 561.953125,
+      "tree": [
+        {
+          "pid": 51751,
+          "ppid": 51742,
+          "cpuSeconds": 2.89,
+          "rssKiB": 183760
+        },
+        {
+          "pid": 51752,
+          "ppid": 51751,
+          "cpuSeconds": 7.96,
+          "rssKiB": 82352
+        },
+        {
+          "pid": 51753,
+          "ppid": 51751,
+          "cpuSeconds": 0.1,
+          "rssKiB": 40160
+        },
+        {
+          "pid": 51764,
+          "ppid": 51751,
+          "cpuSeconds": 2.27,
+          "rssKiB": 116432
+        },
+        {
+          "pid": 51769,
+          "ppid": 51751,
+          "cpuSeconds": 4.59,
+          "rssKiB": 152736
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "sit",
+        "rhythm": "off",
+        "npcPhase": "yield",
+        "npcReason": "disabled",
+        "heapBytes": 5138932
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0309854169999961,
+      "cpuPercentOneCore": 48.49729120853343,
+      "rssMiB": 558.828125,
+      "tree": [
+        {
+          "pid": 51751,
+          "ppid": 51742,
+          "cpuSeconds": 2.92,
+          "rssKiB": 183776
+        },
+        {
+          "pid": 51752,
+          "ppid": 51751,
+          "cpuSeconds": 8.21,
+          "rssKiB": 82352
+        },
+        {
+          "pid": 51753,
+          "ppid": 51751,
+          "cpuSeconds": 0.1,
+          "rssKiB": 40160
+        },
+        {
+          "pid": 51764,
+          "ppid": 51751,
+          "cpuSeconds": 2.34,
+          "rssKiB": 112368
+        },
+        {
+          "pid": 51769,
+          "ppid": 51751,
+          "cpuSeconds": 4.74,
+          "rssKiB": 153584
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "sit",
+        "rhythm": "off",
+        "npcPhase": "yield",
+        "npcReason": "disabled",
+        "heapBytes": 4689610
+      }
+    },
+    {
+      "round": 2,
+      "elapsedSeconds": 1.0301517080000049,
+      "cpuPercentOneCore": 47.56580959821085,
+      "rssMiB": 560.15625,
+      "tree": [
+        {
+          "pid": 51751,
+          "ppid": 51742,
+          "cpuSeconds": 2.94,
+          "rssKiB": 183792
+        },
+        {
+          "pid": 51752,
+          "ppid": 51751,
+          "cpuSeconds": 8.48,
+          "rssKiB": 82352
+        },
+        {
+          "pid": 51753,
+          "ppid": 51751,
+          "cpuSeconds": 0.1,
+          "rssKiB": 40160
+        },
+        {
+          "pid": 51764,
+          "ppid": 51751,
+          "cpuSeconds": 2.4,
+          "rssKiB": 112880
+        },
+        {
+          "pid": 51769,
+          "ppid": 51751,
+          "cpuSeconds": 4.88,
+          "rssKiB": 154416
+        }
+      ],
+      "renderer": {
+        "mood": "idle",
+        "mode": "sit",
+        "rhythm": "off",
+        "npcPhase": "yield",
+        "npcReason": "disabled",
+        "heapBytes": 5117810
+      }
+    }
+  ],
+  "limitations": "Bounded same-machine observation, not long-term idle acceptance or other-platform evidence. Other desktop workloads and macOS GPU accounting can affect results."
+}

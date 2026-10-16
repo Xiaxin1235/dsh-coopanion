@@ -1,0 +1,89 @@
+NPC native state: {
+  state: {
+    generation: 2,
+    serial: 3,
+    phase: 'resume',
+    reason: 'none',
+    target: 1740.8,
+    returning: true,
+    recent: [ 1218.5600000000002 ],
+    energy: 0.56,
+    interest: 0.5,
+    emotion: 'thinking',
+    walkId: null,
+    dueAt: 58000,
+    lastAt: 46000,
+    safeAt: 46000,
+    spaceKey: '2048:180:0.85:0.3:1',
+    placed: true,
+    failed: false
+  },
+  input: {
+    enabled: true,
+    now: 46000,
+    space: {
+      min: 1126.4,
+      max: 1740.8000000000002,
+      home: 1740.8,
+      key: '2048:180:0.85:0.3:1'
+    },
+    keyboard: 'idle',
+    pointer: { x: 1383, y: 21 },
+    layout: {
+      x: 1262.0463836903166,
+      facing: -1,
+      mode: 'idle',
+      busy: false,
+      moving: false,
+      pressing: false,
+      cursor: '',
+      box: [Object],
+      hit: [Array],
+      bubble: [Object],
+      side: [Object]
+    },
+    words: [
+      'neutral',  'happy',      'wink',
+      'love',     'shy',        'surprised',
+      'angry',    'sad',        'sleepy',
+      'thinking', 'smug',       'pout',
+      'worried',  'determined', 'flustered',
+      'scared',   'excited',    'cry',
+      'confused', 'stand',      'jump',
+      'hop',      'look',       'turn',
+      'nod',      'shake',      'spin',
+      'sit',      'sleep',      'dizzy',
+      'walk',     'run',        'wave',
+      'bow',      'shiver',     'flap',
+      'dance'
+    ],
+    event: undefined,
+    user: false,
+    lifecycle: false,
+    work: false,
+    quiet: false,
+    canWalk: true
+  },
+  events: [
+    { state: [Object], word: 'stand', now: 44000 },
+    { state: [Object], walk: [Object], word: 'stand', now: 46000 },
+    { state: [Object], stop: 8589934595, now: 46000 },
+    { state: [Object], word: 'stand', now: 46000 },
+    { state: [Object], word: 'stand', now: 46000 },
+    { state: [Object], word: 'stand', now: 46000 },
+    { state: [Object], word: 'stand', now: 46000 },
+    { state: [Object], word: 'stand', now: 46000 }
+  ],
+  mode: 'idle'
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.waitForFunction: Timeout 25000ms exceeded.
+    at /Users/jam/Documents/codespace/personal-projects/dsh-coopanion/tests/npc-life-native.mjs:35:46 {
+  log: [],
+  name: 'TimeoutError'
+}
+
+Node.js v24.21.0
