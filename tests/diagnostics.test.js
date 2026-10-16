@@ -74,8 +74,10 @@ it('diagnostic reads never initialize or mutate a companion archive', async () =
 it('drops unrecognized text and credentials and rejects a wrong runtime identity', async () => fixture(async f => {
   await f.api.configure(true); const [endpoint] = await listDiagnostics(f.registry);
   const snapshot = await readDiagnostics(endpoint);
+  snapshot.value.renderer.npc = { phase: 'yield', reason: 'unknown', keyboard: 'unknown', targetValid: true, compact: true, text: 'private keyboard content' };
   snapshot.value.chat = 'private message'; snapshot.value.renderer.text = 'private draft'; snapshot.token = endpoint.token;
   const clean = sanitizeSnapshot(snapshot, endpoint);
+  expect(clean.value.renderer.npc).toEqual({ phase: 'yield', reason: 'unknown', keyboard: 'unknown', targetValid: true, compact: true });
   expect(JSON.stringify(clean)).not.toContain('private');
   expect(JSON.stringify(clean)).not.toContain(endpoint.token);
   expect(() => sanitizeSnapshot({ ...snapshot, session: '0'.repeat(32) }, endpoint)).toThrow('identity');

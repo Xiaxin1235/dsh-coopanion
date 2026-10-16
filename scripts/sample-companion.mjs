@@ -7,7 +7,7 @@ import { mkdir, open, writeFile, rename, readFile } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { listDiagnostics, readDiagnostics } from './diagnostics-client.mjs';
-import { linuxSnapshot, linuxEnvironment, processCpu, ResourceWindow } from './resource-observation.mjs';
+import { linuxSnapshot, linuxEnvironment, processCpu, ResourceWindow, companionCoverage } from './resource-observation.mjs';
 
 const { values: args } = parseArgs({ options: {
   registry: { type: 'string' }, instance: { type: 'string' }, output: { type: 'string' }, seconds: { type: 'string' },
@@ -63,7 +63,7 @@ if (args.list) {
     if (!current) return;
     const duration = (previousAt - current.at) / 1000;
     segments.push({ instance: current.instance, session: current.session, version: current.version, build: current.build, startedAt: current.startedAt, reason: complete ? 'duration' : reason,
-      resource: current.window.finish(complete ? seconds : duration, { complete, maxGapSeconds: interval * 3 }), lastSnapshot });
+      npcPhases: [...current.npcPhases].sort(), resource: current.window.finish(complete ? seconds : duration, { complete, maxGapSeconds: interval * 3 }), lastSnapshot });
     current = undefined; previousTree = undefined; previousAt = undefined; previousWall = undefined;
   };
   let checkpointAt = 60, unavailable = false, failure = null, targetInstance = args.instance;
@@ -97,7 +97,7 @@ if (args.list) {
       }
       if (!current) {
         if (segments.length >= 64) throw new Error('Segment limit reached');
-        current = { instance: snapshot.instance, session: snapshot.session, version: snapshot.version, build: snapshot.build, startedAt: snapshot.measuredAt, at: now, window: new ResourceWindow(windowSeconds) };
+        current = { instance: snapshot.instance, session: snapshot.session, version: snapshot.version, build: snapshot.build, startedAt: snapshot.measuredAt, at: now, npcPhases: new Set(), window: new ResourceWindow(windowSeconds) };
         lastSnapshot = snapshot; previousTree = rows; previousAt = now; previousWall = wall; previousEnvironment = env;
         await event({ type: 'segment-start', instance: snapshot.instance, pid: snapshot.pid, version: snapshot.version, productDigest: snapshot.build.productDigest });
       } else {
@@ -113,14 +113,16 @@ if (args.list) {
         if (rawBytes + Buffer.byteLength(line) > maxBytes) { reason = 'size-limit'; throw new Error('Raw sample size limit reached'); }
         await samples.write(line); rawBytes += Buffer.byteLength(line); count++; current.window.add(sample); lastSnapshot = snapshot;
         const data = snapshot.value, renderer = data.renderer;
+        if (renderer?.npc) current.npcPhases.add(renderer.npc.phase);
         maxPending = Math.max(maxPending, renderer?.queues.carePending ?? 0); maxStorePending = Math.max(maxStorePending, data.store.pending);
         if (args.strict) {
           if (!renderer || renderer.mode !== 'interactive' || renderer.hidden || renderer.hour < 7 || renderer.hour >= 22 || renderer.mood !== 'idle' || !data.runtime.visible || data.runtime.suspended) throw new Error('Controlled daytime idle scenario is unavailable');
+          if (renderer.npc && renderer.npc.keyboard !== 'idle') throw new Error('Controlled NPC keyboard perception is unavailable');
           if (renderer.careUnavailable || data.store.failed || data.store.bytes > 262144 || data.store.recentCount > 128 || data.store.characterCount > 256 || data.store.invitations > 2) throw new Error('Companion store bounds failed');
         }
         if (sample.globalAtSeconds >= checkpointAt) {
           await checkpoint({ measuredAt: snapshot.measuredAt, elapsedSeconds: sample.globalAtSeconds, requestedSeconds: seconds, samples: count, rawBytes, lastSample: sample });
-          await event({ type: 'progress', elapsedSeconds: sample.globalAtSeconds, rssMiB: sample.rssMiB, pending: renderer?.queues.carePending, routines: renderer?.counts.routines, invitationsShown: renderer?.counts.invitationsShown });
+          await event({ type: 'progress', elapsedSeconds: sample.globalAtSeconds, rssMiB: sample.rssMiB, pending: renderer?.queues.carePending, routines: renderer?.counts.routines, npc: renderer?.npc, invitationsShown: renderer?.counts.invitationsShown });
           checkpointAt += 60;
         }
         previousTree = rows; previousAt = now; previousWall = wall; previousEnvironment = env;
@@ -133,14 +135,13 @@ if (args.list) {
     const complete = reason === 'duration' && current?.window.duration >= seconds && !stop;
     finishSegment(complete);
     const last = segments.at(-1), renderer = lastSnapshot?.value.renderer, store = lastSnapshot?.value.store;
-    const coverage = { routines: !!renderer && ['observe', 'play', 'rest'].every(kind => renderer.counts.routines[kind] > 0),
-      invitation: !!renderer && renderer.counts.invitationsShown >= 1 && renderer.counts.invitationsShown <= 2 && store?.invitations === renderer.counts.invitationsShown };
+    const coverage = companionCoverage(renderer, store, last?.npcPhases ?? []);
     const full = complete && segments.length === 1 && seconds >= 7200 && windowSeconds >= 1800;
     const bounds = { maxPendingRequests: maxPending, maxStorePending, requestsDrained: renderer?.queues.carePending === 0 && store?.pending === 0 };
-    const strictPass = last?.resource.status === 'pass' && bounds.requestsDrained && (!full || coverage.routines && coverage.invitation);
+    const strictPass = last?.resource.status === 'pass' && bounds.requestsDrained && (!full || coverage.daily && coverage.invitation);
     const summary = { schema: 1, startedAt, endedAt: new Date().toISOString(), reason, status: failure ? 'incomplete' : args.strict ? !complete ? 'incomplete' : strictPass ? 'pass' : 'fail' : 'recorded',
       fullTwoHourObservation: full, samples: count, rawBytes, errors, firstError, bounds, coverage, environment: { maxStealPercent: maxSteal, maxSwapUsedMiB: maxSwap }, segments,
-      limitations: 'Passive local observation; seven-day subjective value, physical delivery, GPU power and other platforms require separate evidence. Diagnostic counters cover finite known queues, not all timers/objects.',
+      limitations: 'Passive local observation; subjective experience, physical delivery, GPU power and other platforms require separate evidence. Diagnostic counters cover finite known queues, not all timers/objects.',
     };
     await writeFile(join(output, 'summary.json'), JSON.stringify(summary, null, 2) + '\n', { flag: 'wx' });
     await event({ type: 'finished', status: summary.status, reason, fullTwoHourObservation: full, samples: count });

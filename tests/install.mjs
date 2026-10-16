@@ -337,6 +337,12 @@ try {
     await page.waitForFunction(mode => document.querySelector('#pet').dataset.companionship === mode, companionship);
     assert.equal(await page.locator('#message').inputValue(), 'M4 installed draft');
   }
+  for (const [field, percent, fraction] of [['npcHome', 20, '0.2'], ['npcRange', 25, '0.25']]) {
+    const input = surface.locator('#coopanion-' + field);
+    await input.fill(String(percent)); await input.press('Enter');
+    await waitProfile(new RegExp(field + ': ' + fraction.replace('.', '[.]')));
+    assert.deepEqual(await page.locator('#message').evaluate(n => [n.value, n.selectionStart, n.selectionEnd, window.m6InstalledFrame === document.querySelector('#body-layer iframe')]), ['M4 installed draft', 2, 7, true]);
+  }
   const p1Summary = await page.evaluate(() => window.dshPetBridge.companionship({ type: 'read', characterId: 'whale' }));
   assert.equal(p1Summary.writable, true); assert.equal(p1Summary.relation.total, 0);
   assert.equal(await surface.getByRole('switch', { name: '本地诊断', exact: true }).getAttribute('aria-checked'), 'false');
@@ -393,6 +399,8 @@ try {
   browser = await chromium.connectOverCDP(`http://127.0.0.1:${port}`);
   const reopened = browser.contexts()[0].pages()[0];
   await reopened.waitForSelector('#pet[data-character=whale]');
+  assert.equal(await surface.locator('#coopanion-npcHome').inputValue(), '20');
+  assert.equal(await surface.locator('#coopanion-npcRange').inputValue(), '25');
   await reopened.waitForFunction(() => getComputedStyle(document.documentElement).getPropertyValue('--size') === '180px');
   await reopened.waitForFunction(() => getComputedStyle(document.documentElement).getPropertyValue('--text-scale') === '1.5');
   await reopened.waitForFunction(() => document.querySelector('#pet').dataset.rhythm !== 'off');

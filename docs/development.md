@@ -49,7 +49,7 @@ npm 使用已配置的 Trusted Publisher；dshmarket 通过社区目录 PR 收�
 
 ## P1 自主陪伴验证
 
-下一轮 [NPC 日常修订](npc-daily-life-plan.md)已完成现有动作／表情／音效／物件评估与[隔离原语检查](evidence/p1/npc-capability-20261016/README.md)，尚未实现。后续先验证键盘活动适配和受控移动的打断，再接入完整日常循环；这些检查与当前候选回归、资源观察分别结算。
+本轮 [NPC 日常修订](npc-daily-life-plan.md)已接入本地源码：macOS 保守键盘适配、workArea 小窝与范围、逐代受控移动及意图恢复。`tests/npc-life.test.js` 验证纯状态／几何／输入适配，`tests/npc-life-native.mjs` 使用隔离 profile 验证原生循环；其中控制时钟与输入枚举，实际身体与 arrived／interrupted 保持真实。物理键盘和监听权限逐平台另验收，原语探针与旧资源结果不能代替本轮行为验证。
 
 `test:inbox-ui` 已包含 P1 真实 API 2 日常、邀请、输入轨迹、成长、热设置和阅读回归；`test:desktop` 额外串行运行真实时间的 P1 原生点击／存档重启验证。`test:install` 在两版宿主中检查新枚举保存和原生 IPC，不要求独立运行。
 

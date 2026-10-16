@@ -1,0 +1,19 @@
+// Only aggregate event age is queried. No event tap, event object, key code or content.
+ObjC.import('Foundation');
+ObjC.bindFunction('CGPreflightListenEventAccess', ['bool', []]);
+ObjC.bindFunction('CGEventSourceSecondsSinceLastEventType', ['double', ['int', 'unsigned int']]);
+var combinedSessionState = 0, keyDown = 10, keyUp = 11;
+function sample() {
+  if (!$.CGPreflightListenEventAccess()) return 'unknown';
+  var age = Math.min($.CGEventSourceSecondsSinceLastEventType(combinedSessionState, keyDown), $.CGEventSourceSecondsSinceLastEventType(combinedSessionState, keyUp));
+  return isFinite(age) && age >= 0 ? (age < 1.5 ? 'active' : 'idle') : 'unknown';
+}
+function run(args) {
+  if (args[0] === '--once') return sample();
+  while (true) {
+    var pool = $.NSAutoreleasePool.alloc.init;
+    $.NSFileHandle.fileHandleWithStandardOutput.writeData($(sample() + '\n').dataUsingEncoding($.NSUTF8StringEncoding));
+    pool.drain;
+    $.NSThread.sleepForTimeInterval(0.5);
+  }
+}

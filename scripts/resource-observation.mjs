@@ -106,3 +106,12 @@ export class ResourceWindow {
     return { ...result, largestGapSeconds: this.maxGap, maxRssMiB: this.maxRss, meanCpuPercentOneCore: this.cpuArea / this.duration, samples: this.count };
   }
 }
+
+/** Coverage follows the renderer contract; legacy routines never stand in for an NPC cycle. */
+export function companionCoverage(renderer, store, phases = []) {
+  const observedPhases = [...new Set(phases.filter(p => ['home', 'prepare', 'outbound', 'observe', 'return', 'yield', 'resume'].includes(p)))].sort();
+  const routines = !!renderer && ['observe', 'play', 'rest'].every(kind => renderer.counts.routines[kind] > 0);
+  const npc = !!renderer?.npc && ['home', 'outbound', 'observe', 'return'].every(p => observedPhases.includes(p));
+  return { kind: renderer?.npc ? 'npc' : 'routines', routines, npc, observedPhases, daily: renderer?.npc ? npc : routines,
+    invitation: !!renderer && renderer.counts.invitationsShown >= 1 && renderer.counts.invitationsShown <= 2 && store?.invitations === renderer.counts.invitationsShown };
+}

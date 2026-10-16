@@ -9,4 +9,4 @@ export interface CompanionState {
 }
 export function initialCompanionship(): CompanionState;
 export function companionWeights(energy: number, interest: number): Record<string, number>;
-export function stepCompanionship(state: CompanionState, input: { mode: unknown; now: number; hour: number; words?: string[]; occupied?: boolean; automatic?: boolean; eligible?: boolean; motionBusy?: boolean; unlocked?: boolean; action?: string }, random?: () => number): { state: CompanionState; release?: boolean; word?: string; hideInvitation?: boolean; showInvitation?: boolean; reserveInvitation?: boolean; completed?: boolean };
+export function stepCompanionship(state: CompanionState, input: { routines?: boolean; mode: unknown; now: number; hour: number; words?: string[]; occupied?: boolean; automatic?: boolean; eligible?: boolean; motionBusy?: boolean; unlocked?: boolean; action?: string }, random?: () => number): { state: CompanionState; release?: boolean; word?: string; hideInvitation?: boolean; showInvitation?: boolean; reserveInvitation?: boolean; completed?: boolean };

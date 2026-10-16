@@ -6,7 +6,7 @@ const { Diagnostics } = require('../dist/diagnostics.cjs');
 const { z } = require('zod');
 const diagnosticCount = z.number().int().min(0).max(1000000000);
 const diagnosticCounts = z.object({ routines: z.object({ observe: diagnosticCount, play: diagnosticCount, rest: diagnosticCount, greeting: diagnosticCount }).strict(), invitationsShown: diagnosticCount, invitationsExpired: diagnosticCount, invitationsAccepted: diagnosticCount, invitationsLater: diagnosticCount, invitationsQuiet: diagnosticCount }).strict();
-const diagnosticRenderer = z.object({ mode: z.enum(['off', 'quiet', 'interactive']), activity: z.enum(['idle', 'observe', 'play', 'rest', 'greeting']), invitation: z.enum(['none', 'pending', 'shown']), mood: z.string().regex(/^[a-z-]{1,24}$/), careUnavailable: z.boolean(), hidden: z.boolean(), hour: z.number().int().min(0).max(23), queues: z.object({ carePending: diagnosticCount, pendingInteractions: diagnosticCount, composerSessions: diagnosticCount, chatTimers: diagnosticCount, snoozing: diagnosticCount, shownResults: diagnosticCount, acknowledgedResults: diagnosticCount }).strict(), counts: diagnosticCounts, heapBytes: z.number().min(0).max(Number.MAX_SAFE_INTEGER), nodes: diagnosticCount }).strict();
+const diagnosticRenderer = z.object({ npc: z.object({ phase: z.enum(['home', 'prepare', 'outbound', 'observe', 'return', 'yield', 'resume']), reason: z.enum(['none', 'disabled', 'input', 'unknown', 'pointer', 'work', 'user', 'lifecycle', 'geometry', 'capability']), keyboard: z.enum(['active', 'idle', 'unknown']), targetValid: z.boolean(), compact: z.boolean() }).strict().optional(), mode: z.enum(['off', 'quiet', 'interactive']), activity: z.enum(['idle', 'observe', 'play', 'rest', 'greeting']), invitation: z.enum(['none', 'pending', 'shown']), mood: z.string().regex(/^[a-z-]{1,24}$/), careUnavailable: z.boolean(), hidden: z.boolean(), hour: z.number().int().min(0).max(23), queues: z.object({ carePending: diagnosticCount, pendingInteractions: diagnosticCount, composerSessions: diagnosticCount, chatTimers: diagnosticCount, snoozing: diagnosticCount, shownResults: diagnosticCount, acknowledgedResults: diagnosticCount }).strict(), counts: diagnosticCounts, heapBytes: z.number().min(0).max(Number.MAX_SAFE_INTEGER), nodes: diagnosticCount }).strict();
 const { randomBytes } = require('node:crypto');
 const { once } = require('node:events');
 const { CompanionStore, companionRequest } = require('../dist/companion-store.cjs');
@@ -32,6 +32,7 @@ if (process.env.DSH_PET_TEST_DEBUG_PORT) {
   app.commandLine.appendSwitch('remote-debugging-port', process.env.DSH_PET_TEST_DEBUG_PORT);
 }
 const displayTest = process.env.DSH_PET_TEST_NO_SANDBOX === '1' && !!process.env.DSH_PET_TEST_DEBUG_PORT;
+const keyboardActivity = require('./keyboard-activity.cjs').createKeyboardActivity();
 let win, tray, options, lastFrame, poll, assetServer, characters, companions, displays, diagnostics, diagnosticRead;
 const configureDiagnostics = () => { if (options?.diagnostics !== true && diagnosticRead) { clearTimeout(diagnosticRead.timer); diagnosticRead.resolve(null); diagnosticRead = undefined; } void diagnostics?.configure(options?.diagnostics === true).catch(() => console.error('Local diagnostics unavailable')); };
 function readRendererDiagnostics() {
@@ -239,8 +240,10 @@ app.whenReady().then(async () => {
   if (desiredVisible) show(); else visibility();
   // Restore input when a click-through window misses movement, without repeatedly
   // overriding the renderer's newer pointer event with a stationary OS cursor.
-  let lastCursor;
+  let lastCursor, keyboardSentAt = -Infinity;
   const pollCursor = () => {
+    keyboardActivity.configure(!!options?.companionship && options.companionship !== 'off' && !!win && !win.isDestroyed() && win.isVisible() && !suspended);
+    if (performance.now() - keyboardSentAt >= 500) { keyboardSentAt = performance.now(); forward({ type: 'keyboard-activity', value: keyboardActivity.sample() }); }
     if (!win || win.isDestroyed() || !win.isVisible()) return;
     const next = displays.cursor();
     if (!next || (next.x === lastCursor?.x && next.y === lastCursor?.y && next.revision === lastCursor?.revision)) return;
@@ -258,5 +261,5 @@ app.whenReady().then(async () => {
   if (process.connected) process.send(failure, () => app.exit(1)); else app.exit(1);
 });
 
-app.on('before-quit', () => { if (userClosed) process.send?.({ type: 'closed' }); clearInterval(poll); if (diagnosticRead) { clearTimeout(diagnosticRead.timer); diagnosticRead.resolve(null); diagnosticRead = undefined; } diagnostics?.release(); void diagnostics?.close(); assetServer?.close(); tray?.destroy(); });
+app.on('before-quit', () => { if (userClosed) process.send?.({ type: 'closed' }); clearInterval(poll); keyboardActivity.configure(false); if (diagnosticRead) { clearTimeout(diagnosticRead.timer); diagnosticRead.resolve(null); diagnosticRead = undefined; } diagnostics?.release(); void diagnostics?.close(); assetServer?.close(); tray?.destroy(); });
 app.on('window-all-closed', () => { userClosed = true; app.quit(); });

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseProcStat, processCpu, summarizeObservation, ResourceWindow } from '../scripts/resource-observation.mjs';
+import { parseProcStat, processCpu, summarizeObservation, ResourceWindow, companionCoverage } from '../scripts/resource-observation.mjs';
 
 describe('external resource evidence', () => {
   it('accepts the frozen 20 MiB boundary only after both full windows complete', () => {
@@ -40,4 +40,13 @@ it('bounds seven-day sampler memory and keeps the largest gap outside retained w
   expect(window.last.length).toBeLessThanOrEqual(8);
   expect(window.finish(604800, { maxGapSeconds: 15 }).status).toBe('incomplete');
   expect(window.finish(604800, { maxGapSeconds: 30 }).meanCpuPercentOneCore).toBeCloseTo(2, 2);
+});
+
+it('separates NPC cycle coverage from legacy routines and cannot accept stationary or cross-contract counters', () => {
+  const renderer = { npc: { keyboard: 'unknown' }, counts: { routines: { observe: 3, play: 3, rest: 3 }, invitationsShown: 1 } }, store = { invitations: 1 };
+  expect(companionCoverage(renderer, store, ['home', 'yield']).daily).toBe(false);
+  expect(companionCoverage(renderer, store, ['home', 'outbound', 'observe', 'return']).daily).toBe(true);
+  expect(companionCoverage({ ...renderer, npc: undefined }, store).daily).toBe(true);
+  expect(companionCoverage(renderer, { invitations: 2 }, ['home', 'outbound', 'observe', 'return']).invitation).toBe(false);
+  expect(companionCoverage(renderer, store, ['private input']).observedPhases).toEqual([]);
 });

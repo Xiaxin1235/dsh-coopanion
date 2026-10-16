@@ -44,6 +44,11 @@ export function sanitizeSnapshot(raw, endpoint) {
       heapBytes: count(renderer.heapBytes), nodes: count(renderer.nodes),
     };
   }
+  if (cleanRenderer && renderer.npc) {
+    const n = renderer.npc;
+    if (!['home', 'prepare', 'outbound', 'observe', 'return', 'yield', 'resume'].includes(n.phase) || !['none', 'disabled', 'input', 'unknown', 'pointer', 'work', 'user', 'lifecycle', 'geometry', 'capability'].includes(n.reason) || !['active', 'idle', 'unknown'].includes(n.keyboard) || typeof n.targetValid !== 'boolean' || typeof n.compact !== 'boolean') throw new Error('Invalid NPC diagnostics');
+    cleanRenderer.npc = { phase: n.phase, reason: n.reason, keyboard: n.keyboard, targetValid: n.targetValid, compact: n.compact };
+  }
   const productDigest = raw.build?.productDigest;
   if (!/^[a-f0-9]{64}$/.test(productDigest) || !(raw.build.commit === null || /^[a-f0-9]{40}$/.test(raw.build.commit)) || ![true, false, null].includes(raw.build.dirty)) throw new Error('Invalid build identity');
   return { schema: 1, instance: raw.instance, session: raw.session, pid: raw.pid, startedAt: raw.startedAt, measuredAt: raw.measuredAt, version: raw.version,

@@ -69,7 +69,7 @@ export function stepCompanionship(state, input, random = Math.random) {
   if (mode === 'interactive' && period === 'day' && eligible && recipe('play', words) && !state.invitation && now >= state.inviteAt) {
     next.invitation = 'pending'; next.inviteAt = now + invitationWait(random); output.reserveInvitation = true; return output;
   }
-  if (state.invitation || now < state.dueAt) return output;
+  if (input.routines === false || state.invitation || now < state.dueAt) return output;
   const weights = companionWeights(next.energy, next.interest);
   const choices = Object.entries(weights).filter(([kind]) => kind === 'wait' || kind !== state.lastKind && (period !== 'night' || kind !== 'play') && recipe(kind, words));
   let target = entropy(random) * choices.reduce((sum, [, weight]) => sum + weight, 0);

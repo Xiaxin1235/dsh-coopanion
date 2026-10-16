@@ -3,10 +3,12 @@ import { once } from 'node:events';
 import { mkdtemp, rm, readFile, mkdir } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
+import { zipSync, strToU8 } from 'fflate';
 import { createRequire } from 'node:module';
 import { before, after, test } from 'node:test';
 import { chromium } from 'playwright-core';
 import { controlCompanionClock, advanceCompanion } from './helpers/companionship.mjs';
+import { controlNpc, npcTick, npcUntil } from './helpers/npc-life.mjs';
 import { recordBodyOrders } from './helpers/daily-rhythm.mjs';
 const require = createRequire(import.meta.url);
 const { CharacterStore } = require('../dist/character-store.cjs'), { CompanionStore } = require('../dist/companion-store.cjs'), { createPetServer } = require('../dist/figure-server.cjs');
@@ -15,18 +17,24 @@ before(async () => { await mkdir('artifacts', { recursive: true }); browser = aw
 after(async () => { await browser?.close(); });
 const session = { id: 'companion-focus', label: 'Companion focus', mood: 'idle', active: false, chatAvailable: true };
 const snapshot = patch => ({ mood: 'idle', active: false, sessionId: session.id, sessions: [session], results: [], ...patch });
-async function fixture(t, mode = 'interactive', vocab) {
+async function fixture(t, mode = 'interactive', vocab, star = false) {
   const directory = await mkdtemp(join(tmpdir(), 'dsh-companion-ui-'));
   let ownerNow = new Date(2026, 9, 15, 12).getTime();
   const store = new CompanionStore(join(directory, 'care'), () => ownerNow);
-  const server = createPetServer({ webRoot: resolve('web'), store: new CharacterStore(join(directory, 'figures'), resolve('web/upstream/whale')), companions: store });
+  const characters = new CharacterStore(join(directory, 'figures'), resolve('web/upstream/whale'));
+  if (star) {
+    const manifest = JSON.parse(await readFile('examples/star/figure.json', 'utf8')); manifest.can = { walk: false };
+    const imported = await characters.import(zipSync({ 'figure.json': strToU8(JSON.stringify(manifest)), 'figure.js': new Uint8Array(await readFile('examples/star/figure.js')) }));
+    await characters.select(imported.importedId);
+  }
+  const server = createPetServer({ webRoot: resolve('web'), store: characters, companions: store });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');
   const page = await browser.newPage({ viewport: { width: 1000, height: 750 } }); page.setDefaultTimeout(10000);
   t.after(async () => { await page.close(); await new Promise(r => server.close(r)); await store.close(); await rm(directory, { recursive: true, force: true }); });
   const errors = []; page.on('pageerror', e => errors.push(e.message)); t.after(() => assert.deepEqual(errors, []));
-  await controlCompanionClock(page);
+  await controlCompanionClock(page); await controlNpc(page);
   if (vocab) await page.route('**/api/characters/load', async route => { const response = await route.fetch(), result = await response.json(); result.value.vocab = result.value.vocab.filter(w => vocab.includes(w.id)); await route.fulfill({ response, json: result }); });
-  await page.addInitScript(() => { window.actions = []; window.dshPetBridge = { subscribe(fn) { window.receive = fn; }, action(a) { window.actions.push(a); }, hit() {} }; });
+  await page.addInitScript(() => { window.actions = []; addEventListener('message', e => { if (e.data?.t === 'frame' && e.data.layout) window.lastNpcLayout = e.data.layout; }); window.dshPetBridge = { subscribe(fn) { window.receive = fn; }, action(a) { window.actions.push(a); }, hit() {} }; });
   await page.goto(`http://127.0.0.1:${server.address().port}`);
   await page.waitForSelector('#pet[data-mode]');
   const receive = msg => page.evaluate(msg => window.receive(msg), msg);
@@ -46,16 +54,39 @@ async function finishActivity(page) {
 }
 async function menu(page) { await page.locator('#pet').dispatchEvent('contextmenu', { button: 2 }); await page.locator('#menu').waitFor(); }
 
-test('real API 2 body runs coherent routines, gives up on tasks, keeps missing vocabulary safe', async t => {
-  const { page, receive, body } = await fixture(t, 'quiet');
-  await tickNext(page); assert.equal(await page.locator('#pet').getAttribute('data-companion-activity'), 'observe'); await finishActivity(page);
-  await tickNext(page); assert.equal(await page.locator('#pet').getAttribute('data-companion-activity'), 'play'); await finishActivity(page);
-  await page.evaluate(() => { window.companionRandom = .7; }); await tickNext(page); assert.equal(await page.locator('#pet').getAttribute('data-companion-activity'), 'rest');
+test('NPC follows real arrival, pauses typing, resumes retained intent and returns home', async t => {
+  const { page, receive, body, configure } = await fixture(t, 'quiet');
+  await npcUntil(page, 'outbound');
+  const original = await page.evaluate(() => ({ id: window.npcState.walkId, target: window.npcState.target }));
+  assert.ok(original.id > 0);
+  await page.evaluate(() => { window.npcKeyboard = 'active'; }); await npcTick(page);
+  assert.equal(await page.evaluate(() => window.npcState.phase), 'yield');
+  assert.equal(await page.evaluate(() => window.npcState.target), original.target);
+  await page.waitForFunction(() => document.querySelector('#pet').dataset.mode !== 'walk');
+  assert.equal(await page.locator('#companion-invitation').isVisible(), false);
+  await page.evaluate(() => { window.npcKeyboard = 'idle'; }); await npcTick(page); await npcTick(page, 5000);
+  assert.equal(await page.evaluate(() => window.npcState.walkId), null);
+  await npcUntil(page, 'outbound');
+  assert.ok(await page.evaluate(id => window.npcState.walkId > id, original.id));
+  assert.equal(await page.evaluate(() => window.npcState.target), original.target);
+  await body.evaluate(({ id, layout }) => parent.postMessage({ t: 'frame', layout, events: [{ kind: 'arrived', detail: { walkId: id } }] }, '*'), { id: original.id, layout: await page.evaluate(() => window.lastNpcLayout) });
+  await page.waitForSelector('#pet[data-mode=walk]');
+  await page.waitForFunction(() => window.npcState.phase === 'observe', null, { timeout: 20000 });
+  assert.ok(await page.evaluate(() => window.npcState.recent.length > 0));
+  await page.screenshot({ path: 'artifacts/npc-life-observe.png' });
+  await npcUntil(page, 'return');
+  await page.waitForFunction(() => window.npcState.phase === 'home', null, { timeout: 20000 });
   await page.waitForSelector('#pet[data-mode=sit]');
+  await page.evaluate(() => { window.npcBodyFrame = document.querySelector('#body-layer iframe'); });
+  await configure({ companionship: 'off' }); await page.waitForFunction(() => document.querySelector('#pet').dataset.mode !== 'sit');
+  assert.equal(await page.evaluate(() => document.querySelector('#body-layer iframe') === window.npcBodyFrame), true);
+  await configure({ companionship: 'quiet' });
+  await npcUntil(page, 'outbound');
+  const target = await page.evaluate(() => window.npcState.target);
   await receive({ type: 'snapshot', snapshot: snapshot({ mood: 'working', active: true, sessions: [{ ...session, mood: 'working', active: true }] }) });
-  await page.waitForFunction(() => window.companionState.active === null); await page.waitForFunction(() => document.querySelector('#pet').dataset.mode !== 'sit');
+  await page.waitForFunction(() => window.npcState.phase === 'yield');
+  assert.equal(await page.evaluate(() => window.npcState.target), target);
   assert.equal(await page.locator('#pet').getAttribute('data-mood'), 'working');
-  assert.ok(await body.evaluate(() => window.rhythmOrders.some(e => e.t === 'do' && e.word === 'determined')));
   assert.deepEqual(await page.evaluate(() => window.actions.filter(a => a.type !== 'presentation')), []);
 });
 
@@ -206,4 +237,49 @@ test('idle rendering is bounded while real elapsed time, work and input keep the
   const work = await sample(); assert.ok(work.ticks.length > 0); if (hasHeadroom) assert.ok(work.ticks.length > idle.ticks.length * 1.3);
   await receive({ type: 'snapshot', snapshot: snapshot() }); await receive({ type: 'ui-control', command: 'chat' }); await page.locator('#message').fill('Keep the input cadence');
   const input = await sample(); assert.ok(input.ticks.length > 0); if (hasHeadroom) assert.ok(input.ticks.length > idle.ticks.length * 1.3);
+});
+
+
+test('unknown input, mouse proximity, lifecycle and limited star keep control and vocabulary safe', async t => {
+  const f = await fixture(t, 'quiet'); const { page, receive, configure } = f;
+  await npcUntil(page, 'outbound');
+  const target = await page.evaluate(() => window.npcState.target);
+  const box = await page.locator('#pet').boundingBox();
+  await page.mouse.move(box.x - 25, box.y + box.height / 2); await npcTick(page);
+  assert.equal(await page.evaluate(() => window.npcState.phase), 'yield');
+  assert.equal(await page.evaluate(() => window.npcState.target), target);
+  await page.mouse.move(0, 0); await page.evaluate(() => { window.npcKeyboard = 'unknown'; }); await npcTick(page);
+  assert.equal(await page.locator('#pet').getAttribute('data-npc-reason'), 'unknown');
+  await page.waitForFunction(w => document.querySelector('#pet').getBoundingClientRect().width < w * .8, box.width);
+  const small = await page.locator('#pet').boundingBox();
+  await page.evaluate(() => { window.npcKeyboard = 'idle'; }); await npcTick(page); await npcTick(page, 5000);
+  assert.ok((await page.locator('#pet').boundingBox()).width < box.width * .8);
+  const runtime = { phase: 'running', visible: false, suspended: false, generation: 1, visibilityRevision: 1 };
+  await receive({ type: 'notification-state', snapshot: { protocol: 1, runtime, interactions: [] } }); await npcTick(page);
+  assert.equal(await page.evaluate(() => window.npcState.reason), 'lifecycle');
+  assert.equal(await page.locator('#npc-home').isVisible(), false);
+  await receive({ type: 'notification-state', snapshot: { protocol: 1, runtime: { ...runtime, visible: true, suspended: true }, interactions: [] } }); await npcTick(page);
+  assert.equal(await page.evaluate(() => window.npcState.reason), 'lifecycle');
+  await configure({ roam: false }); assert.equal(await page.evaluate(() => window.npcState.walkId), null);
+  assert.equal(await page.locator('#npc-home').evaluate(n => getComputedStyle(n).pointerEvents), 'none');
+  const star = await fixture(t, 'quiet', undefined, true);
+  await star.page.waitForSelector('#pet[data-character=paper-star]');
+  for (let i = 0; i < 50; i++) await npcTick(star.page);
+  assert.equal(await star.page.evaluate(() => window.npcEvents.some(e => e.walk)), false);
+  const words = await star.body.evaluate(() => window.rhythmOrders.filter(e => e.t === 'do').map(e => e.word));
+  assert.ok(!words.includes('look') && !words.includes('sit') && !words.includes('dance'), JSON.stringify(words));
+});
+
+
+test('native NPC waits for acknowledged workArea before establishing home', async t => {
+  const { page, receive } = await fixture(t, 'quiet');
+  await page.reload(); await page.waitForSelector('#pet[data-mode]');
+  await page.evaluate(() => { window.dshPetBridge.nativeGeometry = true; });
+  await receive({ type: 'init', baseline: true, options: { companionship: 'quiet', roam: true }, snapshot: snapshot() });
+  for (let i = 0; i < 10; i++) await npcTick(page);
+  assert.equal(await page.evaluate(() => window.npcState.placed), false);
+  assert.equal(await page.evaluate(() => window.npcState.reason), 'geometry');
+  await receive({ type: 'display-changed', revision: 1, displayId: 2, workArea: { x: -1000, y: 0, width: 1000, height: 750 }, contentBounds: { x: -1000, y: 0, width: 1000, height: 750 }, scaleFactor: 2 });
+  await npcUntil(page, 'outbound');
+  assert.ok(await page.evaluate(() => window.npcEvents.some(e => e.place !== undefined && Math.abs(e.place - 850) < 1)));
 });
