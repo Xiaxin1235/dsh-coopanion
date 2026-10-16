@@ -48,4 +48,4 @@ Windows 不用 SSH 的非交互会话或 RDP 作为正向输入验收：通过�
 
 本轮证明 VM 来宾的原生 API、进程、IPC、实际窗口／身体、虚拟键鼠输入及日常退让／恢复。物理设备、跨应用／安全输入的完整矩阵、真实锁屏／休眠／RDP、Wayland compositor、物理多屏／DPI、完整资源预算、长期体验和正式 DSH Host 三平台安装矩阵仍分别待验收。远端 CI 未执行。
 
-汇总见 [summary.json](summary.json)。`SHA256SUMS` 覆盖原始报告、日志和脚本；README 是可追加的索引，不纳入原始清单。
+汇总见 [summary.json](summary.json)。`SHA256SUMS` 覆盖原始报告、日志和脚本；README 是可追加的索引，不纳入原始清单。该目录通过 [.gitattributes](../../../../.gitattributes) 禁止 Git 行尾转换并保留原始输出空白，保证 Windows CRLF 原字节可复核。
