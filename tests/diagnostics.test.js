@@ -101,10 +101,10 @@ it('keeps activity counters fixed-size and clears them when diagnostics are disa
 it('keeps only fixed lifecycle state and counters, including events between reads', async () => fixture(async f => {
   await f.api.configure(true); const [endpoint] = await listDiagnostics(f.registry);
   const snapshot = await readDiagnostics(endpoint);
-  snapshot.value.runtime = { ...snapshot.value.runtime, screenLocked: true, systemAsleep: false,
+  snapshot.value.runtime = { ...snapshot.value.runtime, screenLocked: true, systemAsleep: false, lockStateKnown: true,
     lifecycle: { locks: 2, unlocks: 1, suspends: 1, resumes: 1, text: 'private' } };
   expect(sanitizeSnapshot(snapshot, endpoint).value.runtime).toEqual({ generation: 1, visible: true, suspended: false,
-    screenLocked: true, systemAsleep: false, lifecycle: { locks: 2, unlocks: 1, suspends: 1, resumes: 1 } });
+    screenLocked: true, systemAsleep: false, lockStateKnown: true, lifecycle: { locks: 2, unlocks: 1, suspends: 1, resumes: 1 } });
   snapshot.value.runtime.screenLocked = 'private';
   expect(() => sanitizeSnapshot(snapshot, endpoint)).toThrow('lifecycle');
   snapshot.value.runtime.screenLocked = true; snapshot.value.runtime.lifecycle.resumes = -1;

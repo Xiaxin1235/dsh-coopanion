@@ -36,7 +36,7 @@ try {
   assert.deepEqual(first.value.runtime.lifecycle, { locks: 0, unlocks: 0, suspends: 0, resumes: 0 });
   await app.evaluate(({ powerMonitor }) => { powerMonitor.emit('lock-screen'); powerMonitor.emit('suspend'); });
   assert.deepEqual((await readDiagnostics(endpoint)).value.runtime, { generation: 1, visible: true, suspended: true,
-    screenLocked: true, systemAsleep: true, lifecycle: { locks: 1, unlocks: 0, suspends: 1, resumes: 0 } });
+    screenLocked: true, systemAsleep: true, lockStateKnown: true, lifecycle: { locks: 1, unlocks: 0, suspends: 1, resumes: 0 } });
   await app.evaluate(({ powerMonitor }) => { powerMonitor.emit('resume'); powerMonitor.emit('unlock-screen'); });
   const resumed = (await readDiagnostics(endpoint)).value.runtime;
   assert.equal(resumed.suspended, false); assert.equal(resumed.screenLocked, false); assert.equal(resumed.systemAsleep, false);

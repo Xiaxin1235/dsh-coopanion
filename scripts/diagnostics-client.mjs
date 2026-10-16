@@ -52,7 +52,7 @@ export function sanitizeSnapshot(raw, endpoint) {
     cleanRenderer.npc = { phase: n.phase, reason: n.reason, keyboard: n.keyboard, targetValid: n.targetValid, compact: n.compact, ...(n.keyboardBackend === undefined ? {} : { keyboardBackend: n.keyboardBackend }), ...(n.keyboardStatus === undefined ? {} : { keyboardStatus: n.keyboardStatus }) };
   }
   const runtime = { visible: data.runtime.visible, suspended: data.runtime.suspended, generation: count(data.runtime.generation) };
-  for (const key of ['screenLocked', 'systemAsleep']) {
+  for (const key of ['screenLocked', 'systemAsleep', 'lockStateKnown']) {
     if (data.runtime[key] !== undefined) {
       if (typeof data.runtime[key] !== 'boolean') throw new Error('Invalid lifecycle state');
       runtime[key] = data.runtime[key];

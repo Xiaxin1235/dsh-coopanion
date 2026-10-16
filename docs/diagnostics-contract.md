@@ -10,7 +10,7 @@
 
 本轮增加可选 `npc` 固定字段：phase=home／prepare／outbound／observe／return／yield／resume；reason=none／disabled／input／unknown／pointer／work／user／lifecycle／geometry／capability；keyboard=active／idle／unknown；targetValid 与 compact 为布尔值。不输出具体坐标、目标身份、按键内容或输入历史。另有可选 keyboardBackend=macos／windows／x11／none 和 keyboardStatus=disabled／starting／available／unsupported-platform／unsupported-session／missing-dependency／failed／stale／unavailable／protocol-error；仅说明适配器状态，不代表物理输入验收或已获某项权限。旧采样结果没有这些字段，不能据此推断 NPC 行为。
 
-运行状态保留 screenLocked／systemAsleep 布尔值；启用诊断后用固定 locks／unlocks／suspends／resumes 计数记录系统事件，关闭诊断清零，进程重启另段结算。计数能反映两次读取之间的锁屏／休眠／唤醒，但不提供事件精确发生时间；休眠期间未采到的时间仍记为缺口。旧包缺少这些字段时不推断状态。
+运行状态保留 screenLocked／systemAsleep 和可选 lockStateKnown 布尔值；启动前已经锁屏时先校验系统状态，不能只等待后续锁屏事件。macOS 只读取 CoreGraphics 当前会话的三个固定状态标记，Windows／Linux 使用原生系统空闲状态 API；初始状态未知时保持挂起，收到明确的锁屏／解锁事件后更新已知状态。隔离原生测试显式控制初态，正常安装不采纳测试覆盖值。启用诊断后用固定 locks／unlocks／suspends／resumes 计数记录系统事件，关闭诊断清零，进程重启另段结算。计数能反映两次读取之间的锁屏／休眠／唤醒，但不提供事件精确发生时间；休眠期间未采到的时间仍记为缺口。旧包缺少这些字段时不推断状态。
 
 摘要只含运行可见性／挂起、当前陪伴模式与片段、邀请状态、固定活动计数、有限队列／集合规模、存档修订与规模、Renderer 堆／DOM 数量及包版本／构建摘要。不得包含聊天／草稿正文、会话／互动身份、角色名字、文件内容、提示词或凭证。计数为有限诊断范围，不证明所有对象、定时器或队列。
 

@@ -33,6 +33,7 @@ if (process.env.DSH_PET_TEST_DEBUG_PORT) {
 }
 const displayTest = process.env.DSH_PET_TEST_NO_SANDBOX === '1' && !!process.env.DSH_PET_TEST_DEBUG_PORT;
 const keyboardActivity = require('./keyboard-activity.cjs').createKeyboardActivity();
+const { initialLockState } = require('./lifecycle-state.cjs');
 let win, tray, options, lastFrame, poll, assetServer, characters, companions, displays, diagnostics, diagnosticRead;
 let lifecycle = { locks: 0, unlocks: 0, suspends: 0, resumes: 0 };
 const configureDiagnostics = () => {
@@ -54,9 +55,10 @@ let presentation = {}, lastTrayKey, lastIconKey, iconBase, iconAppearance;
 let interactive = null;
 const generation = Number(process.env.DSH_PET_GENERATION ?? 1);
 let visibilityRevision = 0, screenLocked = process.env.DSH_PET_SCREEN_LOCKED === '1', systemAsleep = process.env.DSH_PET_SYSTEM_ASLEEP === '1';
-let suspended = screenLocked || systemAsleep;
+let lockStateKnown = false;
+let suspended = true;
 let desiredVisible = process.env.DSH_PET_VISIBLE !== '0', userClosed = false;
-function visibility() { if (win && !win.isDestroyed()) { process.send?.({ type: 'visibility', generation, visibilityRevision: ++visibilityRevision, visible: win.isVisible(), desiredVisible, suspended, screenLocked, systemAsleep }); syncTray(); } }
+function visibility() { if (win && !win.isDestroyed()) { process.send?.({ type: 'visibility', generation, visibilityRevision: ++visibilityRevision, visible: win.isVisible(), desiredVisible, suspended, screenLocked, systemAsleep, lockStateKnown }); syncTray(); } }
 function forward(message) { if (win && !win.isDestroyed()) win.webContents.send('pet:update', message); }
 function hit(active) {
   if (!win || win.isDestroyed()) return;
@@ -154,6 +156,15 @@ process.on('disconnect', () => app.quit());
 process.on('SIGTERM', () => app.quit());
 
 app.whenReady().then(async () => {
+  const suspendState = key => { if (options?.diagnostics === true) lifecycle[key] = Math.min(Number.MAX_SAFE_INTEGER, lifecycle[key] + 1); suspended = screenLocked || systemAsleep || !lockStateKnown; visibility(); };
+  powerMonitor.on('suspend', () => { systemAsleep = true; suspendState('suspends'); });
+  powerMonitor.on('resume', () => { systemAsleep = false; suspendState('resumes'); });
+  powerMonitor.on('lock-screen', () => { screenLocked = true; lockStateKnown = true; suspendState('locks'); });
+  powerMonitor.on('unlock-screen', () => { screenLocked = false; lockStateKnown = true; suspendState('unlocks'); });
+  const initialState = initialLockState({ monitor: powerMonitor });
+  lockStateKnown = initialState !== 'unknown';
+  screenLocked ||= initialState === 'locked';
+  suspended = screenLocked || systemAsleep || !lockStateKnown;
   const { chatRequest } = await import('../web/chat-contract.js');
   const webRoot = join(__dirname, '../web');
   characters = new CharacterStore(join(app.getPath('userData'), 'figures-v2'), join(webRoot, 'upstream/whale'));
@@ -163,7 +174,7 @@ app.whenReady().then(async () => {
   const build = JSON.parse(readFileSync(join(__dirname, '../dist/build-info.json'), 'utf8'));
   diagnostics = new Diagnostics({ registry: process.env.DSH_PET_TEST_DIAGNOSTICS_DIR ?? join(homedir(), '.dsh-coopanion', 'diagnostics'),
     profile: app.getPath('userData'), version: manifest.version, build,
-    read: async () => ({ runtime: { generation, visible: !!win && !win.isDestroyed() && win.isVisible(), suspended, screenLocked, systemAsleep, lifecycle: { ...lifecycle } },
+    read: async () => ({ runtime: { generation, visible: !!win && !win.isDestroyed() && win.isVisible(), suspended, screenLocked, systemAsleep, lockStateKnown, lifecycle: { ...lifecycle } },
       store: companions.inspect(), renderer: await readRendererDiagnostics() }),
   });
   configureDiagnostics();
@@ -208,11 +219,6 @@ app.whenReady().then(async () => {
   win.setAlwaysOnTop(true, 'floating');
   win.on('show', visibility); win.on('hide', visibility);
   win.webContents.on('render-process-gone', () => app.exit(1));
-  const suspendState = key => { if (options?.diagnostics === true) lifecycle[key] = Math.min(Number.MAX_SAFE_INTEGER, lifecycle[key] + 1); suspended = screenLocked || systemAsleep; visibility(); };
-  powerMonitor.on('suspend', () => { systemAsleep = true; suspendState('suspends'); });
-  powerMonitor.on('resume', () => { systemAsleep = false; suspendState('resumes'); });
-  powerMonitor.on('lock-screen', () => { screenLocked = true; suspendState('locks'); });
-  powerMonitor.on('unlock-screen', () => { screenLocked = false; suspendState('unlocks'); });
   win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
   if (process.platform === 'darwin') app.dock?.hide();
   win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
