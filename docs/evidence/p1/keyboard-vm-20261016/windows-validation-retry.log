@@ -1,0 +1,90 @@
+
+[1m[46m RUN [49m[22m [36mv3.2.7 [39m[90mC:/coop-keyboard/candidate/package[39m
+
+ [32m✓[39m tests/figures.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 3164[2mms[22m[39m
+   [33m[2m✓[22m[39m serves the frame with an opaque-origin CSP, rejects cross-origin mutations and offers matching source [33m 3041[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m6 passed[39m[22m[90m (6)[39m
+[2m   Start at [22m 17:22:51
+[2m   Duration [22m 3.61s[2m (transform 93ms, setup 0ms, collect 226ms, tests 3.16s, environment 0ms, prepare 80ms)[22m
+
+
+> @takboo/dsh-coopanion@0.4.10 test
+> vitest run && node --test tests/release-checks.mjs tests/client-build.mjs && node --test tests/locale-client.mjs
+
+
+[1m[46m RUN [49m[22m [36mv3.2.7 [39m[90mC:/coop-keyboard/candidate/package[39m
+
+ [32m✓[39m tests/companion-store.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 482[2mms[22m[39m
+   [33m[2m✓[22m[39m persistent companion relationships and profile budgets[2m > [22mbounds the ledger, validates wire input, and recovers a dead writer [33m 314[2mms[22m[39m
+ [32m✓[39m tests/notification-integration.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 694[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps the original question answerer usable when reminder tracking reaches capacity [33m 457[2mms[22m[39m
+ [32m✓[39m tests/plugin.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 269[2mms[22m[39m
+ [32m✓[39m tests/companionship.test.js [2m([22m[2m9 tests[22m[2m)[22m[32m 203[2mms[22m[39m
+ [32m✓[39m tests/locale-sync.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 197[2mms[22m[39m
+ [32m✓[39m tests/daily-rhythm.test.js [2m([22m[2m22 tests[22m[2m)[22m[32m 114[2mms[22m[39m
+ [32m✓[39m tests/chat.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 112[2mms[22m[39m
+ [32m✓[39m tests/figures.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 1992[2mms[22m[39m
+   [33m[2m✓[22m[39m serves the frame with an opaque-origin CSP, rejects cross-origin mutations and offers matching source [33m 1850[2mms[22m[39m
+ [32m✓[39m tests/diagnostics.test.js [2m([22m[2m5 tests[22m[2m)[22m[32m 75[2mms[22m[39m
+ [32m✓[39m tests/companion-http.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 72[2mms[22m[39m
+ [32m✓[39m tests/session-recovery.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 52[2mms[22m[39m
+ [32m✓[39m tests/keyboard-activity.test.js [2m([22m[2m8 tests[22m[2m)[22m[32m 19[2mms[22m[39m
+ [32m✓[39m tests/notification-client.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 38[2mms[22m[39m
+ [32m✓[39m tests/controls.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+ [32m✓[39m tests/notification-broker.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+ [32m✓[39m tests/completion.test.ts [2m([22m[2m17 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+ [32m✓[39m tests/resource-observation.test.js [2m([22m[2m7 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m tests/model.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+ [32m✓[39m tests/notification-contract.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m tests/presentation.test.js [2m([22m[2m11 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m tests/npc-life.test.js [2m([22m[2m8 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m tests/display-geometry.test.js [2m([22m[2m6 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/companion-touch.test.js [2m([22m[2m2 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/companion-client.test.js [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/render-cadence.test.js [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/text-scale.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+ [2m[90m↓[39m[22m tests/bridge.test.ts [2m([22m[2m8 tests[22m[2m | [22m[33m8 skipped[39m[2m)[22m
+
+[2m Test Files [22m [1m[32m26 passed[39m[22m[2m | [22m[33m1 skipped[39m[90m (27)[39m
+[2m      Tests [22m [1m[32m222 passed[39m[22m[2m | [22m[33m8 skipped[39m[90m (230)[39m
+[2m   Start at [22m 17:22:56
+[2m   Duration [22m 4.96s[2m (transform 558ms, setup 0ms, collect 4.86s, tests 4.46s, environment 4ms, prepare 1.82s)[22m
+
+✔ activates the built Client factory using only DSH public peers and React seeds (1393.0875ms)
+✔ verifies a real stable tag and exports its immutable commit (1367.4785ms)
+✔ rejects a prerelease tag instead of publishing it to latest (408.9956ms)
+✔ rejects a tag whose package version differs (589.1313ms)
+✔ rejects a release outside main ancestry (714.4836ms)
+✔ rejects a tag moved after candidate verification (529.2069ms)
+✔ rejects shrinkwrap metadata and missing release notes (1216.5894ms)
+✔ release notes contain only the target version and reject duplicates (1.1876ms)
+✔ npm preflight distinguishes unused, identical, conflicting and unavailable versions (20.447ms)
+✔ post-publish verification waits for the registry to expose identical bytes (5.6252ms)
+✔ post-publish verification has a deadline and fails immediately on conflicts or registry errors (0.9115ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4933.6274
+✔ the real Client factory synchronizes resolved Harness locale without workspace or notifications (187.2253ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 254.9095
+{
+  "schema": 1,
+  "commit": "555503ef54e1375b084a6bc34d9472e9726658be",
+  "dirty": false,
+  "productDigest": "0fce0e1dda0c36f58307d037fd0b8d7fed6582cfc50d6731b320fcf249cd336a"
+}
+
+{"Caption":"Microsoft Windows 11 Pro","Version":"10.0.26300","OSArchitecture":"64-bit"}

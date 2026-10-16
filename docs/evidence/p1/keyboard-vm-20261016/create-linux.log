@@ -1,0 +1,14 @@
+creating a clone of VM 9400 with ID 303
+create full clone of drive ide2 (local-lvm:vm-9400-cloudinit)
+  Logical volume "vm-303-cloudinit" created.
+  Logical volume pve/vm-303-cloudinit changed.
+allocated target volume 'local-lvm:vm-303-cloudinit'
+create linked clone of drive scsi0 (local-lvm:base-9400-disk-0)
+  Logical volume "vm-303-disk-0" created.
+  Logical volume pve/vm-303-disk-0 changed.
+update VM 303: -description Ubuntu test VM from JAM 9400; ubuntu with injected owner SSH key; pcwan DHCP; linked clone depends on template base disk. -onboot 0 -sshkeys ssh-ed25519%20AAAAC3NzaC1lZDI1NTE5AAAAIJcoH3a6monV2lOH2KoFUhsbcMzfffBGmf6ydR66z1WE%20pve%40proxmox.com%0A -tags ubuntu24;test-vm
+generating cloud-init ISO
+update VM 303: -cores 2 -memory 4096 -vga std
+generating cloud-init ISO
+Created JAM VM 303 (coop-linux-test). Login: ubuntu; DHCP on pcwan.
+Get its address and host public key through Guest Agent before setting up strict SSH trust.

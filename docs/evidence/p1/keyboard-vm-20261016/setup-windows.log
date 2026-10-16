@@ -1,0 +1,92 @@
+
+added 1 package in 11s
+npm notice
+npm notice New major version of npm available! 11.19.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+v24.21.0
+11.19.1
+
+added 171 packages in 19s
+
+> @takboo/dsh-coopanion@0.4.10 setup:electron
+> node node_modules/electron/install.js
+
+
+> @takboo/dsh-coopanion@0.4.10 typecheck
+> tsc --noEmit && tsc --noEmit -p tsconfig.client.json
+
+
+> @takboo/dsh-coopanion@0.4.10 test
+> vitest run && node --test tests/release-checks.mjs tests/client-build.mjs && node --test tests/locale-client.mjs
+
+
+[1m[46m RUN [49m[22m [36mv3.2.7 [39m[90mC:/coop-keyboard/candidate/package[39m
+
+ [32m✓[39m tests/model.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+ [32m✓[39m tests/notification-broker.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m tests/controls.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+ [32m✓[39m tests/plugin.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 277[2mms[22m[39m
+ [32m✓[39m tests/notification-client.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 36[2mms[22m[39m
+ [2m[90m↓[39m[22m tests/bridge.test.ts [2m([22m[2m8 tests[22m[2m | [22m[33m8 skipped[39m[2m)[22m
+ [32m✓[39m tests/notification-integration.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 559[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps the original question answerer usable when reminder tracking reaches capacity [33m 391[2mms[22m[39m
+ [32m✓[39m tests/completion.test.ts [2m([22m[2m17 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+ [32m✓[39m tests/presentation.test.js [2m([22m[2m11 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m tests/keyboard-activity.test.js [2m([22m[2m8 tests[22m[2m)[22m[32m 27[2mms[22m[39m
+ [32m✓[39m tests/session-recovery.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 53[2mms[22m[39m
+ [32m✓[39m tests/npc-life.test.js [2m([22m[2m8 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m tests/diagnostics.test.js [2m([22m[2m5 tests[22m[2m)[22m[32m 73[2mms[22m[39m
+ [32m✓[39m tests/daily-rhythm.test.js [2m([22m[2m22 tests[22m[2m)[22m[32m 114[2mms[22m[39m
+ [32m✓[39m tests/chat.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 110[2mms[22m[39m
+ [32m✓[39m tests/companion-store.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 695[2mms[22m[39m
+   [33m[2m✓[22m[39m persistent companion relationships and profile budgets[2m > [22mbounds the ledger, validates wire input, and recovers a dead writer [33m 572[2mms[22m[39m
+ [32m✓[39m tests/notification-contract.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m tests/display-geometry.test.js [2m([22m[2m6 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/companionship.test.js [2m([22m[2m9 tests[22m[2m)[22m[32m 233[2mms[22m[39m
+ [32m✓[39m tests/resource-observation.test.js [2m([22m[2m7 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m tests/locale-sync.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 186[2mms[22m[39m
+ [32m✓[39m tests/companion-http.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 59[2mms[22m[39m
+ [32m✓[39m tests/companion-client.test.js [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/companion-touch.test.js [2m([22m[2m2 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/render-cadence.test.js [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/text-scale.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+ [31m❯[39m tests/figures.test.ts [2m([22m[2m6 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 5169[2mms[22m[39m
+   [32m✓[39m upstream API 2 packs[2m > [22mloads the native whale, its eight dress presets and full motion vocabulary[32m 11[2mms[22m[39m
+   [32m✓[39m upstream API 2 packs[2m > [22mimports wrapped folders, retains executable modules without executing them, and saves outfits across restarts[32m 69[2mms[22m[39m
+   [32m✓[39m upstream API 2 packs[2m > [22mrejects legacy packs, traversal, reserved ids, unsupported APIs and oversized entries before installing[32m 32[2mms[22m[39m
+   [32m✓[39m upstream API 2 packs[2m > [22mkeeps an installed revision when an update has a missing model or entry[32m 34[2mms[22m[39m
+[31m   [31m×[31m serves the frame with an opaque-origin CSP, rejects cross-origin mutations and offers matching source[39m[33m 5005[2mms[22m[39m
+[31m     → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".[39m
+   [32m✓[39m bounds untrusted hit areas and only accepts touch events following real input[32m 17[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/figures.test.ts[2m > [22mserves the frame with an opaque-origin CSP, rejects cross-origin mutations and offers matching source
+[31m[1mError[22m: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".[39m
+[36m [2m❯[22m tests/figures.test.ts:[2m70:1[22m[39m
+    [90m 68| [39m})[33m;[39m
+    [90m 69| [39m
+    [90m 70| [39mit('serves the frame with an opaque-origin CSP, rejects cross-origin m…
+    [90m   | [39m[31m^[39m
+    [90m 71| [39m  [35mawait[39m store[33m.[39m[35mimport[39m([34marchive[39m())[33m;[39m
+    [90m 72| [39m  const server = createPetServer({ webRoot: resolve('web'), store, pre…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m25 passed[39m[22m[2m | [22m[33m1 skipped[39m[90m (27)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m221 passed[39m[22m[2m | [22m[33m8 skipped[39m[90m (230)[39m
+[2m   Start at [22m 17:21:24
+[2m   Duration [22m 7.95s[2m (transform 3.37s, setup 0ms, collect 5.52s, tests 7.73s, environment 4ms, prepare 1.86s)[22m
+
+#< CLIXML
+<Objs Version="1.1.0.1" xmlns="http://schemas.microsoft.com/powershell/2004/04"><S S="Error">Windows tests failed_x000D__x000A_</S><S S="Error">At line:27 char:28_x000D__x000A_</S><S S="Error">+ if ($LASTEXITCODE -ne 0) { throw 'Windows tests failed' }_x000D__x000A_</S><S S="Error">+                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~_x000D__x000A_</S><S S="Error">    + CategoryInfo          : OperationStopped: (Windows tests failed:String) [], RuntimeException_x000D__x000A_</S><S S="Error">    + FullyQualifiedErrorId : Windows tests failed_x000D__x000A_</S><S S="Error"> _x000D__x000A_</S></Objs>Traceback (most recent call last):
+  File "/Users/jam/Documents/codespace/personal-projects/dsh-coopanion/.cache/p1-keyboard-vm-20261016/win-command.py", line 6, in <module>
+    subprocess.run(['ssh','-F',str(root/'ssh_config'),'coop-win-304',command],check=True)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 528, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['ssh', '-F', '/Users/jam/Documents/codespace/personal-projects/dsh-coopanion/.cache/p1-keyboard-vm-20261016/ssh_config', 'coop-win-304', 'powershell.exe -NoLogo -NoProfile -NonInteractive -EncodedCommand JABFAHIAcgBvAHIAQQBjAHQAaQBvAG4AUAByAGUAZgBlAHIAZQBuAGMAZQA9ACcAUwB0AG8AcAAnAAoAJABQAHIAbwBnAHIAZQBzAHMAUAByAGUAZgBlAHIAZQBuAGMAZQA9ACcAUwBpAGwAZQBuAHQAbAB5AEMAbwBuAHQAaQBuAHUAZQAnAAoAJAByAG8AbwB0AD0AJwBDADoAXABjAG8AbwBwAC0AawBlAHkAYgBvAGEAcgBkACcACgBpAGYAIAAoACgARwBlAHQALQBGAGkAbABlAEgAYQBzAGgAIAAiACQAcgBvAG8AdABcAGMAYQBuAGQAaQBkAGEAdABlAC4AdABnAHoAIgAgAC0AQQBsAGcAbwByAGkAdABoAG0AIABTAEgAQQAyADUANgApAC4ASABhAHMAaAAuAFQAbwBMAG8AdwBlAHIAKAApACAALQBuAGUAIAAnAGYANAA1ADkAYQA3AGMAOAA3ADEANQBiAGYAOAA5ADIAZAA5AGIAMAA2ADQAOQA1ADIAMQBiAGMAMgA2AGEAOQBkADIAOQBiAGUAZgBkAGQAYwAwADkAOQA1ADAAZAA4ADkAMwAxADkAZAA0ADMAZQAwAGYAYwA0ADgAZAAzADQAJwApACAAewAgAHQAaAByAG8AdwAgACcAQwBhAG4AZABpAGQAYQB0AGUAIABjAGgAZQBjAGsAcwB1AG0AIABtAGkAcwBtAGEAdABjAGgAJwAgAH0ACgBpAGYAIAAoACgARwBlAHQALQBGAGkAbABlAEgAYQBzAGgAIAAiACQAcgBvAG8AdABcAG4AbwBkAGUALQB3AGkAbgAuAHoAaQBwACIAIAAtAEEAbABnAG8AcgBpAHQAaABtACAAUwBIAEEAMgA1ADYAKQAuAEgAYQBzAGgALgBUAG8ATABvAHcAZQByACgAKQAgAC0AbgBlACAAJwAxADUAOABmADcANgA4ADUAYgA0ADQAZABlADUAMQBmADYAYwAwAGQAZgAxAGQAMQA1ADMANQAyADYAYwBiAGMAZAAzAGUAMQBiAGMANwAzADkAYQA4AGQAZgBjADYAMAA3ADcAMgAxAGMAZQBmADcANQBkAGUAOQBlADUANAAxACcAKQAgAHsAIAB0AGgAcgBvAHcAIAAnAE4AbwBkAGUAIABjAGgAZQBjAGsAcwB1AG0AIABtAGkAcwBtAGEAdABjAGgAJwAgAH0ACgBOAGUAdwAtAEkAdABlAG0AIAAtAEkAdABlAG0AVAB5AHAAZQAgAEQAaQByAGUAYwB0AG8AcgB5ACAALQBGAG8AcgBjAGUAIAAiACQAcgBvAG8AdABcAHQAbwBvAGwAYwBoAGEAaQBuACIALAAiACQAcgBvAG8AdABcAGMAYQBuAGQAaQBkAGEAdABlACIAIAB8ACAATwB1AHQALQBOAHUAbABsAAoARQB4AHAAYQBuAGQALQBBAHIAYwBoAGkAdgBlACAALQBQAGEAdABoACAAIgAkAHIAbwBvAHQAXABuAG8AZABlAC0AdwBpAG4ALgB6AGkAcAAiACAALQBEAGUAcwB0AGkAbgBhAHQAaQBvAG4AUABhAHQAaAAgACIAJAByAG8AbwB0AFwAdABvAG8AbABjAGgAYQBpAG4AIgAgAC0ARgBvAHIAYwBlAAoAJgAgAHQAYQByAC4AZQB4AGUAIAAtAHgAegBmACAAIgAkAHIAbwBvAHQAXABjAGEAbgBkAGkAZABhAHQAZQAuAHQAZwB6ACIAIAAtAEMAIAAiACQAcgBvAG8AdABcAGMAYQBuAGQAaQBkAGEAdABlACIACgBpAGYAIAAoACQATABBAFMAVABFAFgASQBUAEMATwBEAEUAIAAtAG4AZQAgADAAKQAgAHsAIAB0AGgAcgBvAHcAIAAnAEMAYQBuAGQAaQBkAGEAdABlACAAZQB4AHQAcgBhAGMAdABpAG8AbgAgAGYAYQBpAGwAZQBkACcAIAB9AAoAJABuAG8AZABlAD0AIgAkAHIAbwBvAHQAXAB0AG8AbwBsAGMAaABhAGkAbgBcAG4AbwBkAGUALQB2ADIANAAuADIAMQAuADAALQB3AGkAbgAtAHgANgA0AFwAbgBvAGQAZQAuAGUAeABlACIACgAkAGUAbgB2ADoAUABBAFQASAA9ACIAJAByAG8AbwB0AFwAdABvAG8AbABjAGgAYQBpAG4AXABuAG8AZABlAC0AdgAyADQALgAyADEALgAwAC0AdwBpAG4ALQB4ADYANAA7ACQAZQBuAHYAOgBQAEEAVABIACIACgAkAGUAbgB2ADoAbgBwAG0AXwBjAG8AbgBmAGkAZwBfAGMAYQBjAGgAZQA9ACIAJAByAG8AbwB0AFwAbgBwAG0ALQBjAGEAYwBoAGUAIgAKACQAZQBuAHYAOgBFAEwARQBDAFQAUgBPAE4AXwBDAEEAQwBIAEUAPQAiACQAcgBvAG8AdABcAGUAbABlAGMAdAByAG8AbgAtAGMAYQBjAGgAZQAiAAoAJgAgACQAbgBvAGQAZQAgACIAJAByAG8AbwB0AFwAdABvAG8AbABjAGgAYQBpAG4AXABuAG8AZABlAC0AdgAyADQALgAyADEALgAwAC0AdwBpAG4ALQB4ADYANABcAG4AbwBkAGUAXwBtAG8AZAB1AGwAZQBzAFwAbgBwAG0AXABiAGkAbgBcAG4AcABtAC0AYwBsAGkALgBqAHMAIgAgAGkAbgBzAHQAYQBsAGwAIAAtAC0AcAByAGUAZgBpAHgAIAAiACQAcgBvAG8AdABcAHQAbwBvAGwAYwBoAGEAaQBuAFwAbgBwAG0AIgAgAC0ALQBpAGcAbgBvAHIAZQAtAHMAYwByAGkAcAB0AHMAIAAtAC0AbgBvAC0AYQB1AGQAaQB0ACAALQAtAG4AbwAtAGYAdQBuAGQAIABuAHAAbQBAADEAMQAuADEAOQAuADEACgBpAGYAIAAoACQATABBAFMAVABFAFgASQBUAEMATwBEAEUAIAAtAG4AZQAgADAAKQAgAHsAIAB0AGgAcgBvAHcAIAAnAFAAaQBuAG4AZQBkACAAbgBwAG0AIABzAGUAdAB1AHAAIABmAGEAaQBsAGUAZAAnACAAfQAKACQAbgBwAG0APQAiACQAcgBvAG8AdABcAHQAbwBvAGwAYwBoAGEAaQBuAFwAbgBwAG0AXABuAG8AZABlAF8AbQBvAGQAdQBsAGUAcwBcAG4AcABtAFwAYgBpAG4AXABuAHAAbQAtAGMAbABpAC4AagBzACIACgAmACAAJABuAG8AZABlACAALQAtAHYAZQByAHMAaQBvAG4ACgAmACAAJABuAG8AZABlACAAJABuAHAAbQAgAC0ALQB2AGUAcgBzAGkAbwBuAAoAUwBlAHQALQBMAG8AYwBhAHQAaQBvAG4AIAAiACQAcgBvAG8AdABcAGMAYQBuAGQAaQBkAGEAdABlAFwAcABhAGMAawBhAGcAZQAiAAoAJgAgACQAbgBvAGQAZQAgACQAbgBwAG0AIABjAGkAIAAtAC0AaQBnAG4AbwByAGUALQBzAGMAcgBpAHAAdABzACAALQAtAG4AbwAtAGEAdQBkAGkAdAAgAC0ALQBuAG8ALQBmAHUAbgBkAAoAaQBmACAAKAAkAEwAQQBTAFQARQBYAEkAVABDAE8ARABFACAALQBuAGUAIAAwACkAIAB7ACAAdABoAHIAbwB3ACAAJwBEAGUAcABlAG4AZABlAG4AYwB5ACAAaQBuAHMAdABhAGwAbABhAHQAaQBvAG4AIABmAGEAaQBsAGUAZAAnACAAfQAKACYAIAAkAG4AbwBkAGUAIAAkAG4AcABtACAAcgB1AG4AIABzAGUAdAB1AHAAOgBlAGwAZQBjAHQAcgBvAG4ACgBpAGYAIAAoACQATABBAFMAVABFAFgASQBUAEMATwBEAEUAIAAtAG4AZQAgADAAKQAgAHsAIAB0AGgAcgBvAHcAIAAnAEUAbABlAGMAdAByAG8AbgAgAHMAZQB0AHUAcAAgAGYAYQBpAGwAZQBkACcAIAB9AAoAJgAgACQAbgBvAGQAZQAgACQAbgBwAG0AIAByAHUAbgAgAHQAeQBwAGUAYwBoAGUAYwBrAAoAaQBmACAAKAAkAEwAQQBTAFQARQBYAEkAVABDAE8ARABFACAALQBuAGUAIAAwACkAIAB7ACAAdABoAHIAbwB3ACAAJwBXAGkAbgBkAG8AdwBzACAAdAB5AHAAZQBjAGgAZQBjAGsAIABmAGEAaQBsAGUAZAAnACAAfQAKACYAIAAkAG4AbwBkAGUAIAAkAG4AcABtACAAdABlAHMAdAAKAGkAZgAgACgAJABMAEEAUwBUAEUAWABJAFQAQwBPAEQARQAgAC0AbgBlACAAMAApACAAewAgAHQAaAByAG8AdwAgACcAVwBpAG4AZABvAHcAcwAgAHQAZQBzAHQAcwAgAGYAYQBpAGwAZQBkACcAIAB9AAoAIwAgAE4AbwBkAGUAIABjAGgAZQBjAGsAcwAgAHIAZQBiAHUAaQBsAGQAIABkAGkAcwB0AC4AIABSAGUAcwB0AG8AcgBlACAAdABoAGUAIABlAHgAYQBjAHQAIABvAHIAaQBnAGkAbgBhAGwAIABwAGEAYwBrAGEAZwBlACAAbwB1AHQAcAB1AHQAcwAgAGIAZQBmAG8AcgBlACAAbgBhAHQAaQB2AGUAIABhAGMAYwBlAHAAdABhAG4AYwBlAC4ACgBSAGUAbQBvAHYAZQAtAEkAdABlAG0AIAAiACQAcgBvAG8AdABcAGMAYQBuAGQAaQBkAGEAdABlAFwAcABhAGMAawBhAGcAZQBcAGQAaQBzAHQAIgAgAC0AUgBlAGMAdQByAHMAZQAgAC0ARgBvAHIAYwBlAAoAJgAgAHQAYQByAC4AZQB4AGUAIAAtAHgAegBmACAAIgAkAHIAbwBvAHQAXABjAGEAbgBkAGkAZABhAHQAZQAuAHQAZwB6ACIAIAAtAEMAIAAiACQAcgBvAG8AdABcAGMAYQBuAGQAaQBkAGEAdABlACIAIABwAGEAYwBrAGEAZwBlAC8AZABpAHMAdAAgAHAAYQBjAGsAYQBnAGUALwB3AGUAYgAvAG0AYQByAGsAZABvAHcAbgAtAHIAdQBuAHQAaQBtAGUALgBqAHMACgBpAGYAIAAoACQATABBAFMAVABFAFgASQBUAEMATwBEAEUAIAAtAG4AZQAgADAAKQAgAHsAIAB0AGgAcgBvAHcAIAAnAE8AcgBpAGcAaQBuAGEAbAAgAHAAYQBjAGsAYQBnAGUAIABvAHUAdABwAHUAdAAgAHIAZQBzAHQAbwByAGEAdABpAG8AbgAgAGYAYQBpAGwAZQBkACcAIAB9AAoARwBlAHQALQBDAG8AbgB0AGUAbgB0ACAALQBSAGEAdwAgACIAJAByAG8AbwB0AFwAYwBhAG4AZABpAGQAYQB0AGUAXABwAGEAYwBrAGEAZwBlAFwAZABpAHMAdABcAGIAdQBpAGwAZAAtAGkAbgBmAG8ALgBqAHMAbwBuACIACgBbAHAAcwBjAHUAcwB0AG8AbQBvAGIAagBlAGMAdABdAEAAewBDAG8AbQBwAHUAdABlAHIATgBhAG0AZQA9ACQAZQBuAHYAOgBDAE8ATQBQAFUAVABFAFIATgBBAE0ARQA7AE8AUwA9ACgARwBlAHQALQBDAGkAbQBJAG4AcwB0AGEAbgBjAGUAIABXAGkAbgAzADIAXwBPAHAAZQByAGEAdABpAG4AZwBTAHkAcwB0AGUAbQApAC4AQwBhAHAAdABpAG8AbgA7AFYAZQByAHMAaQBvAG4APQAoAEcAZQB0AC0AQwBpAG0ASQBuAHMAdABhAG4AYwBlACAAVwBpAG4AMwAyAF8ATwBwAGUAcgBhAHQAaQBuAGcAUwB5AHMAdABlAG0AKQAuAFYAZQByAHMAaQBvAG4AOwBDAG8AbgBzAG8AbABlAFUAcwBlAHIAPQAoAEcAZQB0AC0AQwBpAG0ASQBuAHMAdABhAG4AYwBlACAAVwBpAG4AMwAyAF8AQwBvAG0AcAB1AHQAZQByAFMAeQBzAHQAZQBtACkALgBVAHMAZQByAE4AYQBtAGUAOwBBAGQAbQBpAG4APQAkACgAWwBTAGUAYwB1AHIAaQB0AHkALgBQAHIAaQBuAGMAaQBwAGEAbAAuAFcAaQBuAGQAbwB3AHMAUAByAGkAbgBjAGkAcABhAGwAXQBbAFMAZQBjAHUAcgBpAHQAeQAuAFAAcgBpAG4AYwBpAHAAYQBsAC4AVwBpAG4AZABvAHcAcwBJAGQAZQBuAHQAaQB0AHkAXQA6ADoARwBlAHQAQwB1AHIAcgBlAG4AdAAoACkAKQAuAEkAcwBJAG4AUgBvAGwAZQAoAFsAUwBlAGMAdQByAGkAdAB5AC4AUAByAGkAbgBjAGkAcABhAGwALgBXAGkAbgBkAG8AdwBzAEIAdQBpAGwAdABJAG4AUgBvAGwAZQBdADoAOgBBAGQAbQBpAG4AaQBzAHQAcgBhAHQAbwByACkAfQAgAHwAIABDAG8AbgB2AGUAcgB0AFQAbwAtAEoAcwBvAG4AIAAtAEMAbwBtAHAAcgBlAHMAcwAKAA==']' returned non-zero exit status 1.
