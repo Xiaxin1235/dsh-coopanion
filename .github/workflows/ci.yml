@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        mode: [factory, uncapped, shell-only]
+        mode: [exact, stderr-pipe, factory, uncapped]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
