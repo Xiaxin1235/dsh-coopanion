@@ -1,0 +1,54 @@
+{
+  "date": "2026-10-16",
+  "timezone": "Asia/Shanghai",
+  "sourceCommit": "555503ef54e1375b084a6bc34d9472e9726658be",
+  "packageSha256": "f459a7c8715bf892d9b0649521bc26a9d29befddc09950d89319d43e0fc48d34",
+  "productDigest": "0fce0e1dda0c36f58307d037fd0b8d7fed6582cfc50d6731b320fcf249cd336a",
+  "linux": {
+    "vmid": 303,
+    "system": "Ubuntu 24.04.5 LTS / Xorg",
+    "backend": "x11",
+    "typecheck": true,
+    "vitestPassed": 230,
+    "vitestSkipped": 0,
+    "nodeChecksPassed": 12,
+    "canonicalPackageQmpInputAndNpc": true,
+    "settledMouse": {
+      "active": 0,
+      "idle": 64,
+      "unknown": 0
+    }
+  },
+  "windows": {
+    "vmid": 304,
+    "system": "Windows 11 Pro 10.0.26300 / local console",
+    "backend": "windows",
+    "typecheck": true,
+    "vitestPassed": 222,
+    "vitestSkipped": 8,
+    "nodeChecksPassed": 12,
+    "initialTimeout": "figures source export test exceeded default 5000ms; targeted and complete unchanged retries passed",
+    "canonicalPackageQmpInputAndNpc": true,
+    "settledMouse": {
+      "active": 0,
+      "idle": 63,
+      "unknown": 0
+    },
+    "consoleCredentialCleared": true
+  },
+  "temporaryVmsRemoved": true,
+  "oldVmStatuses": {
+    "300": "status: running",
+    "302": "status: running",
+    "9300": "status: stopped",
+    "9400": "status: stopped"
+  },
+  "limits": [
+    "VM keyboard and mouse injected via QMP, not physical hardware",
+    "No new release, push, daily installation or old sampler changes",
+    "No remote CI or formal DSH Host installation matrix on these guests",
+    "No physical devices, real lock/sleep/RDP, Wayland compositor or resource budget acceptance",
+    "DHCP lease read via existing router alias failed; gateway configuration unchanged, VM configurations and disks verified removed",
+    "Native harness used --no-sandbox and test profiles; production OS sandbox acceptance pending"
+  ]
+}

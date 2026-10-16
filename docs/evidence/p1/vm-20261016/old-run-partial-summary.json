@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "sourceCommit": "d17029d59de7d8f4e17b092f0cb2d7b50ee3ebc0",
+  "archiveSha256": "8337f876c2b3af8ee05cf40e67ecc3e71c0fed0d45da515c327cbf6dbc7edc6c",
+  "startedAt": "2026-10-16T04:36:59.325Z",
+  "endedAt": "2026-10-16T05:23:09.382Z",
+  "status": "incomplete",
+  "fullTwoHourObservation": false,
+  "resource": {
+    "status": "incomplete",
+    "durationSeconds": 2770.0373127410003,
+    "requestedSeconds": 7200,
+    "windowSeconds": 1800,
+    "largestGapSeconds": 5.033104966999999,
+    "firstWindow": {
+      "mean": 813.528670531425,
+      "coveredSeconds": 1799.9999999999998
+    },
+    "lastWindow": {
+      "mean": null,
+      "coveredSeconds": 0
+    },
+    "rssDeltaMiB": null,
+    "rssBudgetMiB": 20,
+    "meanCpuPercentOneCore": 51.41194284458202,
+    "maxRssMiB": 836.51171875,
+    "scope": "RSS stability only; queues, archive bounds, rendering coverage and environment require separate checks"
+  },
+  "bounds": {
+    "archive": true,
+    "requestsDrained": true,
+    "requestFailures": 0,
+    "maxPendingRequests": 1,
+    "pageErrorCount": 0,
+    "pageErrors": [],
+    "finalArchive": {
+      "exists": true,
+      "bytes": 180,
+      "sha256": "d5974fbf328c08d6e8e2f7f960e34ee222b620f39aaa33afb7295e73fdc0693b",
+      "revision": 1,
+      "recentCount": 1,
+      "characterCount": 0,
+      "invitations": 1,
+      "relation": null
+    },
+    "finalTelemetry": {
+      "pending": 0,
+      "maxPending": 1,
+      "requests": 47,
+      "failures": 0,
+      "invitationsShown": 1,
+      "routines": {
+        "observe": 14,
+        "play": 11,
+        "rest": 10,
+        "greeting": 1
+      },
+      "activity": "idle",
+      "mode": "interactive",
+      "mood": "idle",
+      "visible": true,
+      "invitationVisible": false,
+      "now": 2790479.6,
+      "hour": 13,
+      "innerWidth": 1200,
+      "innerHeight": 800
+    }
+  },
+  "coverage": {
+    "routines": true,
+    "invitation": true
+  },
+  "renderer": {
+    "first": {
+      "Documents": 8,
+      "JSEventListeners": 194,
+      "Nodes": 2801,
+      "JSHeapUsedSize": 7138612,
+      "JSHeapTotalSize": 8142848,
+      "documents": 8,
+      "nodes": 2801,
+      "jsEventListeners": 194
+    },
+    "last": {
+      "Documents": 2,
+      "JSEventListeners": 96,
+      "Nodes": 1020,
+      "JSHeapUsedSize": 4321160,
+      "JSHeapTotalSize": 6168576,
+      "documents": 2,
+      "nodes": 1020,
+      "jsEventListeners": 96
+    }
+  },
+  "environment": {
+    "maxStealPercent": 0.05025125628140704,
+    "maxSwapUsedMiB": 0,
+    "minAvailableMiB": 6532.85546875
+  },
+  "limitations": "One Linux PVE VM, one real DSH version, test rendering/sandbox, and one fixed idle daytime scenario; does not prove macOS/Windows resource use, real GPU cost, seven-day value, all queues/timers, or physical lock/sleep."
+}

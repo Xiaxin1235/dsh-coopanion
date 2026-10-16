@@ -209,3 +209,18 @@ it('companionship defaults off, validates its enum, and joins complete hot Host 
     for (const mode of ['quiet', 'interactive', 'off'] as const) { companionship = mode; ctx.emit('settings/document-updated', 'dsh-coopanion' as SettingsNamespace, 1); expect(bridge.configure).toHaveBeenLastCalledWith(expect.objectContaining({ companionship: mode, dailyRhythm: false })); }
   } finally { await fiber.dispose(); await ctx.fiber.dispose(); }
 });
+
+
+it('persists relative NPC home/range and hot-syncs the complete options', async () => {
+  expect(Config().npcHome.get()).toBe(.85); expect(Config().npcRange.get()).toBe(.3);
+  for (const value of [0, 1, NaN, '0.4']) expect(() => Config({ npcRange: value as never })).toThrow();
+  const ctx = new Context(), config = Config({ autoStart: true, npcHome: .1, npcRange: .5 }); ctx.provide('agents', { list: () => [] });
+  let home = .1; config.npcHome = { get: () => home };
+  const bridge = { ...nativeBridge(), configure: vi.fn() }, fiber = ctx.plugin(scope => mountPet(scope, config, bridge));
+  try {
+    await fiber.await(); await vi.waitFor(() => expect(bridge.start).toHaveBeenCalledWith(expect.objectContaining({ npcHome: .1, npcRange: .5 }), expect.anything()));
+    home = .8; ctx.emit('settings/document-updated', 'dsh-coopanion' as SettingsNamespace, 1);
+    expect(bridge.configure).toHaveBeenLastCalledWith(expect.objectContaining({ npcHome: .8, npcRange: .5, roam: true }));
+    expect(bridge.start).toHaveBeenCalledOnce();
+  } finally { await fiber.dispose(); await ctx.fiber.dispose(); }
+});

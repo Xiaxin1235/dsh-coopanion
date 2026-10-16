@@ -1,10 +1,10 @@
 # GPT 辅助角色素材与建模计划
 
-更新：2026-10-15（Asia/Shanghai）。这是[陪伴路线图](roadmap.md)的素材实施计划，当前尚未生成新图、制作新模型或更新上游运行时。现行包格式和导入规则仍以[角色接口](characters.md)为准。
+这是[陪伴路线图](roadmap.md)的后续素材计划；A1–A3 尚未实施，阶段状态统一见[文档索引](README.md)。现行包格式和导入规则仍以[角色接口](characters.md)为准，下文目录和流程均为拟议内容。
 
 ## 依据与当前能力
 
-用户指定的[上游鲸鱼 README（main）](https://github.com/Pal-AI-Lab/Coopanion/blob/main/packages/cortico-world-desktop-pet/examples/whale/README.md)说明了 ChatGPT 辅助制图、分件和网格驱动的方法；本次阅读时该文件最后修改提交为 `bd1743b96251f195b9d68cf70723c64281a03e17`，复核用[固定文件链接](https://github.com/Pal-AI-Lab/Coopanion/blob/bd1743b96251f195b9d68cf70723c64281a03e17/packages/cortico-world-desktop-pet/examples/whale/README.md)。
+2026-10-15 规划时参考的[上游鲸鱼 README 固定版本](https://github.com/Pal-AI-Lab/Coopanion/blob/bd1743b96251f195b9d68cf70723c64281a03e17/packages/cortico-world-desktop-pet/examples/whale/README.md)说明了 ChatGPT 辅助制图、分件和网格驱动的方法。该 SHA 固定规划依据，不代表上游 main 当前版本；新实施需要重查时另记来源。
 
 上游的制作要点是：先固定母版，再编辑补出遮挡区域，配准后分件，尽量保留母版可见区域的原像素；最终由贴图网格、变形器和共享身体驱动。这提供了制作思路，不能保证任意新角色一次出图即能绑定。下面的分阶段、质检阈值和样板范围是本项目的计划。
 
@@ -21,6 +21,8 @@
 | A3 可复用内容流程 | 配色映射、服装／表情扩展规范、来源清单及生成／绑定模板 | P2／P3 的偏好、纪念物和季节内容 | 第二件素材能按模板制作，换装／缺词／资源测试通过，没有逐件修改宿主的要求 |
 
 P1 的观察、自娱、休息和最小熟悉招呼使用现有动作；A1 不阻塞这些功能验收。A2 完成前，产品不得把泛用 `happy` 或 `dance` 文案包装成已经实现的拿玩具、吃东西。新服装先走独立包，不以整体升级上游作为前置条件。
+
+已认可的 [P1 NPC 日常修订](npc-daily-life-plan.md)首轮复用现有走动、观察、坐下与表情；逻辑小窝及轻量程序标记由宿主实现，不依赖先绘制床、房屋或玩具。当前没有这些实体物件；A1 的纸星星玩具与现有 `paper-star` 角色示例是不同交付，素材线仍未实施。
 
 ## 制作流程
 

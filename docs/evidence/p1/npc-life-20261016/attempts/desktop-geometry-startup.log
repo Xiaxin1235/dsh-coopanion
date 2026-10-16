@@ -1,0 +1,96 @@
+
+> @takboo/dsh-coopanion@0.4.10 test:desktop
+> node tests/desktop.mjs
+
+M5 native screen measurements, controlled work areas, unplug recovery and real OS cursor/CDP clicks passed.
+M6 native API 2 rhythm, task preemption and hot configuration state checks passed.
+P1 native companion play, durable progress, recovery, settings and task precedence passed.
+NPC native state: {
+  state: {
+    generation: 2,
+    serial: 2,
+    phase: 'yield',
+    reason: 'geometry',
+    target: 1218.5600000000002,
+    returning: false,
+    recent: [],
+    energy: 0.65,
+    interest: 0.54,
+    emotion: 'thinking',
+    walkId: null,
+    dueAt: null,
+    lastAt: 37000,
+    safeAt: null,
+    spaceKey: '2048:180:0.85:0.3:1',
+    placed: true,
+    failed: false
+  },
+  input: {
+    enabled: true,
+    now: 37000,
+    space: {
+      min: 1126.4,
+      max: 1740.8000000000002,
+      home: 1740.8,
+      key: '2048:180:0.85:0.3:1'
+    },
+    keyboard: 'idle',
+    pointer: { x: 1175.01171875, y: 542.328125 },
+    layout: {
+      x: 865.4941823478543,
+      facing: 1,
+      mode: 'idle',
+      busy: false,
+      moving: true,
+      pressing: false,
+      cursor: '',
+      box: [Object],
+      hit: [Array],
+      bubble: [Object],
+      side: [Object]
+    },
+    words: [
+      'neutral',  'happy',      'wink',
+      'love',     'shy',        'surprised',
+      'angry',    'sad',        'sleepy',
+      'thinking', 'smug',       'pout',
+      'worried',  'determined', 'flustered',
+      'scared',   'excited',    'cry',
+      'confused', 'stand',      'jump',
+      'hop',      'look',       'turn',
+      'nod',      'shake',      'spin',
+      'sit',      'sleep',      'dizzy',
+      'walk',     'run',        'wave',
+      'bow',      'shiver',     'flap',
+      'dance'
+    ],
+    event: undefined,
+    user: false,
+    lifecycle: false,
+    work: false,
+    quiet: false,
+    canWalk: true
+  },
+  events: [
+    { state: [Object], word: 'stand', now: 19000 },
+    { state: [Object], walk: [Object], word: 'stand', now: 21000 },
+    { state: [Object], stop: 8589934593, now: 22000 },
+    { state: [Object], word: 'stand', now: 23000 },
+    { state: [Object], word: 'look', now: 35000 },
+    { state: [Object], walk: [Object], word: 'stand', now: 37000 },
+    { state: [Object], stop: 8589934594, now: 37000 },
+    { state: [Object], word: 'stand', now: 37000 }
+  ],
+  mode: 'idle'
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.waitForFunction: Timeout 25000ms exceeded.
+    at /Users/jam/Documents/codespace/personal-projects/dsh-coopanion/tests/npc-life-native.mjs:34:14 {
+  log: [],
+  name: 'TimeoutError'
+}
+
+Node.js v24.21.0

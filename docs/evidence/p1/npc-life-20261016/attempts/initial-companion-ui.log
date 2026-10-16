@@ -1,0 +1,31 @@
+✖ NPC follows real arrival, pauses typing, resumes retained intent and returns home (11833.705917ms)
+✔ invitation reserves once, ignores naturally, persists quiet and cannot send model/task messages (48790.22225ms)
+✔ manual play grows only after completion, aborted play does not, archive survives renderer reload (4090.937292ms)
+✔ hot companionship modes preserve captured reader, draft selection, and in-flight identities (503.4785ms)
+✔ real strokes count once, forged sandbox touches do not, missing words remain safe (4992.614333ms)
+✔ twenty manual activities react within 500ms and interrupted trials never grow (980.5685ms)
+✔ twenty real strokes keep visible feedback while hovering and share the growth cooldown (61018.882041ms)
+✔ six stored moments across three dates unlock the real familiar greeting after rehydration (13876.754667ms)
+✔ reduced motion cancels an in-progress activity and a small large-text menu remains reachable (380.7175ms)
+✔ idle rendering is bounded while real elapsed time, work and input keep their cadence (8281.497209ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 9
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 154955.434667
+
+✖ failing tests:
+
+test at tests/companionship-ui.mjs:50:1
+✖ NPC follows real arrival, pauses typing, resumes retained intent and returns home (11833.705917ms)
+  page.waitForSelector: Timeout 10000ms exceeded.
+  Call log:
+  [2m  - waiting for locator('#pet[data-mode=walk]') to be visible[22m
+  
+      at TestContext.<anonymous> (/Users/jam/Documents/codespace/personal-projects/dsh-coopanion/tests/companionship-ui.mjs:66:14) {
+    name: 'TimeoutError',
+    log: [ "  - waiting for locator('#pet[data-mode=walk]') to be visible" ]
+  }

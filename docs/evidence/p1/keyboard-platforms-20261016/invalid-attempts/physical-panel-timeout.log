@@ -1,0 +1,9 @@
+PANEL_READY
+file:///Users/jam/Documents/codespace/personal-projects/dsh-coopanion/.cache/p1-keyboard-20261016/physical-panel.mjs:25
+ while(!await app.evaluate(()=>globalThis.keyboardProbePanel.webContents.executeJavaScript('window.probeStarted === true'))){if(performance.now()-beganWaiting>180000)throw Error('Human start timed out');await pause(100);}
+                                                                                                                                                                            ^
+
+Error: Human start timed out
+    at file:///Users/jam/Documents/codespace/personal-projects/dsh-coopanion/.cache/p1-keyboard-20261016/physical-panel.mjs:25:173
+
+Node.js v24.21.0

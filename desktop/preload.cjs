@@ -5,6 +5,7 @@ async function characterCall(channel, value) {
   return result.value;
 }
 contextBridge.exposeInMainWorld('dshPetBridge', {
+  nativeGeometry: true,
   ...(process.argv.includes('--dsh-pet-display-test') ? { testScreenPoint: value => ipcRenderer.invoke('pet:test-screen-point', value) } : {}),
   subscribe(callback) {
     const listener = (_event, message) => callback(message);
@@ -14,6 +15,7 @@ contextBridge.exposeInMainWorld('dshPetBridge', {
   // Chat carries its immutable target and client request identity unchanged.
   action(value) { ipcRenderer.send('pet:action', value); },
   hit(active) { ipcRenderer.send('pet:hit', active); },
+  diagnosticsRespond: value => ipcRenderer.send('pet:diagnostics-response', value),
   companionship: value => characterCall('pet:companionship', value),
   characters: {
     list: () => characterCall('pet:characters:list'),

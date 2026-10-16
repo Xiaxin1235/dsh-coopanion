@@ -2,7 +2,7 @@
 
 支持 DSH 0.2.0-rc.2 / 0.2.1-alpha.1。实施基线和本机资源观察保留在 [M6 历史记录](evidence/m6/README.md)；后续发布与尚待实机验收的范围见[文档索引](README.md)。
 
-P1 新增[自主陪伴契约](companionship-contract.md)：本文的旧策略仅在 `companionship=off` 时运行；quiet／interactive 独占闲时调度，关闭后恢复原配置。旧布尔值不会迁移为允许邀请。
+P1 新增[自主陪伴契约](companionship-contract.md)：本文的旧策略仅在 `companionship=off` 时运行；quiet／interactive 独占闲时调度，关闭后恢复原配置。旧布尔值不会迁移为允许邀请。新模式不要求开启 `dailyRhythm`，但仍要求 `roam=true` 才允许自动活动；用户配置组合见[使用指南](usage.md#自主陪伴p1-候选功能尚未发布)。
 
 ## 目标与配置
 

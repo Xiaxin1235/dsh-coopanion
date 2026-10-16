@@ -29,6 +29,8 @@ const emptyRelation = (date: string): z.infer<typeof relation> => ({ total: 0, d
 /** One profile's bounded, versioned relationship state. Dates and budgets belong to this owner. */
 export class CompanionStore {
   private data?: Archive;
+  private pending = 0;
+  private bytes = 0;
   private writable = false;
   private error?: string;
   private initialized?: Promise<void>;
@@ -46,6 +48,7 @@ export class CompanionStore {
     catch { this.error = 'companion/readonly'; }
     try {
       const raw = await readFile(this.file, 'utf8');
+      this.bytes = Buffer.byteLength(raw);
       if (raw.length > 256 * 1024) throw new Error('oversized');
       this.data = archive.parse(JSON.parse(raw));
     } catch (error) {
@@ -91,8 +94,13 @@ export class CompanionStore {
     const r = Object.hasOwn(data.characters, characterId) ? data.characters[characterId]! : emptyRelation(data.date);
     return { revision: data.revision, writable: this.writable && !this.closed && !this.error, ...(this.error ? { error: this.error } : {}), relation: { total: r.total, days: r.days.length, unlocked: r.unlocked }, invitation: { remaining: 2 - data.invitations, quiet: data.quiet, laterUntil: data.laterUntil } };
   }
+  /** Read-only in-memory diagnostics: never initializes, writes or joins the request queue. */
+  inspect() { return { initialized: !!this.data, writable: this.writable && !this.closed && !this.error, failed: !!this.error,
+    bytes: this.bytes, revision: this.data?.revision ?? 0, recentCount: this.data?.recent.length ?? 0,
+    characterCount: Object.keys(this.data?.characters ?? {}).length, invitations: this.data?.invitations ?? 0, pending: this.pending }; }
   request(input: unknown): Promise<CompanionReceipt> {
     const request = companionRequest.parse(input);
+    this.pending++;
     const run = this.queue.then(async () => {
       await (this.initialized ??= this.initialize());
       if (!this.writable && !this.error?.includes('invalid-save')) {
@@ -128,11 +136,13 @@ export class CompanionStore {
       next.lastAt = now; next.revision++; next.recent = [...next.recent, request.requestId].slice(-128);
       if (Object.keys(next.characters).length > 256) throw new Error('companion/character-limit');
       const temp = `${this.file}.${this.token}.tmp`;
-      try { await writeFile(temp, JSON.stringify(next) + '\n', { mode: 0o600 }); await rename(temp, this.file); }
+      const serialized = JSON.stringify(next) + '\n';
+      try { await writeFile(temp, serialized, { mode: 0o600 }); await rename(temp, this.file); this.bytes = Buffer.byteLength(serialized); }
       finally { await rm(temp, { force: true }); }
       this.data = next;
       return { ...this.summary(next, request.characterId), applied };
     });
+    run.then(() => { this.pending--; }, () => { this.pending--; });
     this.queue = run.catch(() => {});
     return run;
   }

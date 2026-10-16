@@ -4,7 +4,14 @@
 
 | 记录 | 适用范围 |
 |---|---|
-| [P1 自主陪伴](p1/README.md) | 未发布工作区实现；固定基线、快照／测试包摘要、本机功能与资源验证，长期与跨平台范围分别标记 |
+| [键盘活动 VM 原生验证](p1/keyboard-vm-20261016/README.md) | 555503e 同包 Ubuntu Xorg／Windows 11 本地控制台、QMP 虚拟键鼠、退让与恢复、完整单测及临时 VM 回收；物理设备／资源／远端 CI 另验收 |
+| [键盘跨平台修订](p1/keyboard-platforms-20261016/README.md) | 555503e 固定新包、macOS 原生与两版同包安装、macOS 本机物理输入／仅鼠标／自然恢复初验、Linux X11 合成键盘／仅鼠标、保守降级；Windows 原生和其他物理场景另验收 |
+| [NPC 有限空间日常修订](p1/npc-life-20261016/README.md) | ac5938f 的独立本地包、完整回归／两宿主同包安装、输入 unknown 降级及短时资源对照；物理键盘／两小时资源／自然体验待验收 |
+| [P1 自主陪伴初始记录](p1/README.md) | 固定基线与 S1–S3 历史快照；其中“最终候选”、版本 0.4.9 和未完成项只属于当时记录，不代表已发布包或当前候选 |
+| [0.4.10 诊断候选安装与启动](p1/diagnostics-20261016/README.md) | 固定源码 3a93a36 与包摘要，本机／两宿主安装、新 VM 两小时及七天采样启动；不是长期验收通过 |
+| [诊断候选后续核对](p1/diagnostics-followup-20261016/README.md) | 更正最初漏开 roam 的体验边界，保留原始启动记录；提供新时点配置、采样进度和远端状态 |
+| [短时体验未通过／本机采样停止](p1/experience-rejected-20261016/README.md) | 用户取消七天与填表要求，本机采样提前结束；112 条原始数据保留，VM 资源观察独立继续 |
+| [NPC 修订的原语能力评估](p1/npc-capability-20261016/README.md) | 当前鲸鱼与 API 2 的定点行走、按身份停止、姿态、表情和音效请求；不证明新调度、键盘感知、实际扬声器或新体验通过 |
 | [v0.4.9 正式交付](releases/v0.4.9/README.md) | main／Release CI、六组安装、npm 与 Release 同包身份 |
 | [M1](m1/README.md)、[M2](m2/README.md)、[M3](m3/README.md)、[M4](m4/README.md)、[M5](m5/README.md)、[M6](m6/README.md) | 六个不同实现提交上的 v0.4.8 本地测试包；均不是已发布 v0.4.8 或 v0.4.9 的分发身份 |
 | [N0 说明](../archive/2026-10-notifications/notification-n0.md)、[CI 汇总](notification-n0/ci-final-summary.json) | 私有原型及单实例 macOS 系统通知实机；不能外推为后续分发包通过 |

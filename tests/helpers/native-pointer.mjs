@@ -134,3 +134,13 @@ export async function nativeClick(page, selector) {
     `OS cursor reaches the measured DIP point: ${JSON.stringify({ measurement, observed })}`);
   return { ...measurement, cursorAfterClick: observed.cursor };
 }
+
+/** Keep the OS cursor and CDP pointer away from an autonomous walking path. */
+export async function parkNativePointer(page) {
+  const origin = await page.evaluate(() => ({ x: screenX + 2, y: screenY + 2 }));
+  if (process.platform === 'darwin') await run('python3', ['-c', warpMacCursor, String(origin.x), String(origin.y)]);
+  else if (process.platform === 'linux' && process.env.DISPLAY) await run('python3', ['-c', warpCursor, String(origin.x), String(origin.y)]);
+  else if (process.platform === 'win32') await run('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command',
+    `Add-Type -TypeDefinition 'using System; using System.Runtime.InteropServices; public class PetParkCursor { [DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y); }'; if (-not [PetParkCursor]::SetCursorPos(${Math.round(origin.x)}, ${Math.round(origin.y)})) { throw 'Cannot park native cursor' }`]);
+  await page.mouse.move(2, 2);
+}

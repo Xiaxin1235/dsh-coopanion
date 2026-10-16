@@ -1,0 +1,112 @@
+{
+  "schema": 1,
+  "startedAt": "2026-10-16T05:38:49.154Z",
+  "endedAt": "2026-10-16T06:35:23.178Z",
+  "reason": "signal",
+  "status": "recorded",
+  "fullTwoHourObservation": false,
+  "samples": 112,
+  "rawBytes": 214396,
+  "errors": 0,
+  "bounds": {
+    "maxPendingRequests": 0,
+    "maxStorePending": 0,
+    "requestsDrained": true
+  },
+  "coverage": {
+    "routines": true,
+    "invitation": false
+  },
+  "environment": {
+    "maxStealPercent": 0,
+    "maxSwapUsedMiB": 0
+  },
+  "segments": [
+    {
+      "instance": "d82c57c189683a89d8d0",
+      "session": "c6dd01072ff86ea3690cdaa16f247846",
+      "version": "0.4.10",
+      "build": {
+        "schema": 1,
+        "commit": "3a93a369bfa72f53941bd8a5c45c3cdd6ca58e07",
+        "dirty": false,
+        "productDigest": "0aa015b2080da47056915b57b7c5ad28434d72b4bf9652c007ca0409962d3596"
+      },
+      "startedAt": "2026-10-16T05:38:49.161Z",
+      "reason": "signal",
+      "resource": {
+        "status": "incomplete",
+        "durationSeconds": 3364.013758208,
+        "samples": 112,
+        "reason": "insufficient-window-duration"
+      },
+      "lastSnapshot": {
+        "schema": 1,
+        "instance": "d82c57c189683a89d8d0",
+        "session": "c6dd01072ff86ea3690cdaa16f247846",
+        "pid": 15746,
+        "startedAt": "2026-10-16T05:36:58.360Z",
+        "measuredAt": "2026-10-16T06:34:53.159Z",
+        "version": "0.4.10",
+        "build": {
+          "schema": 1,
+          "commit": "3a93a369bfa72f53941bd8a5c45c3cdd6ca58e07",
+          "dirty": false,
+          "productDigest": "0aa015b2080da47056915b57b7c5ad28434d72b4bf9652c007ca0409962d3596"
+        },
+        "value": {
+          "runtime": {
+            "visible": true,
+            "suspended": false,
+            "generation": 1
+          },
+          "store": {
+            "initialized": true,
+            "writable": true,
+            "failed": false,
+            "bytes": 0,
+            "revision": 0,
+            "recentCount": 0,
+            "characterCount": 0,
+            "invitations": 0,
+            "pending": 0
+          },
+          "renderer": {
+            "mode": "interactive",
+            "activity": "play",
+            "invitation": "none",
+            "mood": "idle",
+            "careUnavailable": false,
+            "hidden": false,
+            "hour": 14,
+            "queues": {
+              "carePending": 0,
+              "pendingInteractions": 0,
+              "composerSessions": 2,
+              "chatTimers": 0,
+              "snoozing": 0,
+              "shownResults": 0,
+              "acknowledgedResults": 0
+            },
+            "counts": {
+              "routines": {
+                "observe": 8,
+                "play": 9,
+                "rest": 9,
+                "greeting": 0
+              },
+              "invitationsShown": 0,
+              "invitationsExpired": 0,
+              "invitationsAccepted": 0,
+              "invitationsLater": 0,
+              "invitationsQuiet": 0
+            },
+            "heapBytes": 3607552,
+            "nodes": 895
+          }
+        }
+      }
+    }
+  ],
+  "limitations": "Passive local observation; seven-day subjective value, physical delivery, GPU power and other platforms require separate evidence. Diagnostic counters cover finite known queues, not all timers/objects."
+}

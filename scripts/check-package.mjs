@@ -33,12 +33,19 @@ for (const required of ['src/desktop-lifecycle.ts', 'src/controls.ts', 'docs/des
 for (const required of ['web/display-geometry.js', 'desktop/display-controller.cjs', 'desktop/test-display-probe.cjs', 'docs/multi-display-contract.md', 'tests/display-geometry.test.js', 'tests/multi-display-ui.mjs', 'tests/multi-display-native.mjs', 'tests/helpers/multi-display-native.mjs']) assert.ok(entries.includes(`package/${required}`), `missing M5 geometry source ${required}`);
 for (const required of ['web/daily-rhythm.js', 'web/daily-rhythm.d.ts', 'docs/daily-rhythm-contract.md', 'tests/daily-rhythm.test.js', 'tests/daily-rhythm-ui.mjs', 'tests/daily-rhythm-native.mjs', 'tests/helpers/daily-rhythm.mjs', 'scripts/measure-idle.mjs']) assert.ok(entries.includes(`package/${required}`), `missing M6 rhythm source ${required}`);
 for (const required of ['dist/companion-store.cjs', 'src/companion-store.ts', 'web/companionship.js', 'web/companionship.d.ts', 'web/companion-client.js', 'web/companion-touch.js', 'docs/companionship-contract.md', 'tests/companionship.test.js', 'tests/companion-store.test.ts', 'tests/companion-client.test.js', 'tests/companion-touch.test.js', 'tests/companion-http.test.ts', 'tests/companionship-ui.mjs', 'tests/companionship-native.mjs', 'tests/helpers/companionship.mjs']) assert.ok(entries.includes(`package/${required}`), `missing P1 companionship source ${required}`);
+for (const required of ['web/npc-life.js', 'desktop/keyboard-activity.cjs', 'desktop/keyboard-activity.jxa', 'desktop/keyboard-activity-win.cs', 'desktop/keyboard-activity-x11.py', 'tests/keyboard-activity.test.js', 'tests/keyboard-activity-native.mjs', 'tests/helpers/keyboard-x11-probe.py', 'tests/npc-life.test.js', 'tests/npc-life-native.mjs', 'tests/helpers/npc-life.mjs']) assert.ok(entries.includes('package/' + required), 'missing NPC source ' + required);
+for (const required of ['desktop/lifecycle-state.cjs', 'desktop/lifecycle-state-macos.jxa', 'tests/lifecycle-state.test.js', 'tests/lifecycle-startup-native.mjs', 'dist/diagnostics.cjs', 'dist/build-info.json', 'src/diagnostics.ts', 'web/diagnostics.js', 'web/render-cadence.js', 'scripts/sample-companion.mjs', 'scripts/diagnostics-client.mjs', 'scripts/resource-observation.mjs', 'docs/diagnostics-contract.md', 'tests/diagnostics.test.js', 'tests/diagnostics-native.mjs']) assert.ok(entries.includes('package/' + required), 'missing diagnostics source ' + required);
+const buildInfo = JSON.parse(unpack('dist/build-info.json'));
+assert.equal(buildInfo.schema, 1);
+assert.match(buildInfo.productDigest, /^[a-f0-9]{64}$/);
 const sha256 = createHash('sha256').update(bytes).digest('hex');
 const integrity = `sha512-${createHash('sha512').update(bytes).digest('base64')}`;
 const notes = releaseNotes(unpack('docs/release-notes.md'), packed.version);
 if (values['write-report']) {
   assert.equal(git(['status', '--porcelain']), '', 'release report requires a clean committed checkout');
   const sourceCommit = git(['rev-parse', 'HEAD']);
+  assert.equal(buildInfo.commit, sourceCommit, 'build metadata must bind the packaged candidate commit');
+  assert.equal(buildInfo.dirty, false, 'candidate report requires a committed build');
   if (values['expected-commit']) assert.equal(sourceCommit, values['expected-commit']);
   const report = { name: packed.name, version: packed.version, sourceCommit, sha256, integrity };
   writeFileSync(join(dirname(archive), 'verification.json'), `${JSON.stringify(report, null, 2)}\n`);

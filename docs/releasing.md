@@ -4,6 +4,8 @@
 
 npm 包名为 **`@takboo/dsh-coopanion`**，采用维护者的 scope，并以 public 发布。`npm pack` 默认产生 `takboo-dsh-coopanion-<version>.tgz`；CI 将同一文件重命名为 `dsh-coopanion-<version>.tgz`，再复制固定别名 `dsh-coopanion.tgz`，不重新打包。宿主 bundle 的模块路径及浏览器模块标识使用完整 npm 包名；配置 id 和设置 namespace 继续使用 `dsh-coopanion`。
 
+已发布版本和本地候选的实际身份统一见[文档索引](README.md)。本地构建、候选安装或文档提交不构成发布；复核既有候选时使用其冻结的包与 `verification.json`，不因后续文档提交重写旧报告的源码提交或包摘要。
+
 ## 自动发布
 
 `.github/workflows/ci.yml` 在 Linux、macOS、Windows 上运行元数据、类型、单元、浏览器及真实 Electron 窗口测试，并在三平台分别验证 DSH **0.2.0-rc.2 / 0.2.1-alpha.1** 安装。Linux 构建是规范分发产物；六组安装测试消费这一份 `.tgz`。所有检查通过才允许发布。

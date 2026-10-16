@@ -49,6 +49,39 @@ npm 使用已配置的 Trusted Publisher；dshmarket 通过社区目录 PR 收�
 
 ## P1 自主陪伴验证
 
+本轮 [NPC 日常修订](npc-daily-life-plan.md)已接入本地源码：macOS 保守键盘适配、workArea 小窝与范围、逐代受控移动及意图恢复。`tests/npc-life.test.js` 验证纯状态／几何／输入适配，`tests/npc-life-native.mjs` 使用隔离 profile 验证原生循环；其中控制时钟与输入枚举，实际身体与 arrived／interrupted 保持真实。物理键盘和监听权限逐平台另验收，原语探针与旧资源结果不能代替本轮行为验证。
+
+`test:inbox-ui` 将会话回复与字号两份浏览器用例串行执行，避免并发冷启动争用；保留原有断言和 5 秒就绪等待。就绪失败时保留有界页面状态、控制台摘要和截图，辅助区分初始化与功能断言失败。
+
 `test:inbox-ui` 已包含 P1 真实 API 2 日常、邀请、输入轨迹、成长、热设置和阅读回归；`test:desktop` 额外串行运行真实时间的 P1 原生点击／存档重启验证。`test:install` 在两版宿主中检查新枚举保存和原生 IPC，不要求独立运行。
 
-资源采样入口增加 `--mode companion-day`／`companion-night`，与同轮 `off` 使用相同固定种子和真实物理时钟。P1 的预算、原始基线、实际执行范围见[本轮记录](evidence/p1/README.md)。
+短时资源对照入口 `scripts/measure-idle.mjs` 支持 `--mode companion-day`／`companion-night`，与同轮 `off` 使用相同固定种子和真实物理时钟。初始预算及基线见[P1 固定记录](evidence/p1/README.md)，最新候选和实际执行状态从[文档索引](README.md)读取；旧记录中的“最终候选”只代表对应快照。
+
+### 隔离 Linux 长时观察
+
+`sample-companion.mjs` 是随包提供的独立 Node 采样器，仅使用本地诊断接口与 OS 进程指标，不依赖 Electron、Playwright 或 CDP。日常使用见[使用指南](usage.md)，诊断开关和数据范围见[诊断契约](diagnostics-contract.md)。
+
+`observe-companion.mjs` 负责受控 VM 的正式安装、启动和场景验证，将周期采样交给上述同一程序；不再注入测试专用活动／请求计数。它先核对采样器与候选包内脚本摘要一致，再按版本和产品摘要约束目标。CDP 只用于开始时的随机源、窗口及实际渲染证明，普通安装不启用。
+
+启动前按[使用指南](usage.md#自主陪伴p1-候选功能尚未发布)确认实际 profile 的自动活动许可。VM 启动器会生成独立 profile 并配置 `roam=true`、`companionship=interactive`、`diagnostics=true`；日常 Desktop 设置不随 VM 改变。可选日常采样与两小时受控观察分别记录，按[诊断契约](diagnostics-contract.md)解释时间、缺口及结果。当前体验采用短时可见检查和自然反馈，不要求用户七天试用、填表或评分。
+
+VM 建议 Ubuntu 24.04 x86_64、4 vCPU、固定 8 GiB 内存与 50 GiB 磁盘。按仓库固定 Node／npm 准备依赖、Electron 和 Chromium，另安装 `xvfb openbox x11-utils dbus-x11 libgtk-3-0t64 python3 procps`；Chromium 的依赖不保证包含 GTK 3。
+
+```bash
+npm install --prefix /path/to/dsh-runtime --no-audit --no-fund @deepseek-ai/dsh@0.2.0-rc.2
+bash scripts/run-resource-observation.sh \
+  --runtime /path/to/dsh-runtime \
+  --package /path/to/frozen-candidate.tgz \
+  --source-commit <候选包实际来源的完整提交> \
+  --output artifacts/p1-observation-unique
+```
+
+每次使用尚不存在的输出目录，不覆盖失败记录。默认预热 20 秒、真实采样至少 7200 秒、每 5 秒一次，比较首／末 1800 秒的时间加权 RSS 均值，增量仍须 ≤20 MiB。场景为真实白天 `interactive`、种子 17、无工作占用；期间不注入输入，邀请自然忽略。另检查三类片段、邀请落盘、存档边界和请求排空。
+
+可加 `--seconds 60 --window 20` 做短检；`fullTwoHourObservation` 仍为 false。原始采样和报告在 `sampling/` 内，安装／启动元数据及总报告在上一层。PVE／软件渲染、RSS 共享页重复、短暂子进程 CPU 漏计及环境争用须随结果披露。旧的测试页面注入观察器保留在原证据目录，不用于新候选包验收。
+
+## 粗粒度键盘适配验证
+
+`npm run test:keyboard-native` 在当前系统运行真实辅助进程约 10–20 秒，检查启动、固定枚举输出和停用清理，报告写入 `artifacts/keyboard-activity-native.json`。macOS 与可用 X11 环境需取得 active／idle；非交互或远程 Windows 可保守 unknown，报告的 usable=false 必须保留。它不模拟或验收物理键盘。三平台 CI 在图形环境准备后执行此入口，并保留报告；Linux CI 在隔离 Xvfb 中额外设 `DSH_KEYBOARD_TEST_X11_INPUT=1`，以 XTest 合成输入验证键盘触发、仅鼠标不触发与恢复 idle，日常图形会话不要开启该测试开关；本地未运行的系统不能记为通过。
+
+定向回归：`npx vitest run tests/keyboard-activity.test.js tests/npc-life.test.js tests/diagnostics.test.js`。覆盖 macOS 授权误门槛、无效聚合值、三平台启动选择、Wayland／Xwayland、依赖失败、协议边界、旧进程回包与数据过期；完整 UI 检查还须运行 `npm run test:inbox-ui`。真实键盘／仅鼠标／停止输入后恢复，以及锁屏、休眠、远程会话和资源开销另行记录。

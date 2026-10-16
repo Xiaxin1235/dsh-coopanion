@@ -1,0 +1,69 @@
+
+> @takboo/dsh-coopanion@0.4.10 test
+> vitest run && node --test tests/release-checks.mjs tests/client-build.mjs && node --test tests/locale-client.mjs
+
+
+ RUN  v3.2.7 /Users/jam/Documents/codespace/personal-projects/dsh-coopanion
+
+ ✓ tests/daily-rhythm.test.js (22 tests) 46ms
+ ✓ tests/companionship.test.js (9 tests) 88ms
+ ✓ tests/companion-http.test.ts (1 test) 50ms
+ ✓ tests/notification-client.test.ts (15 tests) 39ms
+ ✓ tests/diagnostics.test.js (5 tests) 74ms
+ ✓ tests/locale-sync.test.ts (4 tests) 162ms
+ ✓ tests/chat.test.ts (7 tests) 41ms
+ ✓ tests/session-recovery.test.ts (6 tests) 36ms
+ ✓ tests/controls.test.ts (15 tests) 22ms
+ ✓ tests/notification-broker.test.ts (18 tests) 13ms
+ ✓ tests/resource-observation.test.js (7 tests) 10ms
+ ✓ tests/plugin.test.ts (10 tests) 209ms
+ ✓ tests/completion.test.ts (17 tests) 15ms
+ ✓ tests/model.test.ts (18 tests) 10ms
+ ✓ tests/companion-store.test.ts (8 tests) 350ms
+ ✓ tests/notification-integration.test.ts (8 tests) 300ms
+ ✓ tests/presentation.test.js (11 tests) 5ms
+ ✓ tests/notification-contract.test.ts (5 tests) 8ms
+ ✓ tests/companion-client.test.js (3 tests) 3ms
+ ✓ tests/npc-life.test.js (9 tests) 7ms
+ ✓ tests/text-scale.test.ts (1 test) 1ms
+ ✓ tests/display-geometry.test.js (6 tests) 5ms
+ ✓ tests/render-cadence.test.js (2 tests) 1ms
+ ✓ tests/companion-touch.test.js (2 tests) 2ms
+ ✓ tests/figures.test.ts (6 tests) 1299ms
+   ✓ serves the frame with an opaque-origin CSP, rejects cross-origin mutations and offers matching source  1213ms
+ ✓ tests/bridge.test.ts (8 tests | 1 skipped) 2041ms
+   ✓ releases a process that exits by signal before the ready handshake  1042ms
+
+ Test Files  26 passed (26)
+      Tests  222 passed | 1 skipped (223)
+   Start at  15:57:44
+   Duration  2.34s (transform 870ms, setup 0ms, collect 2.18s, tests 4.84s, environment 2ms, prepare 1.03s)
+
+✔ activates the built Client factory using only DSH public peers and React seeds (161.661375ms)
+✔ verifies a real stable tag and exports its immutable commit (191.215ms)
+✔ rejects a prerelease tag instead of publishing it to latest (113.8955ms)
+✔ rejects a tag whose package version differs (162.490583ms)
+✔ rejects a release outside main ancestry (182.035834ms)
+✔ rejects a tag moved after candidate verification (133.47725ms)
+✔ rejects shrinkwrap metadata and missing release notes (330.627792ms)
+✔ release notes contain only the target version and reject duplicates (0.676417ms)
+✔ npm preflight distinguishes unused, identical, conflicting and unavailable versions (11.274416ms)
+✔ post-publish verification waits for the registry to expose identical bytes (3.590709ms)
+✔ post-publish verification has a deadline and fails immediately on conflicts or registry errors (0.461125ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1165.062375
+✔ the real Client factory synchronizes resolved Harness locale without workspace or notifications (125.787542ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 163.343833

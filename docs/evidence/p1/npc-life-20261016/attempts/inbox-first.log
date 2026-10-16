@@ -1,0 +1,85 @@
+
+> @takboo/dsh-coopanion@0.4.10 test:inbox-ui
+> node tests/inbox-ui.mjs && node --test tests/session-replies-ui.mjs tests/text-scale-ui.mjs && node --test tests/multi-display-ui.mjs && node --test tests/daily-rhythm-ui.mjs && node --test tests/companionship-ui.mjs
+
+Inbox UI passed: one-click full reply, direct source actions, mixed pending items, stable chat focus and reading order, Unicode/text safety, bilingual copy and narrow layout.
+✔ unread replies coalesce by session and reading does not expose old turns again (998.236292ms)
+✔ native recovery baseline preserves unread results without speaking or acknowledging them again (536.130292ms)
+✔ full replies render Markdown headings, emphasis, tables and fenced code (463.498792ms)
+✔ multiple turns of a single session still open directly with one click (325.858875ms)
+✔ reply markup cannot inject HTML, active URLs or external images (304.236458ms)
+✔ chat freezes the target, keeps per-session drafts and retries a lost receipt with the same request ID (367.611959ms)
+✔ full-result continue opens the exact source composer without replacing the reading snapshot (400.26475ms)
+✔ composer timeout preserves identity and acceptance remains monotonic (1.68475ms)
+✔ zh-CN: all text scales × character extremes keep reader, inbox and draft usable (1833.519125ms)
+✔ en-US: all text scales × character extremes keep reader, inbox and draft usable (1317.452792ms)
+✔ text scaling keeps final bubble font and original dismissal clock (2308.980209ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5728.334959
+✔ controlled irregular layout and mixed DPR preserve reading, draft, in-flight identity and hit areas (1900.838875ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2281.744083
+✔ legacy default uses calm; optional day/night scheduling emits API 2 words and restores without notifications (5551.055666ms)
+✔ task, pending requests, input, reader, reduced motion and user rest preempt idle activity (5938.527834ms)
+✔ hot preference keeps reader DOM/scroll, draft/focus/selection, request identity and bubble expiry (3528.331791ms)
+✔ roam off, native hidden/suspended and pointer dragging each suppress scheduling (5970.35225ms)
+✔ missing manifest vocabulary falls back to idle without issuing unsupported words (2955.739875ms)
+✔ renderer observes changed system local hours while monotonic deadlines survive midnight (3612.292791ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 27866.401709
+✔ NPC follows real arrival, pauses typing, resumes retained intent and returns home (9601.537ms)
+✔ invitation reserves once, ignores naturally, persists quiet and cannot send model/task messages (48776.771917ms)
+✔ manual play grows only after completion, aborted play does not, archive survives renderer reload (4113.691833ms)
+✔ hot companionship modes preserve captured reader, draft selection, and in-flight identities (352.637166ms)
+✔ real strokes count once, forged sandbox touches do not, missing words remain safe (5021.211375ms)
+✔ twenty manual activities react within 500ms and interrupted trials never grow (960.037167ms)
+✔ twenty real strokes keep visible feedback while hovering and share the growth cooldown (61032.204167ms)
+✔ six stored moments across three dates unlock the real familiar greeting after rehydration (13878.430708ms)
+✔ reduced motion cancels an in-progress activity and a small large-text menu remains reachable (510.6295ms)
+✔ idle rendering is bounded while real elapsed time, work and input keep their cadence (8312.889334ms)
+✖ unknown input, mouse proximity, lifecycle and limited star keep control and vocabulary safe (3194.591708ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 10
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 155989.057792
+
+✖ failing tests:
+
+test at tests/companionship-ui.mjs:238:1
+✖ unknown input, mouse proximity, lifecycle and limited star keep control and vocabulary safe (3194.591708ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///Users/jam/Documents/codespace/personal-projects/dsh-coopanion/tests/companionship-ui.mjs:263:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
