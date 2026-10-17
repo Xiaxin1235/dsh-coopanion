@@ -12,6 +12,8 @@ npm 包名为 **`@takboo/dsh-coopanion`**，采用维护者的 scope，并以 pu
 
 Linux 原生和安装测试使用 Xvfb + Openbox，由 `setup-linux-display` 等待 X11 与 EWMH 窗口管理器就绪；避免无窗口管理器时 Electron 将工作区窗口宽高各约束少 1 像素。原生指针测试以 X11 根窗口为绝对坐标目标，同一次 CSS / 原生测量驱动系统鼠标与 CDP，继续检查实际鼠标坐标及完整工作区边界。
 
+原生桌面步骤记录 Playwright 的进程启动、标准错误和退出日志，单步上限六分钟。超时按失败保留当次 job 和工件；重跑通过与系统原因定位分别结算。日志仅来自隔离测试实例。
+
 PR CI 的 `desktop-pet` artifact 用于审阅分发候选，`verification.json` 绑定实际 checkout commit、版本与包摘要。合并后的稳定标签会对标签指向的源码重新运行完整 CI，生成该次发布的 canonical 包；十二组安装、npm 和 GitHub Release 继续消费该包，固定别名通过复制保留相同字节。发布审批覆盖合并、稳定标签和随后自动执行的 npm／Release 发布。
 
 稳定标签 `v<major>.<minor>.<patch>` 的新建 push 派发 **main 上的 `release.yml`**。标签入口仅有 Actions 派发权限；npm job 才拥有 `id-token: write`，GitHub Release 使用另一个 `contents: write` job。fork、其他分支、移动或删除标签不会进入自动发布路径；预发布标签不会发布到 `latest`。
