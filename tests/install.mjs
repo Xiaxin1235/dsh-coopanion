@@ -55,10 +55,15 @@ async function waitProfile(pattern) {
   assert.match(await readFile(join(profile, 'cordis.patch.yml'), 'utf8'), pattern, 'the Host persisted its locale preference');
 }
 async function openPetSettings(page, chinese = true) {
-  const launcher = page.getByRole('button', { name: chinese ? '设置' : 'Settings', exact: true });
+  const settingsName = chinese ? '设置' : 'Settings';
+  const accountMenu = version.startsWith('0.2.1-rc.');
+  const launcher = page.getByRole('button', { name: accountMenu ? (chinese ? '账号菜单' : 'Account menu') : settingsName, exact: true });
   const section = page.getByRole('button', { name: chinese ? '桌宠' : 'Desktop pet', exact: true });
   for (let attempt = 0; attempt < 2; attempt++) {
     await launcher.click();
+    if (accountMenu) {
+      await page.getByRole('menuitem', { name: settingsName, exact: true }).click();
+    }
     try {
       await section.waitFor({ timeout: 5000 });
       await section.click();
@@ -67,9 +72,10 @@ async function openPetSettings(page, chinese = true) {
       return;
     } catch (error) {
       // DSH closes its panel when initial session/onboarding hydration settles.
-      // Reopen only if the public launcher confirms it actually closed; a missing
+      // Reopen only if the public UI confirms it actually closed; a missing
       // plugin section or failed status/configuration load in an open panel must fail.
-      if (attempt !== 0 || await launcher.getAttribute('aria-expanded') !== 'false') throw error;
+      const closed = accountMenu ? await page.getByRole('dialog').count() === 0 : await launcher.getAttribute('aria-expanded') === 'false';
+      if (attempt !== 0 || !closed) throw error;
       console.log('DSH closed settings during initial onboarding; reopening the native panel.');
     }
   }
