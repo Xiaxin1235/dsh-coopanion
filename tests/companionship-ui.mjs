@@ -300,11 +300,26 @@ test('manual interaction survives a frame timestamp preceding the click event cl
   assert.equal((await read()).relation.total, 1);
 });
 
-test('manual interaction follows a real poke reaction while actual work still preempts it', async t => {
-  const { page, read, receive, configure } = await fixture(t, 'quiet', undefined, false, {});
+for (const jump of [false, true]) test(`manual interaction follows a real poke reaction while actual work still preempts it (jump=${jump})`, async t => {
+  const { page, body, read, receive, configure } = await fixture(t, 'quiet', undefined, false, {});
   await configure({ roam: false });
+  await page.waitForFunction(() => window.lastNpcLayout?.mode === 'idle' && !window.lastNpcLayout.busy);
+  // The upstream poke randomly jumps. Exercise both real physics paths rather
+  // than mistaking the air/crouch guard for a short expression blocking play.
+  await body.evaluate(jump => { Math.random = () => jump ? .1 : .9; }, jump);
   await page.locator('#pet').click(); await page.mouse.move(0, 0);
-  await page.waitForSelector('#pet[data-mood=happy]');
+  if (jump) {
+    // Admit the action within the observed physical frame, so automation latency
+    // cannot turn an airborne attempt into a click after landing.
+    await page.waitForFunction(() => {
+      if (!['crouch', 'air'].includes(window.lastNpcLayout?.mode)) return false;
+      document.querySelector('#companion-play').click();
+      return true;
+    });
+    assert.equal(await page.locator('#pet').getAttribute('data-companion-activity'), 'idle', 'Airborne physics still owns the body');
+    assert.equal((await read()).relation.total, 0);
+    await page.waitForSelector('#pet[data-mode=idle]');
+  } else await page.waitForSelector('#pet[data-mood=happy]');
   await menu(page); await page.locator('#companion-play').click(); await page.mouse.move(0, 0);
   await page.waitForTimeout(200);
   assert.equal(await page.locator('#pet').getAttribute('data-companion-activity'), 'play', 'A brief poke expression is not task occupancy');

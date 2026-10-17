@@ -10,7 +10,7 @@
 
 ### 在 Harness 中从 npm 安装
 
-打开侧边栏 **插件 → 添加插件**，在「包名或地址」输入 `@takboo/dsh-coopanion`，点击安装，再启用 `dsh-coopanion`。输入框填写包名即可；若需固定版本，可填 `@takboo/dsh-coopanion@0.4.11`。安装方式见 [Harness 官方插件管理说明](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/ui-plugin-manager/README.zh.md#安装一个组合包)。
+打开侧边栏 **插件 → 添加插件**，在「包名或地址」输入 `@takboo/dsh-coopanion`，点击安装，再启用 `dsh-coopanion`。输入框填写包名即可；若需固定版本，可填 `@takboo/dsh-coopanion@0.4.12`。安装方式见 [Harness 官方插件管理说明](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/ui-plugin-manager/README.zh.md#安装一个组合包)。
 
 ### 通过 dsh 命令行安装
 
