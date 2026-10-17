@@ -1,6 +1,7 @@
 import { readdir, readFile, stat } from 'node:fs/promises';
 import { request } from 'node:http';
 import { join } from 'node:path';
+import { setTimeout as delay } from 'node:timers/promises';
 
 export async function listDiagnostics(registry) {
   let names;
@@ -9,17 +10,25 @@ export async function listDiagnostics(registry) {
   if (files.length > 256) throw new Error('Too many diagnostic descriptors');
   const endpoints = [];
   for (const name of files) {
-    try {
-      const path = join(registry, name), info = await stat(path);
-      if (process.platform !== 'win32' && (info.uid !== process.getuid() || (info.mode & 0o077))) throw new Error('Unsafe diagnostic descriptor permissions');
-      if (info.size > 4096) throw new Error('Oversized diagnostic descriptor');
-      const value = JSON.parse(await readFile(path, 'utf8'));
-      if (value.schema !== 1 || !/^[a-f0-9]{20}$/.test(value.instance) || !/^[a-f0-9]{32}$/.test(value.session) || !/^[a-f0-9]{64}$/.test(value.token) ||
-          !Number.isSafeInteger(value.pid) || value.pid < 1 || typeof value.socketPath !== 'string' || value.socketPath.length > 256 ||
-          !/^\d+\.\d+\.\d+$/.test(value.version) || !Number.isFinite(Date.parse(value.startedAt))) throw new Error('Invalid diagnostic descriptor');
-      try { process.kill(value.pid, 0); } catch (error) { if (error.code === 'ESRCH') continue; if (error.code !== 'EPERM') throw error; }
-      endpoints.push(value);
-    } catch (error) { if (error.code !== 'ENOENT') throw error; }
+    for (let attempt = 0; ; attempt++) {
+      try {
+        const path = join(registry, name), info = await stat(path);
+        if (process.platform !== 'win32' && (info.uid !== process.getuid() || (info.mode & 0o077))) throw new Error('Unsafe diagnostic descriptor permissions');
+        if (info.size > 4096) throw new Error('Oversized diagnostic descriptor');
+        const value = JSON.parse(await readFile(path, 'utf8'));
+        if (value.schema !== 1 || !/^[a-f0-9]{20}$/.test(value.instance) || !/^[a-f0-9]{32}$/.test(value.session) || !/^[a-f0-9]{64}$/.test(value.token) ||
+            !Number.isSafeInteger(value.pid) || value.pid < 1 || typeof value.socketPath !== 'string' || value.socketPath.length > 256 ||
+            !/^\d+\.\d+\.\d+$/.test(value.version) || !Number.isFinite(Date.parse(value.startedAt))) throw new Error('Invalid diagnostic descriptor');
+        try { process.kill(value.pid, 0); } catch (error) { if (error.code === 'ESRCH') break; if (error.code !== 'EPERM') throw error; }
+        endpoints.push(value);
+        break;
+      } catch (error) {
+        if (error.code === 'ENOENT') break;
+        // Windows may deny opening a file that is being withdrawn after stat.
+        if (process.platform !== 'win32' || error.code !== 'EPERM' || attempt >= 2) throw error;
+        await delay(50);
+      }
+    }
   }
   return endpoints;
 }
