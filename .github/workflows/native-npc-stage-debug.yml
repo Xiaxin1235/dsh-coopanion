@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        port: [fixed, random]
+        display: [idle-allowed, awake]
     defaults:
       run:
         shell: bash
@@ -30,21 +30,26 @@ jobs:
       - run: npm run setup:electron
       - run: npm run build
       - run: npm run character:pack -- examples/star paper-star.zip
-      - name: Repeat the crash recovery to NPC handoff
-        timeout-minutes: 7
+      - run: npx playwright-core install --with-deps chromium
+      - name: Record managed display policy
+        run: pmset -g custom
+      - name: Hold the managed display awake for the controlled case
+        if: matrix.display == 'awake'
+        run: caffeinate -d -t 1200 > "$RUNNER_TEMP/caffeinate.log" 2>&1 &
+      - run: pmset -g assertions
+      - run: npm run test:ui
+      - run: npm run test:notification-ui
+      - run: npm run test:inbox-ui
+      - run: npm run test:keyboard-native
+      - name: Trace the complete native sequence after the browser prelude
+        timeout-minutes: 6
         env:
           DEBUG: pw:browser
           ELECTRON_ENABLE_LOGGING: '1'
-          DSH_DIAG_FRESH_NPC_PORT: ${{ matrix.port == 'random' && '1' || '0' }}
-        run: |
-          for attempt in 1 2; do
-            node tests/native-npc-recovery-probe.mjs
-            mkdir -p "artifacts/recovery-$attempt"
-            cp artifacts/desktop-recovery.json artifacts/npc-life-native.json artifacts/npc-life-native-home.png "artifacts/recovery-$attempt/"
-          done
+        run: node tests/native-npc-recovery-probe.mjs
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         if: always()
         with:
-          name: native-npc-stage-diagnosis-${{ matrix.port }}
+          name: native-npc-stage-diagnosis-${{ matrix.display }}
           path: artifacts/
           retention-days: 7

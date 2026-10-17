@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
+import { execFileSync } from 'node:child_process';
 import { mkdtemp, rm, readFile, mkdir, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
@@ -18,6 +19,9 @@ const debugWatch = setInterval(async () => {
     console.error('[DEBUG-npc-stage-20261017] STALLED', debugStage, Date.now() - debugStageAt);
     process.exit(86);
   }
+  let displayPower;
+  try { displayPower = execFileSync('/usr/sbin/ioreg',['-r','-n','IODisplayWrangler','-d','1'],{encoding:'utf8',timeout:1500}).split('\n').filter(line=>line.includes('IOPowerManagement')); } catch(error) { displayPower=error.message; }
+  console.log('[DEBUG-npc-stage-20261017] power', JSON.stringify(displayPower));
   const native = await app?.evaluate(({ app, BrowserWindow }) => ({ hidden: app.isHidden?.(), windows: BrowserWindow.getAllWindows().map(w => ({ visible: w.isVisible(), focused: w.isFocused(), minimized: w.isMinimized(), bounds: w.getBounds() })) })).catch(error => ({ error: error.message }));
   const renderer = page ? await Promise.race([
     page.evaluate(() => ({ hidden: document.hidden, visibility: document.visibilityState, raf: window.__debugNpcRaf, npc: window.npcState, input: window.npcInput, mode: document.querySelector('#pet')?.dataset.mode })).catch(error => ({ error: error.message })),

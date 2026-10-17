@@ -41,4 +41,13 @@ try {
   assert.deepEqual(errors, []);
   await writeFile('artifacts/companionship-native.json', JSON.stringify({ sourceBaseCommit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), sources: Object.fromEntries(await Promise.all(['desktop/main.cjs', 'web/pet.js', 'web/companionship.js', 'src/companion-store.ts'].map(async file => [file, createHash('sha256').update(await readFile(file)).digest('hex')]))), platform: process.platform, arch: process.arch, nativeIpc: true, realInputPlay: true, durableRelationship: summary.relation, noSessionRequired: true, hotDraftSelection: true, taskPreemption: true, sandboxUnchanged: true }, null, 2) + '\n');
   console.log('P1 native companion play, durable progress, recovery, settings and task precedence passed.');
-} finally { await app?.close(); await rm(directory, { recursive: true, force: true }); }
+} finally {
+  const closingAt = Date.now(), child = app?.process();
+  console.log('[DEBUG-p1-close-20261017] closing', child?.pid);
+  const watch = setInterval(() => {
+    console.log('[DEBUG-p1-close-20261017]', JSON.stringify({ms:Date.now()-closingAt,pid:child?.pid,exitCode:child?.exitCode,signalCode:child?.signalCode,stdoutEnded:child?.stdout?.readableEnded,stderrEnded:child?.stderr?.readableEnded}));
+    if (Date.now()-closingAt>45000) process.exit(87);
+  },5000);
+  try { await app?.close(); console.log('[DEBUG-p1-close-20261017] closed'); await rm(directory, { recursive: true, force: true }); console.log('[DEBUG-p1-close-20261017] removed'); }
+  finally { clearInterval(watch); }
+}

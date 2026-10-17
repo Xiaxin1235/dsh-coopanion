@@ -266,8 +266,12 @@ try {
   await writeFile('artifacts/desktop-recovery.json', JSON.stringify({ sourceCommit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), platform: process.platform, arch: process.arch, electron: '44.7.0', retryDelaysMs: [100, 300, 1000], crashedPid, cases: { hiddenNoFlash: true, visibleRecovery: true, fullResults: true, validRequests: true, noChatReplay: true, noOldReplySpeech: true, stopDuringBackoff: true, unloadDuringBackoff: true, rendererDraftLoss: true }, events: recoveryEvents, native: nativeEvents }, null, 2) + '\n');
   await bridge.dispose();
   if (browser) { await browser.close(); browser = undefined; }
-  if (process.env.DSH_DIAG_FRESH_NPC_PORT === '1') process.env.DSH_PET_TEST_DEBUG_PORT = '0';
+  await import('./multi-display-native.mjs');
+  await import('./daily-rhythm-native.mjs');
+  await import('./companionship-native.mjs');
   await import('./npc-life-native.mjs');
+  await import('./diagnostics-native.mjs');
+  await import('./lifecycle-startup-native.mjs');
   console.log('Native recovery passed: hidden and visible crashes, full Host state, no replay, stop and unload during backoff.');
   console.log('Native smoke passed: Electron ready handshake, isolated renderer, two-way chat IPC, host reply, notification, and clean shutdown.');
   console.log('Native character smoke passed: import, selection, disk persistence across process restart, and removal.');
