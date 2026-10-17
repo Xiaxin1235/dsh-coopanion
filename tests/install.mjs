@@ -554,9 +554,9 @@ try {
     const response = await settings.request.post(new URL('/api/coopanion/notification-state', hostUrl).href, { headers: { Origin: new URL(hostUrl).origin }, data: { type: 'client-request', rpcId: 'm3-runtime', method: 'coopanion/notification-state', payload: {} } });
     assert.equal(response.status(), 200); const envelope = await response.json(); assert.equal(envelope.result.ok, true); return envelope.result.value;
   };
-  await m2Page.waitForTimeout(300);
   const focusBeforeRecovery = await m2Page.locator('#chat-session-name').innerText();
   const actualApproval = await m2Command('prepare-m3-pending', 'm3-pending-ready');
+  assert.equal(actualApproval.previousReplyPending, true, 'M3 waits for the accepted but unfinished M2 reply');
   const beforeRecovery = await recoveryState();
   assert.ok(beforeRecovery.interactions.some(item => item.nativeId === actualApproval.approvalId), 'an actual public approval request is pending before the crash');
   const messagesBeforeRecovery = m2Messages.map(message => message.id);
