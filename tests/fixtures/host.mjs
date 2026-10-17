@@ -7,6 +7,7 @@ export const inject = ['sessions', 'appReady', 'appExit', 'webServer', 'connecti
 export function apply(ctx) {
   let session;
   let m3Abort, m3Approval, m3Agent, m3Turn;
+  let releaseSecondReply;
   ctx.on('approval/request', (request, next) => request.callId === 'm3-installed-pending-full' ? new Promise(() => {}) : next(), { prepend: true });
   const sessions = new Map();
   const action = async message => {
@@ -15,9 +16,16 @@ export function apply(ctx) {
     } else if (message?.type === 'prepare-m2-cold') {
       try {
         const { LlmAdapter } = await import(pathToFileURL(join(process.env.COOPANION_TEST_MODULES, '@deepseek-ai/dsh-llm/lib/index.js')).href);
+        let replies = 0;
+        const secondReply = new Promise(resolve => { releaseSecondReply = resolve; });
         class Controlled extends LlmAdapter {
           async listModels() { return [{ provider: 'm2-installed', id: 'controlled', name: 'M2 installed controlled' }]; }
-          async *stream() { yield { type: 'block-end', index: 0, block: { type: 'text', text: 'M2 installed full result 🐳' } }; yield { type: 'finish', reason: { kind: 'stop' } }; }
+          async *stream(options) {
+            const title = options.messages.some(message => message.source?.kind === 'dsh-session-title-llm');
+            if (!title && ++replies === 2) await secondReply;
+            yield { type: 'block-end', index: 0, block: { type: 'text', text: 'M2 installed full result 🐳' } };
+            yield { type: 'finish', reason: { kind: 'stop' } };
+          }
         }
         ctx.llm.registerAdapter(['m2-installed'], new Controlled());
         const owned = await ctx.agents.create({ sessionId: 'm2-installed-cold-full', meta: { cwd: process.env.DSH_HOME }, agentOptions: { provider: 'm2-installed', model: 'controlled' } });
@@ -29,6 +37,11 @@ export function apply(ctx) {
       try {
         const agent = ctx.agents.get('m2-installed-cold-full');
         if (!agent || !ctx.get('approval')) throw new Error('M3 approval service unavailable');
+        // Admission is not completion. Keep the second reply pending until this
+        // boundary, then wait for its real turn/end before opening the M3 fixture.
+        const previousReplyPending = agent.status === 'running';
+        releaseSecondReply();
+        await agent.whenIdle();
         m3Agent = agent; m3Turn = (agent.session.snapshotEvents().findLast(event => event.type === 'turn/start')?.data.turn ?? 0) + 1;
         agent.session.append('turn/start', { turn: m3Turn });
         m3Abort = new AbortController();
@@ -36,7 +49,7 @@ export function apply(ctx) {
         await new Promise(resolve => setTimeout(resolve, 20));
         const event = agent.session.snapshotEvents().findLast(event => event.type === 'approval/asked');
         if (!event || event.data.callId !== 'm3-installed-pending-full') throw new Error('M3 approval was not recorded');
-        process.send?.({ type: 'm3-pending-ready', approvalId: event.data.id });
+        process.send?.({ type: 'm3-pending-ready', approvalId: event.data.id, previousReplyPending });
       } catch (error) { process.send?.({ type: 'm3-pending-ready', error: String(error.stack ?? error) }); }
     } else if (message?.type === 'cancel-m3-pending') {
       m3Abort?.abort(); await m3Approval;
