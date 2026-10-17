@@ -1,6 +1,6 @@
 # 会话直接续接契约（M2）
 
-支持 DSH `0.2.0-rc.2` 和 `0.2.1-alpha.1`。共享线协议定义在 [chat-contract.js](../web/chat-contract.js) 和[类型声明](../web/chat-contract.d.ts)，Host 准入在 [chat.ts](../src/chat.ts)，Client 草稿状态在 [session-ui.js](../web/session-ui.js)。实际两版样本与重复命令见 [M2 证据](evidence/m2/README.md)。
+支持 DSH `0.2.0-rc.2`、`0.2.1-alpha.1`、`0.2.1-rc.1` 和 `0.2.1-rc.2`。共享线协议定义在 [chat-contract.js](../web/chat-contract.js) 和[类型声明](../web/chat-contract.d.ts)，Host 准入在 [chat.ts](../src/chat.ts)，Client 草稿状态在 [session-ui.js](../web/session-ui.js)。原两版样本与重复命令见 [M2 证据](evidence/m2/README.md)。
 
 ## 消息与回执
 

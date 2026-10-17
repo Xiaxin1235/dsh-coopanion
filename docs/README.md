@@ -1,8 +1,10 @@
 # 文档索引与接手状态
 
-核对日期：2026-10-16（Asia/Shanghai）。本页集中维护交付、候选身份与验收状态；行为以对应契约为准，版本、依赖和命令以仓库配置为准。历史记录不作为当前任务安排。
+核对日期：2026-10-17（Asia/Shanghai）。本页集中维护交付、候选身份与验收状态；行为以对应契约为准，版本、依赖和命令以仓库配置为准。历史记录不作为当前任务安排。
 
 ## 当前交付
+
+**本轮兼容性候选：v0.4.11（尚未发布）。** 针对 DSH 0.2.1-rc.1，并同时核对本日新发布的 0.2.1-rc.2；保留原两版支持。新增精确 `engines.dsh` 与 peers，安装矩阵扩为三平台／四版宿主的十二组同包检查。旧 v0.4.10 声明会被新宿主拒绝；候选声明通过实际宿主兼容性判断，接口、安装及发布验证继续独立结算。日用 v0.4.10 与周末采集保持原包身份。
 
 **已发布：v0.4.10**，源码 `4b6a54ae575d2c61a1d06d03e674fedf29846aaf`，规范包 SHA-256 `595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88`。[main CI](https://github.com/takboo/dsh-coopanion/actions/runs/38895406936) 的 10 项检查与[发布 CI](https://github.com/takboo/dsh-coopanion/actions/runs/38902873948) 的 13 项检查通过，包含三平台与两版宿主六组安装。npm、Release 版本包、固定及 latest 别名均与本机安装包逐字节一致；60 份安装报告绑定同一源码和压缩包。见[交付记录](evidence/releases/v0.4.10/README.md)及[正式 Release](https://github.com/takboo/dsh-coopanion/releases/tag/v0.4.10)。
 

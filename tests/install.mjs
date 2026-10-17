@@ -20,7 +20,7 @@ import { crashNative, connectRecovered, waitRecovery } from './helpers/desktop-r
 
 const sourceCommit = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
 const version = process.env.DSH_TEST_VERSION ?? '0.2.0-rc.2';
-assert.ok(['0.2.0-rc.2', '0.2.1-alpha.1'].includes(version), 'test only advertised DSH versions');
+assert.ok(['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-rc.1', '0.2.1-rc.2'].includes(version), 'test only advertised DSH versions');
 const project = fileURLToPath(new URL('../', import.meta.url));
 const manifest = JSON.parse(await readFile(join(project, 'package.json'), 'utf8'));
 const archive = resolve(process.env.DSH_TEST_PACKAGE ?? (process.env.DSH_TEST_PACKAGE_DIR
@@ -134,6 +134,12 @@ try {
   }
   if (version === '0.2.0-rc.2') assert.equal(evaluatePluginCompatibility(previous, {}, version)?.exempted, false, 'reproduce the previous release rejection');
   assert.ok(evaluatePluginCompatibility(manifest, {}, '0.2.0-rc.1'), 'unverified versions remain incompatible');
+  assert.ok(evaluatePluginCompatibility(manifest, {}, '0.2.1-rc.3'), 'later prereleases require explicit verification');
+  if (version.startsWith('0.2.1-rc.')) {
+    const restricted = structuredClone(manifest);
+    restricted.engines.dsh = '0.2.0-rc.2';
+    assert.ok(evaluatePluginCompatibility(restricted, {}, version), 'new hosts enforce engines.dsh even when peers match');
+  }
 
   await mkdir(profile, { recursive: true });
   await writeFile(join(profile, 'package.json'), JSON.stringify({ name: 'coopanion-install-profile', private: true, dependencies: {}, dsh: { profile: { bundles: ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-web-app'] } } }));

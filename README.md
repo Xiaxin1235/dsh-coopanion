@@ -53,7 +53,7 @@
 
 ## 开始一起工作
 
-需要 **DeepSeek Harness Desktop 0.2.0-rc.2 或 0.2.1-alpha.1**。这是 Harness 插件，聊天使用你在 Harness 中配置的模型，无需另填 API Key。
+需要 **DeepSeek Harness Desktop 0.2.0-rc.2、0.2.1-alpha.1、0.2.1-rc.1 或 0.2.1-rc.2**。这是 Harness 插件，聊天使用你在 Harness 中配置的模型，无需另填 API Key。
 
 ### 在 Harness 中从 npm 安装（推荐）
 
