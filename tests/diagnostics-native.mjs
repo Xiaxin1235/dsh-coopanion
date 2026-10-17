@@ -29,7 +29,7 @@ try {
   for (let i = 0; i < 50; i++) { [endpoint] = await listDiagnostics(registry); if (endpoint) break; await pause(100); }
   assert.ok(endpoint);
   const first = await readDiagnostics(endpoint);
-  assert.ok(first.value.renderer); assert.equal(first.version, '0.4.10');
+  assert.ok(first.value.renderer); assert.equal(first.version, require('../package.json').version);
   assert.equal(first.value.renderer.queues.carePending, 0);
   assert.ok(!JSON.stringify(first).includes('diagnostic private draft'));
   assert.deepEqual(await page.locator('#message').evaluate(n => [n.value, n.selectionStart, n.selectionEnd]), ['diagnostic private draft', 2, 8]);
