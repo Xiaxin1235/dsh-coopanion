@@ -20,7 +20,7 @@ import { crashNative, connectRecovered, waitRecovery } from './helpers/desktop-r
 
 const sourceCommit = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
 const version = process.env.DSH_TEST_VERSION ?? '0.2.0-rc.2';
-assert.ok(['0.2.0-rc.2', '0.2.1-alpha.1'].includes(version), 'test only advertised DSH versions');
+assert.ok(['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-rc.1', '0.2.1-rc.2'].includes(version), 'test only advertised DSH versions');
 const project = fileURLToPath(new URL('../', import.meta.url));
 const manifest = JSON.parse(await readFile(join(project, 'package.json'), 'utf8'));
 const archive = resolve(process.env.DSH_TEST_PACKAGE ?? (process.env.DSH_TEST_PACKAGE_DIR
@@ -55,10 +55,15 @@ async function waitProfile(pattern) {
   assert.match(await readFile(join(profile, 'cordis.patch.yml'), 'utf8'), pattern, 'the Host persisted its locale preference');
 }
 async function openPetSettings(page, chinese = true) {
-  const launcher = page.getByRole('button', { name: chinese ? '设置' : 'Settings', exact: true });
+  const settingsName = chinese ? '设置' : 'Settings';
+  const accountMenu = version.startsWith('0.2.1-rc.');
+  const launcher = page.getByRole('button', { name: accountMenu ? (chinese ? '账号菜单' : 'Account menu') : settingsName, exact: true });
   const section = page.getByRole('button', { name: chinese ? '桌宠' : 'Desktop pet', exact: true });
   for (let attempt = 0; attempt < 2; attempt++) {
     await launcher.click();
+    if (accountMenu) {
+      await page.getByRole('menuitem', { name: settingsName, exact: true }).click();
+    }
     try {
       await section.waitFor({ timeout: 5000 });
       await section.click();
@@ -67,9 +72,10 @@ async function openPetSettings(page, chinese = true) {
       return;
     } catch (error) {
       // DSH closes its panel when initial session/onboarding hydration settles.
-      // Reopen only if the public launcher confirms it actually closed; a missing
+      // Reopen only if the public UI confirms it actually closed; a missing
       // plugin section or failed status/configuration load in an open panel must fail.
-      if (attempt !== 0 || await launcher.getAttribute('aria-expanded') !== 'false') throw error;
+      const closed = accountMenu ? await page.getByRole('dialog').count() === 0 : await launcher.getAttribute('aria-expanded') === 'false';
+      if (attempt !== 0 || !closed) throw error;
       console.log('DSH closed settings during initial onboarding; reopening the native panel.');
     }
   }
@@ -134,6 +140,12 @@ try {
   }
   if (version === '0.2.0-rc.2') assert.equal(evaluatePluginCompatibility(previous, {}, version)?.exempted, false, 'reproduce the previous release rejection');
   assert.ok(evaluatePluginCompatibility(manifest, {}, '0.2.0-rc.1'), 'unverified versions remain incompatible');
+  assert.ok(evaluatePluginCompatibility(manifest, {}, '0.2.1-rc.3'), 'later prereleases require explicit verification');
+  if (version.startsWith('0.2.1-rc.')) {
+    const restricted = structuredClone(manifest);
+    restricted.engines.dsh = '0.2.0-rc.2';
+    assert.ok(evaluatePluginCompatibility(restricted, {}, version), 'new hosts enforce engines.dsh even when peers match');
+  }
 
   await mkdir(profile, { recursive: true });
   await writeFile(join(profile, 'package.json'), JSON.stringify({ name: 'coopanion-install-profile', private: true, dependencies: {}, dsh: { profile: { bundles: ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-web-app'] } } }));

@@ -25,13 +25,13 @@ npm run test:install
 
 `npm run dev` 打开浏览器演示服务（默认 `http://127.0.0.1:4173`），`npm run demo` 启动桌面演示。演示中的任务事件是模拟的。浏览器预览和桌面版使用同一个 API 2 存储与沙箱运行时。
 
-浏览器测试检查实际 WebGL 动画、逐字说话与嘴部同步、拖拽 / 落地、会话、聊天、换装、包导入、重启保存及脚本隔离。桌面测试验证真实 Electron 窗口、IPC、流式动画、最终回复与完整阅读、休息唤醒、实际状态栏图标和角色数据；CI 同时运行 Linux、macOS、Windows 原生窗口测试。安装测试使用官方 DSH profile loader 安装实际 `.tgz`，检查任务事件、会话导航、设置页、配置持久化和重启；`DSH_TEST_VERSION=0.2.1-alpha.1` 测试另一支持版本。
+浏览器测试检查实际 WebGL 动画、逐字说话与嘴部同步、拖拽 / 落地、会话、聊天、换装、包导入、重启保存及脚本隔离。桌面测试验证真实 Electron 窗口、IPC、流式动画、最终回复与完整阅读、休息唤醒、实际状态栏图标和角色数据；CI 同时运行 Linux、macOS、Windows 原生窗口测试。安装测试使用官方 DSH profile loader 安装实际 `.tgz`，检查任务事件、会话导航、设置页、配置持久化和重启；`DSH_TEST_VERSION=0.2.1-rc.1` 测试 rc.1；其他支持版本同样通过此变量选择。
 
 CI 窗口测试使用隔离数据和测试沙箱参数；Linux 在虚拟显示中运行。普通安装保留 Chromium sandbox、contextIsolation，关闭 Node integration。安装测试中的通知适配器、原生可见性及答复器为受控边界；完整系统实机验收和外部真实模型会话尚未验证。
 
 ## CI 与发布
 
-CI 在 **Linux、macOS、Windows** 执行元数据检查、类型检查、单元测试、浏览器交互及真实 Electron 窗口测试，并在三平台分别验证两个 DSH 版本的实际安装。稳定 `v<major>.<minor>.<patch>` 标签派发 main 上的发布流程；全部检查通过后，用 npm OIDC 发布已验证的同一份 `.tgz`，再创建 GitHub Release，附带版本化和固定名称的插件包、示例角色、校验值、源码提交报告及当前版本说明。
+CI 在 **Linux、macOS、Windows** 执行元数据检查、类型检查、单元测试、浏览器交互及真实 Electron 窗口测试，并在三平台分别验证四个 DSH 版本的实际安装。稳定 `v<major>.<minor>.<patch>` 标签派发 main 上的发布流程；全部检查通过后，用 npm OIDC 发布已验证的同一份 `.tgz`，再创建 GitHub Release，附带版本化和固定名称的插件包、示例角色、校验值、源码提交报告及当前版本说明。
 
 npm 使用已配置的 Trusted Publisher；dshmarket 通过社区目录 PR 收录，再自动关联 npm 包。具体操作和失败重跑见 [发布说明](releasing.md)，市场条目的收录状态见 [目录 PR](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/7073)。
 
