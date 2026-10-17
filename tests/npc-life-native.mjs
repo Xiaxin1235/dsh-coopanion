@@ -10,10 +10,14 @@ import { listDiagnostics, readDiagnostics } from '../scripts/diagnostics-client.
 const require = createRequire(import.meta.url), root = await mkdtemp(join(tmpdir(), 'dsh-npc-native-'));
 const packageRoot = resolve(process.env.DSH_NPC_PACKAGE_ROOT ?? '.');
 let app, page;
-let debugStage = 'launch';
+let debugStage = 'launch', debugStageAt = Date.now();
 const debugAt = Date.now();
-const debugStageMark = stage => { debugStage = stage; console.log('[DEBUG-npc-stage-20261017]', stage, Date.now() - debugAt, process.env.DSH_PET_TEST_DEBUG_PORT); };
+const debugStageMark = stage => { debugStage = stage; debugStageAt = Date.now(); console.log('[DEBUG-npc-stage-20261017]', stage, Date.now() - debugAt, process.env.DSH_PET_TEST_DEBUG_PORT); };
 const debugWatch = setInterval(async () => {
+  if (Date.now() - debugStageAt > 45000) {
+    console.error('[DEBUG-npc-stage-20261017] STALLED', debugStage, Date.now() - debugStageAt);
+    process.exit(86);
+  }
   const native = await app?.evaluate(({ app, BrowserWindow }) => ({ hidden: app.isHidden?.(), windows: BrowserWindow.getAllWindows().map(w => ({ visible: w.isVisible(), focused: w.isFocused(), minimized: w.isMinimized(), bounds: w.getBounds() })) })).catch(error => ({ error: error.message }));
   const renderer = page ? await Promise.race([
     page.evaluate(() => ({ hidden: document.hidden, visibility: document.visibilityState, raf: window.__debugNpcRaf, npc: window.npcState, input: window.npcInput, mode: document.querySelector('#pet')?.dataset.mode })).catch(error => ({ error: error.message })),

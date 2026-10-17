@@ -11,7 +11,11 @@ permissions:
 jobs:
   macos:
     runs-on: macos-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        port: [fixed, random]
     defaults:
       run:
         shell: bash
@@ -25,21 +29,38 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run setup:electron
       - run: npm run build
-      - run: npx playwright-core install --with-deps chromium
-      - run: npm run character:pack -- examples/star paper-star.zip
-      - run: npm run test:ui
-      - run: npm run test:notification-ui
-      - run: npm run test:inbox-ui
-      - run: npm run test:keyboard-native
-      - name: Trace native stages after the original browser prelude
-        timeout-minutes: 5
+      - name: Repeat the companion to NPC process handoff
+        timeout-minutes: 7
         env:
-          DEBUG: pw:api,pw:browser
+          DEBUG: pw:browser
           ELECTRON_ENABLE_LOGGING: '1'
-        run: npm run test:desktop
+          DSH_DIAG_PORT_MODE: ${{ matrix.port }}
+        run: |
+          node --input-type=module <<'JS'
+          import { createServer } from 'node:net';
+          import { once } from 'node:events';
+          import { copyFile, mkdtemp } from 'node:fs/promises';
+          import { tmpdir } from 'node:os';
+          import { join } from 'node:path';
+          const parent = await mkdtemp(join(tmpdir(), 'dsh-npc-parent-'));
+          const listener = createServer(); listener.listen(0, '127.0.0.1'); await once(listener, 'listening');
+          const port = listener.address().port; await new Promise(resolve => listener.close(resolve));
+          process.env.DSH_PET_TEST_DEBUG_PORT = process.env.DSH_DIAG_PORT_MODE === 'fixed' ? String(port) : '0';
+          process.env.DSH_PET_TEST_DATA_DIR = parent;
+          process.env.DSH_PET_TEST_NO_SANDBOX = '1';
+          process.env.XDG_CONFIG_HOME = parent; process.env.XDG_CACHE_HOME = parent;
+          for (let iteration = 1; iteration <= 5; iteration++) {
+            console.log('[DEBUG-npc-stage-20261017] handoff', iteration, process.env.DSH_DIAG_PORT_MODE);
+            await import(`./tests/companionship-native.mjs?iteration=${iteration}`);
+            await copyFile('artifacts/companionship-native.json', `artifacts/companionship-native-${iteration}.json`);
+            await import(`./tests/npc-life-native.mjs?iteration=${iteration}`);
+            await copyFile('artifacts/npc-life-native.json', `artifacts/npc-life-native-${iteration}.json`);
+            await copyFile('artifacts/npc-life-native-home.png', `artifacts/npc-life-native-home-${iteration}.png`);
+          }
+          JS
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         if: always()
         with:
-          name: native-npc-stage-diagnosis
+          name: native-npc-stage-diagnosis-${{ matrix.port }}
           path: artifacts/
           retention-days: 7
