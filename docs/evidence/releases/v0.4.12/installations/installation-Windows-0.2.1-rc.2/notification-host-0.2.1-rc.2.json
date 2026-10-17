@@ -1,0 +1,182 @@
+{
+  "dsh": "0.2.1-rc.2",
+  "pluginVersion": "0.4.12",
+  "sourceCommit": "015ef3a792e9db17897d5ceed611106d78aedabd",
+  "kind": "actual-host-contract",
+  "cases": {
+    "questionOpen": true,
+    "continuedSurvivesTurnEnd": true,
+    "prefixReplyCannotSettle": true,
+    "exactLateReplySettles": true,
+    "approvalNativePair": true,
+    "questionPublicRequestAndCancellation": true,
+    "stopVocabulary": true
+  },
+  "source": "published DSH services and public projection snapshot",
+  "packages": {
+    "dsh-session": "2f5dd07cb5c744a29abbb8003a8a4cefd9e582c6e2538074ca299a0ddd02a3bf",
+    "dsh-user-approval": "6a5ad1ba3c3dc3abbbae52e6c8c4463970ee0c1c8988cebb0d5cf2acd17ee90b",
+    "dsh-user-questions": "e1c51afac2e31be8593c6426976e5f31dbe2a709b85ae1ea43ed406146f54265"
+  },
+  "events": [
+    {
+      "type": "turn/start",
+      "seq": 0,
+      "time": 1792245344066,
+      "data": {
+        "turn": 1
+      }
+    },
+    {
+      "type": "request/header",
+      "seq": 1,
+      "time": 1792245344067,
+      "data": {
+        "reason": "initial",
+        "header": {
+          "tools": [
+            {
+              "name": "ask_user_question",
+              "description": "N0 timed question",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "timeout": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "tool/call",
+      "seq": 2,
+      "time": 1792245344067,
+      "data": {
+        "turn": 1,
+        "step": 1,
+        "callId": "n0-call-complete-identity",
+        "name": "ask_user_question",
+        "arguments": "{\"questions\":[{\"id\":\"q\",\"question\":\"N0 问题\"}]}"
+      }
+    },
+    {
+      "type": "tool/result",
+      "seq": 3,
+      "time": 1792245344069,
+      "data": {
+        "turn": 1,
+        "step": 1,
+        "message": {
+          "role": "tool",
+          "id": "result",
+          "toolCallId": "n0-call-complete-identity",
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"pending\":true,\"callId\":\"n0-call-complete-identity\"}"
+            }
+          ]
+        }
+      },
+      "surfaceOp": "append"
+    },
+    {
+      "type": "turn/end",
+      "seq": 4,
+      "time": 1792245344070,
+      "data": {
+        "turn": 1,
+        "reason": {
+          "kind": "completed"
+        }
+      }
+    },
+    {
+      "type": "turn/start",
+      "seq": 5,
+      "time": 1792245344070,
+      "data": {
+        "turn": 2
+      }
+    },
+    {
+      "type": "user/message",
+      "seq": 6,
+      "time": 1792245344070,
+      "data": {
+        "role": "user",
+        "id": "unrelated",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"answers\":[]}"
+          }
+        ],
+        "source": {
+          "kind": "user-question-reply",
+          "callId": "n0-call",
+          "outcome": "answered"
+        }
+      },
+      "surfaceOp": "append"
+    },
+    {
+      "type": "user/message",
+      "seq": 7,
+      "time": 1792245344070,
+      "data": {
+        "role": "user",
+        "id": "late",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"answers\":[{\"id\":\"q\",\"selected\":[],\"custom\":\"回答\"}]}"
+          }
+        ],
+        "source": {
+          "kind": "user-question-reply",
+          "callId": "n0-call-complete-identity",
+          "outcome": "answered"
+        }
+      },
+      "surfaceOp": "append"
+    },
+    {
+      "type": "approval/asked",
+      "seq": 8,
+      "time": 1792245344072,
+      "data": {
+        "id": "aa3f9862-7af7-4e64-a081-89b22db5ff8a",
+        "toolName": "bash",
+        "callId": "approval-call"
+      }
+    },
+    {
+      "type": "approval/decided",
+      "seq": 9,
+      "time": 1792245344072,
+      "data": {
+        "id": "aa3f9862-7af7-4e64-a081-89b22db5ff8a",
+        "outcome": "allowed-once"
+      }
+    }
+  ],
+  "status": "pass",
+  "integration": {
+    "kind": "installed-plugin-published-services",
+    "loader": "published-dsh-host",
+    "nativeVisibility": "controlled",
+    "humanAnswers": "controlled",
+    "model": "not-used",
+    "cases": {
+      "approvalServiceThroughInstalledPlugin": true,
+      "timedServiceContinuedSnoozeAndExactAnswer": true,
+      "questionServiceCancellationSettlesPlugin": true,
+      "installedServiceCleanup": true
+    }
+  }
+}

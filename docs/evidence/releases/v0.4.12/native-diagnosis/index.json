@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "canonicalArtifact": false,
+  "boundary": "Diagnostic instrumentation and repeated controlled cases; distinct from unchanged-tag formal release validation. Periodic state queries are not a system-cause fix.",
+  "runs": [
+    {
+      "run": 39034655036,
+      "sourceCommit": "eacee3cfdb153ae49632da47c81525e6ce6091cd",
+      "conclusion": "failure",
+      "meaning": "Earlier multi-display drag wait failed before NPC; no NPC verdict",
+      "sha256": "866a6244d410d47d3425352286e12de5dcb91b21dc892fabe892524647b7eb89"
+    },
+    {
+      "run": 39035545232,
+      "sourceCommit": "38f0f8500bf9fa1741e5bf22ab33830c9d77d0e1",
+      "conclusion": "success",
+      "meaning": "10 companion-to-NPC handoffs passed",
+      "sha256": "88fcc693eb28482339bc407d4536a45a9695572c664c0eace8f957166a9d2ce6"
+    },
+    {
+      "run": 39036029514,
+      "sourceCommit": "af9da5e5cf4ea4d14097ea957d794ecd397e0171",
+      "conclusion": "success",
+      "meaning": "4 recovery-to-NPC handoffs passed",
+      "sha256": "b84d70bd0702143a87eea0c9d5e42d5ec36374a98efc9f70c918f915475dded5"
+    },
+    {
+      "run": 39036399705,
+      "sourceCommit": "7e6cd28e8030406d679917ec177d35a83b0b3ae3",
+      "conclusion": "success",
+      "meaning": "Both complete prelude controls passed; display sleep disabled",
+      "sha256": "7ecc924a7a242408ebd44c9f7074c2b9a985072c6c2545ce12f1fa9bcbc519ce"
+    }
+  ],
+  "excerpts": [
+    {
+      "file": "idle-stage-excerpts.log",
+      "bytes": 4530,
+      "sha256": "efad16d370a371e3c5766e38e63978514a3d8c9cd196b28da3d394430570437c",
+      "originalLogSha256": "eded33e7fe0a6669847af9b5f5a971680281e026cec8549b235cb99001a087a5",
+      "boundary": "Selected original marker lines, not the complete log"
+    },
+    {
+      "file": "awake-stage-excerpts.log",
+      "bytes": 4540,
+      "sha256": "889076454efce677cc868145a02090eefa19c051d364f6a637bfea62ca68686d",
+      "originalLogSha256": "68e41bfd15ea591778555dd019610c808a2af1fcc8105e21c1bea57048ee59cf",
+      "boundary": "Selected original marker lines, not the complete log"
+    }
+  ],
+  "localStandaloneCases": {
+    "sourceCommit": "015ef3a792e9db17897d5ceed611106d78aedabd",
+    "instrumentationCommit": "eacee3cfdb153ae49632da47c81525e6ce6091cd",
+    "fixedPort": "pass",
+    "randomPort": "pass"
+  },
+  "extraFdProbe": "Both normal and explicitly closed descriptor cases exited and closed immediately"
+}

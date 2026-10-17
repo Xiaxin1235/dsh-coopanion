@@ -4,15 +4,15 @@
 
 ## 当前交付
 
-**本轮兼容性候选：v0.4.12（尚未发布）。** 针对 DSH 0.2.1-rc.1，并同时核对本日新发布的 0.2.1-rc.2；保留原两版支持。新增精确 `engines.dsh` 与 peers，安装矩阵扩为三平台／四版宿主的十二组同包检查。已补齐新宿主设置导航和以真实回合结束为边界的安装恢复夹具，并修复 Windows 诊断发现文件撤销时的读取竞争。旧 v0.4.10 声明会被新宿主拒绝；候选声明通过实际宿主兼容性判断，接口、安装及发布验证继续独立结算。v0.4.11 的主分支检查通过，但发布阶段暴露戳触测试未区分随机跳跃与纯表情的误报，未上传 npm／Release；保留标签与原始记录，不移动标签。v0.4.12 已固定两条物理路径，标签源码 `015ef3a792e9db17897d5ceed611106d78aedabd` 的主分支 16 项检查全部通过，规范包 SHA-256 `5abd4079a114e1314e869dd65f15614b5eb57857727e5ab3ec654cf83290dab3`。正式发布曾两次在 macOS 原生步骤停滞，尚未上传；独立对照均通过，未宣称已定位系统原因。工作流现在增加进程日志和六分钟上限，继续验证原标签与同一规范包，不因工作流／文档提交重定产品身份。日用 v0.4.10 与周末采集保持原包身份。
+**已发布：v0.4.12**，源码 `015ef3a792e9db17897d5ceed611106d78aedabd`，规范包 SHA-256 `5abd4079a114e1314e869dd65f15614b5eb57857727e5ab3ec654cf83290dab3`。新增 DSH **0.2.1-rc.1／0.2.1-rc.2** 精确兼容声明，保留 0.2.0-rc.2／0.2.1-alpha.1；修复旧声明被新宿主拒绝及 Windows 诊断文件读取竞争，适配设置导航并修正安装／原生退出测试竞争；正式 CI 增加进程日志与原生步骤时限。[main CI](https://github.com/takboo/dsh-coopanion/actions/runs/39031172723) 16 项与[发布 CI](https://github.com/takboo/dsh-coopanion/actions/runs/39037489562) 19 项检查通过，包含三平台／四版宿主十二组同包安装；npm 与 Release 版本包、固定及 latest 别名逐字节一致。144 份原始安装报告、重跑及验收边界见[交付记录](evidence/releases/v0.4.12/README.md)和[正式 Release](https://github.com/takboo/dsh-coopanion/releases/tag/v0.4.12)。本轮未改既有日用安装或周末采集。
 
-**已发布：v0.4.10**，源码 `4b6a54ae575d2c61a1d06d03e674fedf29846aaf`，规范包 SHA-256 `595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88`。[main CI](https://github.com/takboo/dsh-coopanion/actions/runs/38895406936) 的 10 项检查与[发布 CI](https://github.com/takboo/dsh-coopanion/actions/runs/38902873948) 的 13 项检查通过，包含三平台与两版宿主六组安装。npm、Release 版本包、固定及 latest 别名均与本机安装包逐字节一致；60 份安装报告绑定同一源码和压缩包。见[交付记录](evidence/releases/v0.4.10/README.md)及[正式 Release](https://github.com/takboo/dsh-coopanion/releases/tag/v0.4.10)。
+**历史发布 v0.4.10**，源码 `4b6a54ae575d2c61a1d06d03e674fedf29846aaf`，规范包 SHA-256 `595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88`。[main CI](https://github.com/takboo/dsh-coopanion/actions/runs/38895406936) 的 10 项检查与[发布 CI](https://github.com/takboo/dsh-coopanion/actions/runs/38902873948) 的 13 项检查通过，包含三平台与两版宿主六组安装。npm、Release 版本包、固定及 latest 别名均与本机安装包逐字节一致；60 份安装报告绑定同一源码和压缩包。见[交付记录](evidence/releases/v0.4.10/README.md)及[正式 Release](https://github.com/takboo/dsh-coopanion/releases/tag/v0.4.10)。
 
-**日用安装与周末采集：** 本机 Desktop 0.2.0-rc.2 已通过官方 CLI 安装上述包，全部 1232 份文件核验相等，原配置保留；普通沙箱启动，互动陪伴、漫游和诊断保持开启。独立被动采集于 10 月 16 日 20:12 开始，每 30 秒记录，计划截止 **10 月 19 日 09:00（Asia/Shanghai）**，允许正常锁屏、休眠、唤醒和数据缺口。原始日用数据只留本机；截至交付核对仍在采集，尚未结算周末资源／自然生命周期或完整 P1 验收。原七天采样保持取消。本轮用户已授权安装、采集及发布，取代早先仅本地候选、不发布的限制。
+**既有日用安装与周末采集（10 月 16 日记录）：** 本机 Desktop 0.2.0-rc.2 当时已通过官方 CLI 安装 v0.4.10 规范包，1232 份文件核验相等；普通沙箱启动，互动陪伴、漫游和诊断开启。独立被动采集于 10 月 16 日 20:12 开始，每 30 秒记录，计划截止 **10 月 19 日 09:00（Asia/Shanghai）**，允许正常锁屏、休眠、唤醒和缺口。本轮兼容性发布未重装日用包、未调整采集，也未重新核对采样存活或结算周末资源／自然生命周期与完整 P1 验收；原始日用数据仍只留本机。原七天采样及填表要求保持取消。
 
-**历史发布 v0.4.9**，源码 `aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2`；M1–M6 及当时分发身份保留于[原交付记录](evidence/releases/v0.4.9/README.md)。下方旧候选描述其固定包形成时的验证范围，当前交付以上方 v0.4.10 为准；原始包与报告不改写。
+**历史发布 v0.4.9**，源码 `aac5bba0ba450f35e0b014d9b0a0a17a1f3fd6f2`；M1–M6 及当时分发身份保留于[原交付记录](evidence/releases/v0.4.9/README.md)。下方旧候选描述其固定包形成时的验证范围，当前交付以上方 v0.4.12 为准；原始包与报告不改写。
 
-**已替换的日用旧候选：0.4.10**，源码 `3a93a369bfa72f53941bd8a5c45c3cdd6ca58e07`，包 SHA-256 `56d55538d0f30e0f677e4ff0748fa23991990434724ff7371c48a01cfa476ec1`。本机日用 Desktop 曾安装这个包，现已被上方规范包替换；候选核验与安装证据见[固定记录](evidence/p1/diagnostics-20261016/README.md)，配置纠正和运行状态见[后续核对](evidence/p1/diagnostics-followup-20261016/README.md)。它的原始包与证据保持不变。
+**已替换的日用旧候选：0.4.10**，源码 `3a93a369bfa72f53941bd8a5c45c3cdd6ca58e07`，包 SHA-256 `56d55538d0f30e0f677e4ff0748fa23991990434724ff7371c48a01cfa476ec1`。本机日用 Desktop 曾安装这个包，10 月 16 日已被 v0.4.10 正式规范包替换；候选核验与安装证据见[固定记录](evidence/p1/diagnostics-20261016/README.md)，配置纠正和运行状态见[后续核对](evidence/p1/diagnostics-followup-20261016/README.md)。它的原始包与证据保持不变。
 
 **键盘修订历史候选（保留原包）：0.4.10**，源码 `555503ef54e1375b084a6bc34d9472e9726658be`，包 SHA-256 `f459a7c8715bf892d9b0649521bc26a9d29befddc09950d89319d43e0fc48d34`。修复 macOS 监听授权误门槛及 JXA 循环崩溃，加入 Windows Raw Input 与 Linux X11 活动类别适配；Wayland／不可用会话保守 unknown。macOS 类型、229 项单测（另 1 项跳过）、12 项 Node 检查、完整收件箱／串行原生和两版同包安装通过；固定包真实 macOS 辅助进程与 Linux x64／ARM64 隔离 X11 合成键盘／仅鼠标测试通过。481 份产品输入与源码逐字节匹配。Linux Xorg 与 Windows 11 本地控制台 VM 的同包键鼠／退让／恢复验证已通过，临时 VM 已回收，见[VM 原生记录](evidence/p1/keyboard-vm-20261016/README.md)。该固定候选当时接入了探针、尚未远端执行；macOS 可见输入面板初验通过：物理输入→退让，仅鼠标 30 秒保持 idle，稳定空闲后自然恢复到出发／观察／开始返回。先前聊天提示尝试未计验收；Windows／Linux 物理输入、跨应用／生命周期、三平台完整资源与自然体验仍待验收。见[独立记录](evidence/p1/keyboard-platforms-20261016/README.md)。该记录形成时未推送、未发布、未改日用安装；后续交付见上方当前状态。
 
@@ -28,7 +28,7 @@ P1 实现与部分验证完成，**旧候选的短时体验未通过**：用户�
 | 旧 P1 与诊断候选 | macOS 类型、211 项单测（另 1 项平台跳过）、12 项 Node 检查、浏览器／收件箱／原生及两版宿主同包安装；Linux 212 项单测、VM 短测通过 | 短时体验未通过；新候选远端三平台／六组安装未执行，旧 macOS CI 失败仅已做本机修正；两小时资源与物理设备仍待验收 |
 | NPC 有限空间与键盘修订 | macOS 完整收件箱／串行原生、两版新包安装、本机物理输入／仅鼠标／自然恢复初验通过；Linux Xorg／Windows 11 控制台 VM 同包虚拟键鼠及自然恢复通过；旧候选短测独立保留 | Windows／Linux 物理输入、跨应用／生命周期、完整预算／两小时新包资源和自然体验待验收；当前分发的远端矩阵见上方交付记录 |
 | 系统通知 | N0 私有原型的单实例 macOS 实机记录，后续受控投递与服务集成 | 当前分发包通知中心送达、留存、点击及跨平台实机验收 |
-| 社区市场 | 本轮查询目录 [PR #7073](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/7073) 仍 open、未合并 | 合并后的在线目录、搜索与修改记录可见性 |
+| 社区市场 | [PR #7073](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/7073) 已合并，在线目录已包含插件及固定下载地址；核验快照见 [v0.4.12 交付记录](evidence/releases/v0.4.12/market-status.json) | 新版 npm 映射、修改记录和市场界面的同步分别核对 |
 
 ## P1 观察与体验结论
 
