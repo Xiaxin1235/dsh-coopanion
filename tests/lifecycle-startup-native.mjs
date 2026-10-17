@@ -39,7 +39,17 @@ for (const initialState of real ? ['system'] : ['locked', 'unknown', 'restore-lo
     }
     records.push({ platform: process.platform, build: snapshot.build, controlledInitialState: real ? null : initialState, normalSandbox: real, runtime: state });
   } finally {
-    child.kill('SIGTERM'); await exited; await rm(root, { recursive: true, force: true });
+    const deadline = setTimeout(() => child.kill('SIGKILL'), 10000);
+    try {
+      // Windows SIGTERM forcibly terminates the main process before Chromium
+      // releases its profile. Use the desktop's normal IPC quit path instead.
+      if (child.connected) child.send({ type: 'quit' }); else child.kill('SIGTERM');
+      const [code, signal] = await exited;
+      assert.equal(signal, null, stderr); assert.equal(code, 0, stderr);
+    } finally {
+      clearTimeout(deadline);
+      await rm(root, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
+    }
   }
 }
 await mkdir('artifacts', { recursive: true });
