@@ -1,0 +1,45 @@
+name: Native NPC stage diagnosis
+
+on:
+  push:
+    branches: [codex/native-npc-stage-debug]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  macos:
+    runs-on: macos-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-toolchain
+        with:
+          cache: ''
+      - run: npm ci --ignore-scripts
+      - run: npm run setup:electron
+      - run: npm run build
+      - run: npx playwright-core install --with-deps chromium
+      - run: npm run character:pack -- examples/star paper-star.zip
+      - run: npm run test:ui
+      - run: npm run test:notification-ui
+      - run: npm run test:inbox-ui
+      - run: npm run test:keyboard-native
+      - name: Trace native stages after the original browser prelude
+        timeout-minutes: 5
+        env:
+          DEBUG: pw:api,pw:browser
+          ELECTRON_ENABLE_LOGGING: '1'
+        run: npm run test:desktop
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: always()
+        with:
+          name: native-npc-stage-diagnosis
+          path: artifacts/
+          retention-days: 7
