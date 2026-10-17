@@ -29,36 +29,19 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run setup:electron
       - run: npm run build
-      - name: Repeat the companion to NPC process handoff
+      - run: npm run character:pack -- examples/star paper-star.zip
+      - name: Repeat the crash recovery to NPC handoff
         timeout-minutes: 7
         env:
           DEBUG: pw:browser
           ELECTRON_ENABLE_LOGGING: '1'
-          DSH_DIAG_PORT_MODE: ${{ matrix.port }}
+          DSH_DIAG_FRESH_NPC_PORT: ${{ matrix.port == 'random' && '1' || '0' }}
         run: |
-          node --input-type=module <<'JS'
-          import { createServer } from 'node:net';
-          import { once } from 'node:events';
-          import { copyFile, mkdir, mkdtemp } from 'node:fs/promises';
-          import { tmpdir } from 'node:os';
-          import { join } from 'node:path';
-          await mkdir('artifacts', { recursive: true });
-          const parent = await mkdtemp(join(tmpdir(), 'dsh-npc-parent-'));
-          const listener = createServer(); listener.listen(0, '127.0.0.1'); await once(listener, 'listening');
-          const port = listener.address().port; await new Promise(resolve => listener.close(resolve));
-          process.env.DSH_PET_TEST_DEBUG_PORT = process.env.DSH_DIAG_PORT_MODE === 'fixed' ? String(port) : '0';
-          process.env.DSH_PET_TEST_DATA_DIR = parent;
-          process.env.DSH_PET_TEST_NO_SANDBOX = '1';
-          process.env.XDG_CONFIG_HOME = parent; process.env.XDG_CACHE_HOME = parent;
-          for (let iteration = 1; iteration <= 5; iteration++) {
-            console.log('[DEBUG-npc-stage-20261017] handoff', iteration, process.env.DSH_DIAG_PORT_MODE);
-            await import(`./tests/companionship-native.mjs?iteration=${iteration}`);
-            await copyFile('artifacts/companionship-native.json', `artifacts/companionship-native-${iteration}.json`);
-            await import(`./tests/npc-life-native.mjs?iteration=${iteration}`);
-            await copyFile('artifacts/npc-life-native.json', `artifacts/npc-life-native-${iteration}.json`);
-            await copyFile('artifacts/npc-life-native-home.png', `artifacts/npc-life-native-home-${iteration}.png`);
-          }
-          JS
+          for attempt in 1 2; do
+            node tests/native-npc-recovery-probe.mjs
+            mkdir -p "artifacts/recovery-$attempt"
+            cp artifacts/desktop-recovery.json artifacts/npc-life-native.json artifacts/npc-life-native-home.png "artifacts/recovery-$attempt/"
+          done
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         if: always()
         with:
