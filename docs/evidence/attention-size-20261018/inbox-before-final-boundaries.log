@@ -1,0 +1,69 @@
+
+> @takboo/dsh-coopanion@0.4.12 test:inbox-ui
+> node tests/inbox-ui.mjs && node --test --test-concurrency=1 tests/session-replies-ui.mjs tests/text-scale-ui.mjs && node --test tests/multi-display-ui.mjs && node --test tests/npc-controls-ui.mjs tests/attention-size-ui.mjs && node --test tests/companionship-ui.mjs
+
+Inbox UI passed: one-click full reply, direct source actions, mixed pending items, stable chat focus and reading order, Unicode/text safety, bilingual copy and narrow layout.
+✔ unread replies coalesce by session and reading does not expose old turns again (774.274375ms)
+✔ native recovery baseline preserves unread results without speaking or acknowledging them again (664.312625ms)
+✔ full replies render Markdown headings, emphasis, tables and fenced code (476.77075ms)
+✔ multiple turns of a single session still open directly with one click (495.107625ms)
+✔ reply markup cannot inject HTML, active URLs or external images (568.379041ms)
+✔ chat freezes the target, keeps per-session drafts and retries a lost receipt with the same request ID (446.478333ms)
+✔ full-result continue opens the exact source composer without replacing the reading snapshot (537.774542ms)
+✔ composer timeout preserves identity and acceptance remains monotonic (2.220584ms)
+✔ zh-CN: all text scales × character extremes keep reader, inbox and draft usable (1980.609625ms)
+✔ en-US: all text scales × character extremes keep reader, inbox and draft usable (1390.762833ms)
+✔ text scaling keeps final bubble font and original dismissal clock (2450.317292ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10368.269625
+✔ controlled irregular layout and mixed DPR preserve reading, draft, in-flight identity and hit areas (2688.631375ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3065.406458
+✔ Take a look acknowledges this generic error, clearing envelope and sad expression (1295.305209ms)
+✔ hovering while typing cannot repeatedly expand and shrink the NPC body (1188.262916ms)
+✔ Take a look never dismisses a real approval or question (748.587167ms)
+✔ off and automatic permission never fall back to random roaming; quiet and interactive use NPC (2467.856542ms)
+✔ hot preference keeps reader DOM/scroll, draft/focus/selection, request identity and bubble expiry (3724.510417ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6726.311041
+✔ NPC follows real arrival, pauses typing, resumes retained intent and returns home (9540.593167ms)
+✔ invitation reserves once, ignores naturally, persists quiet and cannot send model/task messages (49377.507833ms)
+✔ manual play grows only after completion, aborted play does not, archive survives renderer reload (4188.22075ms)
+✔ hot companionship modes preserve captured reader, draft selection, and in-flight identities (368.029667ms)
+✔ real strokes count once, forged sandbox touches do not, missing words remain safe (4892.171542ms)
+✔ twenty manual activities react within 500ms and interrupted trials never grow (1144.355834ms)
+✔ twenty real strokes keep visible feedback while hovering and share the growth cooldown (61033.958459ms)
+✔ six stored moments across three dates unlock the real familiar greeting after rehydration (13869.091625ms)
+✔ reduced motion cancels an in-progress activity and a small large-text menu remains reachable (377.562375ms)
+✔ idle rendering is bounded while real elapsed time, work and input keep their cadence (8299.976583ms)
+✔ unknown input, mouse proximity, lifecycle and limited star keep control and vocabulary safe (3080.849458ms)
+✔ native NPC waits for acknowledged workArea before establishing home (1460.026ms)
+✔ manual interaction survives a frame timestamp preceding the click event clock (5134.499875ms)
+✔ manual interaction follows a real poke reaction while actual work still preempts it (jump=false) (1444.024625ms)
+✔ manual interaction follows a real poke reaction while actual work still preempts it (jump=true) (1421.519875ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 165893.879083

@@ -1,0 +1,81 @@
+✖ selection, typing and dragging always retain the configured size (849.263834ms)
+✖ a fast placement at the edge drops without an automatic reverse throw (1028.058125ms)
+✖ manual relocation before the first NPC departure cannot be overwritten by home placement (1041.443583ms)
+✖ dragging an outbound pet releases its old walk target (929.990291ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 0
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4085.77225
+
+✖ failing tests:
+
+test at tests/npc-drag-ui.mjs:46:1
+✖ selection, typing and dragging always retain the configured size (849.263834ms)
+  AssertionError [ERR_ASSERTION]: keyboard activity must not shrink a selected pet
+  + actual - expected
+  
+  + 0.421875
+  - 0.703125
+  
+      at TestContext.<anonymous> (file:///Volumes/M2ExHome/rockman/Documents/codespace/personal-projects/dsh-plugins/dsh-coopanion/tests/npc-drag-ui.mjs:52:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0.421875,
+    expected: 0.703125,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/npc-drag-ui.mjs:57:1
+✖ a fast placement at the edge drops without an automatic reverse throw (1028.058125ms)
+  AssertionError [ERR_ASSERTION]: placing at the edge must not recoil across the screen: [680,917.1459540444354,886.8818268106739,855.3119770949916,808.6007032117813,808.6007032117813,808.6007032117813,808.6007032117813,808.6007032117813,808.6007032117813,808.6007032117813,808.6007032117813]
+      at TestContext.<anonymous> (file:///Volumes/M2ExHome/rockman/Documents/codespace/personal-projects/dsh-plugins/dsh-coopanion/tests/npc-drag-ui.mjs:63:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/npc-drag-ui.mjs:66:1
+✖ manual relocation before the first NPC departure cannot be overwritten by home placement (1041.443583ms)
+  AssertionError [ERR_ASSERTION]: a user drop must replace the initial automatic home placement
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///Volumes/M2ExHome/rockman/Documents/codespace/personal-projects/dsh-plugins/dsh-coopanion/tests/npc-drag-ui.mjs:74:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/npc-drag-ui.mjs:77:1
+✖ dragging an outbound pet releases its old walk target (929.990291ms)
+  AssertionError [ERR_ASSERTION]: manual relocation must retire the old target 595
+  
+  595 !== null
+  
+      at TestContext.<anonymous> (file:///Volumes/M2ExHome/rockman/Documents/codespace/personal-projects/dsh-plugins/dsh-coopanion/tests/npc-drag-ui.mjs:82:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 595,
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

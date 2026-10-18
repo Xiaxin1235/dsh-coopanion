@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { initialCompanionship, stepCompanionship, companionWeights } from '../web/companionship.js';
+import { initialCompanionship, stepCompanionship } from '../web/companionship.js';
 const words = ['neutral', 'stand', 'look', 'nod', 'sit', 'sleepy', 'happy', 'dance', 'wave', 'love'];
 function fixture(patch = {}, random = () => .1) {
   let state = initialCompanionship(); let input = { mode: 'interactive', now: 0, hour: 12, words, automatic: true, eligible: true, ...patch };
@@ -9,19 +9,21 @@ function fixture(patch = {}, random = () => .1) {
   return { tick, to, events, get state() { return state; } };
 }
 describe('local companionship decisions', () => {
-  it('keeps the old path completely off', () => { const f = fixture({ mode: 'off' }, () => { throw new Error('unused'); }); f.tick(); f.to(60000); expect(f.events).toEqual([]); });
-  it('covers three coherent routines in a seeded day, without adjacent repeats', () => {
-    let seed = 17; const f = fixture({}, () => { seed = seed * 16807 % 2147483647; return (seed - 1) / 2147483646; }); f.tick(); f.to(600000);
-    const starts = f.events.filter(e => e.word && e.state.active?.index === 0).map(e => e.state.active.kind);
-    expect(new Set(starts)).toEqual(new Set(['observe', 'play', 'rest']));
-    for (let i = 1; i < starts.length; i++) expect(starts[i]).not.toBe(starts[i - 1]);
-    expect(f.state.energy).toBeGreaterThanOrEqual(0); expect(f.state.interest).toBeLessThanOrEqual(1);
+  it('does nothing when companionship is off', () => { const f = fixture({ mode: 'off' }, () => { throw new Error('unused'); }); f.tick(); f.to(60000); expect(f.events).toEqual([]); });
+  it('leaves autonomous routines to NPC even after long idle periods', () => {
+    for (const mode of ['quiet', 'interactive']) {
+      const f = fixture({ mode, eligible: false }); f.tick(); f.to(3600000);
+      expect(f.events).toEqual([]);
+      expect(f.state.active).toBeNull();
+    }
   });
-  it('uses motivation and only supported complete recipes', () => {
-    expect(companionWeights(.1, .5).rest).toBeGreaterThan(companionWeights(.9, .5).rest);
-    expect(companionWeights(.9, .1).play).toBeGreaterThan(companionWeights(.9, .9).play);
-    for (const supported of [[], ['look'], ['neutral', 'sit']]) { const f = fixture({ words: supported }); f.tick(); f.to(600000); expect(f.events).toEqual([]); }
-    const f = fixture({ words: ['neutral', 'nod'] }); f.tick(); f.to(60000); expect(f.events[0].word).toBe('nod');
+  it('requires a complete supported recipe for explicit activity', () => {
+    for (const supported of [[], ['look'], ['neutral', 'sit']]) {
+      const f = fixture({ words: supported }); f.tick(); f.tick({ action: 'play' });
+      expect(f.events).toEqual([]);
+    }
+    const f = fixture({ words: ['neutral', 'happy', 'nod'] }); f.tick();
+    expect(f.tick({ action: 'play' }).word).toBe('happy');
   });
   it('night excludes play and invitation and does not catch up across gaps', () => {
     const f = fixture({ hour: 23 }); f.tick(); f.to(2400000); expect(f.events.some(e => e.reserveInvitation || e.state.active?.kind === 'play')).toBe(false);

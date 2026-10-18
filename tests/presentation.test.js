@@ -1,6 +1,6 @@
 import { it, expect } from 'vitest';
 import { createSpeech, replyPreview } from '../web/speech.js';
-import { shortSessionIds, sessionActivity, inboxContents } from '../web/session-ui.js';
+import { shortSessionIds, sessionActivity, inboxContents, SessionAttention } from '../web/session-ui.js';
 import tray from '../desktop/tray-state.cjs';
 
 it('resolves native language before the first Host configuration arrives', () => {
@@ -114,4 +114,42 @@ it('uses round, progress and goal success categories consistently in role and na
     const state = tray.trayState({ sessionId: selected.id, mood, sessions: [selected] }, {}, { locale: 'en' });
     expect(state.stateLabel).toContain(fragment); expect(state.mood).toBe(mood);
   }
+});
+
+it('viewing a generic issue suppresses only that exact revision without changing task facts or other unread work', () => {
+  const attention = new SessionAttention();
+  const source = { id: 'a', mood: 'error', revision: 1, text: 'failed', active: false };
+  const snapshot = { sessionId: 'a', mood: 'error', active: false, sessions: [source, { ...source, id: 'b' }], results: [{ id: 'reply', sessionId: 'b', read: false, time: 1 }] };
+  expect(attention.acknowledge(snapshot, [], 'a')).toBe(true);
+  const projected = attention.project(snapshot);
+  expect(projected.sessions[0].mood).toBe('idle');
+  expect(inboxContents(projected)).toMatchObject({ issues: [{ id: 'b' }], total: 2 });
+  expect(sessionActivity(projected).mood).toBe('error');
+  expect(source.mood).toBe('error');
+  const next = { ...snapshot, sessions: [{ ...source, revision: 2 }] };
+  expect(inboxContents(attention.project(next)).issues).toHaveLength(1);
+});
+it('view receipts cannot settle requests, hide active work, or survive a removed/recreated session', () => {
+  const attention = new SessionAttention();
+  const source = { id: 'a', mood: 'waiting', revision: 1, active: false };
+  const snapshot = { sessionId: 'a', mood: 'waiting', sessions: [source] };
+  const request = { id: 'request', sessionId: 'a', state: 'open' };
+  expect(attention.acknowledge(snapshot, [request], 'a')).toBe(false);
+  expect(attention.acknowledge({ ...snapshot, sessions: [{ ...source, active: true }] }, [], 'a')).toBe(false);
+  attention.acknowledge(snapshot, [], 'a');
+  expect(attention.project(snapshot, [request]).mood).toBe('waiting');
+  attention.acknowledge(snapshot, [], 'a'); attention.project({ ...snapshot, sessions: [] });
+  expect(attention.project(snapshot).mood).toBe('waiting');
+});
+
+it('discarding a viewed queued notice preserves deduplication and the order of other requests', () => {
+  const queue = createNoticeQueue();
+  const viewed = taskNotice('viewed', 'error', 'initial', []);
+  const request = taskNotice('request');
+  queue.push(viewed); queue.push(request);
+  queue.discard(notice => notice.id === viewed.id);
+  expect(queue.push(viewed)).toBe(false);
+  expect(queue.next(false).id).toBe(request.id);
+  const next = taskNotice('new-error', 'error', 'initial', []);
+  expect(queue.push(next)).toBe(true); expect(queue.next(false).id).toBe(next.id);
 });

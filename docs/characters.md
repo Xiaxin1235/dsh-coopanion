@@ -2,8 +2,6 @@
 
 插件直接使用 [Coopanion 固定版本](../web/upstream/UPSTREAM.md) 的角色运行时和沙箱协议。新角色通过 `figure.json` API 2 对接，不使用旧 `.dshpet` 或关键帧 schema。
 
-GPT 辅助母版、分件补画、网格绑定与道具制作的后续方案见[素材与建模计划](character-art-pipeline.md)，与[自主陪伴路线图](roadmap.md)衔接。它是尚未实施的制作计划；下文描述当前已支持的角色接口，上游 main 的新服装等内容不会自动成为本地能力。
-
 ## 包结构与导入
 
 ```text
@@ -122,6 +120,6 @@ talk(), setScheme(id, {fade}), dispose()
 
 应用与上游代码采用 AGPL-3.0-or-later。角色作者应在清单和 LICENSE 中注明自己的代码与素材许可；应用许可不改变独立素材的权利。大肥鱼贴图在上游 AGPL 授权之外，完整声明见 [第三方说明](../THIRD_PARTY_NOTICES.md)。
 
-P1 [自主陪伴](companionship-contract.md)按词表组合有限日常，宿主负责动机、邀请和成长；角色包不持有这些权限。抚摸成长需要可信页面验证的真实轨迹，角色自行上报 touch 或预览动作不计入关系。当前任务神态／提醒动作仍优先。
+[自主陪伴](companionship-contract.md)按词表组合有限日常，宿主负责动机、邀请和成长；角色包不持有这些权限。抚摸成长需要可信页面验证的真实轨迹，角色自行上报 touch 或预览动作不计入关系。当前任务神态／提醒动作仍优先。
 
-面向下一轮小窝／探索／退让的[能力评估与方案](npc-daily-life-plan.md)区分已有原语和待实现调度：鲸鱼可复用水平定点 walk／按身份 stopWalk、姿态、表情及合成音；实体物件和全局键盘感知尚无。接口存在不代表新 NPC 循环已经交付，缺词角色仍按实际清单和 body 能力降级。
+NPC 日常复用水平定点 `walk`、按身份 `stopWalk`、姿态、表情与合成音效；输入感知和调度由可信宿主管理。缺词或无移动能力的角色按其清单和 body 能力降级，详见[自主陪伴契约](companionship-contract.md)。

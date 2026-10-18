@@ -1,0 +1,28 @@
+✖ Take a look acknowledges this generic error, clearing envelope and sad expression (944.211167ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1174.357375
+
+✖ failing tests:
+
+test at tests/attention-size-ui.mjs:31:1
+✖ Take a look acknowledges this generic error, clearing envelope and sad expression (944.211167ms)
+  AssertionError [ERR_ASSERTION]: viewed error must stop the persistent sad expression
+  
+  'error' !== 'idle'
+  
+      at TestContext.<anonymous> (file:///Volumes/M2ExHome/rockman/Documents/codespace/personal-projects/dsh-plugins/dsh-coopanion/tests/attention-size-ui.mjs:40:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'error',
+    expected: 'idle',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

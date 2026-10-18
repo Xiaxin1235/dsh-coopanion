@@ -267,7 +267,6 @@ try {
   await bridge.dispose();
   if (browser) { await browser.close(); browser = undefined; }
   await import('./multi-display-native.mjs');
-  await import('./daily-rhythm-native.mjs');
   await import('./companionship-native.mjs');
   await import('./npc-life-native.mjs');
   await import('./diagnostics-native.mjs');

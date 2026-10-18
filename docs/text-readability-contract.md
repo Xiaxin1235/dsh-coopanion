@@ -1,6 +1,6 @@
-# 文字可读性契约（M4）
+# 文字可读性契约
 
-支持 DSH `0.2.0-rc.2` 与 `0.2.1-alpha.1`。持久字段 `textScale` 使用数值 `1`、`1.25`、`1.5`，分别表示 100%、125%、150%；默认 `1`。缺失字段沿用 100%，遵循现有 Harness schema 的空值默认行为；其他值拒绝保存。共享值、默认值与类型见 [text-scale.js](../web/text-scale.js) 和[类型声明](../web/text-scale.d.ts)。
+支持的宿主版本见 `package.json`。持久字段 `textScale` 使用数值 `1`、`1.25`、`1.5`，分别表示 100%、125%、150%；默认 `1`。缺失字段沿用 100%，遵循现有 Harness schema 的空值默认行为；其他值拒绝保存。共享值、默认值与类型见 [text-scale.js](../web/text-scale.js) 和[类型声明](../web/text-scale.d.ts)。
 
 ## 配置链路
 
@@ -16,13 +16,13 @@ Renderer 将该值设置为 CSS `--text-scale`，对缺失或无效线值保守�
 
 仅尺寸/字号的 configure 不触发内容 render，不替换阅读 DOM 或捕获的 `readerResult` / `readerQueue`，不切换关注会话，不增加 read/select/chat 动作。新回复继续保持独立未读，阅读正文不被替换。当前 Renderer 的草稿、输入选择、焦点与在途请求 ID 保持；字号切换不发送输入，不清空失败草稿，不延长气泡驻留时间。阅读位置保留现有滚动偏移；字体换行可能改变同一像素偏移对应的文本行。
 
-Host 快照或语言、提醒偏好的正常变化仍走原有 render；字号本身不改变 M1 完成判定、M2 接受与去重、M3 恢复、审批/提问结算。Renderer 进程崩溃后的草稿及阅读位置仍会丢失，参见[会话契约](session-chat-contract.md)及[恢复契约](desktop-recovery-contract.md)；M4 不扩展跨进程草稿持久化或自动重放。
+Host 快照或语言、提醒偏好的正常变化仍走原有 render；字号本身不改变完成判定、接受与去重、恢复、审批/提问结算。Renderer 进程崩溃后的草稿及阅读位置仍会丢失，参见[会话契约](session-chat-contract.md)及[恢复契约](desktop-recovery-contract.md)；不扩展跨进程草稿持久化或自动重放。
 
 ## 验证入口
 
 - `tests/plugin.test.ts`：旧配置默认、无效档拒绝、三档与两种角色极值独立，Host 立即发送新配置且不重启原生进程。
 - `tests/text-scale-ui.mjs`：320×640、中英文、三档 × 两种角色尺寸，阅读 DOM/滚动位置、代码/表格滚动、阅读中新增回复、收件箱/聊天边界、键盘操作、草稿/选择/焦点、在途接受身份、原气泡计时。
 - `tests/desktop.mjs` 与 `tests/helpers/text-scale-native.mjs`：真实 Electron IPC，三档 × 两种角色尺寸 × 中英文的原生工作区定位、捕获正文与草稿。
-- `tests/install.mjs`：同一包经两版官方 loader 安装，旧配置默认、正式设置页六种组合持久化及即时同步、原生重启、完整 Host 重启、中英文标签，并保留 M1–M3 回归。
+- `tests/install.mjs`：同一包经支持版本的官方 loader 安装，旧配置默认、正式设置页六种组合持久化及即时同步、原生重启、完整 Host 重启、中英文标签，并保留 完成、会话和恢复回归。
 
-`npm run test:inbox-ui` 包含文字检查；现有三平台测试和两版宿主六组安装矩阵沿用这些入口并上传截图及 JSON。实际执行范围、固定提交和包摘要见 [M4 证据](evidence/m4/README.md)；本机通过不代表远端 CI 或其他平台原生通过。
+`npm run test:inbox-ui` 包含文字检查；三平台测试和宿主安装矩阵复用这些入口，执行范围以对应 CI 结果为准。

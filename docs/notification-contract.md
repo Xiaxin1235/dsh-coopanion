@@ -12,9 +12,9 @@
 
 限时提问返回 pending 后，回合结束仍保持 `continued`。接收 `user-question-reply` 的 user message 后结算对应问题；补提醒按投影中的有效请求安排。阻塞请求在其答复／取消信号结算时结束等待。Host 对恢复状态进行折叠，实时事件产生新的提醒。
 
-## M1 完成语义
+## 完成语义
 
-Host 的共享 `CompletionTracker` 使用支持版本的 `@deepseek-ai/dsh-goal` 公共 `applyGoalProjection` 严格折叠已提交事件，不读取工具调用参数或工具输出作为成功依据。该宿主包是新增 peer；目标服务未运行、历史缺失、未知版本或投影折叠失败时立即使用 `reply`，不等待目标状态。失败后的流保持保守降级。
+Host 的共享 `CompletionTracker` 使用支持版本的 `@deepseek-ai/dsh-goal` 公共 `applyGoalProjection` 严格折叠已提交事件，不读取工具调用参数或工具输出作为成功依据。该宿主包声明为 peer；目标服务未运行、历史缺失、未知版本或投影折叠失败时立即使用 `reply`，不等待目标状态。失败后的流保持保守降级。
 
 | 已提交事实 | 类别 / 角色 | 结果与文案 |
 |---|---|---|
@@ -24,19 +24,17 @@ Host 的共享 `CompletionTracker` 使用支持版本的 `@deepseek-ai/dsh-goal`
 | 当前目标 paused / blocked | stopped / idle 或 blocked / waiting | 目标暂停或受阻；保留结果及异常入口 |
 | 回合 error / aborted / interrupted / blocked / max-tokens | 沿用相应异常类别 | 即使本轮提交过 complete，也不以回合结束报成功 |
 
-提醒可附带 `goal: { id, revision, round }`，每个字段保留完整值；`round` 为严格投影中已接纳轮数。`completed` 现在专指确认的新目标完成，`reply` 和 `goal-progress` 都不触发成功神态。目标完成身份只结算一次，历史终态不把后续普通回合变成成功。宿主在回合外提交终态（如自动轮数耗尽后 block）也更新角色和提醒，以该 `goal/change` 的 seq 为锚点。
+提醒可附带 `goal: { id, revision, round }`，每个字段保留完整值；`round` 为严格投影中已接纳轮数。`completed` 专指确认的新目标完成，`reply` 和 `goal-progress` 都不触发成功神态。目标完成身份只结算一次，历史终态不把后续普通回合变成成功。宿主在回合外提交终态（如自动轮数耗尽后 block）也更新角色和提醒，以该 `goal/change` 的 seq 为锚点。
 
 类别和可选 goal 字段是 protocol 1 的同包扩展，Host / Client / Electron 必须一起更新；不在持久配置中保存提醒，所以旧配置沿用默认值，旧通知不会迁移为新通知。历史恢复折叠目标及回复作为已读基线，不重放提醒。审批与 continued 提问仍独立结算，阅读和打开会话不代表审批或答复。角色、系统通知和托盘通过共享类别呈现，正文保持原文。
 
-两版实际 schema、事件样本、包身份与重复命令见 [M1 验收记录](evidence/m1/README.md)。
-
-M2 的发送接受回执独立于提醒与任务结果，详见[会话续接契约](session-chat-contract.md)。阅读结果不改变关注会话；显式点击“继续对话”才选择来源会话并打开输入框。审批与提问仍只由 Harness 的实际处理结算。
+发送接受回执独立于提醒与任务结果，详见[会话续接契约](session-chat-contract.md)。阅读结果不改变关注会话；显式点击“继续对话”才选择来源会话并打开输入框。审批与提问仍只由 Harness 的实际处理结算。
 
 ## 运行与领取
 
 `NotificationRuntime` 包含阶段、运行代次 `generation`、显示状态版本 `visibilityRevision`、原生可见性、休眠状态和有界错误。
 
-M3 同包增加 `recovering` 阶段与可选 `desiredVisible`、`recoveryAttempt`（0–3）、`retryAt`（Host 时间戳）。恢复等待不具备投递资格；显示意图不代表原生可见性。新代必须收到自己的 visibilityRevision，旧领取仅结算迟到证据，不再进入其他通道。具体启动、停止、锁屏及结果基线见[桌面恢复契约](desktop-recovery-contract.md)。旧配置没有新增持久字段，默认行为保持；Host / Client / Electron 随包同步。
+包含 `recovering` 阶段与可选 `desiredVisible`、`recoveryAttempt`（0–3）、`retryAt`（Host 时间戳）。恢复等待不具备投递资格；显示意图不代表原生可见性。新代必须收到自己的 visibilityRevision，旧领取仅结算迟到证据，不再进入其他通道。具体启动、停止、锁屏及结果基线见[桌面恢复契约](desktop-recovery-contract.md)。旧配置没有新增持久字段，默认行为保持；Host / Client / Electron 随包同步。
 
 Host 按运行状态、显示状态及用户设置选择通道。系统投递需要 Host 颁发的 `DeliveryClaim`，其中包含不可推断的 token、完整提醒、客户端 id、运行代次、显示状态版本及过期时间。
 
@@ -62,9 +60,11 @@ Host 按运行状态、显示状态及用户设置选择通道。系统投递需
 
 ## 配置与动作
 
-`notifications` 保留现有值，新增 `systemNotifications=false`、`reminders=true`、`reminderDelayMs=600000`。提醒延迟允许 1 分钟至 24 小时。关闭提醒取消主动投递与计时，状态和结果继续随会话更新。
+通知配置包括 `notifications=true`、`systemNotifications=false`、`reminders=true`、`reminderDelayMs=600000`。提醒延迟允许 1 分钟至 24 小时。关闭提醒取消主动投递与计时，状态和结果继续随会话更新。
 
 打开会话、确认回复已读和稍后提醒分别操作对应会话、结果和请求。查看动作保留请求的待答／待审批状态；实际结算来自 Harness 的处理结果。
+
+通用异常的查看回执：点击异常／暂停条目的“去处理／Take a look”打开源会话后，当前 Renderer 按完整会话 id、状态修订、神态、文案及完成类别记住这一轮已查看。相同快照重发不恢复该条信封与持续悲伤／等待神态；查看前已经排队的同源无请求异常提示同步撤下，旧 id 仍保留投递去重，后续新提示不被屏蔽；新的修订、重新工作、会话移除或新审批／提问使旧回执失效。其他未读回复与待处理项继续保留。这个回执只影响桌宠的注意力呈现，原始任务状态、聊天来源、未读回复和 Host 托盘事实不改写；不能将异常标为任务成功。存在真实未结审批／提问或仍在工作的会话不接受通用异常回执。回执仅在当前 Renderer 内保留，窗口重载／进程恢复后按 Host 的当前事实重新呈现。
 
 ## 检查
 
@@ -72,6 +72,6 @@ Host 按运行状态、显示状态及用户设置选择通道。系统投递需
 
 三平台 CI 执行共享检查并保留原型摘要；十二组实际安装检查分别执行对应宿主版本的接口检查并上传报告。每份 Host 报告记录源码 commit、插件版本、包实现摘要及实际控制样本事件。
 
-M4 的独立 `textScale` 是呈现偏好，不改变类别、提醒身份、已读/结算或驻留时间；详见[文字契约](text-readability-contract.md)。
+独立 `textScale` 是呈现偏好，不改变类别、提醒身份、已读/结算或驻留时间；详见[文字契约](text-readability-contract.md)。
 
-P1 的[陪伴邀请](companionship-contract.md)是独立本地互动，不进入本 protocol 的提醒类别、领取、收件箱、已读或审批结算；任务及阅读占用出现时立即撤去邀请。今天安静只影响陪伴，不更改本契约的任务通知偏好。
+[陪伴邀请](companionship-contract.md)是独立本地互动，不进入本 protocol 的提醒类别、领取、收件箱、已读或审批结算；任务及阅读占用出现时立即撤去邀请。今天安静只影响陪伴，不更改本契约的任务通知偏好。

@@ -1,18 +1,13 @@
 /** Local decisions only. The owner of persistent state authorizes invitation budgets and growth. */
 export const COMPANIONSHIP_MODES = ['off', 'quiet', 'interactive'];
 export const companionshipMode = value => COMPANIONSHIP_MODES.includes(value) ? value : 'off';
-const clamp = n => Math.max(0, Math.min(1, n));
 const entropy = random => { const n = random(); return Number.isFinite(n) ? Math.min(.999999, Math.max(0, n)) : .5; };
-const wait = (night, random) => (night ? 120000 : 45000) + entropy(random) * (night ? 120000 : 45000);
 const invitationWait = random => 1800000 + entropy(random) * 1800000;
 const recipes = {
-  observe: [[['look', 4000], ['nod', 1000], ['neutral', 200]], [['nod', 1000], ['neutral', 200]]],
   play: [[['happy', 1000], ['dance', 3500], ['neutral', 200]], [['happy', 1000], ['nod', 1000], ['neutral', 200]]],
-  rest: [[['sit', 4000], ['sleepy', 2000], ['stand', 1200], ['neutral', 200]], [['sit', 6000], ['stand', 1200], ['neutral', 200]]],
 };
-export const initialCompanionship = () => ({ mode: 'off', period: null, lastAt: null, dueAt: null, inviteAt: null, invitation: null, invitationUntil: null, active: null, lastKind: null, energy: .6, interest: .5, blocked: true });
+export const initialCompanionship = () => ({ mode: 'off', period: null, lastAt: null, inviteAt: null, invitation: null, invitationUntil: null, active: null, blocked: true });
 const recipe = (kind, words) => recipes[kind]?.find(steps => words.includes('neutral') && steps.every(([word]) => words.includes(word)));
-export function companionWeights(energy, interest) { return { observe: .4 + clamp(interest), play: .2 + clamp(energy) * (1 - clamp(interest)) * 3, rest: .2 + (1 - clamp(energy)) * 3, wait: .15 }; }
 
 /** Intent and release are consumed by the same caller; owned body motion is not an external blocker. */
 export function stepCompanionship(state, input, random = Math.random) {
@@ -20,14 +15,12 @@ export function stepCompanionship(state, input, random = Math.random) {
   const mode = companionshipMode(input.mode), period = Number.isInteger(hour) && hour >= 0 && hour < 24 ? hour >= 7 && hour < 22 ? 'day' : 'night' : null;
   const next = { ...state, mode, period, lastAt: now };
   const output = { state: next };
-  const reset = () => { output.release = !!state.active; output.hideInvitation = !!state.invitation; next.active = null; next.invitation = null; next.invitationUntil = null; next.dueAt = now + wait(period === 'night', random); next.inviteAt = now + 1800000; };
+  const reset = () => { output.release = !!state.active; output.hideInvitation = !!state.invitation; next.active = null; next.invitation = null; next.invitationUntil = null; next.inviteAt = now + 1800000; };
   if (mode === 'off' || !Number.isFinite(now) || !period) { output.release = !!state.active; output.hideInvitation = !!state.invitation; output.state = initialCompanionship(); return output; }
   const discontinuity = state.lastAt !== null && (now < state.lastAt || now - state.lastAt > 10000);
   if (mode !== state.mode || period !== state.period || discontinuity) { reset(); next.blocked = occupied; return output; }
-  if (occupied) { output.release = !!state.active; output.hideInvitation = !!state.invitation; next.active = null; next.invitation = null; next.invitationUntil = null; next.dueAt = null; next.inviteAt = null; next.blocked = true; return output; }
+  if (occupied) { output.release = !!state.active; output.hideInvitation = !!state.invitation; next.active = null; next.invitation = null; next.invitationUntil = null; next.inviteAt = null; next.blocked = true; return output; }
   if (state.blocked) { reset(); next.blocked = false; if (action !== 'play') return output; }
-  const dt = Math.max(0, now - (state.lastAt ?? now)) / 60000;
-  next.energy = clamp(state.energy - dt * .01); next.interest = clamp(state.interest - dt * .04);
   if (action === 'play') {
     const steps = recipe('play', words);
     reset();
@@ -57,24 +50,14 @@ export function stepCompanionship(state, input, random = Math.random) {
     if (index < state.active.steps.length) {
       next.active = { ...state.active, index, dueAt: now + state.active.steps[index][1] }; output.word = state.active.steps[index][0];
     } else {
-      next.active = null; output.release = true; next.lastKind = state.active.kind;
-      if (state.active.kind === 'play') { next.energy = clamp(next.energy - .15); next.interest = clamp(next.interest + .35); }
-      if (state.active.kind === 'rest') next.energy = clamp(next.energy + .25);
+      next.active = null; output.release = true;
       if (state.active.manual) output.completed = true;
-      next.dueAt = now + wait(period === 'night', random);
     }
     return output;
   }
-  if (!automatic) { next.dueAt = now + wait(period === 'night', random); next.inviteAt = now + 1800000; return output; }
+  if (!automatic) { next.inviteAt = now + 1800000; return output; }
   if (mode === 'interactive' && period === 'day' && eligible && recipe('play', words) && !state.invitation && now >= state.inviteAt) {
     next.invitation = 'pending'; next.inviteAt = now + invitationWait(random); output.reserveInvitation = true; return output;
   }
-  if (input.routines === false || state.invitation || now < state.dueAt) return output;
-  const weights = companionWeights(next.energy, next.interest);
-  const choices = Object.entries(weights).filter(([kind]) => kind === 'wait' || kind !== state.lastKind && (period !== 'night' || kind !== 'play') && recipe(kind, words));
-  let target = entropy(random) * choices.reduce((sum, [, weight]) => sum + weight, 0);
-  const kind = choices.find(([, weight]) => (target -= weight) < 0)?.[0] ?? 'wait';
-  if (kind === 'wait') { next.dueAt = now + wait(period === 'night', random); return output; }
-  const steps = recipe(kind, words);
-  next.active = { kind, steps, index: 0, dueAt: now + steps[0][1], manual: false, deadline: now + 20000 }; output.word = steps[0][0]; return output;
+  return output;
 }

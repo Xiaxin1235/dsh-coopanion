@@ -1,0 +1,63 @@
+
+ RUN  v3.2.7 /Volumes/M2ExHome/rockman/Documents/codespace/personal-projects/dsh-plugins/dsh-coopanion
+
+ ❯ tests/npc-life.test.js (10 tests | 2 failed) 8ms
+   ✓ constrains asymmetric body extents, scaling, small work areas and relative anchors 1ms
+   ✓ leaves home, waits for actual matching arrival, observes then returns with unique owned ids 1ms
+   ✓ typing and pointer interruption preserve intent, stop only owned id, and debounce recovery 0ms
+   ✓ unknown, work, physical ownership and lifecycle pause without erasing interest or emotion 0ms
+   ✓ missing optional walk and vocabulary degrade safely, silent or unresponsive walkers time out 1ms
+   ✓ revalidates geometry and never accepts callbacks from a previous body generation 0ms
+   ✓ already presented pending work allows only quiet home observation and retains a suspended exploration 0ms
+   ✓ keeps subpixel home boundaries stable and gives wide displays a bounded distance allowance 0ms
+   × manual relocation retires the owned route and ignores its late arrival 3ms
+     → expected 595 to be null
+   × a manual placement made before initial activation is never overwritten, including outside the activity area 1ms
+     → expected false to be true // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/npc-life.test.js > manual relocation retires the owned route and ignores its late arrival
+AssertionError: expected 595 to be null
+
+- Expected: 
+null
+
++ Received: 
+595
+
+ ❯ tests/npc-life.test.js:82:91
+     80|   const f = fixture(); f.until('outbound'); const oldId = f.state.walk…
+     81|   const out = f.tick({ relocated: true, user: true });
+     82|   expect(out.stop).toBe(oldId); expect(f.state.walkId).toBeNull(); exp…
+       |                                                                                           ^
+     83|   f.tick({ event: { kind: 'arrived', walkId: oldId } });
+     84|   expect(f.state.recent).toEqual([]); expect(f.state.walkId).toBeNull(…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/npc-life.test.js > a manual placement made before initial activation is never overwritten, including outside the activity area
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/npc-life.test.js:90:83
+     88| it('a manual placement made before initial activation is never overwri…
+     89|   const f = fixture();
+     90|   f.tick({ enabled: false, relocated: true, user: true }); expect(f.st…
+       |                                                                                   ^
+     91|   for (let i = 0; i < 20; i++) {
+     92|     const out = f.tick({ layout: { ...layout, x: 80 } });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 8 passed (10)
+   Start at  15:31:19
+   Duration  215ms (transform 17ms, setup 0ms, collect 14ms, tests 8ms, environment 0ms, prepare 38ms)
+

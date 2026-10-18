@@ -1,0 +1,75 @@
+
+> @takboo/dsh-coopanion@0.4.12 test
+> vitest run && node --test tests/release-checks.mjs tests/client-build.mjs && node --test tests/locale-client.mjs
+
+
+ RUN  v3.2.7 /Volumes/M2ExHome/rockman/Documents/codespace/personal-projects/dsh-plugins/dsh-coopanion
+
+ ✓ tests/companionship.test.js (9 tests) 183ms
+ ✓ tests/locale-sync.test.ts (4 tests) 164ms
+ ✓ tests/diagnostics-discovery.test.js (6 tests) 251ms
+ ✓ tests/plugin.test.ts (10 tests) 309ms
+ ✓ tests/companion-store.test.ts (8 tests) 422ms
+   ✓ persistent companion relationships and profile budgets > bounds the ledger, validates wire input, and recovers a dead writer  333ms
+ ✓ tests/notification-broker.test.ts (18 tests) 35ms
+ ✓ tests/companion-http.test.ts (1 test) 73ms
+ ✓ tests/session-recovery.test.ts (6 tests) 92ms
+ ✓ tests/chat.test.ts (7 tests) 93ms
+ ✓ tests/notification-integration.test.ts (8 tests) 736ms
+   ✓ keeps the original question answerer usable when reminder tracking reaches capacity  586ms
+ ✓ tests/notification-client.test.ts (15 tests) 80ms
+ ✓ tests/controls.test.ts (15 tests) 59ms
+ ✓ tests/keyboard-activity.test.js (8 tests) 15ms
+ ✓ tests/completion.test.ts (17 tests) 18ms
+ ✓ tests/bridge.test.ts (8 tests | 1 skipped) 1104ms
+   ✓ forwards exact chat receipts across the child-process bridge  311ms
+ ✓ tests/npc-life.test.js (10 tests) 11ms
+ ✓ tests/resource-observation.test.js (7 tests) 20ms
+ ✓ tests/presentation.test.js (14 tests) 44ms
+ ✓ tests/display-geometry.test.js (6 tests) 7ms
+ ✓ tests/lifecycle-state.test.js (5 tests) 17ms
+ ✓ tests/model.test.ts (18 tests) 29ms
+ ✓ tests/companion-touch.test.js (2 tests) 5ms
+ ✓ tests/notification-contract.test.ts (5 tests) 9ms
+ ✓ tests/companion-client.test.js (3 tests) 4ms
+ ✓ tests/render-cadence.test.js (2 tests) 4ms
+ ✓ tests/text-scale.test.ts (1 test) 12ms
+ ✓ tests/figures.test.ts (6 tests) 2728ms
+   ✓ serves the frame with an opaque-origin CSP, rejects cross-origin mutations and offers matching source  2628ms
+ ✓ tests/diagnostics.test.js (8 tests) 4082ms
+   ✓ honors a wall deadline even while the diagnostic endpoint is unavailable  1510ms
+   ✓ a calendar deadline never grants continuous-resource acceptance  2512ms
+
+ Test Files  28 passed (28)
+      Tests  226 passed | 1 skipped (227)
+   Start at  15:10:58
+   Duration  4.57s (transform 848ms, setup 0ms, collect 2.78s, tests 10.61s, environment 4ms, prepare 2.39s)
+
+✔ activates the built Client factory using only DSH public peers and React seeds (195.386083ms)
+✔ verifies a real stable tag and exports its immutable commit (234.981708ms)
+✔ rejects a prerelease tag instead of publishing it to latest (125.977708ms)
+✔ rejects a tag whose package version differs (216.042833ms)
+✔ rejects a release outside main ancestry (191.015125ms)
+✔ rejects a tag moved after candidate verification (155.401583ms)
+✔ rejects shrinkwrap metadata and missing release notes (428.027083ms)
+✔ release notes contain only the target version and reject duplicates (1.571541ms)
+✔ npm preflight distinguishes unused, identical, conflicting and unavailable versions (26.3995ms)
+✔ post-publish verification waits for the registry to expose identical bytes (3.016667ms)
+✔ post-publish verification has a deadline and fails immediately on conflicts or registry errors (1.577167ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1435.957958
+✔ the real Client factory synchronizes resolved Harness locale without workspace or notifications (148.000958ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 201.827166

@@ -1,0 +1,161 @@
+{
+  "state": {
+    "generation": 2,
+    "serial": 1,
+    "phase": "outbound",
+    "reason": "none",
+    "target": 595,
+    "returning": false,
+    "recent": [],
+    "energy": 0.65,
+    "interest": 0.54,
+    "emotion": "thinking",
+    "walkId": 8589934593,
+    "dueAt": 36000,
+    "lastAt": 16000,
+    "safeAt": 0,
+    "spaceKey": "1000:180:0.85:0.3:0",
+    "placed": true,
+    "failed": false
+  },
+  "trace": [
+    {
+      "now": 0,
+      "phase": "yield",
+      "reason": "disabled",
+      "space": null
+    },
+    {
+      "now": 0,
+      "phase": "resume",
+      "reason": "none",
+      "x": 680,
+      "mode": "idle",
+      "space": {
+        "min": 550,
+        "max": 850,
+        "home": 850,
+        "key": "1000:180:0.85:0.3:0"
+      }
+    },
+    {
+      "now": 0,
+      "phase": "yield",
+      "reason": "user",
+      "x": 680,
+      "mode": "idle",
+      "space": {
+        "min": 550,
+        "max": 850,
+        "home": 850,
+        "key": "1000:180:0.85:0.3:0"
+      }
+    },
+    {
+      "now": 0,
+      "phase": "resume",
+      "reason": "none",
+      "x": 701,
+      "mode": "land",
+      "space": {
+        "min": 550,
+        "max": 850,
+        "home": 850,
+        "key": "1000:180:0.85:0.3:0"
+      }
+    },
+    {
+      "now": 12000,
+      "phase": "home",
+      "reason": "none",
+      "x": 701,
+      "mode": "idle",
+      "space": {
+        "min": 550,
+        "max": 850,
+        "home": 850,
+        "key": "1000:180:0.85:0.3:0"
+      }
+    },
+    {
+      "now": 14000,
+      "phase": "prepare",
+      "reason": "none",
+      "x": 701,
+      "mode": "look",
+      "space": {
+        "min": 550,
+        "max": 850,
+        "home": 850,
+        "key": "1000:180:0.85:0.3:0"
+      }
+    },
+    {
+      "now": 16000,
+      "phase": "outbound",
+      "reason": "none",
+      "x": 701,
+      "mode": "idle",
+      "walk": {
+        "x": 595,
+        "id": 8589934593
+      },
+      "space": {
+        "min": 550,
+        "max": 850,
+        "home": 850,
+        "key": "1000:180:0.85:0.3:0"
+      }
+    }
+  ],
+  "layout": {
+    "x": 700.9670078782586,
+    "facing": -1,
+    "mode": "walk",
+    "busy": false,
+    "moving": true,
+    "pressing": false,
+    "cursor": "",
+    "box": {
+      "x": 685.0195233305946,
+      "y": 551.7854182113798,
+      "w": 31.89886955376437,
+      "h": 174.21493883466928
+    },
+    "hit": [
+      {
+        "x": 700.9690540203891,
+        "y": 634.6089312825857,
+        "r": 75.9375
+      }
+    ],
+    "bubble": {
+      "x": 700.9708103317262,
+      "y": 556.1631734318996
+    },
+    "side": {
+      "x": 700.9690519283328,
+      "y": 634.7023731109275,
+      "reach": 73.125
+    }
+  },
+  "orders": [
+    {
+      "t": "set",
+      "state": {
+        "roam": "off",
+        "dialogOpen": false,
+        "thinking": false,
+        "thoughtShown": false,
+        "expression": "thinking",
+        "listening": false
+      }
+    },
+    {
+      "t": "walk",
+      "x": 595,
+      "run": false,
+      "id": 8589934593
+    }
+  ]
+}

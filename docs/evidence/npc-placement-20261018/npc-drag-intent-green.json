@@ -1,0 +1,330 @@
+{
+  "state": {
+    "generation": 2,
+    "serial": 1,
+    "phase": "resume",
+    "reason": "none",
+    "target": null,
+    "returning": false,
+    "recent": [],
+    "energy": 0.65,
+    "interest": 0.54,
+    "emotion": "thinking",
+    "walkId": null,
+    "dueAt": 24000,
+    "lastAt": 12000,
+    "safeAt": 12000,
+    "spaceKey": "1000:180:0.85:0.3:0",
+    "placed": true,
+    "failed": false
+  },
+  "trace": [
+    {
+      "now": 0,
+      "phase": "yield",
+      "reason": "disabled",
+      "space": null
+    },
+    {
+      "now": 0,
+      "phase": "resume",
+      "reason": "none",
+      "x": 680,
+      "mode": "idle",
+      "space": {
+        "min": 550,
+        "max": 850,
+        "home": 850,
+        "key": "1000:180:0.85:0.3:0"
+      }
+    },
+    {
+      "now": 2000,
+      "phase": "home",
+      "reason": "none",
+      "x": 680,
+      "mode": "idle",
+      "space": {
+        "min": 550,
+        "max": 850,
+        "home": 850,
+        "key": "1000:180:0.85:0.3:0"
+      }
+    },
+    {
+      "now": 9000,
+      "phase": "prepare",
+      "reason": "none",
+      "x": 850,
+      "mode": "look",
+      "space": {
+        "min": 550,
+        "max": 850,
+        "home": 850,
+        "key": "1000:180:0.85:0.3:0"
+      }
+    },
+    {
+      "now": 11000,
+      "phase": "outbound",
+      "reason": "none",
+      "x": 850,
+      "mode": "idle",
+      "walk": {
+        "x": 595,
+        "id": 8589934593
+      },
+      "space": {
+        "min": 550,
+        "max": 850,
+        "home": 850,
+        "key": "1000:180:0.85:0.3:0"
+      }
+    },
+    {
+      "now": 11000,
+      "phase": "yield",
+      "reason": "user",
+      "x": 849.9670078782586,
+      "mode": "walk",
+      "stop": 8589934593,
+      "space": {
+        "min": 550,
+        "max": 850,
+        "home": 850,
+        "key": "1000:180:0.85:0.3:0"
+      }
+    },
+    {
+      "now": 12000,
+      "phase": "resume",
+      "reason": "none",
+      "x": 751,
+      "mode": "land",
+      "space": {
+        "min": 550,
+        "max": 850,
+        "home": 850,
+        "key": "1000:180:0.85:0.3:0"
+      }
+    }
+  ],
+  "layout": {
+    "x": 751,
+    "facing": -1,
+    "mode": "idle",
+    "busy": false,
+    "moving": false,
+    "pressing": false,
+    "cursor": "",
+    "box": {
+      "x": 630.7762744793012,
+      "y": 532.4455376549828,
+      "w": 191.35443088293778,
+      "h": 213.6908994116236
+    },
+    "hit": [
+      {
+        "x": 725.2462845070374,
+        "y": 635.026609690014,
+        "r": 75.9375
+      }
+    ],
+    "bubble": {
+      "x": 703.1152641946542,
+      "y": 556.8501636782987
+    },
+    "side": {
+      "x": 725.247363446419,
+      "y": 635.0304209759429,
+      "reach": 73.125
+    }
+  },
+  "orders": [
+    {
+      "t": "set",
+      "state": {
+        "bounds": {
+          "W": 1000,
+          "H": 750,
+          "floorY": 726,
+          "S": 0.70703125
+        }
+      }
+    },
+    {
+      "t": "set",
+      "state": {
+        "bounds": {
+          "W": 1000,
+          "H": 750,
+          "floorY": 726,
+          "S": 0.703125
+        }
+      }
+    },
+    {
+      "t": "place",
+      "x": 850,
+      "facing": -1
+    },
+    {
+      "t": "set",
+      "state": {
+        "roam": "off",
+        "dialogOpen": false,
+        "thinking": false,
+        "thoughtShown": false,
+        "expression": "thinking",
+        "listening": false
+      }
+    },
+    {
+      "t": "walk",
+      "x": 595,
+      "run": false,
+      "id": 8589934593
+    },
+    {
+      "t": "pointer",
+      "type": "move",
+      "p": {
+        "x": 850,
+        "y": 638.5,
+        "t": 675.9000000953674
+      }
+    },
+    {
+      "t": "stop-walk",
+      "id": 8589934593
+    },
+    {
+      "t": "set",
+      "state": {
+        "roam": "off",
+        "dialogOpen": false,
+        "thinking": false,
+        "thoughtShown": false,
+        "expression": null,
+        "listening": false
+      }
+    },
+    {
+      "t": "pointer",
+      "type": "down",
+      "p": {
+        "x": 850,
+        "y": 638.5,
+        "t": 688.4000000953674
+      }
+    },
+    {
+      "t": "pointer",
+      "type": "move",
+      "p": {
+        "x": 837.5,
+        "y": 638.5,
+        "t": 693.9000000953674
+      }
+    },
+    {
+      "t": "pointer",
+      "type": "move",
+      "p": {
+        "x": 825,
+        "y": 638.5,
+        "t": 706.7999999523163
+      }
+    },
+    {
+      "t": "pointer",
+      "type": "move",
+      "p": {
+        "x": 812.5,
+        "y": 638.5,
+        "t": 725.5999999046326
+      }
+    },
+    {
+      "t": "pointer",
+      "type": "move",
+      "p": {
+        "x": 800,
+        "y": 638.5,
+        "t": 742.2999999523163
+      }
+    },
+    {
+      "t": "pointer",
+      "type": "move",
+      "p": {
+        "x": 787.5,
+        "y": 638.5,
+        "t": 758.5
+      }
+    },
+    {
+      "t": "pointer",
+      "type": "move",
+      "p": {
+        "x": 775,
+        "y": 638.5,
+        "t": 774.7999999523163
+      }
+    },
+    {
+      "t": "pointer",
+      "type": "move",
+      "p": {
+        "x": 762.5,
+        "y": 638.5,
+        "t": 791.7999999523163
+      }
+    },
+    {
+      "t": "pointer",
+      "type": "move",
+      "p": {
+        "x": 750,
+        "y": 638.5,
+        "t": 808.7999999523163
+      }
+    },
+    {
+      "t": "pointer",
+      "type": "move",
+      "p": {
+        "x": 751,
+        "y": 638.5,
+        "t": 826.7000000476837
+      }
+    },
+    {
+      "t": "drop",
+      "p": {
+        "x": 751,
+        "y": 638.5
+      }
+    },
+    {
+      "t": "pointer",
+      "type": "move",
+      "p": {
+        "x": 0,
+        "y": 0,
+        "t": 841.5999999046326
+      }
+    },
+    {
+      "t": "set",
+      "state": {
+        "roam": "off",
+        "dialogOpen": false,
+        "thinking": false,
+        "thoughtShown": false,
+        "expression": "thinking",
+        "listening": false
+      }
+    }
+  ]
+}

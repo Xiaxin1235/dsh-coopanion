@@ -14,15 +14,13 @@
 
 <sub>实际浏览器界面演示：思考 → 收到回复 → 双击继续聊。演示中的 Harness 任务事件为模拟。</sub>
 
-本页的 npm／Release 安装入口面向已发布版本。0.4.10 新增默认关闭的自主陪伴与本地诊断试用功能，实际发布身份及各项验收状态见[工程文档索引](docs/README.md)。
-
 ## 她会做些什么？
 
 ### 桌边有个会回应你的小伙伴
 
 眨眼、看向你、挥挥手，拖起来还会晃动、落地。点点她、打个招呼，或者换个模样继续工作。想安静一会儿，可以让她休息、关掉音效，或暂时隐藏。
 
-还可以开启默认关闭的「日常陪伴节奏」：白天偶尔做些小动作，夜间更安静；你在工作、阅读或输入时，她会先让位。
+还可以开启默认关闭的「自主陪伴」：从小窝出发，在屏幕底部慢走、观察、停留并返回；互动模式偶尔邀请你一起活动。你在工作、阅读或输入时，她会先让位。
 
 ### 工作到哪一步，一眼就知道
 
@@ -60,7 +58,7 @@
 打开侧边栏 **插件 → 添加插件**，在「包名或地址」中填入：
 
 ```text
-@takboo/dsh-coopanion@0.4.12
+@takboo/dsh-coopanion@0.4.13
 ```
 
 点击安装，完成后启用 `dsh-coopanion`，再完全退出并重新打开 Harness。
@@ -72,7 +70,7 @@
 使用 **Desktop 自带的 `dsh` 命令**。先启动 Desktop 一次完成初始化，完全退出应用后执行：
 
 ```bash
-dsh plugin --profile desktop add @takboo/dsh-coopanion@0.4.12
+dsh plugin --profile desktop add @takboo/dsh-coopanion@0.4.13
 ```
 
 完成后重新打开 Desktop。其他 profile 的安装方法见[使用指南](docs/usage.md#通过-dsh-命令行安装)。
@@ -90,15 +88,15 @@ dsh plugin --profile desktop add @takboo/dsh-coopanion@0.4.12
 | 右键角色 | 换装、休息、音效和其他偏好 |
 | 点击小信封 | 查看回复、审批、问题和异常 |
 
-系统通知与日常陪伴节奏默认关闭，可在设置中开启。更多配置、CLI 安装和旧角色迁移见[使用指南](docs/usage.md)。
+系统通知与自主陪伴默认关闭，可在设置中开启。安静陪伴和互动陪伴统一使用小窝出发、探索并返回的 NPC 日常；关闭陪伴即停止自主活动。更多配置、CLI 安装和旧角色迁移见[使用指南](docs/usage.md)。
 
 ## 了解更多与参与
 
 - **使用遇到问题：** 查看[使用指南](docs/usage.md)，或[提交 Issue](https://github.com/takboo/dsh-coopanion/issues)。
-- **参与开发：** 从[开发指南](docs/development.md)开始，完整契约与验证状态见[工程文档索引](docs/README.md)。
-- **关注后续改进：** 查看[路线图](docs/roadmap.md)和[版本记录](docs/release-notes.md)。
+- **参与开发：** 从[开发指南](docs/development.md)开始，完整行为契约与验证边界见[工程文档索引](docs/README.md)。
+- **查看改动：** 阅读[版本记录](docs/release-notes.md)。
 
-支持平台为 Windows、macOS 和 Linux。物理多屏／混合 DPI、系统通知中心实机体验、真实模型会话及长期资源表现的验证范围见[当前状态](docs/README.md#当前交付)。
+支持平台为 Windows、macOS 和 Linux。物理多屏／混合 DPI、系统通知中心实机体验、真实模型会话及长期资源表现的验证范围见[验证说明](docs/README.md#验证与产物身份)。
 
 ## 致谢与许可
 

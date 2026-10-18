@@ -1,0 +1,35 @@
+
+ RUN  v3.2.7 /Volumes/M2ExHome/rockman/Documents/codespace/personal-projects/dsh-plugins/dsh-coopanion
+
+ ❯ tests/lifecycle-state.test.js (5 tests | 1 failed) 5ms
+   ✓ reads only the bounded macOS session enum and treats invalid, missing or failed replies as unknown 1ms
+   ✓ win32 initializes from the native idle-state API without assuming unknown is unlocked 0ms
+   ✓ linux initializes from the native idle-state API without assuming unknown is unlocked 0ms
+   ✓ isolated lifecycle controls require the explicit native test mode 0ms
+   × the macOS adapter uses the CGSession.h dictionary keys and rejects missing or malformed flags 4ms
+     → expected 'unknown' to be 'unlocked' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/lifecycle-state.test.js > the macOS adapter uses the CGSession.h dictionary keys and rejects missing or malformed flags
+AssertionError: expected 'unknown' to be 'unlocked' // Object.is equality
+
+Expected: "unlocked"
+Received: "unknown"
+
+ ❯ tests/lifecycle-state.test.js:43:58
+     41|     dollar.CGSessionCopyCurrentDictionary = () => ({});
+     42|     const ObjC = { import() {}, unwrap: value => value, castRefToObjec…
+     43|     expect(runInNewContext(source, { ObjC, $: dollar })).toBe(expected…
+       |                                                          ^
+     44|     expect(accessed.every(key => ['CGSSessionScreenIsLocked', 'kCGSSes…
+     45|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  15:09:40
+   Duration  172ms (transform 10ms, setup 0ms, collect 9ms, tests 5ms, environment 0ms, prepare 33ms)
+

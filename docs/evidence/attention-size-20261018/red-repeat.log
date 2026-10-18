@@ -1,0 +1,48 @@
+✖ Take a look acknowledges this generic error, clearing envelope and sad expression (989.123792ms)
+✖ hovering while typing cannot repeatedly expand and shrink the NPC body (493.850042ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1710.879083
+
+✖ failing tests:
+
+test at tests/attention-size-ui.mjs:31:1
+✖ Take a look acknowledges this generic error, clearing envelope and sad expression (989.123792ms)
+  AssertionError [ERR_ASSERTION]: viewed error must leave the envelope
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///Volumes/M2ExHome/rockman/Documents/codespace/personal-projects/dsh-plugins/dsh-coopanion/tests/attention-size-ui.mjs:37:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/attention-size-ui.mjs:43:1
+✖ hovering while typing cannot repeatedly expand and shrink the NPC body (493.850042ms)
+  AssertionError [ERR_ASSERTION]: pointer hover alone must not enlarge a typing-suppressed pet
+  + actual - expected
+  
+  + 0.703125
+  - 0.421875
+  
+      at TestContext.<anonymous> (file:///Volumes/M2ExHome/rockman/Documents/codespace/personal-projects/dsh-plugins/dsh-coopanion/tests/attention-size-ui.mjs:54:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0.703125,
+    expected: 0.421875,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

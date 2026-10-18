@@ -1,62 +1,57 @@
-# npm 与 dshmarket 发布
+# 发布流程
 
-开发和 CI 固定 Node.js **24.21.0**（`.node-version`）及 npm **11.19.1**（`packageManager`）。依赖保持 `npm-shrinkwrap.json`；官方宿主包继续声明为 peers，安装包保留 AGPL 对应源码、构建脚本、锁文件及第三方声明。
+发布使用仓库固定工具链和 `npm-shrinkwrap.json`。npm 包为 `@takboo/dsh-coopanion`，公开发布；配置 id 和设置 namespace 为 `dsh-coopanion`。分发保留 AGPL 对应源码、构建脚本、锁文件及第三方声明；历史证据和临时交接内容不进入安装包。
 
-npm 包名为 **`@takboo/dsh-coopanion`**，采用维护者的 scope，并以 public 发布。`npm pack` 默认产生 `takboo-dsh-coopanion-<version>.tgz`；CI 将同一文件重命名为 `dsh-coopanion-<version>.tgz`，再复制固定别名 `dsh-coopanion.tgz`，不重新打包。宿主 bundle 的模块路径及浏览器模块标识使用完整 npm 包名；配置 id 和设置 namespace 继续使用 `dsh-coopanion`。
+## 准备发布
 
-已发布版本和本地候选的实际身份统一见[文档索引](README.md)。本地构建、候选安装或文档提交不构成发布；复核既有候选时使用其冻结的包与 `verification.json`，不因后续文档提交重写旧报告的源码提交或包摘要。
-
-## 自动发布
-
-`.github/workflows/ci.yml` 在 Linux、macOS、Windows 上运行元数据、类型、单元、浏览器及真实 Electron 窗口测试，并在三平台分别验证 DSH **0.2.0-rc.2 / 0.2.1-alpha.1 / 0.2.1-rc.1 / 0.2.1-rc.2** 安装。Linux 构建是规范分发产物；十二组安装测试消费这一份 `.tgz`。所有检查通过才允许发布。
-
-Linux 原生和安装测试使用 Xvfb + Openbox，由 `setup-linux-display` 等待 X11 与 EWMH 窗口管理器就绪；避免无窗口管理器时 Electron 将工作区窗口宽高各约束少 1 像素。原生指针测试以 X11 根窗口为绝对坐标目标，同一次 CSS / 原生测量驱动系统鼠标与 CDP，继续检查实际鼠标坐标及完整工作区边界。
-
-原生桌面步骤记录 Playwright 的进程启动、标准错误和退出日志，单步上限六分钟。超时按失败保留当次 job 和工件；重跑通过与系统原因定位分别结算。日志仅来自隔离测试实例。
-
-PR CI 的 `desktop-pet` artifact 用于审阅分发候选，`verification.json` 绑定实际 checkout commit、版本与包摘要。合并后的稳定标签会对标签指向的源码重新运行完整 CI，生成该次发布的 canonical 包；十二组安装、npm 和 GitHub Release 继续消费该包，固定别名通过复制保留相同字节。发布审批覆盖合并、稳定标签和随后自动执行的 npm／Release 发布。
-
-稳定标签 `v<major>.<minor>.<patch>` 的新建 push 派发 **main 上的 `release.yml`**。标签入口仅有 Actions 派发权限；npm job 才拥有 `id-token: write`，GitHub Release 使用另一个 `contents: write` job。fork、其他分支、移动或删除标签不会进入自动发布路径；预发布标签不会发布到 `latest`。
-
-发布前验证标签是 `origin/main` 的祖先、package / shrinkwrap 版本一致、对应版本发布说明存在，然后检出不可变提交，运行完整 CI。构建并打包一次；后续安装、npm、GitHub Release 都使用同一压缩包，发布时 `--ignore-scripts`，不再次执行构建。报告记录版本、源码 commit、SHA-256 和 npm SHA-512 integrity；发布前还会重新检查标签没有移动。
-
-发布顺序为 **完整 CI → npm → GitHub Release**。Release 包含版本化 `.tgz`、相同字节的 `dsh-coopanion.tgz`、示例角色、`SHA256SUMS`、`verification.json` 和仅当前版本的说明。固定名称供市场下载链接使用，避免 `latest/download/<带版本文件名>` 在升级后失效。
-
-npm 接受上传后可能异步处理数分钟。发布后的 `--require-published` 校验对尚未同步的 404 每 10 秒重试，最多等待 5 分钟；已存在但字节不同、其他 HTTP 错误或等待超时仍会失败。上传前的版本检查保持单次查询，未发布版本可进入上传步骤。
-
-npm 的 `latest` 与 pnpm 安装时可选择的版本分别核对。pnpm 11 默认启用 24 小时 `minimumReleaseAge`；发布首日仅输入包名可能回退到旧版本，而详情页仍显示新版。安装说明和 CLI 示例使用本次发布的精确 `@scope/name@version`，保留默认保护，只对显式版本处理发布时间例外。新版本发布后的检查包含隔离 profile 中的裸包名解析与精确版本安装；压缩包同包矩阵不能替代这个入口检查。复现见[安装解析记录](evidence/installation-resolution-20261018/README.md)。
-
-发布新版本：
+1. 完成实现、测试与当前文档，按[开发指南](development.md)运行相关检查。
+2. 增加 `package.json` 和 shrinkwrap 的版本，在 `docs/release-notes.md` 顶部新增对应 `# v<版本>` 节；同步首页与使用指南的精确安装版本。
+3. 执行 `npm run verify:metadata`，提交并将发布提交合入 main，等待 main CI 通过。
+4. 对实际发布提交创建新的稳定标签并推送：
 
 ```bash
-npm version patch --no-git-tag-version
-# 更新 docs/release-notes.md 对应版本，提交并合并至 main。
-npm run verify:metadata
-# main 的 CI 通过后，对该发布提交创建标签。
-git tag v<package.json.version>
-git push origin v<package.json.version>
+git tag v<实际版本> <发布提交>
+git push origin v<实际版本>
 ```
 
-上面标签命令中的 `<package.json.version>` 替换为实际版本。手动操作选择 **Release → Run workflow → main**，提供已有标签；默认 `mode=verify` 只验证，选择 `publish` 才发布。
+稳定标签新建 push 会派发 **main 上的 `release.yml`**。也可在 Actions → Release → Run workflow 选择 main，输入已有标签；默认 `mode=verify` 仅验证，选择 `publish` 才发布。发布授权应覆盖合并、标签及随后执行的 npm／GitHub Release 发布。
 
-npm 已成功而附档失败时，优先在 7 天 artifact 保留期内重跑失败的附档 job。整个 publish job 重跑时，只有已发布版本的 integrity 与验证产物完全相同才会跳过 publish；不同字节占用同一版本会失败，必须增加版本。不要修改已经发布的标签，也不要重打包替换该版本。
+## 自动检查与同包分发
 
-## npm 认证状态
+CI 在 Linux、macOS、Windows 上运行元数据、类型、单元、浏览器、键盘辅助进程及真实 Electron 窗口检查；宿主安装矩阵使用 `package.json` 声明支持的四版 DSH，三平台共十二组。实际配置以 `.github/workflows/ci.yml` 为准。Linux 窗口检查由 Xvfb + Openbox 提供隔离显示，原生桌面步骤保留进程日志并设置六分钟上限。
 
-本仓库已有 npm OIDC 实际发布记录，见 [v0.4.9 交付证据](evidence/releases/v0.4.9/README.md)。日常发版沿用上述流程；认证失败时先核对实际 Trusted Publisher 设置与失败日志。包首次创建及信任绑定流程保留在[历史参考](archive/npm-bootstrap.md)。
+发布验证标签是 `origin/main` 的祖先、包与 shrinkwrap 版本一致且当前发布说明存在，然后检出不可变提交并重新执行完整 CI。PR 或 main 的先前测试结果不能代替标签上的发布检查。
 
-## dshmarket 上架
+Linux 构建并打包一次，成为规范产物。`npm pack` 产生的 `takboo-dsh-coopanion-<版本>.tgz` 只重命名为 `dsh-coopanion-<版本>.tgz`；固定别名通过复制获得。十二组安装、npm 和 Release 都消费这份压缩包，发布使用 `--ignore-scripts`，不会再次构建。
 
-[dshmarket 投稿说明](https://github.com/dsh-market/dsh-market#submit-your-plugin) 指向 [awesome-dsh-plugin 贡献规范](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/main/contributing.md)。市场只从社区目录读取条目，npm 发布本身不会完成收录。
+`verification.json` 绑定完整源码提交、版本、SHA-256 与 npm SHA-512 integrity；`dist/build-info.json` 记录产品输入摘要。生成正式报告要求干净、已提交的 checkout。构建摘要不代替完整 `.tgz` 的身份。
 
-目录提交状态见[文档索引](README.md)。投稿时核对有效 `dsh.bundle`、对应 patch、仓库公开时长、实际代码、license、双语描述和宿主 peers。为 GitHub 仓库添加 `dsh-plugin` topic；`deepseek-harness` 可帮助其他目录发现。投稿仅新增 `data/plugins/takboo__dsh-coopanion.yml`，内容从 [准备的条目](market/takboo__dsh-coopanion.yml) 复制；不要修改生成的 README，也不要手写 `npm:` 字段。
+发布顺序为 **完整 CI → npm → GitHub Release**。npm job 使用 Trusted Publisher OIDC；Release job 独立拥有内容写权限。发布前再次核对标签没有移动。fork、其他分支、移动／删除标签和预发布标签不进入稳定版自动发布路径。
 
-**首次正式提交前确认固定 tarball URL 返回真实可安装的包**；发布流程准备阶段可用 draft PR，产物上线后再标记 ready。目录维护者合并后，市场按成功的目录构建更新；不能把提交 PR 或 npm publish 当作已经可搜索。npm 包的 `repository` 指回本仓库，目录会自动建立映射，市场优先使用 npm，再使用预构建 Release。
+Release 附件包括：
 
-截图可随后在仓库根声明 `screenshots.json`（1–8 张仓库内实际截图）；没有真实截图时不放占位图。新增版本不需要重复提交目录 PR，继续保持 npm metadata 和固定 Release URL 即可。
+- `dsh-coopanion-<版本>.tgz` 与相同字节的 `dsh-coopanion.tgz`。
+- 示例角色 `paper-star.zip`。
+- `SHA256SUMS`、`verification.json` 与仅当前版本的 `release-notes.md`。
 
-## dshmarket 修改记录
+`docs/release-notes.md` 是 Release 正文源；工作流提取当前版本节，不能只上传附件而省略正文。固定包名供市场的 `latest/download/dsh-coopanion.tgz` 使用。
 
-正式 GitHub Release 必须包含当前版本的完整修改说明，稳定标签与 npm 版本一致。`docs/release-notes.md` 是说明源，发布工作流只提取当前版本节写入 Release 正文，并随已验证压缩包附档；只上传 Markdown 附件而没有正文不能提供市场所需内容。README 的“最新修改记录”也指向正式 Release。
+## 失败与重跑
 
-当前市场从社区目录的每日更新探测读取 GitHub Release 正文与提交记录（`dsh-plugin-updates`／`updates.json`）。目录条目尚未合并时，npm 发布不保证市场显示详细修改记录；合并后还需等待目录探测发布新的记录。交付时分别核对 Release 正文、npm 身份、固定下载别名，以及在线目录和更新记录，保留待同步状态。
+npm 上传后可能异步处理。发布后的 `--require-published` 对 404 每十秒重试、最多五分钟；不同字节占用版本、其他 HTTP 错误或超时均失败。上传前的版本检查只查询一次。
+
+npm 成功但 Release 附档失败时，优先在 artifact 的七天保留期内重跑失败 job。重跑 publish 仅在 npm integrity 与规范包完全相同时跳过上传；字节冲突必须增加版本。已发布标签、包和原始报告保持不可变，不能本地重打包替换。
+
+OIDC 认证失败时核对实际 Trusted Publisher 绑定和 job 日志。认证修复后仍沿用同一规范包；本地构建和安装成功分别记录，不能代替发布成功。
+
+## 发布后核验
+
+核对 npm 版本和 `latest`、Release 正文、版本包、固定别名、`verification.json` 及 `SHA256SUMS`。下载字节应与通过安装矩阵的规范包相同。新的核验使用独立记录并绑定本次提交和包摘要。
+
+安装入口使用精确 `@takboo/dsh-coopanion@<版本>`。pnpm 的发布时间保护可能使裸包名暂时解析为旧版，详情页显示新版不证明安装了新版；检查隔离 profile 中的精确版本安装及实际日志。原因与操作见[使用指南](usage.md#安装版本与发布时间保护)。
+
+## 社区市场
+
+市场从社区目录读取条目，npm 发布本身不完成收录。仓库维护的条目为 [takboo__dsh-coopanion.yml](market/takboo__dsh-coopanion.yml)，使用固定 Release 下载地址；投稿按[社区贡献规范](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/main/contributing.md)核对，不修改生成文件。
+
+新增版本继续维护 npm metadata、稳定标签、Release 正文与固定下载别名，无需重复提交目录条目。目录构建、版本探测和市场修改记录可能异步更新；若报告市场状态，应核对实际在线结果，不能从 npm 发布或目录 PR 推断已同步。

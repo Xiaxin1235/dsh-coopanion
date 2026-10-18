@@ -1,0 +1,40 @@
+✖ a fast placement at the edge drops without an automatic reverse throw (off) (1445.794834ms)
+✖ a fast placement at the edge drops without an automatic reverse throw (quiet) (956.90025ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2621.220625
+
+✖ failing tests:
+
+test at tests/npc-drag-ui.mjs:57:38
+✖ a fast placement at the edge drops without an automatic reverse throw (off) (1445.794834ms)
+  AssertionError [ERR_ASSERTION]: placing at the edge must not recoil across the screen: [917.1460284220722,902.7772681438,855.2181196044735,824.0672381412949,808.6007073795521,808.6007073795521,808.6007073795521,808.6007073795521,808.6007073795521,808.6007073795521,808.6007073795521,808.6007073795521]
+      at TestContext.<anonymous> (file:///Volumes/M2ExHome/rockman/Documents/codespace/personal-projects/dsh-plugins/dsh-coopanion/tests/npc-drag-ui.mjs:64:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/npc-drag-ui.mjs:57:38
+✖ a fast placement at the edge drops without an automatic reverse throw (quiet) (956.90025ms)
+  AssertionError [ERR_ASSERTION]: placing at the edge must not recoil across the screen: [915.1490087167398,902.7664150028768,854.8885100160454,839.1095346073504,839.1095346073504,839.1095346073504,839.1095346073504,839.1095346073504,839.1095346073504,839.1095346073504,839.1095346073504,839.1095346073504]
+      at TestContext.<anonymous> (file:///Volumes/M2ExHome/rockman/Documents/codespace/personal-projects/dsh-plugins/dsh-coopanion/tests/npc-drag-ui.mjs:64:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

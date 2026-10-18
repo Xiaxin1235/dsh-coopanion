@@ -95,7 +95,7 @@ try {
     "process.send?.({ type: 'observation-ready', errors, settings: ctx.settings.describe().find(entry => entry.ns === 'dsh-coopanion')?.value });", '})); }',
   ].join('\n'));
   await writeFile(join(profile, 'cordis.patch.yml'), '- insert:\n    - id: observation\n      name: ' + JSON.stringify(join(observer, 'host.mjs')) +
-    '\n- id: ui-settings-models\n  config:\n    credentialOnboarding: false\n- id: dsh-coopanion\n  config:\n    autoStart: true\n    size: 180\n    roam: true\n    diagnostics: true\n    companionship: interactive\n    dailyRhythm: false\n');
+    '\n- id: ui-settings-models\n  config:\n    credentialOnboarding: false\n- id: dsh-coopanion\n  config:\n    autoStart: true\n    size: 180\n    roam: true\n    diagnostics: true\n    companionship: interactive\n');
   const listener = createServer(); listener.listen(0, '127.0.0.1'); await once(listener, 'listening');
   environment.DSH_PET_TEST_DEBUG_PORT = String(listener.address().port); await new Promise(r => listener.close(r));
   const hostOut = await open(join(output, 'host.log'), 'wx'); let hostWrites = Promise.resolve();

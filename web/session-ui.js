@@ -81,3 +81,27 @@ export class ChatComposer {
   expire(request) { return this.receive({ type: 'chat-result', sessionId: request.sessionId, requestId: request.requestId, status: 'failed', code: 'coopanion/no-receipt' }); }
 }
 import { chatReceipt } from './chat-contract.js';
+
+/** Runtime-only viewing receipts; task facts and actual approval/question requests remain authoritative. */
+export class SessionAttention {
+  constructor() { this.seen = new Map(); }
+  key(session) { return JSON.stringify([session.mood, session.revision ?? 0, session.text ?? '', session.completion ?? '']); }
+  acknowledge(snapshot, interactions, id) {
+    const session = snapshot.sessions?.find(s => s.id === id);
+    if (!session || session.active || !['error', 'waiting'].includes(session.mood) || interactions.some(item => item.sessionId === id && item.state !== 'settled')) return false;
+    this.seen.set(id, this.key(session));
+    return true;
+  }
+  project(snapshot, interactions = []) {
+    if (!this.seen.size) return snapshot;
+    const sources = new Map((snapshot.sessions ?? []).map(s => [s.id, s]));
+    const requested = new Set(interactions.filter(item => item.state !== 'settled').map(item => item.sessionId));
+    for (const [id, key] of this.seen) {
+      const session = sources.get(id);
+      if (!session || session.active || requested.has(id) || this.key(session) !== key) this.seen.delete(id);
+    }
+    if (!this.seen.size) return snapshot;
+    const selectedViewed = this.seen.has(snapshot.sessionId);
+    return { ...snapshot, ...(selectedViewed ? { mood: 'idle' } : {}), sessions: snapshot.sessions.map(s => this.seen.has(s.id) ? { ...s, mood: 'idle' } : s) };
+  }
+}

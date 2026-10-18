@@ -75,3 +75,23 @@ it('keeps subpixel home boundaries stable and gives wide displays a bounded dist
   const result = stepNpc({ ...initialNpc(1), spaceKey: huge.key, phase: 'prepare', placed: true, target: huge.min, dueAt: 0 }, { ...base, now: 1, space: huge, layout: { ...layout, x: huge.home } });
   expect(result.walk).toBeTruthy(); expect(result.state.dueAt).toBeGreaterThan(20000); expect(result.state.dueAt).toBeLessThanOrEqual(60001);
 });
+
+it('manual relocation retires the owned route and ignores its late arrival', () => {
+  const f = fixture(); f.until('outbound'); const oldId = f.state.walkId;
+  const out = f.tick({ relocated: true, user: true });
+  expect(out.stop).toBe(oldId); expect(f.state.walkId).toBeNull(); expect(f.state.target).toBeNull(); expect(f.state.placed).toBe(true);
+  f.tick({ event: { kind: 'arrived', walkId: oldId } });
+  expect(f.state.recent).toEqual([]); expect(f.state.walkId).toBeNull();
+  for (let i = 0; i < 10; i++) expect(f.tick().walk).toBeUndefined();
+  f.until('outbound'); expect(f.state.walkId).toBeGreaterThan(oldId);
+});
+it('a manual placement made before initial activation is never overwritten, including outside the activity area', () => {
+  const f = fixture();
+  f.tick({ enabled: false, relocated: true, user: true }); expect(f.state.placed).toBe(true);
+  for (let i = 0; i < 20; i++) {
+    const out = f.tick({ layout: { ...layout, x: 80 } });
+    expect(out.place).toBeUndefined(); expect(out.walk).toBeUndefined();
+  }
+  expect(f.state.reason).toBe('geometry');
+  for (let i = 0; i < 20; i++) expect(f.tick().place).toBeUndefined();
+});

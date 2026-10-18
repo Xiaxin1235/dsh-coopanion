@@ -1,0 +1,74 @@
+
+> @takboo/dsh-coopanion@0.4.12 test
+> vitest run && node --test tests/release-checks.mjs tests/client-build.mjs && node --test tests/locale-client.mjs
+
+
+ RUN  v3.2.7 /Volumes/M2ExHome/rockman/Documents/codespace/personal-projects/dsh-plugins/dsh-coopanion
+
+ ✓ tests/companionship.test.js (9 tests) 211ms
+ ✓ tests/diagnostics-discovery.test.js (6 tests) 243ms
+ ✓ tests/locale-sync.test.ts (4 tests) 164ms
+ ✓ tests/plugin.test.ts (10 tests) 228ms
+ ✓ tests/notification-client.test.ts (15 tests) 40ms
+ ✓ tests/companion-store.test.ts (8 tests) 355ms
+ ✓ tests/chat.test.ts (7 tests) 43ms
+ ✓ tests/companion-http.test.ts (1 test) 93ms
+ ✓ tests/notification-integration.test.ts (8 tests) 444ms
+   ✓ keeps the original question answerer usable when reminder tracking reaches capacity  320ms
+ ✓ tests/controls.test.ts (15 tests) 48ms
+ ✓ tests/keyboard-activity.test.js (8 tests) 16ms
+ ✓ tests/completion.test.ts (17 tests) 84ms
+ ✓ tests/notification-broker.test.ts (18 tests) 56ms
+ ✓ tests/session-recovery.test.ts (6 tests) 107ms
+ ✓ tests/resource-observation.test.js (7 tests) 14ms
+ ✓ tests/presentation.test.js (11 tests) 12ms
+ ✓ tests/npc-life.test.js (8 tests) 11ms
+ ✓ tests/model.test.ts (18 tests) 22ms
+ ✓ tests/lifecycle-state.test.js (5 tests) 12ms
+ ✓ tests/display-geometry.test.js (6 tests) 6ms
+ ✓ tests/notification-contract.test.ts (5 tests) 17ms
+ ✓ tests/bridge.test.ts (8 tests | 1 skipped) 1272ms
+   ✓ forwards exact chat receipts across the child-process bridge  409ms
+ ✓ tests/companion-client.test.js (3 tests) 6ms
+ ✓ tests/render-cadence.test.js (2 tests) 3ms
+ ✓ tests/text-scale.test.ts (1 test) 3ms
+ ✓ tests/companion-touch.test.js (2 tests) 4ms
+ ✓ tests/figures.test.ts (6 tests) 2757ms
+   ✓ serves the frame with an opaque-origin CSP, rejects cross-origin mutations and offers matching source  2671ms
+ ✓ tests/diagnostics.test.js (8 tests) 4109ms
+   ✓ honors a wall deadline even while the diagnostic endpoint is unavailable  1523ms
+   ✓ a calendar deadline never grants continuous-resource acceptance  2510ms
+
+ Test Files  28 passed (28)
+      Tests  221 passed | 1 skipped (222)
+   Start at  10:44:56
+   Duration  4.52s (transform 1.08s, setup 0ms, collect 2.97s, tests 10.38s, environment 4ms, prepare 1.95s)
+
+✔ activates the built Client factory using only DSH public peers and React seeds (583.346958ms)
+✔ verifies a real stable tag and exports its immutable commit (820.101917ms)
+✔ rejects a prerelease tag instead of publishing it to latest (254.503667ms)
+✔ rejects a tag whose package version differs (400.188375ms)
+✔ rejects a release outside main ancestry (386.315917ms)
+✔ rejects a tag moved after candidate verification (179.050792ms)
+✔ rejects shrinkwrap metadata and missing release notes (429.9435ms)
+✔ release notes contain only the target version and reject duplicates (0.688958ms)
+✔ npm preflight distinguishes unused, identical, conflicting and unavailable versions (10.685625ms)
+✔ post-publish verification waits for the registry to expose identical bytes (4.814333ms)
+✔ post-publish verification has a deadline and fails immediately on conflicts or registry errors (0.462917ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2597.364833
+✔ the real Client factory synchronizes resolved Harness locale without workspace or notifications (130.224917ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 176.9495

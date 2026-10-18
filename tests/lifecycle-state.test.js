@@ -25,20 +25,22 @@ it('isolated lifecycle controls require the explicit native test mode', () => {
   expect(initialLockState({ platform: 'darwin', env: { DSH_PET_TEST_NO_SANDBOX: '1', DSH_PET_TEST_INITIAL_LOCK_STATE: 'system' }, run: () => 'locked' })).toBe('locked');
 });
 
-it('the macOS adapter inspects only fixed flags and never treats malformed session state as unlocked', () => {
+it('the macOS adapter uses the CGSession.h dictionary keys and rejects missing or malformed flags', () => {
   const source = readFileSync(new URL('../desktop/lifecycle-state-macos.jxa', import.meta.url), 'utf8');
   for (const [flags, expected] of [
     [{ CGSSessionScreenIsLocked: true }, 'locked'],
-    [{ kCGSessionOnConsoleKey: true, kCGSessionLoginDoneKey: true }, 'unlocked'],
-    [{ CGSSessionScreenIsLocked: false, kCGSessionOnConsoleKey: true, kCGSessionLoginDoneKey: true }, 'unlocked'],
+    [{ kCGSSessionOnConsoleKey: true, kCGSessionLoginDoneKey: true }, 'unlocked'],
+    [{ CGSSessionScreenIsLocked: false, kCGSSessionOnConsoleKey: true, kCGSessionLoginDoneKey: true }, 'unlocked'],
     [{}, 'unknown'],
-    [{ kCGSessionOnConsoleKey: false, kCGSessionLoginDoneKey: true }, 'unknown'],
-    [{ CGSSessionScreenIsLocked: 'invalid', kCGSessionOnConsoleKey: true, kCGSessionLoginDoneKey: true }, 'unknown'],
+    // The API macro name is not its dictionary key (CGSession.h).
+    [{ kCGSessionOnConsoleKey: true, kCGSessionLoginDoneKey: true }, 'unknown'],
+    [{ kCGSSessionOnConsoleKey: false, kCGSessionLoginDoneKey: true }, 'unknown'],
+    [{ CGSSessionScreenIsLocked: 'invalid', kCGSSessionOnConsoleKey: true, kCGSessionLoginDoneKey: true }, 'unknown'],
   ]) {
     const accessed = [], dollar = value => value;
     dollar.CGSessionCopyCurrentDictionary = () => ({});
     const ObjC = { import() {}, unwrap: value => value, castRefToObject: () => ({ objectForKey(key) { accessed.push(key); return flags[key]; } }) };
     expect(runInNewContext(source, { ObjC, $: dollar })).toBe(expected);
-    expect(accessed.every(key => ['CGSSessionScreenIsLocked', 'kCGSessionOnConsoleKey', 'kCGSessionLoginDoneKey'].includes(key))).toBe(true);
+    expect(accessed.every(key => ['CGSSessionScreenIsLocked', 'kCGSSessionOnConsoleKey', 'kCGSessionLoginDoneKey'].includes(key))).toBe(true);
   }
 });

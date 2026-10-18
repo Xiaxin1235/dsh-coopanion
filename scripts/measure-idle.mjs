@@ -13,7 +13,7 @@ import { chromium } from 'playwright-core';
 const args = process.argv.slice(2), arg = (key, fallback) => args.includes(key) ? args[args.indexOf(key) + 1] : fallback;
 const root = resolve(arg('--checkout', '.')), output = resolve(arg('--output', 'artifacts/idle-resource.json'));
 const mode = arg('--mode', 'baseline'), rounds = Number(arg('--rounds', '3')), seconds = Number(arg('--seconds', '60'));
-assert.ok(['baseline', 'off', 'day', 'night', 'companion-day', 'companion-night', 'npc-controlled'].includes(mode));
+assert.ok(['baseline', 'off', 'npc-day', 'npc-night', 'npc-controlled'].includes(mode));
 assert.ok(Number.isInteger(rounds) && rounds >= 1 && seconds >= 10);
 assert.ok(['darwin', 'linux'].includes(platform()), 'ps sampling currently supports macOS/Linux only');
 const { ElectronBridge } = await import(pathToFileURL(join(root, 'dist/bridge.js')).href);
@@ -38,7 +38,7 @@ const mean = a => a.reduce((s, n) => s + n, 0) / a.length;
 const sourceCommit = execFileSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
 try {
   bridge.update({ mood: 'idle', active: false, text: '', sessionId: null, sessions: [], results: [] });
-  await bridge.start({ size: 180, textScale: 1, locale: 'zh', roam: true, dailyRhythm: ['day', 'night'].includes(mode), companionship: mode.startsWith('companion-') || mode === 'npc-controlled' ? 'quiet' : 'off', notifications: true, bubbleDurationMs: 12000 });
+  await bridge.start({ size: 180, textScale: 1, locale: 'zh', roam: true, companionship: mode.startsWith('npc-') ? 'quiet' : 'off', notifications: true, bubbleDurationMs: 12000 });
   browser = await chromium.connectOverCDP(`http://127.0.0.1:${process.env.DSH_PET_TEST_DEBUG_PORT}`);
   const page = browser.contexts()[0].pages()[0];
   if (mode === 'npc-controlled') await page.route('**/npc-life.js', async route => {
@@ -63,7 +63,7 @@ try {
       await pause(1000);
       const tree = sampleTree(pid), now = performance.now(), elapsed = (now - at) / 1000;
       const cpuSeconds = tree.reduce((total, row) => { const old = previous.find(p => p.pid === row.pid); return total + (old ? Math.max(0, row.cpuSeconds - old.cpuSeconds) : 0); }, 0);
-      const renderer = await page.evaluate(() => ({ mood: document.querySelector('#pet').dataset.mood, mode: document.querySelector('#pet').dataset.mode, rhythm: document.querySelector('#pet').dataset.rhythm, companionship: document.querySelector('#pet').dataset.companionship, activity: document.querySelector('#pet').dataset.companionActivity, npcPhase: document.querySelector('#pet').dataset.npcPhase, npcReason: document.querySelector('#pet').dataset.npcReason, heapBytes: performance.memory?.usedJSHeapSize }));
+      const renderer = await page.evaluate(() => ({ mood: document.querySelector('#pet').dataset.mood, mode: document.querySelector('#pet').dataset.mode, companionship: document.querySelector('#pet').dataset.companionship, activity: document.querySelector('#pet').dataset.companionActivity, npcPhase: document.querySelector('#pet').dataset.npcPhase, npcReason: document.querySelector('#pet').dataset.npcReason, heapBytes: performance.memory?.usedJSHeapSize }));
       samples.push({ round: round + 1, elapsedSeconds: elapsed, cpuPercentOneCore: cpuSeconds / elapsed * 100, rssMiB: tree.reduce((n, p) => n + p.rssKiB, 0) / 1024, tree, renderer });
       assert.equal(renderer.mood, 'idle');
       previous = tree; at = now;

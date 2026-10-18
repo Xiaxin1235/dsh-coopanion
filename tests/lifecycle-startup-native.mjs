@@ -8,6 +8,8 @@ import { join, resolve } from 'node:path';
 import { listDiagnostics, readDiagnostics } from '../scripts/diagnostics-client.mjs';
 const require = createRequire(import.meta.url), packageRoot = resolve(process.env.DSH_LIFECYCLE_PACKAGE_ROOT ?? '.');
 const real = process.env.DSH_LIFECYCLE_NATIVE_REAL === '1';
+const expectedRealState = process.env.DSH_LIFECYCLE_EXPECT_STATE ?? 'locked';
+assert.ok(['locked', 'unlocked'].includes(expectedRealState));
 const records = [];
 for (const initialState of real ? ['system'] : ['locked', 'unknown', 'restore-locked', 'system']) {
   const root = await mkdtemp(join(tmpdir(), 'dsh-initial-lock-'));
@@ -28,7 +30,18 @@ for (const initialState of real ? ['system'] : ['locked', 'unknown', 'restore-lo
     }
     assert.ok(snapshot, 'Initial diagnostic endpoint must become available');
     const state = snapshot.value.runtime;
-    if (initialState === 'locked' || initialState === 'restore-locked' || real) {
+    if (real && expectedRealState === 'unlocked') {
+      assert.equal(state.screenLocked, false, 'A cold start on an unlocked desktop must initialize unlocked');
+      assert.equal(state.suspended, false, 'The ordinary sandbox must allow NPC activity on an unlocked desktop');
+      assert.equal(state.lockStateKnown, true);
+      for (let attempt = 0; attempt < 30; attempt++) {
+        const [endpoint] = await listDiagnostics(join(root, 'registry'));
+        snapshot = await readDiagnostics(endpoint);
+        if (snapshot.value.renderer?.npc?.keyboardStatus === 'available') break;
+        await new Promise(r => setTimeout(r, 100));
+      }
+      assert.equal(snapshot.value.renderer?.npc?.keyboardStatus, 'available', 'Unblocked lifecycle must start the real keyboard adapter');
+    } else if (initialState === 'locked' || initialState === 'restore-locked' || real) {
       assert.equal(state.screenLocked, true, 'A cold start on a locked desktop must initialize locked');
       assert.equal(state.suspended, true); assert.equal(state.lockStateKnown, true);
     } else if (initialState === 'unknown') {
@@ -37,7 +50,7 @@ for (const initialState of real ? ['system'] : ['locked', 'unknown', 'restore-lo
       assert.equal(typeof state.lockStateKnown, 'boolean');
       if (!state.lockStateKnown || state.screenLocked) assert.equal(state.suspended, true);
     }
-    records.push({ platform: process.platform, build: snapshot.build, controlledInitialState: real ? null : initialState, normalSandbox: real, runtime: state });
+    records.push({ platform: process.platform, build: snapshot.build, controlledInitialState: real ? null : initialState, expectedRealState: real ? expectedRealState : null, normalSandbox: real, runtime: state, npc: snapshot.value.renderer?.npc });
   } finally {
     const deadline = setTimeout(() => child.kill('SIGKILL'), 10000);
     try {
@@ -54,4 +67,4 @@ for (const initialState of real ? ['system'] : ['locked', 'unknown', 'restore-lo
 }
 await mkdir('artifacts', { recursive: true });
 await writeFile(real ? 'artifacts/lifecycle-startup-real.json' : 'artifacts/lifecycle-startup-native.json', JSON.stringify({ records }, null, 2) + '\n');
-console.log('Native lifecycle startup: locked cold start, conservative unknown and system adapter observation passed.');
+console.log('Native lifecycle startup passed: ' + (real ? 'ordinary sandbox, expected ' + expectedRealState : 'controlled locked/unknown and system adapter observation') + '.');

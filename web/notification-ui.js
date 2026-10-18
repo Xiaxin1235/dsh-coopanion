@@ -52,6 +52,7 @@ export function createNoticeQueue({ limit = 32, history = 256 } = {}) {
         return notice;
       }
     },
+    discard(predicate) { for (let i = pending.length - 1; i >= 0; i--) if (predicate(pending[i])) pending.splice(i, 1); },
     clear() { pending.length = 0; },
     get size() { return pending.length; },
   };

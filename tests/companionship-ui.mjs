@@ -9,7 +9,7 @@ import { before, after, test } from 'node:test';
 import { chromium } from 'playwright-core';
 import { controlCompanionClock, advanceCompanion } from './helpers/companionship.mjs';
 import { controlNpc, npcTick, npcUntil } from './helpers/npc-life.mjs';
-import { recordBodyOrders } from './helpers/daily-rhythm.mjs';
+import { recordBodyOrders } from './helpers/body-orders.mjs';
 const require = createRequire(import.meta.url);
 const { CharacterStore } = require('../dist/character-store.cjs'), { CompanionStore } = require('../dist/companion-store.cjs'), { createPetServer } = require('../dist/figure-server.cjs');
 let browser;
@@ -42,14 +42,14 @@ async function fixture(t, mode = 'interactive', vocab, star = false, timing = nu
   await page.goto(`http://127.0.0.1:${server.address().port}`);
   await page.waitForSelector('#pet[data-mode]');
   const receive = msg => page.evaluate(msg => window.receive(msg), msg);
-  await receive({ type: 'init', baseline: true, options: { companionship: mode, roam: true, dailyRhythm: true, locale: 'zh' }, snapshot: snapshot() });
+  await receive({ type: 'init', baseline: true, options: { companionship: mode, roam: true, locale: 'zh' }, snapshot: snapshot() });
   await page.mouse.move(0, 0);
   if (timing) await page.waitForSelector('#pet[data-mode=idle]');
   else await page.waitForFunction(() => window.companionState?.blocked === false);
   const body = await recordBodyOrders(page);
   return { page, directory, store, receive, setDay: (day, minutes = 0) => { ownerNow = new Date(2026, 9, day, 12).getTime() + minutes * 60000; }, read: () => store.request({ type: 'read', characterId: 'whale' }), configure: options => receive({ type: 'configure', options }), body };
 }
-async function tickNext(page, extra = 0) { await advanceCompanion(page, await page.evaluate(() => window.companionState.active?.dueAt ?? window.companionState.dueAt) + extra); }
+async function tickNext(page, extra = 0) { await advanceCompanion(page, await page.evaluate(() => window.companionState.active?.dueAt) + extra); }
 async function finishActivity(page) {
   for (let i = 0; i < 6 && await page.evaluate(() => !!window.companionState.active); i++) {
     const index = await page.evaluate(() => window.companionState.active.index);
@@ -153,7 +153,7 @@ test('real strokes count once, forged sandbox touches do not, missing words rema
   assert.equal((await read()).relation.total, 1);
   const missing = await fixture(t, 'quiet', ['neutral', 'stand']);
   await advanceCompanion(missing.page, 600000); assert.equal(await missing.page.locator('#pet').getAttribute('data-companion-activity'), 'idle');
-  const orders = await missing.body.evaluate(() => window.rhythmOrders.filter(e => e.t === 'do').map(e => e.word)); assert.deepEqual(orders.filter(w => !['neutral', 'stand'].includes(w)), []);
+  const orders = await missing.body.evaluate(() => window.bodyOrders.filter(e => e.t === 'do').map(e => e.word)); assert.deepEqual(orders.filter(w => !['neutral', 'stand'].includes(w)), []);
 });
 
 test('twenty manual activities react within 500ms and interrupted trials never grow', async t => {
@@ -209,7 +209,7 @@ test('six stored moments across three dates unlock the real familiar greeting af
   await page.evaluate(() => { window.companionRandom = .999; });
   await advanceCompanion(page, 1800000); await page.locator('#companion-invitation').waitFor();
   await advanceCompanion(page, 1802100); await page.waitForFunction(() => window.companionEvents.some(e => e.word === 'love'));
-  assert.ok(await f.body.evaluate(() => window.rhythmOrders.some(e => e.t === 'do' && e.word === 'love')));
+  assert.ok(await f.body.evaluate(() => window.bodyOrders.some(e => e.t === 'do' && e.word === 'love')));
 });
 
 test('reduced motion cancels an in-progress activity and a small large-text menu remains reachable', async t => {
@@ -231,10 +231,10 @@ test('idle rendering is bounded while real elapsed time, work and input keep the
   await body.evaluate(() => { window.cadence = []; addEventListener('message', e => { if (e.data?.t === 'tick') window.cadence.push(e.data.dt); }); });
   const sample = async () => { await body.evaluate(() => { window.cadence = []; }); const at = await page.evaluate(() => performance.now()); await page.waitForTimeout(2000); return { elapsed: (await page.evaluate(() => performance.now()) - at) / 1000, ticks: await body.evaluate(() => window.cadence.slice()) }; };
   const idle = await sample();
-  await configure({ companionship: 'off' }); const legacy = await sample();
-  const hasHeadroom = legacy.ticks.length / legacy.elapsed >= 40;
-  assert.ok(idle.ticks.length > 0 && idle.ticks.length / idle.elapsed <= 31, JSON.stringify({ idle, legacy }));
-  if (hasHeadroom) assert.ok(idle.ticks.length < legacy.ticks.length * .8 && idle.ticks.length > legacy.ticks.length * .25, JSON.stringify({ idle: idle.ticks.length, legacy: legacy.ticks.length }));
+  await configure({ companionship: 'off' }); const disabled = await sample();
+  const hasHeadroom = disabled.ticks.length / disabled.elapsed >= 40;
+  assert.ok(idle.ticks.length > 0 && idle.ticks.length / idle.elapsed <= 31, JSON.stringify({ idle, disabled }));
+  if (hasHeadroom) assert.ok(idle.ticks.length < disabled.ticks.length * .8 && idle.ticks.length > disabled.ticks.length * .25, JSON.stringify({ idle: idle.ticks.length, disabled: disabled.ticks.length }));
   else t.diagnostic('Renderer baseline is below 40fps; relative speedup is not exercised here. Controlled render-cadence tests cover cap/bypass and dt.');
   if (hasHeadroom) assert.ok(Math.abs(idle.ticks.reduce((a, b) => a + b, 0) - idle.elapsed) < .25, JSON.stringify(idle));
   await configure({ companionship: 'quiet' });
@@ -246,7 +246,10 @@ test('idle rendering is bounded while real elapsed time, work and input keep the
 
 
 test('unknown input, mouse proximity, lifecycle and limited star keep control and vocabulary safe', async t => {
-  const f = await fixture(t, 'quiet'); const { page, receive, configure } = f;
+  const f = await fixture(t, 'quiet'); const { page, receive, configure, body } = f;
+  await configure({ size: 181 }); await configure({ size: 180 });
+  await body.waitForFunction(() => window.bodyOrders.some(o => o.t === 'set' && o.state.bounds?.S === 180 / 256));
+  const scale = () => body.evaluate(() => window.bodyOrders.filter(o => o.t === 'set' && o.state.bounds).at(-1)?.state.bounds.S);
   await npcUntil(page, 'outbound');
   const target = await page.evaluate(() => window.npcState.target);
   const box = await page.locator('#pet').boundingBox();
@@ -255,10 +258,9 @@ test('unknown input, mouse proximity, lifecycle and limited star keep control an
   assert.equal(await page.evaluate(() => window.npcState.target), target);
   await page.mouse.move(0, 0); await page.evaluate(() => { window.npcKeyboard = 'unknown'; }); await npcTick(page);
   assert.equal(await page.locator('#pet').getAttribute('data-npc-reason'), 'unknown');
-  await page.waitForFunction(w => document.querySelector('#pet').getBoundingClientRect().width < w * .8, box.width);
-  const small = await page.locator('#pet').boundingBox();
+  assert.equal(await scale(), 180 / 256, 'unknown perception must not shrink the body');
   await page.evaluate(() => { window.npcKeyboard = 'idle'; }); await npcTick(page); await npcTick(page, 5000);
-  assert.ok((await page.locator('#pet').boundingBox()).width < box.width * .8);
+  assert.equal(await scale(), 180 / 256, 'idle recovery must retain configured size');
   const runtime = { phase: 'running', visible: false, suspended: false, generation: 1, visibilityRevision: 1 };
   await receive({ type: 'notification-state', snapshot: { protocol: 1, runtime, interactions: [] } }); await npcTick(page);
   assert.equal(await page.evaluate(() => window.npcState.reason), 'lifecycle');
@@ -271,7 +273,7 @@ test('unknown input, mouse proximity, lifecycle and limited star keep control an
   await star.page.waitForSelector('#pet[data-character=paper-star]');
   for (let i = 0; i < 50; i++) await npcTick(star.page);
   assert.equal(await star.page.evaluate(() => window.npcEvents.some(e => e.walk)), false);
-  const words = await star.body.evaluate(() => window.rhythmOrders.filter(e => e.t === 'do').map(e => e.word));
+  const words = await star.body.evaluate(() => window.bodyOrders.filter(e => e.t === 'do').map(e => e.word));
   assert.ok(!words.includes('look') && !words.includes('sit') && !words.includes('dance'), JSON.stringify(words));
 });
 

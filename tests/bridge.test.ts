@@ -145,12 +145,12 @@ process.on('message', m => {
   if (m.type === 'quit') process.exit(0);
 });
 `, { mode: 0o700 });
-    const options: DesktopOptions = { size: 90, textScale: 1, dailyRhythm: false, companionship: 'off', roam: true, notifications: true, bubbleDurationMs: 12000, locale: 'zh', electronPath: binary };
+    const options: DesktopOptions = { size: 90, textScale: 1, companionship: 'off', roam: true, notifications: true, bubbleDurationMs: 12000, locale: 'zh', electronPath: binary };
     const delivered = new Promise<any>(resolve => bridge.onAction(resolve));
     const start = bridge.start(options);
-    bridge.configure({ ...options, size: 240, textScale: 1.5, dailyRhythm: true, companionship: 'interactive', locale: undefined });
+    bridge.configure({ ...options, size: 240, textScale: 1.5, companionship: 'interactive', locale: undefined });
     await start;
-    expect(await delivered).toEqual({ type: 'latest-init', options: { ...options, size: 240, textScale: 1.5, dailyRhythm: true, companionship: 'interactive', locale: null } });
+    expect(await delivered).toEqual({ type: 'latest-init', options: { ...options, size: 240, textScale: 1.5, companionship: 'interactive', locale: null } });
   } finally {
     await bridge.dispose(); await rm(folder, { recursive: true, force: true });
     if (previous === undefined) delete process.env.WAYLAND_DISPLAY; else process.env.WAYLAND_DISPLAY = previous;

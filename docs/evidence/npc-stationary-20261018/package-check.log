@@ -1,0 +1,129 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: release report requires a clean committed checkout
++ actual - expected
+
++ 'M .github/workflows/ci.yml\n' +
++   ' M README.md\n' +
++   ' M desktop/lifecycle-state-macos.jxa\n' +
++   ' M docs/README.md\n' +
++   ' M docs/companionship-contract.md\n' +
++   ' M docs/daily-rhythm-contract.md\n' +
++   ' M docs/desktop-recovery-contract.md\n' +
++   ' M docs/development.md\n' +
++   ' M docs/diagnostics-contract.md\n' +
++   ' M docs/notification-contract.md\n' +
++   ' M docs/roadmap.md\n' +
++   ' M docs/usage.md\n' +
++   ' M package.json\n' +
++   ' M scripts/check-package.mjs\n' +
++   ' M scripts/measure-idle.mjs\n' +
++   ' M scripts/observe-companion.mjs\n' +
++   ' M src/bridge.ts\n' +
++   ' M src/client/Settings.tsx\n' +
++   ' M src/client/locales.ts\n' +
++   ' M src/index.ts\n' +
++   ' M tests/bridge.test.ts\n' +
++   ' M tests/companionship-native.mjs\n' +
++   ' M tests/companionship-ui.mjs\n' +
++   ' M tests/companionship.test.js\n' +
++   ' D tests/daily-rhythm-native.mjs\n' +
++   ' D tests/daily-rhythm-ui.mjs\n' +
++   ' D tests/daily-rhythm.test.js\n' +
++   ' M tests/desktop.mjs\n' +
++   ' D tests/helpers/daily-rhythm.mjs\n' +
++   ' M tests/helpers/npc-life.mjs\n' +
++   ' M tests/install.mjs\n' +
++   ' M tests/lifecycle-startup-native.mjs\n' +
++   ' M tests/lifecycle-state.test.js\n' +
++   ' M tests/npc-life-native.mjs\n' +
++   ' M tests/npc-life.test.js\n' +
++   ' M tests/plugin.test.ts\n' +
++   ' M tests/presentation.test.js\n' +
++   ' M web/companionship.d.ts\n' +
++   ' M web/companionship.js\n' +
++   ' D web/daily-rhythm.d.ts\n' +
++   ' D web/daily-rhythm.js\n' +
++   ' M web/index.html\n' +
++   ' M web/locale.js\n' +
++   ' M web/notification-ui.js\n' +
++   ' M web/npc-life.js\n' +
++   ' M web/pet.js\n' +
++   ' M web/session-ui.js\n' +
++   '?? docs/evidence/attention-size-20261018/\n' +
++   '?? docs/evidence/daily-trial-20261018/\n' +
++   '?? docs/evidence/npc-only-20261018/\n' +
++   '?? docs/evidence/npc-stationary-20261018/\n' +
++   '?? tests/attention-size-ui.mjs\n' +
++   '?? tests/helpers/body-orders.mjs\n' +
++   '?? tests/npc-controls-ui.mjs'
+- ''
+
+    at file:///Volumes/M2ExHome/rockman/Documents/codespace/personal-projects/dsh-plugins/dsh-coopanion/scripts/check-package.mjs:46:10
+    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+    at async node:internal/modules/esm/loader:647:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'M .github/workflows/ci.yml\n' +
+    ' M README.md\n' +
+    ' M desktop/lifecycle-state-macos.jxa\n' +
+    ' M docs/README.md\n' +
+    ' M docs/companionship-contract.md\n' +
+    ' M docs/daily-rhythm-contract.md\n' +
+    ' M docs/desktop-recovery-contract.md\n' +
+    ' M docs/development.md\n' +
+    ' M docs/diagnostics-contract.md\n' +
+    ' M docs/notification-contract.md\n' +
+    ' M docs/roadmap.md\n' +
+    ' M docs/usage.md\n' +
+    ' M package.json\n' +
+    ' M scripts/check-package.mjs\n' +
+    ' M scripts/measure-idle.mjs\n' +
+    ' M scripts/observe-companion.mjs\n' +
+    ' M src/bridge.ts\n' +
+    ' M src/client/Settings.tsx\n' +
+    ' M src/client/locales.ts\n' +
+    ' M src/index.ts\n' +
+    ' M tests/bridge.test.ts\n' +
+    ' M tests/companionship-native.mjs\n' +
+    ' M tests/companionship-ui.mjs\n' +
+    ' M tests/companionship.test.js\n' +
+    ' D tests/daily-rhythm-native.mjs\n' +
+    ' D tests/daily-rhythm-ui.mjs\n' +
+    ' D tests/daily-rhythm.test.js\n' +
+    ' M tests/desktop.mjs\n' +
+    ' D tests/helpers/daily-rhythm.mjs\n' +
+    ' M tests/helpers/npc-life.mjs\n' +
+    ' M tests/install.mjs\n' +
+    ' M tests/lifecycle-startup-native.mjs\n' +
+    ' M tests/lifecycle-state.test.js\n' +
+    ' M tests/npc-life-native.mjs\n' +
+    ' M tests/npc-life.test.js\n' +
+    ' M tests/plugin.test.ts\n' +
+    ' M tests/presentation.test.js\n' +
+    ' M web/companionship.d.ts\n' +
+    ' M web/companionship.js\n' +
+    ' D web/daily-rhythm.d.ts\n' +
+    ' D web/daily-rhythm.js\n' +
+    ' M web/index.html\n' +
+    ' M web/locale.js\n' +
+    ' M web/notification-ui.js\n' +
+    ' M web/npc-life.js\n' +
+    ' M web/pet.js\n' +
+    ' M web/session-ui.js\n' +
+    '?? docs/evidence/attention-size-20261018/\n' +
+    '?? docs/evidence/daily-trial-20261018/\n' +
+    '?? docs/evidence/npc-only-20261018/\n' +
+    '?? docs/evidence/npc-stationary-20261018/\n' +
+    '?? tests/attention-size-ui.mjs\n' +
+    '?? tests/helpers/body-orders.mjs\n' +
+    '?? tests/npc-controls-ui.mjs',
+  expected: '',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.21.0

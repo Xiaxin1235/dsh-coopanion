@@ -1,13 +1,10 @@
 # 接手入口
 
-开始仓库工作时先读 [docs/README.md](docs/README.md)，按任务读取其中的现行契约。版本、依赖和可执行命令以 `package.json`、`npm-shrinkwrap.json` 及 `.github/workflows/` 为准。
+开始仓库工作时先读 [docs/README.md](docs/README.md)，按任务读取对应契约。版本、依赖和命令以 `package.json`、`npm-shrinkwrap.json` 及 `.github/workflows/` 为准，当前执行范围来自用户。
 
-评估阶段、接续采样或准备发布时，从索引核对实际候选提交、包摘要和最近记录；源码实现、安装成功、采样启动及验收通过分别结算。路线图维护后续方向，当前执行范围来自用户。
-
-- 产品行为变更先核对对应契约，再同步实现、测试和使用说明；完成语义由 `src/completion.ts` 共享判断，会话接受回执与任务完成分别结算。
-- `docs/archive/` 和 `docs/evidence/` 是历史资料。只在追溯提交、复现旧问题或核对证据时读取；其中的“下一步”、分工、阶段范围和本机绝对路径只描述当时环境。当前任务范围来自用户，本地缓存和旧会话记忆需与当前源码及文档索引复核。
-- 原始报告、日志、截图、摘要及第三方许可保留原字节。新增验证使用新的记录，绑定实际提交、宿主版本和包摘要；对后续结果的说明写入索引或新记录。
-- 普通检索由 `.ignore` 隔离历史资料；追溯时使用 `rg --no-ignore docs/archive docs/evidence`。`.cache/`、`artifacts/`、`dist/`、`node_modules/` 是本机或生成内容，不作为当前计划或状态来源。
-- 验证按改动选择现有入口；涉及浏览器回复、收件箱、字号、多屏或日常节奏时包含 `test:inbox-ui`。原生窗口和正式安装使用隔离 profile，系统桌面操作串行执行。CI 的三平台与两版宿主矩阵、物理实机验收分别报告。
-- 自主陪伴试用先按 [使用指南](docs/usage.md#自主陪伴p1-候选功能尚未发布) 核对开关组合；诊断和长时采样按 [诊断契约](docs/diagnostics-contract.md) 解释有效时间、缺口和报告状态。采样进程存活本身不证明自主活动可用。
-- 发布操作前读 [docs/releasing.md](docs/releasing.md)，保持同一分发包贯穿安装、npm 和 Release。新的文档整理或本地构建不改变已发布产物身份。
+- 产品行为变更同步实现、测试和使用说明；完成语义由 `src/completion.ts` 共享判断，会话接受回执与任务完成分别结算。
+- 浏览器回复、收件箱、字号、多屏或 NPC 日常的变更包含 `test:inbox-ui`。原生窗口和安装使用隔离 profile，系统桌面操作串行执行。自动化矩阵与物理实机验收分别报告。
+- 诊断和资源观察按 [诊断契约](docs/diagnostics-contract.md) 解释有效时间、缺口和报告状态；进程存活本身不证明自主活动可用。
+- 发布前读 [发布流程](docs/releasing.md)，保持同一分发包贯穿安装、npm 和 Release；本地构建或安装成功分别记录，不能代替发布成功。
+- `docs/evidence/` 只用于追溯提交、复现旧问题或核对原始证据；先读其 [说明](docs/evidence/README.md)，用 `rg --no-ignore docs/evidence` 显式检索。报告、日志、截图、摘要及第三方许可保留原字节，新验证绑定实际提交、宿主版本和包摘要。
+- `.cache/`、`artifacts/`、`dist/` 和 `node_modules/` 是本机或生成内容，使用前核对来源与实际源码。

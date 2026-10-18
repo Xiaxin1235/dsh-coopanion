@@ -5,7 +5,7 @@ export async function controlNpc(page) {
     const response = await route.fetch(), source = await response.text();
     await route.fulfill({ response, body: source.replace('export function stepNpc(', 'function actualStepNpc(') + `
 export function stepNpc(state, input) {
-  input = {...input, now: window.npcNow, keyboard: window.npcKeyboard};
+  input = {...input, now: window.npcNow, keyboard: window.npcKeyboard, pointer: Object.hasOwn(window, 'npcPointer') ? window.npcPointer : input.pointer};
   const result = actualStepNpc(state, input);
   if (state.phase !== result.state.phase || state.reason !== result.state.reason || result.walk || result.stop) { window.npcTrace.push({now: input.now, phase: result.state.phase, reason: result.state.reason, x: input.layout?.x, mode: input.layout?.mode, event: input.event, stop: result.stop, walk: result.walk, space: input.space}); window.npcTrace = window.npcTrace.slice(-60); }
   window.npcState = result.state; window.npcInput = input;

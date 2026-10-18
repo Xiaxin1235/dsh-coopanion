@@ -1,0 +1,65 @@
+
+> @takboo/dsh-coopanion@0.4.12 test
+> vitest run && node --test tests/release-checks.mjs tests/client-build.mjs && node --test tests/locale-client.mjs
+
+
+ RUN  v3.2.7 /Volumes/M2ExHome/rockman/Documents/codespace/personal-projects/dsh-plugins/dsh-coopanion
+
+ ✓ tests/companionship.test.js (9 tests) 163ms
+ ✓ tests/locale-sync.test.ts (4 tests) 163ms
+ ✓ tests/diagnostics-discovery.test.js (6 tests) 241ms
+ ✓ tests/companion-store.test.ts (8 tests) 278ms
+ ✓ tests/chat.test.ts (7 tests) 47ms
+ ✓ tests/plugin.test.ts (10 tests) 271ms
+ ✓ tests/companion-http.test.ts (1 test) 76ms
+ ✓ tests/session-recovery.test.ts (6 tests) 59ms
+ ✓ tests/model.test.ts (18 tests) 8ms
+ ✓ tests/notification-integration.test.ts (8 tests) 518ms
+   ✓ keeps the original question answerer usable when reminder tracking reaches capacity  360ms
+ ✓ tests/notification-client.test.ts (15 tests) 43ms
+ ✓ tests/notification-broker.test.ts (18 tests) 59ms
+ ✓ tests/keyboard-activity.test.js (8 tests) 22ms
+ ✓ tests/completion.test.ts (17 tests) 29ms
+ ✓ tests/controls.test.ts (15 tests) 35ms
+ ✓ tests/resource-observation.test.js (7 tests) 13ms
+ ✓ tests/notification-contract.test.ts (5 tests) 7ms
+ ✓ tests/display-geometry.test.js (6 tests) 4ms
+ ✓ tests/npc-life.test.js (10 tests) 12ms
+ ✓ tests/companion-touch.test.js (2 tests) 3ms
+ ✓ tests/presentation.test.js (14 tests) 12ms
+ ✓ tests/companion-client.test.js (3 tests) 3ms
+ ✓ tests/lifecycle-state.test.js (5 tests) 5ms
+ ✓ tests/render-cadence.test.js (2 tests) 2ms
+ ✓ tests/text-scale.test.ts (1 test) 2ms
+ ❯ tests/diagnostics.test.js (8 tests | 1 failed) 1656ms
+   ✓ publishes no endpoint by default, authenticates read-only access and withdraws on disable 27ms
+   ✓ collapses rapid toggles to the latest intent and changes sessions without retaining old descriptors 11ms
+   ✓ diagnostic reads never initialize or mutate a companion archive 6ms
+   ✓ drops unrecognized text and credentials and rejects a wrong runtime identity 12ms
+   ✓ keeps activity counters fixed-size and clears them when diagnostics are disabled 0ms
+   ✓ keeps only fixed lifecycle state and counters, including events between reads 5ms
+   ✓ honors a wall deadline even while the diagnostic endpoint is unavailable  1517ms
+   × a calendar deadline never grants continuous-resource acceptance 76ms
+     → Command failed: /Volumes/M2ExHome/rockman/Documents/codespace/personal-projects/dsh-plugins/dsh-coopanion/.cache/npm/_npx/e538cc6a94e578f9/node_modules/node/bin/node /Volumes/M2ExHome/rockman/Documents/codespace/personal-projects/dsh-plugins/dsh-coopanion/scripts/sample-companion.mjs --registry /var/folders/0w/vz98vrvs5z15l1dfh4kwcblm0000gp/T/dsh-diagnostics-af3ZAS/registry --output /var/folders/0w/vz98vrvs5z15l1dfh4kwcblm0000gp/T/dsh-diagnostics-af3ZAS/live-deadline --seconds 7200 --interval 1 --window 1800 --until 2026-10-18T07:10:32.726Z
+
+ ✓ tests/bridge.test.ts (8 tests | 1 skipped) 1794ms
+   ✓ releases a process that exits by signal before the ready handshake  373ms
+   ✓ honors explicit native startup failure classification instead of retrying every exception  325ms
+   ✓ rehydrates full Host snapshots silently, initializes hidden, and isolates old process messages  389ms
+   ✓ forwards exact chat receipts across the child-process bridge  405ms
+ ✓ tests/figures.test.ts (6 tests) 2059ms
+   ✓ serves the frame with an opaque-origin CSP, rejects cross-origin mutations and offers matching source  1984ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/diagnostics.test.js > a calendar deadline never grants continuous-resource acceptance
+Error: Command failed: /Volumes/M2ExHome/rockman/Documents/codespace/personal-projects/dsh-plugins/dsh-coopanion/.cache/npm/_npx/e538cc6a94e578f9/node_modules/node/bin/node /Volumes/M2ExHome/rockman/Documents/codespace/personal-projects/dsh-plugins/dsh-coopanion/scripts/sample-companion.mjs --registry /var/folders/0w/vz98vrvs5z15l1dfh4kwcblm0000gp/T/dsh-diagnostics-af3ZAS/registry --output /var/folders/0w/vz98vrvs5z15l1dfh4kwcblm0000gp/T/dsh-diagnostics-af3ZAS/live-deadline --seconds 7200 --interval 1 --window 1800 --until 2026-10-18T07:10:32.726Z
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 27 passed (28)
+      Tests  1 failed | 225 passed | 1 skipped (227)
+   Start at  15:10:28
+   Duration  2.49s (transform 820ms, setup 0ms, collect 2.13s, tests 7.59s, environment 3ms, prepare 1.44s)
+

@@ -24,6 +24,12 @@ export function stepNpc(state, input) {
   const stop = () => { if (next.walkId) out.stop = next.walkId; next.walkId = null; };
   const pause = reason => { stop(); next.phase = 'yield'; next.reason = reason; next.safeAt = null; next.dueAt = null; };
   const gap = state.lastAt !== null && (now < state.lastAt || now - state.lastAt > 10000);
+  // A manual move replaces this route and the pending initial home placement.
+  // Keep serial/generation so a retired walk cannot complete a later route.
+  if (input.relocated) {
+    next.target = null; next.returning = false; next.placed = true; next.failed = false;
+    pause(input.enabled ? 'user' : 'disabled'); return out;
+  }
   if (!input.enabled) { pause('disabled'); return out; }
   if (input.lifecycle || gap) { pause('lifecycle'); return out; }
   if (input.user) { pause('user'); return out; }

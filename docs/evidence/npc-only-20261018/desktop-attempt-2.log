@@ -1,0 +1,21 @@
+
+> @takboo/dsh-coopanion@0.4.12 test:desktop
+> node tests/desktop.mjs
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: OS cursor reaches the measured DIP point: {"measurement":{"point":{"x":1564,"y":1047},"dip":{"x":1564,"y":1047},"geometry":{"displayId":3,"workArea":{"x":0,"y":25,"width":2304,"height":1271},"contentBounds":{"x":0,"y":25,"width":2304,"height":1271},"scaleFactor":2,"revision":1},"contentBounds":{"x":0,"y":25,"width":2304,"height":1271},"cursor":{"x":1566,"y":1229},"displays":[{"id":3,"label":"LG TV SSCR2","bounds":{"x":0,"y":0,"width":2304,"height":1296},"workArea":{"x":0,"y":25,"width":2304,"height":1271},"scaleFactor":2,"rotation":0}],"electron":"44.7.0","css":{"x":1564.21875,"y":1021.76171875}},"observed":{"point":{"x":1564,"y":1047},"dip":{"x":1564,"y":1047},"geometry":{"displayId":3,"workArea":{"x":0,"y":25,"width":2304,"height":1271},"contentBounds":{"x":0,"y":25,"width":2304,"height":1271},"scaleFactor":2,"revision":1},"contentBounds":{"x":0,"y":25,"width":2304,"height":1271},"cursor":{"x":1532,"y":1000},"displays":[{"id":3,"label":"LG TV SSCR2","bounds":{"x":0,"y":0,"width":2304,"height":1296},"workArea":{"x":0,"y":25,"width":2304,"height":1271},"scaleFactor":2,"rotation":0}],"electron":"44.7.0","css":{"x":1564.21875,"y":1021.76171875}}}
+    at nativeClick (file:///Volumes/M2ExHome/rockman/Documents/codespace/personal-projects/dsh-plugins/dsh-coopanion/tests/helpers/native-pointer.mjs:133:10)
+    at async sampleNativeDisplay (file:///Volumes/M2ExHome/rockman/Documents/codespace/personal-projects/dsh-plugins/dsh-coopanion/tests/helpers/multi-display-native.mjs:6:18)
+    at async file:///Volumes/M2ExHome/rockman/Documents/codespace/personal-projects/dsh-plugins/dsh-coopanion/tests/multi-display-native.mjs:20:16 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.21.0

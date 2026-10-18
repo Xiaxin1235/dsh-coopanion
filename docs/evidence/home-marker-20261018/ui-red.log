@@ -1,0 +1,26 @@
+Home marker drag positions: [["before",850],["held-990",653],["held-15",850],["held-850",729.899],["released",850]]
+✖ home marker remains fixed throughout a held drag and release (4381.537541ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4630.440625
+
+✖ failing tests:
+
+test at tests/npc-drag-ui.mjs:105:1
+✖ home marker remains fixed throughout a held drag and release (4381.537541ms)
+  AssertionError [ERR_ASSERTION]: home must stay anchored while held, not just restore after release
+      at TestContext.<anonymous> (file:///Volumes/M2ExHome/rockman/Documents/codespace/personal-projects/dsh-plugins/dsh-coopanion/tests/npc-drag-ui.mjs:124:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

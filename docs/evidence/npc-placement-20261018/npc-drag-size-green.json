@@ -1,0 +1,121 @@
+{
+  "state": {
+    "generation": 2,
+    "serial": 0,
+    "phase": "yield",
+    "reason": "input",
+    "target": null,
+    "returning": false,
+    "recent": [],
+    "energy": 0.6,
+    "interest": 0.5,
+    "emotion": "neutral",
+    "walkId": null,
+    "dueAt": null,
+    "lastAt": 2000,
+    "safeAt": null,
+    "spaceKey": "1000:180:0.85:0.3:0",
+    "placed": false,
+    "failed": false
+  },
+  "trace": [
+    {
+      "now": 0,
+      "phase": "yield",
+      "reason": "disabled",
+      "space": null
+    },
+    {
+      "now": 0,
+      "phase": "resume",
+      "reason": "none",
+      "x": 680,
+      "mode": "idle",
+      "space": {
+        "min": 550,
+        "max": 850,
+        "home": 850,
+        "key": "1000:180:0.85:0.3:0"
+      }
+    },
+    {
+      "now": 1000,
+      "phase": "yield",
+      "reason": "input",
+      "x": 680,
+      "mode": "idle",
+      "space": {
+        "min": 550,
+        "max": 850,
+        "home": 850,
+        "key": "1000:180:0.85:0.3:0"
+      }
+    }
+  ],
+  "layout": {
+    "x": 680,
+    "facing": 1,
+    "mode": "idle",
+    "busy": false,
+    "moving": false,
+    "pressing": false,
+    "cursor": "",
+    "box": {
+      "x": 604.5386241972894,
+      "y": 552.5438104179727,
+      "w": 150.92275160542113,
+      "h": 173.45618958202726
+    },
+    "hit": [
+      {
+        "x": 680,
+        "y": 635.0065890717234,
+        "r": 75.9375
+      }
+    ],
+    "bubble": {
+      "x": 680,
+      "y": 556.8091265552357
+    },
+    "side": {
+      "x": 680,
+      "y": 635.0065890717234,
+      "reach": 73.125
+    }
+  },
+  "orders": [
+    {
+      "t": "set",
+      "state": {
+        "bounds": {
+          "W": 1000,
+          "H": 750,
+          "floorY": 726,
+          "S": 0.70703125
+        }
+      }
+    },
+    {
+      "t": "set",
+      "state": {
+        "bounds": {
+          "W": 1000,
+          "H": 750,
+          "floorY": 726,
+          "S": 0.703125
+        }
+      }
+    },
+    {
+      "t": "set",
+      "state": {
+        "roam": "off",
+        "dialogOpen": false,
+        "thinking": false,
+        "thoughtShown": false,
+        "expression": null,
+        "listening": false
+      }
+    }
+  ]
+}

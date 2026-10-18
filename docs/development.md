@@ -1,8 +1,8 @@
 # 开发与验证
 
-工程入口是[文档索引](README.md)；首次贡献先了解对应行为契约，产品安装与操作见[使用指南](usage.md)。
+先从[文档索引](README.md)阅读对应行为契约。工具链分别固定在 `.node-version` 和 `package.json#packageManager`，依赖锁为随包提供的 `npm-shrinkwrap.json`。
 
-开发工具链固定 Node.js 24.21.0 和 npm 11.19.1。Electron 支持 Windows、macOS、Linux；Linux 的窗口测试需要 X11 / XWayland 或 Xvfb，以及 Python 3 和 libX11，用于同步原生鼠标位置。原生网格需要 Chromium 的 WebGL 支持。
+## 准备与验证入口
 
 ```bash
 npm ci --ignore-scripts
@@ -11,77 +11,83 @@ npm run setup:electron
 npm run typecheck
 npm test
 npm run build
+npx playwright-core install chromium
 npm run character:pack -- examples/star paper-star.zip
 npm run test:ui
 npm run test:notification-ui
 npm run test:inbox-ui
+npm run test:keyboard-native
 npm run test:desktop
 npm pack
 node scripts/check-package.mjs
 npm run test:install
 ```
 
-依赖锁使用 `npm-shrinkwrap.json`，随安装包及源码下载提供；`npm ci` 可以直接使用它。
+按改动选择检查；完整发布门槛见[发布流程](releasing.md)。Linux 原生窗口需要 X11／Xvfb 和窗口管理器，测试光标还需要 Python 3 与 libX11；浏览器及网格动画需要 Chromium WebGL。CI 的 Linux 显示准备由 `.github/actions/setup-linux-display` 完成。
 
-`npm run dev` 打开浏览器演示服务（默认 `http://127.0.0.1:4173`），`npm run demo` 启动桌面演示。演示中的任务事件是模拟的。浏览器预览和桌面版使用同一个 API 2 存储与沙箱运行时。
+`npm run dev` 打开浏览器演示（默认 `http://127.0.0.1:4173`），`npm run demo` 启动桌面演示，二者的任务事件均为模拟。首页素材的重拍见[素材说明](assets/README.md)。
 
-浏览器测试检查实际 WebGL 动画、逐字说话与嘴部同步、拖拽 / 落地、会话、聊天、换装、包导入、重启保存及脚本隔离。桌面测试验证真实 Electron 窗口、IPC、流式动画、最终回复与完整阅读、休息唤醒、实际状态栏图标和角色数据；CI 同时运行 Linux、macOS、Windows 原生窗口测试。安装测试使用官方 DSH profile loader 安装实际 `.tgz`，检查任务事件、会话导航、设置页、配置持久化和重启；`DSH_TEST_VERSION=0.2.1-rc.1` 测试 rc.1；其他支持版本同样通过此变量选择。
+浏览器检查真实 API 2 动画、聊天、完整阅读、角色导入及脚本隔离；桌面检查真实 Electron 窗口、IPC、托盘和恢复；安装检查使用官方 DSH loader 安装实际 `.tgz`。用 `DSH_TEST_VERSION=<支持版本>` 选择宿主，用 `DSH_TEST_PACKAGE_DIR=<规范包目录>` 消费已有规范包及校验文件。完整平台／宿主列表以 CI 矩阵为准。
 
-CI 窗口测试使用隔离数据和测试沙箱参数；Linux 在虚拟显示中运行。普通安装保留 Chromium sandbox、contextIsolation，关闭 Node integration。安装测试中的通知适配器、原生可见性及答复器为受控边界；完整系统实机验收和外部真实模型会话尚未验证。
+原生测试和安装使用隔离数据目录，系统桌面操作串行执行。CI 测试沙箱参数仅供隔离实例；普通安装保留 Chromium sandbox 与 contextIsolation，关闭 Node integration。测试通知适配器和模型答复器属于受控边界，不能代替通知中心实机送达或真实模型会话验收。
 
-## CI 与发布
+## 关键行为回归
 
-CI 在 **Linux、macOS、Windows** 执行元数据检查、类型检查、单元测试、浏览器交互及真实 Electron 窗口测试，并在三平台分别验证四个 DSH 版本的实际安装。稳定 `v<major>.<minor>.<patch>` 标签派发 main 上的发布流程；全部检查通过后，用 npm OIDC 发布已验证的同一份 `.tgz`，再创建 GitHub Release，附带版本化和固定名称的插件包、示例角色、校验值、源码提交报告及当前版本说明。
+| 改动 | 检查入口与范围 |
+|---|---|
+| 完成、通知与请求结算 | `npm test`、`test:n0`、`test:notification-ui`；宿主接口检查由安装入口执行 |
+| 聊天、收件箱、字号、多屏、NPC 日常 | `test:inbox-ui`；会话与字号浏览器用例串行，初始化失败保留有界状态、控制台与截图 |
+| NPC 配置 | `tests/npc-controls-ui.mjs`：关闭许可、quiet／interactive、热切状态保持与禁用上游随机漫游 |
+| 异常查看与尺寸 | `tests/attention-size-ui.mjs`：通用异常回执、新修订、审批／提问与固定角色尺寸 |
+| 拖放与小窝 | `tests/npc-drag-ui.mjs`：真实指针轨迹、两侧边缘、区域外停留、旧路线取消、按住及释放后小窝锚点 |
+| 自主循环与互动存档 | `tests/npc-life.test.js`、`tests/npc-life-native.mjs`、`tests/companionship-ui.mjs`、`tests/companionship-native.mjs` |
+| 原生冷启动 | `tests/lifecycle-startup-native.mjs`：受控 unknown／locked 与实际系统状态分别检查 |
 
-npm 使用已配置的 Trusted Publisher；dshmarket 通过社区目录 PR 收录，再自动关联 npm 包。具体操作和失败重跑见 [发布说明](releasing.md)，市场条目的收录状态见 [目录 PR](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/7073)。
+原生 NPC 用例控制时钟、粗粒度输入和鼠标感知；身体移动及 arrived／interrupted 保持真实。受控循环通过与物理输入、自然体验分别报告。
 
-插件没有遥测或独立模型 API。上游代码和角色资源已固定在仓库中，不在启动时在线拉取。Electron 首次准备仍从官方发行源下载并校验；Node 24 可用 `NODE_USE_ENV_PROXY=1` 沿用已有代理变量。
-
-## 更新首页展示素材
-
-使用 `node scripts/capture-showcase.mjs` 录制实际浏览器演示。依赖、拍摄范围与素材说明见[首页素材](assets/README.md)。这些展示素材与正式宿主验收证据分别维护。
-
-## 渲染与隔离
-
-高频流式事件仅发送动画元数据，完整结果只在结果列表或已读状态变化时传输，避免长回复和多会话拖慢桌面更新。
-
-角色脚本在 `sandbox="allow-scripts"` 的 opaque-origin iframe 中运行，只通过受控消息协议与宿主交互；没有 Node、Electron 桥、外部网络连接或顶层导航权限。本地资源服务只监听 `127.0.0.1`，桌面实例使用随机路径，API 写入要求可信页面来源。
-
-## P1 自主陪伴验证
-
-本轮 [NPC 日常修订](npc-daily-life-plan.md)已接入本地源码：macOS 保守键盘适配、workArea 小窝与范围、逐代受控移动及意图恢复。`tests/npc-life.test.js` 验证纯状态／几何／输入适配，`tests/npc-life-native.mjs` 使用隔离 profile 验证原生循环；其中控制时钟与输入枚举，实际身体与 arrived／interrupted 保持真实。物理键盘和监听权限逐平台另验收，原语探针与旧资源结果不能代替本轮行为验证。
-
-`test:inbox-ui` 将会话回复与字号两份浏览器用例串行执行，避免并发冷启动争用；保留原有断言和 5 秒就绪等待。就绪失败时保留有界页面状态、控制台摘要和截图，辅助区分初始化与功能断言失败。
-
-`test:inbox-ui` 已包含 P1 真实 API 2 日常、邀请、输入轨迹、成长、热设置和阅读回归；`test:desktop` 额外串行运行真实时间的 P1 原生点击／存档重启验证。`test:install` 在两版宿主中检查新枚举保存和原生 IPC，不要求独立运行。
-
-短时资源对照入口 `scripts/measure-idle.mjs` 支持 `--mode companion-day`／`companion-night`，与同轮 `off` 使用相同固定种子和真实物理时钟。初始预算及基线见[P1 固定记录](evidence/p1/README.md)，最新候选和实际执行状态从[文档索引](README.md)读取；旧记录中的“最终候选”只代表对应快照。
-
-### 隔离 Linux 长时观察
-
-`sample-companion.mjs` 是随包提供的独立 Node 采样器，仅使用本地诊断接口与 OS 进程指标，不依赖 Electron、Playwright 或 CDP。日常使用见[使用指南](usage.md)，诊断开关和数据范围见[诊断契约](diagnostics-contract.md)。
-
-`observe-companion.mjs` 负责受控 VM 的正式安装、启动和场景验证，将周期采样交给上述同一程序；不再注入测试专用活动／请求计数。它先核对采样器与候选包内脚本摘要一致，再按版本和产品摘要约束目标。CDP 只用于开始时的随机源、窗口及实际渲染证明，普通安装不启用。
-
-启动前按[使用指南](usage.md#自主陪伴p1-候选功能尚未发布)确认实际 profile 的自动活动许可。VM 启动器会生成独立 profile 并配置 `roam=true`、`companionship=interactive`、`diagnostics=true`；日常 Desktop 设置不随 VM 改变。可选日常采样与两小时受控观察分别记录，按[诊断契约](diagnostics-contract.md)解释时间、缺口及结果。当前体验采用短时可见检查和自然反馈，不要求用户七天试用、填表或评分。
-
-VM 建议 Ubuntu 24.04 x86_64、4 vCPU、固定 8 GiB 内存与 50 GiB 磁盘。按仓库固定 Node／npm 准备依赖、Electron 和 Chromium，另安装 `xvfb openbox x11-utils dbus-x11 libgtk-3-0t64 python3 procps`；Chromium 的依赖不保证包含 GTK 3。
+小窝回归支持录制隔离页面，不录桌面其他窗口或音频：
 
 ```bash
-npm install --prefix /path/to/dsh-runtime --no-audit --no-fund @deepseek-ai/dsh@0.2.0-rc.2
-bash scripts/run-resource-observation.sh \
-  --runtime /path/to/dsh-runtime \
-  --package /path/to/frozen-candidate.tgz \
-  --source-commit <候选包实际来源的完整提交> \
-  --output artifacts/p1-observation-unique
+DSH_HOME_MARKER_VIDEO=/absolute/path/drag.webm \
+DSH_HOME_MARKER_TRACE=/absolute/path/drag.json \
+node --test --test-name-pattern="home marker" tests/npc-drag-ui.mjs
 ```
 
-每次使用尚不存在的输出目录，不覆盖失败记录。默认预热 20 秒、真实采样至少 7200 秒、每 5 秒一次，比较首／末 1800 秒的时间加权 RSS 均值，增量仍须 ≤20 MiB。场景为真实白天 `interactive`、种子 17、无工作占用；期间不注入输入，邀请自然忽略。另检查三类片段、邀请落盘、存档边界和请求排空。
+默认不录视频。断言同时检查按住、拖动及松手后的锚点，并覆盖大尺寸及两端小窝设置。
 
-可加 `--seconds 60 --window 20` 做短检；`fullTwoHourObservation` 仍为 false。原始采样和报告在 `sampling/` 内，安装／启动元数据及总报告在上一层。PVE／软件渲染、RSS 共享页重复、短暂子进程 CPU 漏计及环境争用须随结果披露。旧的测试页面注入观察器保留在原证据目录，不用于新候选包验收。
+## 键盘与生命周期
 
-## 粗粒度键盘适配验证
+`test:keyboard-native` 启动当前系统的真实辅助进程，检查固定枚举、停用和清理，报告写入 `artifacts/keyboard-activity-native.json`。macOS 与可用 X11 需取得 active／idle；不支持的会话保守 unknown。Linux CI 在隔离 Xvfb 中设置 `DSH_KEYBOARD_TEST_X11_INPUT=1`，用 XTest 验证键盘触发、仅鼠标不触发和恢复 idle；日常会话不使用这个注入开关。
 
-`npm run test:keyboard-native` 在当前系统运行真实辅助进程约 10–20 秒，检查启动、固定枚举输出和停用清理，报告写入 `artifacts/keyboard-activity-native.json`。macOS 与可用 X11 环境需取得 active／idle；非交互或远程 Windows 可保守 unknown，报告的 usable=false 必须保留。它不模拟或验收物理键盘。三平台 CI 在图形环境准备后执行此入口，并保留报告；Linux CI 在隔离 Xvfb 中额外设 `DSH_KEYBOARD_TEST_X11_INPUT=1`，以 XTest 合成输入验证键盘触发、仅鼠标不触发与恢复 idle，日常图形会话不要开启该测试开关；本地未运行的系统不能记为通过。
+macOS 可在已解锁桌面运行普通沙箱探针：
 
-定向回归：`npx vitest run tests/keyboard-activity.test.js tests/npc-life.test.js tests/diagnostics.test.js`。覆盖 macOS 授权误门槛、无效聚合值、三平台启动选择、Wayland／Xwayland、依赖失败、协议边界、旧进程回包与数据过期；完整 UI 检查还须运行 `npm run test:inbox-ui`。真实键盘／仅鼠标／停止输入后恢复，以及锁屏、休眠、远程会话和资源开销另行记录。
+```bash
+DSH_LIFECYCLE_NATIVE_REAL=1 DSH_LIFECYCLE_EXPECT_STATE=unlocked \
+node tests/lifecycle-startup-native.mjs
+```
+
+它要求真实初态已知、未挂起且键盘适配器 available。锁屏场景使用 `DSH_LIFECYCLE_EXPECT_STATE=locked`，在实际锁屏环境单独执行；探针不改变锁屏状态。物理键盘、跨应用、锁屏／休眠、远程会话与平台资源分别验证。
+
+## 资源与诊断
+
+先按[使用指南](usage.md#自主陪伴)核对开关，再按[诊断契约](diagnostics-contract.md)解释时长、缺口和报告状态。独立采样器 `scripts/sample-companion.mjs` 使用本地诊断接口及 OS 指标，不操作窗口、不读取聊天正文、不启动模型。
+
+`scripts/measure-idle.mjs` 支持 `off`、`npc-day`、`npc-night` 的同机短时对照，使用固定随机种子与真实时间；`npc-controlled` 强制粗粒度 keyboard=idle，只用于区分输入阻塞。短测不能作为两小时或其他平台资源结论。
+
+受控 Linux 观察使用 `scripts/run-resource-observation.sh`；按脚本参数提供隔离 DSH runtime、冻结包、完整来源提交和尚不存在的输出目录：
+
+```bash
+bash scripts/run-resource-observation.sh \
+  --runtime /path/to/dsh-runtime \
+  --package /path/to/frozen-package.tgz \
+  --source-commit <包实际来源的完整提交> \
+  --output artifacts/resource-observation-unique
+```
+
+VM 需图形依赖、Xvfb、Openbox、Python 3、procps 及固定工具链。观察器核对包内采样脚本，使用独立 profile，设置 `roam=true`、`companionship=interactive`、`diagnostics=true`；开始时用 CDP 证明渲染并设置随机源，周期采样交给同一独立采样器。默认预热 20 秒、采样至少 7200 秒、每 5 秒一次，首末各 1800 秒时间加权 RSS 增量 ≤20 MiB；NPC 覆盖、邀请落盘、存档与队列边界另行检查。`--seconds 60 --window 20` 仅做短检。
+
+## 运行时与隔离
+
+高频事件只发送动画元数据，完整结果在结果或已读状态变化时传输。角色脚本运行于 `sandbox="allow-scripts"` 的 opaque-origin iframe，仅通过有限协议交互；没有 Node、Electron 桥、外部网络或顶层导航权限。本地资源服务只监听 `127.0.0.1`，原生实例使用随机路径，写入校验可信页面来源。
+
+上游代码和资源固定在仓库，不在启动时在线拉取；Electron 首次准备仍下载并校验运行时。插件不收集遥测，也不提供独立模型 API。许可及对应源码要求见[第三方声明](../THIRD_PARTY_NOTICES.md)。

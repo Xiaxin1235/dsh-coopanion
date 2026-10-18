@@ -11,6 +11,7 @@ try {
   }
   var locked = flag('CGSSessionScreenIsLocked');
   if (locked === true) state = 'locked';
-  else if ((locked === false || locked === null) && flag('kCGSessionOnConsoleKey') === true && flag('kCGSessionLoginDoneKey') === true) state = 'unlocked';
+  // CGSession.h defines kCGSessionOnConsoleKey as CFSTR("kCGSSessionOnConsoleKey").
+  else if ((locked === false || locked === null) && flag('kCGSSessionOnConsoleKey') === true && flag('kCGSessionLoginDoneKey') === true) state = 'unlocked';
 } catch (_) {}
 state;

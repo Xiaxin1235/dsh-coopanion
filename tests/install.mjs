@@ -174,7 +174,7 @@ try {
   await writeFile(fixture, await readFile(fileURLToPath(new URL('./fixtures/host.mjs', import.meta.url))));
   await writeFile(join(observer, 'installed-services.mjs'), await readFile(fileURLToPath(new URL('./helpers/installed-services.mjs', import.meta.url))));
   await writeFile(join(observer, 'notification-probe.mjs'), await readFile(fileURLToPath(new URL('./fixtures/notification-probe/host.mjs', import.meta.url))));
-  await writeFile(join(profile, 'cordis.patch.yml'), `- insert:\n    - id: install-observer\n      name: ${JSON.stringify(fixture)}\n- id: locale\n  config:\n    preference: zh\n- id: ui-settings-models\n  config:\n    credentialOnboarding: false\n- id: dsh-coopanion\n  config:\n    autoStart: true\n    size: 150\n    roam: true\n    notifications: true\n    bubbleDurationMs: 12000\n`);
+  await writeFile(join(profile, 'cordis.patch.yml'), `- insert:\n    - id: install-observer\n      name: ${JSON.stringify(fixture)}\n- id: locale\n  config:\n    preference: zh\n- id: ui-settings-models\n  config:\n    credentialOnboarding: false\n- id: dsh-coopanion\n  config:\n    autoStart: true\n    size: 150\n    roam: true\n    dailyRhythm: true\n    notifications: true\n    bubbleDurationMs: 12000\n`);
   if (process.platform === 'linux' && !environment.DISPLAY) {
     const number = 100 + process.pid % 1000;
     display = spawn(process.env.XVFB_PATH ?? 'Xvfb', [`:${number}`, '-screen', '0', '1200x800x24', '-nolisten', 'tcp'], { stdio: ['ignore', 'ignore', 'pipe'] });
@@ -331,29 +331,23 @@ try {
   await page.waitForFunction(() => getComputedStyle(document.documentElement).getPropertyValue('--size') === '180px');
   assert.match(await readFile(join(profile, 'cordis.patch.yml'), 'utf8'), /size: 180/, 'native Host settings persist the size');
   assert.equal(await surface.getByRole('combobox', { name: '文字大小', exact: true }).inputValue(), '1', 'old installed config defaults to 100%');
-  assert.equal(await surface.getByRole('switch', { name: '日常陪伴节奏', exact: true }).getAttribute('aria-checked'), 'false', 'old installed config defaults daily rhythm off');
-  await page.waitForSelector('#pet[data-rhythm=off]');
+  assert.equal(await surface.getByRole('switch', { name: '日常陪伴节奏', exact: true }).count(), 0);
+  assert.equal(await surface.getByRole('combobox', { name: '自主陪伴', exact: true }).inputValue(), 'off');
   await petClick(page, {}, true);
   await page.locator('#message').fill('M4 installed draft');
-  await page.locator('#message').evaluate(n => { n.focus(); n.setSelectionRange(2, 7); window.m6InstalledFrame = document.querySelector('#body-layer iframe'); });
-  for (const dailyRhythm of [true, false, true]) {
-    await surface.getByRole('switch', { name: '日常陪伴节奏', exact: true }).click();
-    await waitProfile(new RegExp('dailyRhythm: ' + dailyRhythm));
-    await page.waitForFunction(enabled => (document.querySelector('#pet').dataset.rhythm !== 'off') === enabled, dailyRhythm);
-    assert.deepEqual(await page.locator('#message').evaluate(n => [n.value, n.selectionStart, n.selectionEnd, window.m6InstalledFrame === document.querySelector('#body-layer iframe')]), ['M4 installed draft', 2, 7, true], 'native hot preference preserves draft, selection and API 2 frame');
-  }
-  assert.equal(await surface.getByRole('combobox', { name: '自主陪伴', exact: true }).inputValue(), 'off');
+  await page.locator('#message').evaluate(n => { n.focus(); n.setSelectionRange(2, 7); window.npcInstalledFrame = document.querySelector('#body-layer iframe'); });
   for (const companionship of ['quiet', 'interactive', 'off']) {
     await surface.getByRole('combobox', { name: '自主陪伴', exact: true }).selectOption(companionship);
     await waitProfile(new RegExp('companionship: ' + companionship));
-    await page.waitForFunction(mode => document.querySelector('#pet').dataset.companionship === mode, companionship);
-    assert.equal(await page.locator('#message').inputValue(), 'M4 installed draft');
+    await page.waitForFunction(mode => document.querySelector('#companion-mode').value === mode, companionship);
+    assert.deepEqual(await page.locator('#message').evaluate(n => [n.value, n.selectionStart, n.selectionEnd, window.npcInstalledFrame === document.querySelector('#body-layer iframe')]), ['M4 installed draft', 2, 7, true], 'native hot preference preserves draft, selection and API 2 frame');
   }
+  assert.equal(await surface.getByRole('combobox', { name: '自主陪伴', exact: true }).inputValue(), 'off');
   for (const [field, percent, fraction] of [['npcHome', 20, '0.2'], ['npcRange', 25, '0.25']]) {
     const input = surface.locator('#coopanion-' + field);
     await input.fill(String(percent)); await input.press('Enter');
     await waitProfile(new RegExp(field + ': ' + fraction.replace('.', '[.]')));
-    assert.deepEqual(await page.locator('#message').evaluate(n => [n.value, n.selectionStart, n.selectionEnd, window.m6InstalledFrame === document.querySelector('#body-layer iframe')]), ['M4 installed draft', 2, 7, true]);
+    assert.deepEqual(await page.locator('#message').evaluate(n => [n.value, n.selectionStart, n.selectionEnd, window.npcInstalledFrame === document.querySelector('#body-layer iframe')]), ['M4 installed draft', 2, 7, true]);
   }
   const p1Summary = await page.evaluate(() => window.dshPetBridge.companionship({ type: 'read', characterId: 'whale' }));
   assert.equal(p1Summary.writable, true); assert.equal(p1Summary.relation.total, 0);
@@ -415,7 +409,7 @@ try {
   assert.equal(await surface.locator('#coopanion-npcRange').inputValue(), '25');
   await reopened.waitForFunction(() => getComputedStyle(document.documentElement).getPropertyValue('--size') === '180px');
   await reopened.waitForFunction(() => getComputedStyle(document.documentElement).getPropertyValue('--text-scale') === '1.5');
-  await reopened.waitForFunction(() => document.querySelector('#pet').dataset.rhythm !== 'off');
+  await reopened.waitForFunction(() => document.querySelector('#companion-mode').value === 'off');
   await surface.getByRole('button', { name: '管理角色', exact: true }).click();
   await reopened.waitForSelector('#characters:not([hidden])');
   await surface.getByRole('switch', { name: '随 Harness 启动', exact: true }).click();
@@ -442,7 +436,8 @@ try {
   await surface.getByRole('button', { name: 'Manage characters', exact: true }).waitFor();
   assert.equal(await surface.getByRole('spinbutton', { name: 'Character size', exact: true }).inputValue(), '180');
   assert.equal(await surface.getByRole('combobox', { name: 'Text size', exact: true }).inputValue(), '1.5');
-  assert.equal(await surface.getByRole('switch', { name: 'Daily rhythm', exact: true }).getAttribute('aria-checked'), 'true');
+  assert.equal(await surface.getByRole('switch', { name: 'Daily rhythm', exact: true }).count(), 0);
+  assert.equal(await surface.getByRole('combobox', { name: 'Companionship', exact: true }).inputValue(), 'off');
   await settings.screenshot({ path: join(project, 'artifacts', `settings-en-${version}.png`) });
   await settings.getByRole('button', { name: 'General', exact: true }).click();
   await settings.getByRole('button', { name: 'English', exact: true }).click();
@@ -462,10 +457,9 @@ try {
   await surface.getByTestId('pet-status').filter({ hasText: '已关闭' }).waitFor();
   assert.equal(await surface.getByRole('spinbutton', { name: '角色尺寸', exact: true }).inputValue(), '180');
   assert.equal(await surface.getByRole('combobox', { name: '文字大小', exact: true }).inputValue(), '1.5', 'full Host restart preserves text scale');
-  assert.equal(await surface.getByRole('switch', { name: '日常陪伴节奏', exact: true }).getAttribute('aria-checked'), 'true', 'full Host restart preserves daily rhythm');
   assert.equal(await surface.getByRole('combobox', { name: '自主陪伴', exact: true }).inputValue(), 'interactive', 'full Host restart preserves companionship');
   await surface.getByRole('combobox', { name: '自主陪伴', exact: true }).selectOption('off');
-  await waitProfile(/companionship: off/); // Continue the original M6 recovery checks on their legacy path.
+  await waitProfile(/companionship: off/); // Exercise recovery with autonomous activity disabled.
   assert.equal(await surface.getByRole('switch', { name: '随 Harness 启动', exact: true }).getAttribute('aria-checked'), 'false');
   assert.equal(await surface.getByRole('switch', { name: '系统通知', exact: true }).getAttribute('aria-checked'), 'true');
   assert.equal(await surface.getByRole('switch', { name: '待处理请求补提醒', exact: true }).getAttribute('aria-checked'), 'false');
@@ -607,8 +601,7 @@ try {
   await stop(host);
   assert.equal(host.exitCode, 0, hostLog);
   await writeFile(join(project, 'artifacts', `multi-display-installed-${version}.json`), JSON.stringify({ dsh: version, sourceCommit, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), platform: process.platform, arch: process.arch, physicalMultiDisplay: false, physicalMixedDpi: false, samples: textScaleSamples.map(({ size, textScale, display }) => ({ size, textScale, ...display })) }, null, 2) + '\n');
-  await writeFile(join(project, 'artifacts', `daily-rhythm-installed-${version}.json`), JSON.stringify({ dsh: version, sourceCommit, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), platform: process.platform, arch: process.arch, oldConfigDefaultOff: true, harnessVolatilePersistence: true, nativeHotSync: true, nativeRestart: true, hostRestart: true, draftSelectionAndFrame: true, englishLabel: true }, null, 2) + '\n');
-  await writeFile(join(project, 'artifacts', `companionship-installed-${version}.json`), JSON.stringify({ dsh: version, sourceCommit, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), platform: process.platform, arch: process.arch, defaultOff: true, enumHotSync: true, draftSelectionAndFrame: true, nativeStoreIpc: p1Summary.writable, hostRestartPersistence: true, independentRuntime: false }, null, 2) + '\n');
+  await writeFile(join(project, 'artifacts', `companionship-installed-${version}.json`), JSON.stringify({ dsh: version, sourceCommit, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), platform: process.platform, arch: process.arch, defaultOff: true, removedRhythmIgnored: true, enumHotSync: true, draftSelectionAndFrame: true, nativeStoreIpc: p1Summary.writable, hostRestartPersistence: true, independentRuntime: false }, null, 2) + '\n');
   await writeFile(join(project, 'artifacts', `text-scale-installed-${version}.json`), JSON.stringify({ dsh: version, sourceCommit, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), samples: textScaleSamples, oldConfigDefault: true, nativeRestart: true, hostRestart: true, englishLabel: true }, null, 2) + '\n');
   await writeFile(join(project, 'artifacts', `install-${version}.json`), JSON.stringify({ dsh: version, sourceCommit, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), m3NativeRecovery: true, m2NativeContinuation: true, plugin: `${manifest.name}@${manifest.version}`, package: archive, installed: true, profileLoader: true, nativeWindow: true, customCharacter: true, builtinCharacterId: 'whale', sessionNotifications: true, multipleSessions: true, roundReplyWithoutGoalCelebration: true, notificationOpensSourceSession: true, nativeSettingsPage: true, darkTheme: true, closeAndRelaunch: true, hostRestartPersistence: true, autoStartDisabled: true, chineseAndEnglish: true, liveLocaleSwitch: true, automaticSystemLanguage: true, riskExemption: false, cleanShutdown: true }, null, 2) + '\n');
   console.log(`Installation smoke passed on DSH ${version}: admission, actual profile loader, native window, independent sessions, session navigation from notices, official settings UI, live persisted preferences, and reopening after native close.`);
