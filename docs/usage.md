@@ -10,14 +10,22 @@
 
 ### 在 Harness 中从 npm 安装
 
-打开侧边栏 **插件 → 添加插件**，在「包名或地址」输入 `@takboo/dsh-coopanion`，点击安装，再启用 `dsh-coopanion`。输入框填写包名即可；若需固定版本，可填 `@takboo/dsh-coopanion@0.4.12`。安装方式见 [Harness 官方插件管理说明](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/ui-plugin-manager/README.zh.md#安装一个组合包)。
+打开侧边栏 **插件 → 添加插件**，在「包名或地址」输入 **`@takboo/dsh-coopanion@0.4.12`**，点击安装，再启用 `dsh-coopanion`。显式版本可以避免发布首日的裸包名解析回退，原因见下方。安装方式见 [Harness 官方插件管理说明](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/ui-plugin-manager/README.zh.md#安装一个组合包)。
+
+### 安装版本与发布时间保护
+
+pnpm 11 的 `minimumReleaseAge` 默认为 1440 分钟（24 小时）。详情页可以从 npm metadata 显示最新版本，但仅输入 `@takboo/dsh-coopanion` 时，安装解析仍可能跳过等待期内的新版本。见 [pnpm 官方说明](https://pnpm.io/supply-chain-security)。
+
+若日志显示 `dependencies: + @takboo/dsh-coopanion 0.4.10`，随后被 DSH rc.1／rc.2 拒绝，实际安装的是旧包。在同一输入框改填 **`@takboo/dsh-coopanion@0.4.12`**；pnpm 11.28.5 默认会为显式指定的新版本添加精确的 `minimumReleaseAgeExclude` 条目。自定义启用了 `minimumReleaseAgeStrict` 时，按安装器提示确认该精确版本，或等待保护期结束。
+
+0.4.12 于 **2026-10-17 22:08:30（Asia/Shanghai）** 发布，默认等待期于 **10 月 18 日 22:08:30** 后结束。日志中的安装版本应为 0.4.12。这里的发布时间例外与 DSH 不兼容版本豁免是两套机制；无需给 0.4.10 授予 `allow-version`，也无需全局关闭发布时间保护。隔离复现与核验见[安装解析记录](evidence/installation-resolution-20261018/README.md)。
 
 ### 通过 dsh 命令行安装
 
 **Desktop：** 使用 Desktop 自带的 `dsh` 命令。先启动 Desktop 一次初始化 profile，完全退出应用，再执行：
 
 ```bash
-dsh plugin --profile desktop add @takboo/dsh-coopanion
+dsh plugin --profile desktop add @takboo/dsh-coopanion@0.4.12
 ```
 
 npm 安装的 dsh 不能管理 Desktop 所拥有的 profile；若系统找不到 Desktop 的命令，先在 Desktop 的菜单栏中使用 **Manage dsh command／管理 dsh 命令** 安装命令入口。
@@ -25,7 +33,7 @@ npm 安装的 dsh 不能管理 Desktop 所拥有的 profile；若系统找不到
 **本机 Web profile：** 使用 npm 安装的 dsh 时，向实际使用的 profile 安装。例如默认 `web` profile：
 
 ```bash
-dsh plugin --profile web add @takboo/dsh-coopanion
+dsh plugin --profile web add @takboo/dsh-coopanion@0.4.12
 dsh --profile web
 ```
 

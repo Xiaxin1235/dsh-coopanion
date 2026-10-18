@@ -4,6 +4,7 @@
 
 | 记录 | 适用范围 |
 |---|---|
+| [发布首日的安装版本解析](installation-resolution-20261018/README.md) | pnpm 11.28.5 的 24 小时发布时间保护：裸包名回退 0.4.10，精确 0.4.12 通过真实 rc.2 隔离安装与 1238 文件同包核验 |
 | [v0.4.12 正式交付](releases/v0.4.12/README.md) | DSH rc.1／rc.2 兼容修订，三平台／四宿主十二组同包安装、144 份报告、npm／Release 字节与目录状态核验 |
 | [键盘活动 VM 原生验证](p1/keyboard-vm-20261016/README.md) | 555503e 同包 Ubuntu Xorg／Windows 11 本地控制台、QMP 虚拟键鼠、退让与恢复、完整单测及临时 VM 回收；物理设备／资源／远端 CI 另验收 |
 | [键盘跨平台修订](p1/keyboard-platforms-20261016/README.md) | 555503e 固定新包、macOS 原生与两版同包安装、macOS 本机物理输入／仅鼠标／自然恢复初验、Linux X11 合成键盘／仅鼠标、保守降级；Windows 原生和其他物理场景另验收 |

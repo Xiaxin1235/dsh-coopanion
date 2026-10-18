@@ -24,6 +24,8 @@ PR CI 的 `desktop-pet` artifact 用于审阅分发候选，`verification.json` 
 
 npm 接受上传后可能异步处理数分钟。发布后的 `--require-published` 校验对尚未同步的 404 每 10 秒重试，最多等待 5 分钟；已存在但字节不同、其他 HTTP 错误或等待超时仍会失败。上传前的版本检查保持单次查询，未发布版本可进入上传步骤。
 
+npm 的 `latest` 与 pnpm 安装时可选择的版本分别核对。pnpm 11 默认启用 24 小时 `minimumReleaseAge`；发布首日仅输入包名可能回退到旧版本，而详情页仍显示新版。安装说明和 CLI 示例使用本次发布的精确 `@scope/name@version`，保留默认保护，只对显式版本处理发布时间例外。新版本发布后的检查包含隔离 profile 中的裸包名解析与精确版本安装；压缩包同包矩阵不能替代这个入口检查。复现见[安装解析记录](evidence/installation-resolution-20261018/README.md)。
+
 发布新版本：
 
 ```bash

@@ -1,0 +1,13 @@
+packages:
+  - .
+
+nodeLinker: hoisted
+autoInstallPeers: false
+minimumReleaseAgeExclude:
+  - dshmarket@1.66.6 || 1.66.15 || 1.66.21 || 1.66.22 || 1.66.28
+  - dsh-usage-state@0.4.5 || 0.4.6
+  - '@takboo/dsh-coopanion@0.4.4 || 0.4.7 || 0.4.9 || 0.4.10'
+allowBuilds:
+  koffi: true
+
+minimumReleaseAge: 0

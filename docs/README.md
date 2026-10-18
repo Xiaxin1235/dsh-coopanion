@@ -1,8 +1,10 @@
 # 文档索引与接手状态
 
-核对日期：2026-10-17（Asia/Shanghai）。本页集中维护交付、候选身份与验收状态；行为以对应契约为准，版本、依赖和命令以仓库配置为准。历史记录不作为当前任务安排。
+核对日期：2026-10-18（Asia/Shanghai）。本页集中维护交付、候选身份与验收状态；行为以对应契约为准，版本、依赖和命令以仓库配置为准。历史记录不作为当前任务安排。
 
 ## 当前交付
+
+**安装入口核对（10 月 18 日）：** pnpm 11 默认等待新版本发布满 24 小时，裸包名在本次保护期内仍解析为 0.4.10，导致 rc.2 拒载；同一输入框填写 **`@takboo/dsh-coopanion@0.4.12`** 已在真实 rc.2 隔离安装中通过，1238 份包文件与规范包相等，无 DSH 兼容性豁免。首页和使用指南改用精确版本；[独立复现记录](evidence/installation-resolution-20261018/README.md)补齐固定压缩包矩阵没有覆盖的入口。原发布身份、原始报告和日用 profile 保持不变。
 
 **已发布：v0.4.12**，源码 `015ef3a792e9db17897d5ceed611106d78aedabd`，规范包 SHA-256 `5abd4079a114e1314e869dd65f15614b5eb57857727e5ab3ec654cf83290dab3`。新增 DSH **0.2.1-rc.1／0.2.1-rc.2** 精确兼容声明，保留 0.2.0-rc.2／0.2.1-alpha.1；修复旧声明被新宿主拒绝及 Windows 诊断文件读取竞争，适配设置导航并修正安装／原生退出测试竞争；正式 CI 增加进程日志与原生步骤时限。[main CI](https://github.com/takboo/dsh-coopanion/actions/runs/39031172723) 16 项与[发布 CI](https://github.com/takboo/dsh-coopanion/actions/runs/39037489562) 19 项检查通过，包含三平台／四版宿主十二组同包安装；npm 与 Release 版本包、固定及 latest 别名逐字节一致。144 份原始安装报告、重跑及验收边界见[交付记录](evidence/releases/v0.4.12/README.md)和[正式 Release](https://github.com/takboo/dsh-coopanion/releases/tag/v0.4.12)。本轮未改既有日用安装或周末采集。
 

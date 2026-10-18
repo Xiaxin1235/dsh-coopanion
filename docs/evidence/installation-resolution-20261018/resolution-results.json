@@ -1,0 +1,26 @@
+[
+  {
+    "case": "unversioned",
+    "version": "0.4.10",
+    "specifier": "^0.4.10",
+    "policyAfter": "packages:\n  - .\n\nnodeLinker: hoisted\nautoInstallPeers: false\nminimumReleaseAgeExclude:\n  - dshmarket@1.66.6 || 1.66.15 || 1.66.21 || 1.66.22 || 1.66.28\n  - dsh-usage-state@0.4.5 || 0.4.6\n  - '@takboo/dsh-coopanion@0.4.4 || 0.4.7 || 0.4.9 || 0.4.10'\nallowBuilds:\n  koffi: true\n"
+  },
+  {
+    "case": "repeat-unversioned",
+    "version": "0.4.10",
+    "specifier": "^0.4.10",
+    "policyAfter": "packages:\n  - .\n\nnodeLinker: hoisted\nautoInstallPeers: false\nminimumReleaseAgeExclude:\n  - dshmarket@1.66.6 || 1.66.15 || 1.66.21 || 1.66.22 || 1.66.28\n  - dsh-usage-state@0.4.5 || 0.4.6\n  - '@takboo/dsh-coopanion@0.4.4 || 0.4.7 || 0.4.9 || 0.4.10'\nallowBuilds:\n  koffi: true\n"
+  },
+  {
+    "case": "explicit-version",
+    "version": "0.4.12",
+    "specifier": "0.4.12",
+    "policyAfter": "packages:\n  - .\n\nnodeLinker: hoisted\nautoInstallPeers: false\nminimumReleaseAgeExclude:\n  - dshmarket@1.66.6 || 1.66.15 || 1.66.21 || 1.66.22 || 1.66.28\n  - dsh-usage-state@0.4.5 || 0.4.6\n  - '@takboo/dsh-coopanion@0.4.4 || 0.4.7 || 0.4.9 || 0.4.10 || 0.4.12'\nallowBuilds:\n  koffi: true\n"
+  },
+  {
+    "case": "age-zero",
+    "version": "0.4.12",
+    "specifier": "^0.4.12",
+    "policyAfter": "packages:\n  - .\n\nnodeLinker: hoisted\nautoInstallPeers: false\nminimumReleaseAgeExclude:\n  - dshmarket@1.66.6 || 1.66.15 || 1.66.21 || 1.66.22 || 1.66.28\n  - dsh-usage-state@0.4.5 || 0.4.6\n  - '@takboo/dsh-coopanion@0.4.4 || 0.4.7 || 0.4.9 || 0.4.10'\nallowBuilds:\n  koffi: true\n\nminimumReleaseAge: 0\n"
+  }
+]
