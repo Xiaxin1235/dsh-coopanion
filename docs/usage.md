@@ -148,7 +148,7 @@ npm run character:pack -- examples/star paper-star.zip
 
 ## 破坏式更新
 
-v0.4.0 移除了旧 Canvas 关键帧引擎、`dsh-character` v1 协议、`.dshpet` 包、旧 schema 和转换工具。旧角色不能直接加载，也不提供旧引擎兼容模式；需要重新制作或导入 API 2 包。
+当前版本已移除旧 Canvas 关键帧引擎、`dsh-character` v1 协议、`.dshpet` 包、旧 schema 和转换工具。旧角色不能直接加载，也不提供旧引擎兼容模式；需要重新制作或导入 API 2 包。
 
 桌面版改用独立数据目录 `figures-v2`，旧角色选择恢复为内置大肥鱼。旧 `characters` 数据不会被读取；不再需要时可自行删除。Harness 的会话与配置不受角色数据重置影响。
 ## 回复、未读与会话保护
