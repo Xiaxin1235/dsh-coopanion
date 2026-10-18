@@ -340,6 +340,9 @@ try {
     await surface.getByRole('combobox', { name: '自主陪伴', exact: true }).selectOption(companionship);
     await waitProfile(new RegExp('companionship: ' + companionship));
     await page.waitForFunction(mode => document.querySelector('#companion-mode').value === mode, companionship);
+    // Profile persistence, native IPC and the official form subscription settle
+    // independently. Finish the visible update before changing this select again.
+    await settings.waitForFunction(mode => document.querySelector('#coopanion-companionship')?.value === mode, companionship);
     assert.deepEqual(await page.locator('#message').evaluate(n => [n.value, n.selectionStart, n.selectionEnd, window.npcInstalledFrame === document.querySelector('#body-layer iframe')]), ['M4 installed draft', 2, 7, true], 'native hot preference preserves draft, selection and API 2 frame');
   }
   assert.equal(await surface.getByRole('combobox', { name: '自主陪伴', exact: true }).inputValue(), 'off');
