@@ -28,7 +28,7 @@ macOS 的字典键按 SDK `CGSession.h` 取值：`kCGSessionOnConsoleKey` 宏对
 
 ## 独立采样器
 
-`scripts/sample-companion.mjs` 使用 Node 内置模块，通过本地接口及操作系统采集，不依赖 Playwright／Electron／CDP，不操作窗口或鼠标、不截图、不防休眠、不启动模型。当前 OS 资源采样支持 macOS／Linux；Windows 命名管道接口已实现、尚待单独验证，Windows 的独立资源采样尚未实现。
+`scripts/sample-companion.mjs` 使用 Node 内置模块，通过本地接口及操作系统采集，不依赖 Playwright／Electron／CDP，不操作窗口或鼠标、不截图、不防休眠、不启动模型。当前 OS 资源采样支持 macOS／Linux；Windows 使用命名管道提供同一只读接口；独立 OS 资源采样尚未实现。
 
 发现多个活动实例时要求 `--instance`，不猜测目标。读取身份与发现文件必须一致；输出采用字段白名单，排除 token、socket 路径及未知文字。进程／诊断会话／版本变化、接口关闭或长采样中断分段记录；不能拼接不同生命周期来声称连续两小时通过。
 
