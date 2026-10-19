@@ -1,0 +1,175 @@
+{
+  "resource": "O03",
+  "status": "local-browser-interaction-validated",
+  "sourceCommit": "7d55786d096552dea62ef974237d942ab03c3b2f",
+  "worktreeDirty": true,
+  "date": "2026-10-19",
+  "timezone": "Asia/Shanghai",
+  "environment": {
+    "node": "24.21.0",
+    "npm": "11.19.1",
+    "os": "15.8.1",
+    "arch": "arm64",
+    "liveBrowser": "Codex IAB, real API 2 sandbox",
+    "regressionBrowser": "Chrome for Testing 156.0.8078.4, Playwright chromium 1248"
+  },
+  "artwork": {
+    "origin": "built-in image_gen O03 V2",
+    "sha256": "542b49cffbec43e41b4ca75a0ae184302b1e384b27539ff957806c71d28b910d",
+    "copiedWithoutPixelChanges": true,
+    "gripAlpha": 254
+  },
+  "checks": {
+    "targetedStrategyTests": {
+      "passed": 8
+    },
+    "typecheck": "passed",
+    "build": "passed",
+    "npmTest": {
+      "passed": true,
+      "vitestPassed": 234,
+      "vitestSkipped": 1,
+      "additionalNodeTestsPassed": 12
+    },
+    "testInboxUi": "passed-complete-command",
+    "liveScenario": {
+      "passed": true,
+      "checks": 13,
+      "bodyFrames": 538,
+      "maxBindingError": 0,
+      "ownershipFrameMismatches": 0
+    },
+    "pointerDrag": true,
+    "keyboardPickup": true,
+    "modelSnapshot": "matches-source",
+    "pngBinding": "passed"
+  },
+  "executionNotes": [
+    "Initial sandbox runs could not execute ps / launch Chromium; complete regressions passed outside that sandbox with temporary test profiles.",
+    "Live UI actions used cua_repl; QA sends public scene commands and observes actual body frames.",
+    "Final pointer and keyboard actions revalidated the final scene code; lifecycle suspension retained hand ownership and resumed successfully."
+  ],
+  "limits": [
+    "Validated DeepSeek scheme, role size 180 and prop width 40 in a horizontal browser scene.",
+    "No native desktop, physical multi-display, mixed-DPI, general two-dimensional navigation or full work/life integration acceptance.",
+    "No default product automatic activity or relationship scoring enabled; no publish or local commit."
+  ],
+  "files": {
+    "docs/design/art-workflow/inspect-art-asset.mjs": {
+      "sha256": "fda94c72a3430944e76d51063aa5789060532559ba28c591a89b0549c901730a",
+      "bytes": 6435
+    },
+    "docs/design/art-workflow/o03-shell-interaction-v1/README.md": {
+      "sha256": "116e51ae7ea93ee6c2405ff2571b16aa47d57a8c298b5e4ac3f3c3b1492055b0",
+      "bytes": 6143
+    },
+    "docs/design/art-workflow/o03-shell-interaction-v1/browser-qa-final.json": {
+      "sha256": "9d9ae0fd062d92f7fa8b2c1299b37712e80b7c99eaf0b2d6af74d0d01e9f59d6",
+      "bytes": 7701
+    },
+    "docs/design/art-workflow/o03-shell-interaction-v1/browser-qa.json": {
+      "sha256": "ef616070f9b44dd1b698aca75be7fcd37bf1b915f1acb173a9adeaebf348ed12",
+      "bytes": 7685
+    },
+    "docs/design/art-workflow/o03-shell-interaction-v1/figure.js": {
+      "sha256": "5d85216696b3291629b2821af26320be866f8ece8c42ecb92da353d195de115e",
+      "bytes": 5928
+    },
+    "docs/design/art-workflow/o03-shell-interaction-v1/index.html": {
+      "sha256": "d24c4fb22388aacdf0dad53a3d057f7ae38d1d1b7a5f4a8e3e265f0440c6f4f1",
+      "bytes": 3681
+    },
+    "docs/design/art-workflow/o03-shell-interaction-v1/inspection-binding.json": {
+      "sha256": "cecdcacf5478884818de40f0526ad674dc9a1302f23b931d208523046abbf672",
+      "bytes": 1651
+    },
+    "docs/design/art-workflow/o03-shell-interaction-v1/inspection.json": {
+      "sha256": "c26f65f65c0340570d675c905d0e11ef60537b3d1a3603d644f118b53df3de3e",
+      "bytes": 1410
+    },
+    "docs/design/art-workflow/o03-shell-interaction-v1/keyboard-pickup-final.json": {
+      "sha256": "ce5b6189a1a630bc97eed1be42d768a5f377a8a08914fe0ed721ef4d40beaf84",
+      "bytes": 2425
+    },
+    "docs/design/art-workflow/o03-shell-interaction-v1/keyboard-pickup.json": {
+      "sha256": "bfd594eb1ca0f90b60bee0c76301ead8ef13b62247a92e37a7f9cb69b4ce2b5c",
+      "bytes": 1216
+    },
+    "docs/design/art-workflow/o03-shell-interaction-v1/pointer-drag-final.json": {
+      "sha256": "49bc05cf8242135d38f5fe4f8e70206f29ef832baa4e77a2c2e451b926ab20ca",
+      "bytes": 2365
+    },
+    "docs/design/art-workflow/o03-shell-interaction-v1/pointer-drag.json": {
+      "sha256": "fe35056f06e047c472b9f0d98e3f868ff155bb6ebe66629e8ba79886b587a53b",
+      "bytes": 2368
+    },
+    "docs/design/art-workflow/o03-shell-interaction-v1/prepare-model.mjs": {
+      "sha256": "1c9c74119a873d24b96fd04d58f6e9b26aa5e616f52b6cf2acb9ed30e8630284",
+      "bytes": 769
+    },
+    "docs/design/art-workflow/o03-shell-interaction-v1/scene-model.json": {
+      "sha256": "c077287f6cbca3e21b4bb51e15a0c827cc4870da6f712ae5f32cde76864b028d",
+      "bytes": 5696
+    },
+    "docs/design/art-workflow/o03-shell-interaction-v1/scene.js": {
+      "sha256": "b247d216ec250d786778de91bed8136feb037e0657fc09d709fdc53c7b6a64de",
+      "bytes": 10892
+    },
+    "docs/design/art-workflow/o03-shell-interaction-v1/screenshots/dragged.png": {
+      "sha256": "1b3a5e3e8d3b963b22b2197a1ec4eb998758ac70e4cf8bded4754d78d2d35621",
+      "bytes": 57976
+    },
+    "docs/design/art-workflow/o03-shell-interaction-v1/screenshots/held-dark-final.png": {
+      "sha256": "8c005ee13fd924c4ed0f8e6afd972be6eff3335fd725f09458925d10bbf4e518",
+      "bytes": 59462
+    },
+    "docs/design/art-workflow/o03-shell-interaction-v1/screenshots/held-dark.png": {
+      "sha256": "99ada9f9f6b4a6dad26002b334cb235ebf31d529637f8163eaaf848ac820fad4",
+      "bytes": 59903
+    },
+    "docs/design/art-workflow/o03-shell-interaction-v1/screenshots/qa-final.png": {
+      "sha256": "2e989d9769e2af6f3a9ec454f4bf6893e78709f96d9ef0a4b5c9a6db5f4931c1",
+      "bytes": 57932
+    },
+    "docs/design/art-workflow/o03-shell-interaction-v1/screenshots/qa-passed.png": {
+      "sha256": "3efae01bb5b3885b96f75344ec0dce677e33abec23fb8726bffdd5074c65b399",
+      "bytes": 58014
+    },
+    "docs/design/art-workflow/o03-shell-interaction-v1/style.css": {
+      "sha256": "0f1d291377a922af9ea818f071154d5d827a478ab3af9cd188c79f67d1a1954a",
+      "bytes": 4344
+    },
+    "docs/design/art-workflow/o03-shell-v1/prompt-v1.txt": {
+      "sha256": "6224321fec2fe896f757b639edb56fe84a5c41b59d23b837f470fbd8ac966d17",
+      "bytes": 1517
+    },
+    "docs/design/art-workflow/o03-shell-v1/prompt-v2.txt": {
+      "sha256": "24092c51df473795e6660f3202513c7dc94625edcd1631658e09ed776c7779e4",
+      "bytes": 1048
+    },
+    "docs/design/art-workflow/preview-art-workflow.mjs": {
+      "sha256": "84e6c60d0a1f33d5cfee882b48a89c672368a4f70677622ebbfd0c86ae21ec65",
+      "bytes": 3115
+    },
+    "tests/prop-interaction.test.js": {
+      "sha256": "efc3232678107075ae31b7888e00859e210972543071fe670fbe8ea4e4654f4f",
+      "bytes": 5176
+    },
+    "web/prop-interaction.js": {
+      "sha256": "676ddff8d1c89604c9abcb85c147371d0a2574727dddf17c630f0b7d11c4c3da",
+      "bytes": 4385
+    },
+    "web/props/shell/asset.json": {
+      "sha256": "db1cd6cc6dc21dd178fa95b8a49c0bed503755b06f4dee8a5fed52da139a2a65",
+      "bytes": 828
+    },
+    "web/props/shell/shell.png": {
+      "sha256": "542b49cffbec43e41b4ca75a0ae184302b1e384b27539ff957806c71d28b910d",
+      "bytes": 686799
+    },
+    "web/upstream/whale/figure.js": {
+      "sha256": "95886c38c246ec5eed37068ad2ab46c6c8a04b1641985053a0be8ad732b5682f",
+      "bytes": 44125
+    }
+  }
+}

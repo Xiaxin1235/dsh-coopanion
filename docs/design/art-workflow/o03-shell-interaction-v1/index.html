@@ -1,0 +1,16 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>O03 贝壳 · 真实拿放验证</title><link rel="stylesheet" href="./style.css"><body>
+<header><b>COOPANION <small>ART LAB / 002</small></b><a href="../o03-shell-v1/index.html">查看美术制作过程 ↗</a></header>
+<main><p class="eyebrow">O03 · 从透明素材到真实交互</p><h1>把它拿起来，再放回生活里。</h1><p class="intro">角色真实走近；手部接触后才拿起。携带时贝壳跟随同一网格的手臂变形，放下后保留现场位置。</p>
+<div class="workspace"><section class="panel"><div class="panel-head"><h2>接触与拥有权验证</h2><div class="themes"><button data-theme="light" aria-pressed="true">浅色</button><button data-theme="dark" aria-pressed="false">深色</button></div></div>
+<div id="stage" class="stage"><span class="zone life">生活区</span><span class="zone work">放置区</span><div class="floor"></div><div class="spot home"></div><div id="target" class="spot target"></div>
+<svg id="ground" class="ground" aria-hidden="true"><g id="ground-transform"><svg id="crop" width="40" height="33" overflow="hidden"><image id="shell-image" href="/web/props/shell/shell.png" width="1254" height="1254"/></svg></g></svg>
+<div id="body-layer"></div><button id="shell-hit" class="shell-hit" aria-label="贝壳，点击让角色拿起，左右拖动可摆放"></button>
+<svg class="markers" aria-hidden="true"><circle id="hand-dot" r="3" fill="#e4a16d"/><circle id="grip-dot" r="3" fill="#688cec"/></svg>
+<span class="scene-caption">真实水平 walk · 手部网格绑定<br>本场景不声明二维导航已实现</span></div>
+<div class="actions"><button id="pickup" disabled>走近并拿起</button><button id="drop" disabled>带到落点并放下</button><button id="pause" disabled>打断</button><button id="resume" disabled>接着做</button><button id="reset" disabled>重置场景</button></div>
+<div class="preferences"><label>落点 <input id="destination" type="range" min="55" max="85" value="80" disabled></label><label><input id="anchors" type="checkbox" checked>显示接触点</label><span>贝壳在地面时可左右拖动；拿起后沿身体层级绘制。</span></div>
+<p id="status" role="status">正在加载角色与资源…</p></section>
+<aside class="panel"><p class="eyebrow">LIVE EVIDENCE</p><h2>现场状态</h2><dl><div><dt>阶段</dt><dd id="phase">loading</dd></div><div><dt>物件拥有者</dt><dd id="owner">ground</dd></div><div><dt>拿起 / 放下</dt><dd id="counts">0 / 0</dd></div><div><dt id="distance-label">拿起前对齐误差</dt><dd id="distance">—</dd></div><div><dt>物件离地距离</dt><dd id="ground-distance">—</dd></div><div><dt>代次 / 移动 ID</dt><dd id="identity">—</dd></div></dl><div class="note">单一物件、单一拥有者。抵达与接触由实际身体回执确认；打断保留拥有权，重新接续会使用新的移动身份。</div><h3>本轮动作记录</h3><ol id="trace"></ol></aside></div>
+<section class="panel qa"><div><h2>可重放的交互验收</h2><p>真实走近与手部接触驱动检查；包含两次拿放、途中打断、恢复和重定位。</p></div><button id="qa-run" disabled>运行交互验收</button><output id="qa-status">等待角色就绪</output><details><summary>查看实际帧与动作证据</summary><pre id="qa-report">尚未运行</pre></details></section>
+<footer>隔离交互验证 · 不读取屏幕／输入内容 · 不改变日常 profile · 资源图像沿用已留档的 O03 V2</footer></main><script type="module" src="./scene.js"></script></body></html>

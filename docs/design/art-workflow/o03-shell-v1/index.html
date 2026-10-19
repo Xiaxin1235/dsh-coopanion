@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>美术工作流试跑 · O03 贝壳</title>
+<link rel="stylesheet" href="./preview.css">
+<body>
+  <header><a class="brand" href="./">COOPANION <span>ART LAB / 001</span></a><span class="pill">本地视觉样板 · 非正式资产</span></header>
+  <main>
+    <section class="intro"><p class="eyebrow">从一件小物，走通一次制作</p><h1>一枚能放进生活里的贝壳。</h1><p class="lead">需求 → 生成 → 文件检查 → 实际尺寸 → 接入评审。先看得清，再谈拿得稳。</p></section>
+    <ol class="steps"><li><span>01</span>需求卡<i>O03 / B0</i></li><li><span>02</span>透明生成<i>内置 image_gen</i></li><li><span>03</span>原图检查<i id="gate-copy">正在读取</i></li><li><span>04</span>尺寸与锚点<i>当前预览</i></li><li class="pending"><span>05</span>真实接触<i>下一步</i></li></ol>
+    <div class="workspace">
+      <section class="preview panel"><div class="panel-head"><div><span class="eyebrow">CONTEXT CHECK</span><h2>放在她旁边看看</h2></div><div class="segmented" aria-label="预览底色"><button data-bg="light" aria-pressed="true">浅色</button><button data-bg="dark" aria-pressed="false">深色</button><button data-bg="checker" aria-pressed="false">透明格</button></div></div>
+        <div id="scene" class="scene" data-bg="light"><span class="scene-note">现有角色仅作风格与尺寸参照</span><div class="world-label home-label">生活区</div><div class="world-label work-label">工作岗位</div><div class="home-ring"></div><div class="work-ring"></div><div class="floor"></div><div id="body-layer"></div><div id="prop" class="prop"><img src="./shell-v1.png" alt="生成的贝壳道具"><span class="anchor ground" title="候选底部接地点"></span><span class="anchor grip" title="候选抓握点"></span></div><div class="ground-label">底部接地点</div><div class="scene-caption"><b id="display-width">40 px</b><span>贝壳可见宽度 · 角色约 180 px</span></div></div>
+        <div class="controls"><label for="variant">候选 <select id="variant"><option value="2">V2 · 哑光简化</option><option value="1">V1 · 初次生成</option></select></label><label for="size">道具宽度 <input id="size" type="range" min="24" max="64" value="40"><output id="size-value">40 px</output></label><label class="toggle"><input id="anchors" type="checkbox" checked>显示候选锚点</label></div>
+        <p class="boundary">这里验证比例与位置；贝壳未绑定角色手部，未实现拿放或二维移动。</p>
+      </section>
+      <aside class="panel inspection"><span class="eyebrow">ASSET INSPECTION</span><h2>文件先过关</h2><dl id="facts"></dl><div class="checks" id="checks"></div><div class="note"><b>锚点仍是候选</b><p>蓝点为接地点，橙点为抓握点。需在真实角色操作中校正，数值通过不等于接触自然。</p></div><a id="prompt-link" class="text-link" href="./prompt-v2.txt" target="_blank">查看完整生成提示词 ↗</a><a id="report-link" class="text-link" href="./inspection-v2.json" target="_blank">查看检查报告 ↗</a></aside>
+    </div>
+    <section class="scale-section"><div><p class="eyebrow">SMALL-SCALE READABILITY</p><h2>缩小后，还认得出吗？</h2></div><div id="samples" class="samples"></div></section>
+    <section class="comparison panel"><div><p class="eyebrow">ONE TARGETED REVISION</p><h2>只改内部着色，保留两个候选。</h2><p>第一版偏光亮；第二版尝试更平整的色面。两版均保留原始透明 PNG。轮廓和锚点仍需重新检查。</p></div><div id="versions" class="versions"></div></section>
+    <footer><span id="body-status">角色加载中…</span><span>原图保留 · 无运行时抠图 · 无模型／桌面操作</span></footer>
+  </main><script type="module" src="./preview.js"></script>
+</body></html>

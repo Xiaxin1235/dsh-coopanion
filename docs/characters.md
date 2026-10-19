@@ -123,3 +123,13 @@ talk(), setScheme(id, {fade}), dispose()
 [自主陪伴](companionship-contract.md)按词表组合有限日常，宿主负责动机、邀请和成长；角色包不持有这些权限。抚摸成长需要可信页面验证的真实轨迹，角色自行上报 touch 或预览动作不计入关系。当前任务神态／提醒动作仍优先。
 
 NPC 日常复用水平定点 `walk`、按身份 `stopWalk`、姿态、表情与合成音效；输入感知和调度由可信宿主管理。缺词或无移动能力的角色按其清单和 body 能力降级，详见[自主陪伴契约](companionship-contract.md)。
+
+## 可选物件绑定验证
+
+内置鲸鱼的 figure 工厂可由显式 body factory 提供 `gripProp`（纹理、UV、局部矩形、手部／抓握／落地锚点）及 `gripPose()`。物件在同一 armFar 变形链中绘制，前袖口层覆盖其前景；`figure.gripFrame` 只读返回实际变形后的手部、物件抓握点、地面锚点及三角矩形坐标。未提供选项时不加载物件，也不更改默认角色行为。
+
+这是固定鲸鱼渲染器的可选制作接口，不是 API 2 的通用持物或二维移动声明。[O03 隔离验证场景](design/art-workflow/o03-shell-interaction-v1/README.md)负责动作准入、拥有权和接触检查；主产品的日常、关系与任务结算没有启用此物件。物件 PNG 与使用规格位于 `web/props/shell/`，素材来源及未覆盖的验收范围由该场景记录。
+
+固定鲸鱼还可由显式制作工厂提供 `motionPose()`：腰角、下沉量、两臂角度、视线、脚底固定权重与物件倾角。它在现有网格上连续调姿，物件通过手部子变形链补偿倾角，抓握点仍与实际手部绑定；`gripFrame` 额外报告姿势、实际朝向和脚底投影。默认工厂未启用这些字段，角色包协议没有扩充。[动作工作流](design/art-workflow/o03-shell-motion-v1/README.md)保存配置、慢放／逐帧入口及美术限制。
+
+显式 `handArt` 提供手部原图和源像素腕点／接触点。当前使用握持原图的单一连续网格；`motionPose().hands` 是姿势权重，驱动手指开合，保持袖口和表面透明度固定。掌部与前景指尖的纹理像素互补，避免重复轮廓。`gripFrame.handArt` 报告姿势权重、实际闭合量、表面 alpha、腕部／接触误差与层级。制作时可选 `handDetail` 重用同一实际绘制帧；隔离工作台同时传入 `externalProp`、`raster` 和 `handDetail` 时，返回同帧的身体与前景指尖图像及其矩阵，由宿主将两者与物件一次性合成，地面／持物保持同一遮挡次序。这些选项未用于默认产品工厂，不进入产品诊断。资源与验证见[手型工作记录](design/art-workflow/o03-shell-hands-v1/README.md)。

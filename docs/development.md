@@ -27,6 +27,12 @@ npm run test:install
 
 `npm run dev` 打开浏览器演示（默认 `http://127.0.0.1:4173`），`npm run demo` 启动桌面演示，二者的任务事件均为模拟。首页素材的重拍见[素材说明](assets/README.md)。
 
+美术资源的隔离制作与拿放验证从 [O03 工作资源验收](design/art-workflow/o03-shell-interaction-v1/README.md)进入。`node docs/design/art-workflow/preview-art-workflow.mjs` 启动本地 4186 端口场景；它使用真实 API 2 身体与可选手部网格绑定，不读取实际 Harness 工作内容，也不启用日常 profile 的新行为。页面的交互验收只发操作指令，不伪造到达或接触回执；策略定向检查为 `node node_modules/vitest/vitest.mjs run tests/prop-interaction.test.js`。物理实机、二维导航与宿主安装仍各自验收。
+
+动作设计从 [O03 动作工作流](design/art-workflow/o03-shell-motion-v1/README.md)进入；上述本地服务默认打开动作工作台，旧交互入口仍可直接访问。它提供关键姿势试摆、慢放、暂停／逐帧及三轮真实拿放验收。主要制作参数是 `web/props/shell/motion-profile.json`，定向检查为 `tests/prop-motion.test.js`。
+
+当前默认工作台为 [手型与遮挡版本](design/art-workflow/o03-shell-hands-v1/README.md)，支持原／新手型对照与同帧细节放大。三种候选原图与源图锚点位于 `web/props/shell/hands/`，当前用握持图的连续网格完成开合；`node scripts/check-hand-art.mjs` 只读核对实际原图、源参考摘要和抓握像素，`tests/hand-art.test.js` 检查源像素互补、网格不翻折、固定袖口、姿势时序与拥有权门槛。打开工作台同目录的 `continuity.html` 可运行真实 WebGL 像素回归，验证不透明度、袖口、实际手指运动和拥有权交接的像素连续性。
+
 浏览器检查真实 API 2 动画、聊天、完整阅读、角色导入及脚本隔离；桌面检查真实 Electron 窗口、IPC、托盘和恢复；安装检查使用官方 DSH loader 安装实际 `.tgz`。用 `DSH_TEST_VERSION=<支持版本>` 选择宿主，用 `DSH_TEST_PACKAGE_DIR=<规范包目录>` 消费已有规范包及校验文件。完整平台／宿主列表以 CI 矩阵为准。
 
 原生测试和安装使用隔离数据目录，系统桌面操作串行执行。CI 测试沙箱参数仅供隔离实例；普通安装保留 Chromium sandbox 与 contextIsolation，关闭 Node integration。测试通知适配器和模型答复器属于受控边界，不能代替通知中心实机送达或真实模型会话验收。

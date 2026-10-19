@@ -12,6 +12,10 @@ The textures and thumbnails in `web/upstream/whale/`, and the generated tray ico
 
 This integration follows the project user's existing statement that the community character is reusable. AGPL does not relicense these textures. The complete original upstream rights notice is preserved verbatim in [web/upstream/THIRD_PARTY_NOTICES.md](web/upstream/THIRD_PARTY_NOTICES.md). Its sections on speech-recognition libraries/models describe the upstream package; this plugin does not bundle those components.
 
+## O03 optional hand edits
+
+The optional `web/props/shell/hands/` sprites were produced with the built-in OpenAI image generation tool as edits of the original Whale maid cuff/hand reference. They are stored separately from the original artwork. The source reference digest, generated image digests and full prompts are recorded in `web/props/shell/hands/asset.json`; the original character and artwork attribution above remains in place.
+
 ## Electron
 
 Electron 44.7.0 is installed as a dependency and retains its MIT license and Chromium's accompanying notices. Runtime download and verification remain unchanged.

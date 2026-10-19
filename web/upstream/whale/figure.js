@@ -15,6 +15,7 @@
  * model.json keeps the master drawing's pixel frame for the face sprites; U/V convert.
  */
 import { createRig } from '../kit/rig.js';
+import { handSurfaceModel, handSurfaceState, splitHandRgba } from './hand-art.js';
 
 const f1 = n => Math.round(n * 100) / 100;
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -132,6 +133,32 @@ export async function createWhaleFigure(base = new URL('./', import.meta.url), o
     ahoge: { kind: 'rot', parent: 'headFront', pivot: PV.ahoge },
   };
   const parts = model.parts.map(p => ({ ...p, parent: p.id === 'torso_up' ? 'waist' : p.parent }));
+  // Opt-in prop binding for an explicit body adapter, never a decision made by the figure.
+  // Default API 2 bodies do not provide this extension and retain the original rendering.
+  const prop = opts.gripProp;
+  const gripTexture = prop ? await load(prop.url) : null;
+  if (prop) {
+    tex.__gripProp = gripTexture;
+    deformers.propHold = { kind: 'rot', parent: 'armFar', pivot: prop.hand };
+    parts.push({ id: '__gripProp', tex: '__gripProp', parent: 'propHold', z: 5.05,
+      box: prop.box, uvBox: prop.uvBox, grid: [1, 1] });
+  }
+  let gripFrame = null;
+  const handArt = opts.handArt, handSurface = handArt ? handSurfaceModel(handArt) : null, handTextures = {};
+  if (handSurface) {
+    const source = await load(handSurface.plan.asset.url), cv = document.createElement('canvas');
+    cv.width = handSurface.plan.asset.canvas.width; cv.height = handSurface.plan.asset.canvas.height;
+    const ctx = cv.getContext('2d'); ctx.drawImage(source,0,0);
+    const split = splitHandRgba(ctx.getImageData(0,0,cv.width,cv.height).data,cv.width,cv.height,handSurface.frontBoundary);
+    for(const [name,pixels] of Object.entries(split)) {
+      const layer = document.createElement('canvas'); layer.width=cv.width; layer.height=cv.height;
+      layer.getContext('2d').putImageData(new ImageData(pixels,cv.width,cv.height),0,0);
+      tex[`__hand_${name}`] = handTextures[`__hand_${name}`] = layer;
+    }
+    Object.assign(deformers,handSurface.deformers); parts.push(...handSurface.parts);
+    const arm = parts.find(p => p.id === 'arm_far'), [x, y, w, h] = arm.box, cut = handArt.sleeveCutY, k = (cut - y) / h;
+    parts.push({ ...arm, id: '__artSleeve', box: [x, y, w, cut - y], uvBox: [0, 0, 1, k] });
+  }
   // the face features ride a little ahead of the face for the turn
   parts.push({ id: 'faceFx', tex: 'faceFx', box: [U(FACE.x), V(FACE.y), FACE.w * S, FACE.h * S], z: 9, parent: 'headFeat', grid: [4, 4] });
   // the brows lie on the skin under the fringe, and show through the hair: the same texture is drawn
@@ -373,6 +400,8 @@ export async function createWhaleFigure(base = new URL('./', import.meta.url), o
   function setScheme(id, o = {}) {
     const next = schemeInfo(id).id;
     const apply = set => {
+      if (prop) set.tex.__gripProp = gripTexture;
+      Object.assign(set.tex, handTextures);
       endFade();
       if (scheme === next && tex === set.tex) return;
       scheme = next;
@@ -454,6 +483,19 @@ export async function createWhaleFigure(base = new URL('./', import.meta.url), o
   function draw(petG, fc, o) {
     if (mountedIn !== petG || !petG.contains(fo)) mount(petG);
     if (frameN++ % 20 === 0) fitCanvas();
+    // Authored motion is opt-in; ordinary API 2 bodies and the first prop pilot keep their springs.
+    const motion = opts.motionPose?.();
+    const plantWeight = motion?.plant ? clamp(motion.plantWeight ?? 1, 0, 1) : 0;
+    if (motion?.look) o = { ...o, look: motion.look };
+    if (motion?.plant) {
+      const m = petG.getCTM(), s = opts.host.bounds().S;
+      if (m) {
+        const x = m.a * 128 + m.c * 256 + m.e, y = m.b * 128 + m.d * 256 + m.f;
+        const a = lerp(m.a, s * o.facing, plantWeight), b = lerp(m.b, 0, plantWeight);
+        const c = lerp(m.c, 0, plantWeight), d = lerp(m.d, s, plantWeight);
+        petG.setAttribute('transform', `matrix(${a} ${b} ${c} ${d} ${x - a * 128 - c * 256} ${y - b * 128 - d * 256})`);
+      }
+    }
     const t = o.t, dt = lastT == null ? 1 / 60 : clamp(t - lastT, 0, .05);
     lastT = t;
     const mode = o.mode || 'idle', face = o.face || 'neutral';
@@ -539,13 +581,19 @@ export async function createWhaleFigure(base = new URL('./', import.meta.url), o
     if (runK > .001) { aN = lerp(aN, 38, runK); aF = lerp(aF, 32, runK); }
     if (wave) aN = lerp(aN, 108, wave);
     if (shiver) { aN = lerp(aN, -10, shiver); aF = lerp(aF, 8, shiver); }
-    const armN = sp.armN.step(aN, dt) + wave * 13 * Math.sin(t * 15) + shiver * 1.4 * Math.sin(t * 47) + flap * 9 * Math.sin(t * 24);
-    const armF = sp.armF.step(aF, dt) - shiver * 1.2 * Math.sin(t * 43 + 1) - flap * 9 * Math.sin(t * 24 + 1);
+    const gripPose = prop ? opts.gripPose?.() : null;
+    if (Number.isFinite(gripPose?.armFar)) aF = clamp(gripPose.armFar, -70, 30);
+    const armN = Number.isFinite(motion?.armNear) ? clamp(motion.armNear, -70, 45) : sp.armN.step(aN, dt) + wave * 13 * Math.sin(t * 15) + shiver * 1.4 * Math.sin(t * 47) + flap * 9 * Math.sin(t * 24);
+    const armF = Number.isFinite(motion?.armFar) ? clamp(motion.armFar, -70, 30) : sp.armF.step(aF, dt) - shiver * 1.2 * Math.sin(t * 43 + 1) - flap * 9 * Math.sin(t * 24 + 1);
 
     /* deformer states */
     // the kit sinks the hips 29 when seated; the sitting drawing's lowest point is 19.4 above the soles
     st.body = { a: -sway * 1.2 + (held ? o.swing * .15 : 0), ty: low - 9.6 * sitK, sx: (1 + .006 * breath + .04 * plop) * (1 - .03 * shiver), sy: 1 - .012 * breath - .06 * plop };
     st.waist = { a: bow * 20 };
+    if (motion) {
+      st.waist.a = clamp(motion.waist ?? 0, 0, 24);
+      if (motion.plant) st.body = { a: lerp(st.body.a, 0, plantWeight), ty: lerp(st.body.ty, clamp(motion.drop ?? 0, 0, 22), plantWeight), sx: lerp(st.body.sx, 1, plantWeight), sy: lerp(st.body.sy, 1, plantWeight) };
+    }
     st.skirt = {
       fn: (u, v) => {
         const k = v * v;
@@ -562,11 +610,33 @@ export async function createWhaleFigure(base = new URL('./', import.meta.url), o
     st.armFar = { a: armF };
     // the far arm's cuff layer sits over the bodice; swept back, the arm is behind her and so is the cuff
     st.alpha.arm_far_end_front = 1 - smooth(12, 30, armF);
+    const handsEnabled = !!handSurface && motion?.handArt !== false;
+    const drawnHands = handsEnabled ? motion?.hands ?? { original: 1, reach: 0, grip: 0, release: 0 } : { original: 1, reach: 0, grip: 0, release: 0 };
+    let handState;
+    if (handSurface) {
+      st.alpha.arm_far = handsEnabled ? 0 : 1;
+      st.alpha.__artSleeve = handsEnabled ? 1 : 0;
+      if(handsEnabled) st.alpha.arm_far_end_front = 0;
+      handState = handSurfaceState(handSurface,drawnHands);
+      st.__handRegister = handState.__handRegister; st.__handShape = handState.__handShape;
+      st.alpha.__hand_palm = st.alpha.__hand_fingers = handsEnabled ? 1 : 0;
+    }
     // she is turned toward us, so a foot behind its hip is also farther away: it rides a little higher,
     // which reads as the heel coming up at the push-off
     const behind = o.legs.map(l => Math.max(0, l[0] - l[2]) * .3 * walkK);
     st.legBack = { fn: hinge(PV.legBack, lerp(legA[0], -55, sitK), (-lift[0] * .9 - behind[0]) * (1 - sitK)) };
     st.legFront = { fn: hinge(PV.legFront, lerp(legA[1], -60, sitK), (-lift[1] * .9 - behind[1]) * (1 - sitK)) };
+    if (motion?.plant) {
+      // Compress the existing leg meshes under the skirt while preserving both drawn soles.
+      // There is no knee joint or replacement sitting art in this motion.
+      for (const [key, pivot] of [['legBack', PV.legBack], ['legFront', PV.legFront]]) {
+        const movingLeg = st[key].fn;
+        st[key] = { fn: (u, v, x, y) => {
+          const d = movingLeg(u, v, x, y);
+          return [d[0] * (1 - plantWeight), lerp(d[1], -st.body.ty * clamp((y - pivot[1]) / (256 - pivot[1]), 0, 1), plantWeight)];
+        } };
+      }
+    }
     st.tail = { a: tail - 10 * sitK };
     st.tailBend = { fn: u => [0, -tail * .5 * u * u] };
     // the head stays up while she leans forward for the ninja run
@@ -626,8 +696,46 @@ export async function createWhaleFigure(base = new URL('./', import.meta.url), o
       img = own; fg = fg1;
       rig.upload('faceFx@mix', faceCv2);
     }
-    rig.render(st);
-    if (opts.raster) { fo.setAttribute('href', canvas.toDataURL('image/png')); decoded = fo.decode ? fo.decode().catch(() => {}) : null; }
+    if (prop) {
+      st.propHold = { a: Number.isFinite(motion?.propAngle) ? motion.propAngle - st.armFar.a - st.waist.a - st.body.a : 0 };
+      st.alpha.__gripProp = gripPose?.visible && !(handsEnabled && opts.externalProp) ? 1 : 0;
+      const matrix = petG.getCTM();
+      const project = (x, y, parent = 'propHold') => {
+        const [px, py] = rig.point(parent, st, x, y);
+        return { x: matrix.a * px + matrix.c * py + matrix.e, y: matrix.b * px + matrix.d * py + matrix.f };
+      };
+      if (matrix) {
+        const [x, y, w, h] = prop.box;
+        gripFrame = { hand: project(...prop.hand, 'armFar'), propGrip: project(x+w*prop.grip[0],y+h*prop.grip[1]), quad: [project(x,y),project(x+w,y),project(x,y+h)],
+          ground: project(x+w*prop.ground[0],y+h*prop.ground[1]), visible: !!gripPose?.visible,
+          ...(motion ? { facing: o.facing, pose: { ...motion }, sit: sitK, angles: { armNear: armN, armFar: armF, waist: st.waist.a },
+            feet: [project(PV.legBack[0], 256, 'legBack'), project(PV.legFront[0], 256, 'legFront')] } : {}) };
+        if (handSurface) {
+          const projectedWrist = project(...handArt.wrist, 'armFar');
+          const wrist = project(...handArt.wrist,'__handShape'), contact = project(...handSurface.plan.sourceContact,'__handShape');
+          gripFrame.handArt = { enabled: handsEnabled, baseline: !handsEnabled, weights:{...drawnHands}, wrist:projectedWrist,
+            wristError:Math.hypot(wrist.x-projectedWrist.x,wrist.y-projectedWrist.y), contactError:Math.hypot(contact.x-gripFrame.hand.x,contact.y-gripFrame.hand.y),
+            renderMode:'continuous-mesh', closure:handState.closure, surfaceAlpha:handsEnabled?1:0,
+            layers:{palm:5.02,prop:5.05,fingers:5.2}, frontWeight:st.alpha.__hand_fingers, externalProp:handsEnabled && !!opts.externalProp };
+        }
+      }
+    }
+    const externalHands = handsEnabled && opts.externalProp;
+    rig.render(st,externalHands ? {hidden:{__hand_fingers:true}} : {});
+    if (opts.raster) {
+      const href = canvas.toDataURL('image/png');
+      fo.setAttribute('href', href); decoded = fo.decode ? fo.decode().catch(() => {}) : null;
+      if (opts.handDetail && gripFrame) {
+        const m = petG.getCTM();
+        gripFrame.detail = { href, view: VIEW, transform: petG.getAttribute('transform'), matrix:[m.a,m.b,m.c,m.d,m.e,m.f] };
+        if(externalHands) {
+          // Same frame, same mesh and transforms; only the complementary finger
+          // surface is drawn above the host's single persistent prop layer.
+          rig.render(st,{hidden:Object.fromEntries(parts.filter(p=>p.id!=='__hand_fingers').map(p=>[p.id,true]))});
+          gripFrame.detail.frontHref = canvas.toDataURL('image/png');
+        }
+      }
+    }
     if (fade && st.mix >= 1) endFade();
     drawFx(fc, t);
   }
@@ -677,6 +785,7 @@ export async function createWhaleFigure(base = new URL('./', import.meta.url), o
 
   return {
     draw,
+    get gripFrame() { return gripFrame; },
     groupTilt,
     /** The gestures she draws herself, from the frame's `gesture` (the kit leaves them off the body). */
     gestures: ['nod', 'shake', 'wave', 'bow'],

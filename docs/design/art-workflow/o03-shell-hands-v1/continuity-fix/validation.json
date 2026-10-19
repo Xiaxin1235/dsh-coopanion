@@ -1,0 +1,218 @@
+{
+  "stage": "hand-continuity-correction-v1",
+  "status": "local-workbench-regressions-passed-user-visual-review-separate",
+  "timestamp": "2026-10-19T06:15:59.807896+00:00",
+  "sourceCommit": "7d55786d096552dea62ef974237d942ab03c3b2f",
+  "worktreeDirty": true,
+  "environment": {
+    "node": "24.21.0",
+    "npm": "11.19.1",
+    "packageVersion": "0.4.13",
+    "liveBrowser": "Codex IAB; native app version not exposed by browser tools",
+    "regressionBrowser": "Playwright Chromium 156.0.8078.4 revision 1248",
+    "os": "macOS 15.8.1",
+    "arch": "arm64",
+    "preview": "http://127.0.0.1:4189/"
+  },
+  "checks": {
+    "unitFocused": {
+      "passed": 26,
+      "handArt": 9,
+      "motion": 9,
+      "prop": 8
+    },
+    "npmTest": {
+      "passed": true,
+      "vitestPassed": 252,
+      "vitestSkipped": 1,
+      "additionalNodePassed": 12,
+      "sandboxAttempt": "Initial restricted invocation failed a diagnostic child-process test; the complete invocation outside that sandbox passed. No unrelated diagnostic implementation changed."
+    },
+    "typecheck": "passed",
+    "build": "passed",
+    "testInboxUi": {
+      "passed": true,
+      "nodeCases": 42,
+      "mainInboxScript": "passed"
+    },
+    "resourceIdentity": "passed check-hand-art.mjs",
+    "sceneSnapshot": "passed prepare-model.mjs --check",
+    "diffCheck": "passed",
+    "pixelRegression": {
+      "passed": true,
+      "minimumOpaqueWristAlpha": 254,
+      "required": 248,
+      "phaseMinimums": {
+        "reach": 254,
+        "grasp": 254,
+        "release": 254,
+        "rise": 254
+      },
+      "cuffChangedPixels": 0,
+      "ownerChangedPixels": 0,
+      "handChangedPixels": 34683,
+      "frontVisiblePixels": 1325,
+      "samples": [
+        {
+          "fraction": 0,
+          "alpha": 254,
+          "weights": {
+            "original": 0,
+            "reach": 1,
+            "grip": 0,
+            "release": 0
+          }
+        },
+        {
+          "fraction": 0.25,
+          "alpha": 254,
+          "weights": {
+            "original": 0,
+            "reach": 0.84375,
+            "grip": 0.15625,
+            "release": 0
+          }
+        },
+        {
+          "fraction": 0.5,
+          "alpha": 254,
+          "weights": {
+            "original": 0,
+            "reach": 0.5,
+            "grip": 0.5,
+            "release": 0
+          }
+        },
+        {
+          "fraction": 0.75,
+          "alpha": 254,
+          "weights": {
+            "original": 0,
+            "reach": 0.15625,
+            "grip": 0.84375,
+            "release": 0
+          }
+        },
+        {
+          "fraction": 1,
+          "alpha": 254,
+          "weights": {
+            "original": 0,
+            "reach": 0,
+            "grip": 1,
+            "release": 0
+          }
+        }
+      ]
+    },
+    "liveLoop": {
+      "passed": true,
+      "checks": 44,
+      "frames": 4072,
+      "maxOwnerSwitchJump": 0.49343290190054817,
+      "badSurfaceFrames": 0,
+      "slowSamples": {
+        "paused": {
+          "suspended": "grasp",
+          "owner": "ground",
+          "speed": 0.25,
+          "closure": 0.24433904693369865,
+          "surfaceAlpha": 1
+        },
+        "stepped": {
+          "suspended": "grasp",
+          "owner": "ground",
+          "speed": 0.25,
+          "closure": 0.34883928084999677,
+          "surfaceAlpha": 1
+        },
+        "releasing": {
+          "suspended": "release",
+          "owner": "hand",
+          "speed": 0.25,
+          "closure": 0.7530599431852227,
+          "surfaceAlpha": 1
+        }
+      }
+    },
+    "video": "VP9 1280x720 30fps, 12.633s; decoded and played in IAB"
+  },
+  "artwork": {
+    "newGeneratedPngs": 0,
+    "threeCandidatePngsUnchanged": true,
+    "currentMotionBasis": "grip.png; reach/release retained as candidates",
+    "originalModelTexturesAndNoticeUnchanged": true,
+    "originalShellPngUnchanged": true
+  },
+  "limits": [
+    "Specified whale/DeepSeek/180px and shell/40px workbench only.",
+    "Geometry, pixel regression and inspected actual frames are distinct evidence; user visual acceptance remains separate.",
+    "No native desktop, physical multi-display, package publication, or complete finger/elbow rig acceptance claimed."
+  ],
+  "files": {
+    "docs/design/art-workflow/o03-shell-hands-v1/composition.js": "6887255cfcc4820cc6b46bcd5266259d68de220b7241eaee0f25f3d0334b91e8",
+    "docs/design/art-workflow/o03-shell-hands-v1/continuity-fix/after-pixels.json": "60c2c2e8883be5da282893d4c52b8f1f41be4629be8985883a786fa632d10342",
+    "docs/design/art-workflow/o03-shell-hands-v1/continuity-fix/before-pixels.jpg": "9f54cf7295a3051f428cf21f6d8e66db4dbebf9489c8eb4eac3d9af7940025cf",
+    "docs/design/art-workflow/o03-shell-hands-v1/continuity-fix/before-pixels.json": "a61b7d3d9843fa22f6a2ba3d457e662e92ee1743b71336ca2fefae836f68aaa3",
+    "docs/design/art-workflow/o03-shell-hands-v1/continuity-fix/before-test.js": "95302b405db43a21e0dbf4889377b74a7e7fe54517e26bd1df064ebd4bf589ab",
+    "docs/design/art-workflow/o03-shell-hands-v1/continuity-fix/browser-qa-final.json": "97b8b944717667f3ae324d1895da00e70c9069593518f809bb16cf684ba02951",
+    "docs/design/art-workflow/o03-shell-hands-v1/continuity-fix/browser-qa.json": "dd927d73024d788e12dd5f4ebbef6a66ff851ba99e7be61aeee2286cb1b8a254",
+    "docs/design/art-workflow/o03-shell-hands-v1/continuity-fix/capture.json": "6f66fee1910236838b8f8dc5cecb153d594a06e6cf5f6d801c05f98b40749073",
+    "docs/design/art-workflow/o03-shell-hands-v1/continuity-fix/grasp.jpg": "f6573a88328a3624798138b1c86a1217972ce5ca957a581b03bc22610c08716d",
+    "docs/design/art-workflow/o03-shell-hands-v1/continuity-fix/held.jpg": "c68942489f59466c1e476c700b59a062896942715f35f127f9382eeb9c9d2928",
+    "docs/design/art-workflow/o03-shell-hands-v1/continuity-fix/pixels-passed.jpg": "89a5f6a87c355b810152b54801b1d6882f3b65568824f6fbcfc756107efe42ef",
+    "docs/design/art-workflow/o03-shell-hands-v1/continuity-fix/qa-slow-timeout.json": "c2c63a2860548d0cdb9e3798032a986f5b99ca895cedd244fb5b3799803e4fa2",
+    "docs/design/art-workflow/o03-shell-hands-v1/continuity-fix/reach.jpg": "b6215da151ac7a40f5b479f6941b325cecb6469791f1219b0bfceebfde2760ff",
+    "docs/design/art-workflow/o03-shell-hands-v1/continuity-fix/release.jpg": "2764d0b4413be400bbfa0f4e175c768b3c5ee5215195b54519b15acf434e3e77",
+    "docs/design/art-workflow/o03-shell-hands-v1/continuity-fix/retract.jpg": "dbe233c7a872f11ac2fb313fc77645e51697bcf19e99b71edd432a2e6c94a65a",
+    "docs/design/art-workflow/o03-shell-hands-v1/continuity-fix/rise.jpg": "c1b4fd623e3a0fc4e65ee23d35f67cf4968ef9f6607dd0f92c46986111672249",
+    "docs/design/art-workflow/o03-shell-hands-v1/continuity-fix/shell-loop-fixed.webm": "4d7e1464b9976a0827e9d4e0a46d8503762ace0f6f3c0ed68efa5d60a29c5fb0",
+    "docs/design/art-workflow/o03-shell-hands-v1/continuity-fix/video-playback.json": "95e3a83b0d666f2ab313afd68dd88fb2ed2efb735ebb5c21a65de6266ee5985b",
+    "docs/design/art-workflow/o03-shell-hands-v1/continuity-fix/workbench-ready.jpg": "5af944259f1c0eed867da3fca36ade61e55a38fbc6de7ebb4e0ff2d4b231a64d",
+    "docs/design/art-workflow/o03-shell-hands-v1/continuity.js": "654160e026aa5fa62a0cc43ebfba6eeaca0f8a8394dff5e2f97cf9d2e9404689",
+    "docs/design/art-workflow/o03-shell-hands-v1/figure.js": "16d304e0cb356aaadfcab1a839222436c934f425c50d0bce7e1d3fef145bbeff",
+    "docs/design/art-workflow/o03-shell-hands-v1/scene.js": "68f7d3edc1340fc80706e233778c46486c317cecdcd59216adf626357757e885",
+    "npm-shrinkwrap.json": "e07a7fbcb45dbec5dff78a37a42d293f7ee99fb95001b1f2991ce8b5b3c13d78",
+    "package.json": "4da031d57a411a30bc0879bff038048a96479d33c79cc06fc3e3fdf692c2c145",
+    "tests/hand-art.test.js": "d0c6cf35b38427d9e20a20cc3dab017c51ca2c7a99d33153fa1099abec03ca1f",
+    "tests/prop-interaction.test.js": "efc3232678107075ae31b7888e00859e210972543071fe670fbe8ea4e4654f4f",
+    "tests/prop-motion.test.js": "2a57e75df012a3be8df974bf5b0ab9a98796612788aa17a3ec7ceeb7f9e44c85",
+    "web/prop-interaction.js": "676ddff8d1c89604c9abcb85c147371d0a2574727dddf17c630f0b7d11c4c3da",
+    "web/prop-motion.js": "630785f93911f7987a911b878f342322fb8c2aef60b4c09380f0956ed314ce57",
+    "web/props/shell/hands/asset.json": "489b3619c85ef34ec430a1c217adec4fcb8f10ebfd116a635d462352e4de26b4",
+    "web/props/shell/hands/grip.png": "5770450595803b4586fb8574e5135148b522b116e7f6d3de25f6e7643f91b930",
+    "web/props/shell/hands/reach.png": "880a8009db8ff6d756b2c07a8dc1e5fa3d93075d47ebe1a189494a252364cd02",
+    "web/props/shell/hands/release.png": "275a3a35f22fba018ddffd652c191ce04eec34e162db589426851a8bcc313561",
+    "web/props/shell/motion-with-hands.json": "9a0ab586e9c250e1ea26989635581823892628bb10f3c961873fb526c0fbf377",
+    "web/props/shell/shell.png": "542b49cffbec43e41b4ca75a0ae184302b1e384b27539ff957806c71d28b910d",
+    "web/upstream/THIRD_PARTY_NOTICES.md": "d58332b6c38ad3b3aec4b49fc3e30e796c2e1f5f10ecc7e152ae51c3d01ebf3a",
+    "web/upstream/whale/figure.js": "26b6a5f27147023d5fe9dc7c6b911fb893421d87429c3eb3afc5fc71694f5157",
+    "web/upstream/whale/hand-art.js": "d8ff703fc656d90faa86441d116daaa9b26b6bf38aa71e92cc4018668849d119",
+    "web/upstream/whale/model.json": "3c3e2138572da144bac96e62573d420f45da181bf29aacfbc8246e974e655890",
+    "web/upstream/whale/tex/ahoge.png": "f8db95998cbae5ca04caf492262372d233a4392278a2fcdaea944038f259b5d9",
+    "web/upstream/whale/tex/arm_far.png": "bb191999f4457fcf356f908902a2b00fba513b8862dd78ea549867496dfe3393",
+    "web/upstream/whale/tex/arm_far_end_front.png": "05ed4e4c0e842b5e6f913663473f9d1275b83c4c62ecd170c787170f208f44f6",
+    "web/upstream/whale/tex/arm_near.png": "b1b4e73c81c46058cd69dc3d288d4593989c0bf460924ca619f225d4333f0a6f",
+    "web/upstream/whale/tex/bangs.png": "d4689197d12c80568146c9e0d66b6a09284cdbe98b7c9aa0f34137972266888a",
+    "web/upstream/whale/tex/bow.png": "bacfe5d99df4766d8708dc0f41098eb2fa6ef9b7ade6224c22a8cf9a76c1740c",
+    "web/upstream/whale/tex/brows.png": "fb75a81ee60fcb6cdb0af9ce437533f76912c2c98d599ad79d79ecd309645f4b",
+    "web/upstream/whale/tex/eye_creases.png": "6d0070912b461129c8c29cef1e12a79aebce04421066d8ccc597913ba464e4bb",
+    "web/upstream/whale/tex/face.png": "cbe64591328d46059fd35b1fddb086be90c9d6964f4d5ce77eed1c9a69169167",
+    "web/upstream/whale/tex/fin_far.png": "e90626ef8946e55c8460d3625db199d25be656df5c0d285f89b4b12f9f3c3a91",
+    "web/upstream/whale/tex/fin_near.png": "fd49dc1309a0f4e8f884a853c9c392e2eeb7e31e987d79f81d8c5c706d2e67e4",
+    "web/upstream/whale/tex/hair_back.png": "c7bba3ef7988dd6b75053551803e33fab4c51ee4a470209c0b956192a334c783",
+    "web/upstream/whale/tex/hair_back_curl.png": "ab23c2236760dc7c26f951a9e428e92f5ff06420e3c9e420e44e1bb7483d46a4",
+    "web/upstream/whale/tex/hair_front_left.png": "862d21008dfe58fc34278a61a1557e19af09207f8e0fd044fe47413a29e26399",
+    "web/upstream/whale/tex/hair_front_right.png": "e2cf29230b15d465db0b96691caece779cd8c7961616a65a396aa63547524141",
+    "web/upstream/whale/tex/headdress.png": "c8831c5ae6c6385fd0cddc2ed3d6e827933a332e15c59c7e8749b1fddfb4c259",
+    "web/upstream/whale/tex/leg_back.png": "3ae6a35cc134e7237ca8c7aacfea53dbe4c97922c070fd0782e003d48060e8fb",
+    "web/upstream/whale/tex/leg_front.png": "047c63de3b3e12ea63d7bf9dc2775d98818518fc966644fbedb5e59eb3934b2c",
+    "web/upstream/whale/tex/sidelocks.png": "d645fff70dc582a2338a695c35dbe15168f2ad52cfa55706993d55547f3d97f9",
+    "web/upstream/whale/tex/skirt.png": "b7e8fdd8f9315698d2a20660c977badc3b663199a2328ff6eedc8ef5e833803e",
+    "web/upstream/whale/tex/skirt_sit.png": "1106dc9ac6c9792869936c1a67f56f388e73949efbc593f9a4f68f43210b442b",
+    "web/upstream/whale/tex/tail.png": "6afb085507fe2e793438de1b9434fd19dc5d8bea26e77cf0362a7ef6dee71e22",
+    "web/upstream/whale/tex/torso_up.png": "2064e48edc4b2dc1bbe7c24b3c8d05f3638d040e87c530d164ae8b0987af8886",
+    "web/upstream/whale/tex/waist_bow_front.png": "b652256abd6217b7982e344804df2d8125de7b64aef4d07340628d08a067c976",
+    "web/upstream/whale/tex/waist_bow_sit_front.png": "904ff638fa2054782386ffdcb08aacc123d98152ddefb0c82c6675cb1c735823"
+  }
+}

@@ -11,7 +11,7 @@ License: AGPL-3.0-or-later for code and model data; whale textures and thumbnail
 Imported unchanged:
 
 - `kit/rig.js`: shared movement, gestures, expressions, particles, WebGL mesh rendering.
-- `whale/`: original figure entry, model, all eight schemes and assets.
+- `whale/`: original model, all eight schemes and assets. The figure entry has the opt-in adaptation recorded below.
 - `figure-frame.js`: API 2 factory and sandbox message protocol.
 - `sound.js`: original Web Audio synthesis and pack sound support.
 
@@ -34,3 +34,19 @@ Harness refinements, 2026-10-10:
 
 - `kit/body.js` adds optional persistent `set({ expression })` for Harness task faces, without repeating expression sounds or bounces. All other original body behavior is retained.
 - Final replies retain complete text and per-result read identity. Bounded previews use the original typewriter, punctuation and mouth pulses; a stable full-text reader and explicit session focus prevent concurrent tasks from interrupting reading or redirecting chat.
+
+Harness opt-in prop binding, 2026-10-19:
+
+- `whale/figure.js` accepts a `gripProp` descriptor and a `gripPose()` callback supplied by an explicit body factory. The prop uses the existing `armFar` deformer, UV mapping and draw order between the body and front cuff. `gripFrame` returns projected hand/prop anchors and the prop quad from the same rig states and SVG transform used for drawing.
+- No default factory supplies these options; existing API 2 character motion, appearance and public protocol remain unchanged. The isolated O03 scene supplies its own commands, ownership strategy and visual evidence. This extension is not a declaration of general two-dimensional motion or native desktop contact acceptance.
+- Shell artwork and authoring provenance are separate from the original whale assets. Original model, texture and notice bytes are preserved.
+
+Harness opt-in authored motion, 2026-10-19:
+
+- `whale/figure.js` accepts an explicit `motionPose()` callback for bounded waist/drop/arm/look controls, gradual foot planting and prop-angle compensation. Existing leg meshes compress while their soles stay planted; this does not add knee, elbow or finger joints. A child deformer at the same hand anchor preserves grip while changing the shell's orientation.
+- `gripFrame` adds pose, actual facing, arm angles and foot projections only in this mode. The O03 motion lab supplies its own contact-gated controller and clock. Default factories, original model/textures and API 2 protocol are unchanged; first-round prop binding retains its original behavior.
+
+Harness opt-in hand artwork, 2026-10-19:
+
+- New local helper `whale/hand-art.js` maps original generated pixels to shared wrist/contact anchors and samples reach/grip/release pose weights from the authored motion clock. `whale/figure.js` accepts optional `handArt`; a cropped sleeve and one continuously deformed grip texture replace the hand. Pose weights drive the 24×32 mesh, while surface opacity and cuff geometry stay fixed. Complementary source-pixel masks separate palm and front fingertips without duplicate outlines. Scheme changes retain the optional hand textures.
+- `gripFrame.handArt` reports pose weights, mesh closure, surface opacity, projected wrist/contact registration and ordering. Optional `handDetail` reuses the same raster frame; the isolated workbench also requests `externalProp` and composites decoded body, prop and front-finger rasters atomically with a shared layer order across ownership changes. Default character factories supply none of these options. Original model, textures and rights notices remain unchanged. Generated derivative hand images and prompts are separate in `web/props/shell/hands/`.

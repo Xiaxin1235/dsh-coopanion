@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>贝壳拿放 · 动作工作台</title><link rel="stylesheet" href="./style.css"><body>
+<header><a class="brand" href="./index.html">COOPANION <small>MOTION STUDY / 01</small></a><a href="../o03-shell-interaction-v1/index.html">上一轮 · 物件交互 ↗</a></header>
+<main><div class="heading"><div><p class="eyebrow">O03 · 一枚贝壳，一段完整动作</p><h1>先看见，再伸手。</h1><p class="intro">走近站稳，低头俯身，接触后拿起。带到另一处，放低、松手，再收手起身。</p></div><span class="badge">现有分层模型 · 动作试作</span></div>
+<section class="studio"><div class="viewport"><div class="view-head"><span id="current-label">正在准备</span><div><button data-theme="light" aria-pressed="false">浅色</button><button data-theme="dark" aria-pressed="true">深色</button></div></div>
+<div id="stage" class="stage dark"><span class="zone">SHELL STUDY</span><div class="floor"></div><div id="target" class="target"><span>放置位置</span></div>
+<svg id="ground" class="ground" aria-hidden="true"><g id="ground-transform"><svg id="crop" width="40" height="33" overflow="hidden"><image href="/web/props/shell/shell.png" width="1254" height="1254"/></svg></g></svg>
+<div id="body-layer"></div><button id="shell-hit" class="shell-hit" aria-label="贝壳，点击拿起或左右拖动摆放"></button>
+<svg class="markers" aria-hidden="true"><circle id="hand-dot" r="2.5"/><circle id="grip-dot" r="2.5"/></svg>
+<div class="stage-note"><span id="owner-label">贝壳在地面</span><span>角色 180px / 贝壳 40px</span></div></div>
+<div class="phase-strip"><span data-group="approach">01 接近站稳</span><span data-group="pickup">02 看向与拾取</span><span data-group="carry">03 起身携带</span><span data-group="drop">04 放下与收势</span></div>
+<div class="transport"><button id="loop" class="primary" disabled>完整拿放</button><button id="pickup" disabled>拿起</button><button id="drop" disabled>带走并放下</button><button id="pause" disabled>暂停</button><button id="resume" disabled>继续</button><button id="step" disabled>前进一帧</button><button id="reset" disabled>重置</button></div>
+<div class="settings"><label>播放速度 <select id="speed"><option value="1">1×</option><option value="0.5">0.5×</option><option value="0.25">0.25×</option></select></label><label>放置位置 <input id="destination" type="range" min="25" max="82" value="78"></label><label><input id="anchors" type="checkbox">接触点</label></div>
+<p id="status" role="status">正在加载现有模型和贝壳…</p></div>
+<aside><p class="eyebrow">KEY POSES</p><h2>先检查姿势，再检查衔接。</h2><p>点选姿势可独立试摆。姿势检查不计拿放次数，重置后回到交互。</p><div class="pose-list">
+<button data-pose="stand"><b>01</b><span>站稳准备<small>脚底固定，手臂放松</small></span></button>
+<button data-pose="look"><b>02</b><span>视线朝下<small>先看向贝壳，身体随后行动</small></span></button>
+<button data-pose="contact"><b>03</b><span>俯身接触<small>轻微下沉，伸手到壳面</small></span></button>
+<button data-pose="contactHeld"><b>04</b><span>接触后持有<small>相同接触姿势，物件转移到手部</small></span></button>
+<button data-pose="carry"><b>05</b><span>持物站立<small>身体起身，贝壳随手抬起</small></span></button>
+<button data-pose="retract"><b>06</b><span>松手后收手<small>物件留地，手先离开再起身</small></span></button></div>
+<div class="limits"><strong>本轮美术观察</strong><p>沿用现有手臂、腿部与袖口。屈膝以腿部网格压缩试作；握紧与张手缺少独立手型，先验证触点、停顿和遮挡。</p></div></aside></section>
+<section class="verification"><div><p class="eyebrow">REPEATABLE LOOP</p><h2>让动作经得起重复操作。</h2><p>三轮真实拿放，左右落点、途中打断与续接。逐帧检查接触、脚底与拥有权。</p></div><button id="qa-run" disabled>运行闭环验收</button><output id="qa-status">等待模型就绪</output></section>
+<details class="debug"><summary>动作时序与技术记录</summary><dl><div><dt>阶段</dt><dd id="phase">—</dd></div><div><dt>拿起 / 放下</dt><dd id="counts">0 / 0</dd></div><div><dt>接触 / 离地</dt><dd id="distance">—</dd></div><div><dt>手部绑定误差</dt><dd id="binding">—</dd></div></dl><ol id="trace"></ol><pre id="qa-report">尚未运行</pre></details>
+<footer>单屏水平动作试作 · 不启用主产品自主生活 · 美术原图保留 · 视觉合理性由样片和实际操作共同评审</footer></main><script type="module" src="./scene.js"></script></body></html>

@@ -1,0 +1,338 @@
+{
+  "resource": "O03",
+  "stage": "hand-art-and-occlusion-v1",
+  "status": "local-browser-art-and-motion-validated",
+  "sourceCommit": "7d55786d096552dea62ef974237d942ab03c3b2f",
+  "worktreeDirty": true,
+  "date": "2026-10-19",
+  "timezone": "Asia/Shanghai",
+  "environment": {
+    "node": "24.21.0",
+    "npm": "11.19.1",
+    "os": "macOS 15.8.1 arm64",
+    "packageVersion": "0.4.13",
+    "liveBrowser": "Codex IAB, API 2 opaque-origin sandbox",
+    "regressionBrowser": "repository Playwright Chromium in .cache/art-resource-playwright",
+    "preview": "http://127.0.0.1:4189/"
+  },
+  "artwork": {
+    "generator": "built-in image_gen",
+    "newPngs": 3,
+    "canvas": "1254x1254 RGBA each",
+    "copiedFromToolOutputWithoutPixelChanges": true,
+    "originalWhaleModelTexturesAndNoticeBytesUnchanged": true,
+    "originalShellPixelsUnchanged": true,
+    "graspPocketAlpha": 0,
+    "rimGrip": {
+      "normalized": [
+        0.5,
+        0.05
+      ],
+      "pixel": [
+        627,
+        276
+      ],
+      "alpha": 254
+    },
+    "sourcePrompts": "Full exact prompts retained in asset.json and prompt-*.txt"
+  },
+  "checks": {
+    "newHandTests": 7,
+    "motionTests": 9,
+    "originalPropTests": 8,
+    "npmTest": {
+      "vitestPassed": 250,
+      "vitestSkipped": 1,
+      "additionalNodePassed": 12
+    },
+    "typecheck": "passed",
+    "build": "passed",
+    "testInboxUi": "passed-complete-command",
+    "liveHandLoop": {
+      "checks": 39,
+      "passed": true,
+      "frames": 2121,
+      "maxBindingError": 0,
+      "maxPlantedFootError": 1.52587890625e-05,
+      "maxOwnerSwitchJump": 0.49337186674432737,
+      "maxStationaryHandStep": 0.7617932116311618,
+      "maxSit": 0,
+      "ownershipMismatches": 0,
+      "maxWristError": 0,
+      "maxArtContactError": 0,
+      "maxCoverageError": 0,
+      "missingHandFrames": 0,
+      "badLayerFrames": 0
+    },
+    "baselineComparison": "passed-without-state-change",
+    "keyPoses": 6,
+    "manualPointerDrag": "passed",
+    "quarterSpeedKeyboardPickup": "passed",
+    "previousMotionScene": {
+      "passed": true,
+      "checks": 30
+    },
+    "previousPropScene": {
+      "passed": true,
+      "checks": 13
+    },
+    "videoPlayback": "passed",
+    "previewScopeAndMime": "passed",
+    "modelSnapshot": "matches-source",
+    "priorPngInspectorOutputUnchanged": true
+  },
+  "limits": [
+    "Fixed DeepSeek scheme, role size 180px and shell width 40px in a horizontal browser scene.",
+    "Three raster hand poses blend on one wrist; this is not an independent finger, elbow or knee rig.",
+    "Automated gates and projected anchors do not establish subjective visual acceptance.",
+    "No native desktop, physical multi-display, arbitrary two-dimensional navigation, product autonomy, install, commit or release acceptance."
+  ],
+  "executionNotes": [
+    "Complete regressions used the pinned toolchain and temporary test profiles outside the sandbox that prevents process observation and Chromium launch.",
+    "UI input, actual-frame detail, comparisons and capture used cua_repl. QA issues public commands and consumes real body frames; arrival/contact are not injected.",
+    "Final acceptance is browser-qa-final.json. first/before-rim/rim reports preserve intermediate observations rather than final acceptance.",
+    "Original artwork and earlier evidence bytes remain intact; this manifest binds the current dirty source snapshot."
+  ],
+  "files": {
+    "THIRD_PARTY_NOTICES.md": {
+      "sha256": "8ca09a19b6e3aba59d6130ddfea6f4e2fa3f2b753dd4e51c691e3b70cc8c1e10",
+      "bytes": 5197
+    },
+    "docs/design/art-workflow/inspect-art-asset.mjs": {
+      "sha256": "68c2baba618536fc0367d7d3c55aa6edba2a051e34000bfdf3b4843baf7d7d27",
+      "bytes": 4722
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/README.md": {
+      "sha256": "e06a80a945f9cc388c36fd615cd8da596b1b5d455e15af5f122333a5e9db5ee1",
+      "bytes": 6100
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/browser-qa-before-rim.json": {
+      "sha256": "20f9ab8b623a7ad23656c329bd23b9ebd95a784b7a2cc05dcc98270af2b26fc9",
+      "bytes": 192658
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/browser-qa-final.json": {
+      "sha256": "9ccae66d58f0708e381efaae57d5b1f933bbfff698dfa7a3d7366f006621bc4c",
+      "bytes": 190211
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/browser-qa-first.json": {
+      "sha256": "ea322dbfe0ff358022472747bb3bd565f413bc4b5cad6f8bf855ffc03c09c90d",
+      "bytes": 181525
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/browser-qa-rim.json": {
+      "sha256": "edf1b9a391e5ce8ea33a58d9b64f91b9382e4da975fcfd80efaa45330bbb3a08",
+      "bytes": 192747
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/capture.json": {
+      "sha256": "777b744529df00462acbe9149de9d01c6c75e77ee2c1c467b242ec57fab9df60",
+      "bytes": 79895
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/comparison.json": {
+      "sha256": "e2fdc1b9d4383b4a7c2bb60980a1db06ff77f142c45a8c5d9179f4f6b072b2e9",
+      "bytes": 4707
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/figure.js": {
+      "sha256": "cc53e1910dc08b9bf220b9fffc224fd85af98a4ea321ccbefed85e32ca2fc35c",
+      "bytes": 8926
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/hand-inspection.json": {
+      "sha256": "7eeccd8372557b84759af8ebb3fc06c60ce511f834dc8565c7078efc9359d3cb",
+      "bytes": 1888
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/index.html": {
+      "sha256": "fb8efa8e8c105620a6bbf8f35185cf6450dfdea3c314e56a96f201fff7d3ecc7",
+      "bytes": 5776
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/inspection-grip.json": {
+      "sha256": "5a2bbd0dfe708ecfe9bd95d358a9dace3a595ebe66352122532f2971f9f4af91",
+      "bytes": 1414
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/inspection-reach.json": {
+      "sha256": "a7b47fc62a0e30a2731963a7b2b861873df6e3674a189603398b7458d817ef2f",
+      "bytes": 1414
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/inspection-release.json": {
+      "sha256": "0100a4aa6fc99580542a4d406708b22408c109993e40400950f39bad03e8dcf2",
+      "bytes": 1417
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/key-poses.json": {
+      "sha256": "8226731a9d00164e91876796fdf9181434a23cdc8ce6693acccf04fbcefa40ca",
+      "bytes": 14056
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/keyboard-slow-pickup.json": {
+      "sha256": "5c542db4584ca7951a26010bbaa12fd42f974f21769e3e820d81bcb2fdff34f0",
+      "bytes": 2392
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/pointer-drag.json": {
+      "sha256": "26fd066d5f1613416fc04b7f9231abb781061b395b31b69bc68f6c474b9658f4",
+      "bytes": 4661
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/prepare-model.mjs": {
+      "sha256": "6fb71725e505b088b70de24fcd746c38c4c22a1299b7494b07ffa32df2875e9e",
+      "bytes": 839
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/previous-motion-regression.json": {
+      "sha256": "1204375890ffe59a37b07ceb63adc537d11ac4f36cf377ea85477fc17e0d9866",
+      "bytes": 119753
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/previous-prop-regression.json": {
+      "sha256": "57442880883f5f8280ee94e043bf6f6572ae9e994d96eeb0a037d0bb7f2bd34a",
+      "bytes": 7694
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/prompt-grip.txt": {
+      "sha256": "373beea21c1aa3e5b3cf7adb42309aa79d02af348b2612de2434f3125f619a71",
+      "bytes": 1422
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/prompt-reach.txt": {
+      "sha256": "1dbb8e19d8d74b056d52df8b5f6abbcee7f53f41bfb8b2fbd5ddb984cf81b475",
+      "bytes": 1290
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/prompt-release.txt": {
+      "sha256": "932901604f10d3ab07df161b35835bc8d9e9083b718f896daea3872d01a6e166",
+      "bytes": 1278
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/scene-model.json": {
+      "sha256": "542ae9eece080a49a82619e0ae99f8d8bd6e328ec2f7c47d6ccde82c37bd8c77",
+      "bytes": 12116
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/scene.js": {
+      "sha256": "eae944aa101800d6dc59e6d39f0cbd2f62d2a5c8fb96661767f220e131f24253",
+      "bytes": 18655
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/screenshots/baseline-carry.jpg": {
+      "sha256": "12105fab5f4f08fcc4a9478f75df31e4f93c409a229c6914b6d9ea06a88edc01",
+      "bytes": 56498
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/screenshots/held-final.jpg": {
+      "sha256": "9bc6bb4b6dbd5bb60a9dca798021cf0afed7728debe6ca53c55f90d7ee1546b7",
+      "bytes": 57017
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/screenshots/new-carry.jpg": {
+      "sha256": "a2fd09871ce4adf3fd9a08534370c87f8a13d718392dfce2a032a4761ae182a1",
+      "bytes": 56264
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/screenshots/pose-carry.jpg": {
+      "sha256": "7c899398841bd0f57425d4a3cf26f3c5189267907c2e39679575f9228b51633f",
+      "bytes": 56482
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/screenshots/pose-contact.jpg": {
+      "sha256": "35c7c22d7e34d892f9e6ed0b27e298f6054bf971c43ccec1a420acd211df895f",
+      "bytes": 55874
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/screenshots/pose-contactHeld.jpg": {
+      "sha256": "b3ff4e9ab38d61fae4e470b51859c239d8bf01b60a36c4dad9af65e68f119d63",
+      "bytes": 55625
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/screenshots/pose-look.jpg": {
+      "sha256": "59599123dbc0757a618dbb50363342e60fef6338a0d0dafdd2a7d01951e2cf07",
+      "bytes": 56394
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/screenshots/pose-retract.jpg": {
+      "sha256": "32c61182b026e00b390b0ee6638fe28c00969e6be4977e68692e2bc8ff3db7dc",
+      "bytes": 55937
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/screenshots/pose-stand.jpg": {
+      "sha256": "37230421c99725e9c205ad60c1e190d39767ebb4d78bc79eae825fc8603be7eb",
+      "bytes": 56597
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/screenshots/qa-passed.jpg": {
+      "sha256": "0eb2588dcbe5a59c9aee617ea8203733409cb14e643ca23ada2bd8e93b703300",
+      "bytes": 54258
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/shell-hands-loop.webm": {
+      "sha256": "77c13b4be845325eb7edf702641f2b2992eea2a543e8649091e4ff7a8b371196",
+      "bytes": 990030
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/style.css": {
+      "sha256": "970abc6e35298cf7d5ad82e53c1f235662310b8a68401761f7828a4befbc5463",
+      "bytes": 7043
+    },
+    "docs/design/art-workflow/o03-shell-hands-v1/video-playback.json": {
+      "sha256": "d8f5c152775f982879e4955311d120b05103284906060949fed8e7766a3799f7",
+      "bytes": 138
+    },
+    "docs/design/art-workflow/preview-art-workflow.mjs": {
+      "sha256": "3ea0fa252a331528a9f47f557b75b4a81bcd2c4747aa92bf8477e5392f160911",
+      "bytes": 3296
+    },
+    "scripts/check-hand-art.mjs": {
+      "sha256": "ca4c722ed5665f91615d306e78f89792468dd465aec21a65a5a2fe7c748bc5ad",
+      "bytes": 3594
+    },
+    "scripts/lib/rgba-png.mjs": {
+      "sha256": "a866d153103160cad0dd44e3a6807af77c8068d64ed6a4d67bb10f8ba16ab3d6",
+      "bytes": 2082
+    },
+    "tests/hand-art.test.js": {
+      "sha256": "53c30c25d13abdc16624af6e87602bfbd8cb8110a426b5d0f238239e1736c44c",
+      "bytes": 5673
+    },
+    "tests/prop-interaction.test.js": {
+      "sha256": "efc3232678107075ae31b7888e00859e210972543071fe670fbe8ea4e4654f4f",
+      "bytes": 5176
+    },
+    "tests/prop-motion.test.js": {
+      "sha256": "2a57e75df012a3be8df974bf5b0ab9a98796612788aa17a3ec7ceeb7f9e44c85",
+      "bytes": 6037
+    },
+    "web/prop-motion.js": {
+      "sha256": "630785f93911f7987a911b878f342322fb8c2aef60b4c09380f0956ed314ce57",
+      "bytes": 8247
+    },
+    "web/props/shell/asset.json": {
+      "sha256": "db1cd6cc6dc21dd178fa95b8a49c0bed503755b06f4dee8a5fed52da139a2a65",
+      "bytes": 828
+    },
+    "web/props/shell/hands/README.md": {
+      "sha256": "bc4802151ded99d2581a0026915003035e7bfe1e26f99c2c4294849b5f82e4f0",
+      "bytes": 1048
+    },
+    "web/props/shell/hands/asset.json": {
+      "sha256": "489b3619c85ef34ec430a1c217adec4fcb8f10ebfd116a635d462352e4de26b4",
+      "bytes": 6559
+    },
+    "web/props/shell/hands/grip.png": {
+      "sha256": "5770450595803b4586fb8574e5135148b522b116e7f6d3de25f6e7643f91b930",
+      "bytes": 615877
+    },
+    "web/props/shell/hands/reach.png": {
+      "sha256": "880a8009db8ff6d756b2c07a8dc1e5fa3d93075d47ebe1a189494a252364cd02",
+      "bytes": 555677
+    },
+    "web/props/shell/hands/release.png": {
+      "sha256": "275a3a35f22fba018ddffd652c191ce04eec34e162db589426851a8bcc313561",
+      "bytes": 510105
+    },
+    "web/props/shell/motion-profile.json": {
+      "sha256": "fbcdec7230bce11c643eedbcfe9cdebd68d8576a9e4c51f8b1b3805bd78c2250",
+      "bytes": 901
+    },
+    "web/props/shell/motion-with-hands.json": {
+      "sha256": "9a0ab586e9c250e1ea26989635581823892628bb10f3c961873fb526c0fbf377",
+      "bytes": 1346
+    },
+    "web/props/shell/shell.png": {
+      "sha256": "542b49cffbec43e41b4ca75a0ae184302b1e384b27539ff957806c71d28b910d",
+      "bytes": 686799
+    },
+    "web/upstream/UPSTREAM.md": {
+      "sha256": "ae0a9081a5fdddd51ed87c35a4586eebebf4d1defb414e137bea0de1704a2064",
+      "bytes": 6264
+    },
+    "web/upstream/whale/figure.js": {
+      "sha256": "8eec200e918148616e12551a190070803e1c9387daf647b6be1717cb6585adc4",
+      "bytes": 49268
+    },
+    "web/upstream/whale/hand-art.js": {
+      "sha256": "9c7b71dcaa7be833fcfb8b2cdb22fb1a8b954239a4c2b2d95a9eb7da93c95c68",
+      "bytes": 2367
+    },
+    "web/upstream/whale/model.json": {
+      "sha256": "3c3e2138572da144bac96e62573d420f45da181bf29aacfbc8246e974e655890",
+      "bytes": 8291
+    },
+    "web/upstream/whale/tex/arm_far_end_front.png": {
+      "sha256": "05ed4e4c0e842b5e6f913663473f9d1275b83c4c62ecd170c787170f208f44f6",
+      "bytes": 5258
+    }
+  }
+}
