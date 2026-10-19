@@ -1,5 +1,7 @@
 # O03 手型、连续开合与遮挡
 
+2026-10-19 用户已确认指定尺寸／配色下的工作台效果通过，分支接手见[当前状态](../../../aliveness-development.md)。
+
 当前方案已将三张独立手型的透明切换改成单一手部网格的连续变形，并统一贝壳拿起／放下时的绘制层。上一轮素材原图、提示词、截图和测试记录保留；上一轮几何／状态检查通过不代表视觉验收通过。
 
 ## 打开与操作
@@ -54,6 +56,8 @@ npm test
 npm run test:inbox-ui
 ```
 
-当前验证身份、完整测试结果与文件摘要见 [validation.json](continuity-fix/validation.json)，实际浏览器动作结果见 [browser-qa-final.json](continuity-fix/browser-qa-final.json)。本次仅验证指定尺寸／配色的本地浏览器工作台；自动化指标与画面复核分别记录，不能替代用户观感验收、原生桌面、多屏或其他角色验证。
+整理前的验证身份、完整测试结果与文件摘要见 [validation.json](continuity-fix/validation.json)，实际浏览器动作结果见 [browser-qa-final.json](continuity-fix/browser-qa-final.json)。本次仅验证指定尺寸／配色的本地浏览器工作台；自动化指标与画面复核分别记录，不能替代用户观感验收、原生桌面、多屏或其他角色验证。
+
+原记录不改写其基础提交及脏工作区来源；最终提交与分支状态从当前接手入口核对。
 
 上一轮 [validation.json](validation.json)、[39 项状态检查](browser-qa-final.json)、[关键姿势](key-poses.json)、[原／新手型对照](comparison.json)均按原字节保留，属于修正前的实现快照。

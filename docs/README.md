@@ -1,12 +1,13 @@
 # 文档索引
 
-本目录维护当前产品行为与开发契约。安装入口见 [项目首页](../README.md)，各版本改动见 [版本记录](release-notes.md)。实际版本、依赖、命令和支持的宿主列表以 `package.json`、`npm-shrinkwrap.json` 与 `.github/workflows/` 为准。
+本目录维护现行产品契约与分支开发入口。安装入口见 [项目首页](../README.md)，各版本改动见 [版本记录](release-notes.md)。实际版本、依赖、命令和支持的宿主列表以 `package.json`、`npm-shrinkwrap.json` 与 `.github/workflows/` 为准。
 
 ## 按任务阅读
 
 | 任务 | 资料 |
 |---|---|
 | 安装、配置、操作与升级 | [使用指南](usage.md) |
+| 生活感分支接手、已验收范围与后续路线 | [当前开发状态](aliveness-development.md) |
 | 开发、构建、测试与录制回归 | [开发指南](development.md) |
 | 完成判断、通知身份与请求结算 | [提醒契约](notification-contract.md) |
 | 会话续接、接受回执、草稿与去重 | [会话契约](session-chat-contract.md) |
@@ -24,11 +25,11 @@
 
 | 需要查阅的内容 | 入口与适用范围 |
 |---|---|
-| 生活感概念与后续设计讨论 | [设计草稿](design/README.md)：保留 `aliveness-concept` v0.1，尚未转成实施契约 |
+| 生活感规划与制作 | [设计与制作索引](design/README.md)：当前路线、资源表及已验收的 O03 工作台；原始概念和旧制作叙述已归档 |
 | 固定版本的资源与生命周期结果 | [观察报告](reports/README.md)：周末采集已结束、托管已禁用；0.4.10 数据不作为新版验收 |
 | 早期发散、候选诊断与发布过程 | [历史说明](archive/README.md)：其中的计划、问题和进度只属于当时快照 |
 
-普通搜索聚焦现行文档；设计评审、历史追溯或核对观察结果时，分别使用 `rg --no-ignore docs/design`、`rg --no-ignore docs/archive`、`rg --no-ignore docs/reports`。这些目录不随安装包分发，当前执行范围仍来自用户。
+普通搜索覆盖现行契约、当前分支状态与当前设计文本；归档、旧场景夹具、原始报告与画面由 `.ignore` 屏蔽。历史追溯使用 `rg --no-ignore docs/archive`，核对原始工作台证据使用 `rg --no-ignore docs/design/art-workflow`，观察结果使用 `rg --no-ignore docs/reports`。设计、归档及报告目录不随安装包分发，当前执行范围仍来自用户。
 
 ## 验证与产物身份
 

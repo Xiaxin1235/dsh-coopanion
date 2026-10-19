@@ -1,0 +1,58 @@
+{
+  "date": "2026-10-19T06:35:26.695512+00:00",
+  "branch": "codex/aliveness-foundation",
+  "acceptedImplementationCommit": "ef9e319fadc82cd1f91687981e68990080da56d7",
+  "mainUnchangedAt": "7d55786d096552dea62ef974237d942ab03c3b2f",
+  "scope": "Archive superseded narratives; update current handoff, status and search routing; retain runtime and raw evidence.",
+  "userAcceptance": {
+    "date": "2026-10-19",
+    "scope": "O03 specified whale, scheme and dimensions in isolated browser",
+    "message": "通过"
+  },
+  "checks": {
+    "localMarkdown": {
+      "files": 37,
+      "links": 242,
+      "missing": []
+    },
+    "protectedIdentity": {
+      "files": 1151,
+      "beforeSetSha256": "51d256bf1b4d15edbb6c4939ce161c67558b22bdd3105b77627f36b251f0e37c",
+      "afterSetSha256": "51d256bf1b4d15edbb6c4939ce161c67558b22bdd3105b77627f36b251f0e37c",
+      "changed": 0,
+      "missing": 0,
+      "scope": [
+        "existing docs/evidence and reports",
+        "O03 raw reports, model snapshots, screenshots, video and prompts",
+        "whale source textures and features",
+        "shell and hand resources",
+        "license notices and dependency/version metadata"
+      ]
+    },
+    "sourceModelSnapshot": "passed prepare-model.mjs --check",
+    "focusedTests": {
+      "passed": 26,
+      "hand": 9,
+      "motion": 9,
+      "prop": 8
+    },
+    "runtimeChangesAfterAcceptedCommit": [],
+    "previousFullRegression": "Accepted implementation passed full npm test, typecheck, build, complete test:inbox-ui and 44 live action checks; original evidence retained."
+  },
+  "environmentCleanup": {
+    "previewPortsStopped": [
+      4186,
+      4187,
+      4188
+    ],
+    "previewPortRetained": 4189,
+    "oldOwnedBrowserTabsClosed": 3,
+    "acceptedWorkbenchRetained": true
+  },
+  "publication": {
+    "versionChanged": false,
+    "releaseCreated": false,
+    "mergedToMain": false
+  },
+  "evidencePolicy": "Original reports retain their actual baseline commit and dirty-tree hashes; this record does not relabel them as tests of a different commit."
+}

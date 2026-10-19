@@ -4,6 +4,7 @@
 
 | 历史材料 | 查阅用途 |
 |---|---|
+| [生活感概念与 O03 制作历史](2026-10-aliveness/README.md) | 旧概念顺序、早期工作台叙述与历史证据分类；当前开发从[分支状态](../aliveness-development.md)进入 |
 | [手动互动时钟与触摸占用](2026-10-16/interaction-fixes.md) | 发布前固定候选的修改前后对照 |
 | [冷启动生命周期](2026-10-16/lifecycle-startup.md) | 当时的锁屏初态与受控平台探针 |
 | [周末采集启动](2026-10-16/weekend-startup.md) | 0.4.10 安装与采集启动身份；最终结果见[观察报告](../reports/weekend-observation-20261019.md) |

@@ -93,7 +93,7 @@ dsh plugin --profile desktop add @takboo/dsh-coopanion@0.4.13
 ## 了解更多与参与
 
 - **使用遇到问题：** 查看[使用指南](docs/usage.md)，或[提交 Issue](https://github.com/takboo/dsh-coopanion/issues)。
-- **参与开发：** 从[开发指南](docs/development.md)开始，完整行为契约与验证边界见[工程文档索引](docs/README.md)。
+- **参与开发：** 从[开发指南](docs/development.md)开始，完整行为契约与验证边界见[工程文档索引](docs/README.md)。生活感功能在独立分支推进，接手见[当前开发状态](docs/aliveness-development.md)。
 - **查看改动：** 阅读[版本记录](docs/release-notes.md)。
 
 支持平台为 Windows、macOS 和 Linux。物理多屏／混合 DPI、系统通知中心实机体验、真实模型会话及长期资源表现的验证范围见[验证说明](docs/README.md#验证与产物身份)。
