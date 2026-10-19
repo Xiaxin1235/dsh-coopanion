@@ -1,0 +1,234 @@
+{
+  "schema": 1,
+  "date": "2026-10-19",
+  "runtimeSourceCommit": "f4ff0b7e79059e2ae0280476ba1d8ffe667fee07",
+  "baselineCommit": "8d1fc7a987fd227f9f985dd44fb3c73c0e8feb2c",
+  "canonicalRuntimeManifestSha256": "d15a24dcca6424dc6da396308ea4f889b3292dc72df35749f8558cad5889e6ae",
+  "runtimeFilesVerified": 475,
+  "screenshot": {
+    "actor": {
+      "x": 186,
+      "y": 542
+    },
+    "planter": {
+      "x": 570,
+      "y": 515
+    },
+    "gateNorth": {
+      "x": 621,
+      "y": 75
+    },
+    "target": {
+      "x": 850,
+      "y": 600
+    },
+    "gap": 507,
+    "sha256": "7a2d9c3aeb6c056fe08dd5f8736468e91fb9c4a7c441c6c6772f7834e84aa236"
+  },
+  "rootCause": "screen-space elevation and upright body height were treated as ground occupancy; expanded solids falsely connected into an impassable wall",
+  "fix": "finite ground bodies only for calibrated solids; full-body restrictions, boundaries and unknown solids retained; depth uses calibrated ground bases",
+  "route": [
+    {
+      "x": 186,
+      "y": 542
+    },
+    {
+      "x": 789.5,
+      "y": 554.5
+    },
+    {
+      "x": 850,
+      "y": 600
+    }
+  ],
+  "results": {
+    "targetedPassed": 47,
+    "vitestPassed": 273,
+    "vitestSkipped": 1,
+    "nodeUnitPassed": 12,
+    "typecheck": true,
+    "build": true,
+    "navigationScenarios": 9,
+    "spaceAndContactChecks": 30,
+    "legacyO03Actions": 44,
+    "contactPixels": true,
+    "nativeChecks": 7,
+    "inboxSmoke": true,
+    "inboxNodeTests": 42,
+    "actualForwardAndReturn": true,
+    "presetPage": true
+  },
+  "toolchain": {
+    "node": "24.21.0",
+    "npm": "11.19.1",
+    "browser": "156.0.8078.4",
+    "native": {
+      "electron": "44.7.0",
+      "chrome": "152.0.7977.130",
+      "platform": "darwin",
+      "displays": [
+        {
+          "id": 3,
+          "scaleFactor": 2,
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 2048,
+            "height": 1152
+          }
+        }
+      ],
+      "window": {
+        "x": 0,
+        "y": 25,
+        "width": 1440,
+        "height": 1080
+      }
+    }
+  },
+  "video": {
+    "path": "artifacts/space-routing-feedback/final/flowerbox-detour.webm",
+    "bytes": 8689052,
+    "sha256": "ead952bad54b3f04c0c42bac9af922545d4612ddf4544db270a7e1d28e115380",
+    "seconds": 31.04
+  },
+  "testInputs": [
+    {
+      "path": "tests/navigation.test.js",
+      "bytes": 8478,
+      "sha256": "659260bdec28b699524fc18d21407d9ce92155b6029a44dc413e91c8bca2b914"
+    },
+    {
+      "path": "tests/flowerbox-detour-ui.mjs",
+      "bytes": 3560,
+      "sha256": "50bdffd73b21f274c2442139d39a17ce086b4cd13469854b8bbf30892f67ab98"
+    },
+    {
+      "path": "tests/navigation-ui.mjs",
+      "bytes": 6066,
+      "sha256": "2c2953354870022e1a4a28698a6a822a74ee9479bc08855d3c4fd7b616501b72"
+    },
+    {
+      "path": "tests/space-preview-ui.mjs",
+      "bytes": 11349,
+      "sha256": "1277bbe27097fdce55cfc850606e8d360459975805cc49dad746e87ded24deef"
+    },
+    {
+      "path": "tests/space-native.mjs",
+      "bytes": 7749,
+      "sha256": "cf82aafb2b9344f75fe9fd3999ec4f9a84c9f893e1c978a9b1f7017c66bc8965"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/space-routing-feedback/source-manifest.json",
+      "bytes": 87034,
+      "sha256": "ad70fd34088f8d84ee8f0ea53a0b87d0a3bf94719b3f2890d4652de38007d8eb"
+    },
+    {
+      "path": "artifacts/space-routing-feedback/reported-original.png",
+      "bytes": 2018213,
+      "sha256": "7a2d9c3aeb6c056fe08dd5f8736468e91fb9c4a7c441c6c6772f7834e84aa236"
+    },
+    {
+      "path": "artifacts/space-routing-feedback/repro-before.log",
+      "bytes": 2886,
+      "sha256": "259aa14457bf965180cbaf78a0b958c162381c219e76a6a532b5d1e479e78f40"
+    },
+    {
+      "path": "artifacts/space-routing-feedback/unit-before.log",
+      "bytes": 3649,
+      "sha256": "3226d0af1b30ef3d99bba128131fb841fb334ed6ebd2f677bc97e37c2de059ae"
+    },
+    {
+      "path": "artifacts/space-routing-feedback/browser-before.log",
+      "bytes": 465,
+      "sha256": "504c53fa97ad2ca8c45fb723fc7261ee91510ede712d9d2b1d3db8753e87375c"
+    },
+    {
+      "path": "artifacts/space-routing-feedback/before/reported-layout.png",
+      "bytes": 523421,
+      "sha256": "a77fd486b0a93fb8b1c2ae2132eb2e0966c5e33e1eb39eed356fbf01e10ae946"
+    },
+    {
+      "path": "artifacts/space-routing-feedback/final/feedback.json",
+      "bytes": 57524,
+      "sha256": "e064c10d415222349b2f441fab6c978559675b3de0f665f7d56c8b31a0d1465e"
+    },
+    {
+      "path": "artifacts/space-routing-feedback/final/actual-arrival.png",
+      "bytes": 527976,
+      "sha256": "ff5abcfc985d26690c4e3c4edcb1aa6a5b3a0728d3241adf5b21d3f055becf63"
+    },
+    {
+      "path": "artifacts/space-routing-feedback/feedback-final.log",
+      "bytes": 92,
+      "sha256": "9c12e1a5a041431f8ef07538919a1a5df9d0c771ca7f65a9a108e1899b869ea6"
+    },
+    {
+      "path": "artifacts/space-routing-feedback/targeted-final.log",
+      "bytes": 497,
+      "sha256": "778446b8e2dea71d9cce85af7af4ca8ce70c41826a1e5cab3d26a642123b15a9"
+    },
+    {
+      "path": "artifacts/space-routing-feedback/typecheck-final.log",
+      "bytes": 98,
+      "sha256": "3a3a0f42a52c753626283264ed71e30d318406a98f12cae0c5fe051cd0b21f64"
+    },
+    {
+      "path": "artifacts/space-routing-feedback/build-final.log",
+      "bytes": 64,
+      "sha256": "4be033c0fcfb79c62fffd6311f54f94a69168b9f05a2c35cfeda787da72334e0"
+    },
+    {
+      "path": "artifacts/space-routing-feedback/unit-final.log",
+      "bytes": 4030,
+      "sha256": "6218eae79ce1b3f5dbbad4c48b5264dd4f344a2c59ebf4cb358677de9c97818c"
+    },
+    {
+      "path": "artifacts/space-routing-feedback/navigation/navigation-ui.json",
+      "bytes": 25534,
+      "sha256": "21012b6043af6ae3e4e97fb7281b54725c4fd6643fa7127bf980488841b10755"
+    },
+    {
+      "path": "artifacts/space-routing-feedback/contact/browser-qa.json",
+      "bytes": 72380,
+      "sha256": "354689e9d70e23fa010b4c6a7bf603a5f5f8344b19c93a6d744c4a118a110a81"
+    },
+    {
+      "path": "artifacts/space-routing-feedback/contact/contact-pixels.json",
+      "bytes": 1158,
+      "sha256": "4275ef8636976b88884ab1736533901facead8239817a2104708d2cc52e3b3b5"
+    },
+    {
+      "path": "artifacts/space-routing-feedback/contact/legacy-motion.json",
+      "bytes": 238912,
+      "sha256": "9b2b8eed3065f09ce959175dfeac6631f522e208a4f5abc0548affcdb6766193"
+    },
+    {
+      "path": "artifacts/space-routing-feedback/native/native.json",
+      "bytes": 18871,
+      "sha256": "1ecb622829c11049a14c41e6ce12f7499781e6125e5dd869fe16e91ad56e05e8"
+    },
+    {
+      "path": "artifacts/space-routing-feedback/native.log",
+      "bytes": 1185,
+      "sha256": "737d0bf40b4131f113f314080e693da020871c40d788b2c16369701695e16a4e"
+    },
+    {
+      "path": "artifacts/space-routing-feedback/inbox.log",
+      "bytes": 5353,
+      "sha256": "a47aedabbd3eb749b22a699f5ea3bde6757c888db25fb6e98bebc106634bd4b9"
+    }
+  ],
+  "boundaries": {
+    "native": "controlled single-screen default map; exact reported layout forward/return validated in Chromium",
+    "CI": false,
+    "physicalMultiDisplay": false,
+    "actualOsSleepOrLock": false,
+    "release": false,
+    "visualAcceptance": "pending user review"
+  },
+  "existingUserPage": "not refreshed or reset",
+  "originalEvidence": "unchanged"
+}

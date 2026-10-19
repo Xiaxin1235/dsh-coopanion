@@ -10,4 +10,10 @@
 
 新页面复现：[同一截图布局](http://127.0.0.1:4189/docs/design/art-workflow/space-v1/index.html?layout=flowerbox-570-515)。现有未导出页面未刷新；打开新页面即可获得修正与该布局。
 
-本轮最终提交、源码摘要、浏览器／原生版本、真实录像和各检查结果在本轮验证完成后记入本记录。原第 2 期 JSON、日志、原素材及历史证据不改字节。
+运行源码提交 `f4ff0b7e79059e2ae0280476ba1d8ffe667fee07`，源码清单覆盖 475 个实际运行文件，规范清单 SHA-256 `d15a24dcca6424dc6da396308ea4f889b3292dc72df35749f8558cad5889e6ae`，验证结束逐文件一致。完整身份与原始截图／失败输出摘要见[验证清单](space-routing-feedback.json)。
+
+本轮通过：47 项定向、273 项单元（1 原有跳过）及 12 项 Node 单元、类型检查、构建、二维矩阵 9 场景、原空间／接触 30 项、O03 像素及原 44 项动作、隔离原生单屏 7 项、完整 `test:inbox-ui`（首个 smoke 与后续 42 项）。截图布局在 Chromium 实际往返；原生检查使用同一运行源码的默认地图，不冒称原生完成了该指定布局的往返。
+
+[31.04 秒实际往返录像](../../artifacts/space-routing-feedback/final/flowerbox-detour.webm)与[实际结果](../../artifacts/space-routing-feedback/final/feedback.json)保留点选、真实身体帧、单次到达与返回；新页面复现入口也已检查。浏览器 Chromium 156.0.8078.4，Electron 44.7.0／Chromium 152.0.7977.130；工具链 Node 24.21.0、npm 11.19.1。
+
+未执行新 CI、物理多屏、实际 OS 休眠／锁屏、正式安装或发布；观感待用户审阅。原第 2 期 JSON、日志、原素材及历史证据不改字节，不能用旧记录覆盖本修正。
