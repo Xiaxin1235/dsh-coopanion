@@ -7,7 +7,7 @@
 | 任务 | 资料 |
 |---|---|
 | 安装、配置、操作与升级 | [使用指南](usage.md) |
-| 生活感分支接手、已验收范围与后续路线 | [当前开发状态](aliveness-development.md) |
+| 生活感分支接手、当前阶段与验收边界 | [当前开发状态](aliveness-development.md) |
 | 开发、构建、测试与录制回归 | [开发指南](development.md) |
 | 完成判断、通知身份与请求结算 | [提醒契约](notification-contract.md) |
 | 会话续接、接受回执、草稿与去重 | [会话契约](session-chat-contract.md) |
@@ -25,11 +25,11 @@
 
 | 需要查阅的内容 | 入口与适用范围 |
 |---|---|
-| 生活感规划与制作 | [设计与制作索引](design/README.md)：当前路线、资源表及已验收的 O03 工作台；原始概念和旧制作叙述已归档 |
+| 生活感规划与制作 | [设计与制作索引](design/README.md)：当前第 2 期范围、后续蓝图、按需资源与工作台；原始概念和阶段过程已归档 |
 | 固定版本的资源与生命周期结果 | [观察报告](reports/README.md)：周末采集已结束、托管已禁用；0.4.10 数据不作为新版验收 |
 | 早期发散、候选诊断与发布过程 | [历史说明](archive/README.md)：其中的计划、问题和进度只属于当时快照 |
 
-普通搜索覆盖现行契约、当前分支状态与当前设计文本；归档、旧场景夹具、原始报告与画面由 `.ignore` 屏蔽。历史追溯使用 `rg --no-ignore docs/archive`，核对原始工作台证据使用 `rg --no-ignore docs/design/art-workflow`，观察结果使用 `rg --no-ignore docs/reports`。设计、归档及报告目录不随安装包分发，当前执行范围仍来自用户。
+普通搜索覆盖现行契约、当前分支状态与当前设计文本；归档、旧场景夹具、原始报告／画面／提示词及本地产物由 `.ignore` 屏蔽。历史追溯使用 `rg --no-ignore docs/archive`，核对原始工作台证据使用 `rg --no-ignore docs/design/art-workflow`，观察结果使用 `rg --no-ignore docs/reports`。设计、归档及报告目录不随安装包分发，当前执行范围仍来自用户。
 
 ## 验证与产物身份
 

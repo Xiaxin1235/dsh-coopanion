@@ -1,0 +1,140 @@
+{
+  "schema": 1,
+  "recordedAt": "2026-10-19T08:06:46.020747+00:00",
+  "scope": "documentation-and-local-artifact-cleanup-stage1-to-stage2",
+  "branch": "codex/aliveness-foundation",
+  "baseCommit": "9ab04bc198ecf72203ba5212eb86e0ba8425d1af",
+  "runtimeCommit": "504c7d4f899ab2afc3e027df3901ee6213e0ae23",
+  "readiness": {
+    "engineeringPrerequisitesForStage2": "sufficient",
+    "stage1NewSpaceSubjectiveAcceptance": "not-inferred",
+    "stage2Implementation": "not-started-in-this-cleanup",
+    "nextScope": "docs/design/aliveness-stage-2.md"
+  },
+  "preservation": {
+    "unchangedProtectedTrackedFiles": 1737,
+    "protectedBeforeManifestSha256": "331a15e6ba6867ec9859af432c7d8ec338d16e38052d4f9e6af30034f250aea2",
+    "stage1RuntimeInputsEqualCurrentFilesAndImplementationCommit": 458,
+    "exactArchivedNarrativeSnapshots": 5,
+    "sourceBundlesUnchangedAtOriginalPaths": {
+      "space-v1-source.tgz": "e9046d73a6a957dce3c0032275523aeb105f726af685bca6e7fa8f30a53ba187",
+      "space-v1-final-source.tgz": "4b7c944c635e794282842eea1a3fcc598babc24f66fa2c8571de5716d9dd2062"
+    }
+  },
+  "localArtifacts": {
+    "movedDirectories": 11,
+    "movedFiles": 100,
+    "movedBytes": 103429936,
+    "deletedDirectories": 1,
+    "deletedFiles": 2,
+    "deletedBytes": 1567427,
+    "manifestPath": "artifacts/archive/2026-10-19-space-v1/cleanup-manifest.json",
+    "manifestSha256": "5311fb1b713b2261e9d05551fefcbbd53535acae7b99bd59075b5081b4c2ef83",
+    "allMovedFileHashesMatch": true
+  },
+  "documentAudit": {
+    "markdownFilesChecked": 67,
+    "localFileLinksChecked": 423,
+    "currentLocalFileLinkFailures": 0,
+    "currentMarkdownAnchorChecks": {
+      "checked": 8,
+      "errors": []
+    },
+    "ordinarySearchMarkdownFiles": 29,
+    "ordinarySearchContainsHistoricalOrGeneratedRoots": false,
+    "archivedSnapshotsResolvedAgainstOriginalPathAndCommit": true,
+    "inheritedFrozenLinkExceptions": [
+      {
+        "source": "docs/evidence/p1/keyboard-platforms-20261016/initial-record-at-e820baf.md",
+        "target": "docs/evidence/p1/keyboard-platforms-20261016/invalid-attempts/README.md",
+        "reason": "Original historical evidence references an absent index; frozen bytes retained. Raw invalid-attempt records remain in the existing directory; not a current handoff.",
+        "brokenLinkAlreadyPresentAtBase": true
+      }
+    ],
+    "deletedObsoleteRedirect": "docs/design/aliveness-concept.md"
+  },
+  "checks": {
+    "metadata": {
+      "command": "node .cache/npm-11.19.1/node_modules/npm/bin/npm-cli.js run verify:metadata",
+      "node": "v24.21.0",
+      "npm": "11.19.1",
+      "result": "passed"
+    },
+    "diffWhitespace": "passed",
+    "sourceIdentity": "458 final implementation inputs match their recorded hashes, implementation commit and current checkout",
+    "protectedBytes": "1737 tracked originals unchanged",
+    "snapshots": "5 narratives byte-identical to original paths at base commit"
+  },
+  "geometryReproduction": {
+    "baseline": {
+      "passed": true,
+      "violations": [],
+      "length": 614,
+      "body": {
+        "size": 180,
+        "left": 100,
+        "right": 100,
+        "top": 205,
+        "bottom": 8,
+        "turn": 12
+      },
+      "margin": 12,
+      "revision": 1
+    },
+    "planterFeedback": {
+      "planter": {
+        "id": "planter",
+        "label": "珊瑚花箱",
+        "asset": "planter.svg",
+        "x": 508,
+        "y": 261,
+        "w": 112,
+        "h": 105,
+        "solid": true,
+        "layer": "depth"
+      },
+      "bounds": {
+        "x": 338,
+        "y": 338,
+        "w": 224,
+        "h": 237
+      },
+      "overlap": {
+        "w": 54,
+        "h": 28
+      },
+      "violations": [
+        {
+          "segment": 1,
+          "obstacle": "planter"
+        },
+        {
+          "segment": 2,
+          "obstacle": "planter"
+        },
+        {
+          "segment": 3,
+          "obstacle": "planter"
+        }
+      ]
+    },
+    "purpose": "Read-only reproduction of existing stage-1 behavior; no runtime fix in this documentation cleanup."
+  },
+  "preview": {
+    "url": "http://127.0.0.1:4189/",
+    "onlyPreviewPortIn4186To4189": 4189,
+    "pageReloaded": false,
+    "userEditedLayoutReset": false
+  },
+  "notRun": [
+    "Runtime test suites: documentation-only change; all runtime inputs are byte-identical to stage-1 validation.",
+    "New CI, native integration, installation or physical multi-display acceptance."
+  ],
+  "delivery": {
+    "localCommitRequested": true,
+    "push": false,
+    "mergeMain": false,
+    "release": false,
+    "newSessionAfterCommit": true
+  }
+}

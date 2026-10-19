@@ -1,14 +1,15 @@
 # 生活感设计与制作
 
-当前分支状态、用户验收边界及接手顺序先读[生活感开发状态](../aliveness-development.md)。已发布产品行为仍以[现行契约](../README.md)为准。设计目标、局部工作台实现和产品集成分别解释。
+实施先读[当前开发状态](../aliveness-development.md)，再读当前阶段。已发布产品按[现行契约](../README.md)解释；设计目标、隔离工作台与产品集成分别记录。
 
-| 当前资料 | 用途 |
+| 资料 | 何时使用 |
 |---|---|
-| [实施路线](aliveness-implementation-plan.md) | 先完成美术／空间、二维运动和动作衔接，再推进生活／工作双线；阶段状态明确区分已验收子故事和待实施部分 |
-| [美术资源表](aliveness-art-assets.md) | 完整制作需求与当前已交付子集；O03 不代表全部 B0 资源完成 |
-| [美术与动作工作流](art-workflow/README.md) | 需求、生成、结构检查、真实接触、连续动作和观感验收方法 |
-| [空间样板](art-workflow/space-v1/README.md) | 第 1 期可编辑小窝／岗位场景、完整身体几何与反复拿放 |
-| [生活空间契约草案](living-space-contract.md) | 已实现的编辑坐标、对象、接触与遮挡；真实二维运动留待第 2 期 |
-| [当前 O03 工作台](art-workflow/o03-shell-hands-v1/README.md) | 同一贝壳的可重复拿放、连续手部网格、同帧遮挡及当前证据 |
+| [第 2 期执行范围](aliveness-stage-2.md) | 当前下一项：碰撞语义、真实二维运动与隔离原生单屏验证 |
+| [生活空间草案](living-space-contract.md) | 第 1 期已实现的坐标、对象、接触与遮挡；真实运动时增补已验证条款 |
+| [空间样板](art-workflow/space-v1/README.md) | 可编辑场景与已有拿放的操作、定向回归、证据入口 |
+| [O03 工作台](art-workflow/o03-shell-hands-v1/README.md) | 连续手部、同帧遮挡、实际接触与历史回归 |
+| [制作工作流](art-workflow/README.md) | 需要补素材或动作时：来源、绑定、真实接触与连续性验证 |
+| [七阶段蓝图](aliveness-implementation-plan.md) | 评估后续阶段依赖与体验目标；不是本轮全量任务 |
+| [资源需求池](aliveness-art-assets.md) | 按具体画面缺口选取资源，已有资产优先复用 |
 
-原始概念稿、旧 P1–P3 顺序、首轮试跑和早期美术缺口见[归档索引](../archive/2026-10-aliveness/README.md)。旧文档入口只保留指引；原素材、模型快照和报告保留原路径。普通搜索覆盖当前设计文本，历史夹具及原始证据由 `.ignore` 屏蔽；追溯时显式使用 `rg --no-ignore`。本目录仍不随安装包分发。
+原始概念、旧 P1–P3、O03 过程与第 1 期交接前叙述见[归档](../archive/2026-10-aliveness/README.md)。原素材、模型快照和报告保持原路径与原字节，普通搜索屏蔽历史与原始证据；追溯时用 `rg --no-ignore`。本目录不随安装包分发。

@@ -10,6 +10,6 @@
 | [周末采集启动](2026-10-16/weekend-startup.md) | 0.4.10 安装与采集启动身份；最终结果见[观察报告](../reports/weekend-observation-20261019.md) |
 | [Windows 辅助进程启动对照](2026-10-16/windows-startup.md) | 失败与重试的诊断过程，探针通过不等于根因修复 |
 | [官方宿主依赖发布缺口](2026-10-16/upstream-dependency.md) | 当时 npm 缺失版本与后续恢复的原始来源 |
-| [生活感早期发散](2026-10-19/live-brainstorm.md) | 概念形成背景；继续讨论使用[设计稿](../design/aliveness-concept.md) |
+| [生活感早期发散](2026-10-19/live-brainstorm.md) | 概念形成背景；继续工作使用[当前设计入口](../design/README.md) |
 
 更早且已被删除的重复交接说明通过 Git 历史查询。本目录普通搜索和安装包均排除；追溯时使用 `rg --no-ignore docs/archive`。

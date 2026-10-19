@@ -27,9 +27,7 @@ npm run test:install
 
 `npm run dev` 打开浏览器演示（默认 `http://127.0.0.1:4173`），`npm run demo` 启动桌面演示，二者的任务事件均为模拟。首页素材的重拍见[素材说明](assets/README.md)。
 
-生活感功能分支的接手、已验收范围与下一阶段从[当前开发状态](aliveness-development.md)进入。当前默认制作入口是 [空间样板](design/art-workflow/space-v1/README.md)，其中复用 [O03 连续拿放工作台](design/art-workflow/o03-shell-hands-v1/README.md)，制作方法见[美术与动作工作流](design/art-workflow/README.md)。使用 `PORT=4189 node docs/design/art-workflow/preview-art-workflow.mjs` 启动；不设置 `PORT` 时脚本默认 4186，均默认打开空间样板，右上角进入原 O03。
-
-工作台以真实 API 2 身体和接触结果完成拿放，不读取 Harness 正文、不启用产品自主拿放。`web/props/shell/` 保留素材与标定，连续网格和同帧合成取代独立手型的淡入淡出。新增空间定向测试为 `tests/space-geometry.test.js`，`node tests/space-preview-ui.mjs` 复用上述服务并运行实际浏览器交互、像素和原 44 项动作检查。默认输出到 `artifacts/space-preview/`，用 `SPACE_EVIDENCE_DIR` 指定新的证据目录；按锁安装 Playwright Chromium。O03 定向测试为 `tests/hand-art.test.js`、`tests/prop-motion.test.js`、`tests/prop-interaction.test.js`；`node scripts/check-hand-art.mjs` 只读检查原图及锚点，同目录的 `continuity.html` 检查实际 WebGL 像素。旧场景按原路径保留作[历史夹具](archive/2026-10-aliveness/README.md)。
+生活感分支的当前范围、下一项和交付身份从[开发状态](aliveness-development.md)进入。[空间样板](design/art-workflow/space-v1/README.md)与[O03 工作台](design/art-workflow/o03-shell-hands-v1/README.md)维护操作和定向回归入口，[制作工作流](design/art-workflow/README.md)维护素材／连续动作验证方法。复用已有预览服务，每轮输出写新目录；原始证据保持原字节。第 2 期的原生验证和完成条件集中在对应阶段文档。
 
 浏览器检查真实 API 2 动画、聊天、完整阅读、角色导入及脚本隔离；桌面检查真实 Electron 窗口、IPC、托盘和恢复；安装检查使用官方 DSH loader 安装实际 `.tgz`。用 `DSH_TEST_VERSION=<支持版本>` 选择宿主，用 `DSH_TEST_PACKAGE_DIR=<规范包目录>` 消费已有规范包及校验文件。完整平台／宿主列表以 CI 矩阵为准。
 

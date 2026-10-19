@@ -1,51 +1,34 @@
 # 生活感功能：当前开发状态
 
-这是生活感功能分支的接手入口。已发布产品行为仍按[现行契约](README.md)解释；本文件负责分支范围、交付和验收边界。
+生活感分支的唯一进度与接手入口。已发布产品行为按[现行契约](README.md)解释；完整愿景不等于当前执行范围。
 
-## 分支与范围
+## 当前决策与范围
 
-- 持续开发分支：`codex/aliveness-foundation`。用户要求暂不合并 `main`、不推送、不发布。
-- 当前交付：第 1 期 [潮汐小院空间样板](design/art-workflow/space-v1/README.md)。单屏小窝／生活区、信封岗位、连接路线、门槛、花箱和手动内容禁区，可摆放、显隐分区、查看身体／接触锚点与遮挡、导出几何，并在同一场景重复已有拿放。
-- 角色／动作基础：`ef9e319fadc82cd1f91687981e68990080da56d7` 的 O03 子故事已于 2026-10-19 获用户确认“通过”。这项确认不自动涵盖新的空间样板；本期工程验证与空间观感分别记录。
-- 第 1 期静态几何与对象规格已形成，默认连接路线按完整身体包络通过。编辑摆放、静态路线证明和已有水平拿放都不代表真实 x/y 导航。
-- 尚未实施：真正二维运动／动态避让、完整动作衔接、生活／工作双线协调与调度、人格／出门、主产品及原生桌面自主拿放。
+2026-10-19，第 1 期空间样板具备进入下一期的工程基础；用户要求整理、提交后在新会话推进。下一项执行[第 2 期：真实二维运动与单屏桌面验证](design/aliveness-stage-2.md)。二维运动和原生接入尚未实现；本次交接只整理文档与本地产物。
+
+持续使用 `codex/aliveness-foundation`，本轮及后续会话不合并 `main`、不推送、不发布。第 2 期完成后再决定第 3 期；完整生活／工作协调、人格、出门和跨屏不在本期实施范围。
+
+| 已有基础 | 验证与身份 |
+|---|---|
+| O03 连续手部与反复拿放 | `ef9e319fadc82cd1f91687981e68990080da56d7` 的指定尺寸／主配色工作台于 2026-10-19 获用户确认“通过” |
+| 第 1 期空间、编辑与静态几何 | 最终运行源码 `504c7d4f899ab2afc3e027df3901ee6213e0ae23`；交付文档基线 `9ab04bc`；[原始验证记录](design/art-workflow/space-v1/evidence/validation.json)绑定源码摘要、检查及真实录像 |
+| 验证边界 | 本地浏览器、定向检查、完整单元、类型检查、构建与 `test:inbox-ui`；未运行本期三平台 CI、原生集成、安装或物理多屏。完整产品检查后的私有工作台修正另有最终浏览器复测，详见原记录 |
+
+推进下一期不追认为新空间全部观感已验收；原记录中的待用户审阅状态保留。沿用已有角色、贝壳与新增 SVG，按运行画面发现的具体缺口补素材。
 
 ## 接手顺序
 
-| 任务 | 入口 |
-|---|---|
-| 操作本期空间预览、查看新画面与验证 | [空间样板工作台](design/art-workflow/space-v1/README.md) |
-| 下一期二维运动的坐标、包络、实体和锚点 | [生活空间契约草案](design/living-space-contract.md) |
-| 复现已通过的手部与连续拿放 | [O03 工作台](design/art-workflow/o03-shell-hands-v1/README.md) |
-| 制作素材、检查真实接触与动作连续性 | [美术与动作工作流](design/art-workflow/README.md) |
-| 里程碑与完整资源需求 | [七阶段路线](design/aliveness-implementation-plan.md)、[资源表](design/aliveness-art-assets.md) |
-| 追溯本期前的接手叙述 | [第 1 期实施前快照](archive/2026-10-aliveness/pre-space-v1-state.md)（137a360，内容与相对链接按当时入口解释） |
+1. 实施先读[第 2 期执行范围](design/aliveness-stage-2.md)，按其中顺序落实并验证；当前固定路线判定的用户反馈必须覆盖。
+2. 坐标、实体、锚点和遮挡查[生活空间草案](design/living-space-contract.md)；进入真实运动时更新已实现条款。
+3. 操作与定向回归查[空间样板](design/art-workflow/space-v1/README.md)、[O03 工作台](design/art-workflow/o03-shell-hands-v1/README.md)；工程与原生验证按[开发指南](development.md)。
+4. 规划后续阶段才查[七阶段蓝图](design/aliveness-implementation-plan.md)；素材出现缺口才查[资源需求池](design/aliveness-art-assets.md)与[制作工作流](design/art-workflow/README.md)。
 
-## 实现与验证边界
+当前空间只提供编辑摆放、固定折线的保守包络检查和已有水平拿放。用户反馈的花箱 `(508,261)` 会与当前路线扩张包络相交；界面“不可通过”不能解释为整个空间无路可走。详细复现及改进要求集中在第 2 期文档。
 
-新空间编辑与纯几何模块位于 `docs/design/art-workflow/space-v1/`，不加载生产 NPC 调度器、不读取 Harness 或其他应用内容。四类新增素材是直接创作的分层 SVG，原始需求、来源与 SHA-256 齐全；现有分层角色足够支撑本期，没有新增手图或关节。原角色模型、全部贴图、贝壳与候选手图保持原字节。
+## 本地工作环境
 
-运行时仍复用 `web/prop-motion.js`、`web/prop-interaction.js`、`whale/hand-art.js` 和已有制作工厂。合成器只新增可选画布高度，默认保持旧 390px；新场景 660px 内仍将同帧身体／掌部、贝壳和指尖统一绘制。拥有权交接不换独立物件层。制作工厂暂停时以 dt=0 刷新安全心跳，修正暂停超过1秒后首次继续被误判为旧时间缺口的问题；动作时间与姿势仍冻结。
+复用已有 loopback 4189 预览，入口 `http://127.0.0.1:4189/`；不刷新用户未导出的布局。无服务时按[空间样板说明](design/art-workflow/space-v1/README.md)启动，原 O03 由同一服务提供。
 
-工程结果、源文件身份与真实画面见[本期验证](design/art-workflow/space-v1/evidence/validation.json)。本轮包含几何／资源／接触定向检查、实际浏览器交互、原 O03 像素与动作回归，以及类型检查、构建、完整单元与 `test:inbox-ui`。新空间观感待用户确认；三平台 CI、安装、原生及物理多屏不在本期验证范围。
+本期重复浏览器输出已移入 `artifacts/archive/2026-10-19-space-v1/`；本地源码快照包仍在 `artifacts/space-delivery/`，它们不是 npm 分发包。原始验证、图片、录像、模型、许可和来源摘要保留原字节。缓存与其他历史产物由搜索规则屏蔽，使用前核对提交与用途。
 
-原 O03 的 [44 项动作记录](design/art-workflow/o03-shell-hands-v1/continuity-fix/browser-qa-final.json)、[像素记录](design/art-workflow/o03-shell-hands-v1/continuity-fix/after-pixels.json)、[样片](design/art-workflow/o03-shell-hands-v1/continuity-fix/shell-loop-fixed.webm)按原字节保留，只说明当时已验收的子故事；不把旧报告来源提交改写成本期提交。
-
-## 本地唯一预览服务
-
-从仓库根目录，按[开发指南](development.md)准备工具链：
-
-```bash
-node docs/design/art-workflow/o03-shell-hands-v1/prepare-model.mjs --check
-PORT=4189 node docs/design/art-workflow/preview-art-workflow.mjs
-```
-
-打开 `http://127.0.0.1:4189/`，默认进入空间样板。右上角返回 O03；旧路径和 `continuity.html` 继续由同一服务提供。不指定 `PORT` 时默认 4186；当前演示只保留 4189 一个服务。
-
-## 下一期边界
-
-第 2 期应在同一地图内实现 body 真正 x/y 运动、全路径避让、转向制动、到达／中断身份、几何更新和命中一致性，并按路线要求验证隔离原生单屏。不能把本期 `place`／平面编辑或画板缩放升级描述为导航。
-
-生活和工作保留各自意图、未来共用唯一身体协调入口；业务完成继续由 `src/completion.ts` 判断，会话接受回执与完成分别结算。没有提前实现调度、人格和出门系统。
-
-新增行为同步实现、测试和说明，NPC 相关变更包含完整 `test:inbox-ui`。视觉连续性、几何／状态与用户观感分别验收。原生及安装如后续需要，使用隔离 profile，系统桌面操作串行执行。
+交接前叙述见[第 1 期归档](archive/2026-10-aliveness/stage-1-handoff/README.md)。历史快照只解释当时状态，普通搜索只读当前入口。
