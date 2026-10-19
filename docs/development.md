@@ -39,6 +39,8 @@ npm run test:install
 |---|---|
 | 完成、通知与请求结算 | `npm test`、`test:n0`、`test:notification-ui`；宿主接口检查由安装入口执行 |
 | 聊天、收件箱、字号、多屏、NPC 日常 | `test:inbox-ui`；会话与字号浏览器用例串行，初始化失败保留有界状态、控制台与截图 |
+| 清醒坐姿与鲸鱼摆臂 | `tests/upstream-motion.test.js` 检查坐睡边界、手腿相位与姿势拥有权；`test:ui` 包含真实 WebGL 的 `tests/upstream-motion-ui.mjs`，可用 `UPSTREAM_MOTION_EVIDENCE_DIR` 指定新的截图／结果目录；同时跑 `test:inbox-ui`、空间导航与 O03 接触回归 |
+| 原生空间栅格与调试通道 | `tests/space-native.mjs` 检查 7 项原生行为及动态 PNG URL 积压；记录逐项耗时，120 秒总期限，失败绑定阶段，结束恢复光标和清理 profile；`upstream-motion.test.js` 检查栅格 URL 的释放／重新挂载 |
 | NPC 配置 | `tests/npc-controls-ui.mjs`：关闭许可、quiet／interactive、热切状态保持与禁用上游随机漫游 |
 | 异常查看与尺寸 | `tests/attention-size-ui.mjs`：通用异常回执、新修订、审批／提问与固定角色尺寸 |
 | 拖放与小窝 | `tests/npc-drag-ui.mjs`：真实指针轨迹、两侧边缘、区域外停留、旧路线取消、按住及释放后小窝锚点 |

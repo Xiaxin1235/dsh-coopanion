@@ -1,0 +1,1258 @@
+Analysis of sampling node (pid 19444) every 1 millisecond
+Process:         node [19444]
+Path:            /Users/USER/Documents/*/node
+Load Address:    0x1043ec000
+Identifier:      node
+Version:         0
+Code Type:       ARM64
+Platform:        macOS
+Parent Process:  Python [19442]
+Target Type:     live task
+
+Date/Time:       2026-10-19 21:47:18.492 +0800
+Launch Time:     2026-10-19 21:46:58.105 +0800
+OS Version:      macOS 15.7.9 (24G830)
+Report Version:  7
+Analysis Tool:   /usr/bin/sample
+
+Physical footprint:         142.9M
+Physical footprint (peak):  200.0M
+Idle exit:                  untracked
+----
+
+Call graph:
+    630 Thread_33339948   DispatchQueue_1: com.apple.main-thread  (serial)
+    + 630 start  (in dyld) + 6076  [0x194d1eb98]
+    +   630 node::Start(int, char**)  (in node) + 604  [0x1044d47d8]
+    +     630 node::NodeMainInstance::Run()  (in node) + 268  [0x104583f24]
+    +       630 node::SpinEventLoopInternal(node::Environment*)  (in node) + 248  [0x1043fc6a8]
+    +         597 uv_run  (in node) + 568  [0x1054150ec]
+    +         ! 500 uv__io_poll  (in node) + 764  [0x105428df4]
+    +         ! : 500 kevent  (in libsystem_kernel.dylib) + 8  [0x195083d04]
+    +         ! 77 uv__io_poll  (in node) + 1432  [0x105429090]
+    +         ! : 77 uv__async_io  (in node) + 304  [0x105414798]
+    +         ! :   44 node::PerIsolatePlatformData::FlushForegroundTasksInternal()  (in node) + 960  [0x1045c514c]
+    +         ! :   | 44 node::PerIsolatePlatformData::RunForegroundTask(std::unique_ptr<v8::Task>)  (in node) + 224  [0x1045c6330]
+    +         ! :   |   40 v8::internal::IncrementalMarkingJob::Task::RunInternal()  (in node) + 344  [0x104a22298]
+    +         ! :   |   + 24 v8::internal::IncrementalMarking::AdvanceAndFinalizeIfComplete()  (in node) + 68  [0x104a24888]
+    +         ! :   |   + ! 24 v8::internal::IncrementalMarking::Step(v8::base::TimeDelta, unsigned long, v8::internal::StepOrigin)  (in node) + 956  [0x104a24ca0]
+    +         ! :   |   + !   11 v8::internal::MarkCompactCollector::ProcessMarkingWorklist<(v8::internal::MarkCompactCollector::MarkingWorklistProcessingMode)0>(v8::base::TimeDelta, unsigned long)  (in node) + 12708,964,...  [0x104a39218,0x104a36438,...]
+    +         ! :   |   + !   2 v8::internal::MarkCompactCollector::ProcessMarkingWorklist<(v8::internal::MarkCompactCollector::MarkingWorklistProcessingMode)0>(v8::base::TimeDelta, unsigned long)  (in node) + 3464  [0x104a36dfc]
+    +         ! :   |   + !   : 2 v8::internal::MarkingVisitorBase<v8::internal::MainMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 80,144  [0x104a5b4c0,0x104a5b500]
+    +         ! :   |   + !   2 v8::internal::MarkingVisitorBase<v8::internal::MainMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 228,232  [0x104a5b554,0x104a5b558]
+    +         ! :   |   + !   1 v8::internal::JSFunction::BodyDescriptor::IterateBody<v8::internal::MainMarkingVisitor>(v8::internal::Tagged<v8::internal::Map>, v8::internal::Tagged<v8::internal::HeapObject>, int, v8::internal::MainMarkingVisitor*)  (in node) + 280  [0x104a5ca40]
+    +         ! :   |   + !   1 v8::internal::MarkCompactCollector::ProcessMarkingWorklist<(v8::internal::MarkCompactCollector::MarkingWorklistProcessingMode)0>(v8::base::TimeDelta, unsigned long)  (in node) + 192  [0x104a36134]
+    +         ! :   |   + !   : 1 v8::internal::MarkingWorklists::Local::Pop(v8::internal::Tagged<v8::internal::HeapObject>*)  (in node) + 196  [0x104a5c3f8]
+    +         ! :   |   + !   :   1 free_tiny  (in libsystem_malloc.dylib) + 316  [0x194ec390c]
+    +         ! :   |   + !   1 v8::internal::MarkCompactCollector::ProcessMarkingWorklist<(v8::internal::MarkCompactCollector::MarkingWorklistProcessingMode)0>(v8::base::TimeDelta, unsigned long)  (in node) + 1080  [0x104a364ac]
+    +         ! :   |   + !   : 1 v8::internal::MarkingVisitorBase<v8::internal::MainMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 188  [0x104a5b8ac]
+    +         ! :   |   + !   1 v8::internal::MarkCompactCollector::ProcessMarkingWorklist<(v8::internal::MarkCompactCollector::MarkingWorklistProcessingMode)0>(v8::base::TimeDelta, unsigned long)  (in node) + 4464  [0x104a371e4]
+    +         ! :   |   + !   : 1 v8::internal::MarkingVisitorBase<v8::internal::MainMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 144  [0x104a5b500]
+    +         ! :   |   + !   1 v8::internal::MarkCompactCollector::ProcessMarkingWorklist<(v8::internal::MarkCompactCollector::MarkingWorklistProcessingMode)0>(v8::base::TimeDelta, unsigned long)  (in node) + 4964  [0x104a373d8]
+    +         ! :   |   + !   : 1 v8::internal::MarkingVisitorBase<v8::internal::MainMarkingVisitor>::ProcessWeakHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 68  [0x104a5b688]
+    +         ! :   |   + !   1 v8::internal::MarkCompactCollector::ProcessMarkingWorklist<(v8::internal::MarkCompactCollector::MarkingWorklistProcessingMode)0>(v8::base::TimeDelta, unsigned long)  (in node) + 12868  [0x104a392b8]
+    +         ! :   |   + !   : 1 v8::internal::JSFunction::BodyDescriptor::IterateBody<v8::internal::MainMarkingVisitor>(v8::internal::Tagged<v8::internal::Map>, v8::internal::Tagged<v8::internal::HeapObject>, int, v8::internal::MainMarkingVisitor*)  (in node) + 52  [0x104a5c95c]
+    +         ! :   |   + !   1 v8::internal::MarkCompactCollector::ProcessMarkingWorklist<(v8::internal::MarkCompactCollector::MarkingWorklistProcessingMode)0>(v8::base::TimeDelta, unsigned long)  (in node) + 13344  [0x104a39494]
+    +         ! :   |   + !   : 1 v8::internal::MarkingVisitorBase<v8::internal::MainMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 188  [0x104a5b52c]
+    +         ! :   |   + !   1 v8::internal::MarkCompactCollector::ProcessMarkingWorklist<(v8::internal::MarkCompactCollector::MarkingWorklistProcessingMode)0>(v8::base::TimeDelta, unsigned long)  (in node) + 14224  [0x104a39804]
+    +         ! :   |   + !   : 1 v8::internal::MarkingVisitorBase<v8::internal::MainMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 168  [0x104a5b518]
+    +         ! :   |   + !   1 v8::internal::MarkCompactCollector::ProcessMarkingWorklist<(v8::internal::MarkCompactCollector::MarkingWorklistProcessingMode)0>(v8::base::TimeDelta, unsigned long)  (in node) + 15872  [0x104a39e74]
+    +         ! :   |   + !     1 v8::internal::MarkingVisitorBase<v8::internal::MainMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 132  [0x104a5b4f4]
+    +         ! :   |   + 16 v8::internal::Heap::CollectGarbage(v8::internal::AllocationSpace, v8::internal::GarbageCollectionReason, v8::GCCallbackFlags)  (in node) + 748  [0x104a08488]
+    +         ! :   |   +   16 PushAllRegistersAndIterateStack  (in node) + 40  [0x1053e4e30]
+    +         ! :   |   +     16 heap::base::Stack::SetMarkerAndCallbackImpl<v8::internal::Heap::CollectGarbage(v8::internal::AllocationSpace, v8::internal::GarbageCollectionReason, v8::GCCallbackFlags)::$_1>(heap::base::Stack*, void*, void const*)  (in node) + 40  [0x104a1e620]
+    +         ! :   |   +       16 v8::internal::Heap::CollectGarbage(v8::internal::AllocationSpace, v8::internal::GarbageCollectionReason, v8::GCCallbackFlags)::$_1::operator()() const  (in node) + 1188  [0x104a1eadc]
+    +         ! :   |   +         16 v8::internal::Heap::PerformGarbageCollection(v8::internal::GarbageCollector, v8::internal::GarbageCollectionReason, char const*)  (in node) + 824  [0x104a0c090]
+    +         ! :   |   +           16 v8::internal::Heap::MarkCompact()  (in node) + 420  [0x104a0c728]
+    +         ! :   |   +             6 v8::internal::MarkCompactCollector::CollectGarbage()  (in node) + 128  [0x104a2d72c]
+    +         ! :   |   +             : 6 v8::internal::MarkCompactCollector::MarkLiveObjects()  (in node) + 2032  [0x104a2dfac]
+    +         ! :   |   +             :   6 v8::internal::MarkCompactCollector::MarkTransitiveClosureUntilFixpoint()  (in node) + 304  [0x104a35a08]
+    +         ! :   |   +             :     6 v8::internal::MarkCompactCollector::ProcessEphemerons()  (in node) + 484  [0x104a35f80]
+    +         ! :   |   +             :       3 v8::internal::MarkCompactCollector::ProcessMarkingWorklist<(v8::internal::MarkCompactCollector::MarkingWorklistProcessingMode)0>(v8::base::TimeDelta, unsigned long)  (in node) + 2368,12176,...  [0x104a369b4,0x104a39004,...]
+    +         ! :   |   +             :       2 v8::internal::MarkCompactCollector::ProcessMarkingWorklist<(v8::internal::MarkCompactCollector::MarkingWorklistProcessingMode)0>(v8::base::TimeDelta, unsigned long)  (in node) + 14224  [0x104a39804]
+    +         ! :   |   +             :       | 2 v8::internal::MarkingVisitorBase<v8::internal::MainMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 0,184  [0x104a5b470,0x104a5b528]
+    +         ! :   |   +             :       1 v8::internal::MarkCompactCollector::ProcessMarkingWorklist<(v8::internal::MarkCompactCollector::MarkingWorklistProcessingMode)0>(v8::base::TimeDelta, unsigned long)  (in node) + 12824  [0x104a3928c]
+    +         ! :   |   +             :         1 v8::internal::MarkingVisitorBase<v8::internal::MainMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 44  [0x104a5b81c]
+    +         ! :   |   +             6 v8::internal::MarkCompactCollector::Finish()  (in node) + 688  [0x104a31594]
+    +         ! :   |   +             : 5 v8::internal::MarkCompactCollector::SweepLargeSpace(v8::internal::LargeObjectSpace*)  (in node) + 128  [0x104a31f7c]
+    +         ! :   |   +             : | 5 v8::internal::MemoryAllocator::DeleteMemoryChunk(v8::internal::MutablePageMetadata*)  (in node) + 88  [0x104a64f14]
+    +         ! :   |   +             : |   5 v8::internal::VirtualMemory::~VirtualMemory()  (in node) + 96  [0x104ee66ac]
+    +         ! :   |   +             : |     5 v8::base::PageAllocator::FreePages(void*, unsigned long)  (in node) + 20  [0x105ed2f98]
+    +         ! :   |   +             : |       5 v8::base::OS::Free(void*, unsigned long)  (in node) + 16  [0x105ed7660]
+    +         ! :   |   +             : |         5 __munmap  (in libsystem_kernel.dylib) + 8  [0x1950815e8]
+    +         ! :   |   +             : 1 _szone_free  (in libsystem_malloc.dylib) + 748  [0x194ed7364]
+    +         ! :   |   +             2 v8::internal::MarkCompactCollector::CollectGarbage()  (in node) + 164  [0x104a2d750]
+    +         ! :   |   +             : 1 v8::internal::MarkCompactCollector::ClearNonLiveReferences()  (in node) + 2312  [0x104a2f1e8]
+    +         ! :   |   +             : | 1 v8::internal::MarkCompactCollector::ProcessOldCodeCandidates()  (in node) + 284  [0x104a3fedc]
+    +         ! :   |   +             : |   1 v8::internal::MarkCompactCollector::ProcessOldBytecodeSFI(v8::internal::Tagged<v8::internal::SharedFunctionInfo>)  (in node) + 372  [0x104a42a30]
+    +         ! :   |   +             : |     1 v8::internal::SharedFunctionInfo::DiscardCompiledMetadata(v8::internal::Isolate*, std::function<void (v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)>)  (in node) + 532  [0x104d5cd08]
+    +         ! :   |   +             : 1 v8::internal::MarkCompactCollector::ClearNonLiveReferences()  (in node) + 7180  [0x104a304ec]
+    +         ! :   |   +             :   1 v8::platform::DefaultJobHandle::Join()  (in node) + 24  [0x105905178]
+    +         ! :   |   +             :     1 v8::platform::DefaultJobState::Join()  (in node) + 140  [0x1059049f4]
+    +         ! :   |   +             :       1 absl::CondVar::WaitCommon(absl::Mutex*, absl::synchronization_internal::KernelTimeout)  (in node) + 204  [0x10679d2f8]
+    +         ! :   |   +             :         1 AbslInternalPerThreadSemWait  (in node) + 76  [0x105d984dc]
+    +         ! :   |   +             :           1 absl::synchronization_internal::PthreadWaiter::Wait(absl::synchronization_internal::KernelTimeout)  (in node) + 236  [0x105d986c4]
+    +         ! :   |   +             :             1 _pthread_cond_wait  (in libsystem_pthread.dylib) + 984  [0x1950c009c]
+    +         ! :   |   +             :               1 __psynch_cvwait  (in libsystem_kernel.dylib) + 8  [0x1950813cc]
+    +         ! :   |   +             1 v8::internal::MarkCompactCollector::CollectGarbage()  (in node) + 220  [0x104a2d788]
+    +         ! :   |   +             : 1 v8::internal::MarkCompactCollector::Sweep()  (in node) + 376  [0x104a307d0]
+    +         ! :   |   +             :   1 v8::internal::MarkCompactCollector::SweepLargeSpace(v8::internal::LargeObjectSpace*)  (in node) + 128  [0x104a31f7c]
+    +         ! :   |   +             :     1 v8::internal::MemoryAllocator::RecordMemoryChunkDestroyed(v8::internal::MemoryChunk const*)  (in node) + 244  [0x104a6521c]
+    +         ! :   |   +             1 v8::internal::MarkCompactCollector::CollectGarbage()  (in node) + 228  [0x104a2d790]
+    +         ! :   |   +               1 v8::internal::MarkCompactCollector::Evacuate()  (in node) + 892  [0x104a30dd8]
+    +         ! :   |   +                 1 v8::internal::MarkCompactCollector::UpdatePointersAfterEvacuation()  (in node) + 540  [0x104a474b0]
+    +         ! :   |   +                   1 v8::internal::Heap::IterateRootsIncludingClients(v8::internal::RootVisitor*, v8::base::EnumSet<v8::internal::SkipRoot, int>)  (in node) + 40  [0x104a13ac8]
+    +         ! :   |   +                     1 v8::internal::Heap::IterateRoots(v8::internal::RootVisitor*, v8::base::EnumSet<v8::internal::SkipRoot, int>, v8::internal::Heap::IterateRootsMode)  (in node) + 864  [0x104a138a8]
+    +         ! :   |   +                       1 v8::internal::Heap::IterateWeakRoots(v8::internal::RootVisitor*, v8::base::EnumSet<v8::internal::SkipRoot, int>)  (in node) + 152  [0x104a132ac]
+    +         ! :   |   +                         1 v8::internal::PointersUpdatingVisitor::VisitRootPointers(v8::internal::Root, char const*, v8::internal::OffHeapFullObjectSlot, v8::internal::OffHeapFullObjectSlot)  (in node) + 4  [0x104a593f0]
+    +         ! :   |   3 v8::internal::IncrementalMarkingJob::Task::RunInternal()  (in node) + 256  [0x104a22240]
+    +         ! :   |   + 2 v8::internal::Heap::StartIncrementalMarking(v8::base::Flags<v8::internal::GCFlag, unsigned char, unsigned char>, v8::internal::GarbageCollectionReason, v8::GCCallbackFlags, v8::internal::GarbageCollector)  (in node) + 136  [0x104a08b38]
+    +         ! :   |   + ! 2 v8::internal::Heap::EnsureSweepingCompleted(v8::internal::Heap::SweepingForcedFinalizationMode)  (in node) + 432  [0x104a0b510]
+    +         ! :   |   + !   2 v8::internal::PagedSpaceBase::RefillFreeList()  (in node) + 272  [0x104a80678]
+    +         ! :   |   + !     1 v8::internal::FreeListCategory::Relink(v8::internal::FreeList*)  (in node) + 0  [0x1049f4198]
+    +         ! :   |   + !     1 v8::internal::FreeListManyCached::AddCategory(v8::internal::FreeListCategory*)  (in node) + 104  [0x1049f4f60]
+    +         ! :   |   + 1 v8::internal::Heap::StartIncrementalMarking(v8::base::Flags<v8::internal::GCFlag, unsigned char, unsigned char>, v8::internal::GarbageCollectionReason, v8::GCCallbackFlags, v8::internal::GarbageCollector)  (in node) + 244  [0x104a08ba4]
+    +         ! :   |   +   1 v8::internal::IncrementalMarking::Start(v8::internal::GarbageCollector, v8::internal::GarbageCollectionReason)  (in node) + 1912  [0x104a22f8c]
+    +         ! :   |   +     1 v8::internal::IncrementalMarking::StartMarkingMajor()  (in node) + 756  [0x104a235f0]
+    +         ! :   |   +       1 v8::internal::IncrementalMarking::MarkRoots()  (in node) + 68  [0x104a23ac8]
+    +         ! :   |   +         1 v8::internal::Heap::IterateRoots(v8::internal::RootVisitor*, v8::base::EnumSet<v8::internal::SkipRoot, int>, v8::internal::Heap::IterateRootsMode)  (in node) + 724  [0x104a1381c]
+    +         ! :   |   +           1 v8::internal::RootMarkingVisitor::VisitRootPointers(v8::internal::Root, char const*, v8::internal::FullObjectSlot, v8::internal::FullObjectSlot)  (in node) + 96  [0x104a4af64]
+    +         ! :   |   1 cppgc::internal::Sweeper::SweeperImpl::IncrementalSweepTask::Run()  (in node) + 120  [0x1053fd3ec]
+    +         ! :   |     1 cppgc::internal::Sweeper::SweeperImpl::SweepInForegroundTaskImpl(v8::base::TimeDelta, cppgc::internal::StatsCollector::ScopeId)  (in node) + 76  [0x1053fd4e0]
+    +         ! :   |       1 v8::platform::DefaultJobHandle::IsActive()  (in node) + 28  [0x1059052e0]
+    +         ! :   |         1 absl::Mutex::Lock()  (in node) + 24  [0x105d999dc]
+    +         ! :   |           1 absl::DebugOnlyDeadlockCheck(absl::Mutex*)  (in node) + 0  [0x105d99b44]
+    +         ! :   32 uv__work_done  (in node) + 184  [0x105410d48]
+    +         ! :   | 32 node::ThreadPoolWork::ScheduleWork()::'lambda'(uv_work_s*, int)::__invoke(uv_work_s*, int)  (in node) + 28  [0x1044db5d8]
+    +         ! :   |   32 node::ThreadPoolWork::ScheduleWork()::'lambda'(uv_work_s*, int)::operator()(uv_work_s*, int) const  (in node) + 320  [0x1044db724]
+    +         ! :   |     31 node::(anonymous namespace)::CompressionStream<node::(anonymous namespace)::ZlibContext>::AfterThreadPoolWork(int)  (in node) + 252  [0x1046707d0]
+    +         ! :   |     + 30 node::AsyncWrap::MakeCallback(v8::Local<v8::Function>, int, v8::Local<v8::Value>*)  (in node) + 348  [0x104413f80]
+    +         ! :   |     + ! 25 node::InternalMakeCallback(node::Environment*, v8::Local<v8::Object>, v8::Local<v8::Object>, v8::Local<v8::Function>, int, v8::Local<v8::Value>*, node::async_context, v8::Local<v8::Value>)  (in node) + 492  [0x1043fb3d8]
+    +         ! :   |     + ! : 25 v8::Function::Call(v8::Isolate*, v8::Local<v8::Context>, v8::Local<v8::Value>, int, v8::Local<v8::Value>*)  (in node) + 492  [0x1047c2c90]
+    +         ! :   |     + ! :   25 v8::internal::Execution::Call(v8::internal::Isolate*, v8::internal::DirectHandle<v8::internal::Object>, v8::internal::DirectHandle<v8::internal::Object>, v8::base::Vector<v8::internal::DirectHandle<v8::internal::Object> const>)  (in node) + 120  [0x10494e30c]
+    +         ! :   |     + ! :     25 v8::internal::(anonymous namespace)::Invoke(v8::internal::Isolate*, v8::internal::(anonymous namespace)::InvokeParams const&)  (in node) + 1652  [0x10494e9a8]
+    +         ! :   |     + ! :       25 Builtins_JSEntry  (in node) + 176  [0x105436570]
+    +         ! :   |     + ! :         25 Builtins_JSEntryTrampoline  (in node) + 172  [0x1054368cc]
+    +         ! :   |     + ! :           16 ???  (in <unknown binary>)  [0x1381f0bd4]
+    +         ! :   |     + ! :           | 9 ???  (in <unknown binary>)  [0x13815ac2c]
+    +         ! :   |     + ! :           | + 5 ???  (in <unknown binary>)  [0x13814c798]
+    +         ! :   |     + ! :           | + ! 4 ???  (in <unknown binary>)  [0x138157dd0]
+    +         ! :   |     + ! :           | + ! : 4 ???  (in <unknown binary>)  [0x1381525b4]
+    +         ! :   |     + ! :           | + ! :   4 ???  (in <unknown binary>)  [0x138158254]
+    +         ! :   |     + ! :           | + ! :     2 ???  (in <unknown binary>)  [0x13815e33c]
+    +         ! :   |     + ! :           | + ! :     | 2 Builtins_CallApiCallbackOptimizedNoProfiling  (in node) + 140  [0x10543a94c]
+    +         ! :   |     + ! :           | + ! :     |   2 node::Buffer::(anonymous namespace)::StringSlice<(node::encoding)1>(v8::FunctionCallbackInfo<v8::Value> const&)  (in node) + 732  [0x1044ed8dc]
+    +         ! :   |     + ! :           | + ! :     |     2 node::StringBytes::Encode(v8::Isolate*, char const*, unsigned long, node::encoding)  (in node) + 984  [0x1046946a4]
+    +         ! :   |     + ! :           | + ! :     |       2 node::(anonymous namespace)::ExternString<v8::String::ExternalOneByteStringResource, char>::NewFromCopy(v8::Isolate*, char const*, unsigned long)  (in node) + 88  [0x104694a04]
+    +         ! :   |     + ! :           | + ! :     |         2 v8::String::NewFromOneByte(v8::Isolate*, unsigned char const*, v8::NewStringType, int)  (in node) + 196  [0x1047c98e4]
+    +         ! :   |     + ! :           | + ! :     |           1 v8::internal::FactoryBase<v8::internal::Factory>::NewStringFromOneByte(v8::base::Vector<unsigned char const>, v8::internal::AllocationType)  (in node) + 104  [0x1049cc0a4]
+    +         ! :   |     + ! :           | + ! :     |           + 1 v8::internal::FactoryBase<v8::internal::Factory>::NewRawOneByteString(int, v8::internal::AllocationType)  (in node) + 140  [0x1049cc268]
+    +         ! :   |     + ! :           | + ! :     |           +   1 v8::internal::Factory::AllocateRaw(int, v8::internal::AllocationType, v8::internal::AllocationAlignment)  (in node) + 500  [0x1049de288]
+    +         ! :   |     + ! :           | + ! :     |           +     1 v8::internal::NewLargeObjectSpace::AllocateRaw(v8::internal::LocalHeap*, int)  (in node) + 156  [0x104a27418]
+    +         ! :   |     + ! :           | + ! :     |           +       1 v8::internal::LargeObjectSpace::AllocateLargePage(int, v8::internal::Executability)  (in node) + 116  [0x104a26b60]
+    +         ! :   |     + ! :           | + ! :     |           +         1 v8::internal::MemoryAllocator::AllocateLargePage(v8::internal::LargeObjectSpace*, unsigned long, v8::internal::Executability)  (in node) + 56  [0x104a65968]
+    +         ! :   |     + ! :           | + ! :     |           +           1 v8::internal::MemoryAllocator::AllocateUninitializedChunkAt(v8::internal::BaseSpace*, unsigned long, v8::internal::Executability, unsigned long, v8::internal::PageSize)  (in node) + 152  [0x104a649d8]
+    +         ! :   |     + ! :           | + ! :     |           +             1 v8::internal::MemoryAllocator::AllocateAlignedMemory(unsigned long, unsigned long, unsigned long, v8::internal::AllocationSpace, v8::internal::Executability, void*, v8::internal::VirtualMemory*)  (in node) + 180  [0x104a646d8]
+    +         ! :   |     + ! :           | + ! :     |           +               1 v8::internal::VirtualMemory::VirtualMemory(v8::PageAllocator*, unsigned long, void*, unsigned long, v8::PageAllocator::Permission)  (in node) + 180  [0x104ee64cc]
+    +         ! :   |     + ! :           | + ! :     |           +                 1 v8::base::OS::Allocate(void*, unsigned long, unsigned long, v8::base::OS::MemoryPermission)  (in node) + 168  [0x105ed75c4]
+    +         ! :   |     + ! :           | + ! :     |           +                   1 mmap  (in libsystem_kernel.dylib) + 80  [0x19507e87c]
+    +         ! :   |     + ! :           | + ! :     |           +                     1 __mmap  (in libsystem_kernel.dylib) + 8  [0x19507e8d8]
+    +         ! :   |     + ! :           | + ! :     |           1 v8::internal::FactoryBase<v8::internal::Factory>::NewStringFromOneByte(v8::base::Vector<unsigned char const>, v8::internal::AllocationType)  (in node) + 212  [0x1049cc110]
+    +         ! :   |     + ! :           | + ! :     1 ???  (in <unknown binary>)  [0x138075308]
+    +         ! :   |     + ! :           | + ! :     | 1 ???  (in <unknown binary>)  [0x1381ec750]
+    +         ! :   |     + ! :           | + ! :     |   1 Builtins_CallApiCallbackOptimizedNoProfiling  (in node) + 140  [0x10543a94c]
+    +         ! :   |     + ! :           | + ! :     |     1 node::Buffer::(anonymous namespace)::StringSlice<(node::encoding)1>(v8::FunctionCallbackInfo<v8::Value> const&)  (in node) + 732  [0x1044ed8dc]
+    +         ! :   |     + ! :           | + ! :     |       1 node::StringBytes::Encode(v8::Isolate*, char const*, unsigned long, node::encoding)  (in node) + 984  [0x1046946a4]
+    +         ! :   |     + ! :           | + ! :     |         1 node::(anonymous namespace)::ExternString<v8::String::ExternalOneByteStringResource, char>::NewFromCopy(v8::Isolate*, char const*, unsigned long)  (in node) + 88  [0x104694a04]
+    +         ! :   |     + ! :           | + ! :     |           1 v8::String::NewFromOneByte(v8::Isolate*, unsigned char const*, v8::NewStringType, int)  (in node) + 196  [0x1047c98e4]
+    +         ! :   |     + ! :           | + ! :     |             1 v8::internal::FactoryBase<v8::internal::Factory>::NewStringFromOneByte(v8::base::Vector<unsigned char const>, v8::internal::AllocationType)  (in node) + 208  [0x1049cc10c]
+    +         ! :   |     + ! :           | + ! :     1 ???  (in <unknown binary>)  [0x13815e48c]
+    +         ! :   |     + ! :           | + ! :       1 ???  (in <unknown binary>)  [0x138157004]
+    +         ! :   |     + ! :           | + ! :         1 ???  (in <unknown binary>)  [0x138072150]
+    +         ! :   |     + ! :           | + ! :           1 Builtins_CallApiCallbackGeneric  (in node) + 152  [0x10543a818]
+    +         ! :   |     + ! :           | + ! :             1 node::timers::BindingData::SlowToggleImmediateRef(v8::FunctionCallbackInfo<v8::Value> const&)  (in node) + 0  [0x10469bd98]
+    +         ! :   |     + ! :           | + ! 1 ???  (in <unknown binary>)  [0x138157e80]
+    +         ! :   |     + ! :           | + !   1 ???  (in <unknown binary>)  [0x13814a62c]
+    +         ! :   |     + ! :           | + !     1 ???  (in <unknown binary>)  [0x13815abc4]
+    +         ! :   |     + ! :           | + !       1 ???  (in <unknown binary>)  [0x1381ede88]
+    +         ! :   |     + ! :           | + !         1 ???  (in <unknown binary>)  [0x1381c7688]
+    +         ! :   |     + ! :           | + !           1 ???  (in <unknown binary>)  [0x138047428]
+    +         ! :   |     + ! :           | + !             1 ???  (in <unknown binary>)  [0x138046d74]
+    +         ! :   |     + ! :           | + !               1 Builtins_CEntry_Return1_ArgvOnStack_NoBuiltinExit  (in node) + 84  [0x1054d6234]
+    +         ! :   |     + ! :           | + !                 1 v8::internal::Runtime_LoadIC_Miss(int, unsigned long*, v8::internal::Isolate*)  (in node) + 544  [0x104ac08d4]
+    +         ! :   |     + ! :           | + !                   1 v8::internal::LoadIC::Load(v8::internal::Handle<v8::internal::Union<v8::internal::Smi, v8::internal::HeapNumber, v8::internal::BigInt, v8::internal::String, v8::internal::Symbol, v8::internal::Boolean, v8::internal::Null, v8::internal::Undefined, v8::internal::JSReceiver>>, v8::internal::Handle<v8::internal::Name>, bool, v8::internal::DirectHandle<v8::internal::Union<v8::internal::Smi, v8::internal::HeapNumber, v8::internal::BigInt, v8::internal::String, v8::internal::Symbol, v8::internal::Boolean, v8::internal::Null, v8::internal::Undefined, v8::internal::JSReceiver>>)  (in node) + 652  [0x104ab9230]
+    +         ! :   |     + ! :           | + !                     1 v8::internal::LookupIterator::LookupIterator(v8::internal::Isolate*, v8::internal::DirectHandle<v8::internal::Union<v8::internal::Smi, v8::internal::HeapNumber, v8::internal::BigInt, v8::internal::String, v8::internal::Symbol, v8::internal::Boolean, v8::internal::Null, v8::internal::Undefined, v8::internal::JSReceiver>>, v8::internal::DirectHandle<v8::internal::Name>, unsigned long, v8::internal::DirectHandle<v8::internal::Union<v8::internal::Smi, v8::internal::HeapNumber, v8::internal::BigInt, v8::internal::String, v8::internal::Symbol, v8::internal::Boolean, v8::internal::Null, v8::internal::Undefined, v8::internal::JSReceiver>>, v8::internal::LookupIterator::Configuration)  (in node) + 376  [0x1047aaa88]
+    +         ! :   |     + ! :           | + !                       1 v8::internal::LookupIterator::Start<false>()  (in node) + 172  [0x104d083b4]
+    +         ! :   |     + ! :           | + !                         1 v8::internal::LookupIterator::LookupInRegularHolder<false>(v8::internal::Tagged<v8::internal::Map>, v8::internal::Tagged<v8::internal::JSReceiver>)  (in node) + 552  [0x104d0af08]
+    +         ! :   |     + ! :           | + !                           1 std::ranges::iota_view<int, int>::__iterator std::__lower_bound[abi:nn180100]<std::_RangeAlgPolicy, std::ranges::iota_view<int, int>::__iterator, std::ranges::iota_view<int, int>::__iterator, unsigned int, v8::internal::DescriptorArray::BinarySearch(v8::internal::Tagged<v8::internal::Name>, int)::'lambda'(int)>(std::ranges::iota_view<int, int>::__iterator, std::ranges::iota_view<int, int>::__iterator, unsigned int const&&, v8::internal::DescriptorArray::BinarySearch(v8::internal::Tagged<v8::internal::Name>, int)::'lambda'(int)&)  (in node) + 160  [0x104ae4570]
+    +         ! :   |     + ! :           | + 4 ???  (in <unknown binary>)  [0x13814c454]
+    +         ! :   |     + ! :           | +   4 ???  (in <unknown binary>)  [0x1381e3220]
+    +         ! :   |     + ! :           | +     4 Builtins_TypedArrayPrototypeSet  (in node) + 2584  [0x10558fdd8]
+    +         ! :   |     + ! :           | +       4 _platform_memmove  (in libsystem_platform.dylib) + 180  [0x1950f9374]
+    +         ! :   |     + ! :           | 5 ???  (in <unknown binary>)  [0x13811c74c]
+    +         ! :   |     + ! :           | + 4 ???  (in <unknown binary>)  [0x13810e2b8]
+    +         ! :   |     + ! :           | + ! 3 ???  (in <unknown binary>)  [0x1381198f0]
+    +         ! :   |     + ! :           | + ! : 3 ???  (in <unknown binary>)  [0x1381140d4]
+    +         ! :   |     + ! :           | + ! :   3 ???  (in <unknown binary>)  [0x138119d74]
+    +         ! :   |     + ! :           | + ! :     1 ???  (in <unknown binary>)  [0x13807534c]
+    +         ! :   |     + ! :           | + ! :     | 1 Builtins_JSConstructStubGeneric  (in node) + 376  [0x105435978]
+    +         ! :   |     + ! :           | + ! :     |   1 Builtins_StartTurbofanOptimizeJob  (in node) + 84  [0x10543a314]
+    +         ! :   |     + ! :           | + ! :     |     1 Builtins_CEntry_Return1_ArgvOnStack_NoBuiltinExit  (in node) + 84  [0x1054d6234]
+    +         ! :   |     + ! :           | + ! :     |       1 v8::internal::Runtime_StartTurbofanOptimizeJob(int, unsigned long*, v8::internal::Isolate*)  (in node) + 60  [0x104e65714]
+    +         ! :   |     + ! :           | + ! :     |         1 v8::internal::(anonymous namespace)::CompileOptimized(v8::internal::DirectHandle<v8::internal::JSFunction>, v8::internal::ConcurrencyMode, v8::internal::CodeKind, v8::internal::Isolate*)  (in node) + 348  [0x104e6757c]
+    +         ! :   |     + ! :           | + ! :     |           1 v8::internal::Compiler::CompileOptimized(v8::internal::Isolate*, v8::internal::DirectHandle<v8::internal::JSFunction>, v8::internal::ConcurrencyMode, v8::internal::CodeKind)  (in node) + 212  [0x104861d64]
+    +         ! :   |     + ! :           | + ! :     |             1 v8::internal::(anonymous namespace)::GetOrCompileOptimized(v8::internal::Isolate*, v8::internal::DirectHandle<v8::internal::JSFunction>, v8::internal::ConcurrencyMode, v8::internal::CodeKind, v8::internal::BytecodeOffset, v8::internal::(anonymous namespace)::CompileResultBehavior)  (in node) + 4316  [0x104860b74]
+    +         ! :   |     + ! :           | + ! :     |               1 v8::internal::(anonymous namespace)::PrepareJobWithHandleScope(v8::internal::OptimizedCompilationJob*, v8::internal::Isolate*, v8::internal::OptimizedCompilationInfo*, v8::internal::ConcurrencyMode)  (in node) + 404  [0x1048688f4]
+    +         ! :   |     + ! :           | + ! :     |                 1 v8::internal::compiler::PipelineCompilationJob::PrepareJobImpl(v8::internal::Isolate*)  (in node) + 532  [0x1060fcaa0]
+    +         ! :   |     + ! :           | + ! :     |                   1 v8::internal::compiler::PipelineImpl::InitializeHeapBroker()  (in node) + 728  [0x1060fcf5c]
+    +         ! :   |     + ! :           | + ! :     |                     1 v8::internal::compiler::PipelineImpl::Run<v8::internal::compiler::HeapBrokerInitializationPhase>()  (in node) + 188  [0x1060ffff0]
+    +         ! :   |     + ! :           | + ! :     |                       1 v8::internal::compiler::JSHeapBroker::InitializeAndStartSerializing(v8::internal::DirectHandle<v8::internal::NativeContext>)  (in node) + 212  [0x105fe8090]
+    +         ! :   |     + ! :           | + ! :     |                         1 v8::internal::compiler::RefsMap::RefsMap(unsigned int, v8::internal::compiler::AddressMatcher, v8::internal::Zone*)  (in node) + 120  [0x106138550]
+    +         ! :   |     + ! :           | + ! :     1 ???  (in <unknown binary>)  [0x13811fe5c]
+    +         ! :   |     + ! :           | + ! :     | 1 Builtins_CallApiCallbackOptimizedNoProfiling  (in node) + 140  [0x10543a94c]
+    +         ! :   |     + ! :           | + ! :     |   1 node::Buffer::(anonymous namespace)::StringSlice<(node::encoding)1>(v8::FunctionCallbackInfo<v8::Value> const&)  (in node) + 732  [0x1044ed8dc]
+    +         ! :   |     + ! :           | + ! :     |     1 node::StringBytes::Encode(v8::Isolate*, char const*, unsigned long, node::encoding)  (in node) + 984  [0x1046946a4]
+    +         ! :   |     + ! :           | + ! :     |       1 node::(anonymous namespace)::ExternString<v8::String::ExternalOneByteStringResource, char>::NewFromCopy(v8::Isolate*, char const*, unsigned long)  (in node) + 88  [0x104694a04]
+    +         ! :   |     + ! :           | + ! :     |         1 v8::String::NewFromOneByte(v8::Isolate*, unsigned char const*, v8::NewStringType, int)  (in node) + 196  [0x1047c98e4]
+    +         ! :   |     + ! :           | + ! :     |           1 v8::internal::FactoryBase<v8::internal::Factory>::NewStringFromOneByte(v8::base::Vector<unsigned char const>, v8::internal::AllocationType)  (in node) + 212  [0x1049cc110]
+    +         ! :   |     + ! :           | + ! :     1 ???  (in <unknown binary>)  [0x1381214cc]
+    +         ! :   |     + ! :           | + ! :       1 ???  (in <unknown binary>)  [0x138118a8c]
+    +         ! :   |     + ! :           | + ! :         1 Builtins_KeyedStoreIC  (in node) + 3312  [0x105490df0]
+    +         ! :   |     + ! :           | + ! 1 ???  (in <unknown binary>)  [0x1381199a0]
+    +         ! :   |     + ! :           | + !   1 ???  (in <unknown binary>)  [0x13810ba3c]
+    +         ! :   |     + ! :           | + !     1 Builtins_CEntry_Return1_ArgvOnStack_BuiltinExit  (in node) + 84  [0x1054d6154]
+    +         ! :   |     + ! :           | + !       1 v8::internal::Builtin_ArrayShift(int, unsigned long*, v8::internal::Isolate*)  (in node) + 0  [0x104806274]
+    +         ! :   |     + ! :           | + 1 ???  (in <unknown binary>)  [0x13810e220]
+    +         ! :   |     + ! :           | +   1 Builtins_KeyedLoadIC  (in node) + 4052  [0x105481754]
+    +         ! :   |     + ! :           | +     1 v8::internal::StringTable::TryStringToIndexOrLookupExisting(v8::internal::Isolate*, unsigned long)  (in node) + 272  [0x104d6b98c]
+    +         ! :   |     + ! :           | 1 ???  (in <unknown binary>)  [0x13811c360]
+    +         ! :   |     + ! :           | + 1 Builtins_LoadICTrampoline_Megamorphic  (in node) + 0  [0x10547e1a0]
+    +         ! :   |     + ! :           | 1 ???  (in <unknown binary>)  [0x13811c5d0]
+    +         ! :   |     + ! :           |   1 ???  (in <unknown binary>)  [0x138100494]
+    +         ! :   |     + ! :           |     1 ???  (in <unknown binary>)  [0x138031f40]
+    +         ! :   |     + ! :           |       1 ???  (in <unknown binary>)  [0x13810da64]
+    +         ! :   |     + ! :           |         1 Builtins_CallApiCallbackOptimizedNoProfiling  (in node) + 140  [0x10543a94c]
+    +         ! :   |     + ! :           |           1 node::(anonymous namespace)::CompressionStream<node::(anonymous namespace)::ZlibContext>::Write<true>(v8::FunctionCallbackInfo<v8::Value> const&)  (in node) + 1056  [0x10466f380]
+    +         ! :   |     + ! :           |             1 node::ThreadPoolWork::ScheduleWork()  (in node) + 284  [0x1044d9d38]
+    +         ! :   |     + ! :           |               1 uv_queue_work  (in node) + 152  [0x105410e58]
+    +         ! :   |     + ! :           |                 1 uv_cond_signal  (in node) + 12  [0x105423d74]
+    +         ! :   |     + ! :           |                   1 pthread_cond_signal  (in libsystem_pthread.dylib) + 720  [0x1950beef8]
+    +         ! :   |     + ! :           |                     1 __psynch_cvsignal  (in libsystem_kernel.dylib) + 8  [0x195082820]
+    +         ! :   |     + ! :           5 ???  (in <unknown binary>)  [0x1381f0a10]
+    +         ! :   |     + ! :           | 5 Builtins_CallApiCallbackOptimizedNoProfiling  (in node) + 140  [0x10543a94c]
+    +         ! :   |     + ! :           |   5 node::(anonymous namespace)::CompressionStream<node::(anonymous namespace)::ZlibContext>::Write<true>(v8::FunctionCallbackInfo<v8::Value> const&)  (in node) + 1056  [0x10466f380]
+    +         ! :   |     + ! :           |     5 node::ThreadPoolWork::ScheduleWork()  (in node) + 284  [0x1044d9d38]
+    +         ! :   |     + ! :           |       4 uv_queue_work  (in node) + 152  [0x105410e58]
+    +         ! :   |     + ! :           |       + 4 uv_cond_signal  (in node) + 12  [0x105423d74]
+    +         ! :   |     + ! :           |       +   4 pthread_cond_signal  (in libsystem_pthread.dylib) + 720  [0x1950beef8]
+    +         ! :   |     + ! :           |       +     4 __psynch_cvsignal  (in libsystem_kernel.dylib) + 8  [0x195082820]
+    +         ! :   |     + ! :           |       1 uv_queue_work  (in node) + 112  [0x105410e30]
+    +         ! :   |     + ! :           |         1 uv_mutex_lock  (in node) + 0  [0x1054239fc]
+    +         ! :   |     + ! :           2 ???  (in <unknown binary>)  [0x1381f06bc]
+    +         ! :   |     + ! :           | 2 Builtins_CreateTypedArray  (in node) + 6900,7904  [0x1055885d4,0x1055889c0]
+    +         ! :   |     + ! :           1 ???  (in <unknown binary>)  [0x1381f0794]
+    +         ! :   |     + ! :           | 1 ???  (in <unknown binary>)  [0x13811d67c]
+    +         ! :   |     + ! :           |   1 ???  (in <unknown binary>)  [0x138098478]
+    +         ! :   |     + ! :           |     1 Builtins_KeyedStoreIC  (in node) + 60  [0x10549013c]
+    +         ! :   |     + ! :           1 ???  (in <unknown binary>)  [0x1381f0918]
+    +         ! :   |     + ! :             1 ???  (in <unknown binary>)  [0x1381ff66c]
+    +         ! :   |     + ! :               1 Builtins_CreateTypedArray  (in node) + 8136  [0x105588aa8]
+    +         ! :   |     + ! 4 node::InternalMakeCallback(node::Environment*, v8::Local<v8::Object>, v8::Local<v8::Object>, v8::Local<v8::Function>, int, v8::Local<v8::Value>*, node::async_context, v8::Local<v8::Value>)  (in node) + 452  [0x1043fb3b0]
+    +         ! :   |     + ! : 2 node::InternalCallbackScope::Close()  (in node) + 524  [0x1043fb180]
+    +         ! :   |     + ! : | 2 v8::Function::Call(v8::Isolate*, v8::Local<v8::Context>, v8::Local<v8::Value>, int, v8::Local<v8::Value>*)  (in node) + 492  [0x1047c2c90]
+    +         ! :   |     + ! : |   2 v8::internal::Execution::Call(v8::internal::Isolate*, v8::internal::DirectHandle<v8::internal::Object>, v8::internal::DirectHandle<v8::internal::Object>, v8::base::Vector<v8::internal::DirectHandle<v8::internal::Object> const>)  (in node) + 120  [0x10494e30c]
+    +         ! :   |     + ! : |     2 v8::internal::(anonymous namespace)::Invoke(v8::internal::Isolate*, v8::internal::(anonymous namespace)::InvokeParams const&)  (in node) + 1652  [0x10494e9a8]
+    +         ! :   |     + ! : |       2 Builtins_JSEntry  (in node) + 176  [0x105436570]
+    +         ! :   |     + ! : |         2 Builtins_JSEntryTrampoline  (in node) + 172  [0x1054368cc]
+    +         ! :   |     + ! : |           1 ???  (in <unknown binary>)  [0x1381152d4]
+    +         ! :   |     + ! : |           + 1 ???  (in <unknown binary>)  [0x1381d2934]
+    +         ! :   |     + ! : |           +   1 ???  (in <unknown binary>)  [0x13805e934]
+    +         ! :   |     + ! : |           +     1 ???  (in <unknown binary>)  [0x13803fe80]
+    +         ! :   |     + ! : |           +       1 ???  (in <unknown binary>)  [0x13811e350]
+    +         ! :   |     + ! : |           +         1 ???  (in <unknown binary>)  [0x138052778]
+    +         ! :   |     + ! : |           +           1 Builtins_LoadIC  (in node) + 3620  [0x10547b744]
+    +         ! :   |     + ! : |           +             1 ???  (in <unknown binary>)  [0x1381e2ed8]
+    +         ! :   |     + ! : |           +               1 Builtins_KeyedLoadICTrampoline_Megamorphic  (in node) + 0  [0x1054897a0]
+    +         ! :   |     + ! : |           1 ???  (in <unknown binary>)  [0x1381537b4]
+    +         ! :   |     + ! : |             1 ???  (in <unknown binary>)  [0x1381f3770]
+    +         ! :   |     + ! : |               1 ???  (in <unknown binary>)  [0x13815c450]
+    +         ! :   |     + ! : 1 node::InternalCallbackScope::Close()  (in node) + 168  [0x1043fb01c]
+    +         ! :   |     + ! : | 1 v8::HandleScope::CreateHandle(v8::internal::Isolate*, unsigned long)  (in node) + 0  [0x1047ac1c8]
+    +         ! :   |     + ! : 1 node::InternalCallbackScope::Close()  (in node) + 200  [0x1043fb03c]
+    +         ! :   |     + ! :   1 node::AsyncWrap::EmitAfter(node::Environment*, double)  (in node) + 32  [0x10440ddc4]
+    +         ! :   |     + ! :     1 node::PrincipalRealm::async_hooks_after_function() const  (in node) + 0  [0x1045de034]
+    +         ! :   |     + ! 1 node::InternalMakeCallback(node::Environment*, v8::Local<v8::Object>, v8::Local<v8::Object>, v8::Local<v8::Function>, int, v8::Local<v8::Value>*, node::async_context, v8::Local<v8::Value>)  (in node) + 160  [0x1043fb28c]
+    +         ! :   |     + !   1 node::InternalCallbackScope::InternalCallbackScope(node::Environment*, std::variant<v8::Local<v8::Object>, v8::Local<v8::Object>*>, node::async_context const&, int, v8::Local<v8::Value>)  (in node) + 328  [0x1043fadb0]
+    +         ! :   |     + !     1 node::AsyncHooks::push_async_context(double, double, v8::Local<v8::Object>*)  (in node) + 284  [0x104449ad8]
+    +         ! :   |     + !       1 std::deque<v8::Local<v8::Object>*>::__append(unsigned long)  (in node) + 80  [0x1044a1ebc]
+    +         ! :   |     + !         1 std::deque<v8::Local<v8::Object>*>::__add_back_capacity(unsigned long)  (in node) + 664  [0x1044a2274]
+    +         ! :   |     + !           1 operator new(unsigned long)  (in libc++abi.dylib) + 52  [0x1950793e0]
+    +         ! :   |     + !             1 szone_malloc_should_clear  (in libsystem_malloc.dylib) + 120  [0x194ebfc0c]
+    +         ! :   |     + !               1 small_malloc_should_clear  (in libsystem_malloc.dylib) + 176  [0x194ebfdc8]
+    +         ! :   |     + !                 1 small_malloc_from_free_list  (in libsystem_malloc.dylib) + 348  [0x194ec054c]
+    +         ! :   |     + 1 node::AsyncWrap::MakeCallback(v8::Local<v8::Function>, int, v8::Local<v8::Value>*)  (in node) + 152  [0x104413ebc]
+    +         ! :   |     1 node::(anonymous namespace)::CompressionStream<node::(anonymous namespace)::ZlibContext>::AfterThreadPoolWork(int)  (in node) + 300  [0x104670800]
+    +         ! :   1 node::PerIsolatePlatformData::FlushForegroundTasksInternal()  (in node) + 848  [0x1045c50dc]
+    +         ! :     1 free_tiny  (in libsystem_malloc.dylib) + 184  [0x194ec3888]
+    +         ! 11 uv__io_poll  (in node) + 960  [0x105428eb8]
+    +         ! : 6 uv__stream_io  (in node) + 1320  [0x105421684]
+    +         ! : | 6 node::LibuvStreamWrap::ReadStart()::$_1::__invoke(uv_stream_s*, long, uv_buf_t const*)  (in node) + 88  [0x1046924f0]
+    +         ! : |   6 node::LibuvStreamWrap::OnUvRead(long, uv_buf_t const*)  (in node) + 660  [0x104691dc0]
+    +         ! : |     6 node::EmitToJSStreamListener::OnStreamRead(long, uv_buf_t const&)  (in node) + 440  [0x10468c4ec]
+    +         ! : |       5 node::StreamBase::CallJSOnreadMethod(long, v8::Local<v8::ArrayBuffer>, unsigned long, node::StreamBase::StreamBaseJSChecks)  (in node) + 232  [0x10468ad14]
+    +         ! : |       + 5 node::AsyncWrap::MakeCallback(v8::Local<v8::Function>, int, v8::Local<v8::Value>*)  (in node) + 348  [0x104413f80]
+    +         ! : |       +   5 node::InternalMakeCallback(node::Environment*, v8::Local<v8::Object>, v8::Local<v8::Object>, v8::Local<v8::Function>, int, v8::Local<v8::Value>*, node::async_context, v8::Local<v8::Value>)  (in node) + 492  [0x1043fb3d8]
+    +         ! : |       +     5 v8::Function::Call(v8::Isolate*, v8::Local<v8::Context>, v8::Local<v8::Value>, int, v8::Local<v8::Value>*)  (in node) + 492  [0x1047c2c90]
+    +         ! : |       +       5 v8::internal::Execution::Call(v8::internal::Isolate*, v8::internal::DirectHandle<v8::internal::Object>, v8::internal::DirectHandle<v8::internal::Object>, v8::base::Vector<v8::internal::DirectHandle<v8::internal::Object> const>)  (in node) + 120  [0x10494e30c]
+    +         ! : |       +         5 v8::internal::(anonymous namespace)::Invoke(v8::internal::Isolate*, v8::internal::(anonymous namespace)::InvokeParams const&)  (in node) + 1652  [0x10494e9a8]
+    +         ! : |       +           4 Builtins_JSEntry  (in node) + 176  [0x105436570]
+    +         ! : |       +           ! 4 Builtins_JSEntryTrampoline  (in node) + 172  [0x1054368cc]
+    +         ! : |       +           !   3 ???  (in <unknown binary>)  [0x1380797e4]
+    +         ! : |       +           !   : 2 ???  (in <unknown binary>)  [0x13811aba0]
+    +         ! : |       +           !   : | 2 ???  (in <unknown binary>)  [0x13811d67c]
+    +         ! : |       +           !   : |   2 ???  (in <unknown binary>)  [0x1380984f0]
+    +         ! : |       +           !   : |     1 ???  (in <unknown binary>)  [0x1381edd04]
+    +         ! : |       +           !   : |     + 1 Builtins_NewRestArgumentsElements  (in node) + 24  [0x105595ad8]
+    +         ! : |       +           !   : |     1 ???  (in <unknown binary>)  [0x1381ede88]
+    +         ! : |       +           !   : |       1 ???  (in <unknown binary>)  [0x13810f264]
+    +         ! : |       +           !   : |         1 ???  (in <unknown binary>)  [0x138117858]
+    +         ! : |       +           !   : |           1 ???  (in <unknown binary>)  [0x13810b344]
+    +         ! : |       +           !   : |             1 Builtins_TypedArrayPrototypeSet  (in node) + 2584  [0x10558fdd8]
+    +         ! : |       +           !   : |               1 _platform_memmove  (in libsystem_platform.dylib) + 88  [0x1950f9318]
+    +         ! : |       +           !   : 1 ???  (in <unknown binary>)  [0x138159080]
+    +         ! : |       +           !   :   1 ???  (in <unknown binary>)  [0x13815bb5c]
+    +         ! : |       +           !   :     1 ???  (in <unknown binary>)  [0x1380984f0]
+    +         ! : |       +           !   :       1 ???  (in <unknown binary>)  [0x1381ede88]
+    +         ! : |       +           !   :         1 ???  (in <unknown binary>)  [0x13814d744]
+    +         ! : |       +           !   :           1 ???  (in <unknown binary>)  [0x138155d38]
+    +         ! : |       +           !   :             1 ???  (in <unknown binary>)  [0x1381497f4]
+    +         ! : |       +           !   :               1 Builtins_ArrayPrototypeShift  (in node) + 964  [0x10550b8a4]
+    +         ! : |       +           !   1 ???  (in <unknown binary>)  [0x1380797ac]
+    +         ! : |       +           !     1 Builtins_JSConstructStubGeneric  (in node) + 376  [0x105435978]
+    +         ! : |       +           !       1 ???  (in <unknown binary>)  [0x1381ebb34]
+    +         ! : |       +           !         1 Builtins_JSBuiltinsConstructStub  (in node) + 332  [0x105435b8c]
+    +         ! : |       +           !           1 Builtins_TypedArrayConstructor  (in node) + 0  [0x1054c3e20]
+    +         ! : |       +           1 v8::internal::(anonymous namespace)::Invoke(v8::internal::Isolate*, v8::internal::(anonymous namespace)::InvokeParams const&)  (in node) + 1652  [0x10494e9a8]
+    +         ! : |       +             1 Builtins_JSEntry  (in node) + 152  [0x105436558]
+    +         ! : |       1 node::StreamBase::CallJSOnreadMethod(long, v8::Local<v8::ArrayBuffer>, unsigned long, node::StreamBase::StreamBaseJSChecks)  (in node) + 136  [0x10468acb4]
+    +         ! : 5 uv__stream_io  (in node) + 932  [0x105421500]
+    +         ! :   5 read  (in libsystem_kernel.dylib) + 8  [0x19507e7dc]
+    +         ! 8 uv__io_poll  (in node) + 780  [0x105428e04]
+    +         ! : 5 uv__io_poll_check  (in node) + 52  [0x1054162ac]
+    +         ! : | 4 uv__hrtime  (in node) + 0  [0x105426ad0]
+    +         ! : | 1 uv__hrtime  (in node) + 32  [0x105426af0]
+    +         ! : |   1 mach_continuous_time  (in libsystem_kernel.dylib) + 88  [0x19507e064]
+    +         ! : 2 uv__io_poll_check  (in node) + 40  [0x1054162a0]
+    +         ! : | 2 __error  (in libsystem_kernel.dylib) + 0  [0x19507e5fc]
+    +         ! : 1 uv__io_poll_check  (in node) + 0  [0x105416278]
+    +         ! 1 uv__io_poll  (in node) + 720  [0x105428dc8]
+    +         32 uv_run  (in node) + 836  [0x1054151f8]
+    +         ! 31 uv__run_check  (in node) + 136  [0x10541c3b0]
+    +         ! : 28 node::Environment::CheckImmediate(uv_check_s*)  (in node) + 392  [0x10449a5ec]
+    +         ! : | 28 node::InternalMakeCallback(v8::Isolate*, v8::Local<v8::Object>, v8::Local<v8::Function>, int, v8::Local<v8::Value>*, node::async_context, v8::Local<v8::Value>)  (in node) + 192  [0x1043fb6b8]
+    +         ! : |   26 node::InternalMakeCallback(node::Environment*, v8::Local<v8::Object>, v8::Local<v8::Object>, v8::Local<v8::Function>, int, v8::Local<v8::Value>*, node::async_context, v8::Local<v8::Value>)  (in node) + 492  [0x1043fb3d8]
+    +         ! : |   + 26 v8::Function::Call(v8::Isolate*, v8::Local<v8::Context>, v8::Local<v8::Value>, int, v8::Local<v8::Value>*)  (in node) + 492  [0x1047c2c90]
+    +         ! : |   +   26 v8::internal::Execution::Call(v8::internal::Isolate*, v8::internal::DirectHandle<v8::internal::Object>, v8::internal::DirectHandle<v8::internal::Object>, v8::base::Vector<v8::internal::DirectHandle<v8::internal::Object> const>)  (in node) + 120  [0x10494e30c]
+    +         ! : |   +     26 v8::internal::(anonymous namespace)::Invoke(v8::internal::Isolate*, v8::internal::(anonymous namespace)::InvokeParams const&)  (in node) + 1652  [0x10494e9a8]
+    +         ! : |   +       25 Builtins_JSEntry  (in node) + 176  [0x105436570]
+    +         ! : |   +       ! 25 Builtins_JSEntryTrampoline  (in node) + 172  [0x1054368cc]
+    +         ! : |   +       !   24 ???  (in <unknown binary>)  [0x13806f908]
+    +         ! : |   +       !   : 23 ???  (in <unknown binary>)  [0x138077a84]
+    +         ! : |   +       !   : | 23 Builtins_CEntry_Return1_ArgvOnStack_BuiltinExit  (in node) + 84  [0x1054d6154]
+    +         ! : |   +       !   : |   23 v8::internal::Builtin_JsonParse(int, unsigned long*, v8::internal::Isolate*)  (in node) + 276  [0x104827b48]
+    +         ! : |   +       !   : |     23 v8::internal::JsonParser<unsigned char>::Parse(v8::internal::Isolate*, v8::internal::Handle<v8::internal::String>, v8::internal::Handle<v8::internal::Object>)  (in node) + 120  [0x104b1e3dc]
+    +         ! : |   +       !   : |       23 v8::internal::JsonParser<unsigned char>::ParseJson(v8::internal::DirectHandle<v8::internal::Object>)  (in node) + 364  [0x104b1e624]
+    +         ! : |   +       !   : |         23 v8::internal::JsonParser<unsigned char>::ParseJsonObject(v8::internal::Handle<v8::internal::Map>)  (in node) + 712  [0x104b22210]
+    +         ! : |   +       !   : |           22 v8::internal::JsonParser<unsigned char>::ParseJsonObject(v8::internal::Handle<v8::internal::Map>)  (in node) + 712  [0x104b22210]
+    +         ! : |   +       !   : |           + 10 v8::internal::JsonParser<unsigned char>::ParseJsonObject(v8::internal::Handle<v8::internal::Map>)  (in node) + 696  [0x104b22200]
+    +         ! : |   +       !   : |           + ! 5 v8::internal::JsonParser<unsigned char>::DecodeString<v8::internal::SeqOneByteString>(v8::internal::JsonString const&, v8::internal::Handle<v8::internal::SeqOneByteString>, v8::internal::Handle<v8::internal::String>)  (in node) + 348  [0x104b21a50]
+    +         ! : |   +       !   : |           + ! 5 v8::internal::JsonParser<unsigned char>::MakeString(v8::internal::JsonString const&, v8::internal::Handle<v8::internal::String>)  (in node) + 280  [0x104b1ece0]
+    +         ! : |   +       !   : |           + !   4 v8::internal::FactoryBase<v8::internal::Factory>::NewRawOneByteString(int, v8::internal::AllocationType)  (in node) + 140  [0x1049cc268]
+    +         ! : |   +       !   : |           + !   | 4 v8::internal::Factory::AllocateRaw(int, v8::internal::AllocationType, v8::internal::AllocationAlignment)  (in node) + 500  [0x1049de288]
+    +         ! : |   +       !   : |           + !   |   4 v8::internal::NewLargeObjectSpace::AllocateRaw(v8::internal::LocalHeap*, int)  (in node) + 156  [0x104a27418]
+    +         ! : |   +       !   : |           + !   |     4 v8::internal::LargeObjectSpace::AllocateLargePage(int, v8::internal::Executability)  (in node) + 116  [0x104a26b60]
+    +         ! : |   +       !   : |           + !   |       3 v8::internal::MemoryAllocator::AllocateLargePage(v8::internal::LargeObjectSpace*, unsigned long, v8::internal::Executability)  (in node) + 56  [0x104a65968]
+    +         ! : |   +       !   : |           + !   |       + 3 v8::internal::MemoryAllocator::AllocateUninitializedChunkAt(v8::internal::BaseSpace*, unsigned long, v8::internal::Executability, unsigned long, v8::internal::PageSize)  (in node) + 152  [0x104a649d8]
+    +         ! : |   +       !   : |           + !   |       +   3 v8::internal::MemoryAllocator::AllocateAlignedMemory(unsigned long, unsigned long, unsigned long, v8::internal::AllocationSpace, v8::internal::Executability, void*, v8::internal::VirtualMemory*)  (in node) + 180  [0x104a646d8]
+    +         ! : |   +       !   : |           + !   |       +     3 v8::internal::VirtualMemory::VirtualMemory(v8::PageAllocator*, unsigned long, void*, unsigned long, v8::PageAllocator::Permission)  (in node) + 180  [0x104ee64cc]
+    +         ! : |   +       !   : |           + !   |       +       2 v8::base::OS::Allocate(void*, unsigned long, unsigned long, v8::base::OS::MemoryPermission)  (in node) + 168  [0x105ed75c4]
+    +         ! : |   +       !   : |           + !   |       +       ! 2 mmap  (in libsystem_kernel.dylib) + 80  [0x19507e87c]
+    +         ! : |   +       !   : |           + !   |       +       !   2 __mmap  (in libsystem_kernel.dylib) + 8  [0x19507e8d8]
+    +         ! : |   +       !   : |           + !   |       +       1 v8::base::OS::Allocate(void*, unsigned long, unsigned long, v8::base::OS::MemoryPermission)  (in node) + 268  [0x105ed7628]
+    +         ! : |   +       !   : |           + !   |       +         1 __munmap  (in libsystem_kernel.dylib) + 8  [0x1950815e8]
+    +         ! : |   +       !   : |           + !   |       1 v8::internal::MemoryAllocator::AllocateLargePage(v8::internal::LargeObjectSpace*, unsigned long, v8::internal::Executability)  (in node) + 344  [0x104a65a88]
+    +         ! : |   +       !   : |           + !   |         1 v8::internal::MemoryChunk::MemoryChunk(v8::base::Flags<v8::internal::MemoryChunk::Flag, unsigned long, unsigned long>, v8::internal::MemoryChunkMetadata*)  (in node) + 0  [0x104a66ba8]
+    +         ! : |   +       !   : |           + !   1 v8::internal::FactoryBase<v8::internal::Factory>::NewRawOneByteString(int, v8::internal::AllocationType)  (in node) + 156  [0x1049cc278]
+    +         ! : |   +       !   : |           + 9 v8::internal::JsonParser<unsigned char>::ParseJsonObject(v8::internal::Handle<v8::internal::Map>)  (in node) + 672  [0x104b221e8]
+    +         ! : |   +       !   : |           + ! 9 v8::internal::JsonParser<unsigned char>::ScanJsonString(bool)  (in node) + 116,108  [0x104b20e10,0x104b20e08]
+    +         ! : |   +       !   : |           + 2 v8::internal::JsonParser<unsigned char>::ParseJsonObject(v8::internal::Handle<v8::internal::Map>)  (in node) + 1812  [0x104b2265c]
+    +         ! : |   +       !   : |           + ! 2 v8::internal::JsonParser<unsigned char>::BuildJsonObject<false>(v8::internal::JsonParser<unsigned char>::JsonContinuation const&, v8::internal::DirectHandle<v8::internal::Map>)  (in node) + 928  [0x104b24eb8]
+    +         ! : |   +       !   : |           + !   1 v8::internal::JSDataObjectBuilder::BuildFromIterator<v8::internal::JsonParser<unsigned char>::NamedPropertyIterator&>(v8::internal::JsonParser<unsigned char>::NamedPropertyIterator&, v8::internal::MaybeHandle<v8::internal::FixedArrayBase>)  (in node) + 536  [0x104b2e654]
+    +         ! : |   +       !   : |           + !   : 1 v8::internal::TransitionsAccessor::FindTransitionToField(v8::internal::DirectHandle<v8::internal::String>)  (in node) + 32  [0x104d80df0]
+    +         ! : |   +       !   : |           + !   :   1 v8::internal::TransitionsAccessor::SearchTransition(v8::internal::Tagged<v8::internal::Name>, v8::internal::PropertyKind, v8::internal::PropertyAttributes)  (in node) + 288  [0x104d809f4]
+    +         ! : |   +       !   : |           + !   :     1 v8::internal::TransitionArray::SearchAndGetTarget(v8::internal::PropertyKind, v8::internal::Tagged<v8::internal::Name>, v8::internal::PropertyAttributes)  (in node) + 180  [0x104d80b3c]
+    +         ! : |   +       !   : |           + !   :       1 v8::internal::TransitionArray::BinarySearchName(v8::internal::Tagged<v8::internal::Name>, int*)  (in node) + 144  [0x104d82b7c]
+    +         ! : |   +       !   : |           + !   1 v8::internal::TransitionsAccessor::ExpectedTransition<unsigned char>(v8::base::Vector<unsigned char const>)  (in node) + 64  [0x104b2f36c]
+    +         ! : |   +       !   : |           + 1 v8::internal::JsonParser<unsigned char>::ParseJsonObject(v8::internal::Handle<v8::internal::Map>)  (in node) + 712  [0x104b22210]
+    +         ! : |   +       !   : |           +   1 v8::internal::JsonParser<unsigned char>::ParseJsonObject(v8::internal::Handle<v8::internal::Map>)  (in node) + 1812  [0x104b2265c]
+    +         ! : |   +       !   : |           +     1 v8::internal::JsonParser<unsigned char>::BuildJsonObject<false>(v8::internal::JsonParser<unsigned char>::JsonContinuation const&, v8::internal::DirectHandle<v8::internal::Map>)  (in node) + 928  [0x104b24eb8]
+    +         ! : |   +       !   : |           +       1 v8::internal::JSDataObjectBuilder::BuildFromIterator<v8::internal::JsonParser<unsigned char>::NamedPropertyIterator&>(v8::internal::JsonParser<unsigned char>::NamedPropertyIterator&, v8::internal::MaybeHandle<v8::internal::FixedArrayBase>)  (in node) + 1044  [0x104b2e850]
+    +         ! : |   +       !   : |           1 v8::internal::JsonParser<unsigned char>::ParseJsonObject(v8::internal::Handle<v8::internal::Map>)  (in node) + 1812  [0x104b2265c]
+    +         ! : |   +       !   : |             1 v8::internal::JsonParser<unsigned char>::BuildJsonObject<false>(v8::internal::JsonParser<unsigned char>::JsonContinuation const&, v8::internal::DirectHandle<v8::internal::Map>)  (in node) + 928  [0x104b24eb8]
+    +         ! : |   +       !   : |               1 v8::internal::JSDataObjectBuilder::BuildFromIterator<v8::internal::JsonParser<unsigned char>::NamedPropertyIterator&>(v8::internal::JsonParser<unsigned char>::NamedPropertyIterator&, v8::internal::MaybeHandle<v8::internal::FixedArrayBase>)  (in node) + 536  [0x104b2e654]
+    +         ! : |   +       !   : |                 1 v8::internal::TransitionsAccessor::FindTransitionToField(v8::internal::DirectHandle<v8::internal::String>)  (in node) + 32  [0x104d80df0]
+    +         ! : |   +       !   : |                   1 v8::internal::TransitionsAccessor::SearchTransition(v8::internal::Tagged<v8::internal::Name>, v8::internal::PropertyKind, v8::internal::PropertyAttributes)  (in node) + 288  [0x104d809f4]
+    +         ! : |   +       !   : |                     1 v8::internal::TransitionArray::SearchAndGetTarget(v8::internal::PropertyKind, v8::internal::Tagged<v8::internal::Name>, v8::internal::PropertyAttributes)  (in node) + 180  [0x104d80b3c]
+    +         ! : |   +       !   : |                       1 v8::internal::TransitionArray::BinarySearchName(v8::internal::Tagged<v8::internal::Name>, int*)  (in node) + 200  [0x104d82bb4]
+    +         ! : |   +       !   : 1 ???  (in <unknown binary>)  [0x138077a4c]
+    +         ! : |   +       !   :   1 Builtins_LoadGlobalIC  (in node) + 496  [0x105494590]
+    +         ! : |   +       !   1 ???  (in <unknown binary>)  [0x13806fcec]
+    +         ! : |   +       !     1 Builtins_StrictEqual_Baseline  (in node) + 0  [0x1054aa480]
+    +         ! : |   +       1 v8::internal::(anonymous namespace)::Invoke(v8::internal::Isolate*, v8::internal::(anonymous namespace)::InvokeParams const&)  (in node) + 1652  [0x10494e9a8]
+    +         ! : |   +         1 Builtins_JSEntry  (in node) + 120  [0x105436538]
+    +         ! : |   2 node::InternalMakeCallback(node::Environment*, v8::Local<v8::Object>, v8::Local<v8::Object>, v8::Local<v8::Function>, int, v8::Local<v8::Value>*, node::async_context, v8::Local<v8::Value>)  (in node) + 452  [0x1043fb3b0]
+    +         ! : |     2 node::InternalCallbackScope::Close()  (in node) + 324  [0x1043fb0b8]
+    +         ! : |       2 v8::internal::MicrotaskQueue::PerformCheckpoint(v8::Isolate*)  (in node) + 132  [0x10497ea14]
+    +         ! : |         2 v8::internal::MicrotaskQueue::RunMicrotasks(v8::internal::Isolate*)  (in node) + 356  [0x10497e0b4]
+    +         ! : |           1 v8::internal::Execution::TryRunMicrotasks(v8::internal::Isolate*, v8::internal::MicrotaskQueue*)  (in node) + 56  [0x10494f310]
+    +         ! : |           ! 1 v8::internal::(anonymous namespace)::InvokeWithTryCatch(v8::internal::Isolate*, v8::internal::(anonymous namespace)::InvokeParams const&)  (in node) + 88  [0x10494f1d4]
+    +         ! : |           !   1 v8::internal::(anonymous namespace)::Invoke(v8::internal::Isolate*, v8::internal::(anonymous namespace)::InvokeParams const&)  (in node) + 1580  [0x10494e960]
+    +         ! : |           !     1 Builtins_JSRunMicrotasksEntry  (in node) + 176  [0x1054367b0]
+    +         ! : |           !       1 Builtins_RunMicrotasks  (in node) + 560  [0x105466bd0]
+    +         ! : |           !         1 Builtins_PromiseFulfillReactionJob  (in node) + 56  [0x10554ce58]
+    +         ! : |           !           1 ???  (in <unknown binary>)  [0x1381df6d0]
+    +         ! : |           !             1 ???  (in <unknown binary>)  [0x1381ede88]
+    +         ! : |           !               1 ???  (in <unknown binary>)  [0x1381f75c0]
+    +         ! : |           !                 1 ???  (in <unknown binary>)  [0x1381dc120]
+    +         ! : |           1 v8::internal::Execution::TryRunMicrotasks(v8::internal::Isolate*, v8::internal::MicrotaskQueue*)  (in node) + 0  [0x10494f2d8]
+    +         ! : 2 node::Environment::CheckImmediate(uv_check_s*)  (in node) + 300  [0x10449a590]
+    +         ! : | 1 node::Environment::RunAndClearNativeImmediates(bool)  (in node) + 312  [0x10449b054]
+    +         ! : | + 1 v8::Object::New(v8::Isolate*)  (in node) + 96  [0x1047ca134]
+    +         ! : | +   1 v8::internal::Factory::NewJSObject(v8::internal::DirectHandle<v8::internal::JSFunction>, v8::internal::AllocationType, v8::internal::NewJSObjectType)  (in node) + 104  [0x1049eb914]
+    +         ! : | +     1 v8::internal::Factory::AllocateRawWithAllocationSite(v8::internal::DirectHandle<v8::internal::Map>, v8::internal::AllocationType, v8::internal::DirectHandle<v8::internal::AllocationSite>)  (in node) + 24  [0x1049de304]
+    +         ! : | 1 node::Environment::RunAndClearNativeImmediates(bool)  (in node) + 608  [0x10449b17c]
+    +         ! : |   1 node::InternalCallbackScope::~InternalCallbackScope()  (in node) + 20  [0x1043faa90]
+    +         ! : |     1 node::InternalCallbackScope::Close()  (in node) + 148  [0x1043fb008]
+    +         ! : |       1 node::AsyncHooks::pop_async_context(double)  (in node) + 188  [0x104449e44]
+    +         ! : |         1 std::deque<v8::Local<v8::Object>*>::shrink_to_fit()  (in node) + 164  [0x10444a064]
+    +         ! : |           1 free_small  (in libsystem_malloc.dylib) + 1060  [0x194ec2848]
+    +         ! : 1 node::Environment::CheckImmediate(uv_check_s*)  (in node) + 504  [0x10449a65c]
+    +         ! :   1 v8::HandleScope::~HandleScope()  (in node) + 28  [0x1047ac154]
+    +         ! 1 uv__run_check  (in node) + 28  [0x10541c344]
+    +         1 uv_run  (in node) + 860  [0x105415210]
+    +           1 uv__hrtime  (in node) + 32  [0x105426af0]
+    +             1 mach_continuous_time  (in libsystem_kernel.dylib) + 84  [0x19507e060]
+    630 Thread_33339949: DelayedTaskSchedulerWorker
+    + 630 thread_start  (in libsystem_pthread.dylib) + 8  [0x1950bab80]
+    +   630 _pthread_start  (in libsystem_pthread.dylib) + 136  [0x1950bfbc8]
+    +     630 node::WorkerThreadsTaskRunner::DelayedTaskScheduler::Run()  (in node) + 320  [0x1045c7090]
+    +       630 uv_run  (in node) + 568  [0x1054150ec]
+    +         630 uv__io_poll  (in node) + 764  [0x105428df4]
+    +           630 kevent  (in libsystem_kernel.dylib) + 8  [0x195083d04]
+    630 Thread_33339950: V8Worker
+    + 630 thread_start  (in libsystem_pthread.dylib) + 8  [0x1950bab80]
+    +   630 _pthread_start  (in libsystem_pthread.dylib) + 136  [0x1950bfbc8]
+    +     580 node::(anonymous namespace)::PlatformWorkerThread(void*)  (in node) + 440  [0x1045c474c]
+    +     ! 580 node::TaskQueue<node::TaskQueueEntry>::Locked::BlockingPop()  (in node) + 64  [0x1045c72ac]
+    +     !   580 uv_cond_wait  (in node) + 40  [0x105423dc8]
+    +     !     580 _pthread_cond_wait  (in libsystem_pthread.dylib) + 984  [0x1950c009c]
+    +     !       580 __psynch_cvwait  (in libsystem_kernel.dylib) + 8  [0x1950813cc]
+    +     50 node::(anonymous namespace)::PlatformWorkerThread(void*)  (in node) + 532  [0x1045c47a8]
+    +       50 v8::platform::DefaultJobWorker::Run()  (in node) + 216  [0x10590550c]
+    +         35 v8::internal::ConcurrentMarking::JobTaskMajor::Run(v8::JobDelegate*)  (in node) + 448  [0x1049b7ae0]
+    +         : 15 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 804,904,...  [0x1049a0c0c,0x1049a0c70,...]
+    +         : 7 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 18692  [0x1049a51ec]
+    +         : | 5 v8::internal::JSFunction::BodyDescriptor::IterateBody<v8::internal::ConcurrentMarkingVisitor>(v8::internal::Tagged<v8::internal::Map>, v8::internal::Tagged<v8::internal::HeapObject>, int, v8::internal::ConcurrentMarkingVisitor*)  (in node) + 152,52  [0x1049b019c,0x1049b0138]
+    +         : | 2 v8::internal::JSFunction::BodyDescriptor::IterateBody<v8::internal::ConcurrentMarkingVisitor>(v8::internal::Tagged<v8::internal::Map>, v8::internal::Tagged<v8::internal::HeapObject>, int, v8::internal::ConcurrentMarkingVisitor*)  (in node) + 216  [0x1049b01dc]
+    +         : |   1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 428  [0x1049ad378]
+    +         : |   ! 1 absl::Mutex::UnlockSlow(absl::SynchWaitParams*)  (in node) + 1520  [0x10679ce84]
+    +         : |   !   1 std::chrono::steady_clock::now()  (in libc++.1.dylib) + 8  [0x194fdef30]
+    +         : |   1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 24  [0x1049ad1e4]
+    +         : 4 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 15180  [0x1049a4434]
+    +         : | 4 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 224,8,...  [0x1049ad2ac,0x1049ad1d4,...]
+    +         : 2 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 17592  [0x1049a4da0]
+    +         : | 2 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 32,120  [0x1049ad1ec,0x1049ad244]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 3400  [0x1049a1630]
+    +         : | 1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 32  [0x1049ad1ec]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 4140  [0x1049a1914]
+    +         : | 1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessWeakHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 232  [0x1049ad8bc]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 6864  [0x1049a23b8]
+    +         : | 1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 120  [0x1049ad244]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 10484  [0x1049a31dc]
+    +         : | 1 v8::internal::ObjectVisitor::VisitRelocInfo(v8::internal::Tagged<v8::internal::InstructionStream>, v8::internal::RelocIterator*)  (in node) + 64  [0x104d8ef50]
+    +         : |   1 v8::internal::RelocIteratorBase<v8::internal::RelocInfo>::next()  (in node) + 12  [0x1048b1894]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 13952  [0x1049a3f68]
+    +         : | 1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 104  [0x1049ae78c]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 14700  [0x1049a4254]
+    +         : | 1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 120  [0x1049ad244]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 17752  [0x1049a4e40]
+    +         :   1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 32  [0x1049ad1ec]
+    +         5 v8::internal::maglev::MaglevConcurrentDispatcher::JobTask::Run(v8::JobDelegate*)  (in node) + 532  [0x105061a78]
+    +         : 5 v8::internal::OptimizedCompilationJob::ExecuteJob(v8::internal::RuntimeCallStats*, v8::internal::LocalIsolate*)  (in node) + 60  [0x104858180]
+    +         :   5 v8::internal::maglev::MaglevCompilationJob::ExecuteJobImpl(v8::internal::RuntimeCallStats*, v8::internal::LocalIsolate*)  (in node) + 108  [0x105060468]
+    +         :     3 v8::internal::maglev::MaglevCompiler::Compile(v8::internal::LocalIsolate*, v8::internal::maglev::MaglevCompilationInfo*)  (in node) + 800  [0x104ffa1c4]
+    +         :     | 2 v8::internal::maglev::MaglevGraphBuilder::Build()  (in node) + 620  [0x104ffb4a0]
+    +         :     | + 2 v8::internal::maglev::MaglevGraphBuilder::BuildBody()  (in node) + 328  [0x104ffe378]
+    +         :     | +   2 v8::internal::LocalHeap::SleepInSafepoint()  (in node) + 396  [0x104a28f28]
+    +         :     | +     2 PushAllRegistersAndIterateStack  (in node) + 40  [0x1053e4e30]
+    +         :     | +       2 heap::base::Stack::SetMarkerForBackgroundThreadAndCallbackImpl<v8::internal::LocalHeap::SleepInSafepoint()::$_0>(heap::base::Stack*, void*, void const*)  (in node) + 372  [0x104a296cc]
+    +         :     | +         2 v8::internal::LocalHeap::SleepInSafepoint()::$_0::operator()() const  (in node) + 68  [0x104a29434]
+    +         :     | +           2 v8::internal::IsolateSafepoint::Barrier::WaitInSafepoint()  (in node) + 104  [0x104a87a60]
+    +         :     | +             2 absl::CondVar::WaitCommon(absl::Mutex*, absl::synchronization_internal::KernelTimeout)  (in node) + 204  [0x10679d2f8]
+    +         :     | +               2 AbslInternalPerThreadSemWait  (in node) + 76  [0x105d984dc]
+    +         :     | +                 2 absl::synchronization_internal::PthreadWaiter::Wait(absl::synchronization_internal::KernelTimeout)  (in node) + 236  [0x105d986c4]
+    +         :     | +                   2 _pthread_cond_wait  (in libsystem_pthread.dylib) + 984  [0x1950c009c]
+    +         :     | +                     2 __psynch_cvwait  (in libsystem_kernel.dylib) + 8  [0x1950813cc]
+    +         :     | 1 v8::internal::maglev::MaglevGraphBuilder::Build()  (in node) + 280  [0x104ffb34c]
+    +         :     |   1 v8::internal::maglev::MaglevGraphBuilder::BuildRegisterFrameInitialization(v8::internal::maglev::ValueNode*, v8::internal::maglev::ValueNode*, v8::internal::maglev::ValueNode*)  (in node) + 276  [0x105064984]
+    +         :     |     1 v8::internal::compiler::JSFunctionRef::context(v8::internal::compiler::JSHeapBroker*) const  (in node) + 0  [0x105ff99d4]
+    +         :     1 v8::internal::maglev::MaglevCompiler::Compile(v8::internal::LocalIsolate*, v8::internal::maglev::MaglevCompilationInfo*)  (in node) + 580  [0x104ffa0e8]
+    +         :     | 1 v8::internal::maglev::MaglevGraphBuilder::MaglevGraphBuilder(v8::internal::LocalIsolate*, v8::internal::maglev::MaglevCompilationUnit*, v8::internal::maglev::Graph*, v8::internal::maglev::MaglevCallerDetails*)  (in node) + 144  [0x10506380c]
+    +         :     |   1 v8::internal::compiler::BytecodeAnalysis::BytecodeAnalysis(v8::internal::Handle<v8::internal::BytecodeArray>, v8::internal::Zone*, v8::internal::BytecodeOffset, bool)  (in node) + 0  [0x105f65968]
+    +         :     1 v8::internal::maglev::MaglevCompiler::Compile(v8::internal::LocalIsolate*, v8::internal::maglev::MaglevCompilationInfo*)  (in node) + 4568  [0x104ffb07c]
+    +         :       1 v8::internal::maglev::MaglevCodeGenerator::Assemble()  (in node) + 28  [0x104fba50c]
+    +         :         1 v8::internal::maglev::MaglevCodeGenerator::EmitCode()  (in node) + 5760  [0x104fbbd14]
+    +         :           1 v8::internal::maglev::detail::DeferredCodeInfoImpl<v8::internal::maglev::FunctionEntryStackCheck::GenerateCode(v8::internal::maglev::MaglevAssembler*, v8::internal::maglev::ProcessingState const&)::$_0>::Generate(v8::internal::maglev::MaglevAssembler*)  (in node) + 124  [0x105161698]
+    +         :             1 v8::internal::maglev::FunctionEntryStackCheck::GenerateCode(v8::internal::maglev::MaglevAssembler*, v8::internal::maglev::ProcessingState const&)::$_0::__invoke(v8::internal::maglev::MaglevAssembler*, v8::internal::maglev::ZoneLabelRef, v8::internal::maglev::FunctionEntryStackCheck*, v8::internal::Builtin, int)  (in node) + 172  [0x1051615fc]
+    +         :               1 v8::internal::Assembler::b(v8::internal::Label*)  (in node) + 0  [0x105387e2c]
+    +         4 v8::internal::Sweeper::MajorSweeperJob::RunImpl(v8::JobDelegate*, bool)  (in node) + 700  [0x104aac2b0]
+    +         : 4 v8::internal::Sweeper::ConcurrentMajorSweeper::ConcurrentSweepSpace(v8::internal::AllocationSpace, v8::JobDelegate*)  (in node) + 792  [0x104aac688]
+    +         :   4 v8::internal::Sweeper::RawSweep(v8::internal::PageMetadata*, v8::internal::FreeSpaceTreatmentMode, v8::internal::Sweeper::SweepingMode, bool)  (in node) + 2428,2272,...  [0x104aa1844,0x104aa17a8,...]
+    +         2 v8::internal::Sweeper::MajorSweeperJob::RunImpl(v8::JobDelegate*, bool)  (in node) + 656  [0x104aac284]
+    +         : 2 v8::internal::Sweeper::ConcurrentMajorSweeper::ConcurrentSweepSpace(v8::internal::AllocationSpace, v8::JobDelegate*)  (in node) + 792  [0x104aac688]
+    +         :   2 v8::internal::Sweeper::RawSweep(v8::internal::PageMetadata*, v8::internal::FreeSpaceTreatmentMode, v8::internal::Sweeper::SweepingMode, bool)  (in node) + 2216,2348  [0x104aa1770,0x104aa17f4]
+    +         1 v8::internal::(anonymous namespace)::ParallelClearingJob::Run(v8::JobDelegate*)  (in node) + 112  [0x104a5d8a4]
+    +         : 1 v8::internal::(anonymous namespace)::ClearStringTableJobItem::Run(v8::JobDelegate*)  (in node) + 476  [0x104a5db28]
+    +         :   1 v8::internal::InternalizedStringTableCleaner::VisitRootPointers(v8::internal::Root, char const*, v8::internal::OffHeapFullObjectSlot, v8::internal::OffHeapFullObjectSlot)  (in node) + 36  [0x104a5dbf8]
+    +         1 v8::internal::OptimizingCompileTaskExecutor::CompileTask::Run(v8::JobDelegate*)  (in node) + 596  [0x1048c4074]
+    +         : 1 v8::internal::OptimizingCompileTaskExecutor::CompileTask::RunCompilationJob(v8::internal::Isolate*, v8::internal::LocalIsolate&, v8::internal::TurbofanCompilationJob*)  (in node) + 340  [0x1048c437c]
+    +         :   1 v8::internal::OptimizingCompileTaskExecutor::CompileNext(v8::internal::Isolate*, v8::internal::LocalIsolate&, v8::internal::TurbofanCompilationJob*)  (in node) + 36  [0x1048c03c4]
+    +         :     1 v8::internal::OptimizedCompilationJob::ExecuteJob(v8::internal::RuntimeCallStats*, v8::internal::LocalIsolate*)  (in node) + 60  [0x104858180]
+    +         :       1 v8::internal::compiler::PipelineCompilationJob::ExecuteJobImpl(v8::internal::RuntimeCallStats*, v8::internal::LocalIsolate*)  (in node) + 520  [0x1060fd200]
+    +         :         1 v8::internal::compiler::(anonymous namespace)::GenerateCodeFromTurboshaftGraph(v8::internal::compiler::Linkage*, v8::internal::compiler::turboshaft::Pipeline&, v8::internal::compiler::PipelineImpl*, std::shared_ptr<v8::internal::compiler::OsrHelper>)  (in node) + 196  [0x1060fde30]
+    +         :           1 v8::internal::compiler::turboshaft::Pipeline::AllocateRegisters(v8::internal::compiler::CallDescriptor*)  (in node) + 124  [0x10610a6a8]
+    +         :             1 v8::internal::compiler::turboshaft::Pipeline::AllocateRegisters(v8::internal::RegisterConfiguration const*, v8::internal::compiler::CallDescriptor*, bool)  (in node) + 268  [0x10647c0d8]
+    +         :               1 v8::internal::compiler::turboshaft::Pipeline::Run<v8::internal::compiler::turboshaft::AllocateGeneralRegistersPhase<v8::internal::compiler::LinearScanAllocator>>()  (in node) + 176  [0x10647c9d8]
+    +         :                 1 v8::internal::compiler::LinearScanAllocator::AllocateRegisters()  (in node) + 1748  [0x105f2e80c]
+    +         :                   1 v8::internal::compiler::LinearScanAllocator::UpdateDeferredFixedRanges(v8::internal::compiler::RegisterAllocationData::SpillMode, v8::internal::compiler::InstructionBlock*)  (in node) + 172  [0x105f2dc5c]
+    +         :                     1 v8::internal::compiler::LinearScanAllocator::UpdateDeferredFixedRanges(v8::internal::compiler::RegisterAllocationData::SpillMode, v8::internal::compiler::InstructionBlock*)::$_0::operator()(v8::internal::compiler::LiveRange*) const  (in node) + 68  [0x105f2ddf8]
+    +         :                       1 v8::internal::compiler::LinearScanAllocator::AddToInactive(v8::internal::compiler::LiveRange*)  (in node) + 128  [0x105f2ea14]
+    +         1 v8::internal::Sweeper::MajorSweeperJob::RunImpl(v8::JobDelegate*, bool)  (in node) + 612  [0x104aac258]
+    +         : 1 v8::internal::Sweeper::ConcurrentMajorSweeper::ConcurrentSweepSpace(v8::internal::AllocationSpace, v8::JobDelegate*)  (in node) + 792  [0x104aac688]
+    +         :   1 v8::internal::Sweeper::RawSweep(v8::internal::PageMetadata*, v8::internal::FreeSpaceTreatmentMode, v8::internal::Sweeper::SweepingMode, bool)  (in node) + 2216  [0x104aa1770]
+    +         1 v8::internal::maglev::MaglevConcurrentDispatcher::JobTask::Run(v8::JobDelegate*)  (in node) + 404  [0x1050619f8]
+    +           1 v8::internal::LocalIsolate::LocalIsolate(v8::internal::Isolate*, v8::internal::ThreadKind)  (in node) + 64  [0x104976cfc]
+    +             1 v8::internal::LocalHeap::LocalHeap(v8::internal::Heap*, v8::internal::ThreadKind, std::unique_ptr<v8::internal::PersistentHandles>)  (in node) + 264  [0x104a2837c]
+    +               1 v8::base::RecursiveMutex::Lock()  (in node) + 68  [0x105ed317c]
+    +                 1 absl::Mutex::Lock()  (in node) + 380  [0x105d99b40]
+    +                   1 absl::Mutex::LockSlow(absl::MuHowS const*, absl::Condition const*, int)  (in node) + 76  [0x10679c810]
+    +                     1 absl::Mutex::LockSlowWithDeadline(absl::MuHowS const*, absl::Condition const*, absl::synchronization_internal::KernelTimeout, int)  (in node) + 200  [0x105d9a334]
+    +                       1 absl::Mutex::LockSlowLoop(absl::SynchWaitParams*, int)  (in node) + 636  [0x105d9a7e4]
+    +                         1 absl::Mutex::Block(absl::base_internal::PerThreadSynch*)  (in node) + 136  [0x105d99678]
+    +                           1 AbslInternalPerThreadSemWait  (in node) + 76  [0x105d984dc]
+    +                             1 absl::synchronization_internal::PthreadWaiter::Wait(absl::synchronization_internal::KernelTimeout)  (in node) + 236  [0x105d986c4]
+    +                               1 _pthread_cond_wait  (in libsystem_pthread.dylib) + 984  [0x1950c009c]
+    +                                 1 __psynch_cvwait  (in libsystem_kernel.dylib) + 8  [0x1950813cc]
+    630 Thread_33339951: V8Worker
+    + 630 thread_start  (in libsystem_pthread.dylib) + 8  [0x1950bab80]
+    +   630 _pthread_start  (in libsystem_pthread.dylib) + 136  [0x1950bfbc8]
+    +     583 node::(anonymous namespace)::PlatformWorkerThread(void*)  (in node) + 440  [0x1045c474c]
+    +     ! 583 node::TaskQueue<node::TaskQueueEntry>::Locked::BlockingPop()  (in node) + 64  [0x1045c72ac]
+    +     !   583 uv_cond_wait  (in node) + 40  [0x105423dc8]
+    +     !     583 _pthread_cond_wait  (in libsystem_pthread.dylib) + 984  [0x1950c009c]
+    +     !       583 __psynch_cvwait  (in libsystem_kernel.dylib) + 8  [0x1950813cc]
+    +     47 node::(anonymous namespace)::PlatformWorkerThread(void*)  (in node) + 532  [0x1045c47a8]
+    +       47 v8::platform::DefaultJobWorker::Run()  (in node) + 216  [0x10590550c]
+    +         35 v8::internal::ConcurrentMarking::JobTaskMajor::Run(v8::JobDelegate*)  (in node) + 448  [0x1049b7ae0]
+    +         : 18 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 896,15004,...  [0x1049a0c68,0x1049a4384,...]
+    +         : 6 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 18692  [0x1049a51ec]
+    +         : | 3 v8::internal::JSFunction::BodyDescriptor::IterateBody<v8::internal::ConcurrentMarkingVisitor>(v8::internal::Tagged<v8::internal::Map>, v8::internal::Tagged<v8::internal::HeapObject>, int, v8::internal::ConcurrentMarkingVisitor*)  (in node) + 216  [0x1049b01dc]
+    +         : | + 3 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 52,96,...  [0x1049ad200,0x1049ad22c,...]
+    +         : | 3 v8::internal::JSFunction::BodyDescriptor::IterateBody<v8::internal::ConcurrentMarkingVisitor>(v8::internal::Tagged<v8::internal::Map>, v8::internal::Tagged<v8::internal::HeapObject>, int, v8::internal::ConcurrentMarkingVisitor*)  (in node) + 76,120,...  [0x1049b0150,0x1049b017c,...]
+    +         : 3 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 15180  [0x1049a4434]
+    +         : | 3 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 104,24  [0x1049ad234,0x1049ad1e4]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 1184  [0x1049a0d88]
+    +         : | 1 absl::Mutex::Lock()  (in node) + 380  [0x105d99b40]
+    +         : |   1 absl::Mutex::LockSlow(absl::MuHowS const*, absl::Condition const*, int)  (in node) + 76  [0x10679c810]
+    +         : |     1 absl::Mutex::LockSlowWithDeadline(absl::MuHowS const*, absl::Condition const*, absl::synchronization_internal::KernelTimeout, int)  (in node) + 200  [0x105d9a334]
+    +         : |       1 absl::Mutex::LockSlowLoop(absl::SynchWaitParams*, int)  (in node) + 636  [0x105d9a7e4]
+    +         : |         1 absl::Mutex::Block(absl::base_internal::PerThreadSynch*)  (in node) + 136  [0x105d99678]
+    +         : |           1 AbslInternalPerThreadSemWait  (in node) + 76  [0x105d984dc]
+    +         : |             1 absl::synchronization_internal::PthreadWaiter::Wait(absl::synchronization_internal::KernelTimeout)  (in node) + 236  [0x105d986c4]
+    +         : |               1 _pthread_cond_wait  (in libsystem_pthread.dylib) + 984  [0x1950c009c]
+    +         : |                 1 __psynch_cvwait  (in libsystem_kernel.dylib) + 8  [0x1950813cc]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 1856  [0x1049a1028]
+    +         : | 1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 0  [0x1049ad1cc]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 3320  [0x1049a15e0]
+    +         : | 1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 184  [0x1049ae7dc]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 3400  [0x1049a1630]
+    +         : | 1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 224  [0x1049ad2ac]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 8580  [0x1049a2a6c]
+    +         : | 1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 224  [0x1049ad2ac]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 10484  [0x1049a31dc]
+    +         : | 1 v8::internal::ObjectVisitor::VisitRelocInfo(v8::internal::Tagged<v8::internal::InstructionStream>, v8::internal::RelocIterator*)  (in node) + 64  [0x104d8ef50]
+    +         : |   1 v8::internal::RelocIteratorBase<v8::internal::RelocInfo>::next()  (in node) + 144  [0x1048b1918]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 12492  [0x1049a39b4]
+    +         : | 1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 104  [0x1049ad234]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 17752  [0x1049a4e40]
+    +         :   1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 188  [0x1049ad288]
+    +         4 v8::internal::Sweeper::MajorSweeperJob::RunImpl(v8::JobDelegate*, bool)  (in node) + 520  [0x104aac1fc]
+    +         : 4 v8::internal::Sweeper::ConcurrentMajorSweeper::ConcurrentSweepSpace(v8::internal::AllocationSpace, v8::JobDelegate*)  (in node) + 792  [0x104aac688]
+    +         :   2 v8::internal::Sweeper::RawSweep(v8::internal::PageMetadata*, v8::internal::FreeSpaceTreatmentMode, v8::internal::Sweeper::SweepingMode, bool)  (in node) + 1284,2348  [0x104aa13cc,0x104aa17f4]
+    +         :   1 v8::internal::Sweeper::RawSweep(v8::internal::PageMetadata*, v8::internal::FreeSpaceTreatmentMode, v8::internal::Sweeper::SweepingMode, bool)  (in node) + 1588  [0x104aa14fc]
+    +         :   | 1 v8::internal::Heap::CreateFillerObjectAtBackground(v8::internal::WritableFreeSpace const&)  (in node) + 56  [0x104a0fa5c]
+    +         :   1 v8::internal::Sweeper::RawSweep(v8::internal::PageMetadata*, v8::internal::FreeSpaceTreatmentMode, v8::internal::Sweeper::SweepingMode, bool)  (in node) + 2396  [0x104aa1824]
+    +         :     1 v8::internal::HeapObject::SizeFromMap(v8::internal::Tagged<v8::internal::Map>) const  (in node) + 92  [0x104d401e0]
+    +         2 v8::internal::Sweeper::MajorSweeperJob::RunImpl(v8::JobDelegate*, bool)  (in node) + 656  [0x104aac284]
+    +         : 2 v8::internal::Sweeper::ConcurrentMajorSweeper::ConcurrentSweepSpace(v8::internal::AllocationSpace, v8::JobDelegate*)  (in node) + 792  [0x104aac688]
+    +         :   1 v8::internal::Sweeper::RawSweep(v8::internal::PageMetadata*, v8::internal::FreeSpaceTreatmentMode, v8::internal::Sweeper::SweepingMode, bool)  (in node) + 2396  [0x104aa1824]
+    +         :   | 1 v8::internal::HeapObject::SizeFromMap(v8::internal::Tagged<v8::internal::Map>) const  (in node) + 12  [0x104d40190]
+    +         :   1 v8::internal::Sweeper::RawSweep(v8::internal::PageMetadata*, v8::internal::FreeSpaceTreatmentMode, v8::internal::Sweeper::SweepingMode, bool)  (in node) + 2272  [0x104aa17a8]
+    +         2 v8::internal::maglev::MaglevConcurrentDispatcher::JobTask::Run(v8::JobDelegate*)  (in node) + 404  [0x1050619f8]
+    +         : 2 v8::internal::LocalIsolate::LocalIsolate(v8::internal::Isolate*, v8::internal::ThreadKind)  (in node) + 64  [0x104976cfc]
+    +         :   2 v8::internal::LocalHeap::LocalHeap(v8::internal::Heap*, v8::internal::ThreadKind, std::unique_ptr<v8::internal::PersistentHandles>)  (in node) + 264  [0x104a2837c]
+    +         :     2 v8::base::RecursiveMutex::Lock()  (in node) + 68  [0x105ed317c]
+    +         :       2 absl::Mutex::Lock()  (in node) + 380  [0x105d99b40]
+    +         :         2 absl::Mutex::LockSlow(absl::MuHowS const*, absl::Condition const*, int)  (in node) + 76  [0x10679c810]
+    +         :           2 absl::Mutex::LockSlowWithDeadline(absl::MuHowS const*, absl::Condition const*, absl::synchronization_internal::KernelTimeout, int)  (in node) + 200  [0x105d9a334]
+    +         :             2 absl::Mutex::LockSlowLoop(absl::SynchWaitParams*, int)  (in node) + 636  [0x105d9a7e4]
+    +         :               2 absl::Mutex::Block(absl::base_internal::PerThreadSynch*)  (in node) + 136  [0x105d99678]
+    +         :                 2 AbslInternalPerThreadSemWait  (in node) + 76  [0x105d984dc]
+    +         :                   2 absl::synchronization_internal::PthreadWaiter::Wait(absl::synchronization_internal::KernelTimeout)  (in node) + 236  [0x105d986c4]
+    +         :                     2 _pthread_cond_wait  (in libsystem_pthread.dylib) + 984  [0x1950c009c]
+    +         :                       2 __psynch_cvwait  (in libsystem_kernel.dylib) + 8  [0x1950813cc]
+    +         1 v8::internal::ArrayBufferSweeper::SweepingState::SweepingJob::Run(v8::JobDelegate*)  (in node) + 1020  [0x10499c728]
+    +         : 1 v8::internal::ArrayBufferSweeper::SweepingState::SweepingJob::Sweep(v8::JobDelegate*)  (in node) + 140  [0x10499c894]
+    +         :   1 v8::internal::ArrayBufferSweeper::SweepingState::SweepingJob::SweepListFull(v8::JobDelegate*, v8::internal::ArrayBufferList&, v8::internal::ArrayBufferExtension::Age)  (in node) + 196  [0x10499e210]
+    +         :     1 std::__shared_ptr_pointer<v8::BackingStore*>::__on_zero_shared()  (in node) + 20  [0x104437180]
+    +         :       1 v8::internal::BackingStore::~BackingStore()  (in node) + 96  [0x104b84210]
+    +         :         1 free_medium  (in libsystem_malloc.dylib) + 2292  [0x194ec6dac]
+    +         :           1 mvm_madvise_free_plat  (in libsystem_malloc.dylib) + 108  [0x194edaf48]
+    +         :             1 <deduplicated_symbol>  (in libsystem_malloc.dylib) + 16  [0x194edaec0]
+    +         :               1 madvise  (in libsystem_kernel.dylib) + 8  [0x195080870]
+    +         1 v8::internal::Sweeper::MajorSweeperJob::RunImpl(v8::JobDelegate*, bool)  (in node) + 700  [0x104aac2b0]
+    +         : 1 v8::internal::Sweeper::ConcurrentMajorSweeper::ConcurrentSweepSpace(v8::internal::AllocationSpace, v8::JobDelegate*)  (in node) + 792  [0x104aac688]
+    +         :   1 v8::internal::Sweeper::RawSweep(v8::internal::PageMetadata*, v8::internal::FreeSpaceTreatmentMode, v8::internal::Sweeper::SweepingMode, bool)  (in node) + 2412  [0x104aa1834]
+    +         1 v8::internal::maglev::MaglevConcurrentDispatcher::JobTask::Run(v8::JobDelegate*)  (in node) + 532  [0x105061a78]
+    +         : 1 v8::internal::OptimizedCompilationJob::ExecuteJob(v8::internal::RuntimeCallStats*, v8::internal::LocalIsolate*)  (in node) + 60  [0x104858180]
+    +         :   1 v8::internal::maglev::MaglevCompilationJob::ExecuteJobImpl(v8::internal::RuntimeCallStats*, v8::internal::LocalIsolate*)  (in node) + 108  [0x105060468]
+    +         :     1 v8::internal::maglev::MaglevCompiler::Compile(v8::internal::LocalIsolate*, v8::internal::maglev::MaglevCompilationInfo*)  (in node) + 800  [0x104ffa1c4]
+    +         :       1 v8::internal::maglev::MaglevGraphBuilder::Build()  (in node) + 620  [0x104ffb4a0]
+    +         :         1 v8::internal::maglev::MaglevGraphBuilder::BuildBody()  (in node) + 340  [0x104ffe384]
+    +         :           1 v8::internal::maglev::MaglevGraphBuilder::PeelLoop()  (in node) + 216  [0x1050a8168]
+    +         :             1 v8::internal::maglev::MaglevGraphBuilder::BuildLoopForPeeling()  (in node) + 520  [0x1050a83bc]
+    +         :               1 v8::internal::LocalHeap::SleepInSafepoint()  (in node) + 396  [0x104a28f28]
+    +         :                 1 PushAllRegistersAndIterateStack  (in node) + 40  [0x1053e4e30]
+    +         :                   1 heap::base::Stack::SetMarkerForBackgroundThreadAndCallbackImpl<v8::internal::LocalHeap::SleepInSafepoint()::$_0>(heap::base::Stack*, void*, void const*)  (in node) + 372  [0x104a296cc]
+    +         :                     1 v8::internal::LocalHeap::SleepInSafepoint()::$_0::operator()() const  (in node) + 68  [0x104a29434]
+    +         :                       1 v8::internal::IsolateSafepoint::Barrier::WaitInSafepoint()  (in node) + 104  [0x104a87a60]
+    +         :                         1 absl::CondVar::WaitCommon(absl::Mutex*, absl::synchronization_internal::KernelTimeout)  (in node) + 204  [0x10679d2f8]
+    +         :                           1 AbslInternalPerThreadSemWait  (in node) + 76  [0x105d984dc]
+    +         :                             1 absl::synchronization_internal::PthreadWaiter::Wait(absl::synchronization_internal::KernelTimeout)  (in node) + 236  [0x105d986c4]
+    +         :                               1 _pthread_cond_wait  (in libsystem_pthread.dylib) + 984  [0x1950c009c]
+    +         :                                 1 __psynch_cvwait  (in libsystem_kernel.dylib) + 8  [0x1950813cc]
+    +         1 v8::internal::maglev::MaglevConcurrentDispatcher::JobTask::Run(v8::JobDelegate*)  (in node) + 676  [0x105061b08]
+    +           1 v8::internal::maglev::MaglevCompilationInfo::~MaglevCompilationInfo()  (in node) + 40  [0x104ff8fec]
+    +             1 free_small  (in libsystem_malloc.dylib) + 816  [0x194ec2754]
+    +               1 small_free_list_add_ptr  (in libsystem_malloc.dylib) + 300  [0x194ec48b4]
+    630 Thread_33339952: V8Worker
+    + 630 thread_start  (in libsystem_pthread.dylib) + 8  [0x1950bab80]
+    +   630 _pthread_start  (in libsystem_pthread.dylib) + 136  [0x1950bfbc8]
+    +     585 node::(anonymous namespace)::PlatformWorkerThread(void*)  (in node) + 440  [0x1045c474c]
+    +     ! 585 node::TaskQueue<node::TaskQueueEntry>::Locked::BlockingPop()  (in node) + 64  [0x1045c72ac]
+    +     !   585 uv_cond_wait  (in node) + 40  [0x105423dc8]
+    +     !     585 _pthread_cond_wait  (in libsystem_pthread.dylib) + 984  [0x1950c009c]
+    +     !       585 __psynch_cvwait  (in libsystem_kernel.dylib) + 8  [0x1950813cc]
+    +     45 node::(anonymous namespace)::PlatformWorkerThread(void*)  (in node) + 532  [0x1045c47a8]
+    +       45 v8::platform::DefaultJobWorker::Run()  (in node) + 216  [0x10590550c]
+    +         36 v8::internal::ConcurrentMarking::JobTaskMajor::Run(v8::JobDelegate*)  (in node) + 448  [0x1049b7ae0]
+    +         : 15 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 13492,13864,...  [0x1049a3d9c,0x1049a3f10,...]
+    +         : 5 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 15180  [0x1049a4434]
+    +         : | 4 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 12,32,...  [0x1049ad1d8,0x1049ad1ec,...]
+    +         : | 1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 428  [0x1049ad378]
+    +         : |   1 heap::base::Worklist<v8::internal::Tagged<v8::internal::HeapObject>, (unsigned short)64>::Local::PublishPushSegment()  (in node) + 44  [0x1049ad42c]
+    +         : |     1 absl::Mutex::Lock()  (in node) + 380  [0x105d99b40]
+    +         : |       1 absl::Mutex::LockSlow(absl::MuHowS const*, absl::Condition const*, int)  (in node) + 76  [0x10679c810]
+    +         : |         1 absl::Mutex::LockSlowWithDeadline(absl::MuHowS const*, absl::Condition const*, absl::synchronization_internal::KernelTimeout, int)  (in node) + 200  [0x105d9a334]
+    +         : |           1 absl::Mutex::LockSlowLoop(absl::SynchWaitParams*, int)  (in node) + 636  [0x105d9a7e4]
+    +         : |             1 absl::Mutex::Block(absl::base_internal::PerThreadSynch*)  (in node) + 136  [0x105d99678]
+    +         : |               1 AbslInternalPerThreadSemWait  (in node) + 76  [0x105d984dc]
+    +         : |                 1 absl::synchronization_internal::PthreadWaiter::Wait(absl::synchronization_internal::KernelTimeout)  (in node) + 236  [0x105d986c4]
+    +         : |                   1 _pthread_cond_wait  (in libsystem_pthread.dylib) + 984  [0x1950c009c]
+    +         : |                     1 __psynch_cvwait  (in libsystem_kernel.dylib) + 8  [0x1950813cc]
+    +         : 2 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 1244  [0x1049a0dc4]
+    +         : | 1 _szone_free  (in libsystem_malloc.dylib) + 20  [0x194ed708c]
+    +         : | 1 free_tiny  (in libsystem_malloc.dylib) + 476  [0x194ec39ac]
+    +         : 2 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 3400  [0x1049a1630]
+    +         : | 2 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 52,120  [0x1049ad200,0x1049ad244]
+    +         : 2 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 13880  [0x1049a3f20]
+    +         : | 1 v8::internal::JSFunction::IsOptimizationRequested(v8::internal::Isolate*) const  (in node) + 96  [0x10486865c]
+    +         : | + 1 v8::internal::Isolate::embedded_blob_code() const  (in node) + 0  [0x10495ee48]
+    +         : | 1 v8::internal::JSFunction::IsOptimizationRequested(v8::internal::Isolate*) const  (in node) + 248  [0x1048686f4]
+    +         : |   1 v8::internal::Isolate::embedded_blob_data_size() const  (in node) + 8  [0x10495ee80]
+    +         : 2 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 18692  [0x1049a51ec]
+    +         : | 2 v8::internal::JSFunction::BodyDescriptor::IterateBody<v8::internal::ConcurrentMarkingVisitor>(v8::internal::Tagged<v8::internal::Map>, v8::internal::Tagged<v8::internal::HeapObject>, int, v8::internal::ConcurrentMarkingVisitor*)  (in node) + 216  [0x1049b01dc]
+    +         : |   2 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 24,120  [0x1049ad1e4,0x1049ad244]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 2460  [0x1049a1284]
+    +         : | 1 v8::internal::JSRegExp::BodyDescriptor::IterateBody<v8::internal::ConcurrentMarkingVisitor>(v8::internal::Tagged<v8::internal::Map>, v8::internal::Tagged<v8::internal::HeapObject>, int, v8::internal::ConcurrentMarkingVisitor*)  (in node) + 152  [0x1049b0390]
+    +         : |   1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 120  [0x1049ad244]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 7644  [0x1049a26c4]
+    +         : | 1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 120  [0x1049ad244]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 10484  [0x1049a31dc]
+    +         : | 1 v8::internal::ObjectVisitor::VisitRelocInfo(v8::internal::Tagged<v8::internal::InstructionStream>, v8::internal::RelocIterator*)  (in node) + 56  [0x104d8ef48]
+    +         : |   1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::VisitEmbeddedPointer(v8::internal::Tagged<v8::internal::InstructionStream>, v8::internal::RelocInfo*)  (in node) + 512  [0x1049acff8]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 12492  [0x1049a39b4]
+    +         : | 1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 24  [0x1049ad1e4]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 16560  [0x1049a4998]
+    +         : | 1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 24  [0x1049ad1e4]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 16992  [0x1049a4b48]
+    +         : | 1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 168  [0x1049ad274]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 17752  [0x1049a4e40]
+    +         : | 1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 80  [0x1049ad21c]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 18648  [0x1049a51c0]
+    +         :   1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 216  [0x1049ae7fc]
+    +         4 v8::internal::Sweeper::MajorSweeperJob::RunImpl(v8::JobDelegate*, bool)  (in node) + 656  [0x104aac284]
+    +         : 4 v8::internal::Sweeper::ConcurrentMajorSweeper::ConcurrentSweepSpace(v8::internal::AllocationSpace, v8::JobDelegate*)  (in node) + 792  [0x104aac688]
+    +         :   2 v8::internal::Sweeper::RawSweep(v8::internal::PageMetadata*, v8::internal::FreeSpaceTreatmentMode, v8::internal::Sweeper::SweepingMode, bool)  (in node) + 2396  [0x104aa1824]
+    +         :   | 2 v8::internal::HeapObject::SizeFromMap(v8::internal::Tagged<v8::internal::Map>) const  (in node) + 20,24  [0x104d40198,0x104d4019c]
+    +         :   2 v8::internal::Sweeper::RawSweep(v8::internal::PageMetadata*, v8::internal::FreeSpaceTreatmentMode, v8::internal::Sweeper::SweepingMode, bool)  (in node) + 2396  [0x104aa1824]
+    +         2 v8::internal::ArrayBufferSweeper::SweepingState::SweepingJob::Run(v8::JobDelegate*)  (in node) + 1020  [0x10499c728]
+    +         : 1 v8::internal::ArrayBufferSweeper::SweepingState::SweepingJob::Sweep(v8::JobDelegate*)  (in node) + 116  [0x10499c87c]
+    +         : | 1 v8::internal::ArrayBufferSweeper::SweepingState::SweepingJob::SweepListFull(v8::JobDelegate*, v8::internal::ArrayBufferList&, v8::internal::ArrayBufferExtension::Age)  (in node) + 196  [0x10499e210]
+    +         : |   1 std::__shared_ptr_pointer<v8::BackingStore*>::__on_zero_shared()  (in node) + 20  [0x104437180]
+    +         : |     1 v8::internal::BackingStore::~BackingStore()  (in node) + 96  [0x104b84210]
+    +         : |       1 free_medium  (in libsystem_malloc.dylib) + 2292  [0x194ec6dac]
+    +         : |         1 mvm_madvise_free_plat  (in libsystem_malloc.dylib) + 108  [0x194edaf48]
+    +         : |           1 <deduplicated_symbol>  (in libsystem_malloc.dylib) + 16  [0x194edaec0]
+    +         : |             1 madvise  (in libsystem_kernel.dylib) + 8  [0x195080870]
+    +         : 1 v8::internal::ArrayBufferSweeper::SweepingState::SweepingJob::Sweep(v8::JobDelegate*)  (in node) + 140  [0x10499c894]
+    +         :   1 v8::internal::ArrayBufferSweeper::SweepingState::SweepingJob::SweepListFull(v8::JobDelegate*, v8::internal::ArrayBufferList&, v8::internal::ArrayBufferExtension::Age)  (in node) + 196  [0x10499e210]
+    +         :     1 std::__shared_ptr_pointer<v8::BackingStore*>::__on_zero_shared()  (in node) + 20  [0x104437180]
+    +         :       1 v8::internal::BackingStore::~BackingStore()  (in node) + 96  [0x104b84210]
+    +         :         1 free_medium  (in libsystem_malloc.dylib) + 2292  [0x194ec6dac]
+    +         :           1 mvm_madvise_free_plat  (in libsystem_malloc.dylib) + 108  [0x194edaf48]
+    +         :             1 <deduplicated_symbol>  (in libsystem_malloc.dylib) + 16  [0x194edaec0]
+    +         :               1 madvise  (in libsystem_kernel.dylib) + 8  [0x195080870]
+    +         2 v8::internal::Sweeper::MajorSweeperJob::RunImpl(v8::JobDelegate*, bool)  (in node) + 612  [0x104aac258]
+    +         : 2 v8::internal::Sweeper::ConcurrentMajorSweeper::ConcurrentSweepSpace(v8::internal::AllocationSpace, v8::JobDelegate*)  (in node) + 792  [0x104aac688]
+    +         :   1 v8::internal::Sweeper::RawSweep(v8::internal::PageMetadata*, v8::internal::FreeSpaceTreatmentMode, v8::internal::Sweeper::SweepingMode, bool)  (in node) + 2396  [0x104aa1824]
+    +         :   | 1 v8::internal::HeapObject::SizeFromMap(v8::internal::Tagged<v8::internal::Map>) const  (in node) + 24  [0x104d4019c]
+    +         :   1 v8::internal::Sweeper::RawSweep(v8::internal::PageMetadata*, v8::internal::FreeSpaceTreatmentMode, v8::internal::Sweeper::SweepingMode, bool)  (in node) + 1284  [0x104aa13cc]
+    +         1 v8::internal::maglev::MaglevConcurrentDispatcher::JobTask::Run(v8::JobDelegate*)  (in node) + 532  [0x105061a78]
+    +           1 v8::internal::OptimizedCompilationJob::ExecuteJob(v8::internal::RuntimeCallStats*, v8::internal::LocalIsolate*)  (in node) + 60  [0x104858180]
+    +             1 v8::internal::maglev::MaglevCompilationJob::ExecuteJobImpl(v8::internal::RuntimeCallStats*, v8::internal::LocalIsolate*)  (in node) + 108  [0x105060468]
+    +               1 v8::internal::maglev::MaglevCompiler::Compile(v8::internal::LocalIsolate*, v8::internal::maglev::MaglevCompilationInfo*)  (in node) + 4568  [0x104ffb07c]
+    +                 1 v8::internal::maglev::MaglevCodeGenerator::Assemble()  (in node) + 76  [0x104fba53c]
+    +                   1 v8::internal::maglev::MaglevCodeGenerator::BuildCodeObject(v8::internal::LocalIsolate*)  (in node) + 312  [0x104fbc058]
+    +                     1 v8::internal::Factory::CodeBuilder::BuildInternal(bool)  (in node) + 1848  [0x1049ddcc4]
+    +                       1 v8::internal::InstructionStream::RelocateFromDesc(v8::internal::WritableJitAllocation&, v8::internal::Heap*, v8::internal::CodeDesc const&, unsigned long, v8::internal::PerThreadAssertScopeEmpty<false, (v8::internal::PerThreadAssertType)1, (v8::internal::PerThreadAssertType)2> const&)  (in node) + 160  [0x104c61f68]
+    +                         1 v8::internal::RelocIteratorBase<v8::internal::WritableRelocInfo>::next()  (in node) + 108  [0x1048b1d34]
+    630 Thread_33339953: V8Worker
+    + 630 thread_start  (in libsystem_pthread.dylib) + 8  [0x1950bab80]
+    +   630 _pthread_start  (in libsystem_pthread.dylib) + 136  [0x1950bfbc8]
+    +     585 node::(anonymous namespace)::PlatformWorkerThread(void*)  (in node) + 440  [0x1045c474c]
+    +     ! 585 node::TaskQueue<node::TaskQueueEntry>::Locked::BlockingPop()  (in node) + 64  [0x1045c72ac]
+    +     !   585 uv_cond_wait  (in node) + 40  [0x105423dc8]
+    +     !     585 _pthread_cond_wait  (in libsystem_pthread.dylib) + 984  [0x1950c009c]
+    +     !       585 __psynch_cvwait  (in libsystem_kernel.dylib) + 8  [0x1950813cc]
+    +     45 node::(anonymous namespace)::PlatformWorkerThread(void*)  (in node) + 532  [0x1045c47a8]
+    +       45 v8::platform::DefaultJobWorker::Run()  (in node) + 216  [0x10590550c]
+    +         36 v8::internal::ConcurrentMarking::JobTaskMajor::Run(v8::JobDelegate*)  (in node) + 448  [0x1049b7ae0]
+    +         : 18 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 13928,8464,...  [0x1049a3f50,0x1049a29f8,...]
+    +         : 6 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 18692  [0x1049a51ec]
+    +         : | 3 v8::internal::JSFunction::BodyDescriptor::IterateBody<v8::internal::ConcurrentMarkingVisitor>(v8::internal::Tagged<v8::internal::Map>, v8::internal::Tagged<v8::internal::HeapObject>, int, v8::internal::ConcurrentMarkingVisitor*)  (in node) + 216  [0x1049b01dc]
+    +         : | + 2 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 132,224  [0x1049ad250,0x1049ad2ac]
+    +         : | + 1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 436  [0x1049ad380]
+    +         : | +   1 heap::base::Worklist<v8::internal::Tagged<v8::internal::HeapObject>, (unsigned short)64>::Local::NewSegment() const  (in node) + 32  [0x1049ad480]
+    +         : | +     1 szone_malloc_should_clear  (in libsystem_malloc.dylib) + 84  [0x194ebfbe8]
+    +         : | +       1 tiny_malloc_should_clear  (in libsystem_malloc.dylib) + 52  [0x194ec0ce8]
+    +         : | 3 v8::internal::JSFunction::BodyDescriptor::IterateBody<v8::internal::ConcurrentMarkingVisitor>(v8::internal::Tagged<v8::internal::Map>, v8::internal::Tagged<v8::internal::HeapObject>, int, v8::internal::ConcurrentMarkingVisitor*)  (in node) + 52,220  [0x1049b0138,0x1049b01e0]
+    +         : 3 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 13880  [0x1049a3f20]
+    +         : | 3 v8::internal::JSFunction::IsOptimizationRequested(v8::internal::Isolate*) const  (in node) + 76,188,...  [0x104868648,0x1048686b8,...]
+    +         : 2 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 17592  [0x1049a4da0]
+    +         : | 2 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 144,224  [0x1049ad25c,0x1049ad2ac]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 1184  [0x1049a0d88]
+    +         : | 1 absl::Mutex::Lock()  (in node) + 380  [0x105d99b40]
+    +         : |   1 absl::Mutex::LockSlow(absl::MuHowS const*, absl::Condition const*, int)  (in node) + 76  [0x10679c810]
+    +         : |     1 absl::Mutex::LockSlowWithDeadline(absl::MuHowS const*, absl::Condition const*, absl::synchronization_internal::KernelTimeout, int)  (in node) + 200  [0x105d9a334]
+    +         : |       1 absl::Mutex::LockSlowLoop(absl::SynchWaitParams*, int)  (in node) + 636  [0x105d9a7e4]
+    +         : |         1 absl::Mutex::Block(absl::base_internal::PerThreadSynch*)  (in node) + 136  [0x105d99678]
+    +         : |           1 AbslInternalPerThreadSemWait  (in node) + 76  [0x105d984dc]
+    +         : |             1 absl::synchronization_internal::PthreadWaiter::Wait(absl::synchronization_internal::KernelTimeout)  (in node) + 236  [0x105d986c4]
+    +         : |               1 _pthread_cond_wait  (in libsystem_pthread.dylib) + 984  [0x1950c009c]
+    +         : |                 1 __psynch_cvwait  (in libsystem_kernel.dylib) + 8  [0x1950813cc]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 1808  [0x1049a0ff8]
+    +         : | 1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 8  [0x1049ae72c]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 1856  [0x1049a1028]
+    +         : | 1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 0  [0x1049ad1cc]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 3400  [0x1049a1630]
+    +         : | 1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 184  [0x1049ad284]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 12664  [0x1049a3a60]
+    +         : | 1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 224  [0x1049ad2ac]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 14720  [0x1049a4268]
+    +         : | 1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 436  [0x1049ad380]
+    +         : |   1 heap::base::Worklist<v8::internal::Tagged<v8::internal::HeapObject>, (unsigned short)64>::Local::NewSegment() const  (in node) + 32  [0x1049ad480]
+    +         : |     1 szone_malloc_should_clear  (in libsystem_malloc.dylib) + 84  [0x194ebfbe8]
+    +         : |       1 tiny_malloc_should_clear  (in libsystem_malloc.dylib) + 292  [0x194ec0dd8]
+    +         : 1 v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node) + 15180  [0x1049a4434]
+    +         :   1 v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 32  [0x1049ad1ec]
+    +         4 v8::internal::Sweeper::MajorSweeperJob::RunImpl(v8::JobDelegate*, bool)  (in node) + 520  [0x104aac1fc]
+    +         : 4 v8::internal::Sweeper::ConcurrentMajorSweeper::ConcurrentSweepSpace(v8::internal::AllocationSpace, v8::JobDelegate*)  (in node) + 792  [0x104aac688]
+    +         :   3 v8::internal::Sweeper::RawSweep(v8::internal::PageMetadata*, v8::internal::FreeSpaceTreatmentMode, v8::internal::Sweeper::SweepingMode, bool)  (in node) + 2296,2348,...  [0x104aa17c0,0x104aa17f4,...]
+    +         :   1 v8::internal::Sweeper::RawSweep(v8::internal::PageMetadata*, v8::internal::FreeSpaceTreatmentMode, v8::internal::Sweeper::SweepingMode, bool)  (in node) + 2396  [0x104aa1824]
+    +         :     1 v8::internal::HeapObject::SizeFromMap(v8::internal::Tagged<v8::internal::Map>) const  (in node) + 36  [0x104d401a8]
+    +         3 v8::internal::Sweeper::MajorSweeperJob::RunImpl(v8::JobDelegate*, bool)  (in node) + 700  [0x104aac2b0]
+    +         : 3 v8::internal::Sweeper::ConcurrentMajorSweeper::ConcurrentSweepSpace(v8::internal::AllocationSpace, v8::JobDelegate*)  (in node) + 792  [0x104aac688]
+    +         :   2 v8::internal::Sweeper::RawSweep(v8::internal::PageMetadata*, v8::internal::FreeSpaceTreatmentMode, v8::internal::Sweeper::SweepingMode, bool)  (in node) + 2396  [0x104aa1824]
+    +         :   | 2 v8::internal::HeapObject::SizeFromMap(v8::internal::Tagged<v8::internal::Map>) const  (in node) + 20,36  [0x104d40198,0x104d401a8]
+    +         :   1 v8::internal::Sweeper::RawSweep(v8::internal::PageMetadata*, v8::internal::FreeSpaceTreatmentMode, v8::internal::Sweeper::SweepingMode, bool)  (in node) + 2212  [0x104aa176c]
+    +         1 v8::internal::Sweeper::MajorSweeperJob::RunImpl(v8::JobDelegate*, bool)  (in node) + 612  [0x104aac258]
+    +         : 1 v8::internal::Sweeper::ConcurrentMajorSweeper::ConcurrentSweepSpace(v8::internal::AllocationSpace, v8::JobDelegate*)  (in node) + 792  [0x104aac688]
+    +         :   1 v8::internal::Sweeper::RawSweep(v8::internal::PageMetadata*, v8::internal::FreeSpaceTreatmentMode, v8::internal::Sweeper::SweepingMode, bool)  (in node) + 2348  [0x104aa17f4]
+    +         1 v8::internal::maglev::MaglevConcurrentDispatcher::JobTask::Run(v8::JobDelegate*)  (in node) + 1468  [0x105061e20]
+    +           1 v8::internal::LocalIsolate::~LocalIsolate()  (in node) + 60  [0x104976e5c]
+    +             1 v8::internal::LocalHeap::~LocalHeap()  (in node) + 188  [0x104a285b0]
+    +               1 std::__optional_destruct_base<v8::internal::MainAllocator, false>::~__optional_destruct_base[abi:nn180100]()  (in node) + 48  [0x104a29340]
+    +                 1 v8::internal::PagedSpaceAllocatorPolicy::~PagedSpaceAllocatorPolicy()  (in node) + 0  [0x104a2c000]
+    630 Thread_33339954: SignalInspector
+    + 630 thread_start  (in libsystem_pthread.dylib) + 8  [0x1950bab80]
+    +   630 _pthread_start  (in libsystem_pthread.dylib) + 136  [0x1950bfbc8]
+    +     630 node::inspector::(anonymous namespace)::StartIoThreadMain(void*)  (in node) + 56  [0x1046cdbd8]
+    +       630 uv_sem_wait  (in node) + 24  [0x105423c44]
+    +         630 semaphore_wait_trap  (in libsystem_kernel.dylib) + 8  [0x19507dbb0]
+    630 Thread_33339957
+    + 630 start_wqthread  (in libsystem_pthread.dylib) + 8  [0x1950bab74]
+    +   630 _pthread_wqthread  (in libsystem_pthread.dylib) + 368  [0x1950bbe6c]
+    +     630 __workq_kernreturn  (in libsystem_kernel.dylib) + 8  [0x19507f8b0]
+    630 Thread_33339960: libuv-worker
+    + 630 thread_start  (in libsystem_pthread.dylib) + 8  [0x1950bab80]
+    +   630 _pthread_start  (in libsystem_pthread.dylib) + 136  [0x1950bfbc8]
+    +     591 worker  (in node) + 392  [0x1054111cc]
+    +     ! 591 uv_cond_wait  (in node) + 40  [0x105423dc8]
+    +     !   591 _pthread_cond_wait  (in libsystem_pthread.dylib) + 984  [0x1950c009c]
+    +     !     591 __psynch_cvwait  (in libsystem_kernel.dylib) + 8  [0x1950813cc]
+    +     38 worker  (in node) + 268  [0x105411150]
+    +     ! 38 node::ThreadPoolWork::ScheduleWork()::'lambda'(uv_work_s*)::__invoke(uv_work_s*)  (in node) + 24  [0x1044db398]
+    +     !   38 node::ThreadPoolWork::ScheduleWork()::'lambda'(uv_work_s*)::operator()(uv_work_s*) const  (in node) + 244  [0x1044db498]
+    +     !     38 node::(anonymous namespace)::CompressionStream<node::(anonymous namespace)::ZlibContext>::DoThreadPoolWork()  (in node) + 128  [0x104670578]
+    +     !       35 inflate  (in node) + 5716  [0x105dd79ac]
+    +     !       : 35 inflate_fast_chunk_  (in node) + 232,320,...  [0x105dd54e8,0x105dd5540,...]
+    +     !       2 inflate  (in node) + 3060,5912  [0x105dd6f4c,0x105dd7a70]
+    +     !       1 inflate  (in node) + 3148  [0x105dd6fa4]
+    +     !         1 inflate_table  (in node) + 88  [0x10540b7d4]
+    +     1 worker  (in node) + 324  [0x105411188]
+    +       1 uv_async_send  (in node) + 232  [0x1054145b0]
+    +         1 kevent  (in libsystem_kernel.dylib) + 8  [0x195083d04]
+    630 Thread_33339961: libuv-worker
+    + 630 thread_start  (in libsystem_pthread.dylib) + 8  [0x1950bab80]
+    +   630 _pthread_start  (in libsystem_pthread.dylib) + 136  [0x1950bfbc8]
+    +     607 worker  (in node) + 392  [0x1054111cc]
+    +     ! 607 uv_cond_wait  (in node) + 40  [0x105423dc8]
+    +     !   606 _pthread_cond_wait  (in libsystem_pthread.dylib) + 984  [0x1950c009c]
+    +     !   : 606 __psynch_cvwait  (in libsystem_kernel.dylib) + 8  [0x1950813cc]
+    +     !   1 pthread_cond_wait  (in libsystem_pthread.dylib) + 0  [0x1950bc928]
+    +     23 worker  (in node) + 268  [0x105411150]
+    +       23 node::ThreadPoolWork::ScheduleWork()::'lambda'(uv_work_s*)::__invoke(uv_work_s*)  (in node) + 24  [0x1044db398]
+    +         23 node::ThreadPoolWork::ScheduleWork()::'lambda'(uv_work_s*)::operator()(uv_work_s*) const  (in node) + 244  [0x1044db498]
+    +           23 node::(anonymous namespace)::CompressionStream<node::(anonymous namespace)::ZlibContext>::DoThreadPoolWork()  (in node) + 128  [0x104670578]
+    +             21 inflate  (in node) + 5716  [0x105dd79ac]
+    +             : 21 inflate_fast_chunk_  (in node) + 232,608,...  [0x105dd54e8,0x105dd5660,...]
+    +             1 inflate  (in node) + 3148  [0x105dd6fa4]
+    +             : 1 inflate_table  (in node) + 88  [0x10540b7d4]
+    +             1 inflate  (in node) + 5808  [0x105dd7a08]
+    630 Thread_33339962: libuv-worker
+    + 630 thread_start  (in libsystem_pthread.dylib) + 8  [0x1950bab80]
+    +   630 _pthread_start  (in libsystem_pthread.dylib) + 136  [0x1950bfbc8]
+    +     587 worker  (in node) + 392  [0x1054111cc]
+    +     ! 587 uv_cond_wait  (in node) + 40  [0x105423dc8]
+    +     !   587 _pthread_cond_wait  (in libsystem_pthread.dylib) + 984  [0x1950c009c]
+    +     !     587 __psynch_cvwait  (in libsystem_kernel.dylib) + 8  [0x1950813cc]
+    +     42 worker  (in node) + 268  [0x105411150]
+    +     ! 42 node::ThreadPoolWork::ScheduleWork()::'lambda'(uv_work_s*)::__invoke(uv_work_s*)  (in node) + 24  [0x1044db398]
+    +     !   42 node::ThreadPoolWork::ScheduleWork()::'lambda'(uv_work_s*)::operator()(uv_work_s*) const  (in node) + 244  [0x1044db498]
+    +     !     42 node::(anonymous namespace)::CompressionStream<node::(anonymous namespace)::ZlibContext>::DoThreadPoolWork()  (in node) + 128  [0x104670578]
+    +     !       40 inflate  (in node) + 5716  [0x105dd79ac]
+    +     !       : 40 inflate_fast_chunk_  (in node) + 232,640,...  [0x105dd54e8,0x105dd5680,...]
+    +     !       1 inflate  (in node) + 3148  [0x105dd6fa4]
+    +     !       : 1 inflate_table  (in node) + 1172  [0x10540bc10]
+    +     !       1 inflate  (in node) + 6112  [0x105dd7b38]
+    +     1 worker  (in node) + 324  [0x105411188]
+    +       1 uv_async_send  (in node) + 232  [0x1054145b0]
+    +         1 kevent  (in libsystem_kernel.dylib) + 8  [0x195083d04]
+    630 Thread_33339963: libuv-worker
+      630 thread_start  (in libsystem_pthread.dylib) + 8  [0x1950bab80]
+        630 _pthread_start  (in libsystem_pthread.dylib) + 136  [0x1950bfbc8]
+          581 worker  (in node) + 392  [0x1054111cc]
+          ! 581 uv_cond_wait  (in node) + 40  [0x105423dc8]
+          !   581 _pthread_cond_wait  (in libsystem_pthread.dylib) + 984  [0x1950c009c]
+          !     581 __psynch_cvwait  (in libsystem_kernel.dylib) + 8  [0x1950813cc]
+          46 worker  (in node) + 268  [0x105411150]
+          ! 46 node::ThreadPoolWork::ScheduleWork()::'lambda'(uv_work_s*)::__invoke(uv_work_s*)  (in node) + 24  [0x1044db398]
+          !   46 node::ThreadPoolWork::ScheduleWork()::'lambda'(uv_work_s*)::operator()(uv_work_s*) const  (in node) + 244  [0x1044db498]
+          !     46 node::(anonymous namespace)::CompressionStream<node::(anonymous namespace)::ZlibContext>::DoThreadPoolWork()  (in node) + 128  [0x104670578]
+          !       41 inflate  (in node) + 5716  [0x105dd79ac]
+          !       : 41 inflate_fast_chunk_  (in node) + 192,232,...  [0x105dd54c0,0x105dd54e8,...]
+          !       3 inflate  (in node) + 0,2564,...  [0x105dd6358,0x105dd6d5c,...]
+          !       1 inflate  (in node) + 3148  [0x105dd6fa4]
+          !       : 1 inflate_table  (in node) + 1156  [0x10540bc00]
+          !       1 inflate  (in node) + 3764  [0x105dd720c]
+          !         1 inflate_table  (in node) + 1180  [0x10540bc18]
+          2 worker  (in node) + 324  [0x105411188]
+          ! 2 uv_async_send  (in node) + 232  [0x1054145b0]
+          !   2 kevent  (in libsystem_kernel.dylib) + 8  [0x195083d04]
+          1 worker  (in node) + 252  [0x105411140]
+            1 uv_mutex_unlock  (in node) + 12  [0x105423a54]
+              1 _pthread_mutex_firstfit_unlock_slow  (in libsystem_pthread.dylib) + 252  [0x1950bab14]
+
+Total number in stack (recursive counted multiple, when >=5):
+        29       v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 0  [0x1049ad1cc]
+        16       __psynch_cvwait  (in libsystem_kernel.dylib) + 0  [0x1950813c4]
+        16       _pthread_cond_wait  (in libsystem_pthread.dylib) + 984  [0x1950c009c]
+        11       v8::internal::Sweeper::ConcurrentMajorSweeper::ConcurrentSweepSpace(v8::internal::AllocationSpace, v8::JobDelegate*)  (in node) + 792  [0x104aac688]
+        11       v8::internal::Sweeper::RawSweep(v8::internal::PageMetadata*, v8::internal::FreeSpaceTreatmentMode, v8::internal::Sweeper::SweepingMode, bool)  (in node) + 0  [0x104aa0ec8]
+        10       _pthread_start  (in libsystem_pthread.dylib) + 136  [0x1950bfbc8]
+        10       thread_start  (in libsystem_pthread.dylib) + 8  [0x1950bab80]
+        8       AbslInternalPerThreadSemWait  (in node) + 76  [0x105d984dc]
+        8       absl::synchronization_internal::PthreadWaiter::Wait(absl::synchronization_internal::KernelTimeout)  (in node) + 236  [0x105d986c4]
+        8       uv_cond_wait  (in node) + 40  [0x105423dc8]
+        7       v8::internal::MarkingVisitorBase<v8::internal::MainMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node) + 0  [0x104a5b470]
+        6       v8::internal::(anonymous namespace)::Invoke(v8::internal::Isolate*, v8::internal::(anonymous namespace)::InvokeParams const&)  (in node) + 1652  [0x10494e9a8]
+        6       v8::internal::HeapObject::SizeFromMap(v8::internal::Tagged<v8::internal::Map>) const  (in node) + 0  [0x104d40184]
+        6       v8::internal::Sweeper::RawSweep(v8::internal::PageMetadata*, v8::internal::FreeSpaceTreatmentMode, v8::internal::Sweeper::SweepingMode, bool)  (in node) + 2396  [0x104aa1824]
+        5       Builtins_CallApiCallbackOptimizedNoProfiling  (in node) + 140  [0x10543a94c]
+        5       absl::Mutex::Block(absl::base_internal::PerThreadSynch*)  (in node) + 136  [0x105d99678]
+        5       absl::Mutex::Lock()  (in node) + 380  [0x105d99b40]
+        5       absl::Mutex::LockSlow(absl::MuHowS const*, absl::Condition const*, int)  (in node) + 76  [0x10679c810]
+        5       absl::Mutex::LockSlowLoop(absl::SynchWaitParams*, int)  (in node) + 636  [0x105d9a7e4]
+        5       absl::Mutex::LockSlowWithDeadline(absl::MuHowS const*, absl::Condition const*, absl::synchronization_internal::KernelTimeout, int)  (in node) + 200  [0x105d9a334]
+        5       inflate_table  (in node) + 0  [0x10540b77c]
+        5       kevent  (in libsystem_kernel.dylib) + 0  [0x195083cfc]
+
+Sort by top of stack, same collapsed (when >= 5):
+        __psynch_cvwait  (in libsystem_kernel.dylib)        4708
+        kevent  (in libsystem_kernel.dylib)        1134
+        __workq_kernreturn  (in libsystem_kernel.dylib)        630
+        semaphore_wait_trap  (in libsystem_kernel.dylib)        630
+        inflate_fast_chunk_  (in node)        137
+        v8::internal::ConcurrentMarking::RunMajor(v8::JobDelegate*, v8::base::EnumSet<v8::internal::CodeFlushMode, int>, unsigned int, bool)  (in node)        66
+        v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node)        44
+        v8::internal::Sweeper::RawSweep(v8::internal::PageMetadata*, v8::internal::FreeSpaceTreatmentMode, v8::internal::Sweeper::SweepingMode, bool)  (in node)        19
+        v8::internal::MarkCompactCollector::ProcessMarkingWorklist<(v8::internal::MarkCompactCollector::MarkingWorklistProcessingMode)0>(v8::base::TimeDelta, unsigned long)  (in node)        14
+        v8::internal::JSFunction::BodyDescriptor::IterateBody<v8::internal::ConcurrentMarkingVisitor>(v8::internal::Tagged<v8::internal::Map>, v8::internal::Tagged<v8::internal::HeapObject>, int, v8::internal::ConcurrentMarkingVisitor*)  (in node)        11
+        v8::internal::MarkingVisitorBase<v8::internal::MainMarkingVisitor>::ProcessStrongHeapObject<v8::internal::FullHeapObjectSlot>(v8::internal::Tagged<v8::internal::HeapObject>, v8::internal::FullHeapObjectSlot, v8::internal::Tagged<v8::internal::HeapObject>)  (in node)        10
+        v8::internal::JsonParser<unsigned char>::ScanJsonString(bool)  (in node)        9
+        v8::internal::HeapObject::SizeFromMap(v8::internal::Tagged<v8::internal::Map>) const  (in node)        8
+        inflate  (in node)        7
+        __munmap  (in libsystem_kernel.dylib)        6
+        __psynch_cvsignal  (in libsystem_kernel.dylib)        5
+        _platform_memmove  (in libsystem_platform.dylib)        5
+        inflate_table  (in node)        5
+        read  (in libsystem_kernel.dylib)        5
+        v8::internal::JsonParser<unsigned char>::DecodeString<v8::internal::SeqOneByteString>(v8::internal::JsonString const&, v8::internal::Handle<v8::internal::SeqOneByteString>, v8::internal::Handle<v8::internal::String>)  (in node)        5
+
+Binary Images:
+       0x1043ec000 -        0x109b19b9f +node (0) <E6667961-178E-3F1D-A8C3-CAF589377CD1> /Users/*/Documents/*/node
+       0x194cc4000 -        0x194d17893  libobjc.A.dylib (940.4) <E6F30EB4-FACF-3381-AE46-10E556F1FC39> /usr/lib/libobjc.A.dylib
+       0x194d18000 -        0x194db357b  dyld (1.0.0 - 1286.10) <AA296324-126C-32DD-9026-5B744F8EB283> /usr/lib/dyld
+       0x194db4000 -        0x194db7168  libsystem_blocks.dylib (96) <EFADF6A6-C85B-37E9-9514-8E7A1EBAC882> /usr/lib/system/libsystem_blocks.dylib
+       0x194db8000 -        0x194e0297f  libxpc.dylib (2894.140.12.705.2) <8B32C66C-9490-3212-A213-DB54FBFC6967> /usr/lib/system/libxpc.dylib
+       0x194e03000 -        0x194e1e87f  libsystem_trace.dylib (1643.120.5) <1B02E60B-7CA1-3B9F-9C19-ED966D9E3DF3> /usr/lib/system/libsystem_trace.dylib
+       0x194e1f000 -        0x194ebd3b7  libcorecrypto.dylib (1736.140.2) <2D80D106-1EAB-3D1F-B1AE-FB45BF588C2E> /usr/lib/system/libcorecrypto.dylib
+       0x194ebe000 -        0x194f0506f  libsystem_malloc.dylib (715.140.5) <3CE1E59C-91C8-3259-93D8-7DED66842979> /usr/lib/system/libsystem_malloc.dylib
+       0x194f06000 -        0x194f4c75f  libdispatch.dylib (1521.140.2) <63A54CE1-2AB6-3673-82E4-D8489D811475> /usr/lib/system/libdispatch.dylib
+       0x194f4d000 -        0x194f4fd1b  libsystem_featureflags.dylib (97) <9AF1C2C7-1C15-3F0E-9C0F-4524BD4EB4CF> /usr/lib/system/libsystem_featureflags.dylib
+       0x194f50000 -        0x194fd134b  libsystem_c.dylib (1698.140.3.705.1) <2F87F7E4-6D67-339D-9DB1-756A5618CFC7> /usr/lib/system/libsystem_c.dylib
+       0x194fd2000 -        0x19505eff7  libc++.1.dylib (1900.181) <EB94C9FE-91DA-3E9F-9C45-7B476FEAAEAE> /usr/lib/libc++.1.dylib
+       0x19505f000 -        0x19507cfff  libc++abi.dylib (1900.181) <BC670272-BF32-38AC-AE3F-F06EDA80BE30> /usr/lib/libc++abi.dylib
+       0x19507d000 -        0x1950b85f3  libsystem_kernel.dylib (11417.140.69.711.44) <4D7A9E23-5B73-3C87-80E2-3B5E13F74F58> /usr/lib/system/libsystem_kernel.dylib
+       0x1950b9000 -        0x1950c5a77  libsystem_pthread.dylib (536.0.0.702.1) <2886F4F3-500B-36C8-A20C-C457EB754E3D> /usr/lib/system/libsystem_pthread.dylib
+       0x1950c6000 -        0x1950f5ba3  libdyld.dylib (1286.10) <2E9C20CA-1C3E-3D46-B2CB-001C30D53225> /usr/lib/system/libdyld.dylib
+       0x1950f6000 -        0x1950fde0b  libsystem_platform.dylib (349.140.6) <C26E58A4-34A1-3F9C-BDBC-EBC34426633A> /usr/lib/system/libsystem_platform.dylib
+       0x1950fe000 -        0x19512dd83  libsystem_info.dylib (597.0.0.701.2) <3B2CAC89-F7B9-3111-9EB6-84A87EEBBAD7> /usr/lib/system/libsystem_info.dylib
+       0x19512e000 -        0x19566cfff  com.apple.CoreFoundation (6.9 - 3603.1.411) <BDC82415-A029-3463-AC49-1A792208CE00> /System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation
+       0x19566d000 -        0x19595f41f  com.apple.LaunchServices (1141.1 - 1141.1) <6D1E8E7A-DDC6-354D-9A7E-C1AFF5597C4C> /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/LaunchServices
+       0x195960000 -        0x195ae457f  com.apple.gpusw.MetalTools (1.0 - 1) <62B00E9A-6E4A-3756-8CB5-ACECC6757395> /System/Library/PrivateFrameworks/MetalTools.framework/Versions/A/MetalTools
+       0x195ae5000 -        0x19617872f  libBLAS.dylib (1545) <C32B545C-4E67-304A-8CFD-DA9D0D7A796A> /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib
+       0x196179000 -        0x1962852df  com.apple.Lexicon-framework (1.0 - 173.9) <9981F3EF-247E-3D88-8954-180533E0720D> /System/Library/PrivateFrameworks/Lexicon.framework/Versions/A/Lexicon
+       0x196286000 -        0x196381bd7  libSparse.dylib (127.120.9) <3371D37B-D0C7-37CA-A369-72E8DB658708> /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libSparse.dylib
+       0x196382000 -        0x196415b9b  com.apple.SystemConfiguration (1.21 - 1.21) <3025FB1F-D255-3068-A56C-2316C0DAA697> /System/Library/Frameworks/SystemConfiguration.framework/Versions/A/SystemConfiguration
+       0x196416000 -        0x19644abb7  libCRFSuite.dylib (55) <A483A839-0A4A-32AD-808F-FEFFEC5677D5> /usr/lib/libCRFSuite.dylib
+       0x19671f000 -        0x1975085bf  com.apple.Foundation (6.9 - 3603.1.411) <39BE75AC-350F-3B8C-9C10-8B2B5321CE8E> /System/Library/Frameworks/Foundation.framework/Versions/C/Foundation
+       0x1976c4000 -        0x1977e475f  com.apple.CoreDisplay (288 - 288) <274005DD-76F1-3FEA-921D-B59795A2E9CB> /System/Library/Frameworks/CoreDisplay.framework/Versions/A/CoreDisplay
+       0x1977e5000 -        0x197b9c77f  com.apple.audio.AudioToolboxCore (1.0 - 1456.714) <B7F118FC-D6CA-3A05-850D-A0C32088D046> /System/Library/PrivateFrameworks/AudioToolboxCore.framework/Versions/A/AudioToolboxCore
+       0x197b9d000 -        0x197dbbedf  com.apple.CoreText (844.20.0.2 - 844.20.0.2) <55C1C5CA-3BE3-32BB-BDCE-36C314A65277> /System/Library/Frameworks/CoreText.framework/Versions/A/CoreText
+       0x197dbc000 -        0x1984ee17f  com.apple.audio.CoreAudio (5.0 - 5.0) <9C6E6AEE-F626-30C3-8E58-09FEBCB8D460> /System/Library/Frameworks/CoreAudio.framework/Versions/A/CoreAudio
+       0x1984ef000 -        0x1988f36bf  com.apple.security (7.0 - 61439.140.12.706.1) <75F538B7-7EE8-3D57-A01C-166025A1CA77> /System/Library/Frameworks/Security.framework/Versions/A/Security
+       0x1988f4000 -        0x198bbfc1b  libicucore.A.dylib (76104.4.200) <5A8AB5D2-79D5-389E-8C2D-27D6C797125A> /usr/lib/libicucore.A.dylib
+       0x198bc0000 -        0x198bca397  libsystem_darwin.dylib (1698.140.3.705.1) <F3D8ADB4-AE50-30EC-B59D-AD17CF70B1A2> /usr/lib/system/libsystem_darwin.dylib
+       0x198bcb000 -        0x198ebdcbf  com.apple.CoreServices.CarbonCore (1333 - 1333) <90FB276F-577F-382E-83D5-57B4B93DA6AA> /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/CarbonCore.framework/Versions/A/CarbonCore
+       0x198ebe000 -        0x198efe5df  com.apple.CoreServicesInternal (505 - 505) <0D2E80FF-6D2B-3AF2-BBAC-6BEB4DB87CC3> /System/Library/PrivateFrameworks/CoreServicesInternal.framework/Versions/A/CoreServicesInternal
+       0x198eff000 -        0x198f3f4df  com.apple.CSStore (1141.1 - 1141.1) <EEC2E121-445B-3DB7-B970-B6DC65C1ABD7> /System/Library/PrivateFrameworks/CoreServicesStore.framework/Versions/A/CoreServicesStore
+       0x198f40000 -        0x19902231f  com.apple.framework.IOKit (2.0.2 - 100150.120.2.701.1) <909E0A26-B75E-3C88-B936-9DCE24DCBFC8> /System/Library/Frameworks/IOKit.framework/Versions/A/IOKit
+       0x199023000 -        0x199034ff3  libsystem_notify.dylib (342.0.0.701.1) <CD88E430-ED4B-3A44-8D9C-9EDE34F8A898> /usr/lib/system/libsystem_notify.dylib
+       0x19a6d3000 -        0x19a6e8d1f  com.apple.UniformTypeIdentifiers (709 - 709) <D266A192-770F-3901-8C18-47D34FE36199> /System/Library/Frameworks/UniformTypeIdentifiers.framework/Versions/A/UniformTypeIdentifiers
+       0x19ab8a000 -        0x19ac5a65f  libboringssl.dylib (486.140.6) <108682AC-C63F-387F-8A94-EABAD0683193> /usr/lib/libboringssl.dylib
+       0x19ac5b000 -        0x19ac5b3d7  libnetwork.dylib (4277.140.33.703.1) <55870DC2-B71C-308B-BD76-150A2654937C> /usr/lib/libnetwork.dylib
+       0x19ac5c000 -        0x19b025a5f  com.apple.CFNetwork (1.0 - 3826.600.41.1.1) <2F4B24E0-6706-3C7E-8E83-F3B9260BE473> /System/Library/Frameworks/CFNetwork.framework/Versions/A/CFNetwork
+       0x19b026000 -        0x19b040e8f  libsystem_networkextension.dylib (2063.140.6) <5C0C1505-266B-3544-B970-BE347DAF2AAF> /usr/lib/system/libsystem_networkextension.dylib
+       0x19b041000 -        0x19b042067  libenergytrace.dylib (23) <5D257106-EF74-3F19-8967-E6E531B0696A> /usr/lib/libenergytrace.dylib
+       0x19b043000 -        0x19b0bce5f  libMobileGestalt.dylib (1414.140.6) <1B9A5449-8070-3892-BE4C-7F3B9383882D> /usr/lib/libMobileGestalt.dylib
+       0x19b0bd000 -        0x19b0d4fdb  libsystem_asl.dylib (402) <0574F75C-FB20-3114-8C16-E17D821FFCBD> /usr/lib/system/libsystem_asl.dylib
+       0x19b0d5000 -        0x19b0f7113  com.apple.TCC (1.0 - 1) <563B81ED-2DB6-3A71-BECB-BF2F29DCD308> /System/Library/PrivateFrameworks/TCC.framework/Versions/A/TCC
+       0x19b0f8000 -        0x19b61e45f  com.apple.SkyLight (1.600.0 - 891.9) <ECEA98F9-3CBE-3AA4-BDD6-633E9901AC5C> /System/Library/PrivateFrameworks/SkyLight.framework/Versions/A/SkyLight
+       0x19b61f000 -        0x19bd5127f  com.apple.CoreGraphics (2.0 - 1889.7.2) <D25E0345-D6C1-3FAB-94EF-71753EC63659> /System/Library/Frameworks/CoreGraphics.framework/Versions/A/CoreGraphics
+       0x19bd52000 -        0x19bf07d97  com.apple.ColorSync (4.13.0 - 3777.4.1) <0FD09736-661D-391A-B963-598C24716C07> /System/Library/Frameworks/ColorSync.framework/Versions/A/ColorSync
+       0x19c382000 -        0x19c7dce3f  com.apple.CoreData (120 - 1448.1) <B4183D2F-38A2-3D02-89E7-D49078688D0A> /System/Library/Frameworks/CoreData.framework/Versions/A/CoreData
+       0x19c7dd000 -        0x19c7f70ff  com.apple.ProtocolBuffer (1 - 303.26.4.18.3) <B9B5ED18-B7C4-3885-A9C9-CF6526A2C098> /System/Library/PrivateFrameworks/ProtocolBuffer.framework/Versions/A/ProtocolBuffer
+       0x19c7f8000 -        0x19c9acc67  libsqlite3.dylib (360.4) <7BE2BA1C-7F54-3BE0-8E1C-A71503FD5B8B> /usr/lib/libsqlite3.dylib
+       0x19ca49000 -        0x19cb2da7f  com.apple.BaseBoard (694.5.5 - 694.5.5) <EF83F6FF-946C-346C-A210-E5B84176FCD3> /System/Library/PrivateFrameworks/BaseBoard.framework/Versions/A/BaseBoard
+       0x19cb2e000 -        0x19cb961ff  com.apple.RunningBoardServices (1.0 - 961.100.17) <B9401581-E55A-3B24-BC25-93635A31760B> /System/Library/PrivateFrameworks/RunningBoardServices.framework/Versions/A/RunningBoardServices
+       0x19cb97000 -        0x19cc0b04f  com.apple.AE (944 - 944) <0D1DEA85-2F57-370D-BA4F-42435BBA9BAB> /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/AE.framework/Versions/A/AE
+       0x19cc0c000 -        0x19cc1c247  libdns_services.dylib (2600.140.3.703.3) <292C8C04-BCBC-382E-BDE9-5E42A3AE7306> /usr/lib/libdns_services.dylib
+       0x19cc1d000 -        0x19cc253a7  libsystem_symptoms.dylib (2022.140.4.701.1) <4125946C-7B3E-35FC-95A6-BC1163D1F504> /usr/lib/system/libsystem_symptoms.dylib
+       0x19cc26000 -        0x19dccf37f  com.apple.Network (1.0 - 4277.140.33.703.1) <9DAA9DAF-ED9F-3974-8104-1CC235E818F3> /System/Library/Frameworks/Network.framework/Versions/A/Network
+       0x19dcd0000 -        0x19dd002ff  com.apple.analyticsd (1.0 - 1) <16A92758-4666-3A81-948C-D89CEA14DCEC> /System/Library/PrivateFrameworks/CoreAnalytics.framework/Versions/A/CoreAnalytics
+       0x19dd01000 -        0x19dd028d3  libDiagnosticMessagesClient.dylib (113) <5298D0E2-9DE2-3770-941A-BFF54E1CD22F> /usr/lib/libDiagnosticMessagesClient.dylib
+       0x19dd03000 -        0x19dd63eff  com.apple.spotlight.metadata.utilities (1.0 - 2333.57.1.10) <88D55502-D39E-39ED-A81E-FFC6DED91DAF> /System/Library/PrivateFrameworks/MetadataUtilities.framework/Versions/A/MetadataUtilities
+       0x19dd64000 -        0x19ddee0bf  com.apple.Metadata (15.7 - 2333.57.1.10) <D7B4D9D2-285A-3FCB-B3A4-6F22BDD0F59C> /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Metadata
+       0x19ddef000 -        0x19ddf820b  com.apple.DiskArbitration (2.7 - 2.7) <14C544A5-6F35-3632-8987-34E8A62DC6A5> /System/Library/Frameworks/DiskArbitration.framework/Versions/A/DiskArbitration
+       0x19ddf9000 -        0x19e208633  com.apple.vImage (8.1 - 611.140.2) <66653C30-536A-33AF-8194-020AA06FF3FC> /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vImage.framework/Versions/A/vImage
+       0x19e209000 -        0x19e5dcc7f  com.apple.QuartzCore (1.11 - 1156.18.1) <9C7F9D3D-82DA-3CD1-BDFF-8617D3B0E979> /System/Library/Frameworks/QuartzCore.framework/Versions/A/QuartzCore
+       0x19e5dd000 -        0x19e62e27f  libFontRegistry.dylib (391.20.0.3) <96C3D21E-F497-3D58-BBF2-697F1ACD78FE> /System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/ATS.framework/Versions/A/Resources/libFontRegistry.dylib
+       0x19e8c4000 -        0x19e8d1a7f  com.apple.OpenDirectory (15.7 - 643) <0E06EBA1-452E-3E4A-87DD-CE22C112B440> /System/Library/Frameworks/OpenDirectory.framework/Versions/A/OpenDirectory
+       0x19e8d2000 -        0x19e8f0053  com.apple.CFOpenDirectory (15.7 - 643) <23B0CD04-BEED-313D-B74E-8C56C7DD1D9A> /System/Library/Frameworks/OpenDirectory.framework/Versions/A/Frameworks/CFOpenDirectory.framework/Versions/A/CFOpenDirectory
+       0x19e8f1000 -        0x19e8fe83b  com.apple.CoreServices.FSEvents (1400.100.1 - 1400.100.1) <BDAFFBAA-553F-3BDE-814F-615E737B8BF3> /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/FSEvents
+       0x19e8ff000 -        0x19e92883f  com.apple.coreservices.SharedFileList (225 - 225) <2FDBE7D6-C953-384E-B9FD-B8F15C552F0C> /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/SharedFileList.framework/Versions/A/SharedFileList
+       0x19e929000 -        0x19e92c0af  libapp_launch_measurement.dylib (17) <37012710-C058-3A4F-8542-398E5CFA265B> /usr/lib/libapp_launch_measurement.dylib
+       0x19e92d000 -        0x19e97655f  com.apple.CoreAutoLayout (1.0 - 33) <9E8127D7-FD36-3FE6-BD8B-A888EAC3BDF8> /System/Library/PrivateFrameworks/CoreAutoLayout.framework/Versions/A/CoreAutoLayout
+       0x19e977000 -        0x19ea60f83  libxml2.2.dylib (38.19) <B673F13A-E174-353E-A23F-E649F9D595E7> /usr/lib/libxml2.2.dylib
+       0x19ea61000 -        0x19eac209f  com.apple.CoreVideo (1.8 - 0.0) <3F182F53-9795-314C-BF8B-EB37456A103D> /System/Library/Frameworks/CoreVideo.framework/Versions/A/CoreVideo
+       0x19eac3000 -        0x19eac5e7f  com.apple.loginsupport (3.0 - 259.5.1.100) <BDF4A30C-0B02-32ED-8748-2DF7738F0EF1> /System/Library/PrivateFrameworks/login.framework/Versions/A/Frameworks/loginsupport.framework/Versions/A/loginsupport
+       0x19eb03000 -        0x19eb2d57f  com.apple.UserManagement (1.0 - 1) <3214A88C-87E9-37CF-A63D-DD6861C014DD> /System/Library/PrivateFrameworks/UserManagement.framework/Versions/A/UserManagement
+       0x1a046f000 -        0x1a049f47b  libsystem_containermanager.dylib (689.100.6.701.1) <FF38A93D-F7FA-398C-89A2-8D539ECD61AA> /usr/lib/system/libsystem_containermanager.dylib
+       0x1a04a0000 -        0x1a04b8edf  com.apple.IOSurface (372.5.2 - 372.5.2) <D2B3F646-B8D9-330B-8D1E-7AB5DF3A153F> /System/Library/Frameworks/IOSurface.framework/Versions/A/IOSurface
+       0x1a04b9000 -        0x1a04c2e9f  com.apple.IOAccelerator (485 - 485) <56B58116-4F43-3D9B-98EF-0F8DFE19730B> /System/Library/PrivateFrameworks/IOAccelerator.framework/Versions/A/IOAccelerator
+       0x1a04c3000 -        0x1a0735a1f  com.apple.Metal (368.53 - 368.53) <9BD4305A-6B43-3EBF-BB62-0AE00CB7379D> /System/Library/Frameworks/Metal.framework/Versions/A/Metal
+       0x1a0736000 -        0x1a075dddf  com.apple.audio.caulk (1.0 - 181.700) <FA67137D-9735-3DCE-8716-AB20F8CD6E24> /System/Library/PrivateFrameworks/caulk.framework/Versions/A/caulk
+       0x1a075e000 -        0x1a08b9a9f  com.apple.CoreMedia (1.0 - 3235.14.105.6) <95FA8DB9-0D9C-3B71-9F12-F73A0DB04DE3> /System/Library/Frameworks/CoreMedia.framework/Versions/A/CoreMedia
+       0x1a08ba000 -        0x1a0b8c39f  libFontParser.dylib (423.20.0.2) <984B0C96-ED04-3355-9DB3-B6F3FCCBC49C> /System/Library/PrivateFrameworks/FontServices.framework/libFontParser.dylib
+       0x1a0eea000 -        0x1a126f0bf  com.apple.ImageIO (3.3.0 - GlowSecurityCheerg) <B749D8D3-4BC0-3E09-A2BF-4F46C8322047> /System/Library/Frameworks/ImageIO.framework/Versions/A/ImageIO
+       0x1a1270000 -        0x1a162a97f  com.apple.CoreImage (19.0.0 - 1510.140.2) <40B8A073-A5E1-30FA-BE0F-03AF3B63F832> /System/Library/Frameworks/CoreImage.framework/Versions/A/CoreImage
+       0x1a162b000 -        0x1a16daddf  com.apple.MetalPerformanceShaders.MPSCore (1.0 - 1) <452C27E9-AF7C-3939-BC45-5C682131C15C> /System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSCore.framework/Versions/A/MPSCore
+       0x1a16db000 -        0x1a16df5df  libsystem_configuration.dylib (1351.140.5.701.1) <E6976BA1-4F03-3BA5-9768-C4AA7B20FB2D> /usr/lib/system/libsystem_configuration.dylib
+       0x1a16e0000 -        0x1a16e66ff  libsystem_sandbox.dylib (2401.140.15.704.1) <7848C796-70A5-34AD-99D3-A4BB47817063> /usr/lib/system/libsystem_sandbox.dylib
+       0x1a16e7000 -        0x1a16e817f  com.apple.AggregateDictionary (1.0 - 1) <AAAABC95-A0A2-3E2E-995E-64D59B3456A3> /System/Library/PrivateFrameworks/AggregateDictionary.framework/Versions/A/AggregateDictionary
+       0x1a16e9000 -        0x1a16ed59b  com.apple.AppleSystemInfo (3.1.5 - 3.1.5) <BA9F47D7-0921-303E-A184-DECAA00956D9> /System/Library/PrivateFrameworks/AppleSystemInfo.framework/Versions/A/AppleSystemInfo
+       0x1a16ee000 -        0x1a16ef44f  liblangid.dylib (140) <CD8A32BB-3F05-374F-B150-08E7BD4DAEF5> /usr/lib/liblangid.dylib
+       0x1a16f0000 -        0x1a180cfbf  com.apple.CoreNLP (1.0 - 313) <26DD1F0B-6588-31B6-9B6B-2A00F757D221> /System/Library/PrivateFrameworks/CoreNLP.framework/Versions/A/CoreNLP
+       0x1a180d000 -        0x1a181355f  com.apple.LinguisticData (1.0 - 483.10) <E52A4C67-FC0E-379E-8DFC-15026C167316> /System/Library/PrivateFrameworks/LinguisticData.framework/Versions/A/LinguisticData
+       0x1a1814000 -        0x1a22c0bb7  libBNNS.dylib (1497.120.5) <C04633D9-987C-377B-A772-3897CB392A65> /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBNNS.dylib
+       0x1a22c1000 -        0x1a23b2cff  libvDSP.dylib (1068.100.12) <66BF291C-98EF-30C3-B4BA-0C9F4773DF77> /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libvDSP.dylib
+       0x1a23e6000 -        0x1a23f67e7  com.apple.IOMobileFramebuffer (343.0.0 - 343.0.0) <57066E34-7F1D-3C92-81AE-0167AD728FD6> /System/Library/PrivateFrameworks/IOMobileFramebuffer.framework/Versions/A/IOMobileFramebuffer
+       0x1a25f6000 -        0x1a2612ddf  com.apple.MobileKeyBag (2.0 - 1.0) <8A76FBFE-7FDF-3B6D-93D2-F95567BF2AE1> /System/Library/PrivateFrameworks/MobileKeyBag.framework/Versions/A/MobileKeyBag
+       0x1a2613000 -        0x1a262115f  com.apple.AssertionServices (1.0 - 961.100.17) <EB11B128-3BBF-3A9D-A38D-97C7B1EEEC3B> /System/Library/PrivateFrameworks/AssertionServices.framework/Versions/A/AssertionServices
+       0x1a2622000 -        0x1a26b09df  com.apple.securityfoundation (6.0 - 55290) <AB6461A0-C2E8-36D5-855E-EC183F1B5669> /System/Library/Frameworks/SecurityFoundation.framework/Versions/A/SecurityFoundation
+       0x1a26b1000 -        0x1a26df15f  com.apple.coreservices.BackgroundTaskManagement (1.0 - 104) <86752452-A6EC-3F6A-BC10-F85F15A422B6> /System/Library/PrivateFrameworks/BackgroundTaskManagement.framework/Versions/A/BackgroundTaskManagement
+       0x1a26eb000 -        0x1a26edfe3  libquarantine.dylib (181.120.2.700.1) <AF9AB323-64C2-3CB8-B666-A5E6A21FCEAF> /usr/lib/system/libquarantine.dylib
+       0x1a26ee000 -        0x1a26f9323  libCheckFix.dylib (33) <D336F1DB-D6E2-3268-B1DE-39788018FE78> /usr/lib/libCheckFix.dylib
+       0x1a26fa000 -        0x1a271144f  libcoretls.dylib (186) <1AB6A438-2A4B-3D6C-B3E9-28326E32BF0D> /usr/lib/libcoretls.dylib
+       0x1a2712000 -        0x1a272326b  libbsm.0.dylib (89) <B2FE08CD-552C-3145-A306-FE7211B4AA1F> /usr/lib/libbsm.0.dylib
+       0x1a2724000 -        0x1a278381f  libmecab.dylib (1093.502) <E423EF87-3DE2-3B1D-9421-56389ED3A9A7> /usr/lib/libmecab.dylib
+       0x1a2784000 -        0x1a278644b  libgermantok.dylib (31) <DCC9FD64-EA35-369D-9CFF-FF72F02DC336> /usr/lib/libgermantok.dylib
+       0x1a2787000 -        0x1a279ba5f  libLinearAlgebra.dylib (1545) <8E45A7FD-2924-3416-B47A-35BFA7774D8F> /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libLinearAlgebra.dylib
+       0x1a279c000 -        0x1a29e731f  com.apple.MetalPerformanceShaders.MPSNeuralNetwork (1.0 - 1) <B0BAA63D-A150-37C1-A49A-BE3415854D34> /System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSNeuralNetwork.framework/Versions/A/MPSNeuralNetwork
+       0x1a29e8000 -        0x1a2a3c7df  com.apple.MetalPerformanceShaders.MPSRayIntersector (1.0 - 1) <0061974F-C173-34A2-A913-81F90606C450> /System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSRayIntersector.framework/Versions/A/MPSRayIntersector
+       0x1a2bd3000 -        0x1a2c0423f  com.apple.MetalPerformanceShaders.MPSMatrix (1.0 - 1) <6E48BD78-D752-3ADF-A85A-1834CB01C82F> /System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSMatrix.framework/Versions/A/MPSMatrix
+       0x1a2c05000 -        0x1a2d52d7f  com.apple.MetalPerformanceShaders.MPSNDArray (1.0 - 1) <EC1EAAF4-7903-3401-8848-5ED1474F1404> /System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSNDArray.framework/Versions/A/MPSNDArray
+       0x1a2d53000 -        0x1a2de715f  com.apple.MetalPerformanceShaders.MPSImage (1.0 - 1) <1D62BD0F-66D5-366E-B631-6B48A8C4A854> /System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSImage.framework/Versions/A/MPSImage
+       0x1a2de8000 -        0x1a2df3193  com.apple.AppleFSCompression (170 - 1.0) <3ADB5113-C1B6-3409-B489-99B027A851C2> /System/Library/PrivateFrameworks/AppleFSCompression.framework/Versions/A/AppleFSCompression
+       0x1a2df4000 -        0x1a2e0056b  libbz2.1.0.dylib (46) <D41D3126-6743-348C-9152-709F724B774A> /usr/lib/libbz2.1.0.dylib
+       0x1a2e01000 -        0x1a2e07fa3  libsystem_coreservices.dylib (178.6.9) <8809F3D0-D759-34C1-850C-69A5F7C8AE01> /usr/lib/system/libsystem_coreservices.dylib
+       0x1a2e08000 -        0x1a2e3a29f  com.apple.CoreServices.OSServices (1141.1 - 1141.1) <6834B6ED-32E1-3333-87E6-C88E98F2C9A3> /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/OSServices.framework/Versions/A/OSServices
+       0x1a3270000 -        0x1a327eeb7  libz.1.dylib (98.0.0.700.1) <27D42BFF-42CE-3396-B2A2-A641EA917AB0> /usr/lib/libz.1.dylib
+       0x1a327f000 -        0x1a32bc2b7  libsystem_m.dylib (3291.100.4) <12090DF0-9887-310A-B308-8F9B6BCF630D> /usr/lib/system/libsystem_m.dylib
+       0x1a32bd000 -        0x1a32bdc9b  libcharset.1.dylib (109.100.2.701.1) <2BB08A8C-866E-3C6C-913D-13EF418BD942> /usr/lib/libcharset.1.dylib
+       0x1a32be000 -        0x1a32c14e7  libmacho.dylib (1024.3) <CD255FF9-4E35-347A-B7E9-304517D3A871> /usr/lib/system/libmacho.dylib
+       0x1a32c2000 -        0x1a32dadfb  libkxld.dylib (11417.140.69.711.44) <5A6E875A-0E6B-3C25-9924-30B88764BD0C> /usr/lib/system/libkxld.dylib
+       0x1a32db000 -        0x1a32e85ef  libcommonCrypto.dylib (600035) <65A3AFCF-9611-35C1-9697-8CF5409F0C83> /usr/lib/system/libcommonCrypto.dylib
+       0x1a32e9000 -        0x1a32f2ad7  libunwind.dylib (1900.125) <FA046DDB-1518-353B-A9B6-CD622328B746> /usr/lib/system/libunwind.dylib
+       0x1a32f3000 -        0x1a32fa109  liboah.dylib (349) <CD13AF03-27E5-387A-8DF1-7016C957167A> /usr/lib/liboah.dylib
+       0x1a32fb000 -        0x1a3305a63  libcopyfile.dylib (224.0.0.700.1) <26FB54D7-758D-30F1-9A1C-949DAAE923BB> /usr/lib/system/libcopyfile.dylib
+       0x1a3306000 -        0x1a330998f  libcompiler_rt.dylib (103.3) <7720A496-7B7A-33C1-B7F3-9E8B7DEA0622> /usr/lib/system/libcompiler_rt.dylib
+       0x1a330a000 -        0x1a330ea1b  libsystem_collections.dylib (1698.140.3.705.1) <E5D2CB9A-20CC-3F2B-B8CF-3FC12EB734CC> /usr/lib/system/libsystem_collections.dylib
+       0x1a330f000 -        0x1a33122c7  libsystem_secinit.dylib (153.140.2) <63965812-869C-3C3C-A950-FA563CE8EB1E> /usr/lib/system/libsystem_secinit.dylib
+       0x1a3313000 -        0x1a3315b6f  libremovefile.dylib (81) <E34EF2FA-1C55-3222-B1A2-CEEEC4B02F3D> /usr/lib/system/libremovefile.dylib
+       0x1a3316000 -        0x1a3316f27  libkeymgr.dylib (31) <EE1B8708-02B1-385D-B648-E87B4D25391B> /usr/lib/system/libkeymgr.dylib
+       0x1a3317000 -        0x1a331fd5f  libsystem_dnssd.dylib (2600.140.3.703.3) <1AC2F6F2-3C09-3569-B27E-D65024970B96> /usr/lib/system/libsystem_dnssd.dylib
+       0x1a3320000 -        0x1a33250b3  libcache.dylib (95) <4242CCFB-F060-3493-B555-C26217B4F080> /usr/lib/system/libcache.dylib
+       0x1a3326000 -        0x1a3327ca3  libSystem.B.dylib (1351) <9500400E-A2EC-33F9-B76B-9830E022777A> /usr/lib/libSystem.B.dylib
+       0x1a3328000 -        0x1a332a03f  libfakelink.dylib (5) <C2CB23F0-65F4-3FF1-9A3D-590C7890827D> /usr/lib/libfakelink.dylib
+       0x1a332b000 -        0x1a332ba63  com.apple.SoftLinking (1.0 - 65) <5362D661-B36E-30F2-986E-F57218A1D828> /System/Library/PrivateFrameworks/SoftLinking.framework/Versions/A/SoftLinking
+       0x1a3362000 -        0x1a33692db  libiconv.2.dylib (109.100.2.701.1) <5065A0E2-11DE-3B49-86FD-17251E4EB192> /usr/lib/libiconv.2.dylib
+       0x1a337d000 -        0x1a3475057  libarchive.2.dylib (151.140.2.704.3) <B441B037-8D88-33F8-B4F5-7EAE25DE1D9B> /usr/lib/libarchive.2.dylib
+       0x1a3476000 -        0x1a34dd57f  com.apple.SearchKit (1.4.2 - 1.4.2) <204AB77B-4B37-3D32-A846-953FF69D344A> /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/SearchKit.framework/Versions/A/SearchKit
+       0x1a34de000 -        0x1a34e609f  libThaiTokenizer.dylib (28) <E0BF23A2-4941-37C3-BB9C-3F4EB7D3B8CA> /usr/lib/libThaiTokenizer.dylib
+       0x1a34e7000 -        0x1a350b187  com.apple.applesauce (1.0 - 16.62) <3617E1F9-FD12-33E3-A4E7-5AF311FEB588> /System/Library/PrivateFrameworks/AppleSauce.framework/Versions/A/AppleSauce
+       0x1a350c000 -        0x1a35259ff  libapple_nghttp2.dylib (29) <E6CB2BCD-FC86-357C-8EE2-1035089423D3> /usr/lib/libapple_nghttp2.dylib
+       0x1a3526000 -        0x1a354cac3  libSparseBLAS.dylib (1545) <AA4DB3CB-920F-3CC5-B24C-D631E4F82C4C> /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libSparseBLAS.dylib
+       0x1a354d000 -        0x1a354e59f  com.apple.MetalPerformanceShaders.MetalPerformanceShaders (1.0 - 1) <AD4319B1-5868-334D-8162-401D53084FE1> /System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/MetalPerformanceShaders
+       0x1a354f000 -        0x1a3554f7f  libpam.2.dylib (34) <B8987861-EE2F-3C64-B3AB-85931371648B> /usr/lib/libpam.2.dylib
+       0x1a3555000 -        0x1a362584f  libcompression.dylib (181.100.1) <57996D4C-D60C-320F-975B-3733CDCECF5D> /usr/lib/libcompression.dylib
+       0x1a3626000 -        0x1a362a1e7  libQuadrature.dylib (8) <8D44D224-0119-3704-A303-C3131C65241A> /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libQuadrature.dylib
+       0x1a362b000 -        0x1a488c2df  libLAPACK.dylib (1545) <9F6998F4-3252-3D15-9615-5728C342060C> /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libLAPACK.dylib
+       0x1a488d000 -        0x1a48e331f  com.apple.DictionaryServices (1.2 - 368.203) <D06F10D9-4D68-37B6-A997-8EFFE814B1C3> /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/DictionaryServices.framework/Versions/A/DictionaryServices
+       0x1a48e4000 -        0x1a49028bf  liblzma.5.dylib (20) <5AB64C0F-6D4D-3213-86A3-8EC9F17B09A8> /usr/lib/liblzma.5.dylib
+       0x1a4903000 -        0x1a4904867  libcoretls_cfhelpers.dylib (186) <B921F5F1-3CB0-336C-9A2F-8511C8FAF168> /usr/lib/libcoretls_cfhelpers.dylib
+       0x1a4905000 -        0x1a4976a6b  com.apple.APFS (2332.140.13 - 2332.140.13) <74E79A35-AE9D-3A29-8B99-328A5088FCF9> /System/Library/PrivateFrameworks/APFS.framework/Versions/A/APFS
+       0x1a4977000 -        0x1a49856b3  libxar.1.dylib (501.0.0.700.1) <FBF2D048-1BF7-392A-92AA-8B113E747ECC> /usr/lib/libxar.1.dylib
+       0x1a4986000 -        0x1a49897fb  libutil.dylib (72) <FBB7ACD7-34C1-320E-9E3E-97477BDAC088> /usr/lib/libutil.dylib
+       0x1a498a000 -        0x1a49b574f  libxslt.1.dylib (21.11.1) <87D3DF42-9D28-354D-80AD-7096E32F841B> /usr/lib/libxslt.1.dylib
+       0x1a49be000 -        0x1a4a377c7  libvMisc.dylib (1068.100.12) <4140985D-4751-350C-9BD5-6697985A283E> /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libvMisc.dylib
+       0x1a4a38000 -        0x1a4ac83bf  libate.dylib (3.0.9) <B6F1DD2D-70D9-3E08-A9E4-0D817A64979B> /usr/lib/libate.dylib
+       0x1a4ad2000 -        0x1a4ae591f  com.apple.CrashReporterSupport (10.13 - 15131) <FAFA34CA-B5E7-358A-9A9C-BDC2FF065AD8> /System/Library/PrivateFrameworks/CrashReporterSupport.framework/Versions/A/CrashReporterSupport
+       0x1a4c26000 -        0x1a4c674bf  com.apple.pluginkit.framework (1.0 - 1) <4B00404C-064A-3A17-A734-EB5538F953B5> /System/Library/PrivateFrameworks/PlugInKit.framework/Versions/A/PlugInKit
+       0x1a4cde000 -        0x1a4d26ef7  com.apple.AppleVAFramework (6.2.10 - 6.2.10) <E9D7DB52-29EA-3315-9C47-1F5A8BED43A2> /System/Library/PrivateFrameworks/AppleVA.framework/Versions/A/AppleVA
+       0x1a4d27000 -        0x1a4d41d57  libexpat.1.dylib (43.0.0.702.1) <068F5689-01B0-3CD3-9D9C-01D56BD9EFE7> /usr/lib/libexpat.1.dylib
+       0x1a4d42000 -        0x1a4d4bbb3  libheimdal-asn1.dylib (693.140.2.701.1) <F83889B9-8BBB-3A20-BBF8-1139F59D3929> /usr/lib/libheimdal-asn1.dylib
+       0x1a4e2c000 -        0x1a4ed27ff  com.apple.MediaExperience (1.0 - 1) <5AD002B4-2EE3-3DD7-B797-56396C5BF761> /System/Library/PrivateFrameworks/MediaExperience.framework/Versions/A/MediaExperience
+       0x1a4eff000 -        0x1a4f0aeff  com.apple.GraphVisualizer (1.0 - 120.1) <891B9702-E49B-3A91-ACE9-48E8CB200AEB> /System/Library/PrivateFrameworks/GraphVisualizer.framework/Versions/A/GraphVisualizer
+       0x1a4f0b000 -        0x1a4f4b79f  com.apple.OTSVG (1.0 - 844.20.0.2) <9626B1C8-3225-3DED-A89E-832C0FD60FF3> /System/Library/PrivateFrameworks/OTSVG.framework/Versions/A/OTSVG
+       0x1a4f4c000 -        0x1a4f55a9f  com.apple.xpc.AppServerSupport (1.0 - 2894.140.12.705.2) <5DCC38E1-7ECA-3B4F-B7E1-06DBCE090B68> /System/Library/PrivateFrameworks/AppServerSupport.framework/Versions/A/AppServerSupport
+       0x1a4f56000 -        0x1a4f5c67f  libspindump.dylib (383.17) <D1D7BFAC-DFAC-3254-AA5E-5650D401F037> /usr/lib/libspindump.dylib
+       0x1a4f5d000 -        0x1a501dd1f  com.apple.Heimdal (4.0 - 2.0) <525B0088-86EF-3992-8ABA-CC44A4F1FEE8> /System/Library/PrivateFrameworks/Heimdal.framework/Versions/A/Heimdal
+       0x1a5286000 -        0x1a52cb37f  com.apple.AppleJPEG (1.0 - 1) <C023946F-FEAD-396A-BBD0-98DF6CE19FE0> /System/Library/PrivateFrameworks/AppleJPEG.framework/Versions/A/AppleJPEG
+       0x1a52cc000 -        0x1a53bc4a7  libJP2.dylib (2661.8.3.0.5) <7A9C0BE1-C9E2-315F-ADFE-5D0F4698100B> /System/Library/Frameworks/ImageIO.framework/Versions/A/Resources/libJP2.dylib
+       0x1a53bd000 -        0x1a53bed53  com.apple.WatchdogClient.framework (1.0 - 299.140.5) <958332C7-375B-3A65-906C-247171F2FDA7> /System/Library/PrivateFrameworks/WatchdogClient.framework/Versions/A/WatchdogClient
+       0x1a53bf000 -        0x1a54047ff  com.apple.MultitouchSupport.framework (8440.6 - 8440.6) <4F1A4FD8-901D-3166-A0C5-BDC892A167AD> /System/Library/PrivateFrameworks/MultitouchSupport.framework/Versions/A/MultitouchSupport
+       0x1a5405000 -        0x1a58a9ebf  com.apple.VideoToolbox (1.0 - 3235.14.105.6) <195DF7D0-8B1D-3258-BBCA-7CEC7DD95D17> /System/Library/Frameworks/VideoToolbox.framework/Versions/A/VideoToolbox
+       0x1a58aa000 -        0x1a58df63f  libAudioToolboxUtility.dylib (1456.714) <EF53E274-A49C-30C0-A677-773605998370> /usr/lib/libAudioToolboxUtility.dylib
+       0x1a58e0000 -        0x1a590951f  libPng.dylib (2661.8.3.0.5) <2E66DE35-7EB2-3845-B947-FF434A4E0670> /System/Library/Frameworks/ImageIO.framework/Versions/A/Resources/libPng.dylib
+       0x1a590a000 -        0x1a596c383  libTIFF.dylib (2661.8.3.0.5) <5B787A81-FD3C-3B5B-A668-608D1B20A141> /System/Library/Frameworks/ImageIO.framework/Versions/A/Resources/libTIFF.dylib
+       0x1a596d000 -        0x1a598c983  com.apple.IOPresentment (67 - 67) <783243DF-D0DE-3426-8671-11F0F72735CA> /System/Library/PrivateFrameworks/IOPresentment.framework/Versions/A/IOPresentment
+       0x1a598d000 -        0x1a59917e3  com.apple.GPUWrangler (8.1.10 - 8.1.10) <952C7E27-2C58-343D-A71C-502C8047A4C0> /System/Library/PrivateFrameworks/GPUWrangler.framework/Versions/A/GPUWrangler
+       0x1a5992000 -        0x1a599494b  libRadiance.dylib (2661.8.3.0.5) <82C20D0A-EF58-3D99-8A91-3E78FB3A3F8D> /System/Library/Frameworks/ImageIO.framework/Versions/A/Resources/libRadiance.dylib
+       0x1a5995000 -        0x1a599a64f  com.apple.DSExternalDisplay (3.1 - 380) <3509211B-6684-3476-ACEF-0E927163A89F> /System/Library/PrivateFrameworks/DSExternalDisplay.framework/Versions/A/DSExternalDisplay
+       0x1a599b000 -        0x1a59c5e87  libJPEG.dylib (2661.8.3.0.5) <9C552EC3-32CA-3D28-A643-824F57F93D99> /System/Library/Frameworks/ImageIO.framework/Versions/A/Resources/libJPEG.dylib
+       0x1a59f4000 -        0x1a59f97a3  libGIF.dylib (2661.8.3.0.5) <1F80C005-69FF-3188-BF5B-0B1FD48E164A> /System/Library/Frameworks/ImageIO.framework/Versions/A/Resources/libGIF.dylib
+       0x1a59fa000 -        0x1a5a08d1f  com.apple.CMCaptureCore (1.0 - 587.140.11.0.1) <76C0BA80-2FF5-37C6-8A09-FAF23A2796F2> /System/Library/PrivateFrameworks/CMCaptureCore.framework/Versions/A/CMCaptureCore
+       0x1a6824000 -        0x1a68947af  libusrtcp.dylib (4277.140.33.703.1) <809E035A-7A1C-3FF9-BA5E-68443583B9DB> /usr/lib/libusrtcp.dylib
+       0x1a6895000 -        0x1a6e03f3f  libswiftCore.dylib (6.1.2 - 6.1.2.1.101) <113161E9-DEC6-35C6-AFA0-3DABCEB8EBED> /usr/lib/swift/libswiftCore.dylib
+       0x1a6eb9000 -        0x1a6effe5f  libSessionUtility.dylib (321.702) <B409E7FE-28BB-3C8E-82E3-4F61D2699F93> /System/Library/PrivateFrameworks/AudioSession.framework/libSessionUtility.dylib
+       0x1a6f00000 -        0x1a70aa59f  com.apple.audio.toolbox.AudioToolbox (1.14 - 1.14) <24352E3F-A5D1-3263-AA7A-875627D90A13> /System/Library/Frameworks/AudioToolbox.framework/Versions/A/AudioToolbox
+       0x1a70ab000 -        0x1a7108d7f  com.apple.audio.AudioSession (1.0 - 321.702) <4CF215C7-A1C4-311E-86E2-843494DF78B5> /System/Library/PrivateFrameworks/AudioSession.framework/Versions/A/AudioSession
+       0x1a7109000 -        0x1a712189f  libAudioStatistics.dylib (235.601) <125324A0-E591-3F58-8D7E-0F6F1E8A5282> /usr/lib/libAudioStatistics.dylib
+       0x1a7198000 -        0x1a71b4003  libresolv.9.dylib (91) <F458E2AA-F3E7-3691-8A6A-90391ECDCF0B> /usr/lib/libresolv.9.dylib
+       0x1a71b5000 -        0x1a71c76e7  libsasl2.2.dylib (215) <20A8363B-A17A-3FD1-BFF8-09E7E1198817> /usr/lib/libsasl2.2.dylib
+       0x1a73b7000 -        0x1a7497a0f  libSMC.dylib (38) <A31F3E47-CC8D-3F3E-8141-16B75F89E005> /usr/lib/libSMC.dylib
+       0x1a74f7000 -        0x1a750379f  com.apple.NetAuth (6.2 - 6.2) <F23806F8-E4DA-3439-9392-D90B8A729A86> /System/Library/PrivateFrameworks/NetAuth.framework/Versions/A/NetAuth
+       0x1a7516000 -        0x1a752349f  com.apple.perfdata (1.0 - 121) <B0190EC6-5B85-3780-B698-9782014E1FB3> /System/Library/PrivateFrameworks/perfdata.framework/Versions/A/perfdata
+       0x1a7524000 -        0x1a7531cdf  libperfcheck.dylib (46) <A072094C-8AAF-3AD8-A670-1FA5BDE80977> /usr/lib/libperfcheck.dylib
+       0x1a7532000 -        0x1a7542fbf  com.apple.Kerberos (3.0 - 1) <7232BD58-25C8-30BE-BCA5-4B9D6BFABD30> /System/Library/Frameworks/Kerberos.framework/Versions/A/Kerberos
+       0x1a7543000 -        0x1a7594a1f  com.apple.GSS (4.0 - 2.0) <3E7CF16C-DE90-3E05-82E6-DAAB2D3FB81A> /System/Library/Frameworks/GSS.framework/Versions/A/GSS
+       0x1a7595000 -        0x1a75a5daf  com.apple.CommonAuth (4.0 - 2.0) <1D1E68AB-DA14-3A16-BA8A-6BD2017A35D3> /System/Library/PrivateFrameworks/CommonAuth.framework/Versions/A/CommonAuth
+       0x1a8c46000 -        0x1a8d5d537  com.apple.combine (1.0 - 3022) <55AF78BF-C16F-3536-98B4-9A320D1E21D2> /System/Library/Frameworks/Combine.framework/Versions/A/Combine
+       0x1aad26000 -        0x1aad2686f  com.apple.Accelerate.vecLib (3.11 - vecLib 3.11) <0E3BEEB3-25C0-30CD-81F7-51A05C999DEF> /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/vecLib
+       0x1aad4b000 -        0x1aad4b98f  com.apple.CoreServices (1226 - 1226) <1BCED1C5-CC3B-3779-AD06-C670FECFE7C2> /System/Library/Frameworks/CoreServices.framework/Versions/A/CoreServices
+       0x1aaff7000 -        0x1aaff7417  com.apple.Accelerate (1.11 - Accelerate 1.11) <0FBDC909-7AF4-3B71-8ECA-B493204ECF29> /System/Library/Frameworks/Accelerate.framework/Versions/A/Accelerate
+       0x1abd07000 -        0x1abd3587f  com.apple.PowerLog (1.0 - 1) <AC32223C-B112-31F6-8141-07945E640C09> /System/Library/PrivateFrameworks/PowerLog.framework/Versions/A/PowerLog
+       0x1abd43000 -        0x1abdf731f  com.apple.DiscRecording (9.0.3 - 9030.4.5) <852D0F06-85DC-3BEC-9210-F87296D2906C> /System/Library/Frameworks/DiscRecording.framework/Versions/A/DiscRecording
+       0x1abdf8000 -        0x1abe2925f  com.apple.MediaKit (16 - 938) <1517A395-F1B8-336E-A551-FF12B0F998C2> /System/Library/PrivateFrameworks/MediaKit.framework/Versions/A/MediaKit
+       0x1ac846000 -        0x1ac85caf8  libswiftDispatch.dylib (54) <4E2F0109-0344-33C3-B4AD-C11A200E57F1> /usr/lib/swift/libswiftDispatch.dylib
+       0x1acbab000 -        0x1acc19abf  com.apple.BoardServices (1.0 - 694.5.5) <8217824C-90B1-385F-9A8E-2D26BCDD8138> /System/Library/PrivateFrameworks/BoardServices.framework/Versions/A/BoardServices
+       0x1acfb8000 -        0x1acfdb721  com.apple.DebugSymbols (216 - 217) <E2994B00-FCFA-34C5-99B3-3E5F52A5B3E0> /System/Library/PrivateFrameworks/DebugSymbols.framework/Versions/A/DebugSymbols
+       0x1acfdc000 -        0x1ad0e8ea3  com.apple.CoreSymbolication (16.0 - 64570.35.1) <900D2073-4104-3E18-B333-C10C9BD64604> /System/Library/PrivateFrameworks/CoreSymbolication.framework/Versions/A/CoreSymbolication
+       0x1ad0e9000 -        0x1ad0f317f  com.apple.CoreTime (334.0.4.1) <74BDD3BD-7CF9-3ED7-887B-5D2E48C3B30A> /System/Library/PrivateFrameworks/CoreTime.framework/Versions/A/CoreTime
+       0x1ae858000 -        0x1ae893967  com.apple.LDAPFramework (2.4.28 - 194.5) <776F5BB7-A4A9-36A1-9BE6-3A90D6D2209A> /System/Library/Frameworks/LDAP.framework/Versions/A/LDAP
+       0x1ae894000 -        0x1ae8957a7  com.apple.TrustEvaluationAgent (2.0 - 38) <DF436304-7A6B-3C4C-B12F-966014149E48> /System/Library/PrivateFrameworks/TrustEvaluationAgent.framework/Versions/A/TrustEvaluationAgent
+       0x1ae9c2000 -        0x1aea7f9bf  com.apple.DiskImagesFramework (671.140.2.700.3 - 671.140.2.700.3) <132A6800-7A7A-3BCB-9352-B9105BA8C1F5> /System/Library/PrivateFrameworks/DiskImages.framework/Versions/A/DiskImages
+       0x1aeb80000 -        0x1aec011d7  libcurl.4.dylib (160.0.0.704.2) <77AFD82E-94F3-3F69-9A30-B26B3CCF0784> /usr/lib/libcurl.4.dylib
+       0x1af420000 -        0x1af4203f7  libHeimdalProxy.dylib (87.100.1) <FB8F974F-7D96-39FA-95E9-279EA48B75CC> /System/Library/Frameworks/Kerberos.framework/Versions/A/Libraries/libHeimdalProxy.dylib
+       0x1af4c9000 -        0x1af4ccbdd  libswiftObjectiveC.dylib (940.4) <30717944-0861-38E4-A24F-D74688370664> /usr/lib/swift/libswiftObjectiveC.dylib
+       0x1af4cd000 -        0x1af4e61ff  libswiftos.dylib (1062.100.1) <3AF68747-A111-3B2C-98A8-FF478D3580C4> /usr/lib/swift/libswiftos.dylib
+       0x1b060c000 -        0x1b0641fff  com.apple.ASEProcessing (1.41.51 - 1.41.51) <8EC08B90-BCD2-3B53-82A5-AC5CEECB1EA1> /System/Library/PrivateFrameworks/ASEProcessing.framework/Versions/A/ASEProcessing
+       0x1b1716000 -        0x1b17d0d1f  com.apple.audio.midi.CoreMIDI (2.0 - 88) <9FB89E2E-E907-39CD-811C-17FB6CD4104D> /System/Library/Frameworks/CoreMIDI.framework/Versions/A/CoreMIDI
+       0x1b21f7000 -        0x1b21fb547  com.apple.IOSurfaceAccelerator (1.0.0 - 1.0.0) <55757B18-98CE-3A9F-87C2-A3784973D86C> /System/Library/PrivateFrameworks/IOSurfaceAccelerator.framework/Versions/A/IOSurfaceAccelerator
+       0x1b6bde000 -        0x1b6beedbf  com.apple.HID (1.0 - 1) <5F3E44DA-515C-3221-9ACC-0E62BD7EC83A> /System/Library/PrivateFrameworks/HID.framework/Versions/A/HID
+       0x1baed1000 -        0x1baee069f  com.apple.NetFS (6.0 - 4.0) <0B96E5DA-D997-3D19-B5CC-F521BF30BF96> /System/Library/Frameworks/NetFS.framework/Versions/A/NetFS
+       0x1bb3a8000 -        0x1bb3a9d3b  libswiftDarwin.dylib (310.100.8.0.1) <47B72D0E-165C-3F6E-A050-30571A1F638D> /usr/lib/swift/libswiftDarwin.dylib
+       0x1bd0d9000 -        0x1bd1c74df  libquic.dylib (4277.140.33.703.1) <A581C9E8-4428-3C23-97E5-9077C43640F5> /usr/lib/libquic.dylib
+       0x1bd1d2000 -        0x1bd1f7ebf  com.apple.private.SystemPolicy (1.0 - 1) <430AA172-7215-3DBC-8566-4263452ACB73> /System/Library/PrivateFrameworks/SystemPolicy.framework/Versions/A/SystemPolicy
+       0x1bdf2a000 -        0x1bdfb25ff  com.apple.LoggingSupport (1.0 - 1643.120.5) <362B3C59-D323-3FBA-9AED-13D0FE7E9612> /System/Library/PrivateFrameworks/LoggingSupport.framework/Versions/A/LoggingSupport
+       0x1bdfb3000 -        0x1bdfbf62b  com.apple.MallocStackLogging (1.0 - 64570.58.1) <9C91BAC1-9606-3145-8426-49D7FE8C8EC0> /System/Library/PrivateFrameworks/MallocStackLogging.framework/Versions/A/MallocStackLogging
+       0x1bdfe5000 -        0x1be01947f  libmis.dylib (436.100.18) <9A7AEDEC-561E-39A0-A2BD-A6A42DDB59BF> /usr/lib/libmis.dylib
+       0x1be01a000 -        0x1be01dc7f  com.apple.gpusw.GPURawCounter (34 - 34) <C0AD752C-F619-3723-9F63-600BC676DACD> /System/Library/PrivateFrameworks/GPURawCounter.framework/Versions/A/GPURawCounter
+       0x1be03f000 -        0x1be045fff  libswiftCoreFoundation.dylib (2401) <40FD2B48-2BE4-3E57-8CD8-AF602778C80A> /usr/lib/swift/libswiftCoreFoundation.dylib
+       0x1be051000 -        0x1be098b7a  libswiftXPC.dylib (69.120.3.701.1) <161177A2-D555-34B2-8142-F69C536D724D> /usr/lib/swift/libswiftXPC.dylib
+       0x1be09a000 -        0x1be09aab3  libswiftIOKit.dylib (1) <824AFD0D-2EB0-3C70-86ED-12BE2FC4F097> /usr/lib/swift/libswiftIOKit.dylib
+       0x1c18f1000 -        0x1c1908a4b  libswiftsimd.dylib (21) <47D29A41-C864-331C-BD59-F607FBA71516> /usr/lib/swift/libswiftsimd.dylib
+       0x1c2c9a000 -        0x1c2ca329f  com.apple.IOAccelMemoryInfo (1.0 - 1) <86229073-8D3D-3DB0-A3FD-0D42BFE34C3F> /System/Library/PrivateFrameworks/IOAccelMemoryInfo.framework/Versions/A/IOAccelMemoryInfo
+       0x1cac0d000 -        0x1cac143b8  libswiftMetal.dylib (368.53) <27418F5E-E2EA-3B28-A13D-AD0A27C8E0D1> /usr/lib/swift/libswiftMetal.dylib
+       0x1cebe5000 -        0x1cec4301f  com.apple.osanalytics.OSAnalytics (1.0 - 1) <9797E1B8-168D-378A-AD7C-54EEE17C325A> /System/Library/PrivateFrameworks/OSAnalytics.framework/Versions/A/OSAnalytics
+       0x1cffb1000 -        0x1cffb2e25  libswiftQuartzCore.dylib (4) <D59A8660-07B6-3E40-A9B5-78A86A45B451> /usr/lib/swift/libswiftQuartzCore.dylib
+       0x1d03a6000 -        0x1d03ab967  com.apple.kperf (1.0 - 1) <3A611780-A6D6-3EA9-8362-57BA559CDAA0> /System/Library/PrivateFrameworks/kperf.framework/Versions/A/kperf
+       0x1d04b0000 -        0x1d04b545f  com.apple.MobileSystemServices (1.0 - 1) <36700161-9E6F-31C0-BBD4-143D4E6FA839> /System/Library/PrivateFrameworks/MobileSystemServices.framework/Versions/A/MobileSystemServices
+       0x1d460d000 -        0x1d461b815  libswiftUniformTypeIdentifiers.dylib (840.9) <08FA298C-8EA7-313C-BE09-6EAE2A376607> /usr/lib/swift/libswiftUniformTypeIdentifiers.dylib
+       0x1d9bb6000 -        0x1d9bb7d8b  libswiftOSLog.dylib (8) <5F11EAAB-A7F2-3FEB-86CA-D49199965174> /usr/lib/swift/libswiftOSLog.dylib
+       0x1dd6f5000 -        0x1dd7f1bdf  com.apple.Symbolication (16.0 - 64570.58.1) <DD9C5344-184C-366D-8503-AEAC71267AAD> /System/Library/PrivateFrameworks/Symbolication.framework/Versions/A/Symbolication
+       0x1e17f4000 -        0x1e180421f  com.apple.OSLog (1.0 - 1643.120.5) <C0DB3FD7-C6F1-3EB9-A8CD-EF8C3115A0ED> /System/Library/Frameworks/OSLog.framework/Versions/A/OSLog
+       0x1e1a2d000 -        0x1e1b367dc  com.apple.InternalSwiftProtobuf (1.0 - 1.26.0) <C4A8C092-359E-3182-A0F7-F5F54E9F321C> /System/Library/PrivateFrameworks/InternalSwiftProtobuf.framework/Versions/A/InternalSwiftProtobuf
+       0x1e1bfb000 -        0x1e1c062ff  com.apple.HIDDisplay (1.0 - 1) <00D516D9-DB7A-3851-9AF0-1821590ED346> /System/Library/PrivateFrameworks/HIDDisplay.framework/Versions/A/HIDDisplay
+       0x1e8d74000 -        0x1e8d74c5b  com.apple.FeatureFlags (1.0 - 97) <E9D53EC2-8C28-3408-899A-83D0CF4362FD> /System/Library/PrivateFrameworks/FeatureFlags.framework/Versions/A/FeatureFlags
+       0x1f2616000 -        0x1f261865f  com.apple.ConfigProfileHelper (17.1 - 1722) <FD71C249-E565-3CDC-8162-2E30E5EBEF68> /System/Library/PrivateFrameworks/ConfigProfileHelper.framework/Versions/A/ConfigProfileHelper
+       0x1f55ba000 -        0x1f55c12f7  libCoreFSCache.dylib (301) <73C5D3E5-59F8-3A12-8392-F9EA5B62D5C0> /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libCoreFSCache.dylib
+       0x1f55c2000 -        0x1f55c7907  libCoreVMClient.dylib (301) <121C7234-D3FF-3A55-8C17-994031EF56B4> /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libCoreVMClient.dylib
+       0x1f55c8000 -        0x1f55d8277  com.apple.opengl (21.1.1 - 21.1.1) <2465E3EB-5B14-3061-99AF-61523A179533> /System/Library/Frameworks/OpenGL.framework/Versions/A/OpenGL
+       0x1f55d9000 -        0x1f55db7af  libCVMSPluginSupport.dylib (21.1.2) <6A4671EC-7675-36B8-967D-483BD07A888E> /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libCVMSPluginSupport.dylib
+       0x1f55dc000 -        0x1f55e46bf  libGFXShared.dylib (21.1.2) <573F3162-CB4E-3D9F-B613-3F1CD668F055> /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGFXShared.dylib
+       0x1f55e5000 -        0x1f5617ce3  libGLImage.dylib (21.1.2) <B113EB02-43AF-3623-A447-1D45A1EC227D> /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGLImage.dylib
+       0x1f5618000 -        0x1f565232f  libGLU.dylib (21.1.2) <7226A92D-AEC7-30C5-B6AE-13B12D95F933> /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGLU.dylib
+       0x1f57a4000 -        0x1f57adbcf  libGL.dylib (21.1.2) <CAC03BF8-DAA2-3894-A6B5-7CA7C95EF417> /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib
+       0x1f71e9000 -        0x1f72b307f  com.apple.ExtensionFoundation (97 - 97) <DE58BA54-5AC8-3AD7-946C-EA63A2689BBC> /System/Library/Frameworks/ExtensionFoundation.framework/Versions/A/ExtensionFoundation
+       0x1f8e9d000 -        0x1f8eba09f  com.apple.MPSBenchmarkLoop (1.0 - 1) <86996885-5BC7-392C-8760-7188A78D83FE> /System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSBenchmarkLoop.framework/Versions/A/MPSBenchmarkLoop
+       0x1f8ebb000 -        0x1f8ecf1bf  com.apple.MPSFunctions (1.0 - 1) <201EED9C-26F5-3397-996F-62E4F0B87B16> /System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSFunctions.framework/Versions/A/MPSFunctions
+       0x1fbacd000 -        0x1fbc07022  com.apple.SwiftData (1.0 - 98.1) <67E227B6-E942-31E3-A220-3080BD75B6EA> /System/Library/Frameworks/SwiftData.framework/Versions/A/SwiftData
+       0x23ef91000 -        0x23efe720f  com.apple.AppleKeyStore (1.0 - 1.0) <1DDFB9BB-0945-3CEA-B540-213875C81530> /System/Library/PrivateFrameworks/AppleKeyStore.framework/Versions/A/AppleKeyStore
+       0x23f71f000 -        0x23f737c5f  com.apple.private.AppleMobileFileIntegrity-fmk (1.0 - 1) <BC34DA62-4AE3-3ABA-991B-018548C741D3> /System/Library/PrivateFrameworks/AppleMobileFileIntegrity.framework/Versions/A/AppleMobileFileIntegrity
+       0x23fb0f000 -        0x23fb3d57f  com.apple.imgaudio.AudioAnalytics (1.0 - 1) <06B799F0-262D-379C-AA93-3AC828242F75> /System/Library/PrivateFrameworks/AudioAnalytics.framework/Versions/A/AudioAnalytics
+       0x24312b000 -        0x24326e297  com.apple.CollectionsInternal (1.1.0 - 103.5) <C169398F-E4C2-304D-9339-9F595C1A99EC> /System/Library/PrivateFrameworks/CollectionsInternal.framework/Versions/A/CollectionsInternal
+       0x249383000 -        0x2493836e3  com.apple.FontServices (1.0 - 1) <B7FC7AD4-62BA-341D-B845-19DC68F924E5> /System/Library/PrivateFrameworks/FontServices.framework/Versions/A/FontServices
+       0x249384000 -        0x24944cdef  libXTFontStaticRegistryData.dylib (309.6.0.2) <1263333D-F4D2-3B46-8994-FFB54F1F72E8> /System/Library/PrivateFrameworks/FontServices.framework/libXTFontStaticRegistryData.dylib
+       0x24944e000 -        0x249459fdf  com.apple.FramePacing (1.0 - 1) <3ECD4CAD-0462-3E93-95B4-B15E12E54226> /System/Library/PrivateFrameworks/FramePacing.framework/Versions/A/FramePacing
+       0x249fc3000 -        0x249fc8747  libGPUCompilerUtils.dylib (32023.622) <E6235CA0-027F-3C97-8921-B74EBF1FDD2B> /System/Library/PrivateFrameworks/GPUCompiler.framework/Versions/32023/Libraries/libGPUCompilerUtils.dylib
+       0x24e052000 -        0x24e09201f  libllvm-flatbuffers.dylib (32023.622) <C4FD413F-5511-33B4-AB1E-02A61D1E5B53> /System/Library/PrivateFrameworks/GPUCompiler.framework/Versions/32023/Libraries/libllvm-flatbuffers.dylib
+       0x252ba2000 -        0x252c86c3f  com.apple.InstalledContentLibrary (1.0 - 1.0) <17C048FB-640C-3711-ADF1-00DAC1DFFCE8> /System/Library/PrivateFrameworks/InstalledContentLibrary.framework/Versions/A/InstalledContentLibrary
+       0x25736e000 -        0x2579ff7cf  com.apple.MIL (3405.2 - 3405.2.1) <06A85764-DE6F-3690-A61B-6658B4712A2E> /System/Library/PrivateFrameworks/MIL.framework/Versions/A/MIL
+       0x259f7f000 -        0x259fd4c3f  com.apple.MessageSecurity (1.0 - 115.100.9) <8613A080-9D67-3E12-AEF0-5227A6D70302> /System/Library/PrivateFrameworks/MessageSecurity.framework/Versions/A/MessageSecurity
+       0x25e21c000 -        0x25e33b7af  com.apple.ParsingInternal (0.0.1 - 103.5) <250D6507-261D-38BB-AABD-982657C69ABA> /System/Library/PrivateFrameworks/ParsingInternal.framework/Versions/A/ParsingInternal
+       0x261485000 -        0x2614a467f  com.apple.accessibility.PhotosensitivityProcessing (1.0 - 1) <5C21B70D-5EAF-3220-BFB6-A5D94B761588> /System/Library/PrivateFrameworks/PhotosensitivityProcessing.framework/Versions/A/PhotosensitivityProcessing
+       0x262318000 -        0x26239b47f  com.apple.ProDisplayLibrary (9.4.6 - 9.4.6) <46F991AE-A5EC-3591-ABB0-C45CA27A4CCC> /System/Library/PrivateFrameworks/ProDisplayLibrary.framework/Versions/A/ProDisplayLibrary
+       0x262fda000 -        0x262fe2efb  com.apple.ReflectionInternal (1.0.0 - 103.5) <7448763B-E0BF-3F1A-BB98-A2002CA482D6> /System/Library/PrivateFrameworks/ReflectionInternal.framework/Versions/A/ReflectionInternal
+       0x263cb1000 -        0x263cc5a87  com.apple.RuntimeInternal (1.0.0 - 103.5) <EA3ACABE-0C19-3709-B32E-0FFBA2713C4C> /System/Library/PrivateFrameworks/RuntimeInternal.framework/Versions/A/RuntimeInternal
+       0x26d240000 -        0x26d26c00f  com.apple.security.SwiftASN1Internal (1.0 - 1) <C75EA3C8-A72E-3F07-9DAF-0D034CA601ED> /System/Library/PrivateFrameworks/SwiftASN1Internal.framework/Versions/A/SwiftASN1Internal
+       0x273546000 -        0x273547197  com.apple.VideoToolboxParavirtualizationSupport (40.7.1 - 40.7.1) <CDB24DDE-D8AD-3041-8D87-F84ED8264331> /System/Library/PrivateFrameworks/VideoToolboxParavirtualizationSupport.framework/Versions/A/VideoToolboxParavirtualizationSupport
+       0x27c477000 -        0x27c50fc27  libAppleArchive.dylib (423.100.6.700.1) <5128832C-9B88-36B2-B94C-C65277D2A5B5> /usr/lib/libAppleArchive.dylib
+       0x27c5ac000 -        0x27c5b66df  libCoreEntitlements.dylib (69.100.2) <7849F974-A2DC-39C4-B22F-A0EC54C4BC4F> /usr/lib/libCoreEntitlements.dylib
+       0x27c754000 -        0x27c75b109  libRosetta.dylib (349) <CD13AF03-27E5-387A-8DF1-7016C957167A> /usr/lib/libRosetta.dylib
+       0x27c7b7000 -        0x27c7c041f  libTLE.dylib (69.100.2) <9E333A53-04E7-3A7E-99DA-2B429B9C49EE> /usr/lib/libTLE.dylib
+       0x27c9eb000 -        0x27cafb4b7  libcrypto.46.dylib (107) <987143A3-4E87-30AA-AB95-24B47B1263BF> /usr/lib/libcrypto.46.dylib
+       0x27cb39000 -        0x27cb54567  libhvf.dylib (9) <BE413B25-2BA7-31D6-84A1-3C128E5F4854> /usr/lib/libhvf.dylib
+       0x27d515000 -        0x27d54d1d7  libssl.48.dylib (107) <96B1B021-485D-3BB6-A4D5-172D1456B736> /usr/lib/libssl.48.dylib
+       0x27d738000 -        0x27d74ca7f  libswiftDistributed.dylib (6.1.2 - 6.1.2.1.101) <E2F42C9C-1CB3-3600-A3A5-A0D57C2DB42A> /usr/lib/swift/libswiftDistributed.dylib
+       0x27d764000 -        0x27d771e97  libswiftObservation.dylib (6.1.2 - 6.1.2.1.101) <E474E0E9-5DF7-3118-93A3-504F5B64A7E0> /usr/lib/swift/libswiftObservation.dylib
+       0x27d781000 -        0x27d78d847  libswiftRegexBuilder.dylib (6.1.2 - 6.1.2.1.101) <28637CAD-351F-307C-BE73-0B7EB1CD4BE3> /usr/lib/swift/libswiftRegexBuilder.dylib
+       0x27d7d1000 -        0x27d7da97f  libswiftSynchronization.dylib (6.1.2 - 6.1.2.1.101) <DDD8BB43-A479-350B-ABD0-6100242F6C6F> /usr/lib/swift/libswiftSynchronization.dylib
+       0x27d7db000 -        0x27d7f56f7  libswiftSystem.dylib (64) <922EA785-FFCA-3B66-9CEA-14104120889A> /usr/lib/swift/libswiftSystem.dylib
+       0x27d84a000 -        0x27d84c7ef  libswift_Builtin_float.dylib (6.1.2 - 6.1.2.1.101) <D79D3848-3693-327A-92D2-6ED191DE581D> /usr/lib/swift/libswift_Builtin_float.dylib
+       0x27d84d000 -        0x27d8cdc63  libswift_Concurrency.dylib (6.1.2 - 6.1.2.1.101) <2565BE0C-1131-3228-B73D-FDD2F7C2E346> /usr/lib/swift/libswift_Concurrency.dylib
+       0x27d909000 -        0x27d9ab2cf  libswift_RegexParser.dylib (6.1.2 - 6.1.2.1.101) <E8115D8A-01FC-3E0B-90EA-3E3B1F6B0B56> /usr/lib/swift/libswift_RegexParser.dylib
+       0x27d9ac000 -        0x27da3be57  libswift_StringProcessing.dylib (6.1.2 - 6.1.2.1.101) <07CCC815-3FE2-3BC3-A21E-CAF4A457765C> /usr/lib/swift/libswift_StringProcessing.dylib
+       0x27da3f000 -        0x27da40497  libswift_errno.dylib (310.100.8.0.1) <BB0AD72D-BCE4-3D76-B91F-FD2D3495316B> /usr/lib/swift/libswift_errno.dylib
+       0x27da41000 -        0x27da4377f  libswift_math.dylib (310.100.8.0.1) <5853726B-6CF7-305B-92F9-63063BBE372C> /usr/lib/swift/libswift_math.dylib
+       0x27da44000 -        0x27da44565  libswift_signal.dylib (310.100.8.0.1) <43D1E441-D3C4-39E7-A044-A0591C08CD38> /usr/lib/swift/libswift_signal.dylib
+       0x27da45000 -        0x27da45dcf  libswift_stdio.dylib (310.100.8.0.1) <146ACD14-341D-3EFD-BE54-A77132E4E4A4> /usr/lib/swift/libswift_stdio.dylib
+       0x27da46000 -        0x27da467c7  libswift_time.dylib (310.100.8.0.1) <E4B4BF7E-FD16-3539-BAA2-FA94891DD5A5> /usr/lib/swift/libswift_time.dylib
+       0x27da47000 -        0x27da47737  libswiftsys_time.dylib (310.100.8.0.1) <F6FB5624-709C-3F42-9AD4-4EB22BA2A262> /usr/lib/swift/libswiftsys_time.dylib
+       0x27da48000 -        0x27da4898f  libswiftunistd.dylib (310.100.8.0.1) <F1C895FE-7B01-377E-B73A-0633726EBE42> /usr/lib/swift/libswiftunistd.dylib
+       0x27db7f000 -        0x27db82deb  libsystem_darwindirectory.dylib (122) <8627B2A8-CE68-3F9A-B3E8-2F4E4E35CF66> /usr/lib/system/libsystem_darwindirectory.dylib
+       0x27db83000 -        0x27db8a523  libsystem_eligibility.dylib (181.140.5) <B76C1C04-8001-3113-BE6E-FDDEA1118104> /usr/lib/system/libsystem_eligibility.dylib
+       0x27db8b000 -        0x27db906c5  libsystem_sanitizers.dylib (19) <6143DE0A-A328-3649-AF7D-8FC8781B86E7> /usr/lib/system/libsystem_sanitizers.dylib

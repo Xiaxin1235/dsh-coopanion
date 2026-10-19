@@ -2,9 +2,9 @@
 
 ## Coopanion runtime (AGPL-3.0-or-later)
 
-This application includes and adapts code from [Pal-AI-Lab/Coopanion](https://github.com/Pal-AI-Lab/Coopanion), commit `d7b1a0026fed3eb1975a6e0387527d806192cdbf`, package `packages/cortico-world-desktop-pet`. The vendored body, mesh rig, whale figure/model, sandbox protocol and synthesized sounds are under `web/upstream/`; its manifest reader is adapted in `src/upstream/packs.ts`. Speech timing and bubble styles are adapted in `web/speech.js` and `web/style.css`.
+This application includes and adapts code from [Pal-AI-Lab/Coopanion](https://github.com/Pal-AI-Lab/Coopanion), based on commit `d7b1a0026fed3eb1975a6e0387527d806192cdbf`, package `packages/cortico-world-desktop-pet`, with selected later motion fixes recorded in [UPSTREAM.md](web/upstream/UPSTREAM.md). The vendored body, mesh rig, whale figure/model, sandbox protocol and synthesized sounds are under `web/upstream/`; its manifest reader is adapted in `src/upstream/packs.ts`. Speech timing and bubble styles are adapted in `web/speech.js` and `web/style.css`.
 
-The combined program is distributed under **AGPL-3.0-or-later**, with the full license in `LICENSE`. Original dsh-coopanion code's MIT notice is retained in `LICENSE-MIT`. The exact imported version and modifications made on 2026-10-09 are documented in `web/upstream/UPSTREAM.md`. The installed program offers its corresponding source through **菜单 → 下载本版本源码**, including all source, vendored files, build scripts and the dependency lockfile; the npm archive also includes these files.
+The combined program is distributed under **AGPL-3.0-or-later**, with the full license in `LICENSE`. Original dsh-coopanion code's MIT notice is retained in `LICENSE-MIT`. The base import, selected upstream fixes and dated local adaptations are documented in `web/upstream/UPSTREAM.md`. The installed program offers its corresponding source through **菜单 → 下载本版本源码**, including all source, vendored files, build scripts and the dependency lockfile; the npm archive also includes these files.
 
 ## DeepSeek Whale artwork and marks
 

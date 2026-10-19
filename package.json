@@ -79,7 +79,7 @@
     "verify:metadata": "node scripts/verify-metadata.mjs",
     "verify:release": "node scripts/verify-release.mjs",
     "verify:package": "node scripts/check-package.mjs",
-    "test:ui": "node tests/ui.mjs && node --test tests/locale-ui.mjs",
+    "test:ui": "node tests/ui.mjs && node tests/upstream-motion-ui.mjs && node --test tests/locale-ui.mjs",
     "test:desktop": "node tests/desktop.mjs",
     "test:keyboard-native": "node tests/keyboard-activity-native.mjs",
     "test:install": "node tests/install.mjs",

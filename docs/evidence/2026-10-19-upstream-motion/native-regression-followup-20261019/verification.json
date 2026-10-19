@@ -1,0 +1,200 @@
+{
+  "recordedAt": "2026-10-19T14:14:38.286Z",
+  "status": "complete for requested local regression scope",
+  "allChecksPassed": true,
+  "commit": "3ca1137ec01883d4e032a45d4a42aeb35e878f70",
+  "dirty": true,
+  "build": {
+    "schema": 1,
+    "commit": "3ca1137ec01883d4e032a45d4a42aeb35e878f70",
+    "dirty": true,
+    "productDigest": "38b250e0326b02b72eb13e312169301ecf826ce837abb4962592f9894b51291e"
+  },
+  "environment": {
+    "node": "v24.21.0",
+    "npm": "11.19.1",
+    "platform": "darwin",
+    "arch": "arm64",
+    "osRelease": "24.6.0",
+    "browser": "156.0.8078.4",
+    "native": {
+      "electron": "44.7.0",
+      "chrome": "152.0.7977.130",
+      "platform": "darwin",
+      "displays": [
+        {
+          "id": 3,
+          "scaleFactor": 2,
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 2304,
+            "height": 1296
+          }
+        }
+      ],
+      "window": {
+        "x": 0,
+        "y": 25,
+        "width": 1440,
+        "height": 1080
+      }
+    }
+  },
+  "sourceIdentity": "source-identity.json",
+  "diagnosis": "diagnosis.json",
+  "scope": [
+    "awake-sit and arm-phase integration",
+    "native raster data-URL/CDP accumulation correction",
+    "complete original remaining native regression plus anti-flood and resource lifecycle regression"
+  ],
+  "checks": {
+    "unit": {
+      "passed": true,
+      "vitestFiles": 34,
+      "vitestPassed": 290,
+      "vitestSkipped": 1,
+      "nodePassed": 12,
+      "newMotionAndResourceTests": 17,
+      "evidence": "unit.log"
+    },
+    "typecheck": {
+      "passed": true,
+      "evidence": "typecheck.log"
+    },
+    "build": {
+      "passed": true,
+      "evidence": "build.log"
+    },
+    "metadata": {
+      "passed": true,
+      "evidence": "metadata.log"
+    },
+    "productUi": {
+      "passed": true,
+      "entry": "npm run test:ui",
+      "evidence": "ui.log"
+    },
+    "inboxNpcUi": {
+      "passed": true,
+      "entry": "npm run test:inbox-ui",
+      "nodeTests": 42,
+      "evidence": "inbox.log"
+    },
+    "webgl": {
+      "passed": true,
+      "checks": 16,
+      "evidence": "webgl/regression.json"
+    },
+    "navigation": {
+      "passed": true,
+      "checks": 9,
+      "evidence": "navigation/navigation-ui.json"
+    },
+    "space": {
+      "passed": true,
+      "checks": 30,
+      "evidence": "space/browser-qa.json"
+    },
+    "contactPixels": {
+      "passed": true,
+      "checks": null,
+      "evidence": "space/contact-pixels.json"
+    },
+    "legacyMotion": {
+      "passed": true,
+      "checks": 44,
+      "evidence": "space/legacy-motion.json"
+    },
+    "nativeOriginal": {
+      "passed": true,
+      "checks": 7,
+      "evidence": "native-original-flow/native.json"
+    },
+    "nativeExtended": {
+      "passed": true,
+      "checks": 8,
+      "evidence": "native-final/native.json"
+    },
+    "nativeConfirmed": {
+      "passed": true,
+      "checks": 8,
+      "evidence": "native-confirmed/native.json",
+      "durationMs": 25143,
+      "traffic": {
+        "dataPng": 0,
+        "blob": 430,
+        "urlChars": 19935
+      },
+      "cleanup": "native-confirmed/cleanup.json"
+    }
+  },
+  "limits": [
+    "macOS single-primary-display native run with DPR 2",
+    "controlled suspend is not real OS sleep or lock",
+    "no physical multi-display/mixed-DPI or underlying-app click-delivery acceptance",
+    "not three-platform CI or long-duration resource acceptance",
+    "no real Harness connection or model calls",
+    "no distribution package, installation or release"
+  ],
+  "priorIncompleteEvidence": "../upstream-motion-20261019/verification.json",
+  "priorEvidencePreserved": true,
+  "changedFileSha256": {
+    "THIRD_PARTY_NOTICES.md": "69beac739fa11e9642c6cf17b3115bc16ee4be1febaccf6cf44a2f7b38fe1e96",
+    "docs/README.md": "0fd3396c128191f052d24dcdc4bc095a2300a7245cdb922c1e9c466391f2efc1",
+    "docs/aliveness-development.md": "37b6428472df19607a7f617e52e9f5959c3ad2303a2f3c3e24b3b48853a89723",
+    "docs/characters.md": "f3f252fa492245c61975151c3c4c586efcb17df7d07e46e7451411376fc9b20b",
+    "docs/companionship-contract.md": "b3c482e504418e96111ecdfb156bd34ff9f506886ac17ae427240057c73833bb",
+    "docs/design/README.md": "8a2587d085914569ca6b18877fd06b919df09b5d214dac855666990f38f78ed4",
+    "docs/design/aliveness-implementation-plan.md": "b48e278523695a238372dc40255931a04499e920c4f001744ca3227ac53084a4",
+    "docs/design/art-workflow/space-v1/README.md": "829e50f4ad421ed9f5d3423c067c3108cb0db0f8c5e15c8fd8ef4951ac23813b",
+    "docs/design/art-workflow/space-v1/scene.js": "3428453051de8b9b83f0a1b9b98172953ce77540a04258b27a60927f1f0e39a3",
+    "docs/development.md": "1a4a4e66eb58ec547e0da065584c0f9773df0ed0e9c20d8ed3cf736a705bfc00",
+    "docs/research/upstream-coopanion-2026-10-19.md": "cf6fff91866d43575a1877c56f09e963bd418b4c301d2e09053b1ba54936fb8d",
+    "docs/usage.md": "9681f6a0da8e7088f42654a456343f9f10c35fa192df1ca6ebe0e815d9f2d17b",
+    "package.json": "f1423c6e98be2b78570cade564ef6233b2863a293392ae2705ae5d449c93fead",
+    "tests/space-native.mjs": "27932a3ab6da8384de98ccab6dc4bd1f1aa99e25228ea73b0b6f3298a3809a8f",
+    "tests/upstream-motion-ui.mjs": "6992931f04d420fc8f7f07d53cb849f16000bdf624be803fd838c59c4f71c9e0",
+    "tests/upstream-motion.test.js": "b3e709e6b2f8b32c844f14e9e6ff1781382825637d8c0e6d03a72ec7f98c29a7",
+    "web/upstream/UPSTREAM.md": "5efc6ff4cd34890ccb0cb3750b50e1416eb33748c59acda90fb576145f1c9672",
+    "web/upstream/kit/body.js": "f787f44d659d390de9a005285311d70e280e12e4e04222233aeee0a93f871152",
+    "web/upstream/kit/raster.js": "be2ee9bbee2bbccf14548d79c31bfea9ba68304b44b06cf67b8cbdeedb784672",
+    "web/upstream/whale/figure.js": "559e387f5e7c00f2b0f64e5ded930de429feeed5eeee736af36151c3fd5442a6"
+  },
+  "evidenceSha256": {
+    "source-identity.json": "dec7f89369c4783839dac42f3c83943d763cd10bd2b87d90c3fdacb90eb621b3",
+    "diagnosis.json": "cb4d7528e511b03b90f9477a6fe857df2df99c91f12256365c807bbeb9ab5164",
+    "typecheck.log": "3a3a0f42a52c753626283264ed71e30d318406a98f12cae0c5fe051cd0b21f64",
+    "unit.log": "8cff933f9ee34ce3e14c80a7d4ae9cc5bb65784e4aa9b52bae2728dac9597b31",
+    "build.log": "4be033c0fcfb79c62fffd6311f54f94a69168b9f05a2c35cfeda787da72334e0",
+    "metadata.log": "98b5a70b69e49936c0f920da8feea8f7228cc4359960522c77e1eb2a3f016b41",
+    "ui.log": "2ee7ddc43d81408e430f377b3bb58c9e19a92b7e5f3b66217f0099c8035fab17",
+    "inbox.log": "0c3ee8cd84e01390948087943355545b32b401b6238814920b0902767cd8fed1",
+    "navigation.log": "f488fe2de6590cea53e82d853d1a1687a9ad0a37f6be6cc6a356d5375e22a276",
+    "space.log": "8ebf25209edf40019fc094a948f83be0a4e7353fec2c1146a265f414477bd5a1",
+    "native-original-flow.log": "960449005e2a11eac0f1b9588d8924e3e7f6af4c760ac3b612e14022a2c6ec83",
+    "native-original-flow.source.json": "61e51cb8f05dd260a88f8029dd0d1d0878ddaa645a84ed98c6027f43f82e7149",
+    "native-original-flow/native.json": "6108f3dcc6e56c7942a2714712c393450cea4fc748688008adec20e4ec87c993",
+    "native-final.log": "5d61c617498cccdc56527c9adce315dbec7a340ef0e06fa4e30de2b73d7033ab",
+    "native-final/native.json": "436d4eb8df9a8a60e13893991865d49db30516a37c37598a239116083e82f839",
+    "native-final/cleanup.json": "0b515dbf864624ef42b6f686e8a2df4f1152e351e6bd2f3b72624e185609323d",
+    "native-confirmed.log": "69ee7c4a6043a1137d8a542293ea2f89649cc621ca28b72b715b8c06c69695b3",
+    "native-confirmed/native.json": "c46b6b39772eea2f8229765d36c3b611df03fbef8ab5cdc8224051e2d37babb9",
+    "native-confirmed/cleanup.json": "5aa567254d833644276ca5a5f929211982ca1a5d733a839c5910275319765c72",
+    "traffic-before/protocol.json": "32126f05e480c6ed4f81072437942f39aa082d1eb8fd055a821e46217ec45473",
+    "traffic-before/result.json": "f8c76f3841a01434e9fab123e753f3c701980b38f772070987091bb6f3a6ebd2",
+    "traffic-after/protocol.json": "095cb0655aa285dbbb1ad4debd76b4b19bdeccd99189cef628907a439b79f1c6",
+    "traffic-after/result.json": "0a4bb78c09b9d6e81493c5fcc5501afcca48fc58da5ca1513e45161edf5bdf37",
+    "protocol-before/protocol.json": "02da064693bb637e554387906b63fa31da2262bc735595a635f7c36c1f834541",
+    "profile-before/native-state.json": "98ec067935acd6b5456d371ebf97d40f3373361019b3d542e8a52e496cb9f595",
+    "profile-before/renderer.cpuprofile": "4faea673ccd2291a89ebec1f830c517aee8f614badf86040e36f92817aa76770",
+    "full-sampled/failure.json": "b900581729ebc8793d1a03e88acb3a7006885c11e6d2ee295db9aff9624acb89",
+    "full-sampled/stack-arrival-screenshot.txt": "95ff94416e7f5c3a51fd491f97f30d1cf234ef44d8d015deb1bfef1f3124074b",
+    "webgl/regression.json": "ba5f9e865dc45d8a81baa949c0b73b2c4f2b19e9f35037d38f0aa13eb056e7d4",
+    "navigation/navigation-ui.json": "450780b2f154eb2a506301d7e1c08d5c70ab89e4d7cead78975344cc600f84be",
+    "space/browser-qa.json": "9dccaaaa310c6175dca3b29f3cda35e32ec26f0702f07d9fd3425b2af6ea17c9",
+    "space/contact-pixels.json": "4275ef8636976b88884ab1736533901facead8239817a2104708d2cc52e3b3b5",
+    "space/legacy-motion.json": "471de5d16da9a878b159241e5eb8ca8d9db00dcd96bb04083076015df7a52da0"
+  },
+  "distributionPackage": null
+}

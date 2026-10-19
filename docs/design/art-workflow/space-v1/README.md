@@ -40,6 +40,10 @@ SPACE_EVIDENCE_DIR=artifacts/stage-2-showcase-new node tests/navigation-showcase
 
 输出目录每次用新路径。原生桌面测试串行；浏览器录制只录隔离页面。完整工程验证包括 typecheck／build／unit／`test:inbox-ui`，新记录绑定实际源码摘要、提交和宿主版本，见[第 2 期归档](../../../archive/2026-10-aliveness/stage-2/README.md)。当前指定规格的画面与绕路已获用户验收；后续新改动仍需各自验证与观感审阅。
 
+栅格帧保留原 PNG 字节，通过内存位图解码后同帧合成，绘制或丢弃后释放位图；内部 SVG 预览使用可回收的短 Blob URL。不要把动态 PNG 直接设为 `Image.src` 的长 `data:` URL：原生调试通道会重复发送整段 URL，积压截图和输入命令。`tests/space-native.mjs` 保留原 7 项检查并增加此项回归，默认总期限 120 秒；失败记录当前阶段，结束恢复实机光标并清理隔离 profile。
+
+上述修正的固定源码、实际 Electron 版本及完整 8 项结果见[动作补丁与原生回归归档](../../../archive/2026-10-aliveness/upstream-motion/README.md)，旧阶段 7 项结果不能替代后续源码验证。
+
 ## 历史追溯
 
 第 1 期最终源码 `504c7d4f899ab2afc3e027df3901ee6213e0ae23` 的[验证总表](evidence/validation.json)、[浏览器结果](evidence/final/browser-qa.json)、[接触像素](evidence/final/contact-pixels.json)、[动作回归](evidence/final/legacy-motion.json)和[36.56 秒真实样片](evidence/showcase/space-showcase.webm)原字节保留；它们不覆盖新二维运动或原生验证。

@@ -1,0 +1,86 @@
+{
+  "recordedAt": "2026-10-19T14:08:52.320847+00:00",
+  "cause": "Per-frame PNG data URLs loaded by SVG/image elements are repeated in Chromium Network events, saturating the native CDP connection and queuing screenshot/layout/input commands.",
+  "scope": "local raster preview and its compositor; default canvas renderer and motion algorithms unchanged by this correction",
+  "redCommand": "PROBE_OUTPUT=<new output path> node artifacts/native-regression-followup-20261019/debug/native-frame-traffic-probe.mjs",
+  "redAssertion": "frame PNGs must not flood CDP as data URLs: 217 !== 0",
+  "before": {
+    "requests": 289,
+    "dataPng": 217,
+    "blob": 0,
+    "http": 72,
+    "totalUrlChars": 55740407,
+    "maxUrlChars": 260854
+  },
+  "after": {
+    "requests": 199,
+    "dataPng": 0,
+    "blob": 124,
+    "http": 75,
+    "totalUrlChars": 10089,
+    "maxUrlChars": 82
+  },
+  "protocolEvidence": {
+    "path": "protocol-before/protocol.json",
+    "pendingCommand": "Page.getLayoutMetrics",
+    "networkRequestEvents": 3313,
+    "snapshotLatencyMs": 1247,
+    "sandboxLatencyMs": 2993
+  },
+  "hypotheses": [
+    {
+      "name": "CDP event traffic accumulation",
+      "result": "confirmed by request URL volume, increasing protocol RTT, unchanged original seven checks passing after correction"
+    },
+    {
+      "name": "window focus or visibility",
+      "result": "not observed in the failing profiled run",
+      "state": {
+        "focused": true,
+        "visible": true,
+        "minimized": false,
+        "bounds": {
+          "x": 0,
+          "y": 25,
+          "width": 1440,
+          "height": 1080
+        }
+      }
+    },
+    {
+      "name": "post-resume geometry or hit ordering",
+      "result": "standalone drag succeeds; failed run can stall before suspend; original post-resume drag and physical cursor checks both pass after frame loading correction"
+    }
+  ],
+  "fix": [
+    "decode frame PNG bytes directly into ImageBitmap and close both layers after paint, stale-frame discard or decode failure",
+    "use one owned SVG Blob URL per raster figure, revoking on replacement, remount, snapshot and disposal"
+  ],
+  "regression": [
+    "existing seven native assertions pass unchanged after runtime fix",
+    "maintained native suite adds zero PNG data-URL traffic assertion and positive Blob traffic observation",
+    "unit test exercises bounded URL ownership across actual figure draws, disposal and remount",
+    "native suite records current phase and per-check times, has a 120-second total deadline, restores physical cursor and removes isolated profile"
+  ],
+  "originalNativeChecks": {
+    "passed": true,
+    "count": 7,
+    "source": "native-original-flow.source.json"
+  },
+  "extendedNativeChecks": {
+    "passed": true,
+    "count": 8,
+    "durationMs": 24239,
+    "traffic": {
+      "dataPng": 0,
+      "blob": 752,
+      "urlChars": 34747
+    }
+  },
+  "priorIncompleteEvidence": "../upstream-motion-20261019/verification.json",
+  "limits": [
+    "controlled suspend is not real OS sleep/lock",
+    "single primary display native run",
+    "not three-platform CI or long-duration resource acceptance"
+  ]
+}

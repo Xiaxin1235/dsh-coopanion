@@ -1,5 +1,6 @@
 import { planPath, checkPath, obstaclesFor } from '/web/upstream/kit/navigation.js';
 import { loadBody } from '/web/upstream/body-host.js';
+import { decodePngFrame } from '/web/upstream/kit/raster.js';
 import { drawComposite } from '../o03-shell-hands-v1/composition.js';
 import { WORLD, BODY, GROUND_BODY, freshLayout, footprint, checkRoute, actionRoute, occlusionOrder, navigationModel } from './geometry.js';
 const $ = id => document.getElementById(id), world = $('world');
@@ -132,12 +133,15 @@ function anchorSvg(v) {
 }
 async function paint(v,detail) {
   pending={v,detail,epoch};if(painting)return;painting=true;
-  try {while(pending){const job=pending;pending=null;const bodyImage=new Image(),frontImage=new Image();bodyImage.src=job.detail.href;frontImage.src=job.detail.frontHref;await Promise.all([bodyImage.decode(),frontImage.decode()]);if(job.epoch!==epoch||job.v.generation!==current.generation)continue;
+  try {while(pending){const job=pending;pending=null;let bodyImage,frontImage;try{
+    bodyImage=await decodePngFrame(job.detail.href);frontImage=await decodePngFrame(job.detail.frontHref);
+    if(job.epoch!==epoch||job.v.generation!==current.generation)continue;
     drawComposite($('composition'),{frame:job.v,detail:job.detail,spec,shellImage,bodyImage,frontImage,width:WORLD.width,height:WORLD.height,floorY:job.v.bodyY??layout.actor.y,scale:2});
     const v=job.v;painted=v;world.dataset.painted=JSON.stringify({sequence:v.sequence,phase:v.phase,owner:v.owner,generation:v.generation,layers:['palm','shell','fingers']});
     // Measure actual decoded body/hand alpha in world coordinates, excluding the
     // ground prop and decorative shadow; require every tested frame to fit BODY.
     if(v.sequence%8===0){const cv=document.createElement('canvas');cv.width=WORLD.width;cv.height=WORLD.height;const ctx=cv.getContext('2d',{willReadFrequently:true});ctx.transform(...job.detail.matrix);const[x,y,x1,y1]=job.detail.view;for(const im of[bodyImage,frontImage])ctx.drawImage(im,x,y,x1-x,y1-y);const data=ctx.getImageData(0,0,cv.width,cv.height).data;let minX=cv.width,minY=cv.height,maxX=0,maxY=0;for(let y=0;y<cv.height;y++)for(let x=0;x<cv.width;x++)if(data[(y*cv.width+x)*4+3]>8){minX=Math.min(minX,x);maxX=Math.max(maxX,x);minY=Math.min(minY,y);maxY=Math.max(maxY,y);}if(minX<=maxX){measurements.frames++;measurements.left=Math.max(measurements.left,v.bodyX-minX);measurements.right=Math.max(measurements.right,maxX-v.bodyX);measurements.top=Math.max(measurements.top,(v.bodyY??layout.actor.y)-minY);measurements.bottom=Math.max(measurements.bottom,maxY-(v.bodyY??layout.actor.y));}}
+  }finally{bodyImage?.close();frontImage?.close();}
   }}catch(error){fail(error);}finally{painting=false;}
 }
 function onFrame(v) {

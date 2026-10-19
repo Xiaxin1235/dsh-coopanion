@@ -1,0 +1,174 @@
+{
+  "recordedAt": "2026-10-19T13:39:47.528014+00:00",
+  "status": "implemented; primary automated regressions passed; native supplement incomplete",
+  "allChecksPassed": false,
+  "primaryAutomatedRegressionsPassed": true,
+  "commit": "3ca1137ec01883d4e032a45d4a42aeb35e878f70",
+  "dirty": true,
+  "build": {
+    "schema": 1,
+    "commit": "3ca1137ec01883d4e032a45d4a42aeb35e878f70",
+    "dirty": true,
+    "productDigest": "e33b48b1ac7cc5852fd76d7a53af3d7cc859071e9f775b19568f6d337e7e01fa"
+  },
+  "environment": {
+    "node": "v24.21.0",
+    "npm": "11.19.1",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "browser": "156.0.8078.4",
+  "electronBinaryPackage": "44.7.0",
+  "scope": [
+    "awake sit upstream #105",
+    "whale arm phase upstream #228",
+    "preserve local authored arms and original grip arm",
+    "apply gait to existing opt-in 2D navigation"
+  ],
+  "upstream": {
+    "base": "d7b1a0026fed3eb1975a6e0387527d806192cdbf",
+    "patches": [
+      "7b156c1e9eddb2e655b14229247453934204de53",
+      "76a1179e1e31b52020bcc63dda606f7d0950e15a"
+    ]
+  },
+  "checks": {
+    "targetedUnit": {
+      "passed": true,
+      "files": 5,
+      "tests": 54,
+      "newTests": 16
+    },
+    "fullUnit": {
+      "passed": true,
+      "vitestFiles": 34,
+      "vitestPassed": 289,
+      "vitestSkipped": 1,
+      "nodePassed": 12,
+      "evidence": "unit-allowed.log"
+    },
+    "typecheck": {
+      "passed": true,
+      "evidence": "typecheck.log"
+    },
+    "build": {
+      "passed": true,
+      "evidence": "build-final.log"
+    },
+    "metadata": {
+      "passed": true,
+      "evidence": "metadata.log"
+    },
+    "productUi": {
+      "passed": true,
+      "entry": "npm run test:ui",
+      "evidence": "ui.log"
+    },
+    "inboxNpcUi": {
+      "passed": true,
+      "entry": "npm run test:inbox-ui",
+      "evidence": "inbox.log"
+    },
+    "motionWebgl": {
+      "passed": true,
+      "checks": 16,
+      "evidence": "webgl-allowed/regression.json"
+    },
+    "navigation": {
+      "passed": true,
+      "checks": 9,
+      "evidence": "navigation/navigation-ui.json"
+    },
+    "space": {
+      "passed": true,
+      "checks": 30,
+      "evidence": "space/browser-qa.json"
+    },
+    "contactPixels": {
+      "passed": true,
+      "checks": null,
+      "evidence": "space/contact-pixels.json"
+    },
+    "legacyMotion": {
+      "passed": true,
+      "checks": 44,
+      "evidence": "space/legacy-motion.json"
+    },
+    "nativeSupplement": {
+      "passed": false,
+      "completedChecks": 4,
+      "expectedChecks": 7,
+      "completed": [
+        "arrival",
+        "shared body/draw/hit/bubble coordinates",
+        "sandbox no privileged bridge",
+        "controlled suspend/resume rejects old receipt"
+      ],
+      "status": "incomplete after 240 second external deadline",
+      "remaining": [
+        "native pointer drag",
+        "real macOS cursor hit/click-through flag",
+        "legacy API 2 native horizontal fallback"
+      ],
+      "rootCause": "unresolved; no attribution to or exclusion of the motion patches",
+      "evidence": "native-click-bound.log",
+      "cleanup": "native-cleanup.json"
+    }
+  },
+  "limits": [
+    "not three-platform CI",
+    "not physical multi-display or mixed DPI",
+    "controlled suspend is not real OS sleep/lock",
+    "not long-running resource acceptance",
+    "not connected to a real Harness",
+    "no distribution package, installation or release"
+  ],
+  "finalChangedFileSha256": {
+    "THIRD_PARTY_NOTICES.md": "69beac739fa11e9642c6cf17b3115bc16ee4be1febaccf6cf44a2f7b38fe1e96",
+    "docs/README.md": "0fd3396c128191f052d24dcdc4bc095a2300a7245cdb922c1e9c466391f2efc1",
+    "docs/aliveness-development.md": "7388dce0ea78e7a3f5ced57854f3aa451b528bb5320bbc21f8386ce71d56fdf4",
+    "docs/characters.md": "f3f252fa492245c61975151c3c4c586efcb17df7d07e46e7451411376fc9b20b",
+    "docs/companionship-contract.md": "b3c482e504418e96111ecdfb156bd34ff9f506886ac17ae427240057c73833bb",
+    "docs/design/README.md": "8a2587d085914569ca6b18877fd06b919df09b5d214dac855666990f38f78ed4",
+    "docs/design/aliveness-implementation-plan.md": "b48e278523695a238372dc40255931a04499e920c4f001744ca3227ac53084a4",
+    "docs/development.md": "24c2c19a1c48643a1c5efc4bc762c734b9ad02311cc2470182cfe9256c71381c",
+    "docs/research/upstream-coopanion-2026-10-19.md": "cf6fff91866d43575a1877c56f09e963bd418b4c301d2e09053b1ba54936fb8d",
+    "docs/usage.md": "9681f6a0da8e7088f42654a456343f9f10c35fa192df1ca6ebe0e815d9f2d17b",
+    "package.json": "f1423c6e98be2b78570cade564ef6233b2863a293392ae2705ae5d449c93fead",
+    "tests/space-native.mjs": "19344a613563cb8e783c53efc4bd7bad40751d9f659514084530fb1dc688e6c6",
+    "tests/upstream-motion-ui.mjs": "6992931f04d420fc8f7f07d53cb849f16000bdf624be803fd838c59c4f71c9e0",
+    "tests/upstream-motion.test.js": "b11a3f0ae21405f1182d0825b85b0603f505298e8f3c8bcd8240968d485aa934",
+    "web/upstream/UPSTREAM.md": "bfc8f67f339ce04638fbf52e56aea20266cee067a8edd4eff3130fab4411e5d9",
+    "web/upstream/kit/body.js": "f787f44d659d390de9a005285311d70e280e12e4e04222233aeee0a93f871152",
+    "web/upstream/whale/figure.js": "0dcce2d8e1b0d352feee2d6c6ca815fc0979741d3288237ee2e03425f3862433"
+  },
+  "evidenceSha256": {
+    "source-identity.json": "4f5b2a9901973ec4159138bff8d68cb43d777f0f3c4abb96d246166fe2f6038a",
+    "typecheck.log": "3a3a0f42a52c753626283264ed71e30d318406a98f12cae0c5fe051cd0b21f64",
+    "unit-allowed.log": "b62385cd6350650ee1389311bc53c65e3336cec3d6bcb5ff5599df648b48705b",
+    "build-final.log": "4be033c0fcfb79c62fffd6311f54f94a69168b9f05a2c35cfeda787da72334e0",
+    "metadata.log": "98b5a70b69e49936c0f920da8feea8f7228cc4359960522c77e1eb2a3f016b41",
+    "ui.log": "447eb9e8c3a53fe4906195bbc6f3d13e9a1256e925cb77f3d75efd90ee608e4e",
+    "inbox.log": "870c5313d7f127f44102e0c11ca473c70d8225d1e831aa61b6ccffa37d603b88",
+    "navigation.log": "b79de57fcecee9c06efe2bcd71e6743e5a096d39c094efe3ef40fc6a1b26f677",
+    "space.log": "6fbd4ecba8dea51d4992c66923cb401e100b9f38771e248bbc5a548e6a4cf70b",
+    "webgl-allowed/regression.json": "2027f9ecaab93dc4c00ed17ffa8933f373fba54f49d2a5a356a2924273eed8d5",
+    "navigation/navigation-ui.json": "625ad4dbd164fe770a6b0f5f805fdf897d0d496c2623dc9f2a775d0350cd0bd0",
+    "space/browser-qa.json": "40ce358abf8c1102fa69dd51a8aad8f8de97d3b3713b5cad2000b85791d00b50",
+    "space/contact-pixels.json": "4275ef8636976b88884ab1736533901facead8239817a2104708d2cc52e3b3b5",
+    "space/legacy-motion.json": "2cd95f9550460a2a0c1ee1e69aa505c1972417745e5cc00c5a9cda88ea2753ab",
+    "native-click-bound.log": "44c18208591bde0121b12e1fd46ef8cf427ef4a8ebc9ca3463af3235d6133546",
+    "native-cleanup.json": "e5ad9a64ec25e8220273425b0e79bfafe2bcdfd7602801888b07eec571bd992d",
+    "unit.log": "30b0fdaa99185f6189806bd56c9ef7b59456b7c25c88712d7b8485ad263d8c48",
+    "diagnostics-isolated.json": "f86e0d72ebec7637a494724aed6929b28cfca19fbf07c802a646abf24b18c19e",
+    "native.log": "4169a0bbec2940487d5c8a30addf0323f07e2d91b699de4f00aff3a4404f8225",
+    "native-verified.log": "7fcd2bfe135abfe61252b2846d77fb46b913bd4e2ea33a34f379d98ccaf4c66c",
+    "native-final.log": "3248a834f1619daff20ae75ca902221f54f031bfdf5638fc788bd3f0caeec27a",
+    "native-final/failure.json": "be417d407350ca6c9f7d6f81d21f963defd133567189bf554b42ec601237a55c",
+    "native-lifecycle.log": "d5993e9d36e74c1985bb77ba73764c2eb03000b6cbb2846113c38b06c6f05ab9",
+    "native-lifecycle/failure.json": "54113e2f17eb34559c2410bc6827707d74f7f9386713741dd4aef3d82f71b9d0",
+    "native-bound-frame.log": "e271e0af265e90377f129ca96b532d76108fdb218debb2db50f1b54e58b7a751",
+    "native-bound-frame/failure.json": "b3eac66e623c4b3f09028ba9424c445450c5841ff10dd0830366ebe67e6003d5"
+  },
+  "distributionPackage": null
+}
