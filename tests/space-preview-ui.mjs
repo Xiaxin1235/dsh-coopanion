@@ -25,9 +25,9 @@ try {
   check(await page.locator('[data-object="planter"]').evaluate(el=>parseFloat(el.style.left)>500),'scene object receives real pointer drag through guide layers');await edit('planter',485,220);
   await page.uncheck('#show-zones');check(await page.locator('#zones').evaluate(el=>el.hidden),'zones can be hidden');await page.check('#show-zones');
   await page.uncheck('#show-route');check(await page.locator('#route-layer').evaluate(el=>getComputedStyle(el).display==='none'),'geometric route overlay can be hidden');await page.check('#show-route');
-  await page.click('#block-route');check((await page.textContent('#route-result')).includes('不可通过'),'live obstacle relocation blocks whole-body route');await page.screenshot({path:resolve(output,'space-blocked.jpg'),fullPage:true});
+  await page.click('#block-route');check((await page.textContent('#route-result')).includes('不可达'),'live obstacle relocation blocks whole-body route');await page.screenshot({path:resolve(output,'space-blocked.jpg'),fullPage:true});
   await page.click('#restore-route');check((await page.textContent('#route-result')).includes('可通过'),'restoring obstacle recovers route');
-  await edit('gate-north',621,420);check((await page.textContent('#threshold-label')).includes('162px')&&(await page.textContent('#route-result')).includes('不可通过'),'edited threshold gap and full-body validity update together');await edit('gate-north',621,280);
+  await edit('gate-north',621,420);check((await page.textContent('#threshold-label')).includes('162px')&&(await page.textContent('#route-result')).includes('不可达'),'edited threshold gap and full-body validity update together');await edit('gate-north',621,280);
   await edit('planter',235,480);check(await page.evaluate(()=>Number(getComputedStyle(document.querySelector('[data-object="planter"]')).zIndex)>Number(getComputedStyle(document.querySelector('#composition')).zIndex)),'foreground prop sorts over the complete body-shell-finger unit');await page.selectOption('#object-select','actor');await page.click('[data-object="planter"]');check(await page.inputValue('#object-select')==='planter','foreground object wins pointer selection over the body behind it');await page.screenshot({path:resolve(output,'space-occlusion.jpg'),fullPage:true});await edit('planter',485,220);
   await edit('planter',330,450);check(!(await page.isEnabled('#loop')),'unsafe horizontal action plane is locked');
   await page.uncheck('#show-zones');check(!(await page.isEnabled('#loop')),'hiding region overlay never disables solid geometry');await page.check('#show-zones');
@@ -54,7 +54,7 @@ try {
   const m=final.measuredRaster,b=final.bodyEnvelope;check(m.frames>20&&m.left<=b.left&&m.right<=b.right&&m.top<=b.top&&m.bottom<=b.bottom,'measured real body and hand raster fits the route envelope');
   check(m.binding<.01&&m.ownerMismatches===0&&m.wrongLayers===0&&m.ownerSwitchJump<1.5,'binding, opaque continuous hands and owner transition remain correct');
   const events=final.events.filter(e=>['pickup','drop'].includes(e.type));check(events.length===4&&events.every(e=>e.type==='pickup'?e.contact.distance<=1.5:e.contact.groundDistance<=1.5),'both loops commit through actual stable contact');
-  check(final.route.passed&&final.navigationImplemented===false,'geometry proof remains separate from runtime navigation');
+  check(final.route.passed&&final.navigationImplemented===true,'runtime navigation is explicitly enabled while authored contact remains independent');
   await page.screenshot({path:resolve(output,'space-complete.jpg'),fullPage:true});
   await page.setViewportSize({width:700,height:1000});check(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'narrow editor fits viewport without horizontal overflow');await page.screenshot({path:resolve(output,'space-narrow.jpg'),fullPage:true});
   check(errors.length===0,'no browser page errors');

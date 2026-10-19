@@ -12,7 +12,7 @@ Imported unchanged:
 
 - `kit/rig.js`: shared movement, gestures, expressions, particles, WebGL mesh rendering.
 - `whale/`: original model, all eight schemes and assets. The figure entry has the opt-in adaptation recorded below.
-- `figure-frame.js`: API 2 factory and sandbox message protocol.
+- `figure-frame.js`: API 2 factory and sandbox message protocol (optional extension recorded below).
 - `sound.js`: original Web Audio synthesis and pack sound support.
 
 Harness adaptations, 2026-10-09:
@@ -50,3 +50,9 @@ Harness opt-in hand artwork, 2026-10-19:
 
 - New local helper `whale/hand-art.js` maps original generated pixels to shared wrist/contact anchors and samples reach/grip/release pose weights from the authored motion clock. `whale/figure.js` accepts optional `handArt`; a cropped sleeve and one continuously deformed grip texture replace the hand. Pose weights drive the 24×32 mesh, while surface opacity and cuff geometry stay fixed. Complementary source-pixel masks separate palm and front fingertips without duplicate outlines. Scheme changes retain the optional hand textures.
 - `gripFrame.handArt` reports pose weights, mesh closure, surface opacity, projected wrist/contact registration and ordering. Optional `handDetail` reuses the same raster frame; the isolated workbench also requests `externalProp` and composites decoded body, prop and front-finger rasters atomically with a shared layer order across ownership changes. Default character factories supply none of these options. Original model, textures and rights notices remain unchanged. Generated derivative hand images and prompts are separate in `web/props/shell/hands/`.
+
+Harness opt-in two-dimensional navigation, 2026-10-19:
+
+- `kit/navigation.js` is a local module for full-body Minkowski geometry, conservative visibility-graph planning and acceleration/braking with swept-segment checks. `kit/body.js` enables it only with `navigation:true`, drives actual x/y inside the body, and derives render, shadow, hits and bubble anchors from that root. Default factories retain horizontal motion.
+- `figure-frame.js` and `body-host.js` negotiate `navigation-2d-v1` in ready, forward explicit navigation/cancel/editor placement commands, and bound reported x/y/navigation metadata. Navigation events carry operation id, generation and geometry revision independently of legacy walkId events.
+- The O03 space factory explicitly enables the option for its map bounds, keeps prop motion ownership separate, and cancels routes on lifecycle gaps. Original model, texture, hand artwork and historical evidence bytes remain unchanged. Native single-screen evidence belongs to the isolated map entry, not the production life scheduler.

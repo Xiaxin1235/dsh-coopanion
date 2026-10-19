@@ -79,6 +79,21 @@ talk(), setScheme(id, {fade}), dispose()
 
 宿主校验区域大小和位置，仅在 box 与命中圆内接收角色点击；气泡跟随 `bubble`。角色移动和拖拽由 body 负责，宿主不再维护另一套运动轨道。
 
+## 分支二维能力（显式选择）
+
+生活感分支的空间预览使用可选 `navigation-2d-v1`，不提高 API 2 版本，也不从 `can.walk` 推断二维能力。body 返回 `capabilities:['navigation-2d-v1']`，frame 在 ready 握手中报告，宿主仅在能力存在时转发 `navigate`。共享 kit 只有显式 `navigation:true` 才启用；默认工厂保持旧水平移动。
+
+```js
+body.navigate({ id, generation, model, target: {x, y} });
+body.cancelNavigation('cancel');
+// 仅用于明确的编辑／拖动，不产生 arrived：
+body.place2d({x, y});
+```
+
+`model` 包含 `revision,width,height,body:{left,right,top,bottom},margin,obstacles:[{id,x,y,w,h,kind}]`。`layout` 增加实际根 `y` 和有界 `navigation` 状态，原 box／hit／bubble 同源。事件为 `navigation-arrived`／`navigation-interrupted`，包含 `{id,generation,revision,x,y,by}`；与旧水平 `{walkId,x}` 的 arrived 分开。调用方必须核对三元身份，不能由路程计时合成到达。
+
+旧角色没有 capability 时 `navigate` 返回 false，调用方保留水平回退。二维角色的旧 `walk(x,run,id)` 仍可用，并中断当前二维路线；显式动作、指针和几何调整也中断导航。标定、规划精度和限制见[空间契约](design/living-space-contract.md)。二维能力当前只由私有空间工厂启用，未变更已发布自主陪伴的默认行为。
+
 ## Harness 状态映射
 
 | Harness 状态 | 请求的角色词 | 附加状态 |

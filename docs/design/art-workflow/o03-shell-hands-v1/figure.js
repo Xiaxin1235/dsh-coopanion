@@ -11,13 +11,15 @@ export async function createMotionBody(base, options) {
   const box = [hand[0] - w * spec.grip.x, hand[1] - h * spec.grip.y, w, h];
   let state = initialMotion(profile), pending = null, arrival = null, previous = null, sequence = 0;
   let destination = bounds().W * .78, speed = 1, stepOnce = false, forcePause = false, handArtEnabled = true;
+  let actor;
   let groundQuad, wallAt = performance.now(), activeTime = 0;
   const putGround = x => { const height = spec.displayWidth * b.height / b.width;
     groundQuad = [{ x: x - spec.displayWidth / 2, y: bounds().floorY - height }, { x: x + spec.displayWidth / 2, y: bounds().floorY - height }, { x: x - spec.displayWidth / 2, y: bounds().floorY }]; };
   putGround(bounds().W * .50);
   const authoredPose = () => {
     const pose = sampleMotion(state, profile), phase = state.phase === 'paused' ? state.suspended : state.phase;
-    const walking = ['approach', 'carry'].includes(phase);
+    const navigation=actor?.layout().navigation;
+    const walking = ['approach', 'carry'].includes(phase) || !!navigation && navigation.phase !== 'idle';
     const k = ['settle', 'settleDrop'].includes(phase) ? Math.min(1, state.elapsed / profile.seconds[phase]) : 1;
     return { ...pose, plant: !walking, plantWeight: k * k * (3 - 2 * k), hands: handWeights(state, profile), handArt: handArtEnabled,
       ...(walking ? { armNear: undefined, ...(state.owner === 'ground' ? { armFar: undefined, look: [3, 0] } : {}) } : {}) };
@@ -29,10 +31,10 @@ export async function createMotionBody(base, options) {
     gripPose: () => ({ visible: state.owner === 'hand' }), motionPose: authoredPose,
     handArt: { ...handSpec, assets: Object.fromEntries(Object.entries(handSpec.assets).map(([name, a]) => [name, { ...a, url: new URL('/web/props/shell/hands/' + a.image, base) }])) },
   });
-  const actor = options.kit.createBody({ ...options.host, emit(kind, detail) {
+  actor = options.kit.createBody({ ...options.host, emit(kind, detail) {
     if (['arrived', 'interrupted'].includes(kind)) arrival = { kind, ...detail };
     options.host.emit(kind, detail);
-  } }, { figure });
+  } }, { figure, navigation: options.host.bounds().navigation === true });
   actor.set({ roam: 'off' });
   const groundGrip = () => ({
     x: groundQuad[0].x + (groundQuad[1].x - groundQuad[0].x) * spec.grip.x + (groundQuad[2].x - groundQuad[0].x) * spec.grip.y,
@@ -59,7 +61,7 @@ export async function createMotionBody(base, options) {
       if (e.type === 'face' && actor.layout().facing !== e.facing) actor.do('turn');
       if (e.type === 'drop') groundQuad = figure.gripFrame.quad.map(p => ({ ...p }));
       if (e.type === 'relocate') putGround(Math.max(125, Math.min(bounds().W - 100, e.x)));
-      if (e.type === 'reset') { actor.do('stand'); actor.place(bounds().W * .22, 1); figure.reset(); putGround(bounds().W * .50); previous = null; arrival = null; }
+      if (e.type === 'reset') { actor.do('stand'); actor.place(Number.isFinite(input.command?.x)?input.command.x:bounds().W * .22, 1); figure.reset(); putGround(bounds().W * .50); previous = null; arrival = null; }
       if (e.type === 'inspect') {
         actor.do('stand'); actor.place(input.pickupRoute.x, 1); figure.reset();
         // Inspection poses are explicitly unscored and always use a right-facing reference.
@@ -76,7 +78,7 @@ export async function createMotionBody(base, options) {
     options.host.emit('motion-frame', { phase: state.phase, suspended: state.suspended, elapsed: state.elapsed,
       owner: state.owner, renderedOwner: grip?.visible ? 'hand' : 'ground', generation: state.generation, walkId: state.walkId,
       commits: { ...state.commits }, error: state.error, inspection: state.inspection, loop: state.loop,
-      bodyX: layout.x, moving: layout.moving, facing: layout.facing, visualFacing: grip?.facing, destinationX: destination,
+      bodyX: layout.x, bodyY:layout.y, navigation:layout.navigation, bubble:layout.bubble, hit:layout.hit, moving: layout.moving, facing: layout.facing, visualFacing: grip?.facing, destinationX: destination,
       groundQuad, groundGrip: point, hand: grip?.hand, heldGrip: grip?.propGrip, heldQuad: grip?.quad, feet: grip?.feet, pose: grip?.pose, sit: grip?.sit,
       handArt: grip?.handArt,
       detail: grip?.detail,
@@ -84,10 +86,10 @@ export async function createMotionBody(base, options) {
       activeTime, speed, sequence: ++sequence });
   }
   return {
-    words: actor.words,
+    words: actor.words, capabilities:actor.capabilities, navigate(command){if(state.phase!=='idle'){options.host.emit('navigation-interrupted',{id:command.id,generation:command.generation,revision:command.model.revision,by:'body-owned'});return false;}wallAt=performance.now();return actor.navigate(command);}, cancelNavigation:actor.cancelNavigation, place2d:actor.place2d,
     step(dt) {
       const now = performance.now(), gap = now - wallAt; wallAt = now;
-      if (gap > 1000 || forcePause) { pending = pending?.type === 'reset' ? pending : { type: 'pause' }; forcePause = false; }
+      if (gap > 1000 || forcePause) { actor.cancelNavigation('lifecycle-gap'); pending = ['reset','resume'].includes(pending?.type) ? pending : { type: 'pause' }; forcePause = false; }
       if (pending) { const input = inputs(now, 0, pending, null); pending = null; apply(stepMotion(state, input, profile), input); }
       const stepping = state.phase === 'paused' && stepOnce, suspended = state.suspended;
       stepOnce = false;

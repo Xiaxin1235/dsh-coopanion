@@ -12,6 +12,7 @@
  * Nothing here plays sound or talks to the World: sounds are asked for through `opts.sfx` and what
  * happens to the body is told through `opts.onEvent`; the page around the frame does the rest.
  */
+import { createNavigator, NAVIGATION } from './navigation.js';
 export { createRig } from './rig.js';
 
 export const f = n => Math.round(n * 10) / 10;
@@ -145,6 +146,7 @@ export function createPet(els, opts) {
     pulse: null, walkId: 0, walkWord: null, listening: false, thinking: false, thoughtShown: false, placed: false, noteAt: 0, tearN: 0,
     cursor: '',
   };
+  const navigator = opts.navigation ? createNavigator({x:opts.startX ?? opts.bounds().W*.7,y:opts.bounds().floorY}, onEvent) : null;
   const pointer = { x: -1e4, y: -1e4, inside: false, vx: 0, samples: [] };
   let press = null, strokeAcc = 0, petCool = 0;
   /** Whether the last frame found the horizontal speed not finite: a run of such frames is logged once. */
@@ -164,7 +166,8 @@ export function createPet(els, opts) {
     }
     pet.x = clamp(pet.x, minX(), maxX());
     pet.target = clamp(pet.target, minX(), maxX());
-    if (pet.mode !== 'air' && pet.mode !== 'drag') pet.fy = floorY;
+    if (pet.mode !== 'air' && pet.mode !== 'drag' && !navigator) pet.fy = floorY;
+    if(navigator && !pet.placedNavigation){pet.fy=floorY;pet.placedNavigation=true;}
   }
 
   function toStage(lx, ly) {
@@ -369,6 +372,13 @@ export function createPet(els, opts) {
     };
 
     switch (m) {
+      case 'navigate': {
+        const n=navigator.step(dt);pet.x=n.x;pet.fy=n.y;pet.speed=n.speed;pet.facing=n.facing;
+        const k=n.speed/100;strideT=10*k;liftT=8*k;bobT=3*k;leanT=4*k;lookT=[3,0];
+        pet.phase+=Math.PI*2*2.1*dt*k;
+        if(n.phase==='idle')setMode('idle');
+        break;
+      }
       case 'idle': {
         lookT = track();
         if (pointer.inside && !press && pdx * pet.facing < -50 && pm < 600) {
@@ -662,7 +672,7 @@ export function createPet(els, opts) {
 
     const footY = drag ? pet.dy + 220 * S * 1.09 : pet.fy;
     const k = clamp(1 - (floorY - footY) / 420, .3, 1);
-    shadowEl.setAttribute('cx', f(AX)); shadowEl.setAttribute('cy', f(floorY - 2));
+    shadowEl.setAttribute('cx', f(AX)); shadowEl.setAttribute('cy', f((navigator ? pet.fy : floorY) - 2));
     shadowEl.setAttribute('rx', f(72 * S * k * (1 + pet.sq * .5))); shadowEl.setAttribute('ry', f(10 * S * k + 1));
     shadowEl.setAttribute('opacity', f(k));
 
@@ -810,8 +820,8 @@ export function createPet(els, opts) {
     const xs = corners.map((p) => p.x), ys = corners.map((p) => p.y);
     const side = toStage(128, 128 + pet.low);
     return {
-      x: pet.x, facing: pet.facing, mode: pet.mode, busy: busy(), pressing: !!press, cursor: pet.cursor,
-      moving: !!press || MOVING_MODES.has(pet.mode) || !!pet.pulse || Math.abs(pet.faceVis - pet.facing) > .05,
+      x: pet.x, y:pet.fy, navigation:navigator?.state, facing: pet.facing, mode: pet.mode, busy: busy(), pressing: !!press, cursor: pet.cursor,
+      moving: !!press || (MOVING_MODES.has(pet.mode) || pet.mode === 'navigate') || !!pet.pulse || Math.abs(pet.faceVis - pet.facing) > .05,
       box: { x: Math.min(...xs), y: Math.min(...ys), w: Math.max(...xs) - Math.min(...xs), h: Math.max(...ys) - Math.min(...ys) },
       hit: hits(), bubble: anchor(), side: { x: side.x, y: side.y, reach: 104 * S },
     };
@@ -820,12 +830,21 @@ export function createPet(els, opts) {
   resize();
   custom?.setSkin?.(skin);
   return {
+    navigator,
+    navigate(command){
+      // A horizontal story may have moved the same body since the last route.
+      if(navigator?.state.phase==='idle' && (Math.abs(navigator.state.x-pet.x)>.001||Math.abs(navigator.state.y-pet.fy)>.001)) navigator.relocate({x:pet.x,y:pet.fy});
+      const result=navigator?.request(command);
+      if(result?.passed)setMode('navigate');
+      return result;
+    },
+    cancelNavigation(by){navigator?.cancel(by);if(pet.mode==='navigate')setMode('idle');},
     pet, step, render, resize, act, setExpr, doWord, walkTo, stopWalk, toStage, hitPet, busy, layout,
     pointerDown, pointerMove, pointerUp, pointerLeave, dropAt, shiftDrag,
     get pressing() { return !!press; },
     /** Pressed, carried, airborne, walking, running, dancing, turning round, or in a short gesture (nod, wave, bow…): motion that frames far apart show as jumps. */
     get moving() {
-      return !!press || MOVING_MODES.has(pet.mode) || !!pet.pulse || Math.abs(pet.faceVis - pet.facing) > .05;
+      return !!press || (MOVING_MODES.has(pet.mode) || pet.mode === 'navigate') || !!pet.pulse || Math.abs(pet.faceVis - pet.facing) > .05;
     },
     get time() { return T; },
     get bounds() { return { W, H, floorY, S, minX: minX(), maxX: maxX() }; },
@@ -906,15 +925,19 @@ export function createBody(host, opts) {
   });
   if (start.facing === 1 || start.facing === -1) ctl.pet.facing = ctl.pet.faceVis = start.facing;
   return {
+    capabilities: opts.navigation ? [NAVIGATION] : [],
+    navigate: ctl.navigate,
+    cancelNavigation: ctl.cancelNavigation,
+    place2d(p){if(!ctl.navigator)return;ctl.cancelNavigation('drag');ctl.navigator.relocate(p);ctl.pet.x=p.x;ctl.pet.fy=p.y;ctl.render();},
     step(dt) { ctl.step(dt); ctl.render(); },
     layout: ctl.layout,
-    resize: ctl.resize,
-    do: ctl.doWord,
+    resize(){ctl.cancelNavigation('geometry');ctl.resize();},
+    do(word){ctl.cancelNavigation('action');return ctl.doWord(word);},
     words: [...KIT_EXPRESSIONS, ...KIT_MOTIONS, ...Object.keys(opts.words ?? {}).filter((w) => opts.words[w]?.expression || opts.words[w]?.motion)],
-    walk: (x, run, id) => ctl.walkTo(x, run, id),
+    walk: (x, run, id) => {ctl.cancelNavigation('horizontal-walk');return ctl.walkTo(x, run, id);},
     stopWalk: (id) => ctl.stopWalk(id),
     pointer(type, p) {
-      if (type === 'down') ctl.pointerDown(p);
+      if (type === 'down') {ctl.cancelNavigation('pointer');ctl.pointerDown(p);}
       else if (type === 'move') ctl.pointerMove(p);
       else if (type === 'up' || type === 'cancel') ctl.pointerUp(p);
       else if (type === 'leave') ctl.pointerLeave();
@@ -926,6 +949,7 @@ export function createBody(host, opts) {
       if (ctl.pet.mode === 'drag' || ctl.pet.mode === 'air') return;
       const { minX, maxX } = ctl.bounds;
       ctl.pet.x = ctl.pet.target = clamp(x, minX, maxX);
+      if(ctl.navigator){ctl.navigator.relocate({x:ctl.pet.x,y:ctl.bounds.floorY});ctl.pet.fy=ctl.bounds.floorY;}
       if (facing === 1 || facing === -1) ctl.pet.facing = ctl.pet.faceVis = facing;
     },
     set(s) {

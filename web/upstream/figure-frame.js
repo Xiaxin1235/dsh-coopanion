@@ -72,7 +72,7 @@ addEventListener('message', async (e) => {
       const base = new URL(m.base);
       body = await make(base, { model: m.model ?? undefined, scheme: m.scheme, kit, loadImage, asset: (p) => new URL(p, base), host: { ...host, start: m.start } });
       for (const fn of ['step', 'layout', 'do']) if (typeof body?.[fn] !== 'function') throw new Error(`形象没有 ${fn}`);
-      post({ t: 'ready', z: body.z ?? null, words: Array.isArray(body.words) ? body.words.filter((w) => typeof w === 'string') : null });
+      post({ t: 'ready', z: body.z ?? null, capabilities:body.capabilities??[], words: Array.isArray(body.words) ? body.words.filter((w) => typeof w === 'string') : null });
     } else if (!body) {
       // calls that come before the body is ready have nothing to act on
     } else if (m.t === 'tick') {
@@ -85,6 +85,9 @@ addEventListener('message', async (e) => {
       post({ t: 'scheme', seq: m.seq, z: body.z ?? null });
     } else if (m.t === 'do') body.do(m.word);
     else if (m.t === 'walk') { if (!body.walk?.(m.x, m.run, m.id)) events.push({ kind: 'interrupted', detail: { walkId: m.id, by: 'busy' } }); }
+    else if (m.t === 'navigate' && body.capabilities?.includes('navigation-2d-v1')) body.navigate?.(m.command);
+    else if (m.t === 'cancel-navigation') body.cancelNavigation?.(m.by);
+    else if (m.t === 'place-2d') body.place2d?.(m.p);
     else if (m.t === 'stop-walk') body.stopWalk?.(m.id);
     else if (m.t === 'pointer') body.pointer?.(m.type, m.p);
     else if (m.t === 'drop') body.drop?.(m.p);

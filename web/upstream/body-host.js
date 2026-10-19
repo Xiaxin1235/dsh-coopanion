@@ -44,7 +44,7 @@ export function readLayout(l, size) {
   const box = { x: Math.max(0, x0), y: Math.max(0, y0), w: Math.min(W, x0 + w) - Math.max(0, x0), h: Math.min(H, y0 + h) - Math.max(0, y0) };
   const pt = (p) => ({ x: clampTo(num(p?.x), 0, W), y: clampTo(num(p?.y), 0, H) });
   return {
-    x: clampTo(num(l.x, W / 2), 0, W), facing: l.facing === -1 ? -1 : 1, mode: typeof l.mode === 'string' ? l.mode.slice(0, 32) : 'idle',
+    x: clampTo(num(l.x, W / 2), 0, W), y:clampTo(num(l.y, size.floorY ?? H),0,H), navigation:l.navigation ? {x:clampTo(num(l.navigation.x),0,W),y:clampTo(num(l.navigation.y),0,H),speed:clampTo(num(l.navigation.speed),0,100),phase:['idle','turning','moving','braking','settling'].includes(l.navigation.phase)?l.navigation.phase:'idle',id:Number.isSafeInteger(l.navigation.id)?l.navigation.id:null,generation:num(l.navigation.generation),revision:num(l.navigation.revision)} : null, facing: l.facing === -1 ? -1 : 1, mode: typeof l.mode === 'string' ? l.mode.slice(0, 32) : 'idle',
     busy: !!l.busy, moving: !!l.moving, pressing: !!l.pressing,
     cursor: l.cursor === 'grab' || l.cursor === 'grabbing' ? l.cursor : '',
     box,
@@ -101,7 +101,7 @@ export function loadBody({ layer, pack, start, theme, bounds, onEvent, onSound, 
     // Adapted for the local Harness asset server on 2026-10-09.
     frame.src = new URL('./figure-frame.html', import.meta.url).href;
     let ready = false, gone = false, seq = 0, size = bounds;
-    let layout = null, z = null, words = null;
+    let layout = null, z = null, words = null, capabilities = [];
     // Keep slow renderers from accumulating animation messages behind input and inspector requests.
     let tickPending = false, tickElapsed = 0;
     const touches = touchGate();
@@ -130,6 +130,10 @@ export function loadBody({ layer, pack, start, theme, bounds, onEvent, onSound, 
       get z() { return z; },
       /** The words of the pack's vocabulary its body said it knows, or null when it did not say. */
       get words() { return words; },
+      get capabilities(){return capabilities;},
+      navigate(command){if(!capabilities.includes('navigation-2d-v1'))return false;post({t:'navigate',command});return true;},
+      cancelNavigation(by){post({t:'cancel-navigation',by});},
+      place2d(p){if(capabilities.includes('navigation-2d-v1'))post({t:'place-2d',p});},
       /** Whether stage point `p` is on the body. */
       hit: (p) => onBody(layout, p),
       tick(dt) {
@@ -178,6 +182,7 @@ export function loadBody({ layer, pack, start, theme, bounds, onEvent, onSound, 
           });
         } catch (err) { fail(err); }
       } else if (m.t === 'ready' && !ready) {
+        capabilities = Array.isArray(m.capabilities) ? m.capabilities.filter(c=>c==='navigation-2d-v1') : [];
         ready = true;
         clearTimeout(timer);
         z = typeof m.z === 'string' ? m.z : null;
