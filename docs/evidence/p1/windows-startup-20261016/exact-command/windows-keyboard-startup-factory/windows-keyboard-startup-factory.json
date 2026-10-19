@@ -1,0 +1,112 @@
+{
+  "probeOnly": true,
+  "mode": "factory",
+  "commit": "3f50511d63beb731f8932901e5d74f0a0a0cd3f7",
+  "node": "v24.21.0",
+  "platform": "win32",
+  "hashes": {
+    "desktop/keyboard-activity.cjs": "b5102b16170dc520d26b20a62a9289cfd5e643bbe19dd7857c4ed379fec3447b",
+    "desktop/keyboard-activity-win.cs": "215de3642b4ee43358e955681631d500254c3a870ed62f79f17b0dfb793db37c"
+  },
+  "firstOutputMs": 6416,
+  "verdict": {
+    "value": "idle",
+    "backend": "windows",
+    "status": "available"
+  },
+  "statuses": [
+    {
+      "ms": 12,
+      "value": "unknown",
+      "backend": "windows",
+      "status": "starting"
+    },
+    {
+      "ms": 6611,
+      "value": "unknown",
+      "backend": "windows",
+      "status": "unavailable"
+    },
+    {
+      "ms": 7623,
+      "value": "idle",
+      "backend": "windows",
+      "status": "available"
+    }
+  ],
+  "counts": {
+    "active": 0,
+    "idle": 6,
+    "unknown": 2,
+    "other": 0
+  },
+  "exitResult": {
+    "code": null,
+    "signal": "SIGTERM",
+    "ms": 10166
+  },
+  "stderr": "probe:shell\r\nprobe:compiled\r\n",
+  "events": [
+    {
+      "ms": 1,
+      "event": "spawn",
+      "windowsHide": true
+    },
+    {
+      "ms": 4200,
+      "event": "stderr",
+      "text": "probe:shell\r\n"
+    },
+    {
+      "ms": 5754,
+      "event": "stderr",
+      "text": "probe:compiled\r\n"
+    },
+    {
+      "ms": 6416,
+      "event": "stdout",
+      "bytes": 9
+    },
+    {
+      "ms": 6912,
+      "event": "stdout",
+      "bytes": 9
+    },
+    {
+      "ms": 7402,
+      "event": "stdout",
+      "bytes": 6
+    },
+    {
+      "ms": 7909,
+      "event": "stdout",
+      "bytes": 6
+    },
+    {
+      "ms": 8415,
+      "event": "stdout",
+      "bytes": 6
+    },
+    {
+      "ms": 8905,
+      "event": "stdout",
+      "bytes": 6
+    },
+    {
+      "ms": 9411,
+      "event": "stdout",
+      "bytes": 6
+    },
+    {
+      "ms": 9902,
+      "event": "stdout",
+      "bytes": 6
+    },
+    {
+      "event": "exit",
+      "code": null,
+      "signal": "SIGTERM",
+      "ms": 10166
+    }
+  ]
+}

@@ -1,0 +1,195 @@
+{
+  "recordedAt": "2026-10-16T13:30:29.993748+00:00",
+  "productCommit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+  "packageSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88",
+  "originalReleaseRun": 38902873948,
+  "failedJobs": [
+    116979248614,
+    116983581511
+  ],
+  "diagnosticRuns": [
+    38905899960,
+    38906206698,
+    38906562366,
+    38906810105
+  ],
+  "latestProbeCommit": "83458098d66cc13c2354f7b14d74690b3d0fb4d4",
+  "productFilesChanged": false,
+  "startupDeadlineMsUnchanged": 15000,
+  "canonicalPackageUnchanged": true,
+  "checkoutHashVerification": "Each probe helper hash matches the fixed Git source bytes or its exact Windows CRLF checkout transformation.",
+  "rootCauseConfirmed": false,
+  "records": [
+    {
+      "group": "powershell-parent",
+      "report": "powershell-parent/windows-keyboard-startup-factory/windows-keyboard-startup-factory.json",
+      "commit": "392ef8fc3dfa8bf3906ef60260b16f718e64209f",
+      "mode": "factory",
+      "firstOutputMs": 6595,
+      "verdict": {
+        "value": "idle",
+        "backend": "windows",
+        "status": "available"
+      }
+    },
+    {
+      "group": "powershell-parent",
+      "report": "powershell-parent/windows-keyboard-startup-shell-only/windows-keyboard-startup-shell-only.json",
+      "commit": "392ef8fc3dfa8bf3906ef60260b16f718e64209f",
+      "mode": "shell-only",
+      "firstOutputMs": 1903,
+      "verdict": {
+        "value": "unknown",
+        "backend": "windows",
+        "status": "stale"
+      }
+    },
+    {
+      "group": "powershell-parent",
+      "report": "powershell-parent/windows-keyboard-startup-uncapped/windows-keyboard-startup-uncapped.json",
+      "commit": "392ef8fc3dfa8bf3906ef60260b16f718e64209f",
+      "mode": "uncapped",
+      "firstOutputMs": 5692,
+      "verdict": null
+    },
+    {
+      "group": "bash-parent",
+      "report": "bash-parent/windows-keyboard-startup-factory/windows-keyboard-startup-factory.json",
+      "commit": "0ca3918ab3dd220648ec4ecea049de48f2c93c89",
+      "mode": "factory",
+      "firstOutputMs": 7100,
+      "verdict": {
+        "value": "idle",
+        "backend": "windows",
+        "status": "available"
+      }
+    },
+    {
+      "group": "bash-parent",
+      "report": "bash-parent/windows-keyboard-startup-shell-only/windows-keyboard-startup-shell-only.json",
+      "commit": "0ca3918ab3dd220648ec4ecea049de48f2c93c89",
+      "mode": "shell-only",
+      "firstOutputMs": 2260,
+      "verdict": {
+        "value": "unknown",
+        "backend": "windows",
+        "status": "stale"
+      }
+    },
+    {
+      "group": "bash-parent",
+      "report": "bash-parent/windows-keyboard-startup-uncapped/windows-keyboard-startup-uncapped.json",
+      "commit": "0ca3918ab3dd220648ec4ecea049de48f2c93c89",
+      "mode": "uncapped",
+      "firstOutputMs": 4379,
+      "verdict": null
+    },
+    {
+      "group": "exact-command",
+      "report": "exact-command/windows-keyboard-startup-exact/windows-keyboard-startup-exact.json",
+      "commit": "3f50511d63beb731f8932901e5d74f0a0a0cd3f7",
+      "mode": "exact",
+      "firstOutputMs": 3412,
+      "verdict": {
+        "value": "idle",
+        "backend": "windows",
+        "status": "available"
+      }
+    },
+    {
+      "group": "exact-command",
+      "report": "exact-command/windows-keyboard-startup-factory/windows-keyboard-startup-factory.json",
+      "commit": "3f50511d63beb731f8932901e5d74f0a0a0cd3f7",
+      "mode": "factory",
+      "firstOutputMs": 6416,
+      "verdict": {
+        "value": "idle",
+        "backend": "windows",
+        "status": "available"
+      }
+    },
+    {
+      "group": "exact-command",
+      "report": "exact-command/windows-keyboard-startup-stderr-pipe/windows-keyboard-startup-stderr-pipe.json",
+      "commit": "3f50511d63beb731f8932901e5d74f0a0a0cd3f7",
+      "mode": "stderr-pipe",
+      "firstOutputMs": 3888,
+      "verdict": {
+        "value": "idle",
+        "backend": "windows",
+        "status": "available"
+      }
+    },
+    {
+      "group": "exact-command",
+      "report": "exact-command/windows-keyboard-startup-uncapped/windows-keyboard-startup-uncapped.json",
+      "commit": "3f50511d63beb731f8932901e5d74f0a0a0cd3f7",
+      "mode": "uncapped",
+      "firstOutputMs": 3749,
+      "verdict": null
+    },
+    {
+      "group": "preload",
+      "report": "preload/windows-keyboard-startup-exact/windows-keyboard-startup-exact.json",
+      "commit": "83458098d66cc13c2354f7b14d74690b3d0fb4d4",
+      "mode": "exact",
+      "firstOutputMs": 3957,
+      "verdict": {
+        "value": "idle",
+        "backend": "windows",
+        "status": "available"
+      }
+    },
+    {
+      "group": "preload",
+      "report": "preload/windows-keyboard-startup-loaded-npm/windows-keyboard-startup-exact.json",
+      "commit": "83458098d66cc13c2354f7b14d74690b3d0fb4d4",
+      "mode": "exact",
+      "firstOutputMs": 2020,
+      "verdict": {
+        "value": "idle",
+        "backend": "windows",
+        "status": "available"
+      }
+    },
+    {
+      "group": "preload",
+      "report": "preload/windows-keyboard-startup-loaded-npm/windows-keyboard-startup-uncapped.json",
+      "commit": "83458098d66cc13c2354f7b14d74690b3d0fb4d4",
+      "mode": "uncapped",
+      "firstOutputMs": 972,
+      "verdict": null
+    },
+    {
+      "group": "preload",
+      "report": "preload/windows-keyboard-startup-npm-exact/windows-keyboard-startup-exact.json",
+      "commit": "83458098d66cc13c2354f7b14d74690b3d0fb4d4",
+      "mode": "exact",
+      "firstOutputMs": 3757,
+      "verdict": {
+        "value": "idle",
+        "backend": "windows",
+        "status": "available"
+      }
+    }
+  ],
+  "boundaries": [
+    "Enum-only probes never read key payloads.",
+    "Uncapped and shell-only cases are diagnostics, not product acceptance.",
+    "Both original release failures remain recorded; successful comparisons do not prove a fix.",
+    "The formal release gate is rerun unchanged; publication status is recorded separately."
+  ],
+  "formalReleaseWindowsTest": {
+    "run": 38902873948,
+    "attempt": 3,
+    "job": 116997202964,
+    "passed": true,
+    "keyboardUsable": false,
+    "keyboardEnums": "unknown only; CI remote/service unavailability is permitted, not physical typing acceptance."
+  },
+  "cleanup": {
+    "worktreeArchived": true,
+    "remoteBranchRetainedForProvenance": true,
+    "branch": "codex/windows-keyboard-startup-debug"
+  }
+}

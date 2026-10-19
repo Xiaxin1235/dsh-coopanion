@@ -1,0 +1,33 @@
+{
+  "recordedAt": "2026-10-16T10:53:18.050774+00:00",
+  "clockFixCommit": "f42700dfce33bada566e9e8f19a50c393eea65f5",
+  "pokeFixCommit": "51fea7b9b2dbd354541aecd5c18a3bc0ba32d2f6",
+  "browserIsolationCommit": "f72b6f9eadb993016b3845b97d48fea2a5be8e9d",
+  "runtimeFilesEqualAcrossLastTwoCommits": true,
+  "vmPackageSha256": "d3173241baa5cd16aa9c84b46170e431ac599eadf2fd2ed7b469eb4b910e86fa",
+  "deterministicRegressions": {
+    "clock": "red-before-green-after",
+    "poke": "red-before-green-after",
+    "realWorkPreemptionAndNoGrowth": "passed"
+  },
+  "vmNativeRepeats": {
+    "passed": 10,
+    "attempts": 10,
+    "display": "Xvfb + Openbox",
+    "physicalInput": false,
+    "modifiedHarness": "Only source identity read from packaged build-info instead of absent .git; assertions unchanged."
+  },
+  "temporaryVm": {
+    "createdForThisTask": true,
+    "id": 303,
+    "name": "coop-ci-debug",
+    "removed": true,
+    "configAndOwnDisksAbsent": true,
+    "existingVmsAndTemplatesPreserved": true
+  },
+  "boundaries": [
+    "No long-term resource or physical lifecycle acceptance is claimed.",
+    "macOS browser cold-start contention remains an inference; serial execution retains the original assertions and 5-second readiness limit.",
+    "Raw daily observation and private profile backups stay local."
+  ]
+}

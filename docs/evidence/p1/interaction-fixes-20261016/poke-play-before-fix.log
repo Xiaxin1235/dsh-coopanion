@@ -1,0 +1,28 @@
+✖ manual interaction follows a real poke reaction while actual work still preempts it (1054.384917ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1251.169375
+
+✖ failing tests:
+
+test at tests/companionship-ui.mjs:303:1
+✖ manual interaction follows a real poke reaction while actual work still preempts it (1054.384917ms)
+  AssertionError [ERR_ASSERTION]: A brief poke expression is not task occupancy
+  
+  'idle' !== 'play'
+  
+      at TestContext.<anonymous> (file:///Users/jam/Documents/codespace/personal-projects/dsh-coopanion/tests/companionship-ui.mjs:310:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'idle',
+    expected: 'play',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

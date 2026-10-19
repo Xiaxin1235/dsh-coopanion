@@ -1,0 +1,224 @@
+{
+  "schema": 1,
+  "analyzedAt": "2026-10-19T02:18:03.409327+00:00",
+  "source": {
+    "observation": "weekend-20261016",
+    "version": "0.4.10",
+    "commit": "4b6a54ae575d2c61a1d06d03e674fedf29846aaf",
+    "packageSha256": "595901ec45660a3a707aac35eb07a8dd0ad9ffb479682f9c955f3dba648edc88",
+    "productDigest": "7863f8551c3f9d0dad6d269e87e949ad9b5f94e94f2935c1e21980a844198d3a",
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.21.0",
+    "collectorHashes": {
+      "sample-companion.mjs": "1648f3b264683ef9d62066b5995a624a88cd9e0853b2430724b758fcac3bbf4e",
+      "diagnostics-client.mjs": "78998014e4c41cc37112e83a95b1a493aee26fbcc7204390e37014ce81df5d91",
+      "resource-observation.mjs": "dc5a7450aef8a824ce7ca07c84313885dd71f651b578f34e4bab8b9d9e421148"
+    }
+  },
+  "collection": {
+    "startedAt": "2026-10-16T12:12:22.435Z",
+    "endedAt": "2026-10-19T01:00:00.012Z",
+    "wallSeconds": 218857.577,
+    "sampledIntervalSeconds": 218841.21633587487,
+    "firstSampleAt": "2026-10-16T12:12:52.582Z",
+    "lastSampleAt": "2026-10-19T00:59:44.687Z",
+    "samples": 7281,
+    "rawBytes": 15383556,
+    "intervalSeconds": 30,
+    "reason": "deadline",
+    "status": "recorded",
+    "errors": 0,
+    "segments": 1,
+    "eventCounts": {
+      "segment-start": 1,
+      "progress": 3647,
+      "finished": 1
+    },
+    "largestMonotonicIntervalSeconds": 30.38591075000167,
+    "largestWallIntervalSeconds": 30.389
+  },
+  "resource": {
+    "status": "incomplete",
+    "durationSeconds": 218841.21633587498,
+    "requestedSeconds": 218841.21633587498,
+    "windowSeconds": 1800,
+    "largestGapSeconds": 30.38591075000167,
+    "firstWindow": {
+      "mean": 427.0719805560134,
+      "coveredSeconds": 1799.9999999999995
+    },
+    "lastWindow": {
+      "mean": 136.60218510882268,
+      "coveredSeconds": 1800.000000000029
+    },
+    "rssDeltaMiB": -290.4697954471907,
+    "rssBudgetMiB": 20,
+    "meanCpuPercentOneCore": 8.142291611399246,
+    "maxRssMiB": 498.390625,
+    "scope": "RSS stability only; queues, archive bounds, rendering coverage and environment require separate checks",
+    "samples": 7281,
+    "minRssMiB": 118.59375,
+    "firstSampleRssMiB": 422.078125,
+    "lastSampleRssMiB": 137.328125
+  },
+  "sampleStates": [
+    {
+      "screenLocked": true,
+      "suspended": true,
+      "rendererHidden": false,
+      "samples": 1629,
+      "samplePercent": 22.373300370828183,
+      "sampleWeightedSeconds": 48983.98717412491,
+      "meanCpuPercentOneCore": 35.38586995457189,
+      "meanRssMiB": 457.79533582317356
+    },
+    {
+      "screenLocked": false,
+      "suspended": false,
+      "rendererHidden": false,
+      "samples": 3,
+      "samplePercent": 0.04120313143798929,
+      "sampleWeightedSeconds": 90.25804579100013,
+      "meanCpuPercentOneCore": 40.07398972912999,
+      "meanRssMiB": 488.58333187443617
+    },
+    {
+      "screenLocked": true,
+      "suspended": true,
+      "rendererHidden": true,
+      "samples": 5649,
+      "samplePercent": 77.58549649773383,
+      "sampleWeightedSeconds": 169766.971115959,
+      "meanCpuPercentOneCore": 0.26454498012645666,
+      "meanRssMiB": 237.50416634080136
+    }
+  ],
+  "sampleStateTransitions": [
+    {
+      "sampleTime": "2026-10-16T12:12:52.582Z",
+      "screenLocked": true,
+      "suspended": true,
+      "rendererHidden": false
+    },
+    {
+      "sampleTime": "2026-10-17T01:49:16.903Z",
+      "screenLocked": false,
+      "suspended": false,
+      "rendererHidden": false
+    },
+    {
+      "sampleTime": "2026-10-17T01:50:47.159Z",
+      "screenLocked": true,
+      "suspended": true,
+      "rendererHidden": true
+    }
+  ],
+  "lifecycle": {
+    "initial": {
+      "locks": 0,
+      "unlocks": 0,
+      "suspends": 0,
+      "resumes": 0
+    },
+    "final": {
+      "locks": 1,
+      "unlocks": 1,
+      "suspends": 0,
+      "resumes": 0
+    },
+    "lockKnownSamples": 7281,
+    "screenLockedSamples": 7278,
+    "systemAsleepSamples": 0
+  },
+  "npc": {
+    "phases": {
+      "yield": 7278,
+      "resume": 1,
+      "return": 1,
+      "prepare": 1
+    },
+    "reasons": {
+      "lifecycle": 7278,
+      "none": 3
+    },
+    "keyboard": {
+      "unknown": 7278,
+      "idle": 3
+    },
+    "keyboardStatus": {
+      "disabled": 7278,
+      "available": 3
+    },
+    "coverage": {
+      "kind": "npc",
+      "routines": false,
+      "npc": false,
+      "observedPhases": [
+        "prepare",
+        "resume",
+        "return",
+        "yield"
+      ],
+      "daily": false,
+      "invitation": false
+    },
+    "finalCounts": {
+      "routines": {
+        "observe": 0,
+        "play": 0,
+        "rest": 0,
+        "greeting": 0
+      },
+      "invitationsShown": 0,
+      "invitationsExpired": 0,
+      "invitationsAccepted": 0,
+      "invitationsLater": 0,
+      "invitationsQuiet": 0
+    }
+  },
+  "bounds": {
+    "maxPendingRequests": 0,
+    "maxStorePending": 0,
+    "requestsDrained": true,
+    "storeMaxima": {
+      "initialized": true,
+      "writable": true,
+      "failed": false,
+      "bytes": 0,
+      "revision": 0,
+      "recentCount": 0,
+      "characterCount": 0,
+      "invitations": 0,
+      "pending": 0
+    },
+    "queueMaxima": {
+      "carePending": 0,
+      "pendingInteractions": 0,
+      "composerSessions": 2,
+      "chatTimers": 0,
+      "snoozing": 0,
+      "shownResults": 0,
+      "acknowledgedResults": 0
+    },
+    "heapBytesMin": 2893862,
+    "heapBytesMax": 4076467,
+    "domNodesMin": 839,
+    "domNodesMax": 839
+  },
+  "acceptance": {
+    "fullTwoHourObservation": false,
+    "result": "recorded; incomplete for resource/autonomous/sleep-resume acceptance",
+    "limitations": [
+      "Deadline termination preserves the original incomplete resource verdict.",
+      "Only three unlocked samples; no complete NPC cycle or invitation observed.",
+      "No suspend/resume events; no physical sleep/wake acceptance.",
+      "State-weighted durations label intervals by their endpoint sample, not precise event times.",
+      "Mixed visibility/lifecycle states; falling RSS does not establish a causal performance improvement.",
+      "CPU 100 percent is one core; summed process-tree RSS may double-count shared pages.",
+      "macOS environment is null; zero summary steal/swap values are not measurements.",
+      "This is v0.4.10 evidence, not v0.4.13 validation or subjective user acceptance."
+    ]
+  },
+  "privacy": "Private raw samples, instance/session/process identities, registry and credentials remain local; aggregates and digests only."
+}

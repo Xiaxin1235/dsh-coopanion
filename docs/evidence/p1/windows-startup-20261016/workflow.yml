@@ -1,0 +1,52 @@
+name: CI
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+defaults:
+  run:
+    shell: bash
+jobs:
+  probe:
+    runs-on: windows-latest
+    timeout-minutes: 18
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [exact, npm-exact, loaded-npm]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-toolchain
+        with:
+          cache: ''
+      - if: matrix.mode == 'loaded-npm'
+        run: |
+          npm ci --ignore-scripts
+          npm run verify:metadata
+          npm run setup:electron
+          npm run typecheck
+          npm test
+          npm run test:n0
+          npm run build
+          npx playwright-core install --with-deps chromium
+          npm run character:pack -- examples/star paper-star.zip
+          npm run test:ui
+          npm run test:notification-ui
+          npm run test:inbox-ui
+      - name: Original child command and stdio, direct Node
+        if: matrix.mode == 'exact'
+        run: node tests/probes/windows-keyboard-startup.mjs exact
+      - name: Original child command and stdio, npm lifecycle
+        if: matrix.mode != 'exact'
+        run: npm run probe:keyboard-startup -- exact
+      - name: Uncapped startup timing after loaded probe
+        if: always() && matrix.mode == 'loaded-npm'
+        run: npm run probe:keyboard-startup -- uncapped
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: always()
+        with:
+          name: windows-keyboard-startup-${{ matrix.mode }}
+          path: artifacts/windows-keyboard-startup-*.json
+          retention-days: 7

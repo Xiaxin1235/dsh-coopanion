@@ -1,0 +1,72 @@
+{
+  "probeOnly": true,
+  "mode": "shell-only",
+  "commit": "0ca3918ab3dd220648ec4ecea049de48f2c93c89",
+  "node": "v24.21.0",
+  "platform": "win32",
+  "hashes": {
+    "desktop/keyboard-activity.cjs": "b5102b16170dc520d26b20a62a9289cfd5e643bbe19dd7857c4ed379fec3447b",
+    "desktop/keyboard-activity-win.cs": "215de3642b4ee43358e955681631d500254c3a870ed62f79f17b0dfb793db37c"
+  },
+  "firstOutputMs": 2260,
+  "verdict": {
+    "value": "unknown",
+    "backend": "windows",
+    "status": "stale"
+  },
+  "statuses": [
+    {
+      "ms": 15,
+      "value": "unknown",
+      "backend": "windows",
+      "status": "starting"
+    },
+    {
+      "ms": 2545,
+      "value": "idle",
+      "backend": "windows",
+      "status": "available"
+    },
+    {
+      "ms": 5074,
+      "value": "unknown",
+      "backend": "windows",
+      "status": "stale"
+    }
+  ],
+  "counts": {
+    "active": 0,
+    "idle": 1,
+    "unknown": 0,
+    "other": 0
+  },
+  "exitResult": {
+    "code": null,
+    "signal": "SIGTERM",
+    "ms": 10359
+  },
+  "stderr": "probe:shell\r\n",
+  "events": [
+    {
+      "ms": 1,
+      "event": "spawn",
+      "windowsHide": true
+    },
+    {
+      "ms": 2259,
+      "event": "stderr",
+      "text": "probe:shell\r\n"
+    },
+    {
+      "ms": 2260,
+      "event": "stdout",
+      "bytes": 6
+    },
+    {
+      "event": "exit",
+      "code": null,
+      "signal": "SIGTERM",
+      "ms": 10359
+    }
+  ]
+}

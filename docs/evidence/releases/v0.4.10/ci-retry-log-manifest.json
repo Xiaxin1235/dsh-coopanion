@@ -1,0 +1,31 @@
+{
+  "rawLogsRetainedLocally": true,
+  "productAndAssertionsUnchangedForRetries": true,
+  "rootCauseConfirmed": false,
+  "records": [
+    {
+      "name": "pr-895474f-macos-rc2-first.log",
+      "sha256": "2e469166f4d889d4532f3fdf379a8850a3e278903c8317bab381e917b87c6ca2",
+      "bytes": 48007,
+      "observation": "3-DIP work-area height mismatch; unchanged retry passed"
+    },
+    {
+      "name": "main-macos-first.log",
+      "sha256": "fe5df8a4c6c113418a09b236e94949a938b8a9d7e4eea7b23933ffba332eb214",
+      "bytes": 55583,
+      "observation": "Real-poke UI regression idle instead of play after 200ms; unchanged retry passed this case"
+    },
+    {
+      "name": "main-macos-attempt2-after-cancel.log",
+      "sha256": "30bba2f6fab622d0666125fc14e735df1ea8e0af8f92057074cdf15241e7d78b",
+      "bytes": 55656,
+      "observation": "Native NPC stage did not finish after previous native checks; cancelled to collect logs, unchanged retry launched"
+    },
+    {
+      "name": "main-macos-attempt3-success.log",
+      "sha256": "037559edaf5a35350139206585279478ee1ac7382d12cc04f6f0fc41a2c2f77d",
+      "bytes": 56735,
+      "observation": "Same main commit, product and assertions: full macOS UI/native regression passed on attempt 3. Prior native stall root cause unresolved."
+    }
+  ]
+}

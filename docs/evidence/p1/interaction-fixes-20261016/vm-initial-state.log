@@ -1,0 +1,13 @@
+REPRO_ATTEMPT 1
+[DEBUG-weekend-companion] {"hidden":false,"focused":true,"pet":{"mood":"idle","displayId":"60","displayRevision":"2","nativeHit":"false","character":"whale","scheme":"deepseek","rhythm":"off","npcPhase":"observe","npcReason":"none","mode":"idle","pressing":"false","hostReady":"true","companionship":"interactive","companionActivity":"idle"},"status":"慢慢熟悉你","feedback":"这个模样暂时没有一起活动的动作","trace":[{"t":1055,"type":"pointermove","target":"BUTTON#companion-play","x":718.71875,"y":352.171875,"nativeHit":"true","mode":"idle","hidden":false,"focus":true,"box":{"x":739,"y":602,"w":152,"h":174}},{"t":1070,"type":"pointermove","target":"BUTTON#companion-play","x":718.71875,"y":352.171875,"nativeHit":"true","mode":"idle","hidden":false,"focus":true,"box":{"x":740,"y":601,"w":151,"h":175}},{"t":1070,"type":"pointerdown","target":"BUTTON#companion-play","x":718.71875,"y":352.171875,"nativeHit":"true","mode":"idle","hidden":false,"focus":true,"box":{"x":740,"y":601,"w":151,"h":175}},{"t":1070,"type":"pointerup","target":"BUTTON#companion-play","x":718.71875,"y":352.171875,"nativeHit":"true","mode":"idle","hidden":false,"focus":true,"box":{"x":740,"y":601,"w":151,"h":175}},{"t":1072,"type":"cursor","x":719,"y":352,"revision":2},{"t":1077,"type":"hit-state","active":false,"focused":true,"visible":true},{"t":1077,"type":"hit-state","active":false,"focused":true,"visible":true},{"t":1089,"type":"pointermove","target":"HTML#","x":0,"y":0,"nativeHit":"false","mode":"idle","hidden":false,"focus":true,"box":{"x":740,"y":601,"w":151,"h":175}}]}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.waitForFunction: Timeout 30000ms exceeded.
+    at /home/ubuntu/coop-debug/candidate/package/tests/companionship-debug-v2.mjs:29:14 {
+  log: [],
+  name: 'TimeoutError'
+}
+
+Node.js v24.21.0

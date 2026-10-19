@@ -1,0 +1,44 @@
+{
+  "recordedAt": "2026-10-16T11:31:03.808094+00:00",
+  "sourceCommit": "895474f512bb288ce48280cd2874ab907dd2be67",
+  "preflightPackageSha256": "01d3b95d8d78343850b447ea43e2993c05d50f3d8772a43a5eb9bfec35e9fc17",
+  "priorSourceCommit": "f72b6f9eadb993016b3845b97d48fea2a5be8e9d",
+  "priorPreflightPackageSha256": "d071a1dc8258eaf5eff65f4acb3ccbfc3053250181c32013c0a1d1907dc5c1a1",
+  "regression": "Old fixed package fails a real locked cold start without sandbox bypass; new source passes.",
+  "localNormalSandboxLockedColdStart": "passed",
+  "unit": {
+    "passed": 237,
+    "skipped": 1,
+    "nodeChecks": 12
+  },
+  "nativeControlledCases": [
+    "locked",
+    "unknown",
+    "restore-locked",
+    "system"
+  ],
+  "ciRun": 38892277773,
+  "ciSystemObservations": {
+    "linux": {
+      "known": true,
+      "locked": false,
+      "suspended": false
+    },
+    "macos": {
+      "known": false,
+      "locked": false,
+      "suspended": true
+    },
+    "windows": {
+      "known": true,
+      "locked": false,
+      "suspended": false
+    }
+  },
+  "privacy": "Only three aggregate macOS state flags are inspected. Real daily diagnostics and profile backups stay local.",
+  "boundaries": [
+    "macOS hosted CI system probe returned unknown and correctly remained suspended; this is not an unlocked-console acceptance.",
+    "Windows/Linux physical lock, suspend and resume scenarios remain separate from controlled regression and initial API observation.",
+    "Weekend natural lifecycle observation has not finished."
+  ]
+}
