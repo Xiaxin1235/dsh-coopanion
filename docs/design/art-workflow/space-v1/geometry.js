@@ -49,13 +49,14 @@ export function actionRoute(layout) {
   return checkRoute(layout, [{ x: Math.min(...xs), y: layout.actor.y }, { x: Math.max(...xs), y: layout.actor.y }], BODY, 0);
 }
 export function occlusionOrder(objects, footY) {
-  return [...objects.filter(o => o.layer === 'depth').map(o => ({ id: o.id, depth: o.y+o.h })), { id: 'body-shell-fingers', depth: footY }].sort((a,b) => a.depth-b.depth || a.id.localeCompare(b.id)).map(o => o.id);
+  return [...objects.filter(o => o.layer === 'depth').map(o => {const floor=groundRect(o)??o;return {id:o.id,depth:floor.y+floor.h};}), { id: 'body-shell-fingers', depth: footY }].sort((a,b) => a.depth-b.depth || a.id.localeCompare(b.id)).map(o => o.id);
 }
 
-// Stage 2 keeps the stage-1 diagnostic above verbatim for comparison. These
-// authored bounds exclude only SVG transparent margins and decorative shadows;
-// foliage, rims, roofs and posts remain physical, with the FULL upright body.
-// Coordinates are fractions of the asset rectangle, so resizing stays coherent.
+// Screen-space art is an elevation in this depth-sorted courtyard, not its
+// ground occupancy. Ground bands cover the authored bases, excluding shadows;
+// foliage/tabletops/roofs remain visible occluders at their physical base depth.
+// The full upright body still constrains world edges and content restrictions.
+export const GROUND_BODY = {left:100,right:100,top:24,bottom:8};
 const SILHOUETTES = {
   home: [18/210, 2/175, 176/210, 164/175],
   station: [7/170, 6/120, 156/170, 109/120],
@@ -63,10 +64,19 @@ const SILHOUETTES = {
   'gate-north': [3/28, 2/40, 22/28, 34/40],
   'gate-south': [3/28, 2/40, 22/28, 34/40],
 };
+const GROUND_BANDS = {
+  home: [18/210,145/175,176/210,21/175],
+  station: [7/170,81/120,156/170,34/120],
+  planter: [6/112,60/105,101/112,37/105],
+  'gate-north': [3/28,22/40,22/28,14/40],
+  'gate-south': [3/28,22/40,22/28,14/40],
+};
+const mapRect=(o,shape)=>({x:o.x+shape[0]*o.w,y:o.y+shape[1]*o.h,w:shape[2]*o.w,h:shape[3]*o.h});
+export function groundRect(o) {return o.layer!=='restricted'&&GROUND_BANDS[o.id]?mapRect(o,GROUND_BANDS[o.id]):null;}
 export function navigationModel(layout) {
-  return {revision:layout.revision,width:WORLD.width,height:WORLD.height,body:{...BODY},margin:BODY.turn,
+  return {revision:layout.revision,width:WORLD.width,height:WORLD.height,body:{...BODY},groundBody:{...GROUND_BODY},margin:BODY.turn,
     obstacles:layout.objects.filter(o=>o.solid).map(o=>{
-      const [x,y,w,h]=o.layer==='restricted'?[0,0,1,1]:SILHOUETTES[o.id]??[0,0,1,1];
-      return {id:o.id,label:o.label,kind:o.layer==='restricted'?'full-body-restricted':'solid-silhouette',x:o.x+x*o.w,y:o.y+y*o.h,w:w*o.w,h:h*o.h,art:{x:o.x,y:o.y,w:o.w,h:o.h}};
+      const silhouette=mapRect(o,o.layer==='restricted'?[0,0,1,1]:SILHOUETTES[o.id]??[0,0,1,1]),ground=groundRect(o);
+      return {id:o.id,label:o.label,kind:o.layer==='restricted'?'full-body-restricted':ground?'ground-solid':'solid-silhouette',...(ground??silhouette),silhouette,art:{x:o.x,y:o.y,w:o.w,h:o.h}};
     })};
 }

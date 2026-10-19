@@ -11,9 +11,9 @@ PORT=4189 node docs/design/art-workflow/preview-art-workflow.mjs
 
 打开[本地预览](http://127.0.0.1:4189/)。已有服务直接复用；不要刷新未导出的摆放，可另开隔离页面。
 
-1. 点选空地或“走到岗位”执行真实 x/y 行走。路线卡区分直达、替代路线与当前完整身体模型下不可达，并列冲突对象／段号／包络。
+1. 点选空地或“走到岗位”执行真实 x/y 行走。路线卡区分直达、替代路线与当前当前地面／完整禁区模型下不可达，并列冲突对象／段号／包络。实体按有限 200×32px 身体占地绕行，内容禁区与边界仍按完整 200×213px 加 12px；立面前后遮挡按地面深度排序。
 2. 行走可暂停、继续和取消，连续换目标先制动再重规划。移动花箱会修订几何；运动中拒绝与当前身体重叠的摆放。恢复样板同时重置旧导航目标。
-3. 实体可拖动或数值编辑。角色拖动取消旧路线，body 跟随真实指针并检查完整扫过范围；松手在最后合法根设立水平操作平面，取消不回弹。
+3. 实体可拖动或数值编辑。角色拖动取消旧路线，body 跟随真实指针并按实体占地／完整禁区模型检查连续扫过范围；松手在最后合法根设立水平操作平面，取消不回弹。
 4. 导航期间／离开操作平面时禁用原拿放。按“复位动作”返回原故事，再执行两轮反向拿放、慢放、暂停、继续与非行走阶段逐帧。交接仍由实际接触和开合判断。
 5. 显隐分区／路径、实际脚／手／壳缘和实体边界；导出带 schema 2、修订、规划与旧固定路线对照的 JSON。布局只保存在当前页；窄窗口统一缩放逻辑世界。
 
@@ -25,10 +25,13 @@ node scripts/space-desktop.mjs
 
 它使用临时 profile，退出清理，不改日用安装。地图默认可操作；“桌面穿透”打开后仅角色实际命中范围收取输入，Escape 退出穿透并取消导航。原生不连接 Harness，不自动生活，不读取其他应用。
 
+截图反馈的独立复现入口：[花箱 570/515、角色 186/542、北柱 621/75](http://127.0.0.1:4189/docs/design/art-workflow/space-v1/index.html?layout=flowerbox-570-515)。它在新页面恢复指定布局，不刷新现有未导出编辑；点击“走到岗位”从花箱上方绕行。[修正记录](../../space-routing-feedback.md)说明原模型遗漏及新验证。
+
 ## 回归与新证据
 
 ```bash
 node node_modules/vitest/vitest.mjs run tests/navigation.test.js tests/space-geometry.test.js tests/hand-art.test.js tests/prop-motion.test.js tests/prop-interaction.test.js
+SPACE_EVIDENCE_DIR=artifacts/flowerbox-new node tests/flowerbox-detour-ui.mjs
 SPACE_EVIDENCE_DIR=artifacts/stage-2-ui-new node tests/navigation-ui.mjs
 SPACE_EVIDENCE_DIR=artifacts/stage-2-contact-new node tests/space-preview-ui.mjs
 SPACE_EVIDENCE_DIR=artifacts/stage-2-native-new node tests/space-native.mjs

@@ -1,11 +1,13 @@
-import { planPath, checkPath } from '/web/upstream/kit/navigation.js';
+import { planPath, checkPath, obstaclesFor } from '/web/upstream/kit/navigation.js';
 import { loadBody } from '/web/upstream/body-host.js';
 import { drawComposite } from '../o03-shell-hands-v1/composition.js';
-import { WORLD, BODY, freshLayout, footprint, expanded, checkRoute, actionRoute, occlusionOrder, navigationModel } from './geometry.js';
+import { WORLD, BODY, GROUND_BODY, freshLayout, footprint, checkRoute, actionRoute, occlusionOrder, navigationModel } from './geometry.js';
 const $ = id => document.getElementById(id), world = $('world');
 const spec = await (await fetch('/web/props/shell/asset.json')).json();
 const shellImage = new Image(); shellImage.src = '/web/props/shell/shell.png'; await shellImage.decode();
-let layout = freshLayout(), body, current, painted, selected = 'actor', busyEdit = true, drag, blockedBackup, pending, painting = false, epoch = 0;
+const preset=new URLSearchParams(location.search).get('layout');
+const startingLayout=preset==='flowerbox-570-515'?await(await fetch('./layouts/flowerbox-570-515.json')).json():freshLayout();
+let layout = startingLayout, body, current, painted, selected = 'actor', busyEdit = true, drag, blockedBackup, pending, painting = false, epoch = 0;
 let navId=0, navGeneration=1, navTarget=null, navPlan=null, navActive=false, navPaused=false;
 const rootPosition=()=>({x:current?.bodyX??layout.actor.x,y:current?.bodyY??layout.actor.y});
 let desktopOverlay=false;
@@ -25,11 +27,13 @@ function geometry() {
   Object.assign($('threshold-label').style,{left:gateTop.x-30+'px',top:gateTop.y+13+'px'});
   world.dataset.geometry = JSON.stringify({ route, legacy, action });
   $('route-card').classList.toggle('blocked', !route.passed);
-  $('route-result').textContent = route.passed ? route.alternative?'找到替代路线 · 完整身体绕障':'可通过 · 完整身体直达' : '当前模型内不可达';
+  $('route-result').textContent = route.passed ? route.alternative?'找到替代路线 · 绕开实体占地':'可通过 · 地面直达' : '当前模型内不可达';
   const conflicts=route.direct?.violations??[];
-  $('route-detail').textContent = `${route.reason??(route.alternative?'当前直线路线冲突，已搜索绕路':'直线路线无冲突')}。${conflicts.map(v=>`第 ${v.segment} 段 / ${layout.objects.find(o=>o.id===v.obstacle)?.label??v.obstacle} / ${v.envelope}`).join('；')}。完整身体 200×213px + 12px 余量；实体扣除透明留边与阴影，禁区保留全矩形；可见图顶点精度 0.5px。`;
+  const reasons={'start-blocked':'当前位置与实体或禁区重叠','target-blocked':'目标与实体或禁区重叠','disconnected-in-rectangle-model':'当前模型与精度内各通道受阻'};
+  const envelopeLabel=k=>k==='ground-solid'?'实体地面占用':k==='full-body-restricted'?'完整身体禁区':'完整身体范围';
+  $('route-detail').textContent = `${reasons[route.reason]??(route.alternative?'当前直线路线冲突，已搜索绕路':'直线路线无冲突')}。${conflicts.map(v=>`第 ${v.segment} 段 / ${layout.objects.find(o=>o.id===v.obstacle)?.label??v.obstacle} / ${envelopeLabel(v.envelope)}`).join('；')}。实体按 200×32px 身体占地绕行；禁区和边界按 200×213px 完整身体避让，均另留 12px。立面可前后遮挡；规划精度 0.5px。`;
   const points = routePoints.map(p=>`${p.x},${p.y}`).join(' ');
-  $('route-layer').innerHTML = `<path d="M${gateTop.x} ${gateTop.y}L${gateBottom.x} ${gateBottom.y}" stroke="#b6bca0" stroke-width="25" opacity=".2"/><path d="M${gateTop.x} ${gateTop.y}L${gateBottom.x} ${gateBottom.y}" stroke="#b3b99a" stroke-dasharray="4 7"/>${routePoints.map(p=>svgRect(footprint(p,BODY,BODY.turn),'rx="10" fill="#abc5bb" fill-opacity=".07" stroke="#9bb8aa" stroke-dasharray="3 6" stroke-opacity=".5"')).join('')}<polyline points="${points}" fill="none" stroke="${route.passed?'#8caba1':'#c49a71'}" stroke-width="3" stroke-linejoin="round" stroke-dasharray="4 9"/>${routePoints.map((p,i)=>`<circle cx="${p.x}" cy="${p.y}" r="${i===0||i===routePoints.length-1?6:3}" fill="#f6f7ed" stroke="#8eada2"/><text x="${p.x+10}" y="${p.y+20}" fill="#8fa89d" font-size="9">${i===0?'路线起点':i===routePoints.length-1?'当前目标':i}</text>`).join('')}<ellipse cx="${layout.destination}" cy="${layout.actor.y}" rx="24" ry="6" fill="none" stroke="#b4a27a" stroke-dasharray="3 3"/><text x="${layout.destination-18}" y="${layout.actor.y+25}" font-size="9" fill="#a89879">放置点</text>`;
+  $('route-layer').innerHTML = `<path d="M${gateTop.x} ${gateTop.y}L${gateBottom.x} ${gateBottom.y}" stroke="#b6bca0" stroke-width="25" opacity=".2"/><path d="M${gateTop.x} ${gateTop.y}L${gateBottom.x} ${gateBottom.y}" stroke="#b3b99a" stroke-dasharray="4 7"/>${routePoints.map(p=>svgRect(footprint(p,GROUND_BODY,BODY.turn),'rx="10" fill="#abc5bb" fill-opacity=".07" stroke="#9bb8aa" stroke-dasharray="3 6" stroke-opacity=".5"')).join('')}<polyline points="${points}" fill="none" stroke="${route.passed?'#8caba1':'#c49a71'}" stroke-width="3" stroke-linejoin="round" stroke-dasharray="4 9"/>${routePoints.map((p,i)=>`<circle cx="${p.x}" cy="${p.y}" r="${i===0||i===routePoints.length-1?6:3}" fill="#f6f7ed" stroke="#8eada2"/><text x="${p.x+10}" y="${p.y+20}" fill="#8fa89d" font-size="9">${i===0?'路线起点':i===routePoints.length-1?'当前目标':i}</text>`).join('')}<ellipse cx="${layout.destination}" cy="${layout.actor.y}" rx="24" ry="6" fill="none" stroke="#b4a27a" stroke-dasharray="3 3"/><text x="${layout.destination-18}" y="${layout.actor.y+25}" font-size="9" fill="#a89879">放置点</text>`;
   $('zones').innerHTML = layout.zones.map(z=>`<div class="zone ${z.id==='work'?'work':''}" style="left:${z.x}px;top:${z.y}px;width:${z.w}px;height:${z.h}px"></div>`).join('');
   const order = occlusionOrder(layout.objects,rootPosition().y), ranks = new Map(order.map((id,i)=>[id,10+i]));
   for (const object of layout.objects) {
@@ -49,7 +53,7 @@ function geometry() {
   Object.assign(document.querySelector('.work-label').style,{left:station.x+'px',top:Math.max(250,station.y+station.h+20)+'px'});
   $('report').textContent = JSON.stringify(exportState(),null,2); updateSelection(); updateControls();
 }
-function exportState() { return { schema:2, scope:'stage-2-body-navigation', world:WORLD, bodyEnvelope:BODY, layout, route:navPlan??planPath(navigationModel(layout),rootPosition(),navTarget??{x:850,y:600}), legacyRoute:checkRoute(layout), navigationModel:navigationModel(layout), navigation:{id:navId,generation:navGeneration,target:navTarget,active:navActive,paused:navPaused}, horizontalAction:actionRoute(layout), measuredRaster:measurements, occlusion:occlusionOrder(layout.objects,current?.feet?.[0]?.y??layout.actor.y), asset:'/web/props/shell/asset.json', navigationImplemented:true }; }
+function exportState() { return { schema:2, scope:'stage-2-body-navigation', world:WORLD, bodyEnvelope:BODY,groundEnvelope:GROUND_BODY, layout, route:navPlan??planPath(navigationModel(layout),rootPosition(),navTarget??{x:850,y:600}), legacyRoute:checkRoute(layout), navigationModel:navigationModel(layout), navigation:{id:navId,generation:navGeneration,target:navTarget,active:navActive,paused:navPaused}, horizontalAction:actionRoute(layout), measuredRaster:measurements, occlusion:occlusionOrder(layout.objects,current?.feet?.[0]?.y??layout.actor.y), asset:'/web/props/shell/asset.json', navigationImplemented:true }; }
 function selectedRect() {
   if(selected==='actor')return footprint({x:current?.bodyX??layout.actor.x,y:current?.bodyY??layout.actor.y});
   if(selected==='shell') { const q=current?.owner==='ground'?current.groundQuad:current?.heldQuad;if(q){const xs=q.map(p=>p.x),ys=q.map(p=>p.y);return{x:Math.min(...xs),y:Math.min(...ys),w:40,h:Math.max(...ys)-Math.min(...ys)};}return{x:layout.shell.x-20,y:layout.actor.y-33,w:40,h:33}; }
@@ -65,7 +69,7 @@ function select(id) {
   selected=id;$('object-select').value=id;
   const r=layout.objects.find(o=>o.id===id),p=id==='actor'?rootPosition():id==='shell'?{x:layout.shell.x,y:layout.actor.y}:id==='destination'?{x:layout.destination,y:layout.actor.y}:r;
   $('edit-x').value=Math.round(p.x);$('edit-y').value=Math.round(p.y);$('edit-y').disabled=['shell','destination'].includes(id);
-  $('edit-note').textContent=id==='actor'?'X / Y 编辑会复位动作，贝壳同属此水平平面。即时试摆不代表 x/y 导航。':id==='shell'||id==='destination'?'贝壳与落点沿当前操作平面摆放。离开待机后锁定编辑。':'拖动实体或输入左上角坐标；几何检查实时更新，实体隐藏后仍参与碰撞。';
+  $('edit-note').textContent=id==='actor'?'X / Y 编辑会复位动作，贝壳同属此水平平面。即时试摆不代表 x/y 导航。':id==='shell'||id==='destination'?'贝壳与落点沿当前操作平面摆放。离开待机后锁定编辑。':'拖动实体或输入左上角坐标；几何检查实时更新，地面占用与完整禁区分别检查；立面可前后遮挡。';
   updateSelection();
 }
 const waitFor = (predicate, ms=12000) => new Promise((resolve,reject)=>{const start=performance.now();function check(){if(predicate())return resolve(current);if(performance.now()-start>ms)return reject(Error('等待真实动作帧超时'));setTimeout(check,30);}check();});
@@ -124,7 +128,7 @@ function updateControls() {
 }
 function anchorSvg(v) {
   const dot=(p,label,color='#739c9b')=>p?`<circle cx="${p.x}" cy="${p.y}" r="3" fill="${color}" stroke="#fff"/><text x="${p.x+7}" y="${p.y-5}" font-size="9" fill="${color}">${label}</text>`:'';
-  return `${dot({x:v.bodyX,y:v.bodyY??layout.actor.y},'身体根 / feet')}${dot(v.hand,'手 / palm','#ae8d63')}${dot(v.owner==='ground'?v.groundGrip:v.heldGrip,'壳缘 / grip','#688cb4')}${(v.feet??[]).map((p,i)=>dot(p,`脚 ${i+1}`)).join('')}${BODY?svgRect(footprint({x:v.bodyX,y:v.bodyY??layout.actor.y}),'fill="none" stroke="#739c9b" stroke-dasharray="3 4"'):''}`;
+  return `${dot({x:v.bodyX,y:v.bodyY??layout.actor.y},'身体根 / feet')}${dot(v.hand,'手 / palm','#ae8d63')}${dot(v.owner==='ground'?v.groundGrip:v.heldGrip,'壳缘 / grip','#688cb4')}${(v.feet??[]).map((p,i)=>dot(p,`脚 ${i+1}`)).join('')}${BODY?svgRect(footprint({x:v.bodyX,y:v.bodyY??layout.actor.y}),'fill="none" stroke="#739c9b" stroke-dasharray="3 4"')+svgRect(footprint({x:v.bodyX,y:v.bodyY??layout.actor.y},GROUND_BODY),'fill="#739c9b22" stroke="#739c9b"'):''}`;
 }
 async function paint(v,detail) {
   pending={v,detail,epoch};if(painting)return;painting=true;
@@ -151,7 +155,7 @@ function onFrame(v) {
   $('action-status').textContent=v.error?`接触暂停：${v.error}`:busyEdit?'编辑试摆中…':v.phase==='idle'?navigationBusy()?'正在沿完整身体路径行走；拿放在停稳并返回水平平面后可用。':!actionSafe()?'离开操作平面或实体冲突，请复位动作后拿放。':actionRoute(layout).passed?'点击“重复拿放”执行一次完整闭环，可继续重复；编辑对象后检查布局。':'操作平面与实体冲突，拿放已锁定。先移动对象或恢复样板。':v.phase==='paused'?'动作时钟与物件拥有权已冻结，可继续或在非行走阶段逐帧检查。':`${phases[v.phase]??v.phase} · 真实水平拿放，未执行二维导航`;
   const r=footprint({x:v.bodyX,y:current?.bodyY??layout.actor.y});Object.assign($('actor-hit').style,{left:r.x+'px',top:r.y+'px',width:r.w+'px',height:r.h+'px'});
   const q=v.owner==='ground'?v.groundQuad:v.heldQuad;Object.assign($('shell-hit').style,{left:Math.min(...q.map(p=>p.x))-5+'px',top:Math.min(...q.map(p=>p.y))-5+'px',width:'50px',height:'42px'});
-  $('anchors-layer').innerHTML=anchorSvg(v)+(document.getElementById('show-occlusion').checked?navigationModel(layout).obstacles.map(o=>svgRect(o,'fill="none" stroke="#b08e77" stroke-dasharray="4 3"')+svgRect(expanded(o),'fill="none" stroke="#b08e77" opacity=".22"')).join(''):'');
+  $('anchors-layer').innerHTML=anchorSvg(v)+(document.getElementById('show-occlusion').checked?navigationModel(layout).obstacles.map(o=>svgRect(o,'fill="#b08e7722" stroke="#b08e77"')+svgRect(o.silhouette,'fill="none" stroke="#b08e77" stroke-dasharray="4 3"')).join('')+obstaclesFor(navigationModel(layout)).map(o=>svgRect(o,'fill="none" stroke="#739c9b" opacity=".3"')).join(''):'');
   $('occlusion-readout').textContent=$('show-occlusion').checked?occlusionOrder(layout.objects,rootPosition().y).join(' → '):'身体 / 掌部 → 贝壳 → 指尖\n场景实体按底缘深度排序';
   if(before?.phase!==v.phase&&v.phase==='idle')$('report').textContent=JSON.stringify(exportState(),null,2);
   const rank=new Map(occlusionOrder(layout.objects,v.bodyY??layout.actor.y).map((id,i)=>[id,10+i]));for(const o of layout.objects)document.querySelector(`[data-object="${o.id}"]`).style.zIndex=rank.get(o.id)??3;for(const id of ['composition','actor-hit','shell-hit'])$(id).style.zIndex=rank.get('body-shell-fingers');
@@ -170,7 +174,7 @@ $('reset-layout').onclick=async()=>{layout=freshLayout();navTarget=null;navPlan=
 $('show-zones').onchange=()=>$('zones').hidden=!$('show-zones').checked;
 $('show-route').onchange=()=>$('route-layer').style.display=$('show-route').checked?'block':'none';
 const showAnchors=()=>world.classList.toggle('anchors',$('show-anchors').checked||$('show-occlusion').checked);$('show-anchors').onchange=$('show-occlusion').onchange=showAnchors;
-$('block-route').onclick=()=>{const o=layout.objects.find(o=>o.id==='planter');blockedBackup={x:o.x,y:o.y};void place('planter',600,450);$('block-route').hidden=true;$('restore-route').hidden=false;};
+$('block-route').onclick=()=>{const o=layout.objects.find(o=>o.id==='planter');blockedBackup={x:o.x,y:o.y};void place('planter',570,515);$('block-route').hidden=true;$('restore-route').hidden=false;};
 $('restore-route').onclick=()=>{if(blockedBackup)void place('planter',blockedBackup.x,blockedBackup.y);blockedBackup=null;$('block-route').hidden=false;$('restore-route').hidden=true;};
 $('download').onclick=e=>{e.preventDefault();const url=URL.createObjectURL(new Blob([JSON.stringify(exportState(),null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='coopanion-space-layout.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
 

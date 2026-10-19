@@ -4,6 +4,27 @@ import { freshLayout,navigationModel,checkRoute,occlusionOrder } from '../docs/d
 const start={x:240,y:555},target={x:850,y:600};
 const run=(n,count=3000)=>{for(let i=0;i<count&&n.state.id;i++)n.step(1/60);};
 describe('stage 2 full-body navigation',()=>{
+ it('routes the reported (570,515) flowerbox layout using ground volumes and full content bounds',()=>{
+  const l=freshLayout();l.actor={x:186,y:542};Object.assign(l.objects.find(o=>o.id==='planter'),{x:570,y:515});l.objects.find(o=>o.id==='gate-north').y=75;
+  const model=navigationModel(l),plan=planPath(model,l.actor,target);
+  expect(plan.passed).toBe(true);expect(plan.alternative).toBe(true);expect(checkPath(model,plan.points).passed).toBe(true);
+  expect(plan.points.slice(1,-1).some(p=>p.y<555)).toBe(true);
+  const events=[],n=createNavigator(l.actor,(kind,v)=>events.push({kind,...v}));n.request({id:1,generation:1,model,target});let previous=n.state;
+  for(let i=0;i<3000&&n.state.id;i++){const s=n.step(1/60);expect(checkPath(model,[previous,s]).passed).toBe(true);previous=s;}
+  expect(n.state).toMatchObject({...target,speed:0});expect(events.filter(e=>e.kind==='navigation-arrived')).toHaveLength(1);
+ });
+ it('keeps finite whole-width ground clearance and full-body restricted clearance distinct',()=>{
+  const l=freshLayout(),m=navigationModel(l),p=m.obstacles.find(o=>o.id==='planter');
+  expect(m.groundBody).toMatchObject({left:100,right:100,top:24,bottom:8});
+  expect(checkPath(m,[{x:p.x-112,y:p.y},{x:p.x-112,y:p.y}]).passed).toBe(false);
+  expect(checkPath(m,[{x:p.x-112.01,y:p.y},{x:p.x-112.01,y:p.y}]).passed).toBe(true);
+  // Feet are outside the content rectangle, but hair/body still overlap it.
+  expect(checkPath(m,[{x:850,y:400},{x:850,y:400}]).passed).toBe(false);
+  // Shadow/upper artwork overlap at a different depth is not ground collision.
+  expect(checkPath(m,[{x:550,y:250},{x:550,y:250}]).passed).toBe(true);
+  expect(occlusionOrder(l.objects,320).indexOf('body-shell-fingers')).toBeGreaterThan(occlusionOrder(l.objects,320).indexOf('planter'));
+  expect(occlusionOrder(l.objects,320).indexOf('body-shell-fingers')).toBeLessThan(occlusionOrder(l.objects,320).indexOf('home'));
+ });
  it('diagnoses the reported flowerbox without declaring the whole map blocked',()=>{
   const l=freshLayout();Object.assign(l.objects.find(o=>o.id==='planter'),{x:508,y:261});
   expect(checkRoute(l).violations).toContainEqual({segment:1,obstacle:'planter'});
@@ -11,10 +32,10 @@ describe('stage 2 full-body navigation',()=>{
   expect(plan.passed).toBe(true);expect(checkPath(m,plan.points).passed).toBe(true);
   expect(m.obstacles.find(o=>o.id==='planter').art).toMatchObject({x:508,y:261,w:112,h:105});
  });
- it('finds a legal alternative when the straight line is blocked, then detects a closed gate',()=>{
-  const l=freshLayout();l.objects.find(o=>o.id==='planter').y=280;const m=navigationModel(l),p=planPath(m,start,target);
-  expect(p.alternative).toBe(true);expect(checkPath(m,p.points).passed).toBe(true);expect(p.direct.violations[0]).toMatchObject({segment:1,obstacle:'planter',envelope:'solid-silhouette'});
-  l.objects.find(o=>o.id==='gate-north').h=300;
+ it('finds a ground detour and rejects an actually closed full-body channel',()=>{
+  const l=freshLayout();l.objects.find(o=>o.id==='planter').y=515;const m=navigationModel(l),p=planPath(m,start,target);
+  expect(p.alternative).toBe(true);expect(checkPath(m,p.points).passed).toBe(true);expect(p.direct.violations[0]).toMatchObject({segment:1,obstacle:'planter',envelope:'ground-solid'});
+  Object.assign(l.objects.find(o=>o.id==='panel'),{x:450,y:235});
   expect(planPath(navigationModel(l),start,target).passed).toBe(false);
  });
  it('keeps shadow and transparent art distinct from physical silhouette and depth',()=>{
@@ -22,6 +43,12 @@ describe('stage 2 full-body navigation',()=>{
   expect(pot.x).toBeGreaterThan(pot.art.x);expect(pot.y+pot.h).toBeLessThan(pot.art.y+pot.art.h);
   const before=planPath(m,start,target);occlusionOrder(l.objects,250);expect(planPath(m,start,target)).toEqual(before);
   const panel=m.obstacles.find(o=>o.id==='panel');expect(panel).toMatchObject({...panel.art,kind:'full-body-restricted'});
+ });
+ it('retains full-body collision for unclassified solids and sweeps thin ground barriers',()=>{
+  const m=navigationModel(freshLayout());m.obstacles.push({id:'unknown',kind:'solid-silhouette',x:400,y:350,w:1,h:1});
+  expect(checkPath(m,[{x:400,y:500},{x:401,y:500}]).passed).toBe(false);
+  m.obstacles=m.obstacles.filter(o=>o.id!=='unknown');m.obstacles.push({id:'thin-ground',kind:'ground-solid',x:600,y:0,w:.001,h:660});
+  expect(planPath(m,start,target).passed).toBe(false);
  });
  it('does not use a foot point through content or pass through thin obstacles and exact boundaries',()=>{
   const m={width:500,height:500,revision:1,body:{left:30,right:30,top:100,bottom:5},margin:0,obstacles:[{id:'thin',x:250,y:0,w:.001,h:500}]};

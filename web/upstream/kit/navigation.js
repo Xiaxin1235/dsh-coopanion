@@ -11,8 +11,13 @@ export function segmentHits(a,b,r) {
   return true;
 }
 export function obstaclesFor(model) {
-  const b=model.body,m=model.margin;
-  return model.obstacles.map(o=>({...o,x:o.x-b.right-m,y:o.y-b.bottom-m,w:o.w+b.left+b.right+2*m,h:o.h+b.top+b.bottom+2*m}));
+  const m=model.margin;
+  return model.obstacles.map(o=>{
+    // Only explicitly calibrated ground solids use finite ground depth.
+    // Content volumes and unclassified solids retain the whole visual body.
+    const b=o.kind==='ground-solid' && model.groundBody ? model.groundBody : model.body;
+    return {...o,x:o.x-b.right-m,y:o.y-b.bottom-m,w:o.w+b.left+b.right+2*m,h:o.h+b.top+b.bottom+2*m};
+  });
 }
 export function checkPath(model,points) {
   const b=model.body,m=model.margin,blocks=obstaclesFor(model),violations=[];
@@ -23,7 +28,7 @@ export function checkPath(model,points) {
   return {passed:points.length>=2&&points.every(p=>Number.isFinite(p.x)&&Number.isFinite(p.y))&&!violations.length,violations};
 }
 export function planPath(model,start,target) {
-  const direct=checkPath(model,[start,target]),meta={revision:model.revision,precision:.5,model:'full-body / solid silhouettes / full restricted rectangles',direct};
+  const direct=checkPath(model,[start,target]),meta={revision:model.revision,precision:.5,model:model.groundBody?'finite ground bodies / full-body restricted volumes':'full-body / solid silhouettes / full restricted rectangles',direct};
   if(!checkPath(model,[start,start]).passed)return {...meta,passed:false,reason:'start-blocked',points:[]};
   if(!checkPath(model,[target,target]).passed)return {...meta,passed:false,reason:'target-blocked',points:[]};
   if(direct.passed)return {...meta,passed:true,alternative:false,points:[{...start},{...target}]};

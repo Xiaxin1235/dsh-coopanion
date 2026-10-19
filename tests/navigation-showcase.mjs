@@ -11,7 +11,7 @@ try{
  const edit=async(x,y)=>{await page.selectOption('#object-select','planter');await page.fill('#edit-x',String(x));await page.fill('#edit-y',String(y));await page.click('#apply-placement');};
  const arrived=()=>page.waitForFunction(()=>{const s=window.spacePreview.snapshot();return s.events.some(e=>e.kind==='navigation-arrived'&&e.id===s.navigation.id);},null,{timeout:30000});
  const point=async(x,y)=>{const r=await page.locator('#world').boundingBox();await page.mouse.click(r.x+x*r.width/1080,r.y+y*r.height/660);};
- await edit(508,261);await page.waitForTimeout(1600);await edit(485,280);await page.click('#nav-work');await arrived();
+ await edit(508,261);await page.waitForTimeout(1600);await edit(485,515);await page.click('#nav-work');await arrived();
  await point(240,555);await page.waitForFunction(()=>window.spacePreview.snapshot().frame.bodyX<700);await edit(508,261);await arrived();
  await page.click('#nav-work');await page.waitForFunction(()=>window.spacePreview.snapshot().frame.bodyX>400);await page.click('#nav-pause');await page.waitForTimeout(1600);await page.click('#nav-resume');await arrived();
  await page.screenshot({path:resolve(output,'showcase-final.png'),fullPage:true});

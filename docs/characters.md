@@ -90,7 +90,7 @@ body.cancelNavigation('cancel');
 body.place2d({x, y});
 ```
 
-`model` 包含 `revision,width,height,body:{left,right,top,bottom},margin,obstacles:[{id,x,y,w,h,kind}]`。`layout` 增加实际根 `y` 和有界 `navigation` 状态，原 box／hit／bubble 同源。事件为 `navigation-arrived`／`navigation-interrupted`，包含 `{id,generation,revision,x,y,by}`；与旧水平 `{walkId,x}` 的 arrived 分开。调用方必须核对三元身份，不能由路程计时合成到达。
+`model` 包含 `revision,width,height,body:{left,right,top,bottom},margin,obstacles:[{id,x,y,w,h,kind}]`，可选 `groundBody:{left,right,top,bottom}`。仅显式标定为 `kind:ground-solid` 的实体采用有限地面占用；其余实体、禁区和世界边界保持完整 `body`。缺少 `groundBody` 时保持原全身模型。`layout` 增加实际根 `y` 和有界 `navigation` 状态，原 box／hit／bubble 同源。事件为 `navigation-arrived`／`navigation-interrupted`，包含 `{id,generation,revision,x,y,by}`；与旧水平 `{walkId,x}` 的 arrived 分开。调用方必须核对三元身份，不能由路程计时合成到达。
 
 旧角色没有 capability 时 `navigate` 返回 false，调用方保留水平回退。二维角色的旧 `walk(x,run,id)` 仍可用，并中断当前二维路线；显式动作、指针和几何调整也中断导航。标定、规划精度和限制见[空间契约](design/living-space-contract.md)。二维能力当前只由私有空间工厂启用，未变更已发布自主陪伴的默认行为。
 
