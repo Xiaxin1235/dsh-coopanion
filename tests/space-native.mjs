@@ -5,7 +5,8 @@ import { mkdtemp,rm,mkdir,writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { resolve,join } from 'node:path';
 const profile=await mkdtemp(join(tmpdir(),'coopanion-space-native-')),output=resolve(process.env.SPACE_EVIDENCE_DIR??'artifacts/stage-2-native');await mkdir(output,{recursive:true});
-const checks=[],require=createRequire(import.meta.url);let app,page;
+const checks=[];checks.push=(...items)=>{Array.prototype.push.apply(checks,items);console.log(items[0]);};
+const require=createRequire(import.meta.url);let app,page;
 try{
  app=await _electron.launch({executablePath:require('electron'),args:['--no-sandbox',resolve('desktop/space-preview.cjs')],env:{...process.env,DSH_PET_TEST_DATA_DIR:profile,DSH_PET_TEST_NO_SANDBOX:'1'}});
  page=await app.firstWindow();await page.waitForFunction(()=>document.documentElement.dataset.ready==='true');
@@ -50,4 +51,4 @@ c=ctypes.CDLL('/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics');
  assert.equal(fallback.offered,false);assert.deepEqual(fallback.capabilities,[]);assert.ok(Math.abs(fallback.layout.x-400)<2);assert.equal(fallback.layout.y,555);checks.push('legacy API 2 sandbox declines navigation and completes actual horizontal walk');
  const versions=await app.evaluate(({app,screen,BrowserWindow})=>({electron:process.versions.electron,chrome:process.versions.chrome,platform:process.platform,displays:screen.getAllDisplays().map(d=>({id:d.id,scaleFactor:d.scaleFactor,bounds:d.bounds})),window:BrowserWindow.getAllWindows()[0].getBounds()}));
  await writeFile(join(output,'native.json'),JSON.stringify({passed:true,checks,versions,snapshot:await page.evaluate(()=>window.spacePreview.snapshot()),fallback,scope:'isolated native single-screen map with controlled lifecycle and real macOS cursor',physicalMultiDisplay:false},null,2)+'\n');console.log(JSON.stringify({passed:true,checks,versions}));
-}finally{await app?.close();await rm(profile,{recursive:true,force:true});}
+}catch(error){console.error('native failure',error);throw error;}finally{if(app){await Promise.race([app.close(),new Promise(resolve=>setTimeout(()=>{app.process().kill('SIGTERM');resolve();},5000))]);}await rm(profile,{recursive:true,force:true});}

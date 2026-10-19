@@ -29,7 +29,7 @@ function geometry() {
   const conflicts=route.direct?.violations??[];
   $('route-detail').textContent = `${route.reason??(route.alternative?'当前直线路线冲突，已搜索绕路':'直线路线无冲突')}。${conflicts.map(v=>`第 ${v.segment} 段 / ${layout.objects.find(o=>o.id===v.obstacle)?.label??v.obstacle} / ${v.envelope}`).join('；')}。完整身体 200×213px + 12px 余量；实体扣除透明留边与阴影，禁区保留全矩形；可见图顶点精度 0.5px。`;
   const points = routePoints.map(p=>`${p.x},${p.y}`).join(' ');
-  $('route-layer').innerHTML = `<path d="M${gateTop.x} ${gateTop.y}L${gateBottom.x} ${gateBottom.y}" stroke="#b6bca0" stroke-width="25" opacity=".2"/><path d="M${gateTop.x} ${gateTop.y}L${gateBottom.x} ${gateBottom.y}" stroke="#b3b99a" stroke-dasharray="4 7"/>${routePoints.map(p=>svgRect(footprint(p,BODY,BODY.turn),'rx="10" fill="#abc5bb" fill-opacity=".07" stroke="#9bb8aa" stroke-dasharray="3 6" stroke-opacity=".5"')).join('')}<polyline points="${points}" fill="none" stroke="${route.passed?'#8caba1':'#c49a71'}" stroke-width="3" stroke-linejoin="round" stroke-dasharray="4 9"/>${routePoints.map((p,i)=>`<circle cx="${p.x}" cy="${p.y}" r="${i===0||i===routePoints.length-1?6:3}" fill="#f6f7ed" stroke="#8eada2"/><text x="${p.x+10}" y="${p.y+20}" fill="#8fa89d" font-size="9">${i===0?'生活锚点':i===routePoints.length-1?'岗位锚点':i}</text>`).join('')}<ellipse cx="${layout.destination}" cy="${layout.actor.y}" rx="24" ry="6" fill="none" stroke="#b4a27a" stroke-dasharray="3 3"/><text x="${layout.destination-18}" y="${layout.actor.y+25}" font-size="9" fill="#a89879">放置点</text>`;
+  $('route-layer').innerHTML = `<path d="M${gateTop.x} ${gateTop.y}L${gateBottom.x} ${gateBottom.y}" stroke="#b6bca0" stroke-width="25" opacity=".2"/><path d="M${gateTop.x} ${gateTop.y}L${gateBottom.x} ${gateBottom.y}" stroke="#b3b99a" stroke-dasharray="4 7"/>${routePoints.map(p=>svgRect(footprint(p,BODY,BODY.turn),'rx="10" fill="#abc5bb" fill-opacity=".07" stroke="#9bb8aa" stroke-dasharray="3 6" stroke-opacity=".5"')).join('')}<polyline points="${points}" fill="none" stroke="${route.passed?'#8caba1':'#c49a71'}" stroke-width="3" stroke-linejoin="round" stroke-dasharray="4 9"/>${routePoints.map((p,i)=>`<circle cx="${p.x}" cy="${p.y}" r="${i===0||i===routePoints.length-1?6:3}" fill="#f6f7ed" stroke="#8eada2"/><text x="${p.x+10}" y="${p.y+20}" fill="#8fa89d" font-size="9">${i===0?'路线起点':i===routePoints.length-1?'当前目标':i}</text>`).join('')}<ellipse cx="${layout.destination}" cy="${layout.actor.y}" rx="24" ry="6" fill="none" stroke="#b4a27a" stroke-dasharray="3 3"/><text x="${layout.destination-18}" y="${layout.actor.y+25}" font-size="9" fill="#a89879">放置点</text>`;
   $('zones').innerHTML = layout.zones.map(z=>`<div class="zone ${z.id==='work'?'work':''}" style="left:${z.x}px;top:${z.y}px;width:${z.w}px;height:${z.h}px"></div>`).join('');
   const order = occlusionOrder(layout.objects,rootPosition().y), ranks = new Map(order.map((id,i)=>[id,10+i]));
   for (const object of layout.objects) {
@@ -147,7 +147,7 @@ function onFrame(v) {
   if(!(v.handArt.layers.palm<v.handArt.layers.prop&&v.handArt.layers.prop<v.handArt.layers.fingers)||v.handArt.surfaceAlpha!==1)measurements.wrongLayers++;
   if(before&&before.generation===v.generation&&before.owner!==v.owner){const a=before.owner==='ground'?before.groundQuad:before.heldQuad,b=v.owner==='ground'?v.groundQuad:v.heldQuad;for(let i=0;i<3;i++)measurements.ownerSwitchJump=Math.max(measurements.ownerSwitchJump,Math.hypot(a[i].x-b[i].x,a[i].y-b[i].y));}
   $('counts').textContent=`${v.commits.pickup} / ${v.commits.drop}`;$('binding').textContent=`${v.bindingError.toFixed(3)} px`;$('owner').textContent=v.owner==='ground'?'地面':'手中';
-  $('phase-label').textContent=`${phases[v.phase]??v.phase} · ${Number($('speed').value)}×`;
+  $('phase-label').textContent=`${v.navigation?.id!=null?'二维运动 / '+v.navigation.phase:phases[v.phase]??v.phase} · ${Number($('speed').value)}×`;
   $('action-status').textContent=v.error?`接触暂停：${v.error}`:busyEdit?'编辑试摆中…':v.phase==='idle'?navigationBusy()?'正在沿完整身体路径行走；拿放在停稳并返回水平平面后可用。':!actionSafe()?'离开操作平面或实体冲突，请复位动作后拿放。':actionRoute(layout).passed?'点击“重复拿放”执行一次完整闭环，可继续重复；编辑对象后检查布局。':'操作平面与实体冲突，拿放已锁定。先移动对象或恢复样板。':v.phase==='paused'?'动作时钟与物件拥有权已冻结，可继续或在非行走阶段逐帧检查。':`${phases[v.phase]??v.phase} · 真实水平拿放，未执行二维导航`;
   const r=footprint({x:v.bodyX,y:current?.bodyY??layout.actor.y});Object.assign($('actor-hit').style,{left:r.x+'px',top:r.y+'px',width:r.w+'px',height:r.h+'px'});
   const q=v.owner==='ground'?v.groundQuad:v.heldQuad;Object.assign($('shell-hit').style,{left:Math.min(...q.map(p=>p.x))-5+'px',top:Math.min(...q.map(p=>p.y))-5+'px',width:'50px',height:'42px'});
@@ -180,7 +180,7 @@ function navigateTo(target){
   if(busyEdit||current?.phase!=='idle')return;
   if(!body?.capabilities.includes('navigation-2d-v1')){$('nav-status').textContent='当前角色仅支持 API 2 水平行走';return;}
   navTarget={...target};navPaused=false;navPlan=planPath(navigationModel(layout),rootPosition(),target);
-  const id=++navId;navActive=navPlan.passed;
+  const id=++navId;navActive=navPlan.passed;$('nav-bubble').textContent=navPlan.passed?(navPlan.alternative?'绕一下':'出发'):'当前目标不可达';
   body.navigate({id,generation:navGeneration,model:navigationModel(layout),target});geometry();
 }
 function onNavigationEvent(kind,value){

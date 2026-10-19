@@ -32,7 +32,7 @@ try {
   await edit('planter',330,450);check(!(await page.isEnabled('#loop')),'unsafe horizontal action plane is locked');
   await page.uncheck('#show-zones');check(!(await page.isEnabled('#loop')),'hiding region overlay never disables solid geometry');await page.check('#show-zones');
   await edit('planter',485,220);
-  await edit('actor',260,575);await wait(()=>JSON.parse(document.querySelector('#world').dataset.frame).bodyX===260&&Math.abs(JSON.parse(document.querySelector('#world').dataset.frame).groundQuad[2].y-575)<1);
+  await edit('actor',260,575);await wait(()=>JSON.parse(document.querySelector('#world').dataset.frame).bodyX===260&&Math.abs(JSON.parse(document.querySelector('#world').dataset.frame).groundQuad[2].y-575)<1&&!document.querySelector('#apply-placement').disabled);
   check((await frame()).commits.pickup===0,'editor body x/y placement resets rather than fabricates motion commits');
   check(Math.abs((await frame()).groundGrip.x-335)<1,'body edit preserves shell x and aligns the action floor');
   await page.click('#reset-layout');await page.waitForFunction(()=>!document.querySelector('#reset-layout').disabled);await wait(()=>JSON.parse(document.querySelector('#world').dataset.frame).bodyX===240);
