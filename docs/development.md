@@ -27,7 +27,7 @@ npm run test:install
 
 `npm run dev` 打开浏览器演示（默认 `http://127.0.0.1:4173`），`npm run demo` 启动桌面演示，二者的任务事件均为模拟。首页素材的重拍见[素材说明](assets/README.md)。
 
-生活感分支的当前范围、下一项和交付身份从[开发状态](aliveness-development.md)进入。[空间样板](design/art-workflow/space-v1/README.md)与[O03 工作台](design/art-workflow/o03-shell-hands-v1/README.md)维护操作和定向回归入口，[制作工作流](design/art-workflow/README.md)维护素材／连续动作验证方法。复用已有预览服务，每轮输出写新目录；原始证据保持原字节。第 2 期的原生验证和完成条件集中在对应阶段文档，实际结果见[本期记录](design/stage-2-validation.md)。`node scripts/space-desktop.mjs` 打开临时 profile 的单屏同地图预览；`tests/navigation-ui.mjs`、`tests/space-native.mjs` 与 `tests/navigation-showcase.mjs` 分别执行真实指针、受控原生与页面实录。
+生活感分支的当前范围、下一项和交付身份从[开发状态](aliveness-development.md)进入。[空间样板](design/art-workflow/space-v1/README.md)与[O03 工作台](design/art-workflow/o03-shell-hands-v1/README.md)维护操作和定向回归入口，[制作工作流](design/art-workflow/README.md)维护素材／连续动作验证方法。复用已有预览服务，每轮输出写新目录；原始证据保持原字节。已验收第 2 期的固定范围和实际结果见[阶段归档](archive/2026-10-aliveness/stage-2/README.md)，当前模型与后续授权只看开发状态。`node scripts/space-desktop.mjs` 打开临时 profile 的单屏同地图预览；`tests/navigation-ui.mjs`、`tests/space-native.mjs` 与 `tests/navigation-showcase.mjs` 分别执行真实指针、受控原生与页面实录。
 
 浏览器检查真实 API 2 动画、聊天、完整阅读、角色导入及脚本隔离；桌面检查真实 Electron 窗口、IPC、托盘和恢复；安装检查使用官方 DSH loader 安装实际 `.tgz`。用 `DSH_TEST_VERSION=<支持版本>` 选择宿主，用 `DSH_TEST_PACKAGE_DIR=<规范包目录>` 消费已有规范包及校验文件。完整平台／宿主列表以 CI 矩阵为准。
 

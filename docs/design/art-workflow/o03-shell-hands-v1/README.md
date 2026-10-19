@@ -30,7 +30,8 @@ node node_modules/vitest/vitest.mjs run tests/hand-art.test.js tests/prop-motion
 
 | 记录 | 适用身份 |
 |---|---|
-| [空间最终验证](../space-v1/evidence/validation.json)与其 `final/` | 第 1 期最终源码的像素、44 项动作与长暂停复测；当前已保存结果从这里进入 |
+| [第 2 期归档](../../../archive/2026-10-aliveness/stage-2/README.md) | 已验收二维空间与花箱修正后的 O03 像素、44 项动作与长暂停回归，按最终修正提交解释 |
+| [第 1 期空间验证](../space-v1/evidence/validation.json)与其 `final/` | 第 1 期固定源码的像素、44 项动作与长暂停复测，不覆盖后续运动源码 |
 | [原 O03 验证](continuity-fix/validation.json)、[原样片](continuity-fix/shell-loop-fixed.webm) | 当时已验收子故事的固定快照，基础提交／脏工作区摘要按原记录解释 |
 | 根目录旧报告与 `continuity-fix/before-*` 等 | 三图切换缺陷与中间诊断，属于历史复现，不能作为当前失败或最终通过 |
 
