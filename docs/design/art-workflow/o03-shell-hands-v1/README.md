@@ -63,3 +63,5 @@ npm run test:inbox-ui
 上一轮 [validation.json](validation.json)、[39 项状态检查](browser-qa-final.json)、[关键姿势](key-poses.json)、[原／新手型对照](comparison.json)均按原字节保留，属于修正前的实现快照。
 
 后续空间样板回归补充：新版 Chrome 的 GPU 2D 回读可在相同合成输入下产生少量通道字节差；像素检查的临时画布已预设 `willReadFrequently:true`，WebGL 手部与全部原阈值不变。原始报告不改写，新对照与复测见[空间样板像素记录](../space-v1/evidence/pixel-readback/README.md)。
+
+空间样片补录还覆盖了长暂停：制作工厂暂停时保持 dt=0 的安全心跳，防止首次继续被陈旧 `lastAt` 吞掉。动作时间、手型、拥有权及实际接触门槛不变；修复前后实际帧见[长暂停回归](../space-v1/evidence/long-pause/README.md)。

@@ -99,6 +99,11 @@ export async function createMotionBody(base, options) {
         previous = figure.gripFrame?.hand;
         actor.step(Math.max(1e-6, amount)); activeTime += amount;
         if (stepping) { const inputPause = inputs(now, 0, { type: 'pause' }, null); apply(stepMotion(state, inputPause, profile), inputPause); }
+      } else {
+        // Freeze the authored clock, not the safety heartbeat. Otherwise the
+        // first explicit resume after >1s is itself rejected as a stale gap.
+        const input = inputs(now, 0, null, null);
+        apply(stepMotion(state, input, profile), input);
       }
       // An inspect/reset command must draw at least once even if the page was paused.
       if (!figure.gripFrame) actor.step(1e-6);

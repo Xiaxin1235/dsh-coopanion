@@ -1,0 +1,2708 @@
+{
+  "passed": true,
+  "checks": [
+    "default full-body route passes",
+    "four authored SVG resource types decode",
+    "scene object receives real pointer drag through guide layers",
+    "zones can be hidden",
+    "geometric route overlay can be hidden",
+    "live obstacle relocation blocks whole-body route",
+    "restoring obstacle recovers route",
+    "edited threshold gap and full-body validity update together",
+    "foreground prop sorts over the complete body-shell-finger unit",
+    "foreground object wins pointer selection over the body behind it",
+    "unsafe horizontal action plane is locked",
+    "hiding region overlay never disables solid geometry",
+    "editor body x/y placement resets rather than fabricates motion commits",
+    "body edit preserves shell x and aligns the action floor",
+    "shell pointer drag changes placement without pickup",
+    "actual feet, hand and grip anchors render",
+    "long pre-contact pause freezes clock and ownership",
+    "one-frame step advances the real authored state",
+    "first real loop commits exactly one pickup and drop",
+    "repeated opposite-direction loop reaches changed actual destination",
+    "clicking to select the actor preserves completed action counts",
+    "editable geometry is downloadable",
+    "measured real body and hand raster fits the route envelope",
+    "binding, opaque continuous hands and owner transition remain correct",
+    "both loops commit through actual stable contact",
+    "geometry proof remains separate from runtime navigation",
+    "narrow editor fits viewport without horizontal overflow",
+    "no browser page errors",
+    "legacy WebGL wrist, cuff, finger and owner-switch pixels still pass",
+    "legacy 44 checks pass including slow closure, pause, step and repeated release"
+  ],
+  "errors": [],
+  "final": {
+    "schema": 1,
+    "scope": "stage-1-editor-only",
+    "world": {
+      "width": 1080,
+      "height": 660,
+      "units": "preview-css-px",
+      "origin": "top-left",
+      "root": "feet-midpoint"
+    },
+    "bodyEnvelope": {
+      "size": 180,
+      "left": 100,
+      "right": 100,
+      "top": 205,
+      "bottom": 8,
+      "turn": 12
+    },
+    "layout": {
+      "revision": 9,
+      "actor": {
+        "x": 240,
+        "y": 555
+      },
+      "shell": {
+        "x": 260.5934067921811,
+        "width": 40
+      },
+      "destination": 260,
+      "objects": [
+        {
+          "id": "home",
+          "label": "小窝",
+          "asset": "home.svg",
+          "x": 65,
+          "y": 155,
+          "w": 210,
+          "h": 175,
+          "solid": true,
+          "layer": "depth",
+          "anchor": [
+            170,
+            330
+          ]
+        },
+        {
+          "id": "station",
+          "label": "工作岗位",
+          "asset": "station.svg",
+          "x": 820,
+          "y": 245,
+          "w": 170,
+          "h": 120,
+          "solid": true,
+          "layer": "depth",
+          "anchor": [
+            850,
+            600
+          ]
+        },
+        {
+          "id": "planter",
+          "label": "珊瑚花箱",
+          "asset": "planter.svg",
+          "x": 485,
+          "y": 220,
+          "w": 112,
+          "h": 105,
+          "solid": true,
+          "layer": "depth"
+        },
+        {
+          "id": "gate-north",
+          "label": "门槛北柱",
+          "asset": "post.svg",
+          "x": 621,
+          "y": 280,
+          "w": 28,
+          "h": 40,
+          "solid": true,
+          "layer": "depth"
+        },
+        {
+          "id": "gate-south",
+          "label": "门槛南柱",
+          "asset": "post.svg",
+          "x": 621,
+          "y": 622,
+          "w": 28,
+          "h": 32,
+          "solid": true,
+          "layer": "depth"
+        },
+        {
+          "id": "panel",
+          "label": "手动内容禁区",
+          "x": 755,
+          "y": 40,
+          "w": 280,
+          "h": 195,
+          "solid": true,
+          "layer": "restricted"
+        }
+      ],
+      "zones": [
+        {
+          "id": "life",
+          "label": "生活区",
+          "x": 35,
+          "y": 155,
+          "w": 410,
+          "h": 470
+        },
+        {
+          "id": "work",
+          "label": "岗位区",
+          "x": 735,
+          "y": 250,
+          "w": 300,
+          "h": 375
+        }
+      ],
+      "route": [
+        {
+          "x": 240,
+          "y": 555
+        },
+        {
+          "x": 450,
+          "y": 555
+        },
+        {
+          "x": 540,
+          "y": 575
+        },
+        {
+          "x": 700,
+          "y": 600
+        },
+        {
+          "x": 850,
+          "y": 600
+        }
+      ]
+    },
+    "route": {
+      "passed": true,
+      "violations": [],
+      "length": 614,
+      "body": {
+        "size": 180,
+        "left": 100,
+        "right": 100,
+        "top": 205,
+        "bottom": 8,
+        "turn": 12
+      },
+      "margin": 12,
+      "revision": 9
+    },
+    "horizontalAction": {
+      "passed": true,
+      "violations": [],
+      "length": 161,
+      "body": {
+        "size": 180,
+        "left": 100,
+        "right": 100,
+        "top": 205,
+        "bottom": 8,
+        "turn": 12
+      },
+      "margin": 0,
+      "revision": 9
+    },
+    "measuredRaster": {
+      "frames": 148,
+      "left": 73.791463603733,
+      "right": 72.00127454713987,
+      "top": 166,
+      "bottom": 0.00004577636707381316,
+      "binding": 0,
+      "wrongLayers": 0,
+      "ownerMismatches": 0,
+      "ownerSwitchJump": 0.7934206947800946
+    },
+    "occlusion": [
+      "gate-north",
+      "planter",
+      "home",
+      "station",
+      "body-shell-fingers",
+      "gate-south"
+    ],
+    "asset": "/web/props/shell/asset.json",
+    "navigationImplemented": false,
+    "frame": {
+      "phase": "idle",
+      "suspended": null,
+      "elapsed": 0.08339999999999782,
+      "owner": "ground",
+      "renderedOwner": "ground",
+      "generation": 4,
+      "walkId": null,
+      "commits": {
+        "pickup": 2,
+        "drop": 2
+      },
+      "error": null,
+      "inspection": null,
+      "loop": false,
+      "bodyX": 287.9987254528601,
+      "moving": false,
+      "facing": -1,
+      "visualFacing": -0.9999999999999998,
+      "destinationX": 260,
+      "groundQuad": [
+        {
+          "x": 280.5934084876021,
+          "y": 522.1982883402213
+        },
+        {
+          "x": 240.5934050967601,
+          "y": 522.1982883402213
+        },
+        {
+          "x": 280.5934084876021,
+          "y": 555.000015258789
+        }
+      ],
+      "groundGrip": {
+        "x": 260.5934067921811,
+        "y": 523.8383746861497
+      },
+      "hand": {
+        "x": 260.5498778215795,
+        "y": 514.6059754740393
+      },
+      "heldGrip": {
+        "x": 260.5498778215795,
+        "y": 514.6059754740393
+      },
+      "heldQuad": [
+        {
+          "x": 280.54987951700053,
+          "y": 512.9658891281108
+        },
+        {
+          "x": 240.54987612615852,
+          "y": 512.9658891281108
+        },
+        {
+          "x": 280.54987951700053,
+          "y": 545.7676160466784
+        }
+      ],
+      "feet": [
+        {
+          "x": 298.9546807992458,
+          "y": 555.0000152587891
+        },
+        {
+          "x": 276.6445226579905,
+          "y": 555.0000152587891
+        }
+      ],
+      "pose": {
+        "waist": 0,
+        "drop": 0,
+        "armNear": 4,
+        "armFar": -2,
+        "propAngle": 0,
+        "look": [
+          0,
+          0
+        ],
+        "plant": true,
+        "plantWeight": 1,
+        "hands": {
+          "original": 1,
+          "reach": 0,
+          "grip": 0,
+          "release": 0
+        },
+        "handArt": true
+      },
+      "sit": 0,
+      "handArt": {
+        "enabled": true,
+        "baseline": false,
+        "weights": {
+          "original": 1,
+          "reach": 0,
+          "grip": 0,
+          "release": 0
+        },
+        "wrist": {
+          "x": 261.61396229965095,
+          "y": 508.31115131353295
+        },
+        "wristError": 0,
+        "contactError": 0,
+        "renderMode": "continuous-mesh",
+        "closure": 0.25,
+        "surfaceAlpha": 1,
+        "layers": {
+          "palm": 5.02,
+          "prop": 5.05,
+          "fingers": 5.2
+        },
+        "frontWeight": 1,
+        "externalProp": true
+      },
+      "contact": {
+        "distance": 9.232501826864619,
+        "groundDistance": 9.232383953321573
+      },
+      "bindingError": 0,
+      "activeTime": 16.982766666666564,
+      "speed": 1,
+      "sequence": 1187
+    },
+    "painted": {
+      "phase": "idle",
+      "suspended": null,
+      "elapsed": 0.08339999999999782,
+      "owner": "ground",
+      "renderedOwner": "ground",
+      "generation": 4,
+      "walkId": null,
+      "commits": {
+        "pickup": 2,
+        "drop": 2
+      },
+      "error": null,
+      "inspection": null,
+      "loop": false,
+      "bodyX": 287.9987254528601,
+      "moving": false,
+      "facing": -1,
+      "visualFacing": -0.9999999999999998,
+      "destinationX": 260,
+      "groundQuad": [
+        {
+          "x": 280.5934084876021,
+          "y": 522.1982883402213
+        },
+        {
+          "x": 240.5934050967601,
+          "y": 522.1982883402213
+        },
+        {
+          "x": 280.5934084876021,
+          "y": 555.000015258789
+        }
+      ],
+      "groundGrip": {
+        "x": 260.5934067921811,
+        "y": 523.8383746861497
+      },
+      "hand": {
+        "x": 260.5498778215795,
+        "y": 514.6059754740393
+      },
+      "heldGrip": {
+        "x": 260.5498778215795,
+        "y": 514.6059754740393
+      },
+      "heldQuad": [
+        {
+          "x": 280.54987951700053,
+          "y": 512.9658891281108
+        },
+        {
+          "x": 240.54987612615852,
+          "y": 512.9658891281108
+        },
+        {
+          "x": 280.54987951700053,
+          "y": 545.7676160466784
+        }
+      ],
+      "feet": [
+        {
+          "x": 298.9546807992458,
+          "y": 555.0000152587891
+        },
+        {
+          "x": 276.6445226579905,
+          "y": 555.0000152587891
+        }
+      ],
+      "pose": {
+        "waist": 0,
+        "drop": 0,
+        "armNear": 4,
+        "armFar": -2,
+        "propAngle": 0,
+        "look": [
+          0,
+          0
+        ],
+        "plant": true,
+        "plantWeight": 1,
+        "hands": {
+          "original": 1,
+          "reach": 0,
+          "grip": 0,
+          "release": 0
+        },
+        "handArt": true
+      },
+      "sit": 0,
+      "handArt": {
+        "enabled": true,
+        "baseline": false,
+        "weights": {
+          "original": 1,
+          "reach": 0,
+          "grip": 0,
+          "release": 0
+        },
+        "wrist": {
+          "x": 261.61396229965095,
+          "y": 508.31115131353295
+        },
+        "wristError": 0,
+        "contactError": 0,
+        "renderMode": "continuous-mesh",
+        "closure": 0.25,
+        "surfaceAlpha": 1,
+        "layers": {
+          "palm": 5.02,
+          "prop": 5.05,
+          "fingers": 5.2
+        },
+        "frontWeight": 1,
+        "externalProp": true
+      },
+      "contact": {
+        "distance": 9.232501826864619,
+        "groundDistance": 9.232383953321573
+      },
+      "bindingError": 0,
+      "activeTime": 16.982766666666564,
+      "speed": 1,
+      "sequence": 1187
+    },
+    "events": [
+      {
+        "type": "reset",
+        "phase": "idle",
+        "generation": 2,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": null,
+        "activeTime": 0
+      },
+      {
+        "type": "relocate",
+        "x": 335,
+        "phase": "idle",
+        "generation": 2,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 275.104831576108,
+          "groundDistance": 9.232353435743448,
+          "settled": false
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 263.9860438038647,
+            "y": 508.31118183111107
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 0.016599999999999993
+      },
+      {
+        "type": "reset",
+        "phase": "idle",
+        "generation": 3,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 68.17787732064187,
+          "groundDistance": 29.232383953321573,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 266.38603770034905,
+            "y": 508.31115131353295
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 1.2498999999999998
+      },
+      {
+        "type": "relocate",
+        "x": 335,
+        "phase": "idle",
+        "generation": 3,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 275.104831576108,
+          "groundDistance": 9.232353435743448,
+          "settled": false
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 263.9860438038647,
+            "y": 528.3111818311111
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 1.2665999999999997
+      },
+      {
+        "type": "reset",
+        "phase": "idle",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 48.43787612071066,
+          "groundDistance": 10.767616046678427,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 286.38603770034905,
+            "y": 528.311151313533
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 1.3332999999999995
+      },
+      {
+        "type": "relocate",
+        "x": 335,
+        "phase": "idle",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 275.1048326002616,
+          "groundDistance": 9.232383953321573,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 263.9860438038647,
+            "y": 508.31115131353295
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 1.3666999999999994
+      },
+      {
+        "type": "relocate",
+        "x": 339,
+        "phase": "idle",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 68.17787732064187,
+          "groundDistance": 9.232383953321573,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 266.38603770034905,
+            "y": 508.31115131353295
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 1.4165999999999992
+      },
+      {
+        "type": "relocate",
+        "x": 343,
+        "phase": "idle",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 72.14304700726986,
+          "groundDistance": 9.232353435743448,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 266.3860529591381,
+            "y": 508.31118183111107
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 1.4332999999999991
+      },
+      {
+        "type": "relocate",
+        "x": 347,
+        "phase": "idle",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 76.11189789444069,
+          "groundDistance": 9.232383953321573,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 266.38603770034905,
+            "y": 508.31115131353295
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 1.449899999999999
+      },
+      {
+        "type": "relocate",
+        "x": 351,
+        "phase": "idle",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 80.08383122495077,
+          "groundDistance": 9.232383953321573,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 266.38603770034905,
+            "y": 508.31115131353295
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 1.4666999999999992
+      },
+      {
+        "type": "relocate",
+        "x": 355,
+        "phase": "idle",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 84.05841121802949,
+          "groundDistance": 9.232383953321573,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 266.3860529591381,
+            "y": 508.31115131353295
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 1.4832999999999992
+      },
+      {
+        "type": "relocate",
+        "x": 358,
+        "phase": "idle",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 88.03532284720534,
+          "groundDistance": 9.232383953321573,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 266.38603770034905,
+            "y": 508.31115131353295
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 1.4999999999999991
+      },
+      {
+        "type": "relocate",
+        "x": 358,
+        "phase": "idle",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 91.01930569323842,
+          "groundDistance": 9.232353435743448,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 266.3860529591381,
+            "y": 508.31118183111107
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 1.516699999999999
+      },
+      {
+        "type": "walk",
+        "x": 330.59341674486046,
+        "id": 4000001,
+        "phase": "approach",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 91.01932396882076,
+          "groundDistance": 9.232383953321573,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 266.38603770034905,
+            "y": 508.31115131353295
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 1.6999999999999984
+      },
+      {
+        "type": "face",
+        "facing": 1,
+        "phase": "settle",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 12.92540859806073,
+          "groundDistance": 11.327756255889199,
+          "settled": false
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 361.54338576958986,
+            "y": 506.52540259396125
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 3.166599999999996
+      },
+      {
+        "type": "phase",
+        "phase": "settle",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 12.92540859806073,
+          "groundDistance": 11.327756255889199,
+          "settled": false
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 361.54338576958986,
+            "y": 506.52540259396125
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 3.166599999999996
+      },
+      {
+        "type": "phase",
+        "phase": "look",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 9.268044682151476,
+          "groundDistance": 9.238475022831949,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 356.1950397388845,
+            "y": 508.3054660707813
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 3.533199999999995
+      },
+      {
+        "type": "phase",
+        "phase": "reach",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 9.26279100990532,
+          "groundDistance": 9.232383953321573,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 356.1860254933178,
+            "y": 508.31115131353295
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 3.833199999999994
+      },
+      {
+        "type": "phase",
+        "phase": "grasp",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 0.7919085024779485,
+          "groundDistance": 0.010699917913370882,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 1,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 357.25206662059156,
+            "y": 517.4436827290609
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 4.6832666666666665
+      },
+      {
+        "type": "pickup",
+        "phase": "lift",
+        "generation": 4,
+        "owner": "hand",
+        "commits": {
+          "pickup": 1,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 0.7934189993126703,
+          "groundDistance": 0.000015258788948813162,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 0.0007091465063864266,
+            "grip": 0.9992908534936136,
+            "release": 0
+          },
+          "wrist": {
+            "x": 357.2517471011287,
+            "y": 517.4544067185337
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.9992908534936136,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 4.916566666666669
+      },
+      {
+        "type": "phase",
+        "phase": "lift",
+        "generation": 4,
+        "owner": "hand",
+        "commits": {
+          "pickup": 1,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 0.7934189993126703,
+          "groundDistance": 0.000015258788948813162,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 0.0007091465063864266,
+            "grip": 0.9992908534936136,
+            "release": 0
+          },
+          "wrist": {
+            "x": 357.2517471011287,
+            "y": 517.4544067185337
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.9992908534936136,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 4.916566666666669
+      },
+      {
+        "type": "phase",
+        "phase": "held",
+        "generation": 4,
+        "owner": "hand",
+        "commits": {
+          "pickup": 1,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 21.52849643077434,
+          "groundDistance": 19.457574678225456,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 0,
+            "grip": 1,
+            "release": 0
+          },
+          "wrist": {
+            "x": 363.8186541096843,
+            "y": 500.75182546935116
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 1,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 5.69986666666668
+      },
+      {
+        "type": "walk",
+        "x": 362.59341674486046,
+        "id": 4000002,
+        "phase": "carry",
+        "generation": 4,
+        "owner": "hand",
+        "commits": {
+          "pickup": 1,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 21.548546080349016,
+          "groundDistance": 19.479463558476596,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 0,
+            "grip": 1,
+            "release": 0
+          },
+          "wrist": {
+            "x": 363.81956874415187,
+            "y": 500.73457916956534
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 1,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 6.183166666666685
+      },
+      {
+        "type": "face",
+        "facing": 1,
+        "phase": "settleDrop",
+        "generation": 4,
+        "owner": "hand",
+        "commits": {
+          "pickup": 1,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 47.45896260268221,
+          "groundDistance": 16.990139965499793,
+          "settled": false
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 0,
+            "grip": 1,
+            "release": 0
+          },
+          "wrist": {
+            "x": 397.96709318508937,
+            "y": 502.9538744748818
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 1,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 6.916466666666692
+      },
+      {
+        "type": "phase",
+        "phase": "settleDrop",
+        "generation": 4,
+        "owner": "hand",
+        "commits": {
+          "pickup": 1,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 47.45896260268221,
+          "groundDistance": 16.990139965499793,
+          "settled": false
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 0,
+            "grip": 1,
+            "release": 0
+          },
+          "wrist": {
+            "x": 397.96709318508937,
+            "y": 502.9538744748818
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 1,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 6.916466666666692
+      },
+      {
+        "type": "phase",
+        "phase": "lower",
+        "generation": 4,
+        "owner": "hand",
+        "commits": {
+          "pickup": 1,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 46.594073586284395,
+          "groundDistance": 19.479337690504167,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 0,
+            "grip": 1,
+            "release": 0
+          },
+          "wrist": {
+            "x": 395.9197500320654,
+            "y": 500.735027313193
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 1,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 7.283066666666697
+      },
+      {
+        "type": "phase",
+        "phase": "touch",
+        "generation": 4,
+        "owner": "hand",
+        "commits": {
+          "pickup": 1,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 31.306587104332994,
+          "groundDistance": 0.00004577636707381316,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 0,
+            "grip": 1,
+            "release": 0
+          },
+          "wrist": {
+            "x": 389.3517532046443,
+            "y": 517.4544372361119
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 1,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 8.233066666666705
+      },
+      {
+        "type": "phase",
+        "phase": "release",
+        "generation": 4,
+        "owner": "hand",
+        "commits": {
+          "pickup": 1,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 31.30655658675487,
+          "groundDistance": 0.00004577636707381316,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 0,
+            "grip": 1,
+            "release": 0
+          },
+          "wrist": {
+            "x": 389.3517226870662,
+            "y": 517.4544372361119
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 1,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 8.449666666666703
+      },
+      {
+        "type": "drop",
+        "phase": "retract",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 1,
+          "drop": 1
+        },
+        "contact": {
+          "distance": 31.306587104305812,
+          "groundDistance": 0.000015258788948813162,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 0,
+            "grip": 0.015571900891630741,
+            "release": 0.9844280991083693
+          },
+          "wrist": {
+            "x": 389.3517532046443,
+            "y": 517.4544067185337
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.015571900891630741,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 8.633066666666702
+      },
+      {
+        "type": "phase",
+        "phase": "retract",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 1,
+          "drop": 1
+        },
+        "contact": {
+          "distance": 31.306587104305812,
+          "groundDistance": 0.000015258788948813162,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 0,
+            "grip": 0.015571900891630741,
+            "release": 0.9844280991083693
+          },
+          "wrist": {
+            "x": 389.3517532046443,
+            "y": 517.4544067185337
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.015571900891630741,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 8.633066666666702
+      },
+      {
+        "type": "phase",
+        "phase": "rise",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 1,
+          "drop": 1
+        },
+        "contact": {
+          "distance": 10.257058403110282,
+          "groundDistance": 4.711846937316409,
+          "settled": false
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 0,
+            "grip": 0,
+            "release": 1
+          },
+          "wrist": {
+            "x": 395.66237992643386,
+            "y": 513.3674025347784
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 8.983066666666696
+      },
+      {
+        "type": "phase",
+        "phase": "idle",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 1,
+          "drop": 1
+        },
+        "contact": {
+          "distance": 9.232187674448452,
+          "groundDistance": 9.232066602468535,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0.999937171730324,
+            "reach": 0,
+            "grip": 0,
+            "release": 0.000062828269675963
+          },
+          "wrist": {
+            "x": 388.2865935784715,
+            "y": 508.3114873346773
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.249984292932581,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 9.71636666666668
+      },
+      {
+        "type": "complete",
+        "phase": "idle",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 1,
+          "drop": 1
+        },
+        "contact": {
+          "distance": 9.232187674448452,
+          "groundDistance": 9.232066602468535,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0.999937171730324,
+            "reach": 0,
+            "grip": 0,
+            "release": 0.000062828269675963
+          },
+          "wrist": {
+            "x": 388.2865935784715,
+            "y": 508.3114873346773
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.249984292932581,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 9.71636666666668
+      },
+      {
+        "type": "walk",
+        "x": 361.90000384916374,
+        "id": 4000003,
+        "phase": "approach",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 1,
+          "drop": 1
+        },
+        "contact": {
+          "distance": 9.232501826864619,
+          "groundDistance": 9.232383953321573,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 388.2860315968334,
+            "y": 508.31115131353295
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 9.816266666666678
+      },
+      {
+        "type": "face",
+        "facing": 1,
+        "phase": "settle",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 1,
+          "drop": 1
+        },
+        "contact": {
+          "distance": 9.232501826864619,
+          "groundDistance": 9.232383953321573,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 388.2860315968334,
+            "y": 508.31115131353295
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 9.816266666666678
+      },
+      {
+        "type": "phase",
+        "phase": "settle",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 1,
+          "drop": 1
+        },
+        "contact": {
+          "distance": 9.232501826864619,
+          "groundDistance": 9.232383953321573,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 388.2860315968334,
+            "y": 508.31115131353295
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 9.816266666666678
+      },
+      {
+        "type": "phase",
+        "phase": "look",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 1,
+          "drop": 1
+        },
+        "contact": {
+          "distance": 9.232272918583115,
+          "groundDistance": 9.23234329294155,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 388.28613090758944,
+            "y": 508.3114188417105
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 10.183066666666681
+      },
+      {
+        "type": "phase",
+        "phase": "reach",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 1,
+          "drop": 1
+        },
+        "contact": {
+          "distance": 9.232501826864619,
+          "groundDistance": 9.232383953321573,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 388.2860315968334,
+            "y": 508.31115131353295
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 10.483066666666675
+      },
+      {
+        "type": "phase",
+        "phase": "grasp",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 1,
+          "drop": 1
+        },
+        "contact": {
+          "distance": 0.010938087215437625,
+          "groundDistance": 0.010803568371557049,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 1,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 389.3520906393946,
+            "y": 517.4435790092937
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 11.332966666666662
+      },
+      {
+        "type": "pickup",
+        "phase": "lift",
+        "generation": 4,
+        "owner": "hand",
+        "commits": {
+          "pickup": 2,
+          "drop": 1
+        },
+        "contact": {
+          "distance": 0.000043134763473062776,
+          "groundDistance": 0.00005839355242187594,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 0.000668250000000481,
+            "grip": 0.9993317499999995,
+            "release": 0
+          },
+          "wrist": {
+            "x": 389.3517532046443,
+            "y": 517.4544498532972
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.9993317499999995,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 11.566366666666658
+      },
+      {
+        "type": "phase",
+        "phase": "lift",
+        "generation": 4,
+        "owner": "hand",
+        "commits": {
+          "pickup": 2,
+          "drop": 1
+        },
+        "contact": {
+          "distance": 0.000043134763473062776,
+          "groundDistance": 0.00005839355242187594,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 0.000668250000000481,
+            "grip": 0.9993317499999995,
+            "release": 0
+          },
+          "wrist": {
+            "x": 389.3517532046443,
+            "y": 517.4544498532972
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.9993317499999995,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 11.566366666666658
+      },
+      {
+        "type": "phase",
+        "phase": "held",
+        "generation": 4,
+        "owner": "hand",
+        "commits": {
+          "pickup": 2,
+          "drop": 1
+        },
+        "contact": {
+          "distance": 21.92778145002035,
+          "groundDistance": 19.45789824205633,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 0,
+            "grip": 1,
+            "release": 0
+          },
+          "wrist": {
+            "x": 395.9186740321155,
+            "y": 500.751570519455
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 1,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 12.349666666666646
+      },
+      {
+        "type": "walk",
+        "x": 287.40658325513954,
+        "id": 4000004,
+        "phase": "carry",
+        "generation": 4,
+        "owner": "hand",
+        "commits": {
+          "pickup": 2,
+          "drop": 1
+        },
+        "contact": {
+          "distance": 21.947302271715653,
+          "groundDistance": 19.47943304089847,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 0,
+            "grip": 1,
+            "release": 0
+          },
+          "wrist": {
+            "x": 395.91959010645655,
+            "y": 500.73460968714346
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 1,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 12.832966666666637
+      },
+      {
+        "type": "face",
+        "facing": -1,
+        "phase": "settleDrop",
+        "generation": 4,
+        "owner": "hand",
+        "commits": {
+          "pickup": 2,
+          "drop": 1
+        },
+        "contact": {
+          "distance": 142.7392940366872,
+          "groundDistance": 16.96565883053995,
+          "settled": false
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 0,
+            "grip": 1,
+            "release": 0
+          },
+          "wrist": {
+            "x": 252.07281193184343,
+            "y": 502.7812497256472
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 1,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 14.099466666666615
+      },
+      {
+        "type": "phase",
+        "phase": "settleDrop",
+        "generation": 4,
+        "owner": "hand",
+        "commits": {
+          "pickup": 2,
+          "drop": 1
+        },
+        "contact": {
+          "distance": 142.7392940366872,
+          "groundDistance": 16.96565883053995,
+          "settled": false
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 0,
+            "grip": 1,
+            "release": 0
+          },
+          "wrist": {
+            "x": 252.07281193184343,
+            "y": 502.7812497256472
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 1,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 14.099466666666615
+      },
+      {
+        "type": "phase",
+        "phase": "lower",
+        "generation": 4,
+        "owner": "hand",
+        "commits": {
+          "pickup": 2,
+          "drop": 1
+        },
+        "contact": {
+          "distance": 141.29620825321544,
+          "groundDistance": 19.479470731204287,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 0,
+            "grip": 1,
+            "release": 0
+          },
+          "wrist": {
+            "x": 253.98046552715772,
+            "y": 500.734631384503
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 1,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 14.466166666666613
+      },
+      {
+        "type": "phase",
+        "phase": "touch",
+        "generation": 4,
+        "owner": "hand",
+        "commits": {
+          "pickup": 2,
+          "drop": 1
+        },
+        "contact": {
+          "distance": 128.7131803121258,
+          "groundDistance": 0.00004577636707381316,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 0,
+            "grip": 1,
+            "release": 0
+          },
+          "wrist": {
+            "x": 260.5482406918401,
+            "y": 517.4544372361119
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 1,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 15.4161666666666
+      },
+      {
+        "type": "phase",
+        "phase": "release",
+        "generation": 4,
+        "owner": "hand",
+        "commits": {
+          "pickup": 2,
+          "drop": 1
+        },
+        "contact": {
+          "distance": 128.71318031212218,
+          "groundDistance": 0.000015258788948813162,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 0,
+            "grip": 1,
+            "release": 0
+          },
+          "wrist": {
+            "x": 260.5482406918401,
+            "y": 517.4544067185337
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 1,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 15.616166666666595
+      },
+      {
+        "type": "drop",
+        "phase": "retract",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 2,
+          "drop": 2
+        },
+        "contact": {
+          "distance": 128.71318031212218,
+          "groundDistance": 0.000015258788948813162,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 0,
+            "grip": 0.015571900891630741,
+            "release": 0.9844280991083693
+          },
+          "wrist": {
+            "x": 260.5482406918401,
+            "y": 517.4544067185337
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.015571900891630741,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 15.799466666666591
+      },
+      {
+        "type": "phase",
+        "phase": "retract",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 2,
+          "drop": 2
+        },
+        "contact": {
+          "distance": 128.71318031212218,
+          "groundDistance": 0.000015258788948813162,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 0,
+            "grip": 0.015571900891630741,
+            "release": 0.9844280991083693
+          },
+          "wrist": {
+            "x": 260.5482406918401,
+            "y": 517.4544067185337
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.015571900891630741,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 15.799466666666591
+      },
+      {
+        "type": "phase",
+        "phase": "rise",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 2,
+          "drop": 2
+        },
+        "contact": {
+          "distance": 10.257058403110255,
+          "groundDistance": 4.711846937316295,
+          "settled": false
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 0,
+            "grip": 0,
+            "release": 1
+          },
+          "wrist": {
+            "x": 254.23761397005055,
+            "y": 513.3674025347784
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 16.149466666666584
+      },
+      {
+        "type": "phase",
+        "phase": "idle",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 2,
+          "drop": 2
+        },
+        "contact": {
+          "distance": 9.232218191676807,
+          "groundDistance": 9.23209712004666,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0.999937171730324,
+            "reach": 0,
+            "grip": 0,
+            "release": 0.000062828269675963
+          },
+          "wrist": {
+            "x": 261.61340031801285,
+            "y": 508.31145681709916
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.249984292932581,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 16.882766666666562
+      },
+      {
+        "type": "complete",
+        "phase": "idle",
+        "generation": 4,
+        "owner": "ground",
+        "commits": {
+          "pickup": 2,
+          "drop": 2
+        },
+        "contact": {
+          "distance": 9.232218191676807,
+          "groundDistance": 9.23209712004666,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0.999937171730324,
+            "reach": 0,
+            "grip": 0,
+            "release": 0.000062828269675963
+          },
+          "wrist": {
+            "x": 261.61340031801285,
+            "y": 508.31145681709916
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.249984292932581,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 16.882766666666562
+      }
+    ]
+  },
+  "legacyIncluded": true,
+  "browser": "156.0.8078.4",
+  "url": "http://127.0.0.1:4189/docs/design/art-workflow/space-v1/index.html"
+}

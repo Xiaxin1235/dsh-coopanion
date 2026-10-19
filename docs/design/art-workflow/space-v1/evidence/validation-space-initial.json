@@ -1,0 +1,278 @@
+{
+  "schema": 1,
+  "recordedAt": "2026-10-19T07:14:12.449Z",
+  "timezone": "Asia/Shanghai",
+  "scope": "stage-1-space-preview",
+  "status": "local-engineering-passed",
+  "subjectiveAcceptance": "pending-user-review",
+  "source": {
+    "branch": "codex/aliveness-foundation",
+    "implementationCommit": "20be0137a87d0278cf2eaafb1d4de2efb6665780",
+    "baseCommit": "137a3601b20f6a1fa7413ef3c312a7896f1b7671",
+    "manifest": "source-files.json",
+    "manifestSha256": "65ce29bd0b16c32a24ccff7baaac1663cd6a62956d7606bcc24d94ca0fceaec2",
+    "verifiedCommittedFiles": 457,
+    "workingFilesEqualCommittedFiles": true,
+    "originalWhaleShellHandsAndMotionUnchanged": true
+  },
+  "toolchain": {
+    "node": "v24.21.0",
+    "npm": "11.19.0",
+    "declaredPackageManager": "npm@11.19.1",
+    "playwright": "1.64.0",
+    "vitest": "3.2.7",
+    "chromium": "156.0.8078.4",
+    "os": "ProductName:\t\tmacOS\nProductVersion:\t\t15.8.1\nBuildVersion:\t\t24H32",
+    "arch": "arm64"
+  },
+  "artifact": {
+    "kind": "reproducible-source-inputs-not-an-npm-distribution",
+    "path": "artifacts/space-delivery/space-v1-source.tgz",
+    "sha256": "e9046d73a6a957dce3c0032275523aeb105f726af685bca6e7fa8f30a53ba187",
+    "packageVersion": "0.4.13",
+    "distributionPackage": null,
+    "harnessHost": null
+  },
+  "checks": {
+    "typecheck": "passed",
+    "build": "passed",
+    "unit": {
+      "passed": 261,
+      "skipped": 1,
+      "files": 32,
+      "nodeChecks": 12,
+      "log": "npm-test.log"
+    },
+    "targeted": {
+      "passed": 35,
+      "files": [
+        "tests/space-geometry.test.js",
+        "tests/hand-art.test.js",
+        "tests/prop-motion.test.js",
+        "tests/prop-interaction.test.js"
+      ]
+    },
+    "inboxUi": {
+      "command": "npm run test:inbox-ui",
+      "status": "passed",
+      "log": "inbox-ui.log",
+      "nodeGroups": [
+        11,
+        1,
+        15,
+        15
+      ],
+      "standaloneInbox": "passed"
+    },
+    "spaceBrowser": {
+      "command": "node tests/space-preview-ui.mjs --space-only",
+      "status": "passed",
+      "checks": 28,
+      "report": "browser-qa.json",
+      "actualRaster": {
+        "frames": 128,
+        "left": 73.79141508528357,
+        "right": 71.99500807842583,
+        "top": 185,
+        "bottom": 0.00004577636707381316,
+        "binding": 0,
+        "wrongLayers": 0,
+        "ownerMismatches": 0,
+        "ownerSwitchJump": 0.7934359535691543
+      }
+    },
+    "legacyMotion": {
+      "status": "passed",
+      "checks": 44,
+      "report": "legacy-motion.json"
+    },
+    "webglPixels": {
+      "status": "passed",
+      "report": "contact-pixels.json",
+      "minimumWristAlpha": 254,
+      "cuffChangedBytes": 0,
+      "ownerChangedBytes": 0,
+      "frontVisiblePixels": 56
+    },
+    "sourceIdentity": "all 457 input files verified against implementation commit and current files",
+    "preservedOriginalAssets": true,
+    "handArtInspector": "passed",
+    "preparedModelSnapshot": "matches sources",
+    "diffWhitespace": "passed",
+    "manualBrowser": "IAB: blocked/restored route, edited gate with current 162px gap, actual loop, anchors and final ready state inspected; automated screenshots separately retained"
+  },
+  "geometry": {
+    "routeLength": 614,
+    "routePassed": true,
+    "bodyEnvelope": {
+      "size": 180,
+      "left": 100,
+      "right": 100,
+      "top": 205,
+      "bottom": 8,
+      "turn": 12
+    },
+    "navigationImplemented": false
+  },
+  "environmentNotes": [
+    "Existing preview process was replaced on the same 4189 port for new default route and SVG MIME. Only one persistent preview service remains.",
+    "Installed Playwright-matched Chromium 1248 and ffmpeg 1013 after missing/mismatched local runtime preflight.",
+    "macOS sandbox prevented Chrome registration and OS process metric probes; authorized isolated browser and full tests ran outside the sandbox.",
+    "Chrome 156 GPU 2D readback also differed by 3 channel bytes with the original compositor. Pixel scratch canvas now requests frequent readback, with unchanged WebGL and thresholds. See pixel-readback/.",
+    "Two-loop space capture uses final space-only harness; legacy 44 checks and pixel regression were recorded separately on unchanged legacy source files."
+  ],
+  "notRun": [
+    "CI / three-platform matrix",
+    "native desktop integration / installation",
+    "physical multi-display",
+    "real x/y navigation / dynamic route execution",
+    "life/work scheduling / personality / departures"
+  ],
+  "evidence": [
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/browser-qa.json",
+      "bytes": 66677,
+      "sha256": "2ec86abb0eb8e6632b44bc2bf2ba097b7c27e381cb0b262bd6b84c57c55024fb"
+    },
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/contact-pixels.jpg",
+      "bytes": 111677,
+      "sha256": "168dd693a16fe9ab9bd5f6718fa74b148fd684fe0a116451446efa88eb4612bf"
+    },
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/contact-pixels.json",
+      "bytes": 1158,
+      "sha256": "4275ef8636976b88884ab1736533901facead8239817a2104708d2cc52e3b3b5"
+    },
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/exported-layout.json",
+      "bytes": 3524,
+      "sha256": "80c8dbdef5dfb5cb4d9b664d1d57725300e4dafa7bd3623da486090a80869039"
+    },
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/inbox-ui.log",
+      "bytes": 5356,
+      "sha256": "552053eed9b700573ae3de4e89daf48d15d32175897d086ee6c766d8c4f9fa7e"
+    },
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/initialization-failure/browser-qa.json",
+      "bytes": 3663,
+      "sha256": "9d59292eed1716540b2bcf177ab1831fd92023d14da32b4964b0581dca779db7"
+    },
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/initialization-failure/failure.jpg",
+      "bytes": 101341,
+      "sha256": "5c84042010bbf071fcda38e9ce1867a2c3953c1d82edbb3b027f4ad50aa4ae02"
+    },
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/initialization-failure/page@fdf7a5c441aeda9256672e091aa7820c.webm",
+      "bytes": 5143873,
+      "sha256": "e505f2c43c71f63b9f591ea041f5e60d989feaf53d7dec8ede747e8d620ec71e"
+    },
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/initialization-failure/space-ready.jpg",
+      "bytes": 101341,
+      "sha256": "d679137db9066ada49e547d9003960f81eb85b7e5095d84f242d8c705c509af5"
+    },
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/legacy-motion.json",
+      "bytes": 224517,
+      "sha256": "1e70e95a82280241d1288dac23ed4ba2101a8f11c882ececbe44a537a3b760b3"
+    },
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/npm-test.log",
+      "bytes": 4121,
+      "sha256": "f283a412173258076922f914c1999aa9c9e1bd7d3a7f2ddc7011e635cb9eaaed"
+    },
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/pixel-readback/baseline-composition.js",
+      "bytes": 1142,
+      "sha256": "6887255cfcc4820cc6b46bcd5266259d68de220b7241eaee0f25f3d0334b91e8"
+    },
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/pixel-readback/baseline-continuity.js",
+      "bytes": 5341,
+      "sha256": "654160e026aa5fa62a0cc43ebfba6eeaca0f8a8394dff5e2f97cf9d2e9404689"
+    },
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/pixel-readback/before.jpg",
+      "bytes": 111995,
+      "sha256": "7d86442004afa349a17281b189c18e69ca65930cee678d6a4d6d4daec7774f76"
+    },
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/pixel-readback/before.json",
+      "bytes": 1161,
+      "sha256": "a59f73260d6c908f91f959ee9ce4aba76f54f87a62f829adffb18a85ba560199"
+    },
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/pixel-readback/differential.json",
+      "bytes": 4901,
+      "sha256": "6080939cbedf87b3c67aef3caf80501a48ca19e25d41152497f4f7db0208cb5b"
+    },
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/pixel-readback/probe.mjs",
+      "bytes": 1703,
+      "sha256": "055b79db17a93bbbec364d70fea50d6cbc4ab0939b2d968e551d7b27bf5717ad"
+    },
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/pixel-readback/README.md",
+      "bytes": 1429,
+      "sha256": "5cbf9b4c6138750ea614b8bb296219a2c8330323781e100f0dad848733fc3c5c"
+    },
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/pixel-readback/replay-log.json",
+      "bytes": 3278,
+      "sha256": "41e0b73cc14c22327d4b311e96cd3dbe39da3dca61faf3796994b154bcbf6f57"
+    },
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/pixel-readback/replay.mjs",
+      "bytes": 1514,
+      "sha256": "181cdad73f3fbabdb06c6516baae7fb2b2be10c49ac7d4b8731fbdc539f8895a"
+    },
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/source-files.json",
+      "bytes": 84324,
+      "sha256": "65ce29bd0b16c32a24ccff7baaac1663cd6a62956d7606bcc24d94ca0fceaec2"
+    },
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/space-anchors.jpg",
+      "bytes": 119106,
+      "sha256": "932208c52c627068bb5cab8bc659a4fef06e1c5f2eec7be4c629665e13030b79"
+    },
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/space-blocked.jpg",
+      "bytes": 108442,
+      "sha256": "f843ef49477a0174a2f9d024ff0145984d3f5b297f534394228b9c12bcaf3269"
+    },
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/space-complete.jpg",
+      "bytes": 110456,
+      "sha256": "f512e714b2c354f550eeb72ab4f3bfb74aef9ff04ec2ead3145a21896a781eb2"
+    },
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/space-held.jpg",
+      "bytes": 100511,
+      "sha256": "f1a0317c0b5b27399f501f7670d072cd492494a9a8d095896d4309c3618e20db"
+    },
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/space-interaction.webm",
+      "bytes": 5572466,
+      "sha256": "837ac29feba9c21983166dd1e20287a5bef8a45795014cd5f34de5b84bc50653"
+    },
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/space-narrow.jpg",
+      "bytes": 72088,
+      "sha256": "65e488c8a050d31a5857e584cdfab26eb642b6a5c13e570b6da900da1802dccf"
+    },
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/space-occlusion.jpg",
+      "bytes": 105379,
+      "sha256": "90d45b52497014811d180dfa6fe0d29988da203334f0565f3d4b356e490126cf"
+    },
+    {
+      "file": "docs/design/art-workflow/space-v1/evidence/space-ready.jpg",
+      "bytes": 110176,
+      "sha256": "f49309e54ae4db2a6be7cd25310cf459f08a2c3869f183c7bb59fafba29a046b"
+    }
+  ]
+}
