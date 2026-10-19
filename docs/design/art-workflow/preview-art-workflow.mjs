@@ -6,8 +6,8 @@ import { fileURLToPath } from 'node:url';
 const root = fileURLToPath(new URL('../../../', import.meta.url));
 const port = Number(process.env.PORT ?? 4186);
 if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('Invalid PORT');
-const home = '/docs/design/art-workflow/o03-shell-hands-v1/index.html';
-const types = { '.html':'text/html; charset=utf-8', '.css':'text/css; charset=utf-8', '.js':'text/javascript; charset=utf-8', '.json':'application/json; charset=utf-8', '.png':'image/png', '.jpg':'image/jpeg', '.webm':'video/webm', '.txt':'text/plain; charset=utf-8', '.md':'text/plain; charset=utf-8' };
+const home = '/docs/design/art-workflow/space-v1/index.html';
+const types = { '.html':'text/html; charset=utf-8', '.css':'text/css; charset=utf-8', '.js':'text/javascript; charset=utf-8', '.json':'application/json; charset=utf-8', '.png':'image/png', '.svg':'image/svg+xml', '.jpg':'image/jpeg', '.webm':'video/webm', '.txt':'text/plain; charset=utf-8', '.md':'text/plain; charset=utf-8' };
 createServer(async (req,res) => {
   try {
     if (!['GET','HEAD'].includes(req.method)) { res.writeHead(405); res.end(); return; }

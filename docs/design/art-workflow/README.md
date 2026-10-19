@@ -1,6 +1,6 @@
 # 美术与动作工作流
 
-当前基线是用户已通过的 [O03 连续拿放工作台](o03-shell-hands-v1/README.md)，分支范围和接手顺序见[当前开发状态](../../aliveness-development.md)。服务默认打开这一版；早期生成、绑定和动作叙述见[归档](../../archive/2026-10-aliveness/README.md)。
+当前默认入口为第 1 期 [空间样板](space-v1/README.md)，复用用户已通过的 [O03 连续拿放工作台](o03-shell-hands-v1/README.md)。分支范围和接手顺序见[当前开发状态](../../aliveness-development.md)。原 O03 仍可由右上角链接或原路径进入；早期生成、绑定和动作叙述见[归档](../../archive/2026-10-aliveness/README.md)。
 
 ## 制作美术
 
@@ -12,7 +12,9 @@
 | 放回运行环境 | 目标渲染器中验证角色比例、显示尺寸、底色、接触和遮挡；按实际画面补局部素材 |
 | 交付 | 原图、规格、来源、实际预览和验证边界齐全；用户观感验收单独记录 |
 
-当前源图规格和检查入口为 `web/props/shell/asset.json`、`hands/asset.json`、`scripts/check-hand-art.mjs`。通用 PNG 检查器是 `inspect-art-asset.mjs`，只支持非交错 8-bit RGBA，不改写像素、不验证 PNG chunk CRC；浏览器解码与视觉质量分别验证。
+本期简单空间道具直接创作为分层 SVG，源文件就是运行资产；需求、作者、许可与原始字节摘要见 [space-v1/assets/source.json](space-v1/assets/source.json)，未调用图像生成。需要复杂栅格或补手／关节时再执行上表生成流程。
+
+当前 O03 源图规格和检查入口为 `web/props/shell/asset.json`、`hands/asset.json`、`scripts/check-hand-art.mjs`。通用 PNG 检查器是 `inspect-art-asset.mjs`，只支持非交错 8-bit RGBA，不改写像素、不验证 PNG chunk CRC；浏览器解码与视觉质量分别验证。
 
 ## 设计动作
 
@@ -33,6 +35,6 @@ node node_modules/vitest/vitest.mjs run tests/hand-art.test.js tests/prop-motion
 PORT=4189 node docs/design/art-workflow/preview-art-workflow.mjs
 ```
 
-打开 `http://127.0.0.1:4189/`；工作台同目录的 `continuity.html` 运行真实 WebGL 像素回归。完整工程门槛按[开发指南](../../development.md)，NPC 改动包含 `test:inbox-ui`。
+打开 `http://127.0.0.1:4189/` 进入空间样板；`o03-shell-hands-v1/continuity.html` 运行真实 WebGL 像素回归。`node tests/space-preview-ui.mjs` 复用同一服务运行空间、接触和原工作台回归。完整工程门槛按[开发指南](../../development.md)，NPC 改动包含 `test:inbox-ui`。
 
 单个服务只监听 loopback，提供工作台及固定资源，不读取真实 Harness 正文或启用产品自主拿放。生成内容和测试输出写入新的产物位置；原始报告、截图、录像、提示词及其摘要保留原字节，历史结果不覆盖当前验收状态。

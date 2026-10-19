@@ -11,7 +11,7 @@ node docs/design/art-workflow/o03-shell-hands-v1/prepare-model.mjs --check
 PORT=4189 node docs/design/art-workflow/preview-art-workflow.mjs
 ```
 
-打开[工作台](http://127.0.0.1:4189/)。角色 180px、贝壳 40px、DeepSeek 配色。支持完整／分段拿放、0.25× 慢放、暂停续接、前进一帧、六个姿势与拖动地面贝壳。“新手型”可在待机或试摆时关闭，比较原模型。“专注预览”让舞台、操作和同帧细节放大同时显示。
+服务默认进入[空间样板](../space-v1/README.md)；打开[O03 工作台](http://127.0.0.1:4189/docs/design/art-workflow/o03-shell-hands-v1/index.html)。角色 180px、贝壳 40px、DeepSeek 配色。支持完整／分段拿放、0.25× 慢放、暂停续接、前进一帧、六个姿势与拖动地面贝壳。“新手型”可在待机或试摆时关闭，比较原模型。“专注预览”让舞台、操作和同帧细节放大同时显示。
 
 “运行闭环验收”执行三轮左右落点、打断续接与接触检查；第三轮在 0.25× 下检查闭合暂停、逐帧推进和松手暂停。慢放等待上限随速度放宽至 60 秒，接触、闭合、稳定帧和拥有权条件不变。
 
@@ -61,3 +61,5 @@ npm run test:inbox-ui
 原记录不改写其基础提交及脏工作区来源；最终提交与分支状态从当前接手入口核对。
 
 上一轮 [validation.json](validation.json)、[39 项状态检查](browser-qa-final.json)、[关键姿势](key-poses.json)、[原／新手型对照](comparison.json)均按原字节保留，属于修正前的实现快照。
+
+后续空间样板回归补充：新版 Chrome 的 GPU 2D 回读可在相同合成输入下产生少量通道字节差；像素检查的临时画布已预设 `willReadFrequently:true`，WebGL 手部与全部原阈值不变。原始报告不改写，新对照与复测见[空间样板像素记录](../space-v1/evidence/pixel-readback/README.md)。

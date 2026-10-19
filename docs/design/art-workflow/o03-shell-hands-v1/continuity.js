@@ -47,7 +47,12 @@ document.querySelector('#run').onclick = async () => {
   rig.render(state,{hidden:{__hand_palm:true}});
   const frontImage=new Image();frontImage.src=canvas.toDataURL();await frontImage.decode();
   const shellSpec=await(await fetch('/web/props/shell/asset.json')).json(),shellImage=new Image();shellImage.src='/web/props/shell/shell.png';await shellImage.decode();
-  const composite=document.createElement('canvas'),quad=[{x:166-20,y:199-1.6},{x:166+20,y:199-1.6},{x:166-20,y:199+31.4}];
+  const composite=document.createElement('canvas');
+  // This scratch surface is read after every paint. Request the readback path
+  // up front: recent Chrome GPU readback can quantize identical successive
+  // composites differently. The hand rasters above still come from real WebGL.
+  composite.getContext('2d',{willReadFrequently:true});
+  const quad=[{x:166-20,y:199-1.6},{x:166+20,y:199-1.6},{x:166-20,y:199+31.4}];
   const frame={bodyX:160,groundQuad:quad,heldQuad:quad},detail={matrix:[1,0,0,1,0,0],view};
   const capture=owner=>{drawComposite(composite,{frame:{...frame,owner},detail,spec:shellSpec,shellImage,bodyImage,frontImage,width:320,scale:1});return composite.getContext('2d').getImageData(0,0,320,390).data;};
   const ground=capture('ground'),held=capture('hand');let ownerChangedPixels=0;

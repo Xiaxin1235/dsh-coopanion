@@ -1,9 +1,9 @@
 // The prop uses one persistent surface regardless of gameplay ownership. All
 // decoded layers are painted together, so no partial new frame is ever exposed.
-export function drawComposite(canvas, { frame, detail, spec, shellImage, bodyImage, frontImage, width, floorY=320, scale=2 }) {
-  if(canvas.width!==width*scale || canvas.height!==390*scale) {canvas.width=width*scale;canvas.height=390*scale;}
+export function drawComposite(canvas, { frame, detail, spec, shellImage, bodyImage, frontImage, width, floorY=320, height=390, scale=2 }) {
+  if(canvas.width!==width*scale || canvas.height!==height*scale) {canvas.width=width*scale;canvas.height=height*scale;}
   const ctx=canvas.getContext('2d'), b=spec.visibleBounds;
-  ctx.setTransform(scale,0,0,scale,0,0);ctx.clearRect(0,0,width,390);
+  ctx.setTransform(scale,0,0,scale,0,0);ctx.clearRect(0,0,width,height);
   ctx.fillStyle='#11182738';ctx.beginPath();ctx.ellipse(frame.bodyX,floorY+1,48*180/256,5,0,0,2*Math.PI);ctx.fill();
   const drawBody=image=>{ctx.save();ctx.transform(...detail.matrix);const [x,y,x1,y1]=detail.view;ctx.drawImage(image,x,y,x1-x,y1-y);ctx.restore();};
   drawBody(bodyImage);

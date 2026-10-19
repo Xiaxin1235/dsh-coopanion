@@ -1,0 +1,37 @@
+2026-10-19 / stage-1-space-v1
+Source task: continue codex/aliveness-foundation, implement stage 1 art and space
+sample using the accepted DeepSeek 180px model, O03 40px shell and continuous
+pick/carry/place loop. Provide a distinguishable home/living area, work station,
+connecting route, threshold, obstacles and restricted area. Preserve original
+character images and hand work. Do not implement real x/y navigation or life/work
+scheduling in this stage.
+
+Production choice: author the four simple scalable props directly as layered SVG
+source, as allowed by the asset table's vector delivery format. No image model
+was called and there is no raster generation prompt or derived raster export.
+These SVG bytes are the editable originals and the browser runtime assets.
+
+Palette: sage #aabeb3, cream #e9e7cf, teal #34595b, slate #768f9f,
+sand #dbd2b9. Soft outlined, quiet rounded silhouettes; existing character remains
+the strongest contrast. Do not bake text into props; semantic labels live outside.
+
+home.svg / O01 sample: a small rounded sea-cave shelter, dark open interior,
+cream inner wall, green cushion/threshold, leaf-shaped top. 210 x 175 logical px.
+Layers: ground shadow, outer shell, inner shell, opening, interior, front cushion.
+The opening is decorative in stage 1; it is not an accessible interior.
+
+station.svg / O04 marker sample: a small desk with a freestanding envelope sign,
+soft gold signal lamp and cup/plant. 170 x 120 logical px. A mark for attention;
+it does not display a real task or produce task completion semantics.
+Layers: shadow, feet, desktop, front edge, envelope panel, lamp, cup.
+
+planter.svg / F02 obstacle: rounded coral stems inside a sand-colored flowerbox,
+112 x 105 logical px. Layers: shadow, stems, pot, rim, highlight.
+
+post.svg / F02 threshold: short pale bollard, 28 x 40 logical px. Reused for the
+two ends of an open threshold. Its southern instance is displayed 28 x 32px.
+Layers: shadow, shaft, rounded cap, central dot.
+
+Map background, regions, dotted path, labels, manual no-go panel and diagnostic
+outlines are authored CSS/SVG geometry in index.html, style.css and scene.js.
+They are editor guides rather than a desktop wallpaper or navigation runtime.
