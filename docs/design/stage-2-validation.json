@@ -1,0 +1,243 @@
+{
+  "schema": 1,
+  "date": "2026-10-19",
+  "timezone": "Asia/Shanghai",
+  "status": "implemented and locally validated; visual acceptance pending",
+  "runtimeSourceCommit": "6c022de3b9543de5a1c7a34145708cc6aa8e2e25",
+  "implementationCommit": "11995b2",
+  "baselineCommit": "e84ed76edda08c37e1cf8f0d43c8c8f33fb991f0",
+  "branch": "codex/aliveness-foundation",
+  "canonicalRuntimeManifestSha256": "21d5490e59c8fc5649445b4dbb0fd9abb5152cf9bc19188bfbe6847e308eb9aa",
+  "runtimeFilesVerified": 474,
+  "runtimeTreeUnchangedAfterValidation": true,
+  "testInputs": [
+    {
+      "path": "tests/navigation.test.js",
+      "bytes": 6073,
+      "sha256": "20353271ce8ae66b756554ba275ffd9f197cfc419040e6df7b8aea97f2561b0d"
+    },
+    {
+      "path": "tests/navigation-ui.mjs",
+      "bytes": 6071,
+      "sha256": "bac2789bc069d591c36202b36957b812329b2425dd2c1494df78583bdae43323"
+    },
+    {
+      "path": "tests/navigation-showcase.mjs",
+      "bytes": 2437,
+      "sha256": "e33497d9904829deebb4379b6404ec88cf798537f8b1bcb62545cbd29882c299"
+    },
+    {
+      "path": "tests/space-native.mjs",
+      "bytes": 7749,
+      "sha256": "cf82aafb2b9344f75fe9fd3999ec4f9a84c9f893e1c978a9b1f7017c66bc8965"
+    },
+    {
+      "path": "tests/space-preview-ui.mjs",
+      "bytes": 11342,
+      "sha256": "fb3306b790cc62b4016aa5a8bb1da0e5e1ba0da0eafa390ef81aa2916434ca4b"
+    }
+  ],
+  "toolchain": {
+    "node": "24.21.0",
+    "npm": "11.19.1",
+    "browser": "156.0.8078.4",
+    "native": {
+      "electron": "44.7.0",
+      "chrome": "152.0.7977.130",
+      "platform": "darwin",
+      "displays": [
+        {
+          "id": 3,
+          "scaleFactor": 2,
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 2048,
+            "height": 1152
+          }
+        }
+      ],
+      "window": {
+        "x": 0,
+        "y": 25,
+        "width": 1440,
+        "height": 1080
+      }
+    }
+  },
+  "results": {
+    "targeted": {
+      "passed": 44
+    },
+    "typecheck": true,
+    "build": true,
+    "metadata": true,
+    "unit": {
+      "vitestPassed": 270,
+      "vitestSkipped": 1,
+      "nodePassed": 12
+    },
+    "inbox": {
+      "smokePassed": true,
+      "nodePassed": 42
+    },
+    "navigation": {
+      "passed": true,
+      "checks": 9,
+      "artifact": {
+        "path": "artifacts/stage-2-final/navigation/navigation-ui.json",
+        "bytes": 24738,
+        "sha256": "fbb080e9e038f121e8b737817f3eb81c9961e48d15cbfa4a9837c9278921c63b"
+      }
+    },
+    "contact": {
+      "passed": true,
+      "checks": 30,
+      "artifact": {
+        "path": "artifacts/stage-2-final/contact/browser-qa.json",
+        "bytes": 71458,
+        "sha256": "b83f52a68bc57b8b365b9a64b99caa7476f8de252c2e2fd5741b7e1ee0e51962"
+      }
+    },
+    "pixels": {
+      "passed": true,
+      "checks": 0,
+      "artifact": {
+        "path": "artifacts/stage-2-final/contact/contact-pixels.json",
+        "bytes": 1158,
+        "sha256": "4275ef8636976b88884ab1736533901facead8239817a2104708d2cc52e3b3b5"
+      }
+    },
+    "legacy": {
+      "passed": true,
+      "checks": 44,
+      "artifact": {
+        "path": "artifacts/stage-2-final/contact/legacy-motion.json",
+        "bytes": 238908,
+        "sha256": "38d4a546a341098bb2bf9ec0827cd887f3ce41ad576d3e19d7044d63e0f7f03a"
+      }
+    },
+    "native": {
+      "passed": true,
+      "checks": 7,
+      "artifact": {
+        "path": "artifacts/stage-2-final/native-pass/native.json",
+        "bytes": 20066,
+        "sha256": "750fa324577f631d6ac92bdc4900c81f5984f6b3ea5f1b5fd48ade5ff92f8306"
+      }
+    },
+    "nativeRepeat": {
+      "passed": true,
+      "checks": 7,
+      "artifact": {
+        "path": "artifacts/stage-2-final/native-repeat/native.json",
+        "bytes": 18435,
+        "sha256": "c1807226d99e31210a8b95f70f48277dccfb8d98b4efed87aebdba05aa2335fe"
+      }
+    }
+  },
+  "video": {
+    "path": "artifacts/stage-2-final/showcase/navigation-showcase.webm",
+    "bytes": 12218363,
+    "sha256": "11b5205b0aa31680c1446fc0a97a9a86e7243a56f6cd162c900193751217c332",
+    "durationSeconds": 43.16,
+    "scope": "real-time isolated browser page; no OS desktop or audio recording"
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/stage-2-final/source-manifest.json",
+      "bytes": 86997,
+      "sha256": "26e78339300d6c54a17d5f32b1c5f63fc4fd2a606de495719b1b574c5b1d18d4"
+    },
+    {
+      "path": "artifacts/stage-2-final/targeted.log",
+      "bytes": 496,
+      "sha256": "b6cebc06fa429287b0a86521b799f57fc5a3d065bd506d78ac6b6cdb12920678"
+    },
+    {
+      "path": "artifacts/stage-2-final/typecheck.log",
+      "bytes": 98,
+      "sha256": "3a3a0f42a52c753626283264ed71e30d318406a98f12cae0c5fe051cd0b21f64"
+    },
+    {
+      "path": "artifacts/stage-2-final/build.log",
+      "bytes": 64,
+      "sha256": "4be033c0fcfb79c62fffd6311f54f94a69168b9f05a2c35cfeda787da72334e0"
+    },
+    {
+      "path": "artifacts/stage-2-final/metadata.log",
+      "bytes": 140,
+      "sha256": "98b5a70b69e49936c0f920da8feea8f7228cc4359960522c77e1eb2a3f016b41"
+    },
+    {
+      "path": "artifacts/stage-2-final/unit.log",
+      "bytes": 4028,
+      "sha256": "a17a5535285c7c1302fb1feab877c0e3a2aca1fbf24ed888cb232b9821b6cf93"
+    },
+    {
+      "path": "artifacts/stage-2-final/inbox.log",
+      "bytes": 5355,
+      "sha256": "27453343e2f57f0059ec70a4a7b09f78ff602675f2eadd44ff0dcb7e3e32f55d"
+    },
+    {
+      "path": "artifacts/stage-2-final/navigation.log",
+      "bytes": 136,
+      "sha256": "b00dd50210e9034e998787190aa06553826d3d42a9e8f4f5186d5149578c5942"
+    },
+    {
+      "path": "artifacts/stage-2-final/contact.log",
+      "bytes": 342,
+      "sha256": "f937e181fbbd7c95d9844dc4e42e0249e7d7f7161a686d802eea1b4c5edbf313"
+    },
+    {
+      "path": "artifacts/stage-2-final/native-pass.log",
+      "bytes": 1185,
+      "sha256": "737d0bf40b4131f113f314080e693da020871c40d788b2c16369701695e16a4e"
+    },
+    {
+      "path": "artifacts/stage-2-final/native-repeat.log",
+      "bytes": 1185,
+      "sha256": "737d0bf40b4131f113f314080e693da020871c40d788b2c16369701695e16a4e"
+    },
+    {
+      "path": "artifacts/stage-2-final/showcase/showcase.json",
+      "bytes": 16586,
+      "sha256": "f1dcfa138edca611b150eb0c947705c6eb85ad1699c6e3e3b0decd9e46b7005f"
+    },
+    {
+      "path": "artifacts/stage-2-final/showcase/showcase-final.png",
+      "bytes": 518499,
+      "sha256": "a7c15c3367851b71084cfb537b2ddc168f4163a79827f18d7c8f6fc844312416"
+    },
+    {
+      "path": "artifacts/stage-2-final/native-pass/native-arrival.png",
+      "bytes": 1283607,
+      "sha256": "286a75f1fee2a9ec9b0e8ae78cc50530818d4245ea4ca045b8b26a851d86e23b"
+    }
+  ],
+  "nativeIntermittency": {
+    "unresponsiveAttempt": {
+      "path": "artifacts/stage-2-11995b2/native-unresponsive.json",
+      "bytes": 798,
+      "sha256": "7b51e621dca56fd0c3f515b0667f53d53430a02016ea9b72535654bc44e1cbc9"
+    },
+    "cause": "not established",
+    "finalSerialRunsPassed": 2,
+    "processExitCodes": [
+      0,
+      0
+    ],
+    "longTermReliabilityAcceptance": false
+  },
+  "notPerformed": [
+    "CI three-platform matrix",
+    "Linux/Windows native",
+    "physical multi-display / mixed DPI",
+    "actual OS sleep / lock",
+    "click delivery to underlying applications",
+    "formal host installation",
+    "push / merge / release"
+  ],
+  "visualAcceptance": "pending user review; prior O03 approval not extended",
+  "originalEvidence": "not modified"
+}
