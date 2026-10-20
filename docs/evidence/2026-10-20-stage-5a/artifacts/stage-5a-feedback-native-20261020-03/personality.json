@@ -1,0 +1,6595 @@
+{
+  "passed": true,
+  "sourceIdentity": {
+    "baseCommit": "e4858ddc39ddae04b774abe48356d9b8643fbe86",
+    "node": "v24.21.0",
+    "platform": "darwin",
+    "sources": {
+      "web/prop-motion.js": "630785f93911f7987a911b878f342322fb8c2aef60b4c09380f0956ed314ce57",
+      "web/upstream/kit/space-action.js": "f061d41b6dabe73233ffad5128d741de978a851a236cb40a9a8bdb7ac16aa73a",
+      "web/upstream/kit/navigation.js": "c997f0d031c90a4863c6dc455b31c107e10adae14afe82af9bf83c4f4b856107",
+      "web/upstream/kit/body.js": "a242665a55dc3a2fcd146cb54121d44efb6abf337cda1145de0410238fb48dd6",
+      "web/upstream/kit/raster.js": "be2ee9bbee2bbccf14548d79c31bfea9ba68304b44b06cf67b8cbdeedb784672",
+      "web/upstream/whale/figure.js": "4da46490cd7dd2105bdecede03a88b4505558ad2139744338dc80fc0d4ee6faf",
+      "web/upstream/whale/hand-art.js": "d8ff703fc656d90faa86441d116daaa9b26b6bf38aa71e92cc4018668849d119",
+      "web/upstream/body-host.js": "d2b8dba27e2085c75cee6cdf0a8a5673f038ac9a208d175c67fa7a64e45a6e2b",
+      "web/upstream/figure-frame.js": "a4812b5e8c90f4ed9fd58522faf9f33d7aee9e534689a856c2c1f62ecd87a25b",
+      "desktop/space-preview.cjs": "db86e7fc8624e85126397eb54cfbbd1937c1ccdcb29b260562ce30b56ee9144a",
+      "docs/design/art-workflow/space-v1/scene.js": "c6b1a8489364d3533de7f2092b14110b8a06596e21ca016dbc8f5d13719b9fa5",
+      "docs/design/art-workflow/space-v1/geometry.js": "c8e5571fbf837f304949d2cddf062fda3206b18207613d9c8e06ebc413c31ad8",
+      "docs/design/art-workflow/space-v1/index.html": "15f69c0ecda3a740bdab46f87b1f465cefd4ac80435e9c5cdd61af47ac275ce3",
+      "docs/design/art-workflow/space-v1/style.css": "d2e8890d9dc2259bc7999a5bcb3df4c3037b7c1c3fbfd9051925f5d4cac0c3e2",
+      "docs/design/art-workflow/o03-shell-hands-v1/figure.js": "0dc58c22d58dc4de085568c033729ac39cba86a37c80563efdbad9964c0e2d1c",
+      "docs/design/art-workflow/o03-shell-hands-v1/composition.js": "49b35979d8a25efa34284f322043292963a9f8364cad778894de76b5577df9b0",
+      "docs/design/art-workflow/o03-shell-hands-v1/scene-model.json": "542ae9eece080a49a82619e0ae99f8d8bd6e328ec2f7c47d6ccde82c37bd8c77",
+      "web/props/shell/shell.png": "542b49cffbec43e41b4ca75a0ae184302b1e384b27539ff957806c71d28b910d",
+      "web/props/shell/asset.json": "db1cd6cc6dc21dd178fa95b8a49c0bed503755b06f4dee8a5fed52da139a2a65",
+      "web/props/shell/hands/asset.json": "489b3619c85ef34ec430a1c217adec4fcb8f10ebfd116a635d462352e4de26b4",
+      "web/props/shell/hands/grip.png": "5770450595803b4586fb8574e5135148b522b116e7f6d3de25f6e7643f91b930",
+      "tests/space-action-ui.mjs": "0659ee69d9b90b602b12d1f703da43c9a5ca2f3e55024b59c14891ad1d8d456a",
+      "tests/space-feedback.test.js": "5a5d66ae30fe32b1a10f28c90e56587d5d0346441e75c08c0710092a4e49577f",
+      "tests/space-feedback-ui.mjs": "93afe76618511a9a625a5fed45ecbdc7198d4452907214c9764e74419d060c68",
+      "docs/design/art-workflow/space-v1/layouts/stage-3-feedback-20261020.json": "f4991b785c8ab68ba303610f3278828e78cbf70405aa45f4005b194080990877",
+      "docs/design/art-workflow/space-v1/layouts/stage-3-feedback-moved-20261020.json": "c97a792a5fd9d367fe3c1c03944e69453e9f4ace5cb8d4db7d970d6b8828ac61",
+      "src/completion.ts": "a051d5b2d29267a53576dfe813a72a3844f1c5aef183f3397f0c2844a95ea8a2",
+      "src/work-facts.ts": "2e920d4f019b9c420d60cc4a502c83332ddd2991c5b7b7fa6247e3bc6d862e75",
+      "src/work-preview.ts": "341e03d893837be82baea74ef1ca3c550236ae05cb4476ba6e69f3954ae6fb8b",
+      "src/work-sources.ts": "64787392fd7447edf40f416a7b11a190dcf2244fb9d762bdbcec4ddd63a8f524",
+      "web/upstream/kit/work-performance.js": "7094223319a7eae59f256f3805eca407146f0a2618aad9ec58c0793da0b907f4",
+      "web/upstream/kit/life-work.js": "5e1f775455eeaea0971601bf889d6218cc8ed359f5fde62fa4b4c97f16c9ccca",
+      "web/upstream/kit/personality.js": "b9258a86a55c268b1abf3569667d01745bcebb6814d2def1a275ecdc84e1de51",
+      "web/upstream/kit/personality-performance.js": "8459e68170b0d090ea68f4268369d0aa82362fea8949f8d9e5607fd820071d66",
+      "docs/design/art-workflow/space-v1/stage4-preview.js": "77d9c863d6a0628ea3fec206dc3395fe71ede293e5a05d034e965e91b86c5561",
+      "docs/design/art-workflow/space-v1/prepare-stage4.mjs": "3b7abb40f4e07605743cec3188c3b7c56bfed349a9664b5b9a9cc141bf7a5e45",
+      "docs/design/art-workflow/space-v1/work-facts.generated.js": "4306dd83a6dae73169754ba75dba0cb9d0913a0486c13a00347d5290d9963a2c",
+      "npm-shrinkwrap.json": "e07a7fbcb45dbec5dff78a37a42d293f7ee99fb95001b1f2991ce8b5b3c13d78",
+      "tests/life-work-ui.mjs": "4615c5dcf3d6fe9f7a17abf683982f80da6c2d4e60045c56288cfd377915d771",
+      "tests/work-semantics-ui.mjs": "01f434b04c665d9505988bd9a7c4af70094045160366e2d3d1fd7c4069b6d90d",
+      "tests/personality-feedback.test.js": "289bdd9ce5fcf2de29f704130241949c090d83cedd6538d2215528d4db3ea5c6",
+      "docs/design/art-workflow/space-v1/stage5-preview.js": "75a18f01fba3aef966567cae7a2d0e8b5102a018c6b76042d9a8826a01469c55",
+      "tests/personality.test.js": "9a930f755e4011fc38af69e27ba46c783d700c56567f042e9fa4f3491d1869fc",
+      "tests/personality-ui.mjs": "9f80d3ac38525ff549c3ce17627223cd6e4d36b7356cd739b08200fafd0b473b"
+    },
+    "digest": "d8ac30f284f793b04335ebed0348cd06fce595ca50d35687864eef5ded3ae86e"
+  },
+  "native": true,
+  "simulatedPermissions": true,
+  "simulatedHarness": true,
+  "modelCalls": 0,
+  "realHarness": false,
+  "physicalDeviceAcceptance": false,
+  "userAcceptance": false,
+  "runtime": {
+    "node": "24.21.0",
+    "acorn": "8.18.0",
+    "ada": "4.0.0",
+    "amaro": "1.1.11",
+    "ares": "1.34.8",
+    "brotli": "1.2.0",
+    "cldr": "48.0",
+    "icu": "78.2",
+    "llhttp": "9.4.3",
+    "merve": "1.2.2",
+    "modules": "149",
+    "napi": "10",
+    "nbytes": "0.1.4",
+    "ncrypto": "0.0.1",
+    "nghttp2": "1.70.0",
+    "nghttp3": "",
+    "ngtcp2": "",
+    "openssl": "0.0.0",
+    "simdjson": "4.6.7",
+    "simdutf": "7.7.0",
+    "sqlite": "3.53.4",
+    "tz": "2026d",
+    "undici": "7.29.1",
+    "unicode": "17.0",
+    "uv": "1.52.1",
+    "uvwasi": "0.0.23",
+    "v8": "15.2.124.28-electron.0",
+    "zlib": "1.3.2.1-motley",
+    "zstd": "1.6.0",
+    "electron": "44.7.0",
+    "chrome": "152.0.7977.130"
+  },
+  "checks": [
+    "off default consumes no choice",
+    "seed 7 quiet chooses stationary object attention",
+    "ordinary observation stays standing",
+    "seated exit never uses the prop-reaching bend",
+    "same map/facts/seed yields a different real choice for lively",
+    "personality also changes bounded dwell duration",
+    "exploration only completes on actual stopped arrival",
+    "arrival does not automatically sit",
+    "lively observation uses supported expression after actual attention",
+    "existing nod gesture reaches the actual rendered rig",
+    "switch uses actual root without resetting body or touching object",
+    "blocked body and ownership remain still",
+    "unknown input never advances selection history",
+    "blocked body and ownership remain still",
+    "unknown-version fallback retains explicit quiet overrides",
+    "approval keeps semantic face and physically reaches work despite optional off",
+    "blocked body and ownership remain still",
+    "reading freezes work body without losing approval",
+    "acceptance cannot settle approval",
+    "work release rechecks permission before life restarts",
+    "live obstacle edit pauses the coordinator",
+    "resumed selection uses changed geometry",
+    "blocked body and ownership remain still",
+    "profile change cannot override lifecycle pause",
+    "stop preserves real object and contact counts",
+    "equal timing stays exactly equal in both real runs",
+    "equal timing still changes actual object choice, stance and rendered expression",
+    "no page errors"
+  ],
+  "errors": [],
+  "quiet": {
+    "ordinal": 1,
+    "personality": "quiet",
+    "version": 1,
+    "strategy": 2,
+    "parameters": {
+      "id": "quiet",
+      "version": 1,
+      "label": "安静",
+      "dwellMin": 18,
+      "dwellMax": 26,
+      "explore": 0.2
+    },
+    "samples": [
+      0.23878083983436227,
+      0.9134932646993548,
+      0.6124916663393378
+    ],
+    "seed": 7,
+    "kind": "stay",
+    "reason": "observe-here",
+    "origin": {
+      "x": 240,
+      "y": 555
+    },
+    "revision": 1,
+    "attention": "consider",
+    "interestId": "o03-shell",
+    "interestKey": "[\"o03-shell\",\"shell\",335,537]",
+    "interestLabel": "贝壳",
+    "interestKind": "shell",
+    "focus": {
+      "x": 335,
+      "y": 537
+    },
+    "result": "pending",
+    "duration": 25.307946117594838,
+    "candidates": [
+      {
+        "x": 195,
+        "y": 555
+      },
+      {
+        "x": 370,
+        "y": 420
+      },
+      {
+        "x": 331,
+        "y": 450
+      }
+    ],
+    "target": null,
+    "alternatives": [
+      {
+        "id": "o03-shell",
+        "score": 4.91,
+        "reachable": true
+      },
+      {
+        "id": "home",
+        "score": 2.625166703720174,
+        "reachable": true
+      },
+      {
+        "id": "planter",
+        "score": 1.722107934622091,
+        "reachable": true
+      }
+    ]
+  },
+  "lively": {
+    "ordinal": 1,
+    "personality": "lively",
+    "version": 1,
+    "strategy": 2,
+    "parameters": {
+      "id": "lively",
+      "version": 1,
+      "label": "活泼",
+      "dwellMin": 6,
+      "dwellMax": 10,
+      "explore": 0.85
+    },
+    "samples": [
+      0.23878083983436227,
+      0.9134932646993548,
+      0.6124916663393378
+    ],
+    "seed": 7,
+    "kind": "explore",
+    "reason": "inspect-object",
+    "origin": {
+      "x": 240,
+      "y": 555
+    },
+    "revision": 1,
+    "attention": "investigate",
+    "interestId": "planter",
+    "interestKey": "[\"planter\",\"plant\",541,256.75]",
+    "interestLabel": "花箱",
+    "interestKind": "plant",
+    "focus": {
+      "x": 541,
+      "y": 256.75
+    },
+    "result": "pending",
+    "duration": 9.653973058797419,
+    "candidates": [
+      {
+        "x": 381,
+        "y": 385
+      },
+      {
+        "x": 235,
+        "y": 555
+      },
+      {
+        "x": 370,
+        "y": 420
+      }
+    ],
+    "target": {
+      "x": 381,
+      "y": 385
+    },
+    "alternatives": [
+      {
+        "id": "planter",
+        "score": 4.558271576644653,
+        "reachable": true
+      },
+      {
+        "id": "o03-shell",
+        "score": 2.99,
+        "reachable": true
+      },
+      {
+        "id": "home",
+        "score": 0.6251667037201738,
+        "reachable": true
+      }
+    ]
+  },
+  "equalComparison": [
+    {
+      "phase": "idle",
+      "suspended": null,
+      "elapsed": 3.3504999999999985,
+      "coordination": {
+        "phase": "personal-dwell",
+        "suspended": null,
+        "reason": null,
+        "life": null,
+        "sessions": [],
+        "focus": null,
+        "interaction": null,
+        "occupied": false,
+        "admission": 0,
+        "navigation": null,
+        "serial": 1,
+        "elapsed": 0,
+        "lastAt": 4706.800000190735,
+        "revision": 1,
+        "personality": {
+          "id": "quiet",
+          "version": 1,
+          "overrides": {
+            "quiet": {
+              "dwellMin": 12,
+              "dwellMax": 20,
+              "explore": 0.95
+            }
+          },
+          "seed": 7,
+          "ordinal": 1,
+          "enabled": true,
+          "permissions": {
+            "mode": "quiet",
+            "roam": true,
+            "input": "idle",
+            "occupied": false
+          },
+          "decision": {
+            "ordinal": 1,
+            "personality": "quiet",
+            "version": 1,
+            "strategy": 2,
+            "parameters": {
+              "id": "quiet",
+              "version": 1,
+              "label": "安静",
+              "dwellMin": 12,
+              "dwellMax": 20,
+              "explore": 0.95
+            },
+            "samples": [
+              0.23878083983436227,
+              0.9134932646993548,
+              0.6124916663393378
+            ],
+            "seed": 7,
+            "kind": "explore",
+            "reason": "inspect-object",
+            "origin": {
+              "x": 240,
+              "y": 555
+            },
+            "revision": 1,
+            "attention": "consider",
+            "interestId": "o03-shell",
+            "interestKey": "[\"o03-shell\",\"shell\",335,537]",
+            "interestLabel": "贝壳",
+            "interestKind": "shell",
+            "focus": {
+              "x": 335,
+              "y": 537
+            },
+            "result": "pending",
+            "duration": 19.307946117594838,
+            "candidates": [
+              {
+                "x": 195,
+                "y": 555
+              },
+              {
+                "x": 370,
+                "y": 420
+              },
+              {
+                "x": 331,
+                "y": 450
+              }
+            ],
+            "target": {
+              "x": 195,
+              "y": 555
+            },
+            "alternatives": [
+              {
+                "id": "o03-shell",
+                "score": 4.91,
+                "reachable": true
+              },
+              {
+                "id": "home",
+                "score": 2.625166703720174,
+                "reachable": true
+              },
+              {
+                "id": "planter",
+                "score": 1.722107934622091,
+                "reachable": true
+              }
+            ]
+          },
+          "history": [
+            {
+              "ordinal": 1,
+              "personality": "quiet",
+              "version": 1,
+              "strategy": 2,
+              "parameters": {
+                "id": "quiet",
+                "version": 1,
+                "label": "安静",
+                "dwellMin": 12,
+                "dwellMax": 20,
+                "explore": 0.95
+              },
+              "samples": [
+                0.23878083983436227,
+                0.9134932646993548,
+                0.6124916663393378
+              ],
+              "seed": 7,
+              "kind": "explore",
+              "reason": "inspect-object",
+              "origin": {
+                "x": 240,
+                "y": 555
+              },
+              "revision": 1,
+              "attention": "consider",
+              "interestId": "o03-shell",
+              "interestKey": "[\"o03-shell\",\"shell\",335,537]",
+              "interestLabel": "贝壳",
+              "interestKind": "shell",
+              "focus": {
+                "x": 335,
+                "y": 537
+              },
+              "result": "pending",
+              "duration": 19.307946117594838,
+              "candidates": [
+                {
+                  "x": 195,
+                  "y": 555
+                },
+                {
+                  "x": 370,
+                  "y": 420
+                },
+                {
+                  "x": 331,
+                  "y": 450
+                }
+              ],
+              "target": {
+                "x": 195,
+                "y": 555
+              },
+              "alternatives": [
+                {
+                  "id": "o03-shell",
+                  "score": 4.91,
+                  "reachable": true
+                },
+                {
+                  "id": "home",
+                  "score": 2.625166703720174,
+                  "reachable": true
+                },
+                {
+                  "id": "planter",
+                  "score": 1.722107934622091,
+                  "reachable": true
+                }
+              ]
+            }
+          ],
+          "observations": [],
+          "clock": 3.0666999999999995,
+          "fallback": false
+        },
+        "observed": 0,
+        "workRest": null
+      },
+      "personalityPerformance": {
+        "active": true,
+        "expression": "thinking",
+        "look": [
+          4.959250789846434,
+          2.8591034577267562
+        ],
+        "attention": "consider",
+        "focus": {
+          "x": 335,
+          "y": 537
+        },
+        "label": "静静细看贝壳"
+      },
+      "performance": {
+        "kind": "idle",
+        "expression": "neutral",
+        "label": "歇一会儿",
+        "age": 3.200099999999999,
+        "cue": null,
+        "look": [
+          0.6111709039284757,
+          0.3492405165305576
+        ],
+        "armNear": 5.746202582652788,
+        "armFar": -2,
+        "gaze": 0,
+        "arms": [
+          5.847560135361899,
+          -2
+        ]
+      },
+      "owner": "ground",
+      "renderedOwner": "ground",
+      "generation": 2,
+      "walkId": null,
+      "commits": {
+        "pickup": 0,
+        "drop": 0
+      },
+      "error": null,
+      "inspection": null,
+      "loop": false,
+      "bodyX": 195,
+      "bodyY": 555,
+      "navigation": {
+        "x": 195,
+        "y": 555,
+        "speed": 0,
+        "facing": -1,
+        "phase": "idle",
+        "id": null,
+        "generation": 1,
+        "revision": 1,
+        "plan": null
+      },
+      "bubble": {
+        "x": 195,
+        "y": 385.02553731726744
+      },
+      "hit": [
+        {
+          "x": 195,
+          "y": 463.58516288884107,
+          "r": 75.9375
+        }
+      ],
+      "moving": false,
+      "facing": 1,
+      "visualFacing": 0.998581070861164,
+      "destinationX": 390,
+      "destinationY": 600,
+      "actionNavigation": null,
+      "actionRevision": null,
+      "objectRevision": 2,
+      "continuous": true,
+      "groundQuad": [
+        {
+          "x": 315,
+          "y": 522.198275862069
+        },
+        {
+          "x": 355,
+          "y": 522.198275862069
+        },
+        {
+          "x": 315,
+          "y": 555
+        }
+      ],
+      "groundGrip": {
+        "x": 335,
+        "y": 523.8383620689655
+      },
+      "hand": {
+        "x": 222.32731802815778,
+        "y": 514.4528280770676
+      },
+      "heldGrip": {
+        "x": 222.32731802815778,
+        "y": 514.4528280770676
+      },
+      "heldQuad": [
+        {
+          "x": 202.41613755543958,
+          "y": 512.8065585765688
+        },
+        {
+          "x": 242.23849979371587,
+          "y": 512.8065423964749
+        },
+        {
+          "x": 202.41612462704055,
+          "y": 545.7321103874829
+        }
+      ],
+      "feet": [
+        {
+          "x": 184.0939610608823,
+          "y": 555.0002367819959
+        },
+        {
+          "x": 206.3050403392432,
+          "y": 554.999601649661
+        }
+      ],
+      "gazeOrigin": {
+        "x": 202.75131649569948,
+        "y": 457.0641804489247
+      },
+      "renderedFace": "thinking",
+      "gesture": null,
+      "posture": {
+        "bodyY": 9.917483690562223e-8,
+        "waist": 0,
+        "plantWeight": 0
+      },
+      "pose": {
+        "drop": 0,
+        "propAngle": 0,
+        "look": [
+          4.959250789846434,
+          2.8591034577267562
+        ],
+        "plant": false,
+        "plantWeight": 1,
+        "hands": {
+          "original": 1,
+          "reach": 0,
+          "grip": 0,
+          "release": 0
+        },
+        "handArt": true
+      },
+      "sit": 0,
+      "handArt": {
+        "enabled": true,
+        "baseline": false,
+        "weights": {
+          "original": 1,
+          "reach": 0,
+          "grip": 0,
+          "release": 0
+        },
+        "wrist": {
+          "x": 221.26782059846553,
+          "y": 508.1342657417537
+        },
+        "wristError": 0,
+        "contactError": 0,
+        "renderMode": "continuous-mesh",
+        "closure": 0.25,
+        "surfaceAlpha": 1,
+        "layers": {
+          "palm": 5.02,
+          "prop": 5.05,
+          "fingers": 5.2
+        },
+        "frontWeight": 1,
+        "externalProp": true
+      },
+      "contact": {
+        "distance": 113.06290952846105,
+        "groundDistance": 176.23601504995088
+      },
+      "bindingError": 0,
+      "propMirror": 1,
+      "activeTime": 3.3504999999999985,
+      "speed": 1,
+      "sequence": 167
+    },
+    {
+      "phase": "idle",
+      "suspended": null,
+      "elapsed": 5.000300000000005,
+      "coordination": {
+        "phase": "personal-dwell",
+        "suspended": null,
+        "reason": null,
+        "life": null,
+        "sessions": [],
+        "focus": null,
+        "interaction": null,
+        "occupied": false,
+        "admission": 0,
+        "navigation": null,
+        "serial": 1,
+        "elapsed": 0,
+        "lastAt": 6816.100000143051,
+        "revision": 1,
+        "personality": {
+          "id": "lively",
+          "version": 1,
+          "overrides": {
+            "lively": {
+              "dwellMin": 12,
+              "dwellMax": 20,
+              "explore": 0.95
+            }
+          },
+          "seed": 7,
+          "ordinal": 1,
+          "enabled": true,
+          "permissions": {
+            "mode": "quiet",
+            "roam": true,
+            "input": "idle",
+            "occupied": false
+          },
+          "decision": {
+            "ordinal": 1,
+            "personality": "lively",
+            "version": 1,
+            "strategy": 2,
+            "parameters": {
+              "id": "lively",
+              "version": 1,
+              "label": "活泼",
+              "dwellMin": 12,
+              "dwellMax": 20,
+              "explore": 0.95
+            },
+            "samples": [
+              0.23878083983436227,
+              0.9134932646993548,
+              0.6124916663393378
+            ],
+            "seed": 7,
+            "kind": "explore",
+            "reason": "inspect-object",
+            "origin": {
+              "x": 240,
+              "y": 555
+            },
+            "revision": 1,
+            "attention": "investigate",
+            "interestId": "planter",
+            "interestKey": "[\"planter\",\"plant\",541,256.75]",
+            "interestLabel": "花箱",
+            "interestKind": "plant",
+            "focus": {
+              "x": 541,
+              "y": 256.75
+            },
+            "result": "pending",
+            "duration": 19.307946117594838,
+            "candidates": [
+              {
+                "x": 381,
+                "y": 385
+              },
+              {
+                "x": 235,
+                "y": 555
+              },
+              {
+                "x": 370,
+                "y": 420
+              }
+            ],
+            "target": {
+              "x": 381,
+              "y": 385
+            },
+            "alternatives": [
+              {
+                "id": "planter",
+                "score": 4.558271576644653,
+                "reachable": true
+              },
+              {
+                "id": "o03-shell",
+                "score": 2.99,
+                "reachable": true
+              },
+              {
+                "id": "home",
+                "score": 0.6251667037201738,
+                "reachable": true
+              }
+            ]
+          },
+          "history": [
+            {
+              "ordinal": 1,
+              "personality": "lively",
+              "version": 1,
+              "strategy": 2,
+              "parameters": {
+                "id": "lively",
+                "version": 1,
+                "label": "活泼",
+                "dwellMin": 12,
+                "dwellMax": 20,
+                "explore": 0.95
+              },
+              "samples": [
+                0.23878083983436227,
+                0.9134932646993548,
+                0.6124916663393378
+              ],
+              "seed": 7,
+              "kind": "explore",
+              "reason": "inspect-object",
+              "origin": {
+                "x": 240,
+                "y": 555
+              },
+              "revision": 1,
+              "attention": "investigate",
+              "interestId": "planter",
+              "interestKey": "[\"planter\",\"plant\",541,256.75]",
+              "interestLabel": "花箱",
+              "interestKind": "plant",
+              "focus": {
+                "x": 541,
+                "y": 256.75
+              },
+              "result": "pending",
+              "duration": 19.307946117594838,
+              "candidates": [
+                {
+                  "x": 381,
+                  "y": 385
+                },
+                {
+                  "x": 235,
+                  "y": 555
+                },
+                {
+                  "x": 370,
+                  "y": 420
+                }
+              ],
+              "target": {
+                "x": 381,
+                "y": 385
+              },
+              "alternatives": [
+                {
+                  "id": "planter",
+                  "score": 4.558271576644653,
+                  "reachable": true
+                },
+                {
+                  "id": "o03-shell",
+                  "score": 2.99,
+                  "reachable": true
+                },
+                {
+                  "id": "home",
+                  "score": 0.6251667037201738,
+                  "reachable": true
+                }
+              ]
+            }
+          ],
+          "observations": [],
+          "clock": 4.7511,
+          "fallback": false
+        },
+        "observed": 0,
+        "workRest": null
+      },
+      "personalityPerformance": {
+        "active": true,
+        "expression": "surprised",
+        "look": [
+          5.4999999999994245,
+          -1.0311479405540551
+        ],
+        "attention": "investigate",
+        "focus": {
+          "x": 541,
+          "y": 256.75
+        },
+        "label": "看看花箱的细节"
+      },
+      "performance": {
+        "kind": "idle",
+        "expression": "neutral",
+        "label": "歇一会儿",
+        "age": 4.852200000000002,
+        "cue": null,
+        "look": [
+          -0.008635923404104,
+          -0.004934813373773715
+        ],
+        "armNear": 3.9753259331311313,
+        "armFar": -2,
+        "gaze": 0,
+        "arms": [
+          4.267236884527516,
+          -2
+        ]
+      },
+      "owner": "ground",
+      "renderedOwner": "ground",
+      "generation": 2,
+      "walkId": null,
+      "commits": {
+        "pickup": 0,
+        "drop": 0
+      },
+      "error": null,
+      "inspection": null,
+      "loop": false,
+      "bodyX": 381,
+      "bodyY": 385,
+      "navigation": {
+        "x": 381,
+        "y": 385,
+        "speed": 0,
+        "facing": 1,
+        "phase": "idle",
+        "id": null,
+        "generation": 1,
+        "revision": 1,
+        "plan": null
+      },
+      "bubble": {
+        "x": 381,
+        "y": 219.09129742276855
+      },
+      "hit": [
+        {
+          "x": 381,
+          "y": 295.771789893937,
+          "r": 75.9375
+        }
+      ],
+      "moving": false,
+      "facing": 1,
+      "visualFacing": 1,
+      "destinationX": 390,
+      "destinationY": 600,
+      "actionNavigation": null,
+      "actionRevision": null,
+      "objectRevision": 2,
+      "continuous": true,
+      "groundQuad": [
+        {
+          "x": 315,
+          "y": 522.198275862069
+        },
+        {
+          "x": 355,
+          "y": 522.198275862069
+        },
+        {
+          "x": 315,
+          "y": 555
+        }
+      ],
+      "groundGrip": {
+        "x": 335,
+        "y": 523.8383620689655
+      },
+      "hand": {
+        "x": 408.49254206772014,
+        "y": 344.69410372293396
+      },
+      "heldGrip": {
+        "x": 408.49254206772014,
+        "y": 344.69410372293396
+      },
+      "heldQuad": [
+        {
+          "x": 388.46116654054964,
+          "y": 343.0576101010664
+        },
+        {
+          "x": 428.52391710822224,
+          "y": 343.057615956774
+        },
+        {
+          "x": 388.4611714072329,
+          "y": 375.78742398134125
+        }
+      ],
+      "feet": [
+        {
+          "x": 370.0281142391874,
+          "y": 385.00016575132
+        },
+        {
+          "x": 392.3732804771695,
+          "y": 384.99942996348614
+        }
+      ],
+      "gazeOrigin": {
+        "x": 391.65835823132346,
+        "y": 287.5632801679408
+      },
+      "renderedFace": "surprised",
+      "gesture": null,
+      "posture": {
+        "bodyY": 8.445463412970087e-7,
+        "waist": 0,
+        "plantWeight": 0
+      },
+      "pose": {
+        "drop": 0,
+        "propAngle": 0,
+        "look": [
+          5.4999999999994245,
+          -1.0311479405540551
+        ],
+        "plant": false,
+        "plantWeight": 1,
+        "hands": {
+          "original": 1,
+          "reach": 0,
+          "grip": 0,
+          "release": 0
+        },
+        "handArt": true
+      },
+      "sit": 0,
+      "handArt": {
+        "enabled": true,
+        "baseline": false,
+        "weights": {
+          "original": 1,
+          "reach": 0,
+          "grip": 0,
+          "release": 0
+        },
+        "wrist": {
+          "x": 407.42669097029557,
+          "y": 338.4130961457412
+        },
+        "wristError": 0,
+        "contactError": 0,
+        "renderMode": "continuous-mesh",
+        "closure": 0.25,
+        "surfaceAlpha": 1,
+        "layers": {
+          "palm": 5.02,
+          "prop": 5.05,
+          "fingers": 5.2
+        },
+        "frontWeight": 1,
+        "externalProp": true
+      },
+      "contact": {
+        "distance": 193.63320747724364,
+        "groundDistance": 224.97389191665323
+      },
+      "bindingError": 0,
+      "propMirror": 1,
+      "activeTime": 5.000300000000005,
+      "speed": 1,
+      "sequence": 264
+    }
+  ],
+  "milestones": [
+    {
+      "label": "01-quiet-observes-shell",
+      "frame": {
+        "phase": "idle",
+        "suspended": null,
+        "elapsed": 0.45100000000000007,
+        "coordination": {
+          "phase": "personal-dwell",
+          "suspended": null,
+          "reason": null,
+          "life": null,
+          "sessions": [],
+          "focus": null,
+          "interaction": null,
+          "occupied": false,
+          "admission": 0,
+          "navigation": null,
+          "serial": 0,
+          "elapsed": 0.01669999999999982,
+          "lastAt": 4843.599999904633,
+          "revision": 1,
+          "personality": {
+            "id": "quiet",
+            "version": 1,
+            "overrides": {},
+            "seed": 7,
+            "ordinal": 1,
+            "enabled": true,
+            "permissions": {
+              "mode": "quiet",
+              "roam": true,
+              "input": "idle",
+              "occupied": false
+            },
+            "decision": {
+              "ordinal": 1,
+              "personality": "quiet",
+              "version": 1,
+              "strategy": 2,
+              "parameters": {
+                "id": "quiet",
+                "version": 1,
+                "label": "安静",
+                "dwellMin": 18,
+                "dwellMax": 26,
+                "explore": 0.2
+              },
+              "samples": [
+                0.23878083983436227,
+                0.9134932646993548,
+                0.6124916663393378
+              ],
+              "seed": 7,
+              "kind": "stay",
+              "reason": "observe-here",
+              "origin": {
+                "x": 240,
+                "y": 555
+              },
+              "revision": 1,
+              "attention": "consider",
+              "interestId": "o03-shell",
+              "interestKey": "[\"o03-shell\",\"shell\",335,537]",
+              "interestLabel": "贝壳",
+              "interestKind": "shell",
+              "focus": {
+                "x": 335,
+                "y": 537
+              },
+              "result": "pending",
+              "duration": 25.307946117594838,
+              "candidates": [
+                {
+                  "x": 195,
+                  "y": 555
+                },
+                {
+                  "x": 370,
+                  "y": 420
+                },
+                {
+                  "x": 331,
+                  "y": 450
+                }
+              ],
+              "target": null,
+              "alternatives": [
+                {
+                  "id": "o03-shell",
+                  "score": 4.91,
+                  "reachable": true
+                },
+                {
+                  "id": "home",
+                  "score": 2.625166703720174,
+                  "reachable": true
+                },
+                {
+                  "id": "planter",
+                  "score": 1.722107934622091,
+                  "reachable": true
+                }
+              ]
+            },
+            "history": [
+              {
+                "ordinal": 1,
+                "personality": "quiet",
+                "version": 1,
+                "strategy": 2,
+                "parameters": {
+                  "id": "quiet",
+                  "version": 1,
+                  "label": "安静",
+                  "dwellMin": 18,
+                  "dwellMax": 26,
+                  "explore": 0.2
+                },
+                "samples": [
+                  0.23878083983436227,
+                  0.9134932646993548,
+                  0.6124916663393378
+                ],
+                "seed": 7,
+                "kind": "stay",
+                "reason": "observe-here",
+                "origin": {
+                  "x": 240,
+                  "y": 555
+                },
+                "revision": 1,
+                "attention": "consider",
+                "interestId": "o03-shell",
+                "interestKey": "[\"o03-shell\",\"shell\",335,537]",
+                "interestLabel": "贝壳",
+                "interestKind": "shell",
+                "focus": {
+                  "x": 335,
+                  "y": 537
+                },
+                "result": "pending",
+                "duration": 25.307946117594838,
+                "candidates": [
+                  {
+                    "x": 195,
+                    "y": 555
+                  },
+                  {
+                    "x": 370,
+                    "y": 420
+                  },
+                  {
+                    "x": 331,
+                    "y": 450
+                  }
+                ],
+                "target": null,
+                "alternatives": [
+                  {
+                    "id": "o03-shell",
+                    "score": 4.91,
+                    "reachable": true
+                  },
+                  {
+                    "id": "home",
+                    "score": 2.625166703720174,
+                    "reachable": true
+                  },
+                  {
+                    "id": "planter",
+                    "score": 1.722107934622091,
+                    "reachable": true
+                  }
+                ]
+              }
+            ],
+            "observations": [],
+            "clock": 2.4666999999999977,
+            "fallback": false
+          },
+          "observed": 0.01669999999999982,
+          "workRest": null
+        },
+        "personalityPerformance": {
+          "active": true,
+          "expression": "thinking",
+          "look": [
+            3.4331700281272584,
+            2.677277216905835
+          ],
+          "attention": "consider",
+          "focus": {
+            "x": 335,
+            "y": 537
+          },
+          "label": "静静细看贝壳"
+        },
+        "performance": {
+          "kind": "idle",
+          "expression": "neutral",
+          "label": "歇一会儿",
+          "age": 3.1834999999999973,
+          "cue": null,
+          "look": [
+            0.6148176362812878,
+            0.35132436358930735
+          ],
+          "armNear": 5.756621817946536,
+          "armFar": -2,
+          "gaze": 0,
+          "arms": [
+            5.852853534307352,
+            -2
+          ]
+        },
+        "owner": "ground",
+        "renderedOwner": "ground",
+        "generation": 2,
+        "walkId": null,
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "error": null,
+        "inspection": null,
+        "loop": false,
+        "bodyX": 240,
+        "bodyY": 555,
+        "navigation": {
+          "x": 240,
+          "y": 555,
+          "speed": 0,
+          "facing": 1,
+          "phase": "idle",
+          "id": null,
+          "generation": 0,
+          "revision": 0,
+          "plan": null
+        },
+        "bubble": {
+          "x": 240,
+          "y": 385.01288184691555
+        },
+        "hit": [
+          {
+            "x": 240,
+            "y": 463.57531598282867,
+            "r": 75.9375
+          }
+        ],
+        "moving": false,
+        "facing": 1,
+        "visualFacing": 1,
+        "destinationX": 390,
+        "destinationY": 600,
+        "actionNavigation": null,
+        "actionRevision": 1,
+        "objectRevision": 2,
+        "continuous": true,
+        "groundQuad": [
+          {
+            "x": 315,
+            "y": 522.198275862069
+          },
+          {
+            "x": 355,
+            "y": 522.198275862069
+          },
+          {
+            "x": 315,
+            "y": 555
+          }
+        ],
+        "groundGrip": {
+          "x": 335,
+          "y": 523.8383620689655
+        },
+        "hand": {
+          "x": 267.37079241070546,
+          "y": 514.4523729170289
+        },
+        "heldGrip": {
+          "x": 267.37079241070546,
+          "y": 514.4523729170289
+        },
+        "heldQuad": [
+          {
+            "x": 247.4301896631024,
+            "y": 512.8060009233527
+          },
+          {
+            "x": 287.3113951583084,
+            "y": 512.8060009233527
+          },
+          {
+            "x": 247.4301896631024,
+            "y": 545.733440796876
+          }
+        ],
+        "feet": [
+          {
+            "x": 229.10569669921335,
+            "y": 554.9971923194902
+          },
+          {
+            "x": 251.35121655114602,
+            "y": 554.997191055691
+          }
+        ],
+        "gazeOrigin": {
+          "x": 246.83051899776171,
+          "y": 456.9279000507983
+        },
+        "renderedFace": "thinking",
+        "gesture": null,
+        "posture": {
+          "bodyY": 0.003097629091596274,
+          "waist": 0,
+          "plantWeight": 0
+        },
+        "pose": {
+          "drop": 0,
+          "propAngle": 0,
+          "look": [
+            3.4331700281272584,
+            2.677277216905835
+          ],
+          "plant": false,
+          "plantWeight": 1,
+          "hands": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "handArt": true
+        },
+        "sit": 0.0005018620151129727,
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 266.30920115502346,
+            "y": 508.1335373436784
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "contact": {
+          "distance": 68.27742314642641,
+          "groundDistance": 134.0998956066874
+        },
+        "bindingError": 0,
+        "propMirror": 1,
+        "activeTime": 3.333399999999998,
+        "speed": 1,
+        "sequence": 147
+      }
+    },
+    {
+      "label": "02-lively-observes-plant",
+      "frame": {
+        "phase": "idle",
+        "suspended": null,
+        "elapsed": 7.482500000000027,
+        "coordination": {
+          "phase": "personal-dwell",
+          "suspended": null,
+          "reason": null,
+          "life": null,
+          "sessions": [],
+          "focus": null,
+          "interaction": null,
+          "occupied": false,
+          "admission": 0,
+          "navigation": null,
+          "serial": 1,
+          "elapsed": 2.5156999999999976,
+          "lastAt": 8813,
+          "revision": 1,
+          "personality": {
+            "id": "lively",
+            "version": 1,
+            "overrides": {},
+            "seed": 7,
+            "ordinal": 1,
+            "enabled": true,
+            "permissions": {
+              "mode": "quiet",
+              "roam": true,
+              "input": "idle",
+              "occupied": false
+            },
+            "decision": {
+              "ordinal": 1,
+              "personality": "lively",
+              "version": 1,
+              "strategy": 2,
+              "parameters": {
+                "id": "lively",
+                "version": 1,
+                "label": "活泼",
+                "dwellMin": 6,
+                "dwellMax": 10,
+                "explore": 0.85
+              },
+              "samples": [
+                0.23878083983436227,
+                0.9134932646993548,
+                0.6124916663393378
+              ],
+              "seed": 7,
+              "kind": "explore",
+              "reason": "inspect-object",
+              "origin": {
+                "x": 240,
+                "y": 555
+              },
+              "revision": 1,
+              "attention": "investigate",
+              "interestId": "planter",
+              "interestKey": "[\"planter\",\"plant\",541,256.75]",
+              "interestLabel": "花箱",
+              "interestKind": "plant",
+              "focus": {
+                "x": 541,
+                "y": 256.75
+              },
+              "result": "observed",
+              "duration": 9.653973058797419,
+              "candidates": [
+                {
+                  "x": 381,
+                  "y": 385
+                },
+                {
+                  "x": 235,
+                  "y": 555
+                },
+                {
+                  "x": 370,
+                  "y": 420
+                }
+              ],
+              "target": {
+                "x": 381,
+                "y": 385
+              },
+              "alternatives": [
+                {
+                  "id": "planter",
+                  "score": 4.558271576644653,
+                  "reachable": true
+                },
+                {
+                  "id": "o03-shell",
+                  "score": 2.99,
+                  "reachable": true
+                },
+                {
+                  "id": "home",
+                  "score": 0.6251667037201738,
+                  "reachable": true
+                }
+              ]
+            },
+            "history": [
+              {
+                "ordinal": 1,
+                "personality": "lively",
+                "version": 1,
+                "strategy": 2,
+                "parameters": {
+                  "id": "lively",
+                  "version": 1,
+                  "label": "活泼",
+                  "dwellMin": 6,
+                  "dwellMax": 10,
+                  "explore": 0.85
+                },
+                "samples": [
+                  0.23878083983436227,
+                  0.9134932646993548,
+                  0.6124916663393378
+                ],
+                "seed": 7,
+                "kind": "explore",
+                "reason": "inspect-object",
+                "origin": {
+                  "x": 240,
+                  "y": 555
+                },
+                "revision": 1,
+                "attention": "investigate",
+                "interestId": "planter",
+                "interestKey": "[\"planter\",\"plant\",541,256.75]",
+                "interestLabel": "花箱",
+                "interestKind": "plant",
+                "focus": {
+                  "x": 541,
+                  "y": 256.75
+                },
+                "result": "observed",
+                "duration": 9.653973058797419,
+                "candidates": [
+                  {
+                    "x": 381,
+                    "y": 385
+                  },
+                  {
+                    "x": 235,
+                    "y": 555
+                  },
+                  {
+                    "x": 370,
+                    "y": 420
+                  }
+                ],
+                "target": {
+                  "x": 381,
+                  "y": 385
+                },
+                "alternatives": [
+                  {
+                    "id": "planter",
+                    "score": 4.558271576644653,
+                    "reachable": true
+                  },
+                  {
+                    "id": "o03-shell",
+                    "score": 2.99,
+                    "reachable": true
+                  },
+                  {
+                    "id": "home",
+                    "score": 0.6251667037201738,
+                    "reachable": true
+                  }
+                ]
+              }
+            ],
+            "observations": [
+              {
+                "id": "planter",
+                "key": "[\"planter\",\"plant\",541,256.75]",
+                "at": 7.232400000000024
+              }
+            ],
+            "clock": 7.232400000000024,
+            "fallback": false
+          },
+          "observed": 2.5156999999999976,
+          "workRest": null
+        },
+        "personalityPerformance": {
+          "active": true,
+          "expression": "happy",
+          "look": [
+            5.499999999999998,
+            -0.7541832228477068
+          ],
+          "attention": "investigate",
+          "focus": {
+            "x": 541,
+            "y": 265.9794367169106
+          },
+          "label": "看过花箱，再留意一会儿"
+        },
+        "performance": {
+          "kind": "idle",
+          "expression": "neutral",
+          "label": "歇一会儿",
+          "age": 7.349100000000024,
+          "cue": null,
+          "look": [
+            -1.7815834933966572,
+            -0.3991675674455072
+          ],
+          "armNear": 2.004162162772464,
+          "armFar": -0.10467956185771543,
+          "gaze": 0,
+          "arms": [
+            2.030343406237126,
+            -1.0473352071712627
+          ]
+        },
+        "owner": "ground",
+        "renderedOwner": "ground",
+        "generation": 2,
+        "walkId": null,
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "error": null,
+        "inspection": null,
+        "loop": false,
+        "bodyX": 381,
+        "bodyY": 385,
+        "navigation": {
+          "x": 381,
+          "y": 385,
+          "speed": 0,
+          "facing": 1,
+          "phase": "idle",
+          "id": null,
+          "generation": 1,
+          "revision": 1,
+          "plan": null
+        },
+        "bubble": {
+          "x": 381,
+          "y": 219.73947920234423
+        },
+        "hit": [
+          {
+            "x": 381,
+            "y": 296.1203921760507,
+            "r": 75.9375
+          }
+        ],
+        "moving": true,
+        "facing": 1,
+        "visualFacing": 1,
+        "destinationX": 390,
+        "destinationY": 600,
+        "actionNavigation": null,
+        "actionRevision": null,
+        "objectRevision": 2,
+        "continuous": true,
+        "groundQuad": [
+          {
+            "x": 315,
+            "y": 522.198275862069
+          },
+          {
+            "x": 355,
+            "y": 522.198275862069
+          },
+          {
+            "x": 315,
+            "y": 555
+          }
+        ],
+        "groundGrip": {
+          "x": 335,
+          "y": 523.8383620689655
+        },
+        "hand": {
+          "x": 408.5512894228305,
+          "y": 344.71673376863953
+        },
+        "heldGrip": {
+          "x": 408.5512894228305,
+          "y": 344.71673376863953
+        },
+        "heldQuad": [
+          {
+            "x": 388.5066359869959,
+            "y": 343.0818762229662
+          },
+          {
+            "x": 428.5959428585849,
+            "y": 343.081876223926
+          },
+          {
+            "x": 388.50663598779835,
+            "y": 375.7790271268363
+          }
+        ],
+        "feet": [
+          {
+            "x": 370.02086190764805,
+            "y": 385.0000000186811
+          },
+          {
+            "x": 392.38082941413177,
+            "y": 384.9999999806355
+          }
+        ],
+        "gazeOrigin": {
+          "x": 392.452201369108,
+          "y": 287.94636350469875
+        },
+        "renderedFace": "happy",
+        "gesture": {
+          "kind": "nod",
+          "k": 0.02257142857142799
+        },
+        "posture": {
+          "bodyY": 3.371897074874032e-24,
+          "waist": 0,
+          "plantWeight": 0
+        },
+        "pose": {
+          "drop": 0,
+          "propAngle": 0,
+          "look": [
+            5.499999999999998,
+            -0.7541832228477068
+          ],
+          "plant": false,
+          "plantWeight": 1,
+          "hands": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "handArt": true
+        },
+        "sit": 0,
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 407.47275140345056,
+            "y": 338.44402074358146
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "contact": {
+          "distance": 193.63457826721213,
+          "groundDistance": 224.98709966400833
+        },
+        "bindingError": 0,
+        "propMirror": 1,
+        "activeTime": 7.482500000000027,
+        "speed": 1,
+        "sequence": 390
+      }
+    },
+    {
+      "label": "03-live-switch",
+      "frame": {
+        "phase": "idle",
+        "suspended": null,
+        "elapsed": 9.40010000000001,
+        "coordination": {
+          "phase": "personal-align",
+          "suspended": null,
+          "reason": null,
+          "life": null,
+          "sessions": [],
+          "focus": null,
+          "interaction": null,
+          "occupied": false,
+          "admission": 0,
+          "navigation": null,
+          "serial": 2,
+          "elapsed": 0,
+          "lastAt": 10914.099999904633,
+          "revision": 1,
+          "personality": {
+            "id": "quiet",
+            "version": 1,
+            "overrides": {},
+            "seed": 7,
+            "ordinal": 4,
+            "enabled": true,
+            "permissions": {
+              "mode": "quiet",
+              "roam": true,
+              "input": "idle",
+              "occupied": false
+            },
+            "decision": {
+              "ordinal": 4,
+              "personality": "quiet",
+              "version": 1,
+              "strategy": 2,
+              "parameters": {
+                "id": "quiet",
+                "version": 1,
+                "label": "安静",
+                "dwellMin": 18,
+                "dwellMax": 26,
+                "explore": 0.2
+              },
+              "samples": [
+                0.5333991644438356,
+                0.480263848323375,
+                0.41819843859411776
+              ],
+              "seed": 7,
+              "kind": "stay",
+              "reason": "observe-here",
+              "origin": {
+                "x": 381.12085425307777,
+                "y": 385.38046709302273
+              },
+              "revision": 1,
+              "attention": "consider",
+              "interestId": "o03-shell",
+              "interestKey": "[\"o03-shell\",\"shell\",335,537]",
+              "interestLabel": "贝壳",
+              "interestKind": "shell",
+              "focus": {
+                "x": 335,
+                "y": 537
+              },
+              "result": "pending",
+              "duration": 21.842110786587,
+              "candidates": [
+                {
+                  "x": 475,
+                  "y": 555
+                },
+                {
+                  "x": 370,
+                  "y": 420
+                }
+              ],
+              "target": null,
+              "alternatives": [
+                {
+                  "id": "o03-shell",
+                  "score": 4.612267721489412,
+                  "reachable": true
+                },
+                {
+                  "id": "home",
+                  "score": 2.9272762636269154,
+                  "reachable": true
+                }
+              ]
+            },
+            "history": [
+              {
+                "ordinal": 1,
+                "personality": "lively",
+                "version": 1,
+                "strategy": 2,
+                "parameters": {
+                  "id": "lively",
+                  "version": 1,
+                  "label": "活泼",
+                  "dwellMin": 6,
+                  "dwellMax": 10,
+                  "explore": 0.85
+                },
+                "samples": [
+                  0.23878083983436227,
+                  0.9134932646993548,
+                  0.6124916663393378
+                ],
+                "seed": 7,
+                "kind": "explore",
+                "reason": "inspect-object",
+                "origin": {
+                  "x": 240,
+                  "y": 555
+                },
+                "revision": 1,
+                "attention": "investigate",
+                "interestId": "planter",
+                "interestKey": "[\"planter\",\"plant\",541,256.75]",
+                "interestLabel": "花箱",
+                "interestKind": "plant",
+                "focus": {
+                  "x": 541,
+                  "y": 256.75
+                },
+                "result": "observed",
+                "duration": 9.653973058797419,
+                "candidates": [
+                  {
+                    "x": 381,
+                    "y": 385
+                  },
+                  {
+                    "x": 235,
+                    "y": 555
+                  },
+                  {
+                    "x": 370,
+                    "y": 420
+                  }
+                ],
+                "target": {
+                  "x": 381,
+                  "y": 385
+                },
+                "alternatives": [
+                  {
+                    "id": "planter",
+                    "score": 4.558271576644653,
+                    "reachable": true
+                  },
+                  {
+                    "id": "o03-shell",
+                    "score": 2.99,
+                    "reachable": true
+                  },
+                  {
+                    "id": "home",
+                    "score": 0.6251667037201738,
+                    "reachable": true
+                  }
+                ]
+              },
+              {
+                "ordinal": 2,
+                "personality": "quiet",
+                "version": 1,
+                "strategy": 2,
+                "parameters": {
+                  "id": "quiet",
+                  "version": 1,
+                  "label": "安静",
+                  "dwellMin": 18,
+                  "dwellMax": 26,
+                  "explore": 0.2
+                },
+                "samples": [
+                  0.47969271591864526,
+                  0.7540324558503926,
+                  0.10964234755374491
+                ],
+                "seed": 7,
+                "kind": "stay",
+                "reason": "observe-here",
+                "origin": {
+                  "x": 381,
+                  "y": 385
+                },
+                "revision": 1,
+                "attention": "consider",
+                "interestId": "o03-shell",
+                "interestKey": "[\"o03-shell\",\"shell\",335,537]",
+                "interestLabel": "贝壳",
+                "interestKind": "shell",
+                "focus": {
+                  "x": 335,
+                  "y": 537
+                },
+                "result": "pending",
+                "duration": 24.03225964680314,
+                "candidates": [
+                  {
+                    "x": 475,
+                    "y": 555
+                  },
+                  {
+                    "x": 370,
+                    "y": 420
+                  }
+                ],
+                "target": null,
+                "alternatives": [
+                  {
+                    "id": "o03-shell",
+                    "score": 4.611484878029182,
+                    "reachable": true
+                  },
+                  {
+                    "id": "home",
+                    "score": 2.9266242546886234,
+                    "reachable": true
+                  }
+                ]
+              },
+              {
+                "ordinal": 3,
+                "personality": "lively",
+                "version": 1,
+                "strategy": 2,
+                "parameters": {
+                  "id": "lively",
+                  "version": 1,
+                  "label": "活泼",
+                  "dwellMin": 6,
+                  "dwellMax": 10,
+                  "explore": 0.85
+                },
+                "samples": [
+                  0.28772356640547514,
+                  0.3054390463512391,
+                  0.16469576908275485
+                ],
+                "seed": 7,
+                "kind": "explore",
+                "reason": "inspect-object",
+                "origin": {
+                  "x": 381,
+                  "y": 385
+                },
+                "revision": 1,
+                "attention": "investigate",
+                "interestId": "o03-shell",
+                "interestKey": "[\"o03-shell\",\"shell\",335,537]",
+                "interestLabel": "贝壳",
+                "interestKind": "shell",
+                "focus": {
+                  "x": 335,
+                  "y": 537
+                },
+                "result": "pending",
+                "duration": 7.221756185404956,
+                "candidates": [
+                  {
+                    "x": 435,
+                    "y": 555
+                  },
+                  {
+                    "x": 370,
+                    "y": 420
+                  }
+                ],
+                "target": {
+                  "x": 435,
+                  "y": 555
+                },
+                "alternatives": [
+                  {
+                    "id": "o03-shell",
+                    "score": 2.643259197735947,
+                    "reachable": true
+                  },
+                  {
+                    "id": "home",
+                    "score": 0.9266242546886234,
+                    "reachable": true
+                  }
+                ]
+              },
+              {
+                "ordinal": 4,
+                "personality": "quiet",
+                "version": 1,
+                "strategy": 2,
+                "parameters": {
+                  "id": "quiet",
+                  "version": 1,
+                  "label": "安静",
+                  "dwellMin": 18,
+                  "dwellMax": 26,
+                  "explore": 0.2
+                },
+                "samples": [
+                  0.5333991644438356,
+                  0.480263848323375,
+                  0.41819843859411776
+                ],
+                "seed": 7,
+                "kind": "stay",
+                "reason": "observe-here",
+                "origin": {
+                  "x": 381.12085425307777,
+                  "y": 385.38046709302273
+                },
+                "revision": 1,
+                "attention": "consider",
+                "interestId": "o03-shell",
+                "interestKey": "[\"o03-shell\",\"shell\",335,537]",
+                "interestLabel": "贝壳",
+                "interestKind": "shell",
+                "focus": {
+                  "x": 335,
+                  "y": 537
+                },
+                "result": "pending",
+                "duration": 21.842110786587,
+                "candidates": [
+                  {
+                    "x": 475,
+                    "y": 555
+                  },
+                  {
+                    "x": 370,
+                    "y": 420
+                  }
+                ],
+                "target": null,
+                "alternatives": [
+                  {
+                    "id": "o03-shell",
+                    "score": 4.612267721489412,
+                    "reachable": true
+                  },
+                  {
+                    "id": "home",
+                    "score": 2.9272762636269154,
+                    "reachable": true
+                  }
+                ]
+              }
+            ],
+            "observations": [
+              {
+                "id": "planter",
+                "key": "[\"planter\",\"plant\",541,256.75]",
+                "at": 7.232400000000024
+              }
+            ],
+            "clock": 9.150000000000016,
+            "fallback": false
+          },
+          "observed": 0,
+          "workRest": null
+        },
+        "personalityPerformance": {
+          "active": true,
+          "expression": "thinking",
+          "look": [
+            -1.5055945115037608,
+            3.3164532949170313
+          ],
+          "attention": "consider",
+          "focus": {
+            "x": 335,
+            "y": 537
+          },
+          "label": "转向贝壳"
+        },
+        "performance": {
+          "kind": "idle",
+          "expression": "neutral",
+          "label": "歇一会儿",
+          "age": 9.266700000000014,
+          "cue": null,
+          "look": [
+            -4.092410220258409,
+            -0.10276662350020915
+          ],
+          "armNear": 3.4861668824989542,
+          "armFar": 4.846995100982825,
+          "gaze": 0,
+          "arms": [
+            3.217251124277362,
+            4.876867377245624
+          ]
+        },
+        "owner": "ground",
+        "renderedOwner": "ground",
+        "generation": 2,
+        "walkId": null,
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "error": null,
+        "inspection": null,
+        "loop": false,
+        "bodyX": 381.12085425307777,
+        "bodyY": 385.38046709302273,
+        "navigation": {
+          "x": 381.12085425307777,
+          "y": 385.38046709302273,
+          "speed": 0,
+          "facing": 1,
+          "phase": "idle",
+          "id": null,
+          "generation": 1,
+          "revision": 1,
+          "plan": null
+        },
+        "bubble": {
+          "x": 381.12085425307777,
+          "y": 219.48186779890477
+        },
+        "hit": [
+          {
+            "x": 381.12085425307777,
+            "y": 296.15643542299927,
+            "r": 75.9375
+          }
+        ],
+        "moving": true,
+        "facing": -1,
+        "visualFacing": 0.5529639817397949,
+        "destinationX": 390,
+        "destinationY": 600,
+        "actionNavigation": null,
+        "actionRevision": null,
+        "objectRevision": 2,
+        "continuous": true,
+        "groundQuad": [
+          {
+            "x": 315,
+            "y": 522.198275862069
+          },
+          {
+            "x": 355,
+            "y": 522.198275862069
+          },
+          {
+            "x": 315,
+            "y": 555
+          }
+        ],
+        "groundGrip": {
+          "x": 335,
+          "y": 523.8383620689655
+        },
+        "hand": {
+          "x": 396.30215885708094,
+          "y": 345.0975691826363
+        },
+        "heldGrip": {
+          "x": 396.30215885708094,
+          "y": 345.0975691826363
+        },
+        "heldQuad": [
+          {
+            "x": 407.3794724688911,
+            "y": 343.46101813422894
+          },
+          {
+            "x": 385.22484558863704,
+            "y": 343.46102560512475
+          },
+          {
+            "x": 407.3794690352284,
+            "y": 376.1919643934187
+          }
+        ],
+        "feet": [
+          {
+            "x": 375.02261470915096,
+            "y": 385.40000098243326
+          },
+          {
+            "x": 387.39943785085444,
+            "y": 385.2497893192562
+          }
+        ],
+        "gazeOrigin": {
+          "x": 384.4717582153761,
+          "y": 287.7800847804736
+        },
+        "renderedFace": "thinking",
+        "gesture": null,
+        "posture": {
+          "bodyY": 0.0033491853360613894,
+          "waist": 0,
+          "plantWeight": 0
+        },
+        "pose": {
+          "drop": 0,
+          "propAngle": 0,
+          "look": [
+            -1.5055945115037608,
+            3.3164532949170313
+          ],
+          "plant": false,
+          "plantWeight": 1,
+          "hands": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "handArt": true
+        },
+        "sit": 0,
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 395.71345758945625,
+            "y": 338.81612816121196
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "contact": {
+          "distance": 188.96091056663656,
+          "groundDistance": 223.8967448094995
+        },
+        "bindingError": 0,
+        "propMirror": 1,
+        "activeTime": 9.40010000000001,
+        "speed": 1,
+        "sequence": 485
+      }
+    },
+    {
+      "label": "04-reduced-stationary",
+      "frame": {
+        "phase": "idle",
+        "suspended": null,
+        "elapsed": 0.39999999999999997,
+        "coordination": {
+          "phase": "personal-dwell",
+          "suspended": null,
+          "reason": null,
+          "life": null,
+          "sessions": [],
+          "focus": null,
+          "interaction": null,
+          "occupied": false,
+          "admission": 0,
+          "navigation": null,
+          "serial": 2,
+          "elapsed": 0,
+          "lastAt": 15564.200000047684,
+          "revision": 1,
+          "personality": {
+            "id": "quiet",
+            "version": 1,
+            "overrides": {},
+            "seed": 7,
+            "ordinal": 6,
+            "enabled": true,
+            "permissions": {
+              "mode": "quiet",
+              "roam": true,
+              "input": "idle",
+              "occupied": false
+            },
+            "decision": {
+              "ordinal": 6,
+              "personality": "quiet",
+              "version": 1,
+              "strategy": 2,
+              "parameters": {
+                "id": "quiet",
+                "version": 1,
+                "label": "安静",
+                "dwellMin": 18,
+                "dwellMax": 26,
+                "explore": 0.2
+              },
+              "samples": [
+                0.0907087700907141,
+                0.2516032187268138,
+                0.08371922257356346
+              ],
+              "seed": 7,
+              "kind": "stay",
+              "reason": "reduced-motion",
+              "origin": {
+                "x": 381.12085425307777,
+                "y": 385.38046709302273
+              },
+              "revision": 1,
+              "attention": "consider",
+              "interestId": null,
+              "interestKey": null,
+              "interestLabel": null,
+              "interestKind": null,
+              "focus": null,
+              "result": "pending",
+              "duration": 20.01282574981451,
+              "candidates": [],
+              "target": null,
+              "alternatives": [
+                {
+                  "id": "o03-shell",
+                  "score": 5,
+                  "reachable": false
+                },
+                {
+                  "id": "home",
+                  "score": 3,
+                  "reachable": false
+                }
+              ]
+            },
+            "history": [
+              {
+                "ordinal": 1,
+                "personality": "lively",
+                "version": 1,
+                "strategy": 2,
+                "parameters": {
+                  "id": "lively",
+                  "version": 1,
+                  "label": "活泼",
+                  "dwellMin": 6,
+                  "dwellMax": 10,
+                  "explore": 0.85
+                },
+                "samples": [
+                  0.23878083983436227,
+                  0.9134932646993548,
+                  0.6124916663393378
+                ],
+                "seed": 7,
+                "kind": "explore",
+                "reason": "inspect-object",
+                "origin": {
+                  "x": 240,
+                  "y": 555
+                },
+                "revision": 1,
+                "attention": "investigate",
+                "interestId": "planter",
+                "interestKey": "[\"planter\",\"plant\",541,256.75]",
+                "interestLabel": "花箱",
+                "interestKind": "plant",
+                "focus": {
+                  "x": 541,
+                  "y": 256.75
+                },
+                "result": "observed",
+                "duration": 9.653973058797419,
+                "candidates": [
+                  {
+                    "x": 381,
+                    "y": 385
+                  },
+                  {
+                    "x": 235,
+                    "y": 555
+                  },
+                  {
+                    "x": 370,
+                    "y": 420
+                  }
+                ],
+                "target": {
+                  "x": 381,
+                  "y": 385
+                },
+                "alternatives": [
+                  {
+                    "id": "planter",
+                    "score": 4.558271576644653,
+                    "reachable": true
+                  },
+                  {
+                    "id": "o03-shell",
+                    "score": 2.99,
+                    "reachable": true
+                  },
+                  {
+                    "id": "home",
+                    "score": 0.6251667037201738,
+                    "reachable": true
+                  }
+                ]
+              },
+              {
+                "ordinal": 2,
+                "personality": "quiet",
+                "version": 1,
+                "strategy": 2,
+                "parameters": {
+                  "id": "quiet",
+                  "version": 1,
+                  "label": "安静",
+                  "dwellMin": 18,
+                  "dwellMax": 26,
+                  "explore": 0.2
+                },
+                "samples": [
+                  0.47969271591864526,
+                  0.7540324558503926,
+                  0.10964234755374491
+                ],
+                "seed": 7,
+                "kind": "stay",
+                "reason": "observe-here",
+                "origin": {
+                  "x": 381,
+                  "y": 385
+                },
+                "revision": 1,
+                "attention": "consider",
+                "interestId": "o03-shell",
+                "interestKey": "[\"o03-shell\",\"shell\",335,537]",
+                "interestLabel": "贝壳",
+                "interestKind": "shell",
+                "focus": {
+                  "x": 335,
+                  "y": 537
+                },
+                "result": "pending",
+                "duration": 24.03225964680314,
+                "candidates": [
+                  {
+                    "x": 475,
+                    "y": 555
+                  },
+                  {
+                    "x": 370,
+                    "y": 420
+                  }
+                ],
+                "target": null,
+                "alternatives": [
+                  {
+                    "id": "o03-shell",
+                    "score": 4.611484878029182,
+                    "reachable": true
+                  },
+                  {
+                    "id": "home",
+                    "score": 2.9266242546886234,
+                    "reachable": true
+                  }
+                ]
+              },
+              {
+                "ordinal": 3,
+                "personality": "lively",
+                "version": 1,
+                "strategy": 2,
+                "parameters": {
+                  "id": "lively",
+                  "version": 1,
+                  "label": "活泼",
+                  "dwellMin": 6,
+                  "dwellMax": 10,
+                  "explore": 0.85
+                },
+                "samples": [
+                  0.28772356640547514,
+                  0.3054390463512391,
+                  0.16469576908275485
+                ],
+                "seed": 7,
+                "kind": "explore",
+                "reason": "inspect-object",
+                "origin": {
+                  "x": 381,
+                  "y": 385
+                },
+                "revision": 1,
+                "attention": "investigate",
+                "interestId": "o03-shell",
+                "interestKey": "[\"o03-shell\",\"shell\",335,537]",
+                "interestLabel": "贝壳",
+                "interestKind": "shell",
+                "focus": {
+                  "x": 335,
+                  "y": 537
+                },
+                "result": "pending",
+                "duration": 7.221756185404956,
+                "candidates": [
+                  {
+                    "x": 435,
+                    "y": 555
+                  },
+                  {
+                    "x": 370,
+                    "y": 420
+                  }
+                ],
+                "target": {
+                  "x": 435,
+                  "y": 555
+                },
+                "alternatives": [
+                  {
+                    "id": "o03-shell",
+                    "score": 2.643259197735947,
+                    "reachable": true
+                  },
+                  {
+                    "id": "home",
+                    "score": 0.9266242546886234,
+                    "reachable": true
+                  }
+                ]
+              },
+              {
+                "ordinal": 4,
+                "personality": "quiet",
+                "version": 1,
+                "strategy": 2,
+                "parameters": {
+                  "id": "quiet",
+                  "version": 1,
+                  "label": "安静",
+                  "dwellMin": 18,
+                  "dwellMax": 26,
+                  "explore": 0.2
+                },
+                "samples": [
+                  0.5333991644438356,
+                  0.480263848323375,
+                  0.41819843859411776
+                ],
+                "seed": 7,
+                "kind": "stay",
+                "reason": "observe-here",
+                "origin": {
+                  "x": 381.12085425307777,
+                  "y": 385.38046709302273
+                },
+                "revision": 1,
+                "attention": "consider",
+                "interestId": "o03-shell",
+                "interestKey": "[\"o03-shell\",\"shell\",335,537]",
+                "interestLabel": "贝壳",
+                "interestKind": "shell",
+                "focus": {
+                  "x": 335,
+                  "y": 537
+                },
+                "result": "pending",
+                "duration": 21.842110786587,
+                "candidates": [
+                  {
+                    "x": 475,
+                    "y": 555
+                  },
+                  {
+                    "x": 370,
+                    "y": 420
+                  }
+                ],
+                "target": null,
+                "alternatives": [
+                  {
+                    "id": "o03-shell",
+                    "score": 4.612267721489412,
+                    "reachable": true
+                  },
+                  {
+                    "id": "home",
+                    "score": 2.9272762636269154,
+                    "reachable": true
+                  }
+                ]
+              },
+              {
+                "ordinal": 5,
+                "personality": "quiet",
+                "version": 1,
+                "strategy": 2,
+                "parameters": {
+                  "id": "quiet",
+                  "version": 1,
+                  "label": "安静",
+                  "dwellMin": 18,
+                  "dwellMax": 26,
+                  "explore": 0.2
+                },
+                "samples": [
+                  0.9617586119566113,
+                  0.489635051228106,
+                  0.01971343602053821
+                ],
+                "seed": 7,
+                "kind": "stay",
+                "reason": "observe-here",
+                "origin": {
+                  "x": 381.12085425307777,
+                  "y": 385.38046709302273
+                },
+                "revision": 1,
+                "attention": "consider",
+                "interestId": "o03-shell",
+                "interestKey": "[\"o03-shell\",\"shell\",335,537]",
+                "interestLabel": "贝壳",
+                "interestKind": "shell",
+                "focus": {
+                  "x": 335,
+                  "y": 537
+                },
+                "result": "pending",
+                "duration": 21.917080409824848,
+                "candidates": [
+                  {
+                    "x": 475,
+                    "y": 555
+                  },
+                  {
+                    "x": 370,
+                    "y": 420
+                  }
+                ],
+                "target": null,
+                "alternatives": [
+                  {
+                    "id": "o03-shell",
+                    "score": 4.612267721489412,
+                    "reachable": true
+                  },
+                  {
+                    "id": "home",
+                    "score": 2.9272762636269154,
+                    "reachable": true
+                  }
+                ]
+              },
+              {
+                "ordinal": 6,
+                "personality": "quiet",
+                "version": 1,
+                "strategy": 2,
+                "parameters": {
+                  "id": "quiet",
+                  "version": 1,
+                  "label": "安静",
+                  "dwellMin": 18,
+                  "dwellMax": 26,
+                  "explore": 0.2
+                },
+                "samples": [
+                  0.0907087700907141,
+                  0.2516032187268138,
+                  0.08371922257356346
+                ],
+                "seed": 7,
+                "kind": "stay",
+                "reason": "reduced-motion",
+                "origin": {
+                  "x": 381.12085425307777,
+                  "y": 385.38046709302273
+                },
+                "revision": 1,
+                "attention": "consider",
+                "interestId": null,
+                "interestKey": null,
+                "interestLabel": null,
+                "interestKind": null,
+                "focus": null,
+                "result": "pending",
+                "duration": 20.01282574981451,
+                "candidates": [],
+                "target": null,
+                "alternatives": [
+                  {
+                    "id": "o03-shell",
+                    "score": 5,
+                    "reachable": false
+                  },
+                  {
+                    "id": "home",
+                    "score": 3,
+                    "reachable": false
+                  }
+                ]
+              }
+            ],
+            "observations": [
+              {
+                "id": "planter",
+                "key": "[\"planter\",\"plant\",541,256.75]",
+                "at": 7.232400000000024
+              }
+            ],
+            "clock": 11.964899999999991,
+            "fallback": false
+          },
+          "observed": 0,
+          "workRest": null
+        },
+        "personalityPerformance": {
+          "active": true,
+          "expression": "neutral",
+          "look": [
+            0.00003010116578329588,
+            0.00007676215590644306
+          ],
+          "attention": "consider",
+          "focus": null,
+          "label": "留在原地，看看周围"
+        },
+        "performance": {
+          "kind": "idle",
+          "expression": "neutral",
+          "label": "歇一会儿",
+          "age": 12.08159999999999,
+          "cue": null,
+          "look": [
+            0,
+            0
+          ],
+          "armNear": 4,
+          "armFar": -2,
+          "gaze": 0,
+          "arms": [
+            4.001888789800525,
+            -1.9932843258006605
+          ]
+        },
+        "owner": "ground",
+        "renderedOwner": "ground",
+        "generation": 2,
+        "walkId": null,
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "error": null,
+        "inspection": null,
+        "loop": false,
+        "bodyX": 381.12085425307777,
+        "bodyY": 385.38046709302273,
+        "navigation": {
+          "x": 381.12085425307777,
+          "y": 385.38046709302273,
+          "speed": 0,
+          "facing": 1,
+          "phase": "idle",
+          "id": null,
+          "generation": 1,
+          "revision": 1,
+          "plan": null
+        },
+        "bubble": {
+          "x": 381.12085425307777,
+          "y": 220.34805946928415
+        },
+        "hit": [
+          {
+            "x": 381.12085425307777,
+            "y": 296.62354198445746,
+            "r": 75.9375
+          }
+        ],
+        "moving": false,
+        "facing": -1,
+        "visualFacing": -0.9999999999999999,
+        "destinationX": 390,
+        "destinationY": 600,
+        "actionNavigation": null,
+        "actionRevision": 1,
+        "objectRevision": 2,
+        "continuous": true,
+        "groundQuad": [
+          {
+            "x": 315,
+            "y": 522.198275862069
+          },
+          {
+            "x": 355,
+            "y": 522.198275862069
+          },
+          {
+            "x": 315,
+            "y": 555
+          }
+        ],
+        "groundGrip": {
+          "x": 335,
+          "y": 523.8383620689655
+        },
+        "hand": {
+          "x": 353.57943692465597,
+          "y": 345.15199226061935
+        },
+        "heldGrip": {
+          "x": 353.57943692465597,
+          "y": 345.15199226061935
+        },
+        "heldQuad": [
+          {
+            "x": 333.5281002175928,
+            "y": 343.5178354698863
+          },
+          {
+            "x": 373.63077363176006,
+            "y": 343.517835469397
+          },
+          {
+            "x": 333.5281002171828,
+            "y": 376.20097128944064
+          }
+        ],
+        "feet": [
+          {
+            "x": 392.08282011207916,
+            "y": 385.3999939050626
+          },
+          {
+            "x": 369.71539736425933,
+            "y": 385.39999388759225
+          }
+        ],
+        "gazeOrigin": {
+          "x": 373.21558849196504,
+          "y": 287.6609704605481
+        },
+        "renderedFace": "neutral",
+        "gesture": null,
+        "posture": {
+          "bodyY": 9.228713812538786e-23,
+          "waist": 0,
+          "plantWeight": 0
+        },
+        "pose": {
+          "drop": 0,
+          "propAngle": 0,
+          "look": [
+            0.00003010116578329588,
+            0.00007676215590644306
+          ],
+          "plant": false,
+          "plantWeight": 1,
+          "hands": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "handArt": true
+        },
+        "sit": 0,
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 354.6462540701614,
+            "y": 338.879926596538
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "contact": {
+          "distance": 179.6496986686098,
+          "groundDistance": 226.7431645422291
+        },
+        "bindingError": 0,
+        "propMirror": 1,
+        "activeTime": 12.214999999999986,
+        "speed": 1,
+        "sequence": 723
+      }
+    },
+    {
+      "label": "05-work-priority",
+      "frame": {
+        "phase": "idle",
+        "suspended": null,
+        "elapsed": 1.7167000000000017,
+        "coordination": {
+          "phase": "work-wait",
+          "suspended": null,
+          "reason": null,
+          "life": null,
+          "sessions": [
+            {
+              "sessionId": "A",
+              "epoch": 1,
+              "revision": 3,
+              "driver": "running",
+              "running": true,
+              "activity": "preparing",
+              "category": "working",
+              "requests": [
+                {
+                  "id": "preview-approval-1",
+                  "kind": "approval",
+                  "state": "open"
+                }
+              ],
+              "tools": {
+                "pending": 0,
+                "entered": 0
+              },
+              "goal": {
+                "known": true,
+                "goal": null
+              },
+              "needsAttention": false,
+              "problem": null,
+              "resultId": null,
+              "cue": {
+                "id": "[\"A\",1,\"1\",\"approval\"]",
+                "kind": "approval"
+              },
+              "attentionOrder": 2
+            }
+          ],
+          "focus": "A",
+          "interaction": null,
+          "occupied": false,
+          "admission": 2,
+          "navigation": null,
+          "serial": 4,
+          "elapsed": 0.11659999999999855,
+          "lastAt": 26531.099999904633,
+          "revision": 1,
+          "personality": {
+            "id": "quiet",
+            "version": 1,
+            "overrides": {},
+            "seed": 7,
+            "ordinal": 6,
+            "enabled": true,
+            "permissions": {
+              "mode": "off",
+              "roam": true,
+              "input": "idle",
+              "occupied": false
+            },
+            "decision": {
+              "ordinal": 6,
+              "personality": "quiet",
+              "version": 1,
+              "strategy": 2,
+              "parameters": {
+                "id": "quiet",
+                "version": 1,
+                "label": "安静",
+                "dwellMin": 18,
+                "dwellMax": 26,
+                "explore": 0.2
+              },
+              "samples": [
+                0.0907087700907141,
+                0.2516032187268138,
+                0.08371922257356346
+              ],
+              "seed": 7,
+              "kind": "stay",
+              "reason": "reduced-motion",
+              "origin": {
+                "x": 381.12085425307777,
+                "y": 385.38046709302273
+              },
+              "revision": 1,
+              "attention": "consider",
+              "interestId": null,
+              "interestKey": null,
+              "interestLabel": null,
+              "interestKind": null,
+              "focus": null,
+              "result": "pending",
+              "duration": 20.01282574981451,
+              "candidates": [],
+              "target": null,
+              "alternatives": [
+                {
+                  "id": "o03-shell",
+                  "score": 5,
+                  "reachable": false
+                },
+                {
+                  "id": "home",
+                  "score": 3,
+                  "reachable": false
+                }
+              ]
+            },
+            "history": [
+              {
+                "ordinal": 1,
+                "personality": "lively",
+                "version": 1,
+                "strategy": 2,
+                "parameters": {
+                  "id": "lively",
+                  "version": 1,
+                  "label": "活泼",
+                  "dwellMin": 6,
+                  "dwellMax": 10,
+                  "explore": 0.85
+                },
+                "samples": [
+                  0.23878083983436227,
+                  0.9134932646993548,
+                  0.6124916663393378
+                ],
+                "seed": 7,
+                "kind": "explore",
+                "reason": "inspect-object",
+                "origin": {
+                  "x": 240,
+                  "y": 555
+                },
+                "revision": 1,
+                "attention": "investigate",
+                "interestId": "planter",
+                "interestKey": "[\"planter\",\"plant\",541,256.75]",
+                "interestLabel": "花箱",
+                "interestKind": "plant",
+                "focus": {
+                  "x": 541,
+                  "y": 256.75
+                },
+                "result": "observed",
+                "duration": 9.653973058797419,
+                "candidates": [
+                  {
+                    "x": 381,
+                    "y": 385
+                  },
+                  {
+                    "x": 235,
+                    "y": 555
+                  },
+                  {
+                    "x": 370,
+                    "y": 420
+                  }
+                ],
+                "target": {
+                  "x": 381,
+                  "y": 385
+                },
+                "alternatives": [
+                  {
+                    "id": "planter",
+                    "score": 4.558271576644653,
+                    "reachable": true
+                  },
+                  {
+                    "id": "o03-shell",
+                    "score": 2.99,
+                    "reachable": true
+                  },
+                  {
+                    "id": "home",
+                    "score": 0.6251667037201738,
+                    "reachable": true
+                  }
+                ]
+              },
+              {
+                "ordinal": 2,
+                "personality": "quiet",
+                "version": 1,
+                "strategy": 2,
+                "parameters": {
+                  "id": "quiet",
+                  "version": 1,
+                  "label": "安静",
+                  "dwellMin": 18,
+                  "dwellMax": 26,
+                  "explore": 0.2
+                },
+                "samples": [
+                  0.47969271591864526,
+                  0.7540324558503926,
+                  0.10964234755374491
+                ],
+                "seed": 7,
+                "kind": "stay",
+                "reason": "observe-here",
+                "origin": {
+                  "x": 381,
+                  "y": 385
+                },
+                "revision": 1,
+                "attention": "consider",
+                "interestId": "o03-shell",
+                "interestKey": "[\"o03-shell\",\"shell\",335,537]",
+                "interestLabel": "贝壳",
+                "interestKind": "shell",
+                "focus": {
+                  "x": 335,
+                  "y": 537
+                },
+                "result": "pending",
+                "duration": 24.03225964680314,
+                "candidates": [
+                  {
+                    "x": 475,
+                    "y": 555
+                  },
+                  {
+                    "x": 370,
+                    "y": 420
+                  }
+                ],
+                "target": null,
+                "alternatives": [
+                  {
+                    "id": "o03-shell",
+                    "score": 4.611484878029182,
+                    "reachable": true
+                  },
+                  {
+                    "id": "home",
+                    "score": 2.9266242546886234,
+                    "reachable": true
+                  }
+                ]
+              },
+              {
+                "ordinal": 3,
+                "personality": "lively",
+                "version": 1,
+                "strategy": 2,
+                "parameters": {
+                  "id": "lively",
+                  "version": 1,
+                  "label": "活泼",
+                  "dwellMin": 6,
+                  "dwellMax": 10,
+                  "explore": 0.85
+                },
+                "samples": [
+                  0.28772356640547514,
+                  0.3054390463512391,
+                  0.16469576908275485
+                ],
+                "seed": 7,
+                "kind": "explore",
+                "reason": "inspect-object",
+                "origin": {
+                  "x": 381,
+                  "y": 385
+                },
+                "revision": 1,
+                "attention": "investigate",
+                "interestId": "o03-shell",
+                "interestKey": "[\"o03-shell\",\"shell\",335,537]",
+                "interestLabel": "贝壳",
+                "interestKind": "shell",
+                "focus": {
+                  "x": 335,
+                  "y": 537
+                },
+                "result": "pending",
+                "duration": 7.221756185404956,
+                "candidates": [
+                  {
+                    "x": 435,
+                    "y": 555
+                  },
+                  {
+                    "x": 370,
+                    "y": 420
+                  }
+                ],
+                "target": {
+                  "x": 435,
+                  "y": 555
+                },
+                "alternatives": [
+                  {
+                    "id": "o03-shell",
+                    "score": 2.643259197735947,
+                    "reachable": true
+                  },
+                  {
+                    "id": "home",
+                    "score": 0.9266242546886234,
+                    "reachable": true
+                  }
+                ]
+              },
+              {
+                "ordinal": 4,
+                "personality": "quiet",
+                "version": 1,
+                "strategy": 2,
+                "parameters": {
+                  "id": "quiet",
+                  "version": 1,
+                  "label": "安静",
+                  "dwellMin": 18,
+                  "dwellMax": 26,
+                  "explore": 0.2
+                },
+                "samples": [
+                  0.5333991644438356,
+                  0.480263848323375,
+                  0.41819843859411776
+                ],
+                "seed": 7,
+                "kind": "stay",
+                "reason": "observe-here",
+                "origin": {
+                  "x": 381.12085425307777,
+                  "y": 385.38046709302273
+                },
+                "revision": 1,
+                "attention": "consider",
+                "interestId": "o03-shell",
+                "interestKey": "[\"o03-shell\",\"shell\",335,537]",
+                "interestLabel": "贝壳",
+                "interestKind": "shell",
+                "focus": {
+                  "x": 335,
+                  "y": 537
+                },
+                "result": "pending",
+                "duration": 21.842110786587,
+                "candidates": [
+                  {
+                    "x": 475,
+                    "y": 555
+                  },
+                  {
+                    "x": 370,
+                    "y": 420
+                  }
+                ],
+                "target": null,
+                "alternatives": [
+                  {
+                    "id": "o03-shell",
+                    "score": 4.612267721489412,
+                    "reachable": true
+                  },
+                  {
+                    "id": "home",
+                    "score": 2.9272762636269154,
+                    "reachable": true
+                  }
+                ]
+              },
+              {
+                "ordinal": 5,
+                "personality": "quiet",
+                "version": 1,
+                "strategy": 2,
+                "parameters": {
+                  "id": "quiet",
+                  "version": 1,
+                  "label": "安静",
+                  "dwellMin": 18,
+                  "dwellMax": 26,
+                  "explore": 0.2
+                },
+                "samples": [
+                  0.9617586119566113,
+                  0.489635051228106,
+                  0.01971343602053821
+                ],
+                "seed": 7,
+                "kind": "stay",
+                "reason": "observe-here",
+                "origin": {
+                  "x": 381.12085425307777,
+                  "y": 385.38046709302273
+                },
+                "revision": 1,
+                "attention": "consider",
+                "interestId": "o03-shell",
+                "interestKey": "[\"o03-shell\",\"shell\",335,537]",
+                "interestLabel": "贝壳",
+                "interestKind": "shell",
+                "focus": {
+                  "x": 335,
+                  "y": 537
+                },
+                "result": "pending",
+                "duration": 21.917080409824848,
+                "candidates": [
+                  {
+                    "x": 475,
+                    "y": 555
+                  },
+                  {
+                    "x": 370,
+                    "y": 420
+                  }
+                ],
+                "target": null,
+                "alternatives": [
+                  {
+                    "id": "o03-shell",
+                    "score": 4.612267721489412,
+                    "reachable": true
+                  },
+                  {
+                    "id": "home",
+                    "score": 2.9272762636269154,
+                    "reachable": true
+                  }
+                ]
+              },
+              {
+                "ordinal": 6,
+                "personality": "quiet",
+                "version": 1,
+                "strategy": 2,
+                "parameters": {
+                  "id": "quiet",
+                  "version": 1,
+                  "label": "安静",
+                  "dwellMin": 18,
+                  "dwellMax": 26,
+                  "explore": 0.2
+                },
+                "samples": [
+                  0.0907087700907141,
+                  0.2516032187268138,
+                  0.08371922257356346
+                ],
+                "seed": 7,
+                "kind": "stay",
+                "reason": "reduced-motion",
+                "origin": {
+                  "x": 381.12085425307777,
+                  "y": 385.38046709302273
+                },
+                "revision": 1,
+                "attention": "consider",
+                "interestId": null,
+                "interestKey": null,
+                "interestLabel": null,
+                "interestKind": null,
+                "focus": null,
+                "result": "pending",
+                "duration": 20.01282574981451,
+                "candidates": [],
+                "target": null,
+                "alternatives": [
+                  {
+                    "id": "o03-shell",
+                    "score": 5,
+                    "reachable": false
+                  },
+                  {
+                    "id": "home",
+                    "score": 3,
+                    "reachable": false
+                  }
+                ]
+              }
+            ],
+            "observations": [
+              {
+                "id": "planter",
+                "key": "[\"planter\",\"plant\",541,256.75]",
+                "at": 7.232400000000024
+              }
+            ],
+            "clock": 22.281599999999848,
+            "fallback": true
+          },
+          "observed": 0.18340000000000145,
+          "workRest": {
+            "key": "[\"A\",\"preparing\",0,0,\"[\\\"A\\\",1,\\\"1\\\",\\\"approval\\\"]\",1,false]",
+            "stable": 0.09990000000000146
+          }
+        },
+        "personalityPerformance": {
+          "active": false,
+          "expression": "neutral",
+          "look": [
+            4.514154780600621e-34,
+            1.1511722022625884e-33
+          ],
+          "attention": "consider",
+          "focus": null,
+          "label": "留在原地，看看周围"
+        },
+        "performance": {
+          "kind": "approval",
+          "expression": "listening",
+          "label": "这一步需要你的许可",
+          "age": 10.083400000000006,
+          "cue": null,
+          "look": [
+            -6.449822585903542,
+            -1.8929124537597335
+          ],
+          "armNear": -29.464562268798666,
+          "armFar": 2.615145135692014,
+          "gaze": -6.8876653596095325,
+          "arms": [
+            -29.75558475787355,
+            3.3762979419086667
+          ]
+        },
+        "owner": "ground",
+        "renderedOwner": "ground",
+        "generation": 2,
+        "walkId": null,
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "error": null,
+        "inspection": null,
+        "loop": false,
+        "bodyX": 850,
+        "bodyY": 600,
+        "navigation": {
+          "x": 850,
+          "y": 600,
+          "speed": 0,
+          "facing": 1,
+          "phase": "idle",
+          "id": null,
+          "generation": 1,
+          "revision": 1,
+          "plan": null
+        },
+        "bubble": {
+          "x": 850,
+          "y": 434.3168507352911
+        },
+        "hit": [
+          {
+            "x": 850,
+            "y": 510.89309619377,
+            "r": 75.9375
+          }
+        ],
+        "moving": false,
+        "facing": 1,
+        "visualFacing": 0.9999999999999999,
+        "destinationX": 390,
+        "destinationY": 600,
+        "actionNavigation": null,
+        "actionRevision": 1,
+        "objectRevision": 2,
+        "continuous": true,
+        "groundQuad": [
+          {
+            "x": 315,
+            "y": 522.198275862069
+          },
+          {
+            "x": 355,
+            "y": 522.198275862069
+          },
+          {
+            "x": 315,
+            "y": 555
+          }
+        ],
+        "groundGrip": {
+          "x": 335,
+          "y": 523.8383620689655
+        },
+        "hand": {
+          "x": 875.4606372850329,
+          "y": 560.3966866027962
+        },
+        "heldGrip": {
+          "x": 875.4606372850329,
+          "y": 560.3966866027962
+        },
+        "heldQuad": [
+          {
+            "x": 855.4606355896119,
+            "y": 558.7566002568678
+          },
+          {
+            "x": 895.460638980454,
+            "y": 558.7566002568678
+          },
+          {
+            "x": 855.4606355896119,
+            "y": 591.5583271754355
+          }
+        ],
+        "feet": [
+          {
+            "x": 839.0453802359104,
+            "y": 600.0000457763672
+          },
+          {
+            "x": 861.3555383771658,
+            "y": 600.0000457763672
+          }
+        ],
+        "gazeOrigin": {
+          "x": 855.803312908422,
+          "y": 501.5445200912243
+        },
+        "renderedFace": "neutral",
+        "gesture": null,
+        "posture": {
+          "bodyY": 0,
+          "waist": 0,
+          "plantWeight": 1
+        },
+        "pose": {
+          "waist": 0,
+          "drop": 0,
+          "armNear": -29.75558475787355,
+          "armFar": 3.3762979419086667,
+          "propAngle": 0,
+          "look": [
+            -6.8876653596095325,
+            -1.8929124537597335
+          ],
+          "plant": true,
+          "plantWeight": 1,
+          "hands": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "handArt": true
+        },
+        "sit": 0,
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 874.9910366710119,
+            "y": 554.0298536183778
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "contact": {
+          "distance": 541.695681676774,
+          "groundDistance": 485.53402784281485
+        },
+        "bindingError": 0,
+        "propMirror": 1,
+        "activeTime": 22.531699999999837,
+        "speed": 1,
+        "sequence": 1276
+      }
+    },
+    {
+      "label": "06-geometry-lifecycle",
+      "frame": {
+        "phase": "idle",
+        "suspended": null,
+        "elapsed": 0.034199999999997094,
+        "coordination": {
+          "phase": "personal-choose",
+          "suspended": null,
+          "reason": null,
+          "life": null,
+          "sessions": [
+            {
+              "sessionId": "A",
+              "epoch": 1,
+              "revision": 6,
+              "driver": "idle",
+              "running": false,
+              "activity": "idle",
+              "category": "reply",
+              "requests": [],
+              "tools": {
+                "pending": 0,
+                "entered": 0
+              },
+              "goal": {
+                "known": true,
+                "goal": null
+              },
+              "needsAttention": false,
+              "problem": null,
+              "resultId": "[\"A\",1,3,\"reply\"]",
+              "cue": {
+                "id": "[\"A\",1,\"3\",\"reply\"]",
+                "kind": "reply"
+              },
+              "attentionOrder": 4
+            }
+          ],
+          "focus": null,
+          "interaction": null,
+          "occupied": false,
+          "admission": 4,
+          "navigation": null,
+          "serial": 4,
+          "elapsed": 0,
+          "lastAt": 31731.299999952316,
+          "revision": 2,
+          "personality": {
+            "id": "quiet",
+            "version": 1,
+            "overrides": {},
+            "seed": 7,
+            "ordinal": 8,
+            "enabled": true,
+            "permissions": {
+              "mode": "quiet",
+              "roam": true,
+              "input": "idle",
+              "occupied": false
+            },
+            "decision": {
+              "ordinal": 8,
+              "personality": "lively",
+              "version": 1,
+              "strategy": 2,
+              "parameters": {
+                "id": "lively",
+                "version": 1,
+                "label": "活泼",
+                "dwellMin": 6,
+                "dwellMax": 10,
+                "explore": 0.85
+              },
+              "samples": [
+                0.9193347259424627,
+                0.8707673505414277,
+                0.26022794283926487
+              ],
+              "seed": 7,
+              "kind": "stay",
+              "reason": "observe-here",
+              "origin": {
+                "x": 850,
+                "y": 600
+              },
+              "revision": 2,
+              "attention": "investigate",
+              "interestId": "planter",
+              "interestKey": "[\"planter\",\"plant\",546,466.75]",
+              "interestLabel": "花箱",
+              "interestKind": "plant",
+              "focus": {
+                "x": 546,
+                "y": 466.75
+              },
+              "result": "pending",
+              "duration": 9.483069402165711,
+              "candidates": [
+                {
+                  "x": 706,
+                  "y": 595
+                },
+                {
+                  "x": 235,
+                  "y": 555
+                },
+                {
+                  "x": 370,
+                  "y": 420
+                }
+              ],
+              "target": null,
+              "alternatives": [
+                {
+                  "id": "planter",
+                  "score": 4.711826441185178,
+                  "reachable": true
+                },
+                {
+                  "id": "o03-shell",
+                  "score": 1.766711712534332,
+                  "reachable": true
+                },
+                {
+                  "id": "home",
+                  "score": -0.06969198851948111,
+                  "reachable": true
+                }
+              ]
+            },
+            "history": [
+              {
+                "ordinal": 1,
+                "personality": "lively",
+                "version": 1,
+                "strategy": 2,
+                "parameters": {
+                  "id": "lively",
+                  "version": 1,
+                  "label": "活泼",
+                  "dwellMin": 6,
+                  "dwellMax": 10,
+                  "explore": 0.85
+                },
+                "samples": [
+                  0.23878083983436227,
+                  0.9134932646993548,
+                  0.6124916663393378
+                ],
+                "seed": 7,
+                "kind": "explore",
+                "reason": "inspect-object",
+                "origin": {
+                  "x": 240,
+                  "y": 555
+                },
+                "revision": 1,
+                "attention": "investigate",
+                "interestId": "planter",
+                "interestKey": "[\"planter\",\"plant\",541,256.75]",
+                "interestLabel": "花箱",
+                "interestKind": "plant",
+                "focus": {
+                  "x": 541,
+                  "y": 256.75
+                },
+                "result": "observed",
+                "duration": 9.653973058797419,
+                "candidates": [
+                  {
+                    "x": 381,
+                    "y": 385
+                  },
+                  {
+                    "x": 235,
+                    "y": 555
+                  },
+                  {
+                    "x": 370,
+                    "y": 420
+                  }
+                ],
+                "target": {
+                  "x": 381,
+                  "y": 385
+                },
+                "alternatives": [
+                  {
+                    "id": "planter",
+                    "score": 4.558271576644653,
+                    "reachable": true
+                  },
+                  {
+                    "id": "o03-shell",
+                    "score": 2.99,
+                    "reachable": true
+                  },
+                  {
+                    "id": "home",
+                    "score": 0.6251667037201738,
+                    "reachable": true
+                  }
+                ]
+              },
+              {
+                "ordinal": 2,
+                "personality": "quiet",
+                "version": 1,
+                "strategy": 2,
+                "parameters": {
+                  "id": "quiet",
+                  "version": 1,
+                  "label": "安静",
+                  "dwellMin": 18,
+                  "dwellMax": 26,
+                  "explore": 0.2
+                },
+                "samples": [
+                  0.47969271591864526,
+                  0.7540324558503926,
+                  0.10964234755374491
+                ],
+                "seed": 7,
+                "kind": "stay",
+                "reason": "observe-here",
+                "origin": {
+                  "x": 381,
+                  "y": 385
+                },
+                "revision": 1,
+                "attention": "consider",
+                "interestId": "o03-shell",
+                "interestKey": "[\"o03-shell\",\"shell\",335,537]",
+                "interestLabel": "贝壳",
+                "interestKind": "shell",
+                "focus": {
+                  "x": 335,
+                  "y": 537
+                },
+                "result": "pending",
+                "duration": 24.03225964680314,
+                "candidates": [
+                  {
+                    "x": 475,
+                    "y": 555
+                  },
+                  {
+                    "x": 370,
+                    "y": 420
+                  }
+                ],
+                "target": null,
+                "alternatives": [
+                  {
+                    "id": "o03-shell",
+                    "score": 4.611484878029182,
+                    "reachable": true
+                  },
+                  {
+                    "id": "home",
+                    "score": 2.9266242546886234,
+                    "reachable": true
+                  }
+                ]
+              },
+              {
+                "ordinal": 3,
+                "personality": "lively",
+                "version": 1,
+                "strategy": 2,
+                "parameters": {
+                  "id": "lively",
+                  "version": 1,
+                  "label": "活泼",
+                  "dwellMin": 6,
+                  "dwellMax": 10,
+                  "explore": 0.85
+                },
+                "samples": [
+                  0.28772356640547514,
+                  0.3054390463512391,
+                  0.16469576908275485
+                ],
+                "seed": 7,
+                "kind": "explore",
+                "reason": "inspect-object",
+                "origin": {
+                  "x": 381,
+                  "y": 385
+                },
+                "revision": 1,
+                "attention": "investigate",
+                "interestId": "o03-shell",
+                "interestKey": "[\"o03-shell\",\"shell\",335,537]",
+                "interestLabel": "贝壳",
+                "interestKind": "shell",
+                "focus": {
+                  "x": 335,
+                  "y": 537
+                },
+                "result": "pending",
+                "duration": 7.221756185404956,
+                "candidates": [
+                  {
+                    "x": 435,
+                    "y": 555
+                  },
+                  {
+                    "x": 370,
+                    "y": 420
+                  }
+                ],
+                "target": {
+                  "x": 435,
+                  "y": 555
+                },
+                "alternatives": [
+                  {
+                    "id": "o03-shell",
+                    "score": 2.643259197735947,
+                    "reachable": true
+                  },
+                  {
+                    "id": "home",
+                    "score": 0.9266242546886234,
+                    "reachable": true
+                  }
+                ]
+              },
+              {
+                "ordinal": 4,
+                "personality": "quiet",
+                "version": 1,
+                "strategy": 2,
+                "parameters": {
+                  "id": "quiet",
+                  "version": 1,
+                  "label": "安静",
+                  "dwellMin": 18,
+                  "dwellMax": 26,
+                  "explore": 0.2
+                },
+                "samples": [
+                  0.5333991644438356,
+                  0.480263848323375,
+                  0.41819843859411776
+                ],
+                "seed": 7,
+                "kind": "stay",
+                "reason": "observe-here",
+                "origin": {
+                  "x": 381.12085425307777,
+                  "y": 385.38046709302273
+                },
+                "revision": 1,
+                "attention": "consider",
+                "interestId": "o03-shell",
+                "interestKey": "[\"o03-shell\",\"shell\",335,537]",
+                "interestLabel": "贝壳",
+                "interestKind": "shell",
+                "focus": {
+                  "x": 335,
+                  "y": 537
+                },
+                "result": "pending",
+                "duration": 21.842110786587,
+                "candidates": [
+                  {
+                    "x": 475,
+                    "y": 555
+                  },
+                  {
+                    "x": 370,
+                    "y": 420
+                  }
+                ],
+                "target": null,
+                "alternatives": [
+                  {
+                    "id": "o03-shell",
+                    "score": 4.612267721489412,
+                    "reachable": true
+                  },
+                  {
+                    "id": "home",
+                    "score": 2.9272762636269154,
+                    "reachable": true
+                  }
+                ]
+              },
+              {
+                "ordinal": 5,
+                "personality": "quiet",
+                "version": 1,
+                "strategy": 2,
+                "parameters": {
+                  "id": "quiet",
+                  "version": 1,
+                  "label": "安静",
+                  "dwellMin": 18,
+                  "dwellMax": 26,
+                  "explore": 0.2
+                },
+                "samples": [
+                  0.9617586119566113,
+                  0.489635051228106,
+                  0.01971343602053821
+                ],
+                "seed": 7,
+                "kind": "stay",
+                "reason": "observe-here",
+                "origin": {
+                  "x": 381.12085425307777,
+                  "y": 385.38046709302273
+                },
+                "revision": 1,
+                "attention": "consider",
+                "interestId": "o03-shell",
+                "interestKey": "[\"o03-shell\",\"shell\",335,537]",
+                "interestLabel": "贝壳",
+                "interestKind": "shell",
+                "focus": {
+                  "x": 335,
+                  "y": 537
+                },
+                "result": "pending",
+                "duration": 21.917080409824848,
+                "candidates": [
+                  {
+                    "x": 475,
+                    "y": 555
+                  },
+                  {
+                    "x": 370,
+                    "y": 420
+                  }
+                ],
+                "target": null,
+                "alternatives": [
+                  {
+                    "id": "o03-shell",
+                    "score": 4.612267721489412,
+                    "reachable": true
+                  },
+                  {
+                    "id": "home",
+                    "score": 2.9272762636269154,
+                    "reachable": true
+                  }
+                ]
+              },
+              {
+                "ordinal": 6,
+                "personality": "quiet",
+                "version": 1,
+                "strategy": 2,
+                "parameters": {
+                  "id": "quiet",
+                  "version": 1,
+                  "label": "安静",
+                  "dwellMin": 18,
+                  "dwellMax": 26,
+                  "explore": 0.2
+                },
+                "samples": [
+                  0.0907087700907141,
+                  0.2516032187268138,
+                  0.08371922257356346
+                ],
+                "seed": 7,
+                "kind": "stay",
+                "reason": "reduced-motion",
+                "origin": {
+                  "x": 381.12085425307777,
+                  "y": 385.38046709302273
+                },
+                "revision": 1,
+                "attention": "consider",
+                "interestId": null,
+                "interestKey": null,
+                "interestLabel": null,
+                "interestKind": null,
+                "focus": null,
+                "result": "pending",
+                "duration": 20.01282574981451,
+                "candidates": [],
+                "target": null,
+                "alternatives": [
+                  {
+                    "id": "o03-shell",
+                    "score": 5,
+                    "reachable": false
+                  },
+                  {
+                    "id": "home",
+                    "score": 3,
+                    "reachable": false
+                  }
+                ]
+              },
+              {
+                "ordinal": 7,
+                "personality": "lively",
+                "version": 1,
+                "strategy": 2,
+                "parameters": {
+                  "id": "lively",
+                  "version": 1,
+                  "label": "活泼",
+                  "dwellMin": 6,
+                  "dwellMax": 10,
+                  "explore": 0.85
+                },
+                "samples": [
+                  0.2326178033836186,
+                  0.38524509058333933,
+                  0.32047120574861765
+                ],
+                "seed": 7,
+                "kind": "explore",
+                "reason": "inspect-object",
+                "origin": {
+                  "x": 850,
+                  "y": 600
+                },
+                "revision": 1,
+                "attention": "investigate",
+                "interestId": "o03-shell",
+                "interestKey": "[\"o03-shell\",\"shell\",335,537]",
+                "interestLabel": "贝壳",
+                "interestKind": "shell",
+                "focus": {
+                  "x": 335,
+                  "y": 537
+                },
+                "result": "pending",
+                "duration": 7.540980362333357,
+                "candidates": [
+                  {
+                    "x": 435,
+                    "y": 555
+                  },
+                  {
+                    "x": 370,
+                    "y": 420
+                  }
+                ],
+                "target": {
+                  "x": 435,
+                  "y": 555
+                },
+                "alternatives": [
+                  {
+                    "id": "o03-shell",
+                    "score": 2.165134741410328,
+                    "reachable": true
+                  },
+                  {
+                    "id": "home",
+                    "score": -0.025280449438103814,
+                    "reachable": true
+                  }
+                ]
+              },
+              {
+                "ordinal": 8,
+                "personality": "lively",
+                "version": 1,
+                "strategy": 2,
+                "parameters": {
+                  "id": "lively",
+                  "version": 1,
+                  "label": "活泼",
+                  "dwellMin": 6,
+                  "dwellMax": 10,
+                  "explore": 0.85
+                },
+                "samples": [
+                  0.9193347259424627,
+                  0.8707673505414277,
+                  0.26022794283926487
+                ],
+                "seed": 7,
+                "kind": "stay",
+                "reason": "observe-here",
+                "origin": {
+                  "x": 850,
+                  "y": 600
+                },
+                "revision": 2,
+                "attention": "investigate",
+                "interestId": "planter",
+                "interestKey": "[\"planter\",\"plant\",546,466.75]",
+                "interestLabel": "花箱",
+                "interestKind": "plant",
+                "focus": {
+                  "x": 546,
+                  "y": 466.75
+                },
+                "result": "pending",
+                "duration": 9.483069402165711,
+                "candidates": [
+                  {
+                    "x": 706,
+                    "y": 595
+                  },
+                  {
+                    "x": 235,
+                    "y": 555
+                  },
+                  {
+                    "x": 370,
+                    "y": 420
+                  }
+                ],
+                "target": null,
+                "alternatives": [
+                  {
+                    "id": "planter",
+                    "score": 4.711826441185178,
+                    "reachable": true
+                  },
+                  {
+                    "id": "o03-shell",
+                    "score": 1.766711712534332,
+                    "reachable": true
+                  },
+                  {
+                    "id": "home",
+                    "score": -0.06969198851948111,
+                    "reachable": true
+                  }
+                ]
+              }
+            ],
+            "observations": [
+              {
+                "id": "planter",
+                "key": "[\"planter\",\"plant\",541,256.75]",
+                "at": 7.232400000000024
+              }
+            ],
+            "clock": 25.898999999999816,
+            "fallback": false
+          },
+          "observed": 0,
+          "workRest": {
+            "key": "[\"A\",\"preparing\",0,0,\"[\\\"A\\\",1,\\\"3\\\",\\\"reply\\\"]\",0,false]",
+            "stable": 0
+          }
+        },
+        "personalityPerformance": {
+          "active": false,
+          "expression": "neutral",
+          "look": [
+            -0.0003586773301421051,
+            -0.0002606700581362699
+          ],
+          "attention": "investigate",
+          "focus": null,
+          "label": "看看花箱的细节"
+        },
+        "performance": {
+          "kind": "idle",
+          "expression": "neutral",
+          "label": "歇一会儿",
+          "age": 3.467400000000002,
+          "cue": null,
+          "look": [
+            0.5429719497218366,
+            0.31026968555533524
+          ],
+          "armNear": 5.551348427776676,
+          "armFar": -2,
+          "gaze": -6.708642909154967e-8,
+          "arms": [
+            5.700021718641239,
+            -1.9999976426635537
+          ]
+        },
+        "owner": "ground",
+        "renderedOwner": "ground",
+        "generation": 2,
+        "walkId": null,
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "error": null,
+        "inspection": null,
+        "loop": false,
+        "bodyX": 850,
+        "bodyY": 600,
+        "navigation": {
+          "x": 850,
+          "y": 600,
+          "speed": 0,
+          "facing": 1,
+          "phase": "idle",
+          "id": null,
+          "generation": 1,
+          "revision": 1,
+          "plan": null
+        },
+        "bubble": {
+          "x": 850,
+          "y": 432.85423912222734
+        },
+        "hit": [
+          {
+            "x": 850,
+            "y": 510.10648154472733,
+            "r": 75.9375
+          }
+        ],
+        "moving": false,
+        "facing": -1,
+        "visualFacing": -0.9999999497297718,
+        "destinationX": 390,
+        "destinationY": 600,
+        "actionNavigation": null,
+        "actionRevision": 2,
+        "objectRevision": 2,
+        "continuous": true,
+        "groundQuad": [
+          {
+            "x": 315,
+            "y": 522.198275862069
+          },
+          {
+            "x": 355,
+            "y": 522.198275862069
+          },
+          {
+            "x": 315,
+            "y": 555
+          }
+        ],
+        "groundGrip": {
+          "x": 335,
+          "y": 523.8383620689655
+        },
+        "hand": {
+          "x": 822.5223515218479,
+          "y": 559.6079654838179
+        },
+        "heldGrip": {
+          "x": 822.5223515218479,
+          "y": 559.6079654838179
+        },
+        "heldQuad": [
+          {
+            "x": 802.5177201682872,
+            "y": 557.9683501389236
+          },
+          {
+            "x": 842.5269828754086,
+            "y": 557.9683501389235
+          },
+          {
+            "x": 802.5177201682872,
+            "y": 590.7606570368118
+          }
+        ],
+        "feet": [
+          {
+            "x": 860.9572166221535,
+            "y": 600
+          },
+          {
+            "x": 838.641894061074,
+            "y": 600
+          }
+        ],
+        "gazeOrigin": {
+          "x": 841.9971248355813,
+          "y": 502.20684793578494
+        },
+        "renderedFace": "neutral",
+        "gesture": null,
+        "posture": {
+          "bodyY": 1.7127334032257074e-44,
+          "waist": 0,
+          "plantWeight": 0
+        },
+        "pose": {
+          "drop": 0,
+          "propAngle": 0,
+          "look": [
+            -6.708642909154967e-8,
+            0.31026968555533524
+          ],
+          "plant": false,
+          "plantWeight": 1,
+          "hands": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "handArt": true
+        },
+        "sit": 0,
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 823.5930931641165,
+            "y": 553.3160355658881
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "contact": {
+          "distance": 488.8328014381278,
+          "groundDistance": 432.6210235580101
+        },
+        "bindingError": 0,
+        "propMirror": 1,
+        "activeTime": 26.149099999999805,
+        "speed": 1,
+        "sequence": 1534
+      }
+    },
+    {
+      "label": "equal-quiet",
+      "frame": {
+        "phase": "idle",
+        "suspended": null,
+        "elapsed": 3.3504999999999985,
+        "coordination": {
+          "phase": "personal-dwell",
+          "suspended": null,
+          "reason": null,
+          "life": null,
+          "sessions": [],
+          "focus": null,
+          "interaction": null,
+          "occupied": false,
+          "admission": 0,
+          "navigation": null,
+          "serial": 1,
+          "elapsed": 0,
+          "lastAt": 4706.800000190735,
+          "revision": 1,
+          "personality": {
+            "id": "quiet",
+            "version": 1,
+            "overrides": {
+              "quiet": {
+                "dwellMin": 12,
+                "dwellMax": 20,
+                "explore": 0.95
+              }
+            },
+            "seed": 7,
+            "ordinal": 1,
+            "enabled": true,
+            "permissions": {
+              "mode": "quiet",
+              "roam": true,
+              "input": "idle",
+              "occupied": false
+            },
+            "decision": {
+              "ordinal": 1,
+              "personality": "quiet",
+              "version": 1,
+              "strategy": 2,
+              "parameters": {
+                "id": "quiet",
+                "version": 1,
+                "label": "安静",
+                "dwellMin": 12,
+                "dwellMax": 20,
+                "explore": 0.95
+              },
+              "samples": [
+                0.23878083983436227,
+                0.9134932646993548,
+                0.6124916663393378
+              ],
+              "seed": 7,
+              "kind": "explore",
+              "reason": "inspect-object",
+              "origin": {
+                "x": 240,
+                "y": 555
+              },
+              "revision": 1,
+              "attention": "consider",
+              "interestId": "o03-shell",
+              "interestKey": "[\"o03-shell\",\"shell\",335,537]",
+              "interestLabel": "贝壳",
+              "interestKind": "shell",
+              "focus": {
+                "x": 335,
+                "y": 537
+              },
+              "result": "pending",
+              "duration": 19.307946117594838,
+              "candidates": [
+                {
+                  "x": 195,
+                  "y": 555
+                },
+                {
+                  "x": 370,
+                  "y": 420
+                },
+                {
+                  "x": 331,
+                  "y": 450
+                }
+              ],
+              "target": {
+                "x": 195,
+                "y": 555
+              },
+              "alternatives": [
+                {
+                  "id": "o03-shell",
+                  "score": 4.91,
+                  "reachable": true
+                },
+                {
+                  "id": "home",
+                  "score": 2.625166703720174,
+                  "reachable": true
+                },
+                {
+                  "id": "planter",
+                  "score": 1.722107934622091,
+                  "reachable": true
+                }
+              ]
+            },
+            "history": [
+              {
+                "ordinal": 1,
+                "personality": "quiet",
+                "version": 1,
+                "strategy": 2,
+                "parameters": {
+                  "id": "quiet",
+                  "version": 1,
+                  "label": "安静",
+                  "dwellMin": 12,
+                  "dwellMax": 20,
+                  "explore": 0.95
+                },
+                "samples": [
+                  0.23878083983436227,
+                  0.9134932646993548,
+                  0.6124916663393378
+                ],
+                "seed": 7,
+                "kind": "explore",
+                "reason": "inspect-object",
+                "origin": {
+                  "x": 240,
+                  "y": 555
+                },
+                "revision": 1,
+                "attention": "consider",
+                "interestId": "o03-shell",
+                "interestKey": "[\"o03-shell\",\"shell\",335,537]",
+                "interestLabel": "贝壳",
+                "interestKind": "shell",
+                "focus": {
+                  "x": 335,
+                  "y": 537
+                },
+                "result": "pending",
+                "duration": 19.307946117594838,
+                "candidates": [
+                  {
+                    "x": 195,
+                    "y": 555
+                  },
+                  {
+                    "x": 370,
+                    "y": 420
+                  },
+                  {
+                    "x": 331,
+                    "y": 450
+                  }
+                ],
+                "target": {
+                  "x": 195,
+                  "y": 555
+                },
+                "alternatives": [
+                  {
+                    "id": "o03-shell",
+                    "score": 4.91,
+                    "reachable": true
+                  },
+                  {
+                    "id": "home",
+                    "score": 2.625166703720174,
+                    "reachable": true
+                  },
+                  {
+                    "id": "planter",
+                    "score": 1.722107934622091,
+                    "reachable": true
+                  }
+                ]
+              }
+            ],
+            "observations": [],
+            "clock": 3.0666999999999995,
+            "fallback": false
+          },
+          "observed": 0,
+          "workRest": null
+        },
+        "personalityPerformance": {
+          "active": true,
+          "expression": "thinking",
+          "look": [
+            4.959250789846434,
+            2.8591034577267562
+          ],
+          "attention": "consider",
+          "focus": {
+            "x": 335,
+            "y": 537
+          },
+          "label": "静静细看贝壳"
+        },
+        "performance": {
+          "kind": "idle",
+          "expression": "neutral",
+          "label": "歇一会儿",
+          "age": 3.200099999999999,
+          "cue": null,
+          "look": [
+            0.6111709039284757,
+            0.3492405165305576
+          ],
+          "armNear": 5.746202582652788,
+          "armFar": -2,
+          "gaze": 0,
+          "arms": [
+            5.847560135361899,
+            -2
+          ]
+        },
+        "owner": "ground",
+        "renderedOwner": "ground",
+        "generation": 2,
+        "walkId": null,
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "error": null,
+        "inspection": null,
+        "loop": false,
+        "bodyX": 195,
+        "bodyY": 555,
+        "navigation": {
+          "x": 195,
+          "y": 555,
+          "speed": 0,
+          "facing": -1,
+          "phase": "idle",
+          "id": null,
+          "generation": 1,
+          "revision": 1,
+          "plan": null
+        },
+        "bubble": {
+          "x": 195,
+          "y": 385.02553731726744
+        },
+        "hit": [
+          {
+            "x": 195,
+            "y": 463.58516288884107,
+            "r": 75.9375
+          }
+        ],
+        "moving": false,
+        "facing": 1,
+        "visualFacing": 0.998581070861164,
+        "destinationX": 390,
+        "destinationY": 600,
+        "actionNavigation": null,
+        "actionRevision": null,
+        "objectRevision": 2,
+        "continuous": true,
+        "groundQuad": [
+          {
+            "x": 315,
+            "y": 522.198275862069
+          },
+          {
+            "x": 355,
+            "y": 522.198275862069
+          },
+          {
+            "x": 315,
+            "y": 555
+          }
+        ],
+        "groundGrip": {
+          "x": 335,
+          "y": 523.8383620689655
+        },
+        "hand": {
+          "x": 222.32731802815778,
+          "y": 514.4528280770676
+        },
+        "heldGrip": {
+          "x": 222.32731802815778,
+          "y": 514.4528280770676
+        },
+        "heldQuad": [
+          {
+            "x": 202.41613755543958,
+            "y": 512.8065585765688
+          },
+          {
+            "x": 242.23849979371587,
+            "y": 512.8065423964749
+          },
+          {
+            "x": 202.41612462704055,
+            "y": 545.7321103874829
+          }
+        ],
+        "feet": [
+          {
+            "x": 184.0939610608823,
+            "y": 555.0002367819959
+          },
+          {
+            "x": 206.3050403392432,
+            "y": 554.999601649661
+          }
+        ],
+        "gazeOrigin": {
+          "x": 202.75131649569948,
+          "y": 457.0641804489247
+        },
+        "renderedFace": "thinking",
+        "gesture": null,
+        "posture": {
+          "bodyY": 9.917483690562223e-8,
+          "waist": 0,
+          "plantWeight": 0
+        },
+        "pose": {
+          "drop": 0,
+          "propAngle": 0,
+          "look": [
+            4.959250789846434,
+            2.8591034577267562
+          ],
+          "plant": false,
+          "plantWeight": 1,
+          "hands": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "handArt": true
+        },
+        "sit": 0,
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 221.26782059846553,
+            "y": 508.1342657417537
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "contact": {
+          "distance": 113.06290952846105,
+          "groundDistance": 176.23601504995088
+        },
+        "bindingError": 0,
+        "propMirror": 1,
+        "activeTime": 3.3504999999999985,
+        "speed": 1,
+        "sequence": 167
+      }
+    },
+    {
+      "label": "equal-lively",
+      "frame": {
+        "phase": "idle",
+        "suspended": null,
+        "elapsed": 5.000300000000005,
+        "coordination": {
+          "phase": "personal-dwell",
+          "suspended": null,
+          "reason": null,
+          "life": null,
+          "sessions": [],
+          "focus": null,
+          "interaction": null,
+          "occupied": false,
+          "admission": 0,
+          "navigation": null,
+          "serial": 1,
+          "elapsed": 0,
+          "lastAt": 6816.100000143051,
+          "revision": 1,
+          "personality": {
+            "id": "lively",
+            "version": 1,
+            "overrides": {
+              "lively": {
+                "dwellMin": 12,
+                "dwellMax": 20,
+                "explore": 0.95
+              }
+            },
+            "seed": 7,
+            "ordinal": 1,
+            "enabled": true,
+            "permissions": {
+              "mode": "quiet",
+              "roam": true,
+              "input": "idle",
+              "occupied": false
+            },
+            "decision": {
+              "ordinal": 1,
+              "personality": "lively",
+              "version": 1,
+              "strategy": 2,
+              "parameters": {
+                "id": "lively",
+                "version": 1,
+                "label": "活泼",
+                "dwellMin": 12,
+                "dwellMax": 20,
+                "explore": 0.95
+              },
+              "samples": [
+                0.23878083983436227,
+                0.9134932646993548,
+                0.6124916663393378
+              ],
+              "seed": 7,
+              "kind": "explore",
+              "reason": "inspect-object",
+              "origin": {
+                "x": 240,
+                "y": 555
+              },
+              "revision": 1,
+              "attention": "investigate",
+              "interestId": "planter",
+              "interestKey": "[\"planter\",\"plant\",541,256.75]",
+              "interestLabel": "花箱",
+              "interestKind": "plant",
+              "focus": {
+                "x": 541,
+                "y": 256.75
+              },
+              "result": "pending",
+              "duration": 19.307946117594838,
+              "candidates": [
+                {
+                  "x": 381,
+                  "y": 385
+                },
+                {
+                  "x": 235,
+                  "y": 555
+                },
+                {
+                  "x": 370,
+                  "y": 420
+                }
+              ],
+              "target": {
+                "x": 381,
+                "y": 385
+              },
+              "alternatives": [
+                {
+                  "id": "planter",
+                  "score": 4.558271576644653,
+                  "reachable": true
+                },
+                {
+                  "id": "o03-shell",
+                  "score": 2.99,
+                  "reachable": true
+                },
+                {
+                  "id": "home",
+                  "score": 0.6251667037201738,
+                  "reachable": true
+                }
+              ]
+            },
+            "history": [
+              {
+                "ordinal": 1,
+                "personality": "lively",
+                "version": 1,
+                "strategy": 2,
+                "parameters": {
+                  "id": "lively",
+                  "version": 1,
+                  "label": "活泼",
+                  "dwellMin": 12,
+                  "dwellMax": 20,
+                  "explore": 0.95
+                },
+                "samples": [
+                  0.23878083983436227,
+                  0.9134932646993548,
+                  0.6124916663393378
+                ],
+                "seed": 7,
+                "kind": "explore",
+                "reason": "inspect-object",
+                "origin": {
+                  "x": 240,
+                  "y": 555
+                },
+                "revision": 1,
+                "attention": "investigate",
+                "interestId": "planter",
+                "interestKey": "[\"planter\",\"plant\",541,256.75]",
+                "interestLabel": "花箱",
+                "interestKind": "plant",
+                "focus": {
+                  "x": 541,
+                  "y": 256.75
+                },
+                "result": "pending",
+                "duration": 19.307946117594838,
+                "candidates": [
+                  {
+                    "x": 381,
+                    "y": 385
+                  },
+                  {
+                    "x": 235,
+                    "y": 555
+                  },
+                  {
+                    "x": 370,
+                    "y": 420
+                  }
+                ],
+                "target": {
+                  "x": 381,
+                  "y": 385
+                },
+                "alternatives": [
+                  {
+                    "id": "planter",
+                    "score": 4.558271576644653,
+                    "reachable": true
+                  },
+                  {
+                    "id": "o03-shell",
+                    "score": 2.99,
+                    "reachable": true
+                  },
+                  {
+                    "id": "home",
+                    "score": 0.6251667037201738,
+                    "reachable": true
+                  }
+                ]
+              }
+            ],
+            "observations": [],
+            "clock": 4.7511,
+            "fallback": false
+          },
+          "observed": 0,
+          "workRest": null
+        },
+        "personalityPerformance": {
+          "active": true,
+          "expression": "surprised",
+          "look": [
+            5.4999999999994245,
+            -1.0311479405540551
+          ],
+          "attention": "investigate",
+          "focus": {
+            "x": 541,
+            "y": 256.75
+          },
+          "label": "看看花箱的细节"
+        },
+        "performance": {
+          "kind": "idle",
+          "expression": "neutral",
+          "label": "歇一会儿",
+          "age": 4.852200000000002,
+          "cue": null,
+          "look": [
+            -0.008635923404104,
+            -0.004934813373773715
+          ],
+          "armNear": 3.9753259331311313,
+          "armFar": -2,
+          "gaze": 0,
+          "arms": [
+            4.267236884527516,
+            -2
+          ]
+        },
+        "owner": "ground",
+        "renderedOwner": "ground",
+        "generation": 2,
+        "walkId": null,
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "error": null,
+        "inspection": null,
+        "loop": false,
+        "bodyX": 381,
+        "bodyY": 385,
+        "navigation": {
+          "x": 381,
+          "y": 385,
+          "speed": 0,
+          "facing": 1,
+          "phase": "idle",
+          "id": null,
+          "generation": 1,
+          "revision": 1,
+          "plan": null
+        },
+        "bubble": {
+          "x": 381,
+          "y": 219.09129742276855
+        },
+        "hit": [
+          {
+            "x": 381,
+            "y": 295.771789893937,
+            "r": 75.9375
+          }
+        ],
+        "moving": false,
+        "facing": 1,
+        "visualFacing": 1,
+        "destinationX": 390,
+        "destinationY": 600,
+        "actionNavigation": null,
+        "actionRevision": null,
+        "objectRevision": 2,
+        "continuous": true,
+        "groundQuad": [
+          {
+            "x": 315,
+            "y": 522.198275862069
+          },
+          {
+            "x": 355,
+            "y": 522.198275862069
+          },
+          {
+            "x": 315,
+            "y": 555
+          }
+        ],
+        "groundGrip": {
+          "x": 335,
+          "y": 523.8383620689655
+        },
+        "hand": {
+          "x": 408.49254206772014,
+          "y": 344.69410372293396
+        },
+        "heldGrip": {
+          "x": 408.49254206772014,
+          "y": 344.69410372293396
+        },
+        "heldQuad": [
+          {
+            "x": 388.46116654054964,
+            "y": 343.0576101010664
+          },
+          {
+            "x": 428.52391710822224,
+            "y": 343.057615956774
+          },
+          {
+            "x": 388.4611714072329,
+            "y": 375.78742398134125
+          }
+        ],
+        "feet": [
+          {
+            "x": 370.0281142391874,
+            "y": 385.00016575132
+          },
+          {
+            "x": 392.3732804771695,
+            "y": 384.99942996348614
+          }
+        ],
+        "gazeOrigin": {
+          "x": 391.65835823132346,
+          "y": 287.5632801679408
+        },
+        "renderedFace": "surprised",
+        "gesture": null,
+        "posture": {
+          "bodyY": 8.445463412970087e-7,
+          "waist": 0,
+          "plantWeight": 0
+        },
+        "pose": {
+          "drop": 0,
+          "propAngle": 0,
+          "look": [
+            5.4999999999994245,
+            -1.0311479405540551
+          ],
+          "plant": false,
+          "plantWeight": 1,
+          "hands": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "handArt": true
+        },
+        "sit": 0,
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 407.42669097029557,
+            "y": 338.4130961457412
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "contact": {
+          "distance": 193.63320747724364,
+          "groundDistance": 224.97389191665323
+        },
+        "bindingError": 0,
+        "propMirror": 1,
+        "activeTime": 5.000300000000005,
+        "speed": 1,
+        "sequence": 264
+      }
+    }
+  ],
+  "snapshot": {
+    "schema": 5,
+    "scope": "stage-5a-personality",
+    "world": {
+      "width": 1080,
+      "height": 660,
+      "units": "preview-css-px",
+      "origin": "top-left",
+      "root": "feet-midpoint"
+    },
+    "bodyEnvelope": {
+      "size": 180,
+      "left": 100,
+      "right": 100,
+      "top": 205,
+      "bottom": 8,
+      "turn": 12
+    },
+    "groundEnvelope": {
+      "left": 100,
+      "right": 100,
+      "top": 24,
+      "bottom": 8
+    },
+    "layout": {
+      "revision": 1,
+      "actor": {
+        "x": 240,
+        "y": 555
+      },
+      "shell": {
+        "x": 335,
+        "width": 40,
+        "y": 555
+      },
+      "destination": 390,
+      "objects": [
+        {
+          "id": "home",
+          "label": "小窝",
+          "asset": "home.svg",
+          "x": 65,
+          "y": 155,
+          "w": 210,
+          "h": 175,
+          "solid": true,
+          "layer": "depth",
+          "anchor": [
+            170,
+            330
+          ]
+        },
+        {
+          "id": "station",
+          "label": "工作岗位",
+          "asset": "station.svg",
+          "x": 820,
+          "y": 245,
+          "w": 170,
+          "h": 120,
+          "solid": true,
+          "layer": "depth",
+          "anchor": [
+            850,
+            600
+          ]
+        },
+        {
+          "id": "planter",
+          "label": "珊瑚花箱",
+          "asset": "planter.svg",
+          "x": 485,
+          "y": 220,
+          "w": 112,
+          "h": 105,
+          "solid": true,
+          "layer": "depth"
+        },
+        {
+          "id": "gate-north",
+          "label": "门槛北柱",
+          "asset": "post.svg",
+          "x": 621,
+          "y": 280,
+          "w": 28,
+          "h": 40,
+          "solid": true,
+          "layer": "depth"
+        },
+        {
+          "id": "gate-south",
+          "label": "门槛南柱",
+          "asset": "post.svg",
+          "x": 621,
+          "y": 622,
+          "w": 28,
+          "h": 32,
+          "solid": true,
+          "layer": "depth"
+        },
+        {
+          "id": "panel",
+          "label": "手动内容禁区",
+          "x": 755,
+          "y": 40,
+          "w": 280,
+          "h": 195,
+          "solid": true,
+          "layer": "restricted"
+        }
+      ],
+      "zones": [
+        {
+          "id": "life",
+          "label": "生活区",
+          "x": 35,
+          "y": 155,
+          "w": 410,
+          "h": 470
+        },
+        {
+          "id": "work",
+          "label": "岗位区",
+          "x": 735,
+          "y": 250,
+          "w": 300,
+          "h": 375
+        }
+      ],
+      "route": [
+        {
+          "x": 240,
+          "y": 555
+        },
+        {
+          "x": 450,
+          "y": 555
+        },
+        {
+          "x": 540,
+          "y": 575
+        },
+        {
+          "x": 700,
+          "y": 600
+        },
+        {
+          "x": 850,
+          "y": 600
+        }
+      ],
+      "destinationY": 600
+    },
+    "route": {
+      "revision": 1,
+      "precision": 0.5,
+      "model": "finite ground bodies / full-body restricted volumes",
+      "direct": {
+        "passed": true,
+        "violations": []
+      },
+      "passed": true,
+      "alternative": false,
+      "points": [
+        {
+          "x": 381,
+          "y": 385
+        },
+        {
+          "x": 850,
+          "y": 600
+        }
+      ]
+    },
+    "legacyRoute": {
+      "passed": true,
+      "violations": [],
+      "length": 614,
+      "body": {
+        "size": 180,
+        "left": 100,
+        "right": 100,
+        "top": 205,
+        "bottom": 8,
+        "turn": 12
+      },
+      "margin": 12,
+      "revision": 1
+    },
+    "navigationModel": {
+      "revision": 1,
+      "width": 1080,
+      "height": 660,
+      "body": {
+        "size": 180,
+        "left": 100,
+        "right": 100,
+        "top": 205,
+        "bottom": 8,
+        "turn": 12
+      },
+      "groundBody": {
+        "left": 100,
+        "right": 100,
+        "top": 24,
+        "bottom": 8
+      },
+      "margin": 12,
+      "obstacles": [
+        {
+          "id": "home",
+          "label": "小窝",
+          "kind": "ground-solid",
+          "x": 83,
+          "y": 300,
+          "w": 176,
+          "h": 21,
+          "silhouette": {
+            "x": 83,
+            "y": 157,
+            "w": 176,
+            "h": 164
+          },
+          "art": {
+            "x": 65,
+            "y": 155,
+            "w": 210,
+            "h": 175
+          }
+        },
+        {
+          "id": "station",
+          "label": "工作岗位",
+          "kind": "ground-solid",
+          "x": 827,
+          "y": 326,
+          "w": 156,
+          "h": 34,
+          "silhouette": {
+            "x": 827,
+            "y": 251,
+            "w": 156,
+            "h": 109
+          },
+          "art": {
+            "x": 820,
+            "y": 245,
+            "w": 170,
+            "h": 120
+          }
+        },
+        {
+          "id": "planter",
+          "label": "珊瑚花箱",
+          "kind": "ground-solid",
+          "x": 491,
+          "y": 280,
+          "w": 101,
+          "h": 37,
+          "silhouette": {
+            "x": 491,
+            "y": 226,
+            "w": 101,
+            "h": 91
+          },
+          "art": {
+            "x": 485,
+            "y": 220,
+            "w": 112,
+            "h": 105
+          }
+        },
+        {
+          "id": "gate-north",
+          "label": "门槛北柱",
+          "kind": "ground-solid",
+          "x": 624,
+          "y": 302,
+          "w": 22,
+          "h": 14,
+          "silhouette": {
+            "x": 624,
+            "y": 282,
+            "w": 22,
+            "h": 34
+          },
+          "art": {
+            "x": 621,
+            "y": 280,
+            "w": 28,
+            "h": 40
+          }
+        },
+        {
+          "id": "gate-south",
+          "label": "门槛南柱",
+          "kind": "ground-solid",
+          "x": 624,
+          "y": 639.6,
+          "w": 22,
+          "h": 11.2,
+          "silhouette": {
+            "x": 624,
+            "y": 623.6,
+            "w": 22,
+            "h": 27.2
+          },
+          "art": {
+            "x": 621,
+            "y": 622,
+            "w": 28,
+            "h": 32
+          }
+        },
+        {
+          "id": "panel",
+          "label": "手动内容禁区",
+          "kind": "full-body-restricted",
+          "x": 755,
+          "y": 40,
+          "w": 280,
+          "h": 195,
+          "silhouette": {
+            "x": 755,
+            "y": 40,
+            "w": 280,
+            "h": 195
+          },
+          "art": {
+            "x": 755,
+            "y": 40,
+            "w": 280,
+            "h": 195
+          }
+        }
+      ]
+    },
+    "navigation": {
+      "id": 0,
+      "generation": 2,
+      "target": null,
+      "active": false,
+      "paused": false
+    },
+    "horizontalAction": {
+      "passed": true,
+      "violations": [],
+      "length": 230,
+      "body": {
+        "size": 180,
+        "left": 100,
+        "right": 100,
+        "top": 205,
+        "bottom": 8,
+        "turn": 12
+      },
+      "margin": 0,
+      "revision": 1
+    },
+    "measuredRaster": {
+      "frames": 33,
+      "left": 73.0158475370539,
+      "right": 55.10219787736571,
+      "top": 166,
+      "bottom": 0.5333758907943889,
+      "binding": 0,
+      "wrongLayers": 0,
+      "ownerMismatches": 0,
+      "ownerSwitchJump": 0
+    },
+    "occlusion": [
+      "gate-north",
+      "planter",
+      "home",
+      "station",
+      "body-shell-fingers",
+      "ground-shell",
+      "gate-south"
+    ],
+    "asset": "/web/props/shell/asset.json",
+    "navigationImplemented": true,
+    "frame": {
+      "phase": "idle",
+      "suspended": null,
+      "elapsed": 5.148300000000003,
+      "coordination": {
+        "phase": "personal-dwell",
+        "suspended": null,
+        "reason": null,
+        "life": null,
+        "sessions": [],
+        "focus": null,
+        "interaction": null,
+        "occupied": false,
+        "admission": 0,
+        "navigation": null,
+        "serial": 1,
+        "elapsed": 0.14799999999999913,
+        "lastAt": 7195.900000095367,
+        "revision": 1,
+        "personality": {
+          "id": "lively",
+          "version": 1,
+          "overrides": {
+            "lively": {
+              "dwellMin": 12,
+              "dwellMax": 20,
+              "explore": 0.95
+            }
+          },
+          "seed": 7,
+          "ordinal": 1,
+          "enabled": true,
+          "permissions": {
+            "mode": "quiet",
+            "roam": true,
+            "input": "idle",
+            "occupied": false
+          },
+          "decision": {
+            "ordinal": 1,
+            "personality": "lively",
+            "version": 1,
+            "strategy": 2,
+            "parameters": {
+              "id": "lively",
+              "version": 1,
+              "label": "活泼",
+              "dwellMin": 12,
+              "dwellMax": 20,
+              "explore": 0.95
+            },
+            "samples": [
+              0.23878083983436227,
+              0.9134932646993548,
+              0.6124916663393378
+            ],
+            "seed": 7,
+            "kind": "explore",
+            "reason": "inspect-object",
+            "origin": {
+              "x": 240,
+              "y": 555
+            },
+            "revision": 1,
+            "attention": "investigate",
+            "interestId": "planter",
+            "interestKey": "[\"planter\",\"plant\",541,256.75]",
+            "interestLabel": "花箱",
+            "interestKind": "plant",
+            "focus": {
+              "x": 541,
+              "y": 256.75
+            },
+            "result": "pending",
+            "duration": 19.307946117594838,
+            "candidates": [
+              {
+                "x": 381,
+                "y": 385
+              },
+              {
+                "x": 235,
+                "y": 555
+              },
+              {
+                "x": 370,
+                "y": 420
+              }
+            ],
+            "target": {
+              "x": 381,
+              "y": 385
+            },
+            "alternatives": [
+              {
+                "id": "planter",
+                "score": 4.558271576644653,
+                "reachable": true
+              },
+              {
+                "id": "o03-shell",
+                "score": 2.99,
+                "reachable": true
+              },
+              {
+                "id": "home",
+                "score": 0.6251667037201738,
+                "reachable": true
+              }
+            ]
+          },
+          "history": [
+            {
+              "ordinal": 1,
+              "personality": "lively",
+              "version": 1,
+              "strategy": 2,
+              "parameters": {
+                "id": "lively",
+                "version": 1,
+                "label": "活泼",
+                "dwellMin": 12,
+                "dwellMax": 20,
+                "explore": 0.95
+              },
+              "samples": [
+                0.23878083983436227,
+                0.9134932646993548,
+                0.6124916663393378
+              ],
+              "seed": 7,
+              "kind": "explore",
+              "reason": "inspect-object",
+              "origin": {
+                "x": 240,
+                "y": 555
+              },
+              "revision": 1,
+              "attention": "investigate",
+              "interestId": "planter",
+              "interestKey": "[\"planter\",\"plant\",541,256.75]",
+              "interestLabel": "花箱",
+              "interestKind": "plant",
+              "focus": {
+                "x": 541,
+                "y": 256.75
+              },
+              "result": "pending",
+              "duration": 19.307946117594838,
+              "candidates": [
+                {
+                  "x": 381,
+                  "y": 385
+                },
+                {
+                  "x": 235,
+                  "y": 555
+                },
+                {
+                  "x": 370,
+                  "y": 420
+                }
+              ],
+              "target": {
+                "x": 381,
+                "y": 385
+              },
+              "alternatives": [
+                {
+                  "id": "planter",
+                  "score": 4.558271576644653,
+                  "reachable": true
+                },
+                {
+                  "id": "o03-shell",
+                  "score": 2.99,
+                  "reachable": true
+                },
+                {
+                  "id": "home",
+                  "score": 0.6251667037201738,
+                  "reachable": true
+                }
+              ]
+            }
+          ],
+          "observations": [],
+          "clock": 4.899099999999999,
+          "fallback": false
+        },
+        "observed": 0.14799999999999913,
+        "workRest": null
+      },
+      "personalityPerformance": {
+        "active": true,
+        "expression": "surprised",
+        "look": [
+          5.499999999999784,
+          -1.049261664973329
+        ],
+        "attention": "investigate",
+        "focus": {
+          "x": 541,
+          "y": 258.34367765845707
+        },
+        "label": "看看花箱的细节"
+      },
+      "performance": {
+        "kind": "idle",
+        "expression": "neutral",
+        "label": "歇一会儿",
+        "age": 5.0002,
+        "cue": null,
+        "look": [
+          -0.07582705933137043,
+          -0.04332974818935454
+        ],
+        "armNear": 3.7833512590532274,
+        "armFar": -2,
+        "gaze": 0,
+        "arms": [
+          4.072231226557184,
+          -2
+        ]
+      },
+      "owner": "ground",
+      "renderedOwner": "ground",
+      "generation": 2,
+      "walkId": null,
+      "commits": {
+        "pickup": 0,
+        "drop": 0
+      },
+      "error": null,
+      "inspection": null,
+      "loop": false,
+      "bodyX": 381,
+      "bodyY": 385,
+      "navigation": {
+        "x": 381,
+        "y": 385,
+        "speed": 0,
+        "facing": 1,
+        "phase": "idle",
+        "id": null,
+        "generation": 1,
+        "revision": 1,
+        "plan": null
+      },
+      "bubble": {
+        "x": 381,
+        "y": 218.21558139437408
+      },
+      "hit": [
+        {
+          "x": 381,
+          "y": 295.3008168545548,
+          "r": 75.9375
+        }
+      ],
+      "moving": false,
+      "facing": 1,
+      "visualFacing": 1,
+      "destinationX": 390,
+      "destinationY": 600,
+      "actionNavigation": null,
+      "actionRevision": null,
+      "objectRevision": 2,
+      "continuous": true,
+      "groundQuad": [
+        {
+          "x": 315,
+          "y": 522.198275862069
+        },
+        {
+          "x": 355,
+          "y": 522.198275862069
+        },
+        {
+          "x": 315,
+          "y": 555
+        }
+      ],
+      "groundGrip": {
+        "x": 335,
+        "y": 523.8383620689655
+      },
+      "hand": {
+        "x": 408.46503652997364,
+        "y": 344.6383547916846
+      },
+      "heldGrip": {
+        "x": 408.46503652997364,
+        "y": 344.6383547916846
+      },
+      "heldQuad": [
+        {
+          "x": 388.4538832500457,
+          "y": 342.9995933200099
+        },
+        {
+          "x": 428.4761896954028,
+          "y": 342.99959470912563
+        },
+        {
+          "x": 388.45388439503216,
+          "y": 375.77480886234713
+        }
+      ],
+      "feet": [
+        {
+          "x": 370.0391954066907,
+          "y": 385.0001010519902
+        },
+        {
+          "x": 392.36179408382367,
+          "y": 384.99980863439123
+        }
+      ],
+      "gazeOrigin": {
+        "x": 391.62296090187033,
+        "y": 287.4970709456277
+      },
+      "renderedFace": "surprised",
+      "gesture": null,
+      "posture": {
+        "bodyY": 7.910707389718329e-8,
+        "waist": 0,
+        "plantWeight": 0
+      },
+      "pose": {
+        "drop": 0,
+        "propAngle": 0,
+        "look": [
+          5.499999999999784,
+          -1.049261664973329
+        ],
+        "plant": false,
+        "plantWeight": 1,
+        "hands": {
+          "original": 1,
+          "reach": 0,
+          "grip": 0,
+          "release": 0
+        },
+        "handArt": true
+      },
+      "sit": 0,
+      "handArt": {
+        "enabled": true,
+        "baseline": false,
+        "weights": {
+          "original": 1,
+          "reach": 0,
+          "grip": 0,
+          "release": 0
+        },
+        "wrist": {
+          "x": 407.40030016237915,
+          "y": 338.3486281192615
+        },
+        "wristError": 0,
+        "contactError": 0,
+        "renderMode": "continuous-mesh",
+        "closure": 0.25,
+        "surfaceAlpha": 1,
+        "layers": {
+          "palm": 5.02,
+          "prop": 5.05,
+          "fingers": 5.2
+        },
+        "frontWeight": 1,
+        "externalProp": true
+      },
+      "contact": {
+        "distance": 193.67435091030478,
+        "groundDistance": 224.98420745309102
+      },
+      "bindingError": 0,
+      "propMirror": 1,
+      "activeTime": 5.148300000000003,
+      "speed": 1,
+      "sequence": 271
+    },
+    "painted": {
+      "phase": "idle",
+      "suspended": null,
+      "elapsed": 5.148300000000003,
+      "coordination": {
+        "phase": "personal-dwell",
+        "suspended": null,
+        "reason": null,
+        "life": null,
+        "sessions": [],
+        "focus": null,
+        "interaction": null,
+        "occupied": false,
+        "admission": 0,
+        "navigation": null,
+        "serial": 1,
+        "elapsed": 0.14799999999999913,
+        "lastAt": 7195.900000095367,
+        "revision": 1,
+        "personality": {
+          "id": "lively",
+          "version": 1,
+          "overrides": {
+            "lively": {
+              "dwellMin": 12,
+              "dwellMax": 20,
+              "explore": 0.95
+            }
+          },
+          "seed": 7,
+          "ordinal": 1,
+          "enabled": true,
+          "permissions": {
+            "mode": "quiet",
+            "roam": true,
+            "input": "idle",
+            "occupied": false
+          },
+          "decision": {
+            "ordinal": 1,
+            "personality": "lively",
+            "version": 1,
+            "strategy": 2,
+            "parameters": {
+              "id": "lively",
+              "version": 1,
+              "label": "活泼",
+              "dwellMin": 12,
+              "dwellMax": 20,
+              "explore": 0.95
+            },
+            "samples": [
+              0.23878083983436227,
+              0.9134932646993548,
+              0.6124916663393378
+            ],
+            "seed": 7,
+            "kind": "explore",
+            "reason": "inspect-object",
+            "origin": {
+              "x": 240,
+              "y": 555
+            },
+            "revision": 1,
+            "attention": "investigate",
+            "interestId": "planter",
+            "interestKey": "[\"planter\",\"plant\",541,256.75]",
+            "interestLabel": "花箱",
+            "interestKind": "plant",
+            "focus": {
+              "x": 541,
+              "y": 256.75
+            },
+            "result": "pending",
+            "duration": 19.307946117594838,
+            "candidates": [
+              {
+                "x": 381,
+                "y": 385
+              },
+              {
+                "x": 235,
+                "y": 555
+              },
+              {
+                "x": 370,
+                "y": 420
+              }
+            ],
+            "target": {
+              "x": 381,
+              "y": 385
+            },
+            "alternatives": [
+              {
+                "id": "planter",
+                "score": 4.558271576644653,
+                "reachable": true
+              },
+              {
+                "id": "o03-shell",
+                "score": 2.99,
+                "reachable": true
+              },
+              {
+                "id": "home",
+                "score": 0.6251667037201738,
+                "reachable": true
+              }
+            ]
+          },
+          "history": [
+            {
+              "ordinal": 1,
+              "personality": "lively",
+              "version": 1,
+              "strategy": 2,
+              "parameters": {
+                "id": "lively",
+                "version": 1,
+                "label": "活泼",
+                "dwellMin": 12,
+                "dwellMax": 20,
+                "explore": 0.95
+              },
+              "samples": [
+                0.23878083983436227,
+                0.9134932646993548,
+                0.6124916663393378
+              ],
+              "seed": 7,
+              "kind": "explore",
+              "reason": "inspect-object",
+              "origin": {
+                "x": 240,
+                "y": 555
+              },
+              "revision": 1,
+              "attention": "investigate",
+              "interestId": "planter",
+              "interestKey": "[\"planter\",\"plant\",541,256.75]",
+              "interestLabel": "花箱",
+              "interestKind": "plant",
+              "focus": {
+                "x": 541,
+                "y": 256.75
+              },
+              "result": "pending",
+              "duration": 19.307946117594838,
+              "candidates": [
+                {
+                  "x": 381,
+                  "y": 385
+                },
+                {
+                  "x": 235,
+                  "y": 555
+                },
+                {
+                  "x": 370,
+                  "y": 420
+                }
+              ],
+              "target": {
+                "x": 381,
+                "y": 385
+              },
+              "alternatives": [
+                {
+                  "id": "planter",
+                  "score": 4.558271576644653,
+                  "reachable": true
+                },
+                {
+                  "id": "o03-shell",
+                  "score": 2.99,
+                  "reachable": true
+                },
+                {
+                  "id": "home",
+                  "score": 0.6251667037201738,
+                  "reachable": true
+                }
+              ]
+            }
+          ],
+          "observations": [],
+          "clock": 4.899099999999999,
+          "fallback": false
+        },
+        "observed": 0.14799999999999913,
+        "workRest": null
+      },
+      "personalityPerformance": {
+        "active": true,
+        "expression": "surprised",
+        "look": [
+          5.499999999999784,
+          -1.049261664973329
+        ],
+        "attention": "investigate",
+        "focus": {
+          "x": 541,
+          "y": 258.34367765845707
+        },
+        "label": "看看花箱的细节"
+      },
+      "performance": {
+        "kind": "idle",
+        "expression": "neutral",
+        "label": "歇一会儿",
+        "age": 5.0002,
+        "cue": null,
+        "look": [
+          -0.07582705933137043,
+          -0.04332974818935454
+        ],
+        "armNear": 3.7833512590532274,
+        "armFar": -2,
+        "gaze": 0,
+        "arms": [
+          4.072231226557184,
+          -2
+        ]
+      },
+      "owner": "ground",
+      "renderedOwner": "ground",
+      "generation": 2,
+      "walkId": null,
+      "commits": {
+        "pickup": 0,
+        "drop": 0
+      },
+      "error": null,
+      "inspection": null,
+      "loop": false,
+      "bodyX": 381,
+      "bodyY": 385,
+      "navigation": {
+        "x": 381,
+        "y": 385,
+        "speed": 0,
+        "facing": 1,
+        "phase": "idle",
+        "id": null,
+        "generation": 1,
+        "revision": 1,
+        "plan": null
+      },
+      "bubble": {
+        "x": 381,
+        "y": 218.21558139437408
+      },
+      "hit": [
+        {
+          "x": 381,
+          "y": 295.3008168545548,
+          "r": 75.9375
+        }
+      ],
+      "moving": false,
+      "facing": 1,
+      "visualFacing": 1,
+      "destinationX": 390,
+      "destinationY": 600,
+      "actionNavigation": null,
+      "actionRevision": null,
+      "objectRevision": 2,
+      "continuous": true,
+      "groundQuad": [
+        {
+          "x": 315,
+          "y": 522.198275862069
+        },
+        {
+          "x": 355,
+          "y": 522.198275862069
+        },
+        {
+          "x": 315,
+          "y": 555
+        }
+      ],
+      "groundGrip": {
+        "x": 335,
+        "y": 523.8383620689655
+      },
+      "hand": {
+        "x": 408.46503652997364,
+        "y": 344.6383547916846
+      },
+      "heldGrip": {
+        "x": 408.46503652997364,
+        "y": 344.6383547916846
+      },
+      "heldQuad": [
+        {
+          "x": 388.4538832500457,
+          "y": 342.9995933200099
+        },
+        {
+          "x": 428.4761896954028,
+          "y": 342.99959470912563
+        },
+        {
+          "x": 388.45388439503216,
+          "y": 375.77480886234713
+        }
+      ],
+      "feet": [
+        {
+          "x": 370.0391954066907,
+          "y": 385.0001010519902
+        },
+        {
+          "x": 392.36179408382367,
+          "y": 384.99980863439123
+        }
+      ],
+      "gazeOrigin": {
+        "x": 391.62296090187033,
+        "y": 287.4970709456277
+      },
+      "renderedFace": "surprised",
+      "gesture": null,
+      "posture": {
+        "bodyY": 7.910707389718329e-8,
+        "waist": 0,
+        "plantWeight": 0
+      },
+      "pose": {
+        "drop": 0,
+        "propAngle": 0,
+        "look": [
+          5.499999999999784,
+          -1.049261664973329
+        ],
+        "plant": false,
+        "plantWeight": 1,
+        "hands": {
+          "original": 1,
+          "reach": 0,
+          "grip": 0,
+          "release": 0
+        },
+        "handArt": true
+      },
+      "sit": 0,
+      "handArt": {
+        "enabled": true,
+        "baseline": false,
+        "weights": {
+          "original": 1,
+          "reach": 0,
+          "grip": 0,
+          "release": 0
+        },
+        "wrist": {
+          "x": 407.40030016237915,
+          "y": 338.3486281192615
+        },
+        "wristError": 0,
+        "contactError": 0,
+        "renderMode": "continuous-mesh",
+        "closure": 0.25,
+        "surfaceAlpha": 1,
+        "layers": {
+          "palm": 5.02,
+          "prop": 5.05,
+          "fingers": 5.2
+        },
+        "frontWeight": 1,
+        "externalProp": true
+      },
+      "contact": {
+        "distance": 193.67435091030478,
+        "groundDistance": 224.98420745309102
+      },
+      "bindingError": 0,
+      "propMirror": 1,
+      "activeTime": 5.148300000000003,
+      "speed": 1,
+      "sequence": 271
+    },
+    "events": [
+      {
+        "type": "reset",
+        "phase": "idle",
+        "generation": 2,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": null,
+        "activeTime": 0,
+        "kind": "motion-action"
+      },
+      {
+        "type": "relocate",
+        "x": 335,
+        "y": 555,
+        "phase": "idle",
+        "generation": 2,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 272.7062014316815,
+          "groundDistance": 575.0239980705255,
+          "settled": false
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 266.38603770034905,
+            "y": 508.31118183111107
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 0.016700000000000045,
+        "kind": "motion-action"
+      },
+      {
+        "kind": "navigation-arrived",
+        "id": 8000000000001,
+        "generation": 1,
+        "revision": 1,
+        "x": 381,
+        "y": 385
+      }
+    ],
+    "bodyLayout": {
+      "x": 381,
+      "y": 385,
+      "navigation": {
+        "x": 381,
+        "y": 385,
+        "speed": 0,
+        "phase": "idle",
+        "id": null,
+        "generation": 1,
+        "revision": 1
+      },
+      "facing": 1,
+      "mode": "idle",
+      "busy": false,
+      "moving": false,
+      "pressing": false,
+      "cursor": "",
+      "box": {
+        "x": 304.9197295006703,
+        "y": 214.01093212899508,
+        "w": 152.16054099865937,
+        "h": 170.98906787100492
+      },
+      "hit": [
+        {
+          "x": 381,
+          "y": 295.3008168545548,
+          "r": 75.9375
+        }
+      ],
+      "bubble": {
+        "x": 381,
+        "y": 218.21558139437408
+      },
+      "side": {
+        "x": 381,
+        "y": 295.30081690999106,
+        "reach": 73.125
+      }
+    },
+    "capabilities": [
+      "navigation-2d-v1"
+    ]
+  }
+}

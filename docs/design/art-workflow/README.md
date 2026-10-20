@@ -1,6 +1,6 @@
 # 美术与动作工作流
 
-第 4 期使用[生活／工作双线预览](space-v1/README.md#第-4-期生活工作双线)，模拟事实与真实宿主分别结算。第 3 期[连续动作空间预览](space-v1/README.md#第-3-期连续动作与物件)已验收，使用 `?stage=3`；[O03 连续拿放工作台](o03-shell-hands-v1/README.md)与无参数第 2 期入口继续保留。分支范围和接手顺序见[当前开发状态](../../aliveness-development.md)。原 O03 仍可由右上角链接或原路径进入；早期生成、绑定和动作叙述见[归档](../../archive/2026-10-aliveness/README.md)。
+第 5A 期使用[人格行为对照](space-v1/README.md#第-5a-期同地图的人格行为对照)，对象关注与表现规则见[人格契约](../personality-behavior-contract.md)。第 4 期使用[生活／工作双线预览](space-v1/README.md#第-4-期生活工作双线)，模拟事实与真实宿主分别结算。第 3 期[连续动作空间预览](space-v1/README.md#第-3-期连续动作与物件)已验收，使用 `?stage=3`；[O03 连续拿放工作台](o03-shell-hands-v1/README.md)与无参数第 2 期入口继续保留。分支范围和接手顺序见[当前开发状态](../../aliveness-development.md)。原 O03 仍可由右上角链接或原路径进入；早期生成、绑定和动作叙述见[归档](../../archive/2026-10-aliveness/README.md)。
 
 ## 制作美术
 

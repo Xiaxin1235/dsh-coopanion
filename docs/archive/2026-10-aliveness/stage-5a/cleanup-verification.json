@@ -1,0 +1,748 @@
+{
+  "date": "2026-10-20",
+  "type": "documentation-cleanup-not-functional-retest",
+  "baseCommit": "178437b8ca3ee3c47879c852c4f6a9fd95c99c28",
+  "branch": "codex/aliveness-foundation",
+  "currentHandoff": "docs/aliveness-development.md",
+  "changes": {
+    "removed": "Expired local-only authorization and prospective implementation instructions from current handoff; initial engineering report removed as current workbench result",
+    "archived": "Four byte-identical initial/pre-cleanup handoffs plus 32 selected evidence originals",
+    "updated": [
+      ".gitattributes",
+      ".gitignore",
+      "docs/README.md",
+      "docs/aliveness-development.md",
+      "docs/archive/2026-10-aliveness/README.md",
+      "docs/archive/README.md",
+      "docs/design/README.md",
+      "docs/design/aliveness-art-assets.md",
+      "docs/design/aliveness-implementation-plan.md",
+      "docs/design/art-workflow/README.md",
+      "docs/design/art-workflow/space-v1/README.md",
+      "docs/design/living-space-contract.md",
+      "docs/design/personality-behavior-contract.md",
+      "docs/development.md",
+      "docs/reports/README.md"
+    ],
+    "deletedFiles": [],
+    "retained": "Current contracts, clearly labeled future designs, original reports/assets/licenses and historical evidence; generated runtime dependencies and user layouts untouched"
+  },
+  "protection": {
+    "preexistingFilesVerified": 1799,
+    "changedOriginals": [],
+    "snapshotsVerified": 4,
+    "evidenceCopiesVerified": 32,
+    "evidenceBytes": 14801296
+  },
+  "deliverySourceVerification": [
+    {
+      "report": "artifacts/stage-5a-browser-20261020-05/personality.json",
+      "deliveryCommit": "e4858ddc39ddae04b774abe48356d9b8643fbe86",
+      "trackedSourcesVerified": 41,
+      "untrackedGeneratedInputs": [
+        "docs/design/art-workflow/space-v1/work-facts.generated.js"
+      ]
+    },
+    {
+      "report": "artifacts/stage-5a-native-20261020-03/personality.json",
+      "deliveryCommit": "e4858ddc39ddae04b774abe48356d9b8643fbe86",
+      "trackedSourcesVerified": 41,
+      "untrackedGeneratedInputs": [
+        "docs/design/art-workflow/space-v1/work-facts.generated.js"
+      ]
+    },
+    {
+      "report": "artifacts/stage-5a-feedback-browser-20261020-05/personality.json",
+      "deliveryCommit": "178437b8ca3ee3c47879c852c4f6a9fd95c99c28",
+      "trackedSourcesVerified": 43,
+      "untrackedGeneratedInputs": [
+        "docs/design/art-workflow/space-v1/work-facts.generated.js"
+      ]
+    },
+    {
+      "report": "artifacts/stage-5a-feedback-native-20261020-03/personality.json",
+      "deliveryCommit": "178437b8ca3ee3c47879c852c4f6a9fd95c99c28",
+      "trackedSourcesVerified": 43,
+      "untrackedGeneratedInputs": [
+        "docs/design/art-workflow/space-v1/work-facts.generated.js"
+      ]
+    }
+  ],
+  "checks": {
+    "releaseMetadata": "passed at 0.4.13; package and lock unchanged",
+    "packDryRun": {
+      "passed": true,
+      "files": 669,
+      "historicalAndGeneratedFilesIncluded": 0,
+      "ignoreScripts": true
+    },
+    "ordinarySearch": {
+      "visibleMarkdown": 31,
+      "archiveEvidenceReportsVisible": false
+    },
+    "functionalTests": "Not rerun for documentation-only change; historical results remain bound to delivery commits",
+    "markdownLinks": {
+      "documents": 36,
+      "localLinks": 334,
+      "anchors": 17,
+      "freshCloneTargetsVerified": true,
+      "errors": []
+    },
+    "whitespace": "git diff --check passed"
+  },
+  "acceptance": {
+    "stage5aFeedbackUserAccepted": false,
+    "stage4EnhancedNaturalnessUserAccepted": false,
+    "nextFeatureStageAuthorizedByThisCleanup": false
+  },
+  "inventoryCounts": {
+    "current-entry-or-contract": 29,
+    "historical-archive": 57,
+    "future-candidate": 2,
+    "provenance-or-frozen-art-fixture": 14,
+    "fixed-evidence": 20,
+    "fixed-report": 6
+  },
+  "documentInventory": [
+    {
+      "path": "AGENTS.md",
+      "category": "current-entry-or-contract",
+      "changed": false
+    },
+    {
+      "path": "README.md",
+      "category": "current-entry-or-contract",
+      "changed": false
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "category": "current-entry-or-contract",
+      "changed": false
+    },
+    {
+      "path": "docs/README.md",
+      "category": "current-entry-or-contract",
+      "changed": true
+    },
+    {
+      "path": "docs/aliveness-development.md",
+      "category": "current-entry-or-contract",
+      "changed": true
+    },
+    {
+      "path": "docs/archive/2026-10-16/interaction-fixes.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-16/lifecycle-startup.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-16/upstream-dependency.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-16/weekend-startup.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-16/windows-startup.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-19/live-brainstorm.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/README.md",
+      "category": "historical-archive",
+      "changed": true
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/aliveness-concept-v0.1.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/art-workflow-first-run.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/o03-generation-brief.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/o03-interaction-v1.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/o03-motion-art-gaps-v1.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/o03-motion-v1.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/pre-space-v1-state.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-1-handoff/README.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-1-handoff/asset-requirements-v0.3-at-9ab04bc.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-1-handoff/development-state-at-9ab04bc.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-1-handoff/o03-workbench-at-9ab04bc.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-1-handoff/roadmap-v0.4-at-9ab04bc.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-1-handoff/space-workbench-at-9ab04bc.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-2/README.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-2/snapshots/docs/aliveness-development.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-2/snapshots/docs/design/aliveness-art-assets.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-2/snapshots/docs/design/aliveness-implementation-plan.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-2/snapshots/docs/design/aliveness-stage-2.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-2/snapshots/docs/design/art-workflow/o03-shell-hands-v1/README.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-2/snapshots/docs/design/art-workflow/space-v1/README.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-2/snapshots/docs/design/space-routing-feedback.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-2/snapshots/docs/design/stage-2-validation.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-3/README.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-3/snapshots/docs/aliveness-development.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-3/snapshots/docs/design/aliveness-art-assets.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-3/snapshots/docs/design/aliveness-implementation-plan.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-3/snapshots/docs/design/art-workflow/space-v1/README.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-3/snapshots/docs/design/continuous-action-contract.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-3/snapshots/docs/design/living-space-contract.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-3/snapshots/docs/usage.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-4/README.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-4/snapshots/docs/README.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-4/snapshots/docs/aliveness-development.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-4/snapshots/docs/design/README.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-4/snapshots/docs/design/aliveness-art-assets.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-4/snapshots/docs/design/aliveness-implementation-plan.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-4/snapshots/docs/design/art-workflow/space-v1/README.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-4/snapshots/docs/design/harness-work-semantics.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-4/snapshots/docs/design/life-work-contract.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-4/snapshots/docs/development.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-4/snapshots/docs/reports/README.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-4/snapshots/docs/usage.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-5a/README.md",
+      "category": "historical-archive",
+      "changed": true
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-5a/snapshots/178437b/docs/aliveness-development.md",
+      "category": "historical-archive",
+      "changed": true
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-5a/snapshots/e4858dd/docs/aliveness-development.md",
+      "category": "historical-archive",
+      "changed": true
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-5a/snapshots/e4858dd/docs/design/art-workflow/space-v1/README.md",
+      "category": "historical-archive",
+      "changed": true
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/stage-5a/snapshots/e4858dd/docs/design/personality-behavior-contract.md",
+      "category": "historical-archive",
+      "changed": true
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/upstream-motion/README.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/2026-10-aliveness/upstream-motion/snapshots/docs/research/upstream-coopanion-2026-10-19.md",
+      "category": "historical-archive",
+      "changed": false
+    },
+    {
+      "path": "docs/archive/README.md",
+      "category": "historical-archive",
+      "changed": true
+    },
+    {
+      "path": "docs/assets/README.md",
+      "category": "current-entry-or-contract",
+      "changed": false
+    },
+    {
+      "path": "docs/characters.md",
+      "category": "current-entry-or-contract",
+      "changed": false
+    },
+    {
+      "path": "docs/companionship-contract.md",
+      "category": "current-entry-or-contract",
+      "changed": false
+    },
+    {
+      "path": "docs/design/README.md",
+      "category": "current-entry-or-contract",
+      "changed": true
+    },
+    {
+      "path": "docs/design/aliveness-art-assets.md",
+      "category": "future-candidate",
+      "changed": true
+    },
+    {
+      "path": "docs/design/aliveness-implementation-plan.md",
+      "category": "future-candidate",
+      "changed": true
+    },
+    {
+      "path": "docs/design/art-workflow/README.md",
+      "category": "current-entry-or-contract",
+      "changed": true
+    },
+    {
+      "path": "docs/design/art-workflow/o03-shell-hands-v1/README.md",
+      "category": "current-entry-or-contract",
+      "changed": false
+    },
+    {
+      "path": "docs/design/art-workflow/o03-shell-hands-v1/prompt-grip.txt",
+      "category": "provenance-or-frozen-art-fixture",
+      "changed": false
+    },
+    {
+      "path": "docs/design/art-workflow/o03-shell-hands-v1/prompt-reach.txt",
+      "category": "provenance-or-frozen-art-fixture",
+      "changed": false
+    },
+    {
+      "path": "docs/design/art-workflow/o03-shell-hands-v1/prompt-release.txt",
+      "category": "provenance-or-frozen-art-fixture",
+      "changed": false
+    },
+    {
+      "path": "docs/design/art-workflow/o03-shell-interaction-v1/README.md",
+      "category": "provenance-or-frozen-art-fixture",
+      "changed": false
+    },
+    {
+      "path": "docs/design/art-workflow/o03-shell-motion-v1/README.md",
+      "category": "provenance-or-frozen-art-fixture",
+      "changed": false
+    },
+    {
+      "path": "docs/design/art-workflow/o03-shell-motion-v1/art-gaps.md",
+      "category": "provenance-or-frozen-art-fixture",
+      "changed": false
+    },
+    {
+      "path": "docs/design/art-workflow/o03-shell-v1/brief.md",
+      "category": "provenance-or-frozen-art-fixture",
+      "changed": false
+    },
+    {
+      "path": "docs/design/art-workflow/o03-shell-v1/prompt-v1.txt",
+      "category": "provenance-or-frozen-art-fixture",
+      "changed": false
+    },
+    {
+      "path": "docs/design/art-workflow/o03-shell-v1/prompt-v2.txt",
+      "category": "provenance-or-frozen-art-fixture",
+      "changed": false
+    },
+    {
+      "path": "docs/design/art-workflow/space-v1/README.md",
+      "category": "current-entry-or-contract",
+      "changed": true
+    },
+    {
+      "path": "docs/design/art-workflow/space-v1/assets/design-brief.txt",
+      "category": "provenance-or-frozen-art-fixture",
+      "changed": false
+    },
+    {
+      "path": "docs/design/art-workflow/space-v1/evidence/long-pause/README.md",
+      "category": "provenance-or-frozen-art-fixture",
+      "changed": false
+    },
+    {
+      "path": "docs/design/art-workflow/space-v1/evidence/pixel-readback/README.md",
+      "category": "provenance-or-frozen-art-fixture",
+      "changed": false
+    },
+    {
+      "path": "docs/design/continuous-action-contract.md",
+      "category": "current-entry-or-contract",
+      "changed": false
+    },
+    {
+      "path": "docs/design/life-work-contract.md",
+      "category": "current-entry-or-contract",
+      "changed": false
+    },
+    {
+      "path": "docs/design/living-space-contract.md",
+      "category": "current-entry-or-contract",
+      "changed": true
+    },
+    {
+      "path": "docs/design/personality-behavior-contract.md",
+      "category": "current-entry-or-contract",
+      "changed": true
+    },
+    {
+      "path": "docs/desktop-recovery-contract.md",
+      "category": "current-entry-or-contract",
+      "changed": false
+    },
+    {
+      "path": "docs/development.md",
+      "category": "current-entry-or-contract",
+      "changed": true
+    },
+    {
+      "path": "docs/diagnostics-contract.md",
+      "category": "current-entry-or-contract",
+      "changed": false
+    },
+    {
+      "path": "docs/evidence/2026-10-19-upstream-motion/native-regression-followup-20261019/full-sampled/stack-arrival-screenshot.txt",
+      "category": "fixed-evidence",
+      "changed": false
+    },
+    {
+      "path": "docs/evidence/2026-10-20-stage-3-feedback/README.md",
+      "category": "fixed-evidence",
+      "changed": false
+    },
+    {
+      "path": "docs/evidence/2026-10-20-stage-3/README.md",
+      "category": "fixed-evidence",
+      "changed": false
+    },
+    {
+      "path": "docs/evidence/2026-10-20-stage-4/README.md",
+      "category": "fixed-evidence",
+      "changed": false
+    },
+    {
+      "path": "docs/evidence/2026-10-20-stage-5a/README.md",
+      "category": "fixed-evidence",
+      "changed": true
+    },
+    {
+      "path": "docs/evidence/AGENTS.md",
+      "category": "fixed-evidence",
+      "changed": false
+    },
+    {
+      "path": "docs/evidence/README.md",
+      "category": "fixed-evidence",
+      "changed": false
+    },
+    {
+      "path": "docs/evidence/m2/release-notes.md",
+      "category": "fixed-evidence",
+      "changed": false
+    },
+    {
+      "path": "docs/evidence/m3/release-notes.md",
+      "category": "fixed-evidence",
+      "changed": false
+    },
+    {
+      "path": "docs/evidence/m4/release-notes.md",
+      "category": "fixed-evidence",
+      "changed": false
+    },
+    {
+      "path": "docs/evidence/m5/native-input-startup-loop.mjs.txt",
+      "category": "fixed-evidence",
+      "changed": false
+    },
+    {
+      "path": "docs/evidence/m5/release-notes.md",
+      "category": "fixed-evidence",
+      "changed": false
+    },
+    {
+      "path": "docs/evidence/m6/release-notes.md",
+      "category": "fixed-evidence",
+      "changed": false
+    },
+    {
+      "path": "docs/evidence/p1/keyboard-platforms-20261016/initial-record-at-e820baf.md",
+      "category": "fixed-evidence",
+      "changed": false
+    },
+    {
+      "path": "docs/evidence/p1/keyboard-vm-20261016/dhcp-leases-after.txt",
+      "category": "fixed-evidence",
+      "changed": false
+    },
+    {
+      "path": "docs/evidence/p1/keyboard-vm-20261016/host-after-cleanup.txt",
+      "category": "fixed-evidence",
+      "changed": false
+    },
+    {
+      "path": "docs/evidence/p1/keyboard-vm-20261016/linux-environment.txt",
+      "category": "fixed-evidence",
+      "changed": false
+    },
+    {
+      "path": "docs/evidence/p1/keyboard-vm-20261016/windows-final-state.txt",
+      "category": "fixed-evidence",
+      "changed": false
+    },
+    {
+      "path": "docs/evidence/p1/vm-20261016/environment-during-run.txt",
+      "category": "fixed-evidence",
+      "changed": false
+    },
+    {
+      "path": "docs/evidence/releases/v0.4.12/release-notes.md",
+      "category": "fixed-evidence",
+      "changed": false
+    },
+    {
+      "path": "docs/licenses/dompurify.txt",
+      "category": "provenance-or-frozen-art-fixture",
+      "changed": false
+    },
+    {
+      "path": "docs/licenses/marked.txt",
+      "category": "provenance-or-frozen-art-fixture",
+      "changed": false
+    },
+    {
+      "path": "docs/multi-display-contract.md",
+      "category": "current-entry-or-contract",
+      "changed": false
+    },
+    {
+      "path": "docs/notification-contract.md",
+      "category": "current-entry-or-contract",
+      "changed": false
+    },
+    {
+      "path": "docs/release-notes.md",
+      "category": "current-entry-or-contract",
+      "changed": false
+    },
+    {
+      "path": "docs/releasing.md",
+      "category": "current-entry-or-contract",
+      "changed": false
+    },
+    {
+      "path": "docs/reports/README.md",
+      "category": "fixed-report",
+      "changed": true
+    },
+    {
+      "path": "docs/reports/stage-4-20261020.md",
+      "category": "fixed-report",
+      "changed": false
+    },
+    {
+      "path": "docs/reports/stage-4-semantics-20261020.md",
+      "category": "fixed-report",
+      "changed": false
+    },
+    {
+      "path": "docs/reports/stage-5a-20261020.md",
+      "category": "fixed-report",
+      "changed": false
+    },
+    {
+      "path": "docs/reports/stage-5a-feedback-20261020.md",
+      "category": "fixed-report",
+      "changed": false
+    },
+    {
+      "path": "docs/reports/weekend-observation-20261019.md",
+      "category": "fixed-report",
+      "changed": false
+    },
+    {
+      "path": "docs/session-chat-contract.md",
+      "category": "current-entry-or-contract",
+      "changed": false
+    },
+    {
+      "path": "docs/text-readability-contract.md",
+      "category": "current-entry-or-contract",
+      "changed": false
+    },
+    {
+      "path": "docs/usage.md",
+      "category": "current-entry-or-contract",
+      "changed": false
+    },
+    {
+      "path": "web/props/shell/hands/README.md",
+      "category": "current-entry-or-contract",
+      "changed": false
+    },
+    {
+      "path": "web/upstream/THIRD_PARTY_NOTICES.md",
+      "category": "current-entry-or-contract",
+      "changed": false
+    },
+    {
+      "path": "web/upstream/UPSTREAM.md",
+      "category": "current-entry-or-contract",
+      "changed": false
+    }
+  ]
+}

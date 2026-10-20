@@ -1,0 +1,356 @@
+{
+  "sourceIdentity": {
+    "baseCommit": "e4858ddc39ddae04b774abe48356d9b8643fbe86",
+    "node": "v24.21.0",
+    "platform": "darwin",
+    "sources": {
+      "web/prop-motion.js": "630785f93911f7987a911b878f342322fb8c2aef60b4c09380f0956ed314ce57",
+      "web/upstream/kit/space-action.js": "f061d41b6dabe73233ffad5128d741de978a851a236cb40a9a8bdb7ac16aa73a",
+      "web/upstream/kit/navigation.js": "c997f0d031c90a4863c6dc455b31c107e10adae14afe82af9bf83c4f4b856107",
+      "web/upstream/kit/body.js": "a242665a55dc3a2fcd146cb54121d44efb6abf337cda1145de0410238fb48dd6",
+      "web/upstream/kit/raster.js": "be2ee9bbee2bbccf14548d79c31bfea9ba68304b44b06cf67b8cbdeedb784672",
+      "web/upstream/whale/figure.js": "4da46490cd7dd2105bdecede03a88b4505558ad2139744338dc80fc0d4ee6faf",
+      "web/upstream/whale/hand-art.js": "d8ff703fc656d90faa86441d116daaa9b26b6bf38aa71e92cc4018668849d119",
+      "web/upstream/body-host.js": "d2b8dba27e2085c75cee6cdf0a8a5673f038ac9a208d175c67fa7a64e45a6e2b",
+      "web/upstream/figure-frame.js": "a4812b5e8c90f4ed9fd58522faf9f33d7aee9e534689a856c2c1f62ecd87a25b",
+      "desktop/space-preview.cjs": "db86e7fc8624e85126397eb54cfbbd1937c1ccdcb29b260562ce30b56ee9144a",
+      "docs/design/art-workflow/space-v1/scene.js": "c6b1a8489364d3533de7f2092b14110b8a06596e21ca016dbc8f5d13719b9fa5",
+      "docs/design/art-workflow/space-v1/geometry.js": "c8e5571fbf837f304949d2cddf062fda3206b18207613d9c8e06ebc413c31ad8",
+      "docs/design/art-workflow/space-v1/index.html": "15f69c0ecda3a740bdab46f87b1f465cefd4ac80435e9c5cdd61af47ac275ce3",
+      "docs/design/art-workflow/space-v1/style.css": "d2e8890d9dc2259bc7999a5bcb3df4c3037b7c1c3fbfd9051925f5d4cac0c3e2",
+      "docs/design/art-workflow/o03-shell-hands-v1/figure.js": "0dc58c22d58dc4de085568c033729ac39cba86a37c80563efdbad9964c0e2d1c",
+      "docs/design/art-workflow/o03-shell-hands-v1/composition.js": "49b35979d8a25efa34284f322043292963a9f8364cad778894de76b5577df9b0",
+      "docs/design/art-workflow/o03-shell-hands-v1/scene-model.json": "542ae9eece080a49a82619e0ae99f8d8bd6e328ec2f7c47d6ccde82c37bd8c77",
+      "web/props/shell/shell.png": "542b49cffbec43e41b4ca75a0ae184302b1e384b27539ff957806c71d28b910d",
+      "web/props/shell/asset.json": "db1cd6cc6dc21dd178fa95b8a49c0bed503755b06f4dee8a5fed52da139a2a65",
+      "web/props/shell/hands/asset.json": "489b3619c85ef34ec430a1c217adec4fcb8f10ebfd116a635d462352e4de26b4",
+      "web/props/shell/hands/grip.png": "5770450595803b4586fb8574e5135148b522b116e7f6d3de25f6e7643f91b930",
+      "tests/space-action-ui.mjs": "0659ee69d9b90b602b12d1f703da43c9a5ca2f3e55024b59c14891ad1d8d456a",
+      "tests/space-feedback.test.js": "5a5d66ae30fe32b1a10f28c90e56587d5d0346441e75c08c0710092a4e49577f",
+      "tests/space-feedback-ui.mjs": "93afe76618511a9a625a5fed45ecbdc7198d4452907214c9764e74419d060c68",
+      "docs/design/art-workflow/space-v1/layouts/stage-3-feedback-20261020.json": "f4991b785c8ab68ba303610f3278828e78cbf70405aa45f4005b194080990877",
+      "docs/design/art-workflow/space-v1/layouts/stage-3-feedback-moved-20261020.json": "c97a792a5fd9d367fe3c1c03944e69453e9f4ace5cb8d4db7d970d6b8828ac61",
+      "src/completion.ts": "a051d5b2d29267a53576dfe813a72a3844f1c5aef183f3397f0c2844a95ea8a2",
+      "src/work-facts.ts": "2e920d4f019b9c420d60cc4a502c83332ddd2991c5b7b7fa6247e3bc6d862e75",
+      "src/work-preview.ts": "341e03d893837be82baea74ef1ca3c550236ae05cb4476ba6e69f3954ae6fb8b",
+      "src/work-sources.ts": "64787392fd7447edf40f416a7b11a190dcf2244fb9d762bdbcec4ddd63a8f524",
+      "web/upstream/kit/work-performance.js": "7094223319a7eae59f256f3805eca407146f0a2618aad9ec58c0793da0b907f4",
+      "web/upstream/kit/life-work.js": "02938afd39d4165c9c05eaf0d113830dcc0bad65dd0c6fb7ff4a9fada4f6235e",
+      "web/upstream/kit/personality.js": "5f6eb63d972a953a6ed3b6817e348ce209c711aa3077a6dd35aa63e0fe239f1d",
+      "web/upstream/kit/personality-performance.js": "8459e68170b0d090ea68f4268369d0aa82362fea8949f8d9e5607fd820071d66",
+      "docs/design/art-workflow/space-v1/stage4-preview.js": "77d9c863d6a0628ea3fec206dc3395fe71ede293e5a05d034e965e91b86c5561",
+      "docs/design/art-workflow/space-v1/prepare-stage4.mjs": "3b7abb40f4e07605743cec3188c3b7c56bfed349a9664b5b9a9cc141bf7a5e45",
+      "docs/design/art-workflow/space-v1/work-facts.generated.js": "4306dd83a6dae73169754ba75dba0cb9d0913a0486c13a00347d5290d9963a2c",
+      "npm-shrinkwrap.json": "e07a7fbcb45dbec5dff78a37a42d293f7ee99fb95001b1f2991ce8b5b3c13d78",
+      "tests/life-work-ui.mjs": "4615c5dcf3d6fe9f7a17abf683982f80da6c2d4e60045c56288cfd377915d771",
+      "tests/work-semantics-ui.mjs": "f3bfee417e09accc9d24d06e1700d7e4cd70534275d972275d54cbc395a4566f"
+    },
+    "digest": "b2f0a51f93db5bef8ba1f5fdc77bb1848b5d5593fd3bcd222d5da993f5a02f5d"
+  },
+  "checks": [
+    "A tool, B approval, C completion remain independent",
+    "background completion cannot cover pending approval",
+    "background changes preserve selected session, draft and input focus",
+    "occupied input freezes body while request attention still updates",
+    "approval invites a response standing at the shared station",
+    "interleaved output updates do not switch body focus",
+    "thinking and composing produce distinct actual face and free-arm poses",
+    "one tool result retains the other in-flight call",
+    "stable wait does not alternate sitting and standing on a fixed clock"
+  ],
+  "errors": [],
+  "error": "page.waitForFunction: Timeout 45000ms exceeded.\n    at wait (/Users/jam/Documents/codespace/personal-projects/dsh-coopanion/tests/work-semantics-ui.mjs:15:32)\n    at /Users/jam/Documents/codespace/personal-projects/dsh-coopanion/tests/work-semantics-ui.mjs:36:180",
+  "frame": {
+    "phase": "rest",
+    "suspended": null,
+    "elapsed": 45.964900000000455,
+    "coordination": {
+      "phase": "work-wait",
+      "suspended": null,
+      "reason": null,
+      "life": null,
+      "sessions": [
+        {
+          "sessionId": "A",
+          "epoch": 4,
+          "revision": 12,
+          "driver": "running",
+          "running": true,
+          "activity": "generating",
+          "category": "working",
+          "requests": [],
+          "tools": {
+            "pending": 0,
+            "entered": 0
+          },
+          "goal": {
+            "known": true,
+            "goal": null
+          },
+          "needsAttention": false,
+          "problem": null,
+          "resultId": null,
+          "cue": {
+            "id": "[\"A\",4,\"0\",\"work-start\"]",
+            "kind": "work-start"
+          },
+          "attentionOrder": 1
+        },
+        {
+          "sessionId": "B",
+          "epoch": 4,
+          "revision": 21,
+          "driver": "running",
+          "running": true,
+          "activity": "tools",
+          "category": "working",
+          "requests": [],
+          "tools": {
+            "pending": 1,
+            "entered": 0
+          },
+          "goal": {
+            "known": true,
+            "goal": null
+          },
+          "needsAttention": false,
+          "problem": null,
+          "resultId": null,
+          "cue": {
+            "id": "[\"B\",4,\"0\",\"work-start\"]",
+            "kind": "work-start"
+          },
+          "attentionOrder": 4
+        },
+        {
+          "sessionId": "C",
+          "epoch": 4,
+          "revision": 0,
+          "driver": "idle",
+          "running": false,
+          "activity": "idle",
+          "category": "reply",
+          "requests": [],
+          "tools": {
+            "pending": 0,
+            "entered": 0
+          },
+          "goal": {
+            "known": true,
+            "goal": null
+          },
+          "needsAttention": false,
+          "problem": null,
+          "resultId": null,
+          "cue": null,
+          "attentionOrder": 3
+        }
+      ],
+      "focus": "B",
+      "interaction": null,
+      "occupied": false,
+      "admission": 4,
+      "navigation": null,
+      "serial": 1,
+      "elapsed": 84.99660000000614,
+      "lastAt": 95147.79999995232,
+      "revision": 1,
+      "personality": null,
+      "observed": 0,
+      "workRest": {
+        "key": "[\"B\",\"tools\",0,false]",
+        "stable": 82.23010000000545
+      }
+    },
+    "personalityPerformance": {
+      "active": false,
+      "expression": "neutral",
+      "look": [
+        0,
+        0
+      ],
+      "attention": null,
+      "focus": null,
+      "label": "留在原地，看看周围"
+    },
+    "performance": {
+      "kind": "tools",
+      "expression": "determined",
+      "label": "等待调用结果",
+      "age": 82.23010000000545,
+      "cue": null,
+      "look": [
+        3.970266026507258,
+        1.9830091580041473
+      ],
+      "armNear": -0.08495420997926291,
+      "armFar": -2,
+      "gaze": 4.052768209316712,
+      "arms": [
+        0.21278362601307776,
+        -1.999999999509852
+      ]
+    },
+    "owner": "ground",
+    "renderedOwner": "ground",
+    "generation": 2,
+    "walkId": null,
+    "commits": {
+      "pickup": 0,
+      "drop": 0
+    },
+    "error": null,
+    "inspection": null,
+    "loop": false,
+    "bodyX": 850,
+    "bodyY": 600,
+    "navigation": {
+      "x": 850,
+      "y": 600,
+      "speed": 0,
+      "facing": 1,
+      "phase": "idle",
+      "id": null,
+      "generation": 1,
+      "revision": 1,
+      "plan": null
+    },
+    "bubble": {
+      "x": 850,
+      "y": 451.5746336540883
+    },
+    "hit": [
+      {
+        "x": 850,
+        "y": 509.09834022834116,
+        "r": 75.9375
+      }
+    ],
+    "moving": false,
+    "facing": 1,
+    "visualFacing": 1,
+    "destinationX": 390,
+    "destinationY": 600,
+    "actionNavigation": null,
+    "actionRevision": 1,
+    "objectRevision": 2,
+    "continuous": true,
+    "groundQuad": [
+      {
+        "x": 315,
+        "y": 522.198275862069
+      },
+      {
+        "x": 355,
+        "y": 522.198275862069
+      },
+      {
+        "x": 315,
+        "y": 555
+      }
+    ],
+    "groundGrip": {
+      "x": 335,
+      "y": 523.8383620689655
+    },
+    "hand": {
+      "x": 877.3994177504646,
+      "y": 573.2839596753116
+    },
+    "heldGrip": {
+      "x": 877.3994177504646,
+      "y": 573.2839596753116
+    },
+    "heldQuad": [
+      {
+        "x": 857.4363423445865,
+        "y": 571.639817998757
+      },
+      {
+        "x": 897.3624931563429,
+        "y": 571.639817998757
+      },
+      {
+        "x": 857.4363423445865,
+        "y": 604.522651529849
+      }
+    ],
+    "feet": [
+      {
+        "x": 869.4318940853652,
+        "y": 597.9017473351229
+      },
+      {
+        "x": 893.4384793131244,
+        "y": 595.1624306186935
+      }
+    ],
+    "gazeOrigin": {
+      "x": 860.9076997896607,
+      "y": 516.7828441140009
+    },
+    "renderedFace": "determined",
+    "gesture": null,
+    "posture": {
+      "bodyY": 19.4,
+      "waist": 0,
+      "plantWeight": 0
+    },
+    "pose": {
+      "waist": 0,
+      "drop": 0,
+      "armNear": 0.21278362601307776,
+      "armFar": -1.999999999509852,
+      "propAngle": 0,
+      "look": [
+        4.052768209316712,
+        1.9830091580041473
+      ],
+      "plant": false,
+      "plantWeight": 1,
+      "hands": {
+        "original": 1,
+        "reach": 0,
+        "grip": 0,
+        "release": 0
+      },
+      "handArt": true
+    },
+    "sit": 0.9999999999999998,
+    "handArt": {
+      "enabled": true,
+      "baseline": false,
+      "weights": {
+        "original": 1,
+        "reach": 0,
+        "grip": 0,
+        "release": 0
+      },
+      "wrist": {
+        "x": 876.3372979068573,
+        "y": 566.9735707286688
+      },
+      "wristError": 0,
+      "contactError": 0,
+      "renderMode": "continuous-mesh",
+      "closure": 0.25,
+      "surfaceAlpha": 1,
+      "layers": {
+        "palm": 5.02,
+        "prop": 5.05,
+        "fingers": 5.2
+      },
+      "frontWeight": 1,
+      "externalProp": true
+    },
+    "contact": {
+      "distance": 544.6485063769952,
+      "groundDistance": 487.42040047617246
+    },
+    "bindingError": 0,
+    "propMirror": 1,
+    "activeTime": 94.529700000008,
+    "speed": 1,
+    "sequence": 5434
+  }
+}

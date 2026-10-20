@@ -30,10 +30,10 @@
 |---|---|
 | 生活感规划与制作 | [设计与制作索引](design/README.md)：第 1–3 期已验收，第 4／5A 期本地交付，现行空间／动作／双线／人格契约；阶段授权只看开发状态 |
 | 上游借鉴与已选补丁 | [蓝图第 7 节](design/aliveness-implementation-plan.md#7-上游借鉴人格记忆与互动节奏)维护后续取舍；[固定调研与回归归档](archive/2026-10-aliveness/upstream-motion/README.md)区分当时建议、已移植两项和原生超时修正 |
-| 固定版本的资源与生命周期结果 | [观察报告](reports/README.md)：周末采集已结束、托管已禁用；0.4.10 数据不作为新版验收 |
+| 固定源码验证与资源／生命周期结果 | [固定报告](reports/README.md)：5A 首版与反馈修正分别解释；周末采集已结束、托管已禁用，0.4.10 数据不作为新版验收 |
 | 早期发散、候选诊断与发布过程 | [历史说明](archive/README.md)：其中的计划、问题和进度只属于当时快照 |
 
-前四期的旧范围、提案、失败模型和固定验证已收入[阶段历史](archive/2026-10-aliveness/README.md)。第 3 期用户验收与第 4 期本地交付状态只看[开发状态](aliveness-development.md)；原始报告中的待验收、旧下一步和推送限制均属于当时快照。
+第 1–5A 期的旧范围、提案、失败模型、反馈修正与固定验证从[阶段历史](archive/2026-10-aliveness/README.md)追溯。当前授权、交付与用户验收只看[开发状态](aliveness-development.md)；原始报告中的待验收、旧下一步和推送限制均属于当时快照。
 
 普通搜索覆盖现行契约、当前分支状态与当前设计文本；归档、旧场景夹具、原始报告／画面／提示词及本地产物由 `.ignore` 屏蔽。历史追溯使用 `rg --no-ignore docs/archive`，核对原始工作台证据使用 `rg --no-ignore docs/design/art-workflow`，观察结果使用 `rg --no-ignore docs/reports`。设计、归档及报告目录不随安装包分发，当前执行范围仍来自用户。
 

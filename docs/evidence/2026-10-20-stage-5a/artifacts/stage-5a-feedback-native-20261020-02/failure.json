@@ -1,0 +1,467 @@
+{
+  "sourceIdentity": {
+    "baseCommit": "e4858ddc39ddae04b774abe48356d9b8643fbe86",
+    "node": "v24.21.0",
+    "platform": "darwin",
+    "sources": {
+      "web/prop-motion.js": "630785f93911f7987a911b878f342322fb8c2aef60b4c09380f0956ed314ce57",
+      "web/upstream/kit/space-action.js": "f061d41b6dabe73233ffad5128d741de978a851a236cb40a9a8bdb7ac16aa73a",
+      "web/upstream/kit/navigation.js": "c997f0d031c90a4863c6dc455b31c107e10adae14afe82af9bf83c4f4b856107",
+      "web/upstream/kit/body.js": "a242665a55dc3a2fcd146cb54121d44efb6abf337cda1145de0410238fb48dd6",
+      "web/upstream/kit/raster.js": "be2ee9bbee2bbccf14548d79c31bfea9ba68304b44b06cf67b8cbdeedb784672",
+      "web/upstream/whale/figure.js": "4da46490cd7dd2105bdecede03a88b4505558ad2139744338dc80fc0d4ee6faf",
+      "web/upstream/whale/hand-art.js": "d8ff703fc656d90faa86441d116daaa9b26b6bf38aa71e92cc4018668849d119",
+      "web/upstream/body-host.js": "d2b8dba27e2085c75cee6cdf0a8a5673f038ac9a208d175c67fa7a64e45a6e2b",
+      "web/upstream/figure-frame.js": "a4812b5e8c90f4ed9fd58522faf9f33d7aee9e534689a856c2c1f62ecd87a25b",
+      "desktop/space-preview.cjs": "db86e7fc8624e85126397eb54cfbbd1937c1ccdcb29b260562ce30b56ee9144a",
+      "docs/design/art-workflow/space-v1/scene.js": "c6b1a8489364d3533de7f2092b14110b8a06596e21ca016dbc8f5d13719b9fa5",
+      "docs/design/art-workflow/space-v1/geometry.js": "c8e5571fbf837f304949d2cddf062fda3206b18207613d9c8e06ebc413c31ad8",
+      "docs/design/art-workflow/space-v1/index.html": "15f69c0ecda3a740bdab46f87b1f465cefd4ac80435e9c5cdd61af47ac275ce3",
+      "docs/design/art-workflow/space-v1/style.css": "d2e8890d9dc2259bc7999a5bcb3df4c3037b7c1c3fbfd9051925f5d4cac0c3e2",
+      "docs/design/art-workflow/o03-shell-hands-v1/figure.js": "0dc58c22d58dc4de085568c033729ac39cba86a37c80563efdbad9964c0e2d1c",
+      "docs/design/art-workflow/o03-shell-hands-v1/composition.js": "49b35979d8a25efa34284f322043292963a9f8364cad778894de76b5577df9b0",
+      "docs/design/art-workflow/o03-shell-hands-v1/scene-model.json": "542ae9eece080a49a82619e0ae99f8d8bd6e328ec2f7c47d6ccde82c37bd8c77",
+      "web/props/shell/shell.png": "542b49cffbec43e41b4ca75a0ae184302b1e384b27539ff957806c71d28b910d",
+      "web/props/shell/asset.json": "db1cd6cc6dc21dd178fa95b8a49c0bed503755b06f4dee8a5fed52da139a2a65",
+      "web/props/shell/hands/asset.json": "489b3619c85ef34ec430a1c217adec4fcb8f10ebfd116a635d462352e4de26b4",
+      "web/props/shell/hands/grip.png": "5770450595803b4586fb8574e5135148b522b116e7f6d3de25f6e7643f91b930",
+      "tests/space-action-ui.mjs": "0659ee69d9b90b602b12d1f703da43c9a5ca2f3e55024b59c14891ad1d8d456a",
+      "tests/space-feedback.test.js": "5a5d66ae30fe32b1a10f28c90e56587d5d0346441e75c08c0710092a4e49577f",
+      "tests/space-feedback-ui.mjs": "93afe76618511a9a625a5fed45ecbdc7198d4452907214c9764e74419d060c68",
+      "docs/design/art-workflow/space-v1/layouts/stage-3-feedback-20261020.json": "f4991b785c8ab68ba303610f3278828e78cbf70405aa45f4005b194080990877",
+      "docs/design/art-workflow/space-v1/layouts/stage-3-feedback-moved-20261020.json": "c97a792a5fd9d367fe3c1c03944e69453e9f4ace5cb8d4db7d970d6b8828ac61",
+      "src/completion.ts": "a051d5b2d29267a53576dfe813a72a3844f1c5aef183f3397f0c2844a95ea8a2",
+      "src/work-facts.ts": "2e920d4f019b9c420d60cc4a502c83332ddd2991c5b7b7fa6247e3bc6d862e75",
+      "src/work-preview.ts": "341e03d893837be82baea74ef1ca3c550236ae05cb4476ba6e69f3954ae6fb8b",
+      "src/work-sources.ts": "64787392fd7447edf40f416a7b11a190dcf2244fb9d762bdbcec4ddd63a8f524",
+      "web/upstream/kit/work-performance.js": "7094223319a7eae59f256f3805eca407146f0a2618aad9ec58c0793da0b907f4",
+      "web/upstream/kit/life-work.js": "5e1f775455eeaea0971601bf889d6218cc8ed359f5fde62fa4b4c97f16c9ccca",
+      "web/upstream/kit/personality.js": "b9258a86a55c268b1abf3569667d01745bcebb6814d2def1a275ecdc84e1de51",
+      "web/upstream/kit/personality-performance.js": "8459e68170b0d090ea68f4268369d0aa82362fea8949f8d9e5607fd820071d66",
+      "docs/design/art-workflow/space-v1/stage4-preview.js": "77d9c863d6a0628ea3fec206dc3395fe71ede293e5a05d034e965e91b86c5561",
+      "docs/design/art-workflow/space-v1/prepare-stage4.mjs": "3b7abb40f4e07605743cec3188c3b7c56bfed349a9664b5b9a9cc141bf7a5e45",
+      "docs/design/art-workflow/space-v1/work-facts.generated.js": "4306dd83a6dae73169754ba75dba0cb9d0913a0486c13a00347d5290d9963a2c",
+      "npm-shrinkwrap.json": "e07a7fbcb45dbec5dff78a37a42d293f7ee99fb95001b1f2991ce8b5b3c13d78",
+      "tests/life-work-ui.mjs": "4615c5dcf3d6fe9f7a17abf683982f80da6c2d4e60045c56288cfd377915d771",
+      "tests/work-semantics-ui.mjs": "01f434b04c665d9505988bd9a7c4af70094045160366e2d3d1fd7c4069b6d90d",
+      "tests/personality-feedback.test.js": "289bdd9ce5fcf2de29f704130241949c090d83cedd6538d2215528d4db3ea5c6",
+      "docs/design/art-workflow/space-v1/stage5-preview.js": "3c69759fb5debb5cf30634247404f289fd12ad458d9316a67d6998fab387b446",
+      "tests/personality.test.js": "9a930f755e4011fc38af69e27ba46c783d700c56567f042e9fa4f3491d1869fc",
+      "tests/personality-ui.mjs": "1458453dd0b181680432977dde9382d501929a882aa686a49c03997b72780bca"
+    },
+    "digest": "3137396ee4ffc9bce60777821956eaff1c90cff925205ea7dc37707a3251d1bc"
+  },
+  "checks": [
+    "off default consumes no choice",
+    "seed 7 quiet chooses stationary object attention",
+    "ordinary observation stays standing",
+    "seated exit never uses the prop-reaching bend",
+    "same map/facts/seed yields a different real choice for lively",
+    "personality also changes bounded dwell duration",
+    "exploration only completes on actual stopped arrival",
+    "arrival does not automatically sit",
+    "lively observation uses supported expression after actual attention",
+    "existing nod gesture reaches the actual rendered rig",
+    "switch uses actual root without resetting body or touching object",
+    "blocked body and ownership remain still",
+    "unknown input never advances selection history",
+    "blocked body and ownership remain still",
+    "unknown-version fallback retains explicit quiet overrides",
+    "approval keeps semantic face and physically reaches work despite optional off",
+    "blocked body and ownership remain still",
+    "reading freezes work body without losing approval",
+    "acceptance cannot settle approval",
+    "work release rechecks permission before life restarts",
+    "live obstacle edit pauses the coordinator",
+    "resumed selection uses changed geometry",
+    "blocked body and ownership remain still",
+    "profile change cannot override lifecycle pause",
+    "stop preserves real object and contact counts"
+  ],
+  "errors": [],
+  "error": "AssertionError [ERR_ASSERTION]: equal timing stays exactly equal in both real runs\n    at check (file:///Users/jam/Documents/codespace/personal-projects/dsh-coopanion/tests/personality-ui.mjs:25:36)\n    at file:///Users/jam/Documents/codespace/personal-projects/dsh-coopanion/tests/personality-ui.mjs:85:2",
+  "frame": {
+    "phase": "idle",
+    "suspended": null,
+    "elapsed": 5.251100000000006,
+    "coordination": {
+      "phase": "personal-dwell",
+      "suspended": null,
+      "reason": null,
+      "life": null,
+      "sessions": [],
+      "focus": null,
+      "interaction": null,
+      "occupied": false,
+      "admission": 0,
+      "navigation": null,
+      "serial": 1,
+      "elapsed": 0.2666999999999998,
+      "lastAt": 7029.899999856949,
+      "revision": 1,
+      "personality": {
+        "id": "lively",
+        "version": 1,
+        "overrides": {
+          "lively": {
+            "dwellMin": 12,
+            "dwellMax": 20,
+            "explore": 0.95
+          }
+        },
+        "seed": 7,
+        "ordinal": 1,
+        "enabled": true,
+        "permissions": {
+          "mode": "quiet",
+          "roam": true,
+          "input": "idle",
+          "occupied": false
+        },
+        "decision": {
+          "ordinal": 1,
+          "personality": "lively",
+          "version": 1,
+          "strategy": 2,
+          "parameters": {
+            "id": "lively",
+            "version": 1,
+            "label": "活泼",
+            "dwellMin": 12,
+            "dwellMax": 20,
+            "explore": 0.95
+          },
+          "samples": [
+            0.23878083983436227,
+            0.9134932646993548,
+            0.6124916663393378
+          ],
+          "seed": 7,
+          "kind": "explore",
+          "reason": "inspect-object",
+          "origin": {
+            "x": 240,
+            "y": 555
+          },
+          "revision": 1,
+          "attention": "investigate",
+          "interestId": "planter",
+          "interestKey": "[\"planter\",\"plant\",541,256.75]",
+          "interestLabel": "花箱",
+          "interestKind": "plant",
+          "focus": {
+            "x": 541,
+            "y": 256.75
+          },
+          "result": "pending",
+          "duration": 19.307946117594838,
+          "candidates": [
+            {
+              "x": 381,
+              "y": 385
+            },
+            {
+              "x": 235,
+              "y": 555
+            },
+            {
+              "x": 370,
+              "y": 420
+            }
+          ],
+          "target": {
+            "x": 381,
+            "y": 385
+          },
+          "alternatives": [
+            {
+              "id": "planter",
+              "score": 4.558271576644653,
+              "reachable": true
+            },
+            {
+              "id": "o03-shell",
+              "score": 2.99,
+              "reachable": true
+            },
+            {
+              "id": "home",
+              "score": 0.6251667037201738,
+              "reachable": true
+            }
+          ]
+        },
+        "history": [
+          {
+            "ordinal": 1,
+            "personality": "lively",
+            "version": 1,
+            "strategy": 2,
+            "parameters": {
+              "id": "lively",
+              "version": 1,
+              "label": "活泼",
+              "dwellMin": 12,
+              "dwellMax": 20,
+              "explore": 0.95
+            },
+            "samples": [
+              0.23878083983436227,
+              0.9134932646993548,
+              0.6124916663393378
+            ],
+            "seed": 7,
+            "kind": "explore",
+            "reason": "inspect-object",
+            "origin": {
+              "x": 240,
+              "y": 555
+            },
+            "revision": 1,
+            "attention": "investigate",
+            "interestId": "planter",
+            "interestKey": "[\"planter\",\"plant\",541,256.75]",
+            "interestLabel": "花箱",
+            "interestKind": "plant",
+            "focus": {
+              "x": 541,
+              "y": 256.75
+            },
+            "result": "pending",
+            "duration": 19.307946117594838,
+            "candidates": [
+              {
+                "x": 381,
+                "y": 385
+              },
+              {
+                "x": 235,
+                "y": 555
+              },
+              {
+                "x": 370,
+                "y": 420
+              }
+            ],
+            "target": {
+              "x": 381,
+              "y": 385
+            },
+            "alternatives": [
+              {
+                "id": "planter",
+                "score": 4.558271576644653,
+                "reachable": true
+              },
+              {
+                "id": "o03-shell",
+                "score": 2.99,
+                "reachable": true
+              },
+              {
+                "id": "home",
+                "score": 0.6251667037201738,
+                "reachable": true
+              }
+            ]
+          }
+        ],
+        "observations": [],
+        "clock": 4.966800000000003,
+        "fallback": false
+      },
+      "observed": 0.2666999999999998,
+      "workRest": null
+    },
+    "personalityPerformance": {
+      "active": true,
+      "expression": "surprised",
+      "look": [
+        5.499999999999902,
+        -1.026815113374315
+      ],
+      "attention": "investigate",
+      "focus": {
+        "x": 541,
+        "y": 259.6027811975129
+      },
+      "label": "看看花箱的细节"
+    },
+    "performance": {
+      "kind": "idle",
+      "expression": "neutral",
+      "label": "歇一会儿",
+      "age": 5.100100000000004,
+      "cue": null,
+      "look": [
+        -0.12082252979042962,
+        -0.06904144559453122
+      ],
+      "armNear": 3.654792772027344,
+      "armFar": -2,
+      "gaze": 0,
+      "arms": [
+        3.9368906575592213,
+        -2
+      ]
+    },
+    "owner": "ground",
+    "renderedOwner": "ground",
+    "generation": 2,
+    "walkId": null,
+    "commits": {
+      "pickup": 0,
+      "drop": 0
+    },
+    "error": null,
+    "inspection": null,
+    "loop": false,
+    "bodyX": 381,
+    "bodyY": 385,
+    "navigation": {
+      "x": 381,
+      "y": 385,
+      "speed": 0,
+      "facing": 1,
+      "phase": "idle",
+      "id": null,
+      "generation": 1,
+      "revision": 1,
+      "plan": null
+    },
+    "bubble": {
+      "x": 381,
+      "y": 217.55916001657596
+    },
+    "hit": [
+      {
+        "x": 381,
+        "y": 294.94778353461885,
+        "r": 75.9375
+      }
+    ],
+    "moving": false,
+    "facing": 1,
+    "visualFacing": 1,
+    "destinationX": 390,
+    "destinationY": 600,
+    "actionNavigation": null,
+    "actionRevision": null,
+    "objectRevision": 2,
+    "continuous": true,
+    "groundQuad": [
+      {
+        "x": 315,
+        "y": 522.198275862069
+      },
+      {
+        "x": 355,
+        "y": 522.198275862069
+      },
+      {
+        "x": 315,
+        "y": 555
+      }
+    ],
+    "groundGrip": {
+      "x": 335,
+      "y": 523.8383620689655
+    },
+    "hand": {
+      "x": 408.4474112689727,
+      "y": 344.602083115064
+    },
+    "heldGrip": {
+      "x": 408.4474112689727,
+      "y": 344.602083115064
+    },
+    "heldQuad": [
+      {
+        "x": 388.44946319637666,
+        "y": 342.9618361257619
+      },
+      {
+        "x": 428.4453593354531,
+        "y": 342.96183620040233
+      },
+      {
+        "x": 388.4494632575328,
+        "y": 375.7667751654002
+      }
+    ],
+    "feet": [
+      {
+        "x": 370.04643635688103,
+        "y": 384.9999686756847
+      },
+      {
+        "x": 392.35430377442776,
+        "y": 385.0000068833378
+      }
+    ],
+    "gazeOrigin": {
+      "x": 391.5867204330111,
+      "y": 287.4616682690502
+    },
+    "renderedFace": "surprised",
+    "gesture": null,
+    "posture": {
+      "bodyY": 9.79913409045628e-9,
+      "waist": 0,
+      "plantWeight": 0
+    },
+    "pose": {
+      "drop": 0,
+      "propAngle": 0,
+      "look": [
+        5.499999999999902,
+        -1.026815113374315
+      ],
+      "plant": false,
+      "plantWeight": 1,
+      "hands": {
+        "original": 1,
+        "reach": 0,
+        "grip": 0,
+        "release": 0
+      },
+      "handArt": true
+    },
+    "sit": 0,
+    "handArt": {
+      "enabled": true,
+      "baseline": false,
+      "weights": {
+        "original": 1,
+        "reach": 0,
+        "grip": 0,
+        "release": 0
+      },
+      "wrist": {
+        "x": 407.38345402549686,
+        "y": 338.3066394888705
+      },
+      "wristError": 0,
+      "contactError": 0,
+      "renderMode": "continuous-mesh",
+      "closure": 0.25,
+      "surfaceAlpha": 1,
+      "layers": {
+        "palm": 5.02,
+        "prop": 5.05,
+        "fingers": 5.2
+      },
+      "frontWeight": 1,
+      "externalProp": true
+    },
+    "contact": {
+      "distance": 193.70122848178949,
+      "groundDistance": 224.9907688895567
+    },
+    "bindingError": 0,
+    "propMirror": 1,
+    "activeTime": 5.251100000000006,
+    "speed": 1,
+    "sequence": 264
+  }
+}

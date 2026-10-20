@@ -25,12 +25,12 @@ PORT=4189 node docs/design/art-workflow/preview-art-workflow.mjs
 6. “减少动态”只保留中性原地停留；缺能力或缺词保守降级。对象要在真实到达、转向和注视后才算看过，刚看过的对象不立即重复来回，移动花箱后会重评新位置。无新邀请、台词、成长、相处存档或模型调用。“停止日常”安全退出，不删除实际物件。日常开启时手动拿放由协调器独占，可先停止再“开始整理”。
 
 ```bash
-node node_modules/vitest/vitest.mjs run tests/personality.test.js tests/life-work.test.js tests/space-action.test.js tests/navigation.test.js
+node node_modules/vitest/vitest.mjs run tests/personality.test.js tests/personality-feedback.test.js tests/stage5-controls.test.js tests/life-work.test.js tests/space-action.test.js tests/navigation.test.js
 SPACE_EVIDENCE_DIR=artifacts/stage-5a-browser-new node tests/personality-ui.mjs
 SPACE_EVIDENCE_DIR=artifacts/stage-5a-native-new node tests/personality-ui.mjs --native
 ```
 
-每轮新建证据目录；原生操作串行，临时 profile 退出清理。完整边界见[人格行为契约](../../personality-behavior-contract.md)，来源与结果见[5A 报告](../../../reports/stage-5a-20261020.md)。本页参数只在运行页保留，刷新不恢复布局、参数或执行进度；不扩展 5B 存档。
+每轮新建证据目录；原生操作串行，临时 profile 退出清理。完整边界见[人格行为契约](../../personality-behavior-contract.md)，当前交付结果见[反馈修正报告](../../../reports/stage-5a-feedback-20261020.md)，首版与原字节证据从[5A 阶段历史](../../../archive/2026-10-aliveness/stage-5a/README.md)追溯。本页参数只在运行页保留，刷新不恢复布局、参数或执行进度；不扩展 5B 存档。
 
 ## 第 4 期：生活／工作双线
 
