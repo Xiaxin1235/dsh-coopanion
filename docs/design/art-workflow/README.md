@@ -1,6 +1,6 @@
 # 美术与动作工作流
 
-当前默认入口为已验收第 2 期的[空间预览](space-v1/README.md)，复用用户已通过的 [O03 连续拿放工作台](o03-shell-hands-v1/README.md)。分支范围和接手顺序见[当前开发状态](../../aliveness-development.md)。原 O03 仍可由右上角链接或原路径进入；早期生成、绑定和动作叙述见[归档](../../archive/2026-10-aliveness/README.md)。
+当前制作使用已验收第 3 期的[连续动作空间预览](space-v1/README.md#第-3-期连续动作与物件)，复用用户已通过的 [O03 连续拿放工作台](o03-shell-hands-v1/README.md)。无参数页面继续保留第 2 期。分支范围和接手顺序见[当前开发状态](../../aliveness-development.md)。原 O03 仍可由右上角链接或原路径进入；早期生成、绑定和动作叙述见[归档](../../archive/2026-10-aliveness/README.md)。
 
 ## 制作美术
 

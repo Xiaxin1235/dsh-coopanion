@@ -17,7 +17,7 @@ PORT=4189 node docs/design/art-workflow/preview-art-workflow.mjs
 
 `grip.png` 为唯一动作母版，以连续网格变形展开／收拢手指，袖口与抓握点固定。同一源图由互补多边形拆为掌部／指尖；工作台等待同帧图像就绪后按“身体／掌部 → 贝壳 → 指尖”一次性合成。拥有权交接改变绑定坐标；实际稳定接触和开合达到门槛才提交拿起／放下。
 
-三张候选原图、提示词及锚点由[素材 manifest](../../../../web/props/shell/hands/asset.json)追溯；`frontRect` 是旧矩形窗口字段，当前使用 `handSurfaceModel()`。原角色、PNG 与许可未改写。当前为水平轻物件夹放，并不提供完整指骨／肘膝或任意二维抓握；制作选项不改变默认产品角色工厂。
+三张候选原图、提示词及锚点由[素材 manifest](../../../../web/props/shell/hands/asset.json)追溯；`frontRect` 是旧矩形窗口字段，当前使用 `handSurfaceModel()`。原角色、PNG 与许可未改写。本工作台保留水平轻物件夹放；[第 3 期空间预览](../space-v1/README.md#第-3-期连续动作与物件)已复用此接触能力完成指定规格的二维接近与持物导航，仍不提供完整指骨／肘膝或任意高度抓握。制作选项不改变默认产品角色工厂。
 
 ## 验证入口与证据身份
 
@@ -30,6 +30,7 @@ node node_modules/vitest/vitest.mjs run tests/hand-art.test.js tests/prop-motion
 
 | 记录 | 适用身份 |
 |---|---|
+| [第 3 期归档](../../../archive/2026-10-aliveness/stage-3/README.md) | 已验收连续动作、持物导航与反馈修正；原始工程报告及固定源码摘要按各自身份解释 |
 | [第 2 期归档](../../../archive/2026-10-aliveness/stage-2/README.md) | 已验收二维空间与花箱修正后的 O03 像素、44 项动作与长暂停回归，按最终修正提交解释 |
 | [第 1 期空间验证](../space-v1/evidence/validation.json)与其 `final/` | 第 1 期固定源码的像素、44 项动作与长暂停复测，不覆盖后续运动源码 |
 | [原 O03 验证](continuity-fix/validation.json)、[原样片](continuity-fix/shell-loop-fixed.webm) | 当时已验收子故事的固定快照，基础提交／脏工作区摘要按原记录解释 |

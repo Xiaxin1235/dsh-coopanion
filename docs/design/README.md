@@ -1,6 +1,6 @@
 # 生活感设计与制作
 
-接手先读[当前开发状态](../aliveness-development.md)：第 2 期及花箱绕路修正已获用户验收；2026-10-20 用户授权开始第 3 期，当前为连续动作预览。这里只索引现行模型、可运行工作台与后续候选；蓝图和资源池不产生实施授权。
+接手先读[当前开发状态](../aliveness-development.md)：第 1–3 期及花箱／拾取反馈修正已获用户验收；用户授权在新会话开始第 4 期生活／工作双线协调。这里只索引现行模型、可运行工作台与后续候选；蓝图和资源池不产生实施授权。
 
 | 资料 | 查阅条件 |
 |---|---|
@@ -12,4 +12,4 @@
 | [后续蓝图](aliveness-implementation-plan.md) | 规划或选择下一阶段；第 7 节维护上游人格／记忆／互动节奏的复用与自研边界 |
 | [资源需求池](aliveness-art-assets.md) | 按具体缺口选择素材，不作为待办全集 |
 
-追溯已完成阶段时进入[第 2 期归档](../archive/2026-10-aliveness/stage-2/README.md)、[上游调研与动作补丁回归](../archive/2026-10-aliveness/upstream-motion/README.md)或[更早生活感历史](../archive/2026-10-aliveness/README.md)。固定范围、旧模型和原始结果已退出普通搜索；素材、许可与原始证据保持字节不变。本目录不随正式安装包分发。
+追溯已完成阶段时进入[第 3 期归档](../archive/2026-10-aliveness/stage-3/README.md)、[第 2 期归档](../archive/2026-10-aliveness/stage-2/README.md)、[上游调研与动作补丁回归](../archive/2026-10-aliveness/upstream-motion/README.md)或[更早生活感历史](../archive/2026-10-aliveness/README.md)。固定范围、旧模型和原始结果已退出普通搜索；素材、许可与原始证据保持字节不变。本目录不随正式安装包分发。

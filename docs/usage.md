@@ -1,7 +1,5 @@
 # 使用指南
 
-生活感分支的显式[第 3 期连续动作预览](design/art-workflow/space-v1/README.md#第-3-期连续动作与物件)支持坐姿起身、选择独立二维落点、持物行走及暂停续接。当前工程结果与用户验收状态见[开发状态](aliveness-development.md)。
-
 本页说明安装、操作、配置与升级。产品介绍见[项目首页](../README.md)，开发和验证见[开发指南](development.md)，行为契约从[文档索引](README.md)进入。
 
 ## 安装到 Desktop
@@ -165,20 +163,20 @@ npm run character:pack -- examples/star paper-star.zip
 
 ## 生活感分支制作预览
 
-`codex/aliveness-foundation` 的[潮汐小院空间样板](design/art-workflow/space-v1/README.md)可在仓库内启动：
+`codex/aliveness-foundation` 的[潮汐小院空间样板](design/art-workflow/space-v1/README.md)在仓库内运行，第三阶段及反馈修正已获用户确认“测试通过”。默认安装的自主陪伴尚未接入此二维物件故事；当前范围和下一阶段见[开发状态](aliveness-development.md)。
 
 ```bash
 PORT=4189 node docs/design/art-workflow/preview-art-workflow.mjs
 ```
 
-打开 [本地预览](http://127.0.0.1:4189/)，复用已有服务。点选空地或“走到岗位”，身体实际沿合法 x/y 路径走动并绕障；路线卡说明冲突对象／路段与采用的包络。实体按有限身体占地绕行，内容禁区与世界边界仍按完整身体避让；立面允许合理前后遮挡。可暂停、继续、取消，移动中修改障碍或目标会制动重规划。拖动角色取消旧路线，按完整身体限制更新位置；“恢复样板”同时清空旧目标。
+复用已有服务，另开[第三阶段页面](http://127.0.0.1:4189/docs/design/art-workflow/space-v1/index.html?stage=3)。点空地／“走到岗位”绕障行走；“坐下”后按“拿起”会起身、实际走近并接触拾取。选择“贝壳落点”编辑 X / Y，再按“放下”进行持物二维移动与放置。暂停、真实拖动或修改布局后可以从当前状态继续，已提交拿放不会重播。完整操作和两种反馈布局见[空间预览](design/art-workflow/space-v1/README.md)。
 
-小窝、岗位、障碍、水平操作平面与贝壳仍可编辑／导出；布局只保存在当前页，刷新恢复初值。导航与原 O03 拿放分开操作：离开水平平面后按“复位动作”返回，再重复拿放、慢放或逐帧检查。花箱 `(508,261)` 的旧固定折线冲突不再被显示为全空间不可达。后续 `(570,515)` 的错误封路也已修正；可另开[该布局的独立页面](http://127.0.0.1:4189/docs/design/art-workflow/space-v1/index.html?layout=flowerbox-570-515)验证，不刷新未导出的原页面。
+布局只在当前页，刷新恢复初值；不要刷新未导出的用户页面。无参数[旧入口](http://127.0.0.1:4189/)仍保留第 2 期，导航与水平拿放分开，离开操作平面后用“复位动作”返回。
 
-单屏原生开发预览（保持 4189 服务运行）：
+单屏原生开发预览（保持服务运行）：
 
 ```bash
-node scripts/space-desktop.mjs
+DSH_SPACE_STAGE=3 node scripts/space-desktop.mjs
 ```
 
-该命令自动使用并清理临时 profile，不改变日用安装。窗口中的“桌面穿透”只让实际角色命中范围收取输入，Escape 退出穿透／取消目标；开关默认关闭。该工作台不随正式安装提供，也未修改已发布自主陪伴开关。当前完成范围、实录与验证边界见[开发状态](aliveness-development.md)。
+该命令自动使用并清理临时 profile，不改变日用安装。“桌面穿透”默认关闭；开启后仅实际角色命中范围收取输入，Escape 关闭穿透并取消／暂停。预览不连接真实 Harness、不读取其他应用；工作台不随正式安装提供。工程、物理设备和用户验收分别结算。
