@@ -709,7 +709,7 @@ export async function createWhaleFigure(base = new URL('./', import.meta.url), o
       rig.upload('faceFx@mix', faceCv2);
     }
     if (prop) {
-      st.propHold = { a: Number.isFinite(motion?.propAngle) ? motion.propAngle - st.armFar.a - st.waist.a - st.body.a : 0 };
+      st.propHold = { sx: gripPose?.mirror === -1 ? -1 : 1, a: Number.isFinite(motion?.propAngle) ? motion.propAngle - st.armFar.a - st.waist.a - st.body.a : 0 };
       st.alpha.__gripProp = gripPose?.visible && !(handsEnabled && opts.externalProp) ? 1 : 0;
       const matrix = petG.getCTM();
       const project = (x, y, parent = 'propHold') => {

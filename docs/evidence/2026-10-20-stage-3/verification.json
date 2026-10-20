@@ -1,0 +1,94 @@
+{
+  "date": "2026-10-20",
+  "status": "local-engineering-passed-awaiting-user-visual-acceptance",
+  "sourceIdentity": {
+    "baseCommit": "9ef775520c61b61d0c4b5306156dd18b3bbbcca0",
+    "node": "v24.21.0",
+    "platform": "darwin",
+    "sources": {
+      "web/prop-motion.js": "630785f93911f7987a911b878f342322fb8c2aef60b4c09380f0956ed314ce57",
+      "web/upstream/kit/space-action.js": "c8e73c5004a2173bb2be761dc1c438aa8835c057212d60dec0dcc62cc78cab76",
+      "web/upstream/kit/navigation.js": "c997f0d031c90a4863c6dc455b31c107e10adae14afe82af9bf83c4f4b856107",
+      "web/upstream/kit/body.js": "f787f44d659d390de9a005285311d70e280e12e4e04222233aeee0a93f871152",
+      "web/upstream/kit/raster.js": "be2ee9bbee2bbccf14548d79c31bfea9ba68304b44b06cf67b8cbdeedb784672",
+      "web/upstream/whale/figure.js": "a6501327640faf7e985314105e4e12a40b53ffccb8e21f1771bcc5f8c7f6d613",
+      "web/upstream/whale/hand-art.js": "d8ff703fc656d90faa86441d116daaa9b26b6bf38aa71e92cc4018668849d119",
+      "web/upstream/body-host.js": "d2b8dba27e2085c75cee6cdf0a8a5673f038ac9a208d175c67fa7a64e45a6e2b",
+      "web/upstream/figure-frame.js": "a4812b5e8c90f4ed9fd58522faf9f33d7aee9e534689a856c2c1f62ecd87a25b",
+      "desktop/space-preview.cjs": "ecb05a1a01bcb3e88deb96fb2d244c7e3f8fa3d4d5f59e87659b8187cf7ed131",
+      "docs/design/art-workflow/space-v1/scene.js": "5f83033cd87e3f94c6e99f67b786938288820043829d7f1e7a3d149598db88ff",
+      "docs/design/art-workflow/space-v1/geometry.js": "dcabbd66cf197740132526464458a3c680cb1a75ef4b3b37a5c6731dd26204db",
+      "docs/design/art-workflow/space-v1/index.html": "15f69c0ecda3a740bdab46f87b1f465cefd4ac80435e9c5cdd61af47ac275ce3",
+      "docs/design/art-workflow/space-v1/style.css": "92cb34bef2ee090a0c731ce9d00fdb98429c76b8c8fbbcfcbda19ec416881546",
+      "docs/design/art-workflow/o03-shell-hands-v1/figure.js": "4f8e3451435de66261f55b4f8c0264be0541b0e0edd4c5623a104e53cd53ebaa",
+      "docs/design/art-workflow/o03-shell-hands-v1/composition.js": "49b35979d8a25efa34284f322043292963a9f8364cad778894de76b5577df9b0",
+      "docs/design/art-workflow/o03-shell-hands-v1/scene-model.json": "542ae9eece080a49a82619e0ae99f8d8bd6e328ec2f7c47d6ccde82c37bd8c77",
+      "web/props/shell/shell.png": "542b49cffbec43e41b4ca75a0ae184302b1e384b27539ff957806c71d28b910d",
+      "web/props/shell/asset.json": "db1cd6cc6dc21dd178fa95b8a49c0bed503755b06f4dee8a5fed52da139a2a65",
+      "web/props/shell/hands/asset.json": "489b3619c85ef34ec430a1c217adec4fcb8f10ebfd116a635d462352e4de26b4",
+      "web/props/shell/hands/grip.png": "5770450595803b4586fb8574e5135148b522b116e7f6d3de25f6e7643f91b930",
+      "tests/space-action-ui.mjs": "0659ee69d9b90b602b12d1f703da43c9a5ca2f3e55024b59c14891ad1d8d456a"
+    },
+    "digest": "5302d5703d0824b19f8e5c8ecd05b35b55ef49954fbe8d4b5c4e33cc0c9fffd4"
+  },
+  "checks": {
+    "vitest": {
+      "passed": 301,
+      "skipped": 1
+    },
+    "nodeUnit": 12,
+    "typecheck": true,
+    "build": true,
+    "metadata": true,
+    "ui": true,
+    "upstreamWebGL": 16,
+    "inboxUi": true,
+    "stage3Browser": 31,
+    "stage3Native": 32,
+    "legacySpace": 30,
+    "legacyMotion": 44,
+    "legacyPixels": true,
+    "showcaseSeconds": 36.060075749999996
+  },
+  "measurements": {
+    "browser": {
+      "frames": 536,
+      "left": 76,
+      "right": 72.77267286986694,
+      "top": 166.53892537990885,
+      "bottom": 1.2426411454822528,
+      "binding": 0,
+      "wrongLayers": 0,
+      "ownerMismatches": 0,
+      "ownerSwitchJump": 0.006601024391516444
+    },
+    "native": {
+      "frames": 441,
+      "left": 75,
+      "right": 72.28478162404156,
+      "top": 166.23976197334218,
+      "bottom": 0.620994686500353,
+      "binding": 0,
+      "wrongLayers": 0,
+      "ownerMismatches": 0,
+      "ownerSwitchJump": 0.006601024391516444
+    }
+  },
+  "evidenceArtifacts": {
+    "native": "artifacts/stage-3-delivery-native",
+    "browser": "artifacts/stage-3-delivery-browser",
+    "showcase": "artifacts/stage-3-delivery-showcase/continuous-actions.webm"
+  },
+  "boundaries": {
+    "userVisualAcceptance": false,
+    "physicalMultiDisplay": false,
+    "realOsSleepOrLock": false,
+    "crossPlatformMatrix": false,
+    "longTermResources": false,
+    "harnessWorkCoordination": false,
+    "packageCreated": false,
+    "installed": false,
+    "pushed": false,
+    "released": false
+  }
+}

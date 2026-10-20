@@ -1,5 +1,7 @@
 # 生活空间契约：第 2 期分支预览
 
+第 3 期的显式 `?stage=3` 模式见[连续动作契约](continuous-action-contract.md)：物件／落点独立 x/y、坐姿起身、二维走近与持物、接触提交及拖动后续接。该模式对实体立面也采用完整身体／持物包络；前文第 2 期的有限地面模型、旧页面及已验收花箱绕行保持各自适用范围。
+
 状态：约束 `codex/aliveness-foundation` 的[潮汐小院](art-workflow/space-v1/README.md)及隔离 Electron 单屏预览。已发布行为仍按[自主陪伴契约](../companionship-contract.md)解释。本期不接入自主调度、真实工作交接或跨屏；该样板已获用户验收，当前范围与后续授权见[开发状态](../aliveness-development.md)。
 
 ## 坐标、身体和绘制

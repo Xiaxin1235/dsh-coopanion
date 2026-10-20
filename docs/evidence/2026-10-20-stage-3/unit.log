@@ -1,0 +1,84 @@
+
+> @takboo/dsh-coopanion@0.4.13 test
+> vitest run && node --test tests/release-checks.mjs tests/client-build.mjs && node --test tests/locale-client.mjs
+
+
+ RUN  v3.2.7 /Users/jam/Documents/codespace/personal-projects/dsh-coopanion
+
+ ✓ tests/companionship.test.js (9 tests) 117ms
+ ✓ tests/upstream-motion.test.js (17 tests) 119ms
+ ✓ tests/locale-sync.test.ts (4 tests) 163ms
+ ✓ tests/diagnostics-discovery.test.js (6 tests) 259ms
+ ✓ tests/session-recovery.test.ts (6 tests) 30ms
+ ✓ tests/plugin.test.ts (10 tests) 211ms
+ ✓ tests/chat.test.ts (7 tests) 41ms
+ ✓ tests/companion-store.test.ts (8 tests) 345ms
+ ✓ tests/notification-client.test.ts (15 tests) 45ms
+ ✓ tests/notification-integration.test.ts (8 tests) 343ms
+ ✓ tests/companion-http.test.ts (1 test) 55ms
+ ✓ tests/controls.test.ts (15 tests) 22ms
+ ✓ tests/navigation.test.js (12 tests) 51ms
+ ✓ tests/hand-art.test.js (9 tests) 565ms
+ ✓ tests/notification-contract.test.ts (5 tests) 27ms
+ ✓ tests/notification-broker.test.ts (18 tests) 22ms
+ ✓ tests/prop-motion.test.js (9 tests) 7ms
+ ✓ tests/resource-observation.test.js (7 tests) 8ms
+ ✓ tests/completion.test.ts (17 tests) 10ms
+ ✓ tests/keyboard-activity.test.js (8 tests) 9ms
+ ✓ tests/presentation.test.js (14 tests) 5ms
+ ✓ tests/lifecycle-state.test.js (5 tests) 4ms
+ ✓ tests/npc-life.test.js (10 tests) 10ms
+ ✓ tests/space-geometry.test.js (9 tests) 4ms
+ ✓ tests/model.test.ts (18 tests) 8ms
+ ✓ tests/companion-touch.test.js (2 tests) 2ms
+ ✓ tests/space-action.test.js (11 tests) 5ms
+ ✓ tests/display-geometry.test.js (6 tests) 2ms
+ ✓ tests/prop-interaction.test.js (8 tests) 3ms
+ ✓ tests/companion-client.test.js (3 tests) 2ms
+ ✓ tests/render-cadence.test.js (2 tests) 2ms
+ ✓ tests/text-scale.test.ts (1 test) 1ms
+ ✓ tests/bridge.test.ts (8 tests | 1 skipped) 2741ms
+   ✓ releases a process that exits by signal before the ready handshake  1187ms
+   ✓ honors explicit native startup failure classification instead of retrying every exception  371ms
+   ✓ rehydrates full Host snapshots silently, initializes hidden, and isolates old process messages  433ms
+   ✓ forwards exact chat receipts across the child-process bridge  372ms
+   ✓ ready sends the latest complete preferences changed during startup  374ms
+ ✓ tests/figures.test.ts (6 tests) 2712ms
+   ✓ serves the frame with an opaque-origin CSP, rejects cross-origin mutations and offers matching source  2609ms
+ ✓ tests/diagnostics.test.js (8 tests) 4090ms
+   ✓ honors a wall deadline even while the diagnostic endpoint is unavailable  1507ms
+   ✓ a calendar deadline never grants continuous-resource acceptance  2508ms
+
+ Test Files  35 passed (35)
+      Tests  301 passed | 1 skipped (302)
+   Start at  10:01:17
+   Duration  4.49s (transform 833ms, setup 0ms, collect 2.60s, tests 12.04s, environment 3ms, prepare 1.46s)
+
+✔ activates the built Client factory using only DSH public peers and React seeds (170.495917ms)
+✔ verifies a real stable tag and exports its immutable commit (233.849583ms)
+✔ rejects a prerelease tag instead of publishing it to latest (140.332792ms)
+✔ rejects a tag whose package version differs (194.30825ms)
+✔ rejects a release outside main ancestry (217.989208ms)
+✔ rejects a tag moved after candidate verification (155.169083ms)
+✔ rejects shrinkwrap metadata and missing release notes (363.824417ms)
+✔ release notes contain only the target version and reject duplicates (1.059791ms)
+✔ npm preflight distinguishes unused, identical, conflicting and unavailable versions (11.144584ms)
+✔ post-publish verification waits for the registry to expose identical bytes (3.654792ms)
+✔ post-publish verification has a deadline and fails immediately on conflicts or registry errors (0.5625ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1363.437792
+✔ the real Client factory synchronizes resolved Harness locale without workspace or notifications (126.086667ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 162.324875

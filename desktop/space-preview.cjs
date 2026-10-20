@@ -11,7 +11,7 @@ app.whenReady().then(async()=>{
  const area=screen.getPrimaryDisplay().workArea;
  win=new BrowserWindow({x:area.x,y:area.y,width:Math.min(1440,area.width),height:Math.min(1080,area.height),transparent:true,frame:false,show:false,backgroundColor:'#00000000',webPreferences:{sandbox:true,contextIsolation:true,nodeIntegration:false}});
  win.webContents.setWindowOpenHandler(()=>({action:'deny'}));win.webContents.on('will-navigate',e=>e.preventDefault());win.webContents.session.setPermissionRequestHandler((a,b,cb)=>cb(false));
- await win.loadURL('http://127.0.0.1:4189/?native=1');win.show();
+ await win.loadURL(process.env.DSH_SPACE_STAGE==='3'?'http://127.0.0.1:4189/docs/design/art-workflow/space-v1/index.html?native=1&stage=3':'http://127.0.0.1:4189/?native=1');win.show();
  // In map mode the editor receives normal input. The explicit desktop overlay
  // toggle passes empty space through, while restoring body input as it moves.
  poll=setInterval(async()=>{if(reading||win.isDestroyed())return;reading=true;try{

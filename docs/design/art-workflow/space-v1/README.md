@@ -49,3 +49,22 @@ SPACE_EVIDENCE_DIR=artifacts/stage-2-showcase-new node tests/navigation-showcase
 第 1 期最终源码 `504c7d4f899ab2afc3e027df3901ee6213e0ae23` 的[验证总表](evidence/validation.json)、[浏览器结果](evidence/final/browser-qa.json)、[接触像素](evidence/final/contact-pixels.json)、[动作回归](evidence/final/legacy-motion.json)和[36.56 秒真实样片](evidence/showcase/space-showcase.webm)原字节保留；它们不覆盖新二维运动或原生验证。
 
 场景四类素材的[来源表](assets/source.json)保持不变。旧阶段文档与本地产物整理过程见[第 1 期交接](../../../archive/2026-10-aliveness/stage-1-handoff/README.md)。
+
+## 第 3 期：连续动作与物件
+
+2026-10-20 获用户开始实施授权；工程结果和观感状态见[开发入口](../../../aliveness-development.md)，运行规则见[连续动作契约](../../continuous-action-contract.md)。默认页面继续提供第 2 期预览，新开[第三阶段页面](http://127.0.0.1:4189/docs/design/art-workflow/space-v1/index.html?stage=3)，保护已有页面的未导出布局。
+
+1. 按“坐下”，再按“拿起”或“重复拿放”：从当前坐姿起身，实际走近、停稳、转身、伸手并稳定接触后拿起。
+2. 选择“贝壳落点”编辑 X / Y；物件和落点不再绑定角色初始平面。按“放下”执行持物二维行走、接触、张手、收手与起身退出。完整闭环也可反复执行。
+3. “暂停／继续”保留姿态、位置、开合和拥有权；伸手前后或持物时直接拖动角色会暂停，松手再继续时从实际位置重规划。实体或落点修改也暂停旧目标，拿放提交不重复。
+4. “复位动作”及数值试摆角色是明确重置，清空计数；直接拖动保留计数。该模式采用完整身体／持物包络避让实体立面，部分第 2 期地面路线会保守拒绝；界面与导出 `schema:3` 标明当前模式。
+
+```bash
+node node_modules/vitest/vitest.mjs run tests/space-action.test.js
+SPACE_EVIDENCE_DIR=artifacts/stage-3-new node tests/space-action-ui.mjs
+SPACE_EVIDENCE_DIR=artifacts/stage-3-native-new node tests/space-action-ui.mjs --native
+SPACE_EVIDENCE_DIR=artifacts/stage-3-showcase-new node tests/space-action-showcase.mjs
+DSH_SPACE_STAGE=3 node scripts/space-desktop.mjs
+```
+
+原生操作串行。测试绑定源码 SHA-256 和实际运行时，输出 JSON、画面和页面实录；原生额外覆盖受控 `powerMonitor` suspend，并清理 profile。该入口未接入真实 Harness、模型、自主生活／工作双线或持久存档。

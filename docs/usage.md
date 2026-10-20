@@ -1,5 +1,7 @@
 # 使用指南
 
+生活感分支的显式[第 3 期连续动作预览](design/art-workflow/space-v1/README.md#第-3-期连续动作与物件)支持坐姿起身、选择独立二维落点、持物行走及暂停续接。当前工程结果与用户验收状态见[开发状态](aliveness-development.md)。
+
 本页说明安装、操作、配置与升级。产品介绍见[项目首页](../README.md)，开发和验证见[开发指南](development.md)，行为契约从[文档索引](README.md)进入。
 
 ## 安装到 Desktop

@@ -80,3 +80,10 @@ export function navigationModel(layout) {
       return {id:o.id,label:o.label,kind:o.layer==='restricted'?'full-body-restricted':ground?'ground-solid':'solid-silhouette',...(ground??silhouette),silhouette,art:{x:o.x,y:o.y,w:o.w,h:o.h}};
     })};
 }
+
+// Stage 3 uses the complete body/held-prop envelope against visible solids too.
+// This conservative mode does not generalize the stage-2 ground-only promise.
+export function actionNavigationModel(layout) {
+  const model = navigationModel(layout);
+  return { ...model, obstacles: model.obstacles.map(o => ({ ...o, ...o.silhouette, kind: 'full-body-restricted' })) };
+}

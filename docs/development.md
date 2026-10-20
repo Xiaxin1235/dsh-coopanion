@@ -35,6 +35,8 @@ npm run test:install
 
 ## 关键行为回归
 
+第 3 期定向检查见[空间预览](design/art-workflow/space-v1/README.md#第-3-期连续动作与物件)。`tests/space-action-ui.mjs --native` 与其他原生测试串行执行，自动创建／清理临时 profile；`DSH_SPACE_STAGE=3 node scripts/space-desktop.mjs` 打开同一显式模式。源码身份由 `tests/space-source-identity.mjs` 记录，新证据目录不能覆盖已有结果。
+
 | 改动 | 检查入口与范围 |
 |---|---|
 | 完成、通知与请求结算 | `npm test`、`test:n0`、`test:notification-ui`；宿主接口检查由安装入口执行 |
