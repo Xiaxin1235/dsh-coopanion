@@ -163,20 +163,6 @@ npm run character:pack -- examples/star paper-star.zip
 
 ## 生活感分支制作预览
 
-`codex/aliveness-foundation` 的[潮汐小院空间样板](design/art-workflow/space-v1/README.md)在仓库内运行，第三阶段及反馈修正已获用户确认“测试通过”。默认安装的自主陪伴尚未接入此二维物件故事；当前范围和下一阶段见[开发状态](aliveness-development.md)。
+`codex/aliveness-foundation` 的[潮汐小院工作台](design/art-workflow/space-v1/README.md)提供显式第四阶段生活／工作预览，默认安装尚未接入该二维故事。页面使用模拟事实，可以检查安全留物、真实到岗、多会话关注、守候反应和生活续接；正式宿主适配、页面模拟与用户观感分别验证。启动、控件、第三／第二阶段兼容入口和定向回归统一看工作台，阶段进度与授权统一看[开发状态](aliveness-development.md)。
 
-```bash
-PORT=4189 node docs/design/art-workflow/preview-art-workflow.mjs
-```
-
-复用已有服务，另开[第三阶段页面](http://127.0.0.1:4189/docs/design/art-workflow/space-v1/index.html?stage=3)。点空地／“走到岗位”绕障行走；“坐下”后按“拿起”会起身、实际走近并接触拾取。选择“贝壳落点”编辑 X / Y，再按“放下”进行持物二维移动与放置。暂停、真实拖动或修改布局后可以从当前状态继续，已提交拿放不会重播。完整操作和两种反馈布局见[空间预览](design/art-workflow/space-v1/README.md)。
-
-布局只在当前页，刷新恢复初值；不要刷新未导出的用户页面。无参数[旧入口](http://127.0.0.1:4189/)仍保留第 2 期，导航与水平拿放分开，离开操作平面后用“复位动作”返回。
-
-单屏原生开发预览（保持服务运行）：
-
-```bash
-DSH_SPACE_STAGE=3 node scripts/space-desktop.mjs
-```
-
-该命令自动使用并清理临时 profile，不改变日用安装。“桌面穿透”默认关闭；开启后仅实际角色命中范围收取输入，Escape 关闭穿透并取消／暂停。预览不连接真实 Harness、不读取其他应用；工作台不随正式安装提供。工程、物理设备和用户验收分别结算。
+已有 4189 服务直接复用；新页面生效，保留用户原页未导出的布局。原生预览使用临时 profile，不改变日用安装；系统桌面操作串行。

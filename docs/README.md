@@ -8,6 +8,7 @@
 |---|---|
 | 安装、配置、操作与升级 | [使用指南](usage.md) |
 | 生活感分支接手、当前阶段与验收边界 | [当前开发状态](aliveness-development.md) |
+| 第 4 期生活／工作交接与事实适配 | [双线协调契约](design/life-work-contract.md) |
 | 第 3 期连续动作与物件预览 | [连续动作契约](design/continuous-action-contract.md) |
 | 开发、构建、测试与录制回归 | [开发指南](development.md) |
 | 完成判断、通知身份与请求结算 | [提醒契约](notification-contract.md) |
@@ -26,12 +27,12 @@
 
 | 需要查阅的内容 | 入口与适用范围 |
 |---|---|
-| 生活感规划与制作 | [设计与制作索引](design/README.md)：第 1–3 期已验收，现行空间／动作契约、工作台与后续候选；当前阶段与授权只看开发状态 |
+| 生活感规划与制作 | [设计与制作索引](design/README.md)：第 1–3 期已验收，第 4 期本地交付，现行空间／动作／双线契约；新会话的 5A 授权只看开发状态 |
 | 上游借鉴与已选补丁 | [蓝图第 7 节](design/aliveness-implementation-plan.md#7-上游借鉴人格记忆与互动节奏)维护后续取舍；[固定调研与回归归档](archive/2026-10-aliveness/upstream-motion/README.md)区分当时建议、已移植两项和原生超时修正 |
 | 固定版本的资源与生命周期结果 | [观察报告](reports/README.md)：周末采集已结束、托管已禁用；0.4.10 数据不作为新版验收 |
 | 早期发散、候选诊断与发布过程 | [历史说明](archive/README.md)：其中的计划、问题和进度只属于当时快照 |
 
-第 1–3 期的旧范围、失败模型和固定验证已收入[阶段历史](archive/2026-10-aliveness/README.md)。第 3 期用户验收与第 4 期新会话授权只看[开发状态](aliveness-development.md)；原始报告中的待验收、旧下一步和推送限制均属于当时快照。
+前四期的旧范围、提案、失败模型和固定验证已收入[阶段历史](archive/2026-10-aliveness/README.md)。第 3 期用户验收与第 4 期本地交付状态只看[开发状态](aliveness-development.md)；原始报告中的待验收、旧下一步和推送限制均属于当时快照。
 
 普通搜索覆盖现行契约、当前分支状态与当前设计文本；归档、旧场景夹具、原始报告／画面／提示词及本地产物由 `.ignore` 屏蔽。历史追溯使用 `rg --no-ignore docs/archive`，核对原始工作台证据使用 `rg --no-ignore docs/design/art-workflow`，观察结果使用 `rg --no-ignore docs/reports`。设计、归档及报告目录不随安装包分发，当前执行范围仍来自用户。
 

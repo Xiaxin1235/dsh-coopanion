@@ -1,0 +1,6401 @@
+{
+  "kind": "published-profile-loader-controlled-model",
+  "version": "0.2.1-alpha.1",
+  "node": "v24.21.0",
+  "baseCommit": "d8a61df9a7e5ce7bdb051f9e9536dabe9afbfab2",
+  "sources": {
+    "src/work-facts.ts": "2e920d4f019b9c420d60cc4a502c83332ddd2991c5b7b7fa6247e3bc6d862e75",
+    "src/work-sources.ts": "64787392fd7447edf40f416a7b11a190dcf2244fb9d762bdbcec4ddd63a8f524",
+    "src/completion.ts": "a051d5b2d29267a53576dfe813a72a3844f1c5aef183f3397f0c2844a95ea8a2",
+    "tests/fixtures/work-host.mjs": "6ad60b72248ef9555417fe4c40b8386fb0f740521166f9bea5875138484ee317",
+    "tests/work-host-contract.mjs": "eb87f529860ce1438b223fff298d2ad12e9b41385b91c3d3edd5d1d68414b116"
+  },
+  "packages": {
+    "dsh": "1a03dee18683483ff6a1b27b2a1e650230da6bcca9a0f55f7d81b3308c3f307f",
+    "dsh-agent": "7b9aa39474de83115cf890dd7f8904cf0d59df0811cb335ab85565a04f1aac93",
+    "dsh-llm": "a8a8288910c8862342cda571d096e1ea4489b01dd0f70b5db28bc86525ee283e",
+    "dsh-goal": "8ec52107ead3d31f4d8ca95894c851046a2cbbd1b2033a0ea22fedf17c043ae4",
+    "dsh-session": "b847e7ec736ce4049ec40ea0b20753bad5d7c2388785b4369d2bf00baa32472b",
+    "dsh-tools": "2e9b6a72ba6b917197965c08eb894d4e8d01dc6f81e0e1c9870a5ae8514687a7",
+    "dsh-user-approval": "6a5ad1ba3c3dc3abbbae52e6c8c4463970ee0c1c8988cebb0d5cf2acd17ee90b",
+    "dsh-user-questions": "e1c51afac2e31be8593c6426976e5f31dbe2a709b85ae1ea43ed406146f54265"
+  },
+  "adapterSha256": "4ce52d49603e0c2d20bf53b5660f501c2a0376675b60125bf23fd0fcfcfb5a06",
+  "status": "pass",
+  "requests": 9,
+  "statuses": [
+    "running",
+    "idle",
+    "running",
+    "idle",
+    "running",
+    "idle",
+    "running",
+    "idle",
+    "running",
+    "idle",
+    "running",
+    "idle"
+  ],
+  "events": [
+    {
+      "type": "permission/preset",
+      "seq": 0
+    },
+    {
+      "type": "sandbox/mode",
+      "seq": 1
+    },
+    {
+      "type": "approval/policy",
+      "seq": 2
+    },
+    {
+      "type": "model/selection",
+      "seq": 3
+    },
+    {
+      "type": "agent/inbox/spliced",
+      "seq": 4
+    },
+    {
+      "type": "turn/start",
+      "seq": 5
+    },
+    {
+      "type": "agent/inbox/spliced",
+      "seq": 6
+    },
+    {
+      "type": "step/start",
+      "seq": 7
+    },
+    {
+      "type": "system/message",
+      "seq": 8
+    },
+    {
+      "type": "user/message",
+      "seq": 9
+    },
+    {
+      "type": "user/message",
+      "seq": 10
+    },
+    {
+      "type": "user/message",
+      "seq": 11
+    },
+    {
+      "type": "request/header",
+      "seq": 12
+    },
+    {
+      "type": "request/context",
+      "seq": 13
+    },
+    {
+      "type": "session/title",
+      "seq": 14
+    },
+    {
+      "type": "session/title-llm-request",
+      "seq": 15
+    },
+    {
+      "type": "approval/asked",
+      "seq": 16
+    },
+    {
+      "type": "approval/decided",
+      "seq": 17
+    },
+    {
+      "type": "approval/asked",
+      "seq": 18
+    },
+    {
+      "type": "approval/decided",
+      "seq": 19
+    },
+    {
+      "type": "approval/asked",
+      "seq": 20
+    },
+    {
+      "type": "approval/decided",
+      "seq": 21
+    },
+    {
+      "type": "approval/asked",
+      "seq": 22
+    },
+    {
+      "type": "session/title",
+      "seq": 23
+    },
+    {
+      "type": "approval/decided",
+      "seq": 24
+    },
+    {
+      "type": "assistant/message",
+      "seq": 25
+    },
+    {
+      "type": "tool/call",
+      "seq": 26
+    },
+    {
+      "type": "goal/change",
+      "seq": 27
+    },
+    {
+      "type": "tool/result",
+      "seq": 28
+    },
+    {
+      "type": "step/end",
+      "seq": 29
+    },
+    {
+      "type": "step/start",
+      "seq": 30
+    },
+    {
+      "type": "assistant/message",
+      "seq": 31
+    },
+    {
+      "type": "step/end",
+      "seq": 32
+    },
+    {
+      "type": "turn/end",
+      "seq": 33
+    },
+    {
+      "type": "agent/inbox/spliced",
+      "seq": 34
+    },
+    {
+      "type": "turn/start",
+      "seq": 35
+    },
+    {
+      "type": "agent/inbox/spliced",
+      "seq": 36
+    },
+    {
+      "type": "step/start",
+      "seq": 37
+    },
+    {
+      "type": "user/message",
+      "seq": 38
+    },
+    {
+      "type": "request/header",
+      "seq": 39
+    },
+    {
+      "type": "assistant/message",
+      "seq": 40
+    },
+    {
+      "type": "tool/call",
+      "seq": 41
+    },
+    {
+      "type": "goal/change",
+      "seq": 42
+    },
+    {
+      "type": "tool/result",
+      "seq": 43
+    },
+    {
+      "type": "agent/inbox/spliced",
+      "seq": 44
+    },
+    {
+      "type": "step/end",
+      "seq": 45
+    },
+    {
+      "type": "agent/inbox/spliced",
+      "seq": 46
+    },
+    {
+      "type": "step/start",
+      "seq": 47
+    },
+    {
+      "type": "user/message",
+      "seq": 48
+    },
+    {
+      "type": "assistant/message",
+      "seq": 49
+    },
+    {
+      "type": "step/end",
+      "seq": 50
+    },
+    {
+      "type": "turn/end",
+      "seq": 51
+    },
+    {
+      "type": "agent/inbox/spliced",
+      "seq": 52
+    },
+    {
+      "type": "turn/start",
+      "seq": 53
+    },
+    {
+      "type": "agent/inbox/spliced",
+      "seq": 54
+    },
+    {
+      "type": "step/start",
+      "seq": 55
+    },
+    {
+      "type": "user/message",
+      "seq": 56
+    },
+    {
+      "type": "assistant/attempt",
+      "seq": 57
+    },
+    {
+      "type": "assistant/message",
+      "seq": 58
+    },
+    {
+      "type": "step/end",
+      "seq": 59
+    },
+    {
+      "type": "turn/end",
+      "seq": 60
+    },
+    {
+      "type": "agent/inbox/spliced",
+      "seq": 61
+    },
+    {
+      "type": "turn/start",
+      "seq": 62
+    },
+    {
+      "type": "agent/inbox/spliced",
+      "seq": 63
+    },
+    {
+      "type": "step/start",
+      "seq": 64
+    },
+    {
+      "type": "user/message",
+      "seq": 65
+    },
+    {
+      "type": "assistant/attempt",
+      "seq": 66
+    },
+    {
+      "type": "step/end",
+      "seq": 67
+    },
+    {
+      "type": "turn/end",
+      "seq": 68
+    },
+    {
+      "type": "agent/inbox/spliced",
+      "seq": 69
+    },
+    {
+      "type": "turn/start",
+      "seq": 70
+    },
+    {
+      "type": "agent/inbox/spliced",
+      "seq": 71
+    },
+    {
+      "type": "step/start",
+      "seq": 72
+    },
+    {
+      "type": "user/message",
+      "seq": 73
+    },
+    {
+      "type": "assistant/message",
+      "seq": 74
+    },
+    {
+      "type": "step/end",
+      "seq": 75
+    },
+    {
+      "type": "turn/end",
+      "seq": 76
+    },
+    {
+      "type": "agent/inbox/spliced",
+      "seq": 77
+    },
+    {
+      "type": "turn/start",
+      "seq": 78
+    },
+    {
+      "type": "agent/inbox/spliced",
+      "seq": 79
+    },
+    {
+      "type": "step/start",
+      "seq": 80
+    },
+    {
+      "type": "user/message",
+      "seq": 81
+    },
+    {
+      "type": "assistant/attempt",
+      "seq": 82
+    },
+    {
+      "type": "step/end",
+      "seq": 83
+    },
+    {
+      "type": "turn/end",
+      "seq": 84
+    },
+    {
+      "type": "permission/preset",
+      "seq": 0
+    },
+    {
+      "type": "sandbox/mode",
+      "seq": 1
+    },
+    {
+      "type": "approval/policy",
+      "seq": 2
+    },
+    {
+      "type": "turn/start",
+      "seq": 3
+    },
+    {
+      "type": "request/header",
+      "seq": 4
+    },
+    {
+      "type": "tool/call",
+      "seq": 5
+    },
+    {
+      "type": "tool/result",
+      "seq": 6
+    },
+    {
+      "type": "turn/end",
+      "seq": 7
+    },
+    {
+      "type": "turn/start",
+      "seq": 8
+    },
+    {
+      "type": "user/message",
+      "seq": 9
+    },
+    {
+      "type": "tool/ptc-dispatch-start",
+      "seq": 10
+    },
+    {
+      "type": "tool/ptc-dispatch",
+      "seq": 11
+    },
+    {
+      "type": "turn/end",
+      "seq": 12
+    }
+  ],
+  "frames": [
+    {
+      "type": "start",
+      "revision": 1,
+      "turn": 1,
+      "attemptId": "work-controlled:1"
+    },
+    {
+      "type": "chunk",
+      "chunk": "block-start",
+      "revision": 2,
+      "index": 0,
+      "attemptId": "work-controlled:1"
+    },
+    {
+      "type": "chunk",
+      "chunk": "reasoning-delta",
+      "revision": 3,
+      "index": 1,
+      "attemptId": "work-controlled:1"
+    },
+    {
+      "type": "chunk",
+      "chunk": "block-end",
+      "revision": 4,
+      "index": 2,
+      "attemptId": "work-controlled:1"
+    },
+    {
+      "type": "chunk",
+      "chunk": "block-start",
+      "revision": 5,
+      "index": 3,
+      "attemptId": "work-controlled:1"
+    },
+    {
+      "type": "chunk",
+      "chunk": "tool-call-delta",
+      "revision": 6,
+      "index": 4,
+      "attemptId": "work-controlled:1"
+    },
+    {
+      "type": "chunk",
+      "chunk": "block-end",
+      "revision": 7,
+      "index": 5,
+      "attemptId": "work-controlled:1"
+    },
+    {
+      "type": "chunk",
+      "chunk": "finish",
+      "revision": 8,
+      "index": 6,
+      "attemptId": "work-controlled:1"
+    },
+    {
+      "type": "end",
+      "revision": 9,
+      "index": 7,
+      "attemptId": "work-controlled:1"
+    },
+    {
+      "type": "start",
+      "revision": 10,
+      "turn": 1,
+      "attemptId": "work-controlled:2"
+    },
+    {
+      "type": "chunk",
+      "chunk": "block-start",
+      "revision": 11,
+      "index": 0,
+      "attemptId": "work-controlled:2"
+    },
+    {
+      "type": "chunk",
+      "chunk": "reasoning-delta",
+      "revision": 12,
+      "index": 1,
+      "attemptId": "work-controlled:2"
+    },
+    {
+      "type": "chunk",
+      "chunk": "block-end",
+      "revision": 13,
+      "index": 2,
+      "attemptId": "work-controlled:2"
+    },
+    {
+      "type": "chunk",
+      "chunk": "block-start",
+      "revision": 14,
+      "index": 3,
+      "attemptId": "work-controlled:2"
+    },
+    {
+      "type": "chunk",
+      "chunk": "text-delta",
+      "revision": 15,
+      "index": 4,
+      "attemptId": "work-controlled:2"
+    },
+    {
+      "type": "chunk",
+      "chunk": "block-end",
+      "revision": 16,
+      "index": 5,
+      "attemptId": "work-controlled:2"
+    },
+    {
+      "type": "chunk",
+      "chunk": "finish",
+      "revision": 17,
+      "index": 6,
+      "attemptId": "work-controlled:2"
+    },
+    {
+      "type": "end",
+      "revision": 18,
+      "index": 7,
+      "attemptId": "work-controlled:2"
+    },
+    {
+      "type": "start",
+      "revision": 19,
+      "turn": 2,
+      "attemptId": "work-controlled:3"
+    },
+    {
+      "type": "chunk",
+      "chunk": "block-start",
+      "revision": 20,
+      "index": 0,
+      "attemptId": "work-controlled:3"
+    },
+    {
+      "type": "chunk",
+      "chunk": "reasoning-delta",
+      "revision": 21,
+      "index": 1,
+      "attemptId": "work-controlled:3"
+    },
+    {
+      "type": "chunk",
+      "chunk": "block-end",
+      "revision": 22,
+      "index": 2,
+      "attemptId": "work-controlled:3"
+    },
+    {
+      "type": "chunk",
+      "chunk": "block-start",
+      "revision": 23,
+      "index": 3,
+      "attemptId": "work-controlled:3"
+    },
+    {
+      "type": "chunk",
+      "chunk": "tool-call-delta",
+      "revision": 24,
+      "index": 4,
+      "attemptId": "work-controlled:3"
+    },
+    {
+      "type": "chunk",
+      "chunk": "block-end",
+      "revision": 25,
+      "index": 5,
+      "attemptId": "work-controlled:3"
+    },
+    {
+      "type": "chunk",
+      "chunk": "finish",
+      "revision": 26,
+      "index": 6,
+      "attemptId": "work-controlled:3"
+    },
+    {
+      "type": "end",
+      "revision": 27,
+      "index": 7,
+      "attemptId": "work-controlled:3"
+    },
+    {
+      "type": "start",
+      "revision": 28,
+      "turn": 2,
+      "attemptId": "work-controlled:4"
+    },
+    {
+      "type": "chunk",
+      "chunk": "block-start",
+      "revision": 29,
+      "index": 0,
+      "attemptId": "work-controlled:4"
+    },
+    {
+      "type": "chunk",
+      "chunk": "reasoning-delta",
+      "revision": 30,
+      "index": 1,
+      "attemptId": "work-controlled:4"
+    },
+    {
+      "type": "chunk",
+      "chunk": "block-end",
+      "revision": 31,
+      "index": 2,
+      "attemptId": "work-controlled:4"
+    },
+    {
+      "type": "chunk",
+      "chunk": "block-start",
+      "revision": 32,
+      "index": 3,
+      "attemptId": "work-controlled:4"
+    },
+    {
+      "type": "chunk",
+      "chunk": "text-delta",
+      "revision": 33,
+      "index": 4,
+      "attemptId": "work-controlled:4"
+    },
+    {
+      "type": "chunk",
+      "chunk": "block-end",
+      "revision": 34,
+      "index": 5,
+      "attemptId": "work-controlled:4"
+    },
+    {
+      "type": "chunk",
+      "chunk": "finish",
+      "revision": 35,
+      "index": 6,
+      "attemptId": "work-controlled:4"
+    },
+    {
+      "type": "end",
+      "revision": 36,
+      "index": 7,
+      "attemptId": "work-controlled:4"
+    },
+    {
+      "type": "start",
+      "revision": 37,
+      "turn": 3,
+      "attemptId": "work-controlled:5"
+    },
+    {
+      "type": "chunk",
+      "chunk": "finish",
+      "revision": 38,
+      "index": 0,
+      "attemptId": "work-controlled:5"
+    },
+    {
+      "type": "end",
+      "revision": 39,
+      "index": 1,
+      "attemptId": "work-controlled:5"
+    },
+    {
+      "type": "start",
+      "revision": 40,
+      "turn": 3,
+      "attemptId": "work-controlled:6"
+    },
+    {
+      "type": "chunk",
+      "chunk": "block-start",
+      "revision": 41,
+      "index": 0,
+      "attemptId": "work-controlled:6"
+    },
+    {
+      "type": "chunk",
+      "chunk": "reasoning-delta",
+      "revision": 42,
+      "index": 1,
+      "attemptId": "work-controlled:6"
+    },
+    {
+      "type": "chunk",
+      "chunk": "block-end",
+      "revision": 43,
+      "index": 2,
+      "attemptId": "work-controlled:6"
+    },
+    {
+      "type": "chunk",
+      "chunk": "block-start",
+      "revision": 44,
+      "index": 3,
+      "attemptId": "work-controlled:6"
+    },
+    {
+      "type": "chunk",
+      "chunk": "text-delta",
+      "revision": 45,
+      "index": 4,
+      "attemptId": "work-controlled:6"
+    },
+    {
+      "type": "chunk",
+      "chunk": "block-end",
+      "revision": 46,
+      "index": 5,
+      "attemptId": "work-controlled:6"
+    },
+    {
+      "type": "chunk",
+      "chunk": "finish",
+      "revision": 47,
+      "index": 6,
+      "attemptId": "work-controlled:6"
+    },
+    {
+      "type": "end",
+      "revision": 48,
+      "index": 7,
+      "attemptId": "work-controlled:6"
+    },
+    {
+      "type": "start",
+      "revision": 49,
+      "turn": 4,
+      "attemptId": "work-controlled:7"
+    },
+    {
+      "type": "chunk",
+      "chunk": "finish",
+      "revision": 50,
+      "index": 0,
+      "attemptId": "work-controlled:7"
+    },
+    {
+      "type": "end",
+      "revision": 51,
+      "index": 1,
+      "attemptId": "work-controlled:7"
+    },
+    {
+      "type": "start",
+      "revision": 52,
+      "turn": 5,
+      "attemptId": "work-controlled:8"
+    },
+    {
+      "type": "chunk",
+      "chunk": "finish",
+      "revision": 53,
+      "index": 0,
+      "attemptId": "work-controlled:8"
+    },
+    {
+      "type": "end",
+      "revision": 54,
+      "index": 1,
+      "attemptId": "work-controlled:8"
+    },
+    {
+      "type": "start",
+      "revision": 55,
+      "turn": 6,
+      "attemptId": "work-controlled:9"
+    },
+    {
+      "type": "end",
+      "revision": 56,
+      "index": 0,
+      "attemptId": "work-controlled:9"
+    }
+  ],
+  "facts": [
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 2,
+      "driver": "idle",
+      "running": false,
+      "activity": "idle",
+      "category": "reply",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": null
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 3,
+      "driver": "idle",
+      "running": false,
+      "activity": "idle",
+      "category": "reply",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": null
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 4,
+      "driver": "idle",
+      "running": false,
+      "activity": "idle",
+      "category": "reply",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": null
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 5,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": null
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 6,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"5\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 7,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"5\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 8,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"5\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 9,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"5\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 10,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"5\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 11,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"5\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 12,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"5\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 13,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"5\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 14,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"5\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 15,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"5\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 16,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"5\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 17,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"5\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 18,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"5\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 19,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"5\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 20,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [
+        {
+          "id": "6ad07eba-17e7-4938-b859-2e78632953dd",
+          "kind": "approval",
+          "state": "open"
+        }
+      ],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"16\",\"approval\"]",
+        "kind": "approval"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 21,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [
+        {
+          "id": "6ad07eba-17e7-4938-b859-2e78632953dd",
+          "kind": "approval",
+          "state": "open"
+        }
+      ],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"16\",\"approval\"]",
+        "kind": "approval"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 22,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"17\",\"approval-allowed-once\"]",
+        "kind": "approval-allowed-once"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 23,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"17\",\"approval-allowed-once\"]",
+        "kind": "approval-allowed-once"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 24,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [
+        {
+          "id": "9d0b3d56-ef34-40cc-b89b-1c53223da663",
+          "kind": "approval",
+          "state": "open"
+        }
+      ],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"18\",\"approval\"]",
+        "kind": "approval"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 25,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [
+        {
+          "id": "9d0b3d56-ef34-40cc-b89b-1c53223da663",
+          "kind": "approval",
+          "state": "open"
+        }
+      ],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"18\",\"approval\"]",
+        "kind": "approval"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 26,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"19\",\"approval-rejected\"]",
+        "kind": "approval-rejected"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 27,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"19\",\"approval-rejected\"]",
+        "kind": "approval-rejected"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 28,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [
+        {
+          "id": "abfa88df-b755-4f6a-bf0f-af5e39cc60fd",
+          "kind": "approval",
+          "state": "open"
+        }
+      ],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"20\",\"approval\"]",
+        "kind": "approval"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 29,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [
+        {
+          "id": "abfa88df-b755-4f6a-bf0f-af5e39cc60fd",
+          "kind": "approval",
+          "state": "open"
+        }
+      ],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"20\",\"approval\"]",
+        "kind": "approval"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 30,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"21\",\"approval-cancelled\"]",
+        "kind": "approval-cancelled"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 31,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"21\",\"approval-cancelled\"]",
+        "kind": "approval-cancelled"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 32,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [
+        {
+          "id": "1de765f8-a8b8-4508-89de-72c02e8dbf82",
+          "kind": "approval",
+          "state": "open"
+        }
+      ],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"22\",\"approval\"]",
+        "kind": "approval"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 33,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [
+        {
+          "id": "1de765f8-a8b8-4508-89de-72c02e8dbf82",
+          "kind": "approval",
+          "state": "open"
+        }
+      ],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"22\",\"approval\"]",
+        "kind": "approval"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 34,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [
+        {
+          "id": "1de765f8-a8b8-4508-89de-72c02e8dbf82",
+          "kind": "approval",
+          "state": "open"
+        }
+      ],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"22\",\"approval\"]",
+        "kind": "approval"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 35,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"24\",\"approval-unavailable\"]",
+        "kind": "approval-unavailable"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 36,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,\"24\",\"approval-unavailable\"]",
+        "kind": "approval-unavailable"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 37,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [
+        {
+          "id": "runtime-1",
+          "kind": "question",
+          "state": "open"
+        }
+      ],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,1,\"question\"]",
+        "kind": "question"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 38,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,2,\"answered\"]",
+        "kind": "answered"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 39,
+      "driver": "running",
+      "running": true,
+      "activity": "reasoning",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,2,\"answered\"]",
+        "kind": "answered"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 40,
+      "driver": "running",
+      "running": true,
+      "activity": "tool-arguments",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,2,\"answered\"]",
+        "kind": "answered"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 41,
+      "driver": "running",
+      "running": true,
+      "activity": "tool-arguments",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,2,\"answered\"]",
+        "kind": "answered"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 42,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,2,\"answered\"]",
+        "kind": "answered"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 43,
+      "driver": "running",
+      "running": true,
+      "activity": "tools",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 1,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,2,\"answered\"]",
+        "kind": "answered"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 44,
+      "driver": "running",
+      "running": true,
+      "activity": "tools",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 1,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,2,\"answered\"]",
+        "kind": "answered"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 45,
+      "driver": "running",
+      "running": true,
+      "activity": "tools",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 1,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 0,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,2,\"answered\"]",
+        "kind": "answered"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 46,
+      "driver": "running",
+      "running": true,
+      "activity": "tools",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 1,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 0,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,2,\"answered\"]",
+        "kind": "answered"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 47,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 0,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,2,\"answered\"]",
+        "kind": "answered"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 48,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 0,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,2,\"answered\"]",
+        "kind": "answered"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 49,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 0,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,2,\"answered\"]",
+        "kind": "answered"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 50,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 0,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,2,\"answered\"]",
+        "kind": "answered"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 51,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 0,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,2,\"answered\"]",
+        "kind": "answered"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 52,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 0,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,2,\"answered\"]",
+        "kind": "answered"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 53,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 0,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,2,\"answered\"]",
+        "kind": "answered"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 54,
+      "driver": "running",
+      "running": true,
+      "activity": "reasoning",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 0,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,2,\"answered\"]",
+        "kind": "answered"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 55,
+      "driver": "running",
+      "running": true,
+      "activity": "generating",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 0,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,2,\"answered\"]",
+        "kind": "answered"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 56,
+      "driver": "running",
+      "running": true,
+      "activity": "generating",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 0,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,2,\"answered\"]",
+        "kind": "answered"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 57,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 0,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,2,\"answered\"]",
+        "kind": "answered"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 58,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 0,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,2,\"answered\"]",
+        "kind": "answered"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 59,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 0,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-controlled\",1,2,\"answered\"]",
+        "kind": "answered"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 60,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "goal-progress",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 0,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"33\",\"goal-progress\"]",
+        "kind": "goal-progress"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 61,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "goal-progress",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 0,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"33\",\"goal-progress\"]",
+        "kind": "goal-progress"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 62,
+      "driver": "idle",
+      "running": false,
+      "activity": "idle",
+      "category": "goal-progress",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 0,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"33\",\"goal-progress\"]",
+        "kind": "goal-progress"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 63,
+      "driver": "idle",
+      "running": false,
+      "activity": "idle",
+      "category": "goal-progress",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 0,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"33\",\"goal-progress\"]",
+        "kind": "goal-progress"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 64,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 0,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"33\",\"goal-progress\"]",
+        "kind": "goal-progress"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 65,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 0,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 66,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 0,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 67,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 0,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 68,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 0,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 69,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 0,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 70,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 1,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 71,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 1,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 72,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 1,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 73,
+      "driver": "running",
+      "running": true,
+      "activity": "reasoning",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 1,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 74,
+      "driver": "running",
+      "running": true,
+      "activity": "tool-arguments",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 1,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 75,
+      "driver": "running",
+      "running": true,
+      "activity": "tool-arguments",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 1,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 76,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 1,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 77,
+      "driver": "running",
+      "running": true,
+      "activity": "tools",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 1,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 1,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 78,
+      "driver": "running",
+      "running": true,
+      "activity": "tools",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 1,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 1,
+          "round": 1,
+          "phase": "active"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 79,
+      "driver": "running",
+      "running": true,
+      "activity": "tools",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 1,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 80,
+      "driver": "running",
+      "running": true,
+      "activity": "tools",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 1,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 81,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 82,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 83,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 84,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 85,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 86,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 87,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 88,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 89,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 90,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 91,
+      "driver": "running",
+      "running": true,
+      "activity": "reasoning",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 92,
+      "driver": "running",
+      "running": true,
+      "activity": "generating",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 93,
+      "driver": "running",
+      "running": true,
+      "activity": "generating",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 94,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 95,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 96,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",1,33,\"goal-progress\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"35\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 97,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "completed",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",2,51,\"completed\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"51\",\"completed\"]",
+        "kind": "completed"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 98,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "completed",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",2,51,\"completed\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"51\",\"completed\"]",
+        "kind": "completed"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 99,
+      "driver": "idle",
+      "running": false,
+      "activity": "idle",
+      "category": "completed",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",2,51,\"completed\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"51\",\"completed\"]",
+        "kind": "completed"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 100,
+      "driver": "idle",
+      "running": false,
+      "activity": "idle",
+      "category": "completed",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",2,51,\"completed\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"51\",\"completed\"]",
+        "kind": "completed"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 101,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",2,51,\"completed\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"51\",\"completed\"]",
+        "kind": "completed"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 102,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",2,51,\"completed\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"53\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 103,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",2,51,\"completed\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"53\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 104,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",2,51,\"completed\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"53\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 105,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",2,51,\"completed\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"53\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 106,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",2,51,\"completed\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"53\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 107,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",2,51,\"completed\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"53\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 108,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",2,51,\"completed\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"53\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 109,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",2,51,\"completed\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"53\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 110,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",2,51,\"completed\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"53\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 111,
+      "driver": "running",
+      "running": true,
+      "activity": "recovering",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",2,51,\"completed\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,3,\"request-failed\"]",
+        "kind": "request-failed"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 112,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",2,51,\"completed\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,4,\"retry\"]",
+        "kind": "retry"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 113,
+      "driver": "running",
+      "running": true,
+      "activity": "reasoning",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",2,51,\"completed\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,4,\"retry\"]",
+        "kind": "retry"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 114,
+      "driver": "running",
+      "running": true,
+      "activity": "generating",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",2,51,\"completed\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,4,\"retry\"]",
+        "kind": "retry"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 115,
+      "driver": "running",
+      "running": true,
+      "activity": "generating",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",2,51,\"completed\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,4,\"retry\"]",
+        "kind": "retry"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 116,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",2,51,\"completed\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,4,\"retry\"]",
+        "kind": "retry"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 117,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",2,51,\"completed\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,4,\"retry\"]",
+        "kind": "retry"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 118,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",2,51,\"completed\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,4,\"retry\"]",
+        "kind": "retry"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 119,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "reply",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",3,60,\"reply\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"60\",\"reply\"]",
+        "kind": "reply"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 120,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "reply",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",3,60,\"reply\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"60\",\"reply\"]",
+        "kind": "reply"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 121,
+      "driver": "idle",
+      "running": false,
+      "activity": "idle",
+      "category": "reply",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",3,60,\"reply\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"60\",\"reply\"]",
+        "kind": "reply"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 122,
+      "driver": "idle",
+      "running": false,
+      "activity": "idle",
+      "category": "reply",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",3,60,\"reply\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"60\",\"reply\"]",
+        "kind": "reply"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 123,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",3,60,\"reply\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"60\",\"reply\"]",
+        "kind": "reply"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 124,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",3,60,\"reply\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"62\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 125,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",3,60,\"reply\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"62\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 126,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",3,60,\"reply\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"62\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 127,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",3,60,\"reply\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"62\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 128,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",3,60,\"reply\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"62\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 129,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",3,60,\"reply\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"62\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 130,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",3,60,\"reply\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"62\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 131,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",3,60,\"reply\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"62\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 132,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",3,60,\"reply\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"62\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 133,
+      "driver": "running",
+      "running": true,
+      "activity": "recovering",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",3,60,\"reply\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,5,\"request-failed\"]",
+        "kind": "request-failed"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 134,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",3,60,\"reply\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,5,\"request-failed\"]",
+        "kind": "request-failed"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 135,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",3,60,\"reply\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,5,\"request-failed\"]",
+        "kind": "request-failed"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 136,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "error",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": true,
+      "problem": null,
+      "resultId": "[\"work-controlled\",4,68,\"error\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"68\",\"error\"]",
+        "kind": "error"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 137,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "error",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": true,
+      "problem": null,
+      "resultId": "[\"work-controlled\",4,68,\"error\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"68\",\"error\"]",
+        "kind": "error"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 138,
+      "driver": "idle",
+      "running": false,
+      "activity": "idle",
+      "category": "error",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": true,
+      "problem": null,
+      "resultId": "[\"work-controlled\",4,68,\"error\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"68\",\"error\"]",
+        "kind": "error"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 139,
+      "driver": "idle",
+      "running": false,
+      "activity": "idle",
+      "category": "error",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": true,
+      "problem": null,
+      "resultId": "[\"work-controlled\",4,68,\"error\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"68\",\"error\"]",
+        "kind": "error"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 140,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",4,68,\"error\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"68\",\"error\"]",
+        "kind": "error"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 141,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",4,68,\"error\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"70\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 142,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",4,68,\"error\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"70\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 143,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",4,68,\"error\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"70\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 144,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",4,68,\"error\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"70\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 145,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",4,68,\"error\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"70\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 146,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",4,68,\"error\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"70\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 147,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",4,68,\"error\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,6,\"retry\"]",
+        "kind": "retry"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 148,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",4,68,\"error\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,6,\"retry\"]",
+        "kind": "retry"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 149,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",4,68,\"error\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,6,\"retry\"]",
+        "kind": "retry"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 150,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",4,68,\"error\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,6,\"retry\"]",
+        "kind": "retry"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 151,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",4,68,\"error\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,6,\"retry\"]",
+        "kind": "retry"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 152,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "max-tokens",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": true,
+      "problem": null,
+      "resultId": "[\"work-controlled\",5,76,\"max-tokens\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"76\",\"max-tokens\"]",
+        "kind": "max-tokens"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 153,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "max-tokens",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": true,
+      "problem": null,
+      "resultId": "[\"work-controlled\",5,76,\"max-tokens\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"76\",\"max-tokens\"]",
+        "kind": "max-tokens"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 154,
+      "driver": "idle",
+      "running": false,
+      "activity": "idle",
+      "category": "max-tokens",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": true,
+      "problem": null,
+      "resultId": "[\"work-controlled\",5,76,\"max-tokens\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"76\",\"max-tokens\"]",
+        "kind": "max-tokens"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 155,
+      "driver": "idle",
+      "running": false,
+      "activity": "idle",
+      "category": "max-tokens",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": true,
+      "problem": null,
+      "resultId": "[\"work-controlled\",5,76,\"max-tokens\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"76\",\"max-tokens\"]",
+        "kind": "max-tokens"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 156,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",5,76,\"max-tokens\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"76\",\"max-tokens\"]",
+        "kind": "max-tokens"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 157,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",5,76,\"max-tokens\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"78\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 158,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",5,76,\"max-tokens\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"78\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 159,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",5,76,\"max-tokens\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"78\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 160,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",5,76,\"max-tokens\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"78\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 161,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",5,76,\"max-tokens\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"78\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 162,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",5,76,\"max-tokens\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"78\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 163,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",5,76,\"max-tokens\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"78\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 164,
+      "driver": "running",
+      "running": true,
+      "activity": "requesting",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",5,76,\"max-tokens\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"78\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 165,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",5,76,\"max-tokens\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"78\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 166,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",5,76,\"max-tokens\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"78\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 167,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",5,76,\"max-tokens\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"78\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 168,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "stopped",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",6,84,\"stopped\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"84\",\"stopped\"]",
+        "kind": "stopped"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 169,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "stopped",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",6,84,\"stopped\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"84\",\"stopped\"]",
+        "kind": "stopped"
+      }
+    },
+    {
+      "sessionId": "work-controlled",
+      "epoch": 1,
+      "revision": 170,
+      "driver": "idle",
+      "running": false,
+      "activity": "idle",
+      "category": "stopped",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": {
+          "id": "goal-f0464d50-fe59-4679-a8cb-ee53d0e14d53",
+          "revision": 2,
+          "round": 1,
+          "phase": "complete"
+        }
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-controlled\",6,84,\"stopped\"]",
+      "cue": {
+        "id": "[\"work-controlled\",1,\"84\",\"stopped\"]",
+        "kind": "stopped"
+      }
+    },
+    {
+      "sessionId": "work-projection",
+      "epoch": 1,
+      "revision": 2,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": null
+    },
+    {
+      "sessionId": "work-projection",
+      "epoch": 1,
+      "revision": 3,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-projection\",1,\"3\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-projection",
+      "epoch": 1,
+      "revision": 4,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-projection\",1,\"3\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-projection",
+      "epoch": 1,
+      "revision": 5,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-projection\",1,\"3\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-projection",
+      "epoch": 1,
+      "revision": 6,
+      "driver": "running",
+      "running": true,
+      "activity": "tools",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 1,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-projection\",1,\"3\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-projection",
+      "epoch": 1,
+      "revision": 8,
+      "driver": "running",
+      "running": true,
+      "activity": "tools",
+      "category": "working",
+      "requests": [
+        {
+          "id": "continued-full",
+          "kind": "question",
+          "state": "open"
+        }
+      ],
+      "tools": {
+        "pending": 1,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-projection\",1,1,\"question\"]",
+        "kind": "question"
+      }
+    },
+    {
+      "sessionId": "work-projection",
+      "epoch": 1,
+      "revision": 9,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [
+        {
+          "id": "continued-full",
+          "kind": "question",
+          "state": "open"
+        }
+      ],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-projection\",1,1,\"question\"]",
+        "kind": "question"
+      }
+    },
+    {
+      "sessionId": "work-projection",
+      "epoch": 1,
+      "revision": 11,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [
+        {
+          "id": "continued-full",
+          "kind": "question",
+          "state": "continued"
+        }
+      ],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": {
+        "id": "[\"work-projection\",1,1,\"question\"]",
+        "kind": "question"
+      }
+    },
+    {
+      "sessionId": "work-projection",
+      "epoch": 1,
+      "revision": 12,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "reply",
+      "requests": [
+        {
+          "id": "continued-full",
+          "kind": "question",
+          "state": "continued"
+        }
+      ],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-projection\",1,7,\"reply\"]",
+      "cue": {
+        "id": "[\"work-projection\",1,\"7\",\"reply\"]",
+        "kind": "reply"
+      }
+    },
+    {
+      "sessionId": "work-projection",
+      "epoch": 1,
+      "revision": 14,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "reply",
+      "requests": [
+        {
+          "id": "continued-full",
+          "kind": "question",
+          "state": "continued"
+        }
+      ],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-projection\",1,7,\"reply\"]",
+      "cue": {
+        "id": "[\"work-projection\",1,\"7\",\"reply\"]",
+        "kind": "reply"
+      }
+    },
+    {
+      "sessionId": "work-projection",
+      "epoch": 1,
+      "revision": 15,
+      "driver": "idle",
+      "running": false,
+      "activity": "idle",
+      "category": "reply",
+      "requests": [
+        {
+          "id": "continued-full",
+          "kind": "question",
+          "state": "continued"
+        }
+      ],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-projection\",1,7,\"reply\"]",
+      "cue": {
+        "id": "[\"work-projection\",1,\"7\",\"reply\"]",
+        "kind": "reply"
+      }
+    },
+    {
+      "sessionId": "work-projection",
+      "epoch": 1,
+      "revision": 16,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [
+        {
+          "id": "continued-full",
+          "kind": "question",
+          "state": "continued"
+        }
+      ],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-projection\",1,7,\"reply\"]",
+      "cue": {
+        "id": "[\"work-projection\",1,\"8\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-projection",
+      "epoch": 1,
+      "revision": 18,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [
+        {
+          "id": "continued-full",
+          "kind": "question",
+          "state": "continued"
+        }
+      ],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-projection\",1,7,\"reply\"]",
+      "cue": {
+        "id": "[\"work-projection\",1,\"8\",\"work-start\"]",
+        "kind": "work-start"
+      }
+    },
+    {
+      "sessionId": "work-projection",
+      "epoch": 1,
+      "revision": 20,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-projection\",1,7,\"reply\"]",
+      "cue": {
+        "id": "[\"work-projection\",1,2,\"answered\"]",
+        "kind": "answered"
+      }
+    },
+    {
+      "sessionId": "work-projection",
+      "epoch": 1,
+      "revision": 21,
+      "driver": "running",
+      "running": true,
+      "activity": "tools",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 1,
+        "entered": 1
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-projection\",1,7,\"reply\"]",
+      "cue": {
+        "id": "[\"work-projection\",1,2,\"answered\"]",
+        "kind": "answered"
+      }
+    },
+    {
+      "sessionId": "work-projection",
+      "epoch": 1,
+      "revision": 23,
+      "driver": "running",
+      "running": true,
+      "activity": "tools",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 1,
+        "entered": 1
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-projection\",1,7,\"reply\"]",
+      "cue": {
+        "id": "[\"work-projection\",1,2,\"answered\"]",
+        "kind": "answered"
+      }
+    },
+    {
+      "sessionId": "work-projection",
+      "epoch": 1,
+      "revision": 24,
+      "driver": "unknown",
+      "running": false,
+      "activity": "unknown",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 1,
+        "entered": 1
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-projection\",1,7,\"reply\"]",
+      "cue": {
+        "id": "[\"work-projection\",1,2,\"answered\"]",
+        "kind": "answered"
+      }
+    },
+    {
+      "sessionId": "work-projection",
+      "epoch": 1,
+      "revision": 25,
+      "driver": "running",
+      "running": true,
+      "activity": "tools",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 1,
+        "entered": 1
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-projection\",1,7,\"reply\"]",
+      "cue": {
+        "id": "[\"work-projection\",1,2,\"answered\"]",
+        "kind": "answered"
+      }
+    },
+    {
+      "sessionId": "work-projection",
+      "epoch": 1,
+      "revision": 26,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-projection\",1,7,\"reply\"]",
+      "cue": {
+        "id": "[\"work-projection\",1,\"11\",\"tool-error\"]",
+        "kind": "tool-error"
+      }
+    },
+    {
+      "sessionId": "work-projection",
+      "epoch": 1,
+      "revision": 28,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "working",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-projection\",1,7,\"reply\"]",
+      "cue": {
+        "id": "[\"work-projection\",1,\"11\",\"tool-error\"]",
+        "kind": "tool-error"
+      }
+    },
+    {
+      "sessionId": "work-projection",
+      "epoch": 1,
+      "revision": 29,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "interrupted",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-projection\",2,12,\"interrupted\"]",
+      "cue": {
+        "id": "[\"work-projection\",1,\"11\",\"tool-error\"]",
+        "kind": "tool-error"
+      }
+    },
+    {
+      "sessionId": "work-projection",
+      "epoch": 1,
+      "revision": 31,
+      "driver": "running",
+      "running": true,
+      "activity": "preparing",
+      "category": "interrupted",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-projection\",2,12,\"interrupted\"]",
+      "cue": {
+        "id": "[\"work-projection\",1,\"11\",\"tool-error\"]",
+        "kind": "tool-error"
+      }
+    },
+    {
+      "sessionId": "work-projection",
+      "epoch": 1,
+      "revision": 32,
+      "driver": "idle",
+      "running": false,
+      "activity": "idle",
+      "category": "interrupted",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": "[\"work-projection\",2,12,\"interrupted\"]",
+      "cue": {
+        "id": "[\"work-projection\",1,\"11\",\"tool-error\"]",
+        "kind": "tool-error"
+      }
+    },
+    {
+      "sessionId": "work-projection",
+      "epoch": 2,
+      "revision": 11,
+      "driver": "idle",
+      "running": false,
+      "activity": "idle",
+      "category": "interrupted",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": null
+    },
+    {
+      "sessionId": "work-projection",
+      "epoch": 2,
+      "revision": 12,
+      "driver": "unknown",
+      "running": false,
+      "activity": "unknown",
+      "category": "interrupted",
+      "requests": [],
+      "tools": {
+        "pending": 0,
+        "entered": 0
+      },
+      "goal": {
+        "known": true,
+        "goal": null
+      },
+      "needsAttention": false,
+      "problem": null,
+      "resultId": null,
+      "cue": null
+    }
+  ],
+  "cases": {
+    "realModelStream": true,
+    "realDriverStatus": true,
+    "realOrdinaryTools": true,
+    "realGoalLifecycle": true,
+    "realApprovalFourOutcomes": true,
+    "realRuntimeQuestion": true,
+    "realRecoveryAttempt": true,
+    "realTerminalError": true,
+    "realOutputLimit": true,
+    "realUserCancellation": true,
+    "controlledProjectionContinued": true,
+    "controlledNestedEventContract": true,
+    "restoreNoReplay": true,
+    "sourceReplacement": true,
+    "unknownRetainsCalls": true,
+    "metadataPrivacy": true
+  },
+  "shutdown": {
+    "code": 0,
+    "signal": null
+  }
+}

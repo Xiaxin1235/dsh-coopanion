@@ -1,0 +1,46 @@
+import assert from 'node:assert/strict';
+import {chromium,_electron} from 'playwright-core';
+import {mkdir,writeFile,mkdtemp,rm} from 'node:fs/promises';
+import {execFileSync} from 'node:child_process';
+import {createRequire} from 'node:module';
+import {resolve,join} from 'node:path';
+import {tmpdir} from 'node:os';
+import {spaceSourceIdentity} from './space-source-identity.mjs';
+execFileSync(process.execPath,['docs/design/art-workflow/space-v1/prepare-stage4.mjs']);
+const native=process.argv.includes('--native'),output=resolve(process.env.SPACE_EVIDENCE_DIR??'artifacts/work-semantics-ui');await mkdir(output,{recursive:true});
+const sourceIdentity=await spaceSourceIdentity({stage4:true}),profile=native?await mkdtemp(join(tmpdir(),'work-semantics-')):null;
+const browser=native?await _electron.launch({executablePath:createRequire(import.meta.url)('electron'),args:['--no-sandbox',resolve('desktop/space-preview.cjs')],env:{...process.env,DSH_SPACE_STAGE:'4',DSH_PET_TEST_DATA_DIR:profile,DSH_PET_TEST_NO_SANDBOX:'1'}}):await chromium.launch({headless:true,args:['--no-sandbox','--enable-unsafe-swiftshader']});
+const context=native?browser.context():await browser.newContext({viewport:{width:1440,height:1080}}),page=native?await browser.firstWindow():await context.newPage(),checks=[],errors=[],samples=[];
+page.on('pageerror',e=>errors.push(e.stack));const frame=()=>page.evaluate(()=>JSON.parse(document.querySelector('#world').dataset.frame));
+const wait=(fn,arg=null)=>page.waitForFunction(fn,arg,{timeout:45000});const click=id=>page.locator('#'+id).evaluate(e=>e.click());const select=id=>page.selectOption('#work-session',id);const check=(v,label)=>{assert.ok(v,label);checks.push(label);};
+const capture=async label=>{samples.push({label,frame:await frame()});await page.locator('#world').screenshot({path:join(output,label+'.png')});};
+try{
+ if(!native)await page.goto('http://127.0.0.1:4189/docs/design/art-workflow/space-v1/index.html?stage=4');await wait(()=>document.documentElement.dataset.ready==='true');
+ if((await frame()).coordination.phase==='paused')await click('resume');
+ await click('scenario-attention');await wait(()=>JSON.parse(document.querySelector('#world').dataset.frame).coordination.focus==='B');let f=await frame();
+ check(f.coordination.sessions.find(s=>s.sessionId==='A').tools.pending===1&&f.coordination.sessions.find(s=>s.sessionId==='C').category==='completed','A tool, B approval, C completion remain independent');
+ check(f.performance.kind==='approval'&&f.performance.expression!=='happy','background completion cannot cover pending approval');
+ await select('C');await page.locator('#work-draft').focus();await page.locator('#work-draft').fill('C 的原始草稿');await click('scenario-attention');await wait(()=>JSON.parse(document.querySelector('#world').dataset.frame).coordination.reason==='user-occupied');
+ check(await page.locator('#work-session').inputValue()==='C'&&await page.locator('#work-draft').inputValue()==='C 的原始草稿'&&await page.evaluate(()=>document.activeElement.id)==='work-draft','background changes preserve selected session, draft and input focus');
+ const paused=await frame();await page.waitForTimeout(300);f=await frame();check(f.bodyX===paused.bodyX&&f.bodyY===paused.bodyY&&f.coordination.focus==='B','occupied input freezes body while request attention still updates');
+ await page.locator('#work-draft').evaluate(e=>e.blur());await wait(()=>JSON.parse(document.querySelector('#world').dataset.frame).coordination.phase==='work-wait');await capture('01-approval');
+ check((await frame()).sit<.1,'approval invites a response standing at the shared station');
+ await click('scenario-streams');await select('A');await wait(()=>JSON.parse(document.querySelector('#world').dataset.frame).coordination.phase==='work-wait');await wait(()=>JSON.parse(document.querySelector('#world').dataset.frame).performance.kind==='generating');
+ const focus=(await frame()).coordination.focus;for(let i=0;i<8;i++){await select(i%2?'A':'B');await click('work-generating');}
+ check((await frame()).coordination.focus===focus,'interleaved output updates do not switch body focus');await select(focus);
+ await click('work-reasoning');await wait(()=>JSON.parse(document.querySelector('#world').dataset.frame).performance.kind==='reasoning');await page.waitForTimeout(900);const thinking=await frame();await capture('02-thinking');
+ await click('work-generating');await wait(()=>JSON.parse(document.querySelector('#world').dataset.frame).performance.kind==='generating');await page.waitForTimeout(900);f=await frame();
+ check(thinking.performance.expression!==f.performance.expression&&Math.abs(thinking.pose.armNear-f.pose.armNear)>5,'thinking and composing produce distinct actual face and free-arm poses');await capture('03-composing');
+ await click('work-tool');await click('work-tool');await click('work-tool-done');await wait(id=>JSON.parse(document.querySelector('#world').dataset.frame).coordination.sessions.find(s=>s.sessionId===id).tools.pending===1,focus);check((await frame()).performance.kind==='tools','one tool result retains the other in-flight call');await capture('04-tools');
+ await wait(()=>{const f=JSON.parse(document.querySelector('#world').dataset.frame);return f.sit>.9&&f.phase==='rest';});const seated=await frame();await capture('04a-seated');
+ await wait(()=>{const f=JSON.parse(document.querySelector('#world').dataset.frame);return f.sit<.1&&f.coordination.elapsed>12;});f=await frame();check(f.bodyX===seated.bodyX&&f.bodyY===seated.bodyY&&f.coordination.navigation===null&&f.performance.kind==='tools','long tool wait looks up and stands without moving station or inventing progress');await capture('04b-standing');
+ await click('work-tool-error');await wait(id=>JSON.parse(document.querySelector('#world').dataset.frame).coordination.sessions.find(s=>s.sessionId===id).cue?.kind==='tool-error',focus);check((await frame()).coordination.sessions.find(s=>s.sessionId===focus).category==='working','single tool error does not become terminal task failure');
+ await select('A');await click('work-approval');await click('work-approval');await select('B');await click('work-approval');await select('A');await click('work-approved');check((await frame()).coordination.focus==='A','one settlement retains another approval on the same source');await click('work-approved');await wait(()=>JSON.parse(document.querySelector('#world').dataset.frame).coordination.focus==='B');check(true,'focus advances to oldest still pending source');
+ await select('B');for(const outcome of ['allowed-once','rejected','cancelled','unavailable']){if(outcome!=='allowed-once')await click('work-approval');await page.selectOption('#approval-outcome',outcome);await click('work-approved');await wait(outcome=>JSON.parse(document.querySelector('#world').dataset.frame).coordination.sessions.find(s=>s.sessionId==='B').cue?.kind==='approval-'+outcome,outcome);}check(true,'four formal approval outcomes are independently observable');
+ await click('scenario-continued');await wait(()=>JSON.parse(document.querySelector('#world').dataset.frame).performance.kind==='continued');f=await frame();check(f.coordination.sessions.find(s=>s.sessionId==='A').running===false&&f.coordination.focus==='B','idle active goal does not occupy body over a continued question');await capture('05-continued');
+ await select('B');await click('work-disconnect');await wait(()=>JSON.parse(document.querySelector('#world').dataset.frame).coordination.reason==='source-unavailable');const detached=await frame();await page.waitForTimeout(200);f=await frame();check(f.bodyX===detached.bodyX&&f.bodyY===detached.bodyY&&f.coordination.sessions.find(s=>s.sessionId==='B').requests.length===1,'unobservable driver freezes body and retains unresolved request');await click('work-reconnect');await wait(()=>JSON.parse(document.querySelector('#world').dataset.frame).coordination.phase==='work-wait');
+ await click('work-reduced');await wait(()=>JSON.parse(document.querySelector('#world').dataset.frame).performance.look.every(v=>v===0));check((await frame()).performance.armNear===4,'reduced motion suppresses gaze and free-arm cadence');
+ await select('B');await click('work-answered');await wait(()=>JSON.parse(document.querySelector('#world').dataset.frame).coordination.phase==='idle');check((await frame()).coordination.sessions.find(s=>s.sessionId==='A').goal.goal.phase==='active','all actual work released while active goal metadata remains');
+ check(errors.length===0,'no page errors');await writeFile(join(output,'semantics.json'),JSON.stringify({passed:true,sourceIdentity,native,simulatedHarness:true,checks,errors,samples,final:await frame()},null,2)+'\n');console.log(JSON.stringify({passed:true,native,checks:checks.length,output}));
+}catch(error){await page.screenshot({path:join(output,'failure.png'),fullPage:true}).catch(()=>{});await writeFile(join(output,'failure.json'),JSON.stringify({sourceIdentity,checks,errors,error:error.stack,frame:await frame().catch(()=>null)},null,2));throw error;}
+finally{if(!native)await context.close();await browser.close();if(profile)await rm(profile,{recursive:true,force:true});}

@@ -87,3 +87,11 @@ Stage 3 feedback geometry correction, 2026-10-20:
 
 - The initial action model had expanded all visible elevations into full-body restricted rectangles, recreating the earlier floor/elevation regression. In the reported 580/528 planter layout it linked the station and planter into a virtual wall; after moving the planter to 558/252 it still rejected the shell approach beside the home as target-blocked.
 - `actionNavigationModel` now shares the calibrated `navigationModel`: full-width finite ground footprints for known bases, full-body bounds for restricted content, world edges and unknown solids. The held-prop raster/envelope checks remain mandatory. Navigation rejection reasons are preserved through the action executor for actionable preview feedback. No upstream asset, rig or license bytes change.
+
+Local courtyard life/work coordination, 2026-10-20:
+
+- New local `kit/life-work.js` runs only in the explicit `bounds.lifeWork=true` authoring factory. It retains independent life/work intent and exclusively coordinates the existing navigator and contact executor inside the same body tick. `space-action.js` adds cooperative `yield` without resetting pose, ownership or committed counts.
+- The Stage 4 authoring UI supplies clearly marked simulated facts through an adapter built from `src/work-facts.ts` and the shared `src/completion.ts`. It has no Harness connection, model calls, input-content inspection or second body scheduler. The default product factory, API 2 capabilities and Stage 2/3 entry behavior remain unchanged.
+- The opt-in factory overlays bounded gaze/task expression, uses the existing awake sit at the actual station and rechecks the retained object/target on release. No original artwork, rig, model, prompt or license bytes change. Scope and verification are in `docs/design/life-work-contract.md` and `docs/aliveness-development.md`.
+
+2026-10-20 第四阶段增量：`kit/work-performance.js` 是本仓库的元数据表现策略，沿既有身体时钟采样，区分模型／工具活动、审批与问题，冻结占用并提供减少动态；只在空闲且地面拥有权时覆盖手臂。`kit/life-work.js` 改为真实运行／请求／异常驻岗与稳定多来源仲裁，目标 active 独立保存。来源与测试见[本轮报告](../../docs/reports/stage-4-semantics-20261020.md)。

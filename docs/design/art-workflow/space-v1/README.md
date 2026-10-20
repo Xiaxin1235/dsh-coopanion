@@ -4,12 +4,59 @@
 
 ## 启动
 
+先用 `curl -I http://127.0.0.1:4189/` 或端口监听确认已有服务；HTTP 302 为根路径跳转，页面应返回 200。服务不存在时在独立、保持运行的终端启动下列命令；临时命令结束不代表服务仍在。
+
 ```bash
 node docs/design/art-workflow/o03-shell-hands-v1/prepare-model.mjs --check
 PORT=4189 node docs/design/art-workflow/preview-art-workflow.mjs
 ```
 
-已有 4189 服务直接复用。布局只保存在当前页，刷新会恢复初值；保护用户未导出的布局，复现与测试另开隔离页面。根路径仍进入第 2 期页面，第 3 期使用下方显式入口。
+已有 4189 服务直接复用。布局只保存在当前页，刷新会恢复初值；保护用户未导出的布局，复现与测试另开隔离页面。根路径仍进入第 2 期页面，第 3／4 期各用显式入口。
+
+## 第 4 期：生活／工作双线
+
+首次准备共享事实模块，再另开[第四阶段页面](http://127.0.0.1:4189/docs/design/art-workflow/space-v1/index.html?stage=4)：
+
+```bash
+node docs/design/art-workflow/space-v1/prepare-stage4.mjs
+DSH_SPACE_STAGE=4 node scripts/space-desktop.mjs
+```
+
+第二条是可选的临时 profile 原生入口；浏览器仍复用 4189 服务。新事实模块来自共享 CompletionTracker；页面醒目标注“模拟 Harness 事实”，不连接真实宿主。
+
+1. 按“开始整理”，在拿起、持物或放下期间按“工作开始”。工作关注立即呈现，未提交拿起先收手，已持物先真实放稳，再沿同一导航器到岗。
+2. “发送已接受”不会完成任务，“回合结束 · 目标未完成”只保留目标状态，Agent 已 idle 且无未决请求／异常时可返回生活，“目标完成”仅在共享严格判断后解除该会话的工作。到岗用实际位置／速度／回执判断，随后按当前活动清醒守候，周期原地坐站；审批／问题邀请回应。
+3. 切到会话 B 提出问题／审批，再完成 A：仍守候 B。异常确认不答复问题，只有独立的结算输入能解除对应请求。“普通回复”在无目标时结束该回合，在目标 active 时仍为推进。
+4. 工作解除后检查原贝壳与目标，未整理完则返回续接；若贝壳已在落点则结束，不重播拿放。临时放稳的落点不覆盖原生活目标。
+5. 暂停、Escape、实际拖动、修改几何和生命周期保留拥有权／计数；按“继续”从现状检查。交接超时会停下并说明，不伪造放下或到岗。“取消生活目标”只取消原目标，工作事实和实际物件保留。
+
+“布局与接触检查”可以展开编辑落点／物件和查看边界。故事运行中手动拿放和点地路线交由协调器独占；待机仍可使用原有控制。完整规则见[双线契约](../../life-work-contract.md)，本地工程结果与用户验收分别见[开发状态](../../../aliveness-development.md)。
+
+```bash
+node node_modules/vitest/vitest.mjs run tests/work-facts.test.ts tests/life-work.test.js tests/space-action.test.js
+SPACE_EVIDENCE_DIR=artifacts/stage-4-browser-new node tests/life-work-ui.mjs
+SPACE_EVIDENCE_DIR=artifacts/stage-4-native-new node tests/life-work-ui.mjs --native
+```
+
+每轮使用新的目录，原生串行。浏览器完整故事输出 `story.webm`、各里程碑截图和 `life-work.json`；报告含实际来源摘要、运行时及模拟／真实边界。重建共享模块后新页面生效，不刷新用户留有布局的页面。首次原生隐藏／长加载可能触发生命周期保护，先显式“继续”，不会自动编造生活意图。
+
+### 工作语义、多会话与守候
+
+第四阶段现在提供 A／B／C 独立来源、思考／输出／工具等待与单个返回、重试、完整审批 outcome、open／continued 问题、输出上限与取消。每次请求有独立身份；“发送已接受”仍不改变完成或请求。三个组合故事显式重建模拟来源，原子替换事实，不复位生活目标；可分别观察 A 工具／B 审批／C 完成、双流输出、active 目标与 continued 问题。
+
+交互会话与身体关注分别显示；选中 C 不会把身体从 B 的审批抢走。模拟草稿按会话保存，聚焦时暂停身体，后台状态继续更新；离开后重评。减少动态关闭空闲视线／手臂节奏与周期站坐。工具守候会原地坐下、抬眼和起身，不绕场走动或假报进度。审批与问题以站立邀请回应；情绪幅度与节奏仍需主观验收。
+
+继续复用 4189 服务；为查看更新请另开页面，不刷新持有未导出布局的原页。执行 `node docs/design/art-workflow/space-v1/prepare-stage4.mjs` 准备同源模块。新增定向检查：
+
+```sh
+node tests/work-semantics-ui.mjs
+node tests/work-semantics-ui.mjs --native
+node tests/work-host-contract.mjs --runtime <隔离运行时目录> --version <支持版本> --output <新证据目录>
+```
+
+loader 检查使用临时 DSH_HOME 和受控模型，加载事实适配观察夹具，不安装日用插件。四支持版本逐一核验其自身包版本与摘要。运行时准备与实际证据见[新增报告](../../../reports/stage-4-semantics-20261020.md)，它不等于真实模型服务、分发包安装或用户体验验收。
+
+“来源不可观测”保留请求并暂停身体；“重新核对驱动”恢复模拟可观测性后从实际姿态重评，不把断开误作完成或空闲。
 
 ## 第 3 期：连续动作与物件
 
@@ -38,7 +85,7 @@ PORT=4189 node docs/design/art-workflow/preview-art-workflow.mjs
 DSH_SPACE_STAGE=3 node scripts/space-desktop.mjs
 ```
 
-退出自动清理，不改日用安装。地图默认可操作；开启“桌面穿透”后仅实际 body 命中范围收取输入，Escape 关闭穿透并取消／暂停。预览不连接真实 Harness，不读取其他应用，也未接入产品自主生活／工作协调。
+退出自动清理，不改日用安装。地图默认可操作；开启“桌面穿透”后仅实际 body 命中范围收取输入，Escape 关闭穿透并取消／暂停。预览不连接真实 Harness，不读取其他应用；第 4 期的模拟协调独立于产品自主陪伴。
 
 ```bash
 node node_modules/vitest/vitest.mjs run tests/space-action.test.js tests/space-feedback.test.js

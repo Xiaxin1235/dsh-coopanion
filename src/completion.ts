@@ -47,6 +47,13 @@ export class CompletionTracker {
     return this.decision(event.seq);
   }
 
+  /** Metadata-only strict projection for work presentation; no objective text. */
+  goalSnapshot() {
+    const current = this.state.failure ? null : this.state.current;
+    return { known: !this.state.failure, goal: current ? { id: current.goal.id, revision: current.goal.revision,
+      round: current.roundsStarted, phase: current.goal.phase } : null };
+  }
+
   private decision(seq: number): CompletionDecision {
     // A malformed or unsupported owned stream permanently loses success authority.
     const current = this.state.failure ? null : this.state.current;

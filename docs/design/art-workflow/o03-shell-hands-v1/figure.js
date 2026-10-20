@@ -1,6 +1,8 @@
 import { createWhaleFigure } from '/web/upstream/whale/figure.js';
 import { initialMotion, sampleMotion, stepMotion, contactRoute } from '/web/prop-motion.js';
 import { initialSpaceAction, sampleSpaceAction, stepSpaceAction, pickupMirror, createSpaceNavigationChannel } from '/web/upstream/kit/space-action.js';
+import { initialLifeWork, stepLifeWork } from '/web/upstream/kit/life-work.js';
+import { initialWorkPerformance, stepWorkPerformance } from '/web/upstream/kit/work-performance.js';
 import { handWeights } from '/web/upstream/whale/hand-art.js';
 
 export async function createMotionBody(base, options) {
@@ -8,6 +10,8 @@ export async function createMotionBody(base, options) {
   const spec = { ...originalSpec, grip: { ...originalSpec.grip, ...handSpec.propGrip } };
   const bounds = () => options.host.bounds(), scale = bounds().S;
   const continuous = bounds().continuousActions === true;
+  const coordinated = bounds().lifeWork === true;
+  let coordination = initialLifeWork(), coordinationQueue = [], gaze = 0, taskExpression = null, workTarget = null, performanceState = initialWorkPerformance(), performanceView = null, reducedWork = false, freeArm = [4,-2];
   const initial = continuous ? initialSpaceAction : initialMotion, sample = continuous ? sampleSpaceAction : sampleMotion, advance = continuous ? stepSpaceAction : stepMotion;
   let spaceModel = null, objectRevision = 0, propMirror = 1;
   const navigationChannel = continuous ? createSpaceNavigationChannel() : null;
@@ -28,8 +32,9 @@ export async function createMotionBody(base, options) {
     const navigation=actor?.layout().navigation;
     const walking = ['approach', 'carry'].includes(phase) || !!navigation && navigation.phase !== 'idle';
     const k = ['settle', 'settleDrop'].includes(phase) ? Math.min(1, state.elapsed / profile.seconds[phase]) : continuous && phase === 'prepare' ? Math.max(state.preparePlantFrom ?? 0, Math.min(1,state.elapsed/.8)) : 1;
-    return { ...pose, plant: !walking && phase !== 'rest' && (phase !== 'prepare' || !state.prepareSeated), plantWeight: k * k * (3 - 2 * k), hands: handWeights(continuous && phase === 'prepare' && state.owner === 'hand' ? {...state, phase:'held'} : state, profile), handArt: handArtEnabled,
-      ...(walking ? { armNear: undefined, ...(state.owner === 'ground' ? { armFar: undefined, look: [3, 0] } : {}) } : {}) };
+    const free=coordinated && coordination.phase==='work-wait' && state.owner==='ground' && ['idle','rest'].includes(phase) && !walking && !coordination.occupied;
+    return { ...pose, ...(free ? {armNear:freeArm[0],armFar:freeArm[1]} : {}), ...(coordinated ? {look:[pose.look[0]+gaze,pose.look[1]+(performanceView?.look[1]??0)]} : {}), plant: !walking && phase !== 'rest' && (phase !== 'prepare' || !state.prepareSeated), plantWeight: k * k * (3 - 2 * k), hands: handWeights(continuous && phase === 'prepare' && state.owner === 'hand' ? {...state, phase:'held'} : state, profile), handArt: handArtEnabled,
+      ...(walking ? { armNear: undefined, ...(state.owner === 'ground' ? { armFar: undefined, look: [3 + gaze, 0] } : {}) } : {}) };
   };
   const figure = await createWhaleFigure(new URL('/web/upstream/whale/', base), {
     ...options, model, raster: true, handDetail: true, externalProp:true, asset: path => new URL(path, new URL('/web/upstream/whale/', base)),
@@ -85,11 +90,40 @@ export async function createMotionBody(base, options) {
         commits: { ...state.commits }, contact: input.contact, handArt: input.hand, activeTime });
     }
   }
+  const parking = () => {
+    const layout=actor.layout(), floor=layout.y;
+    const r=route({x:0,y:floor-spec.displayWidth*b.height/b.width*(1-spec.grip.y),floor},layout.facing);
+    return {x:layout.x-r.x,y:floor};
+  };
+  function coordinate(now, dt, command, event) {
+    const layout=actor.layout();
+    const input={...inputs(now,dt,null,null), command,event,reduced:reducedWork,action:state,objectId:'o03-shell',object:{x:groundGrip().x,y:groundQuad[2].y},
+      physicalNavigation:layout.navigation,destination:{x:destination,y:destinationY},parking:parking(),station:workTarget??bounds().workTarget??{x:850,y:600}};
+    const result=stepLifeWork(coordination,input);coordination=result.state;
+    for(const e of result.effects){
+      if(e.type==='destination'){destination=e.x;destinationY=e.y;objectRevision++;}
+      if(e.type==='action'){const i=inputs(now,0,e.command,null);apply(advance(state,i,profile),i);}
+      if(e.type==='stand')actor.do('stand');
+      if(e.type==='navigate')navigate({id:e.id,generation:e.generation,model:spaceModel,target:e.target});
+      if(e.type==='cancel-navigation'){actor.cancelNavigation('coordination');arrival=null;}
+      options.host.emit('coordination-action',{...e,phase:coordination.phase});
+    }
+    const focused=coordination.sessions.find(f=>f.sessionId===coordination.focus);
+    const performance=stepWorkPerformance(performanceState,coordination,dt,{reduced:reducedWork});
+    performanceState=performance.state;performanceView=performance.view;
+    const expression=performanceView.expression;
+    if(expression!==taskExpression){actor.set({expression});taskExpression=expression;}
+    const aim=focused ? performanceView.look[0] : 0;
+    if(coordination.phase!=='paused'){
+      gaze+=(aim-gaze)*Math.min(1,dt*5);
+      freeArm=freeArm.map((v,i)=>v+((i?performanceView.armFar:performanceView.armNear)-v)*Math.min(1,dt*4));
+    }
+  }
   function emitFrame() {
     const grip = figure.gripFrame, layout = actionLayout(), point = groundGrip();
     const contact = grip ? { distance: Math.hypot(grip.hand.x - point.x, grip.hand.y - point.y), groundDistance: (continuous ? Math.hypot(grip.propGrip.x - destination, grip.ground.y - destinationY) : Math.abs(grip.ground.y - bounds().floorY)) } : null;
     options.host.emit('motion-frame', { phase: state.phase, suspended: state.suspended, elapsed: state.elapsed,
-      owner: state.owner, renderedOwner: grip?.visible ? 'hand' : 'ground', generation: state.generation, walkId: state.walkId,
+      ...(coordinated ? {coordination:structuredClone(coordination),performance:performanceView?{...performanceView,gaze,arms:[...freeArm]}:null} : {}), owner: state.owner, renderedOwner: grip?.visible ? 'hand' : 'ground', generation: state.generation, walkId: state.walkId,
       commits: { ...state.commits }, error: state.error, inspection: state.inspection, loop: state.loop,
       bodyX: layout.x, bodyY:layout.y, navigation:layout.navigation, bubble:layout.bubble, hit:layout.hit, moving: layout.moving, facing: layout.facing, visualFacing: grip?.facing, destinationX: destination, destinationY, actionNavigation: state.navigation, actionRevision: state.revision, objectRevision, continuous,
       groundQuad, groundGrip: point, hand: grip?.hand, heldGrip: grip?.propGrip, heldQuad: grip?.quad, feet: grip?.feet, pose: grip?.pose, sit: grip?.sit,
@@ -99,10 +133,11 @@ export async function createMotionBody(base, options) {
       propMirror, activeTime, speed, sequence: ++sequence });
   }
   return {
-    words: actor.words, capabilities:actor.capabilities, navigate(command){if(state.phase!=='idle'){options.host.emit('navigation-interrupted',{id:command.id,generation:command.generation,revision:command.model.revision,by:'body-owned'});return false;}wallAt=performance.now();return navigate(command);}, cancelNavigation:actor.cancelNavigation, place2d:actor.place2d,
+    words: actor.words, capabilities:actor.capabilities, navigate(command){if(state.phase!=='idle'||coordinated&&!['idle','ended'].includes(coordination.phase)){options.host.emit('navigation-interrupted',{id:command.id,generation:command.generation,revision:command.model.revision,by:'body-owned'});return false;}wallAt=performance.now();return navigate(command);}, cancelNavigation:actor.cancelNavigation, place2d:actor.place2d,
     step(dt) {
       const now = performance.now(), gap = now - wallAt; wallAt = now;
-      if (gap > 1000 || forcePause) { actor.cancelNavigation('lifecycle-gap'); pending = ['reset','resume'].includes(pending?.type) ? pending : { type: 'pause' }; forcePause = false; }
+      if (gap > 1000 || forcePause) { if(coordinated)coordinationQueue.push({type:'pause',reason:'lifecycle'}); actor.cancelNavigation('lifecycle-gap'); pending = ['reset','resume'].includes(pending?.type) ? pending : { type: 'pause' }; forcePause = false; }
+      if(coordinated){for(const command of coordinationQueue.splice(0))coordinate(now,0,command,null);coordinate(now,Math.max(0,Math.min(.05,dt))*speed,null,arrival);}
       if (pending) { const input = inputs(now, 0, pending, null); pending = null; apply(advance(state, input, profile), input); }
       const stepping = state.phase === 'paused' && stepOnce, suspended = state.suspended;
       stepOnce = false;
@@ -127,20 +162,30 @@ export async function createMotionBody(base, options) {
     set(value) {
       if (value.motionCommand) {
         const cmd = value.motionCommand;
+        if(coordinated && cmd.type==='work-facts'){coordinationQueue.push({type:'facts',facts:cmd.facts});return;}
+        if(coordinated && cmd.type==='work-reduced'){reducedWork=cmd.reduced===true;return;}
+        if(coordinated && cmd.type==='work-occupancy'){coordinationQueue.push({type:'occupancy',occupied:cmd.occupied});return;}
+        if(coordinated && ['story-start','story-cancel','story-pause','story-resume','work-fact'].includes(cmd.type)){
+          coordinationQueue.push(cmd.type==='work-fact'?{type:'fact',fact:cmd.fact}:{type:({'story-start':'start','story-cancel':'cancel','story-pause':'pause','story-resume':'resume'})[cmd.type]});
+          return;
+        }
+        if(coordinated && cmd.type==='reset')coordinationQueue.push({type:'reset'});
+        if(coordinated && ['pause','resume'].includes(cmd.type)){coordinationQueue.push({type:cmd.type});return;}
+        if(coordinated && ['pickup','drop','loop','sit','step','inspect'].includes(cmd.type) && !['idle','ended'].includes(coordination.phase))return;
         if (['pickup', 'drop', 'loop', 'pause', 'resume', 'reset', 'inspect', 'relocate', ...(continuous ? ['sit'] : [])].includes(cmd.type)) pending = cmd;
         if (continuous && cmd.type === 'relocate' && state.owner === 'ground' && ['idle','rest'].includes(state.phase)) objectRevision++;
         if (cmd.type === 'speed' && [.25, .5, 1].includes(cmd.value)) speed = cmd.value;
         if (cmd.type === 'hand-art' && ['idle', 'inspect'].includes(state.phase)) handArtEnabled = cmd.enabled !== false;
         if (cmd.type === 'step') stepOnce = true;
-        if (cmd.type === 'destination' && Number.isFinite(cmd.x)) { destination = Math.max(125, Math.min(bounds().W - 100, cmd.x)); if (continuous && Number.isFinite(cmd.y)) destinationY = cmd.y; objectRevision++; }
-        if (continuous && cmd.type === 'world' && cmd.model) spaceModel = cmd.model;
+        if (cmd.type === 'destination' && Number.isFinite(cmd.x)) { destination = Math.max(125, Math.min(bounds().W - 100, cmd.x)); if (continuous && Number.isFinite(cmd.y)) destinationY = cmd.y; objectRevision++; if(coordinated)coordinationQueue.push({type:'target',x:destination,y:destinationY}); }
+        if (continuous && cmd.type === 'world' && cmd.model) { spaceModel = cmd.model; workTarget=cmd.workTarget??workTarget; }
       }
       if (value.bounds) { actor.resize(); forcePause = !['idle', 'inspect'].includes(state.phase); }
       actor.set(value);
     },
     layout: actionLayout, resize() { actor.resize(); forcePause = !['idle', 'inspect'].includes(state.phase); },
     do: actor.do, walk: actor.walk, stopWalk: actor.stopWalk, place: actor.place,
-    pointer(type, p) { pending = { type: 'pause' }; actor.pointer(type, p); },
+    pointer(type, p) { if(coordinated)coordinationQueue.push({type:'pause',reason:'drag'});pending = { type: 'pause' }; actor.pointer(type, p); },
     dispose: actor.dispose,
   };
 }

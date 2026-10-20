@@ -1,0 +1,3331 @@
+[
+  {
+    "id": "@takboo/dsh-coopanion@0.4.13",
+    "name": "@takboo/dsh-coopanion",
+    "version": "0.4.13",
+    "size": 15027790,
+    "unpackedSize": 19102409,
+    "shasum": "56368a8ff58c980cc1ab0aaf02bf12513dc6fc24",
+    "integrity": "sha512-fUvQFw2QswlH3+YC/ig4C5A3neaVrAe3ZMoaS+4z9iD4uPXiAhv7Ngyt4tUdyKCXrFoeuOymfIrcHyOuxmOKAw==",
+    "filename": "takboo-dsh-coopanion-0.4.13.tgz",
+    "files": [
+      {
+        "path": ".node-version",
+        "size": 8,
+        "mode": 420
+      },
+      {
+        "path": "LICENSE",
+        "size": 34523,
+        "mode": 420
+      },
+      {
+        "path": "LICENSE-MIT",
+        "size": 1063,
+        "mode": 420
+      },
+      {
+        "path": "README.md",
+        "size": 6455,
+        "mode": 420
+      },
+      {
+        "path": "THIRD_PARTY_NOTICES.md",
+        "size": 5297,
+        "mode": 420
+      },
+      {
+        "path": "cordis.patch.yml",
+        "size": 205,
+        "mode": 420
+      },
+      {
+        "path": "desktop/display-controller.cjs",
+        "size": 1479,
+        "mode": 420
+      },
+      {
+        "path": "desktop/icon.png",
+        "size": 121880,
+        "mode": 420
+      },
+      {
+        "path": "desktop/keyboard-activity-win.cs",
+        "size": 2911,
+        "mode": 420
+      },
+      {
+        "path": "desktop/keyboard-activity-x11.py",
+        "size": 3773,
+        "mode": 420
+      },
+      {
+        "path": "desktop/keyboard-activity.cjs",
+        "size": 3518,
+        "mode": 420
+      },
+      {
+        "path": "desktop/keyboard-activity.jxa",
+        "size": 1253,
+        "mode": 420
+      },
+      {
+        "path": "desktop/lifecycle-state-macos.jxa",
+        "size": 866,
+        "mode": 420
+      },
+      {
+        "path": "desktop/lifecycle-state.cjs",
+        "size": 1168,
+        "mode": 420
+      },
+      {
+        "path": "desktop/main.cjs",
+        "size": 22269,
+        "mode": 420
+      },
+      {
+        "path": "desktop/preload.cjs",
+        "size": 1364,
+        "mode": 420
+      },
+      {
+        "path": "desktop/space-preview.cjs",
+        "size": 2354,
+        "mode": 420
+      },
+      {
+        "path": "desktop/test-display-probe.cjs",
+        "size": 1194,
+        "mode": 420
+      },
+      {
+        "path": "desktop/tray-state.cjs",
+        "size": 2038,
+        "mode": 420
+      },
+      {
+        "path": "dist/bridge.js",
+        "size": 10016,
+        "mode": 420
+      },
+      {
+        "path": "dist/bridge.js.map",
+        "size": 19796,
+        "mode": 420
+      },
+      {
+        "path": "dist/build-info.json",
+        "size": 178,
+        "mode": 420
+      },
+      {
+        "path": "dist/character-store.cjs",
+        "size": 29698,
+        "mode": 420
+      },
+      {
+        "path": "dist/client.js",
+        "size": 834822,
+        "mode": 420
+      },
+      {
+        "path": "dist/companion-store.cjs",
+        "size": 763901,
+        "mode": 420
+      },
+      {
+        "path": "dist/diagnostics.cjs",
+        "size": 6938,
+        "mode": 420
+      },
+      {
+        "path": "dist/figure-server.cjs",
+        "size": 780341,
+        "mode": 420
+      },
+      {
+        "path": "dist/index.js",
+        "size": 115438,
+        "mode": 420
+      },
+      {
+        "path": "dist/index.js.map",
+        "size": 210899,
+        "mode": 420
+      },
+      {
+        "path": "dist/model.js",
+        "size": 20004,
+        "mode": 420
+      },
+      {
+        "path": "dist/model.js.map",
+        "size": 37374,
+        "mode": 420
+      },
+      {
+        "path": "docs/aliveness-development.md",
+        "size": 4988,
+        "mode": 420
+      },
+      {
+        "path": "docs/assets/README.md",
+        "size": 1114,
+        "mode": 420
+      },
+      {
+        "path": "docs/assets/showcase/appearance.png",
+        "size": 71379,
+        "mode": 420
+      },
+      {
+        "path": "docs/assets/showcase/companion.gif",
+        "size": 779800,
+        "mode": 420
+      },
+      {
+        "path": "docs/assets/showcase/conversation.png",
+        "size": 79798,
+        "mode": 420
+      },
+      {
+        "path": "docs/assets/showcase/inbox.png",
+        "size": 85512,
+        "mode": 420
+      },
+      {
+        "path": "docs/characters.md",
+        "size": 13506,
+        "mode": 420
+      },
+      {
+        "path": "docs/companionship-contract.md",
+        "size": 14172,
+        "mode": 420
+      },
+      {
+        "path": "docs/desktop-recovery-contract.md",
+        "size": 4275,
+        "mode": 420
+      },
+      {
+        "path": "docs/development.md",
+        "size": 9244,
+        "mode": 420
+      },
+      {
+        "path": "docs/diagnostics-contract.md",
+        "size": 8542,
+        "mode": 420
+      },
+      {
+        "path": "docs/licenses/dompurify.txt",
+        "size": 11358,
+        "mode": 420
+      },
+      {
+        "path": "docs/licenses/marked.txt",
+        "size": 2942,
+        "mode": 420
+      },
+      {
+        "path": "docs/market/takboo__dsh-coopanion.yml",
+        "size": 448,
+        "mode": 420
+      },
+      {
+        "path": "docs/multi-display-contract.md",
+        "size": 4556,
+        "mode": 420
+      },
+      {
+        "path": "docs/notification-contract.md",
+        "size": 9166,
+        "mode": 420
+      },
+      {
+        "path": "docs/README.md",
+        "size": 4259,
+        "mode": 420
+      },
+      {
+        "path": "docs/release-notes.md",
+        "size": 13518,
+        "mode": 420
+      },
+      {
+        "path": "docs/releasing.md",
+        "size": 5026,
+        "mode": 420
+      },
+      {
+        "path": "docs/session-chat-contract.md",
+        "size": 5147,
+        "mode": 420
+      },
+      {
+        "path": "docs/text-readability-contract.md",
+        "size": 3841,
+        "mode": 420
+      },
+      {
+        "path": "docs/usage.md",
+        "size": 18494,
+        "mode": 420
+      },
+      {
+        "path": "examples/star/figure.js",
+        "size": 1889,
+        "mode": 420
+      },
+      {
+        "path": "examples/star/figure.json",
+        "size": 3787,
+        "mode": 420
+      },
+      {
+        "path": "npm-shrinkwrap.json",
+        "size": 148034,
+        "mode": 420
+      },
+      {
+        "path": "package.json",
+        "size": 7744,
+        "mode": 420
+      },
+      {
+        "path": "scripts/build.mjs",
+        "size": 2946,
+        "mode": 420
+      },
+      {
+        "path": "scripts/capture-showcase.mjs",
+        "size": 4621,
+        "mode": 420
+      },
+      {
+        "path": "scripts/check-hand-art.mjs",
+        "size": 3594,
+        "mode": 420
+      },
+      {
+        "path": "scripts/check-npm.mjs",
+        "size": 1320,
+        "mode": 420
+      },
+      {
+        "path": "scripts/check-package.mjs",
+        "size": 8424,
+        "mode": 420
+      },
+      {
+        "path": "scripts/demo.mjs",
+        "size": 2094,
+        "mode": 420
+      },
+      {
+        "path": "scripts/diagnostics-client.mjs",
+        "size": 7972,
+        "mode": 420
+      },
+      {
+        "path": "scripts/lib/rgba-png.mjs",
+        "size": 2082,
+        "mode": 420
+      },
+      {
+        "path": "scripts/measure-idle.mjs",
+        "size": 7393,
+        "mode": 420
+      },
+      {
+        "path": "scripts/observe-companion.mjs",
+        "size": 14085,
+        "mode": 420
+      },
+      {
+        "path": "scripts/pack-character.mjs",
+        "size": 1490,
+        "mode": 420
+      },
+      {
+        "path": "scripts/prepare-notification-probe.mjs",
+        "size": 2553,
+        "mode": 420
+      },
+      {
+        "path": "scripts/preview.mjs",
+        "size": 996,
+        "mode": 420
+      },
+      {
+        "path": "scripts/release-support.mjs",
+        "size": 3850,
+        "mode": 420
+      },
+      {
+        "path": "scripts/render-icon.mjs",
+        "size": 1275,
+        "mode": 420
+      },
+      {
+        "path": "scripts/resource-observation.mjs",
+        "size": 7748,
+        "mode": 420
+      },
+      {
+        "path": "scripts/run-resource-observation.sh",
+        "size": 1359,
+        "mode": 420
+      },
+      {
+        "path": "scripts/sample-companion.mjs",
+        "size": 14078,
+        "mode": 420
+      },
+      {
+        "path": "scripts/space-desktop.mjs",
+        "size": 671,
+        "mode": 420
+      },
+      {
+        "path": "scripts/verify-metadata.mjs",
+        "size": 357,
+        "mode": 420
+      },
+      {
+        "path": "scripts/verify-release.mjs",
+        "size": 1485,
+        "mode": 420
+      },
+      {
+        "path": "src/bridge.ts",
+        "size": 12064,
+        "mode": 420
+      },
+      {
+        "path": "src/character-store.ts",
+        "size": 8047,
+        "mode": 420
+      },
+      {
+        "path": "src/chat.ts",
+        "size": 4978,
+        "mode": 420
+      },
+      {
+        "path": "src/client/index.ts",
+        "size": 6105,
+        "mode": 420
+      },
+      {
+        "path": "src/client/locale-sync.ts",
+        "size": 1873,
+        "mode": 420
+      },
+      {
+        "path": "src/client/locales.ts",
+        "size": 9139,
+        "mode": 420
+      },
+      {
+        "path": "src/client/notification-client.ts",
+        "size": 9761,
+        "mode": 420
+      },
+      {
+        "path": "src/client/notification-copy.ts",
+        "size": 2035,
+        "mode": 420
+      },
+      {
+        "path": "src/client/settings.css",
+        "size": 1867,
+        "mode": 420
+      },
+      {
+        "path": "src/client/Settings.tsx",
+        "size": 12708,
+        "mode": 420
+      },
+      {
+        "path": "src/client/styles.d.ts",
+        "size": 66,
+        "mode": 420
+      },
+      {
+        "path": "src/client/system-notifications.ts",
+        "size": 4546,
+        "mode": 420
+      },
+      {
+        "path": "src/companion-store.ts",
+        "size": 9397,
+        "mode": 420
+      },
+      {
+        "path": "src/completion.ts",
+        "size": 4025,
+        "mode": 420
+      },
+      {
+        "path": "src/controls.ts",
+        "size": 10561,
+        "mode": 420
+      },
+      {
+        "path": "src/desktop-lifecycle.ts",
+        "size": 560,
+        "mode": 420
+      },
+      {
+        "path": "src/diagnostics.ts",
+        "size": 5851,
+        "mode": 420
+      },
+      {
+        "path": "src/figure-server.ts",
+        "size": 6957,
+        "mode": 420
+      },
+      {
+        "path": "src/index.ts",
+        "size": 20933,
+        "mode": 420
+      },
+      {
+        "path": "src/model.ts",
+        "size": 18475,
+        "mode": 420
+      },
+      {
+        "path": "src/notification-broker.ts",
+        "size": 26481,
+        "mode": 420
+      },
+      {
+        "path": "src/notification-contract.ts",
+        "size": 4526,
+        "mode": 420
+      },
+      {
+        "path": "src/upstream/packs.ts",
+        "size": 13798,
+        "mode": 420
+      },
+      {
+        "path": "src/work-facts.ts",
+        "size": 11658,
+        "mode": 420
+      },
+      {
+        "path": "src/work-preview.ts",
+        "size": 5653,
+        "mode": 420
+      },
+      {
+        "path": "src/work-sources.ts",
+        "size": 1995,
+        "mode": 420
+      },
+      {
+        "path": "tests/attention-size-ui.mjs",
+        "size": 6246,
+        "mode": 420
+      },
+      {
+        "path": "tests/bridge.test.ts",
+        "size": 11235,
+        "mode": 420
+      },
+      {
+        "path": "tests/chat.test.ts",
+        "size": 5449,
+        "mode": 420
+      },
+      {
+        "path": "tests/client-build.mjs",
+        "size": 1321,
+        "mode": 420
+      },
+      {
+        "path": "tests/companion-client.test.js",
+        "size": 2028,
+        "mode": 420
+      },
+      {
+        "path": "tests/companion-http.test.ts",
+        "size": 2136,
+        "mode": 420
+      },
+      {
+        "path": "tests/companion-store.test.ts",
+        "size": 6398,
+        "mode": 420
+      },
+      {
+        "path": "tests/companion-touch.test.js",
+        "size": 1305,
+        "mode": 420
+      },
+      {
+        "path": "tests/companionship-native.mjs",
+        "size": 5582,
+        "mode": 420
+      },
+      {
+        "path": "tests/companionship-ui.mjs",
+        "size": 27870,
+        "mode": 420
+      },
+      {
+        "path": "tests/companionship.test.js",
+        "size": 4567,
+        "mode": 420
+      },
+      {
+        "path": "tests/completion.test.ts",
+        "size": 10040,
+        "mode": 420
+      },
+      {
+        "path": "tests/controls.test.ts",
+        "size": 15322,
+        "mode": 420
+      },
+      {
+        "path": "tests/desktop.mjs",
+        "size": 24955,
+        "mode": 420
+      },
+      {
+        "path": "tests/diagnostics-discovery.test.js",
+        "size": 3263,
+        "mode": 420
+      },
+      {
+        "path": "tests/diagnostics-native.mjs",
+        "size": 7042,
+        "mode": 420
+      },
+      {
+        "path": "tests/diagnostics.test.js",
+        "size": 9391,
+        "mode": 420
+      },
+      {
+        "path": "tests/display-geometry.test.js",
+        "size": 4378,
+        "mode": 420
+      },
+      {
+        "path": "tests/figures.test.ts",
+        "size": 7765,
+        "mode": 420
+      },
+      {
+        "path": "tests/fixtures/desktop-recovery.ts",
+        "size": 193,
+        "mode": 420
+      },
+      {
+        "path": "tests/fixtures/goal-host.mjs",
+        "size": 8660,
+        "mode": 420
+      },
+      {
+        "path": "tests/fixtures/host.mjs",
+        "size": 7127,
+        "mode": 420
+      },
+      {
+        "path": "tests/fixtures/notification-probe/client.tsx",
+        "size": 2949,
+        "mode": 420
+      },
+      {
+        "path": "tests/fixtures/notification-probe/host.mjs",
+        "size": 1733,
+        "mode": 420
+      },
+      {
+        "path": "tests/fixtures/session-host.mjs",
+        "size": 11439,
+        "mode": 420
+      },
+      {
+        "path": "tests/fixtures/work-host.mjs",
+        "size": 10678,
+        "mode": 420
+      },
+      {
+        "path": "tests/flowerbox-detour-ui.mjs",
+        "size": 3560,
+        "mode": 420
+      },
+      {
+        "path": "tests/goal-host-contract.mjs",
+        "size": 5311,
+        "mode": 420
+      },
+      {
+        "path": "tests/hand-art.test.js",
+        "size": 7952,
+        "mode": 420
+      },
+      {
+        "path": "tests/helpers/body-orders.mjs",
+        "size": 414,
+        "mode": 420
+      },
+      {
+        "path": "tests/helpers/body-startup.mjs",
+        "size": 1787,
+        "mode": 420
+      },
+      {
+        "path": "tests/helpers/characters.mjs",
+        "size": 294,
+        "mode": 420
+      },
+      {
+        "path": "tests/helpers/companionship.mjs",
+        "size": 1634,
+        "mode": 420
+      },
+      {
+        "path": "tests/helpers/desktop-recovery.mjs",
+        "size": 1063,
+        "mode": 420
+      },
+      {
+        "path": "tests/helpers/installed-notifications.mjs",
+        "size": 5939,
+        "mode": 420
+      },
+      {
+        "path": "tests/helpers/installed-services.mjs",
+        "size": 7771,
+        "mode": 420
+      },
+      {
+        "path": "tests/helpers/keyboard-x11-probe.py",
+        "size": 2361,
+        "mode": 420
+      },
+      {
+        "path": "tests/helpers/multi-display-native.mjs",
+        "size": 1410,
+        "mode": 420
+      },
+      {
+        "path": "tests/helpers/native-pointer.mjs",
+        "size": 9654,
+        "mode": 420
+      },
+      {
+        "path": "tests/helpers/npc-life.mjs",
+        "size": 1991,
+        "mode": 420
+      },
+      {
+        "path": "tests/helpers/text-scale-native.mjs",
+        "size": 3016,
+        "mode": 420
+      },
+      {
+        "path": "tests/inbox-ui.mjs",
+        "size": 10291,
+        "mode": 420
+      },
+      {
+        "path": "tests/install.mjs",
+        "size": 53820,
+        "mode": 420
+      },
+      {
+        "path": "tests/keyboard-activity-native.mjs",
+        "size": 2683,
+        "mode": 420
+      },
+      {
+        "path": "tests/keyboard-activity.test.js",
+        "size": 6716,
+        "mode": 420
+      },
+      {
+        "path": "tests/life-work-ui.mjs",
+        "size": 12314,
+        "mode": 420
+      },
+      {
+        "path": "tests/life-work.test.js",
+        "size": 10501,
+        "mode": 420
+      },
+      {
+        "path": "tests/lifecycle-startup-native.mjs",
+        "size": 5064,
+        "mode": 420
+      },
+      {
+        "path": "tests/lifecycle-state.test.js",
+        "size": 3649,
+        "mode": 420
+      },
+      {
+        "path": "tests/locale-client.mjs",
+        "size": 2775,
+        "mode": 420
+      },
+      {
+        "path": "tests/locale-sync.test.ts",
+        "size": 2784,
+        "mode": 420
+      },
+      {
+        "path": "tests/locale-ui.mjs",
+        "size": 6588,
+        "mode": 420
+      },
+      {
+        "path": "tests/model.test.ts",
+        "size": 20529,
+        "mode": 420
+      },
+      {
+        "path": "tests/multi-display-native.mjs",
+        "size": 9016,
+        "mode": 420
+      },
+      {
+        "path": "tests/multi-display-ui.mjs",
+        "size": 8779,
+        "mode": 420
+      },
+      {
+        "path": "tests/navigation-showcase.mjs",
+        "size": 2437,
+        "mode": 420
+      },
+      {
+        "path": "tests/navigation-ui.mjs",
+        "size": 6066,
+        "mode": 420
+      },
+      {
+        "path": "tests/navigation.test.js",
+        "size": 8478,
+        "mode": 420
+      },
+      {
+        "path": "tests/notification-broker.test.ts",
+        "size": 19215,
+        "mode": 420
+      },
+      {
+        "path": "tests/notification-client.test.ts",
+        "size": 14788,
+        "mode": 420
+      },
+      {
+        "path": "tests/notification-contract.test.ts",
+        "size": 5300,
+        "mode": 420
+      },
+      {
+        "path": "tests/notification-host-contract.mjs",
+        "size": 6059,
+        "mode": 420
+      },
+      {
+        "path": "tests/notification-integration.test.ts",
+        "size": 17326,
+        "mode": 420
+      },
+      {
+        "path": "tests/notification-ui.mjs",
+        "size": 13163,
+        "mode": 420
+      },
+      {
+        "path": "tests/npc-controls-ui.mjs",
+        "size": 7018,
+        "mode": 420
+      },
+      {
+        "path": "tests/npc-drag-ui.mjs",
+        "size": 10166,
+        "mode": 420
+      },
+      {
+        "path": "tests/npc-life-native.mjs",
+        "size": 8833,
+        "mode": 420
+      },
+      {
+        "path": "tests/npc-life.test.js",
+        "size": 7616,
+        "mode": 420
+      },
+      {
+        "path": "tests/plugin.test.ts",
+        "size": 18445,
+        "mode": 420
+      },
+      {
+        "path": "tests/presentation.test.js",
+        "size": 11085,
+        "mode": 420
+      },
+      {
+        "path": "tests/prop-interaction.test.js",
+        "size": 5176,
+        "mode": 420
+      },
+      {
+        "path": "tests/prop-motion.test.js",
+        "size": 6037,
+        "mode": 420
+      },
+      {
+        "path": "tests/release-checks.mjs",
+        "size": 6686,
+        "mode": 420
+      },
+      {
+        "path": "tests/render-cadence.test.js",
+        "size": 1113,
+        "mode": 420
+      },
+      {
+        "path": "tests/resource-observation.test.js",
+        "size": 3939,
+        "mode": 420
+      },
+      {
+        "path": "tests/session-host-contract.mjs",
+        "size": 5515,
+        "mode": 420
+      },
+      {
+        "path": "tests/session-recovery.test.ts",
+        "size": 8552,
+        "mode": 420
+      },
+      {
+        "path": "tests/session-replies-ui.mjs",
+        "size": 13187,
+        "mode": 420
+      },
+      {
+        "path": "tests/space-action-showcase.mjs",
+        "size": 2810,
+        "mode": 420
+      },
+      {
+        "path": "tests/space-action-ui.mjs",
+        "size": 9829,
+        "mode": 420
+      },
+      {
+        "path": "tests/space-action.test.js",
+        "size": 8833,
+        "mode": 420
+      },
+      {
+        "path": "tests/space-feedback-ui.mjs",
+        "size": 5708,
+        "mode": 420
+      },
+      {
+        "path": "tests/space-feedback.test.js",
+        "size": 2573,
+        "mode": 420
+      },
+      {
+        "path": "tests/space-geometry.test.js",
+        "size": 3774,
+        "mode": 420
+      },
+      {
+        "path": "tests/space-native.mjs",
+        "size": 11382,
+        "mode": 420
+      },
+      {
+        "path": "tests/space-preview-ui.mjs",
+        "size": 11349,
+        "mode": 420
+      },
+      {
+        "path": "tests/space-source-identity.mjs",
+        "size": 2094,
+        "mode": 420
+      },
+      {
+        "path": "tests/text-scale-ui.mjs",
+        "size": 9240,
+        "mode": 420
+      },
+      {
+        "path": "tests/text-scale.test.ts",
+        "size": 348,
+        "mode": 420
+      },
+      {
+        "path": "tests/ui.mjs",
+        "size": 17388,
+        "mode": 420
+      },
+      {
+        "path": "tests/upstream-motion-ui.mjs",
+        "size": 7590,
+        "mode": 420
+      },
+      {
+        "path": "tests/upstream-motion.test.js",
+        "size": 8731,
+        "mode": 420
+      },
+      {
+        "path": "tests/work-facts.test.ts",
+        "size": 10009,
+        "mode": 420
+      },
+      {
+        "path": "tests/work-host-contract.mjs",
+        "size": 4294,
+        "mode": 420
+      },
+      {
+        "path": "tests/work-performance.test.js",
+        "size": 2730,
+        "mode": 420
+      },
+      {
+        "path": "tests/work-semantics-ui.mjs",
+        "size": 9179,
+        "mode": 420
+      },
+      {
+        "path": "tsconfig.client.json",
+        "size": 157,
+        "mode": 420
+      },
+      {
+        "path": "tsconfig.json",
+        "size": 321,
+        "mode": 420
+      },
+      {
+        "path": "web/character-library.js",
+        "size": 741,
+        "mode": 420
+      },
+      {
+        "path": "web/chat-contract.d.ts",
+        "size": 413,
+        "mode": 420
+      },
+      {
+        "path": "web/chat-contract.js",
+        "size": 1197,
+        "mode": 420
+      },
+      {
+        "path": "web/companion-client.js",
+        "size": 1992,
+        "mode": 420
+      },
+      {
+        "path": "web/companion-touch.js",
+        "size": 794,
+        "mode": 420
+      },
+      {
+        "path": "web/companionship.d.ts",
+        "size": 1045,
+        "mode": 420
+      },
+      {
+        "path": "web/companionship.js",
+        "size": 4632,
+        "mode": 420
+      },
+      {
+        "path": "web/diagnostics.js",
+        "size": 973,
+        "mode": 420
+      },
+      {
+        "path": "web/display-geometry.js",
+        "size": 2104,
+        "mode": 420
+      },
+      {
+        "path": "web/index.html",
+        "size": 14657,
+        "mode": 420
+      },
+      {
+        "path": "web/locale.d.ts",
+        "size": 679,
+        "mode": 420
+      },
+      {
+        "path": "web/locale.js",
+        "size": 21718,
+        "mode": 420
+      },
+      {
+        "path": "web/markdown-runtime.js",
+        "size": 78683,
+        "mode": 420
+      },
+      {
+        "path": "web/notification-ui.js",
+        "size": 6048,
+        "mode": 420
+      },
+      {
+        "path": "web/npc-life.js",
+        "size": 7273,
+        "mode": 420
+      },
+      {
+        "path": "web/pet.js",
+        "size": 79561,
+        "mode": 420
+      },
+      {
+        "path": "web/prop-interaction.js",
+        "size": 4385,
+        "mode": 420
+      },
+      {
+        "path": "web/prop-motion.js",
+        "size": 8247,
+        "mode": 420
+      },
+      {
+        "path": "web/props/shell/asset.json",
+        "size": 828,
+        "mode": 420
+      },
+      {
+        "path": "web/props/shell/hands/asset.json",
+        "size": 6559,
+        "mode": 420
+      },
+      {
+        "path": "web/props/shell/hands/grip.png",
+        "size": 615877,
+        "mode": 420
+      },
+      {
+        "path": "web/props/shell/hands/reach.png",
+        "size": 555677,
+        "mode": 420
+      },
+      {
+        "path": "web/props/shell/hands/README.md",
+        "size": 1572,
+        "mode": 420
+      },
+      {
+        "path": "web/props/shell/hands/release.png",
+        "size": 510105,
+        "mode": 420
+      },
+      {
+        "path": "web/props/shell/motion-profile.json",
+        "size": 901,
+        "mode": 420
+      },
+      {
+        "path": "web/props/shell/motion-with-hands.json",
+        "size": 1346,
+        "mode": 420
+      },
+      {
+        "path": "web/props/shell/shell.png",
+        "size": 686799,
+        "mode": 420
+      },
+      {
+        "path": "web/render-cadence.js",
+        "size": 383,
+        "mode": 420
+      },
+      {
+        "path": "web/reply-markdown.js",
+        "size": 1496,
+        "mode": 420
+      },
+      {
+        "path": "web/session-ui.js",
+        "size": 6747,
+        "mode": 420
+      },
+      {
+        "path": "web/speech.js",
+        "size": 1708,
+        "mode": 420
+      },
+      {
+        "path": "web/style.css",
+        "size": 26154,
+        "mode": 420
+      },
+      {
+        "path": "web/text-scale.d.ts",
+        "size": 178,
+        "mode": 420
+      },
+      {
+        "path": "web/text-scale.js",
+        "size": 273,
+        "mode": 420
+      },
+      {
+        "path": "web/tray-icon.js",
+        "size": 2170,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/body-host.js",
+        "size": 11334,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/figure-frame.html",
+        "size": 516,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/figure-frame.js",
+        "size": 5747,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/kit/body.js",
+        "size": 56034,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/kit/life-work.js",
+        "size": 9301,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/kit/navigation.js",
+        "size": 6909,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/kit/raster.js",
+        "size": 649,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/kit/rig.js",
+        "size": 10856,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/kit/space-action.js",
+        "size": 8804,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/kit/work-performance.js",
+        "size": 4067,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/LICENSE",
+        "size": 34523,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/sound.js",
+        "size": 11180,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/THIRD_PARTY_NOTICES.md",
+        "size": 2365,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/UPSTREAM.md",
+        "size": 14809,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/feat/dizzy_eyeL.png",
+        "size": 16745,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/feat/dizzy_eyeR.png",
+        "size": 13345,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/feat/dizzy_mouth.png",
+        "size": 2133,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/feat/drag_eyeL.png",
+        "size": 8124,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/feat/drag_eyeR.png",
+        "size": 5916,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/feat/drag_mouth.png",
+        "size": 1611,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/feat/eyeL_ball.png",
+        "size": 11129,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/feat/eyeL_iris.png",
+        "size": 14172,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/feat/eyeL_lash.png",
+        "size": 9577,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/feat/eyeR_ball.png",
+        "size": 6353,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/feat/eyeR_iris.png",
+        "size": 7475,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/feat/eyeR_lash.png",
+        "size": 4800,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/feat/happy_eyeL.png",
+        "size": 8910,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/feat/happy_eyeR.png",
+        "size": 5720,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/feat/happy_mouth.png",
+        "size": 3567,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/feat/love_eyeL.png",
+        "size": 30737,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/feat/love_eyeR.png",
+        "size": 18711,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/feat/love_mouth.png",
+        "size": 4280,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/feat/neutral_mouth.png",
+        "size": 517,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/feat/sleep_eyeL.png",
+        "size": 7200,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/feat/sleep_eyeR.png",
+        "size": 4720,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/feat/sleep_mouth.png",
+        "size": 709,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/feat/surprised_eyeL.png",
+        "size": 33572,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/feat/surprised_eyeR.png",
+        "size": 17765,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/feat/surprised_mouth.png",
+        "size": 2967,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/figure.js",
+        "size": 50922,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/figure.json",
+        "size": 16137,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/hand-art.js",
+        "size": 4735,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/model.json",
+        "size": 8291,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/feat/dizzy_eyeL.png",
+        "size": 20014,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/feat/dizzy_eyeR.png",
+        "size": 15391,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/feat/dizzy_mouth.png",
+        "size": 2247,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/feat/drag_eyeL.png",
+        "size": 10016,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/feat/drag_eyeR.png",
+        "size": 7103,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/feat/drag_mouth.png",
+        "size": 1649,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/feat/eyeL_ball.png",
+        "size": 13202,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/feat/eyeL_iris.png",
+        "size": 15116,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/feat/eyeL_lash.png",
+        "size": 10567,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/feat/eyeR_ball.png",
+        "size": 7506,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/feat/eyeR_iris.png",
+        "size": 8086,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/feat/eyeR_lash.png",
+        "size": 5334,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/feat/happy_eyeL.png",
+        "size": 10816,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/feat/happy_eyeR.png",
+        "size": 6640,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/feat/happy_mouth.png",
+        "size": 3584,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/feat/love_eyeL.png",
+        "size": 34929,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/feat/love_eyeR.png",
+        "size": 20732,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/feat/love_mouth.png",
+        "size": 4398,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/feat/neutral_mouth.png",
+        "size": 525,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/feat/sleep_eyeL.png",
+        "size": 8386,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/feat/sleep_eyeR.png",
+        "size": 5419,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/feat/sleep_mouth.png",
+        "size": 733,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/feat/surprised_eyeL.png",
+        "size": 37427,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/feat/surprised_eyeR.png",
+        "size": 19314,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/feat/surprised_mouth.png",
+        "size": 2960,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/tex/ahoge.png",
+        "size": 16048,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/tex/arm_far_end_front.png",
+        "size": 5178,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/tex/arm_far.png",
+        "size": 10511,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/tex/arm_near.png",
+        "size": 16850,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/tex/bangs.png",
+        "size": 109959,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/tex/bow.png",
+        "size": 9641,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/tex/brows.png",
+        "size": 2114,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/tex/eye_creases.png",
+        "size": 2465,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/tex/face.png",
+        "size": 50747,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/tex/fin_far.png",
+        "size": 15725,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/tex/fin_near.png",
+        "size": 21857,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/tex/hair_back_curl.png",
+        "size": 13691,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/tex/hair_back.png",
+        "size": 295849,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/tex/hair_front_left.png",
+        "size": 31809,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/tex/hair_front_right.png",
+        "size": 14312,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/tex/headdress.png",
+        "size": 48328,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/tex/leg_back.png",
+        "size": 41218,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/tex/leg_front.png",
+        "size": 44451,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/tex/sidelocks.png",
+        "size": 35570,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/tex/skirt_sit.png",
+        "size": 110048,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/tex/skirt.png",
+        "size": 74880,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/tex/tail.png",
+        "size": 28995,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/tex/torso_up.png",
+        "size": 32524,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/tex/waist_bow_front.png",
+        "size": 12093,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/chatgpt/tex/waist_bow_sit_front.png",
+        "size": 12357,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/feat/dizzy_eyeL.png",
+        "size": 20574,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/feat/dizzy_eyeR.png",
+        "size": 16037,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/feat/dizzy_mouth.png",
+        "size": 2222,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/feat/drag_eyeL.png",
+        "size": 9323,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/feat/drag_eyeR.png",
+        "size": 6554,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/feat/drag_mouth.png",
+        "size": 1661,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/feat/eyeL_ball.png",
+        "size": 13405,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/feat/eyeL_iris.png",
+        "size": 17638,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/feat/eyeL_lash.png",
+        "size": 10469,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/feat/eyeR_ball.png",
+        "size": 7641,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/feat/eyeR_iris.png",
+        "size": 8894,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/feat/eyeR_lash.png",
+        "size": 5202,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/feat/happy_eyeL.png",
+        "size": 10862,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/feat/happy_eyeR.png",
+        "size": 6654,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/feat/happy_mouth.png",
+        "size": 3515,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/feat/love_eyeL.png",
+        "size": 36436,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/feat/love_eyeR.png",
+        "size": 21360,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/feat/love_mouth.png",
+        "size": 4317,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/feat/neutral_mouth.png",
+        "size": 526,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/feat/sleep_eyeL.png",
+        "size": 8458,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/feat/sleep_eyeR.png",
+        "size": 5423,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/feat/sleep_mouth.png",
+        "size": 734,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/feat/surprised_eyeL.png",
+        "size": 40144,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/feat/surprised_eyeR.png",
+        "size": 20193,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/feat/surprised_mouth.png",
+        "size": 2950,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/tex/ahoge.png",
+        "size": 14974,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/tex/arm_far_end_front.png",
+        "size": 5196,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/tex/arm_far.png",
+        "size": 11057,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/tex/arm_near.png",
+        "size": 18081,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/tex/bangs.png",
+        "size": 107504,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/tex/bow.png",
+        "size": 11565,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/tex/brows.png",
+        "size": 2288,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/tex/eye_creases.png",
+        "size": 2497,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/tex/face.png",
+        "size": 50391,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/tex/fin_far.png",
+        "size": 15408,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/tex/fin_near.png",
+        "size": 22347,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/tex/hair_back_curl.png",
+        "size": 13580,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/tex/hair_back.png",
+        "size": 289340,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/tex/hair_front_left.png",
+        "size": 33083,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/tex/hair_front_right.png",
+        "size": 14519,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/tex/headdress.png",
+        "size": 48327,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/tex/leg_back.png",
+        "size": 42251,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/tex/leg_front.png",
+        "size": 45980,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/tex/sidelocks.png",
+        "size": 38851,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/tex/skirt_sit.png",
+        "size": 110402,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/tex/skirt.png",
+        "size": 76775,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/tex/tail.png",
+        "size": 28846,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/tex/torso_up.png",
+        "size": 35410,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/tex/waist_bow_front.png",
+        "size": 12308,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/claude/tex/waist_bow_sit_front.png",
+        "size": 12448,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/feat/dizzy_eyeL.png",
+        "size": 20261,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/feat/dizzy_eyeR.png",
+        "size": 15694,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/feat/dizzy_mouth.png",
+        "size": 2199,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/feat/drag_eyeL.png",
+        "size": 9383,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/feat/drag_eyeR.png",
+        "size": 6660,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/feat/drag_mouth.png",
+        "size": 1575,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/feat/eyeL_ball.png",
+        "size": 13385,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/feat/eyeL_iris.png",
+        "size": 17046,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/feat/eyeL_lash.png",
+        "size": 10706,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/feat/eyeR_ball.png",
+        "size": 7696,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/feat/eyeR_iris.png",
+        "size": 8522,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/feat/eyeR_lash.png",
+        "size": 5340,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/feat/happy_eyeL.png",
+        "size": 10791,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/feat/happy_eyeR.png",
+        "size": 6579,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/feat/happy_mouth.png",
+        "size": 3491,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/feat/love_eyeL.png",
+        "size": 36030,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/feat/love_eyeR.png",
+        "size": 21237,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/feat/love_mouth.png",
+        "size": 4305,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/feat/neutral_mouth.png",
+        "size": 534,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/feat/sleep_eyeL.png",
+        "size": 8567,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/feat/sleep_eyeR.png",
+        "size": 5485,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/feat/sleep_mouth.png",
+        "size": 747,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/feat/surprised_eyeL.png",
+        "size": 39198,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/feat/surprised_eyeR.png",
+        "size": 19956,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/feat/surprised_mouth.png",
+        "size": 2908,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/tex/ahoge.png",
+        "size": 15444,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/tex/arm_far_end_front.png",
+        "size": 5255,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/tex/arm_far.png",
+        "size": 11208,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/tex/arm_near.png",
+        "size": 17925,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/tex/bangs.png",
+        "size": 111490,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/tex/bow.png",
+        "size": 11983,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/tex/brows.png",
+        "size": 2299,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/tex/eye_creases.png",
+        "size": 2503,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/tex/face.png",
+        "size": 50382,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/tex/fin_far.png",
+        "size": 15595,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/tex/fin_near.png",
+        "size": 22000,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/tex/hair_back_curl.png",
+        "size": 13575,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/tex/hair_back.png",
+        "size": 287068,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/tex/hair_front_left.png",
+        "size": 33685,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/tex/hair_front_right.png",
+        "size": 14637,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/tex/headdress.png",
+        "size": 48039,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/tex/leg_back.png",
+        "size": 41974,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/tex/leg_front.png",
+        "size": 45233,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/tex/sidelocks.png",
+        "size": 36602,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/tex/skirt_sit.png",
+        "size": 110011,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/tex/skirt.png",
+        "size": 74270,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/tex/tail.png",
+        "size": 28751,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/tex/torso_up.png",
+        "size": 36948,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/tex/waist_bow_front.png",
+        "size": 12208,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/gemini/tex/waist_bow_sit_front.png",
+        "size": 12498,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/feat/dizzy_eyeL.png",
+        "size": 19857,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/feat/dizzy_eyeR.png",
+        "size": 15408,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/feat/dizzy_mouth.png",
+        "size": 2200,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/feat/drag_eyeL.png",
+        "size": 9885,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/feat/drag_eyeR.png",
+        "size": 7236,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/feat/drag_mouth.png",
+        "size": 1560,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/feat/eyeL_ball.png",
+        "size": 13010,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/feat/eyeL_iris.png",
+        "size": 15173,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/feat/eyeL_lash.png",
+        "size": 10499,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/feat/eyeR_ball.png",
+        "size": 7545,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/feat/eyeR_iris.png",
+        "size": 8314,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/feat/eyeR_lash.png",
+        "size": 5342,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/feat/happy_eyeL.png",
+        "size": 10880,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/feat/happy_eyeR.png",
+        "size": 6616,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/feat/happy_mouth.png",
+        "size": 3496,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/feat/love_eyeL.png",
+        "size": 36880,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/feat/love_eyeR.png",
+        "size": 21864,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/feat/love_mouth.png",
+        "size": 4394,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/feat/neutral_mouth.png",
+        "size": 549,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/feat/sleep_eyeL.png",
+        "size": 8555,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/feat/sleep_eyeR.png",
+        "size": 5454,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/feat/sleep_mouth.png",
+        "size": 761,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/feat/surprised_eyeL.png",
+        "size": 39286,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/feat/surprised_eyeR.png",
+        "size": 20107,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/feat/surprised_mouth.png",
+        "size": 2959,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/tex/ahoge.png",
+        "size": 13855,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/tex/arm_far_end_front.png",
+        "size": 5243,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/tex/arm_far.png",
+        "size": 10526,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/tex/arm_near.png",
+        "size": 17080,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/tex/bangs.png",
+        "size": 96606,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/tex/bow.png",
+        "size": 10283,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/tex/brows.png",
+        "size": 2042,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/tex/eye_creases.png",
+        "size": 2495,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/tex/face.png",
+        "size": 50925,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/tex/fin_far.png",
+        "size": 14718,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/tex/fin_near.png",
+        "size": 20458,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/tex/hair_back_curl.png",
+        "size": 12808,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/tex/hair_back.png",
+        "size": 259541,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/tex/hair_front_left.png",
+        "size": 30229,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/tex/hair_front_right.png",
+        "size": 13298,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/tex/headdress.png",
+        "size": 48822,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/tex/leg_back.png",
+        "size": 41250,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/tex/leg_front.png",
+        "size": 45132,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/tex/sidelocks.png",
+        "size": 34290,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/tex/skirt_sit.png",
+        "size": 105909,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/tex/skirt.png",
+        "size": 72794,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/tex/tail.png",
+        "size": 25661,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/tex/torso_up.png",
+        "size": 33233,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/tex/waist_bow_front.png",
+        "size": 12584,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/harness/tex/waist_bow_sit_front.png",
+        "size": 12550,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/feat/dizzy_eyeL.png",
+        "size": 19833,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/feat/dizzy_eyeR.png",
+        "size": 15485,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/feat/dizzy_mouth.png",
+        "size": 2180,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/feat/drag_eyeL.png",
+        "size": 9508,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/feat/drag_eyeR.png",
+        "size": 6676,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/feat/drag_mouth.png",
+        "size": 1617,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/feat/eyeL_ball.png",
+        "size": 13045,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/feat/eyeL_iris.png",
+        "size": 16680,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/feat/eyeL_lash.png",
+        "size": 10407,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/feat/eyeR_ball.png",
+        "size": 7513,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/feat/eyeR_iris.png",
+        "size": 8462,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/feat/eyeR_lash.png",
+        "size": 5153,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/feat/happy_eyeL.png",
+        "size": 10413,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/feat/happy_eyeR.png",
+        "size": 6433,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/feat/happy_mouth.png",
+        "size": 3574,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/feat/love_eyeL.png",
+        "size": 35698,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/feat/love_eyeR.png",
+        "size": 21154,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/feat/love_mouth.png",
+        "size": 4314,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/feat/neutral_mouth.png",
+        "size": 538,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/feat/sleep_eyeL.png",
+        "size": 8409,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/feat/sleep_eyeR.png",
+        "size": 5383,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/feat/sleep_mouth.png",
+        "size": 735,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/feat/surprised_eyeL.png",
+        "size": 38573,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/feat/surprised_eyeR.png",
+        "size": 19642,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/feat/surprised_mouth.png",
+        "size": 2927,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/tex/ahoge.png",
+        "size": 13605,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/tex/arm_far_end_front.png",
+        "size": 5208,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/tex/arm_far.png",
+        "size": 10517,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/tex/arm_near.png",
+        "size": 16747,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/tex/bangs.png",
+        "size": 96931,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/tex/bow.png",
+        "size": 11689,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/tex/brows.png",
+        "size": 2113,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/tex/eye_creases.png",
+        "size": 2478,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/tex/face.png",
+        "size": 50836,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/tex/fin_far.png",
+        "size": 14590,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/tex/fin_near.png",
+        "size": 19974,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/tex/hair_back_curl.png",
+        "size": 12685,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/tex/hair_back.png",
+        "size": 265553,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/tex/hair_front_left.png",
+        "size": 30094,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/tex/hair_front_right.png",
+        "size": 12940,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/tex/headdress.png",
+        "size": 47619,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/tex/leg_back.png",
+        "size": 40943,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/tex/leg_front.png",
+        "size": 44472,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/tex/sidelocks.png",
+        "size": 32893,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/tex/skirt_sit.png",
+        "size": 106892,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/tex/skirt.png",
+        "size": 71126,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/tex/tail.png",
+        "size": 26496,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/tex/torso_up.png",
+        "size": 33061,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/tex/waist_bow_front.png",
+        "size": 12103,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/kimi/tex/waist_bow_sit_front.png",
+        "size": 12428,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/feat/dizzy_eyeL.png",
+        "size": 19869,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/feat/dizzy_eyeR.png",
+        "size": 15335,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/feat/dizzy_mouth.png",
+        "size": 2236,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/feat/drag_eyeL.png",
+        "size": 10177,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/feat/drag_eyeR.png",
+        "size": 7391,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/feat/drag_mouth.png",
+        "size": 1606,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/feat/eyeL_ball.png",
+        "size": 14293,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/feat/eyeL_iris.png",
+        "size": 16760,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/feat/eyeL_lash.png",
+        "size": 10534,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/feat/eyeR_ball.png",
+        "size": 8174,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/feat/eyeR_iris.png",
+        "size": 8672,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/feat/eyeR_lash.png",
+        "size": 5363,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/feat/happy_eyeL.png",
+        "size": 11239,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/feat/happy_eyeR.png",
+        "size": 6868,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/feat/happy_mouth.png",
+        "size": 3533,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/feat/love_eyeL.png",
+        "size": 36735,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/feat/love_eyeR.png",
+        "size": 21628,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/feat/love_mouth.png",
+        "size": 4319,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/feat/neutral_mouth.png",
+        "size": 537,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/feat/sleep_eyeL.png",
+        "size": 8514,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/feat/sleep_eyeR.png",
+        "size": 5480,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/feat/sleep_mouth.png",
+        "size": 741,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/feat/surprised_eyeL.png",
+        "size": 40567,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/feat/surprised_eyeR.png",
+        "size": 20469,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/feat/surprised_mouth.png",
+        "size": 2976,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/tex/ahoge.png",
+        "size": 15185,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/tex/arm_far_end_front.png",
+        "size": 5281,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/tex/arm_far.png",
+        "size": 10974,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/tex/arm_near.png",
+        "size": 17733,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/tex/bangs.png",
+        "size": 109860,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/tex/bow.png",
+        "size": 11482,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/tex/brows.png",
+        "size": 2307,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/tex/eye_creases.png",
+        "size": 2505,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/tex/face.png",
+        "size": 51230,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/tex/fin_far.png",
+        "size": 15644,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/tex/fin_near.png",
+        "size": 22834,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/tex/hair_back_curl.png",
+        "size": 13433,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/tex/hair_back.png",
+        "size": 295345,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/tex/hair_front_left.png",
+        "size": 32996,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/tex/hair_front_right.png",
+        "size": 14271,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/tex/headdress.png",
+        "size": 48690,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/tex/leg_back.png",
+        "size": 41669,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/tex/leg_front.png",
+        "size": 46308,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/tex/sidelocks.png",
+        "size": 36840,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/tex/skirt_sit.png",
+        "size": 110477,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/tex/skirt.png",
+        "size": 74359,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/tex/tail.png",
+        "size": 29384,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/tex/torso_up.png",
+        "size": 35487,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/tex/waist_bow_front.png",
+        "size": 12123,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/minimax/tex/waist_bow_sit_front.png",
+        "size": 12544,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/feat/dizzy_eyeL.png",
+        "size": 20607,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/feat/dizzy_eyeR.png",
+        "size": 15897,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/feat/dizzy_mouth.png",
+        "size": 2303,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/feat/drag_eyeL.png",
+        "size": 9977,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/feat/drag_eyeR.png",
+        "size": 7175,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/feat/drag_mouth.png",
+        "size": 1653,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/feat/eyeL_ball.png",
+        "size": 13349,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/feat/eyeL_iris.png",
+        "size": 16416,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/feat/eyeL_lash.png",
+        "size": 10735,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/feat/eyeR_ball.png",
+        "size": 7689,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/feat/eyeR_iris.png",
+        "size": 8414,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/feat/eyeR_lash.png",
+        "size": 5398,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/feat/happy_eyeL.png",
+        "size": 11062,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/feat/happy_eyeR.png",
+        "size": 6789,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/feat/happy_mouth.png",
+        "size": 3508,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/feat/love_eyeL.png",
+        "size": 35815,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/feat/love_eyeR.png",
+        "size": 21059,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/feat/love_mouth.png",
+        "size": 4391,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/feat/neutral_mouth.png",
+        "size": 537,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/feat/sleep_eyeL.png",
+        "size": 8734,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/feat/sleep_eyeR.png",
+        "size": 5556,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/feat/sleep_mouth.png",
+        "size": 737,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/feat/surprised_eyeL.png",
+        "size": 38993,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/feat/surprised_eyeR.png",
+        "size": 19854,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/feat/surprised_mouth.png",
+        "size": 2949,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/tex/ahoge.png",
+        "size": 15361,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/tex/arm_far_end_front.png",
+        "size": 5225,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/tex/arm_far.png",
+        "size": 10909,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/tex/arm_near.png",
+        "size": 17403,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/tex/bangs.png",
+        "size": 113344,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/tex/bow.png",
+        "size": 11348,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/tex/brows.png",
+        "size": 2343,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/tex/eye_creases.png",
+        "size": 2468,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/tex/face.png",
+        "size": 50385,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/tex/fin_far.png",
+        "size": 15493,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/tex/fin_near.png",
+        "size": 21643,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/tex/hair_back_curl.png",
+        "size": 13664,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/tex/hair_back.png",
+        "size": 286448,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/tex/hair_front_left.png",
+        "size": 33202,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/tex/hair_front_right.png",
+        "size": 14978,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/tex/headdress.png",
+        "size": 47588,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/tex/leg_back.png",
+        "size": 41599,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/tex/leg_front.png",
+        "size": 45041,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/tex/sidelocks.png",
+        "size": 36118,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/tex/skirt_sit.png",
+        "size": 111394,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/tex/skirt.png",
+        "size": 74287,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/tex/tail.png",
+        "size": 29170,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/tex/torso_up.png",
+        "size": 35264,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/tex/waist_bow_front.png",
+        "size": 12099,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/schemes/qwen/tex/waist_bow_sit_front.png",
+        "size": 12312,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/tex/ahoge.png",
+        "size": 14666,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/tex/arm_far_end_front.png",
+        "size": 5258,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/tex/arm_far.png",
+        "size": 11014,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/tex/arm_near.png",
+        "size": 18321,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/tex/bangs.png",
+        "size": 108990,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/tex/bow.png",
+        "size": 11229,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/tex/brows.png",
+        "size": 2303,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/tex/eye_creases.png",
+        "size": 2475,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/tex/face.png",
+        "size": 47804,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/tex/fin_far.png",
+        "size": 15010,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/tex/fin_near.png",
+        "size": 21488,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/tex/hair_back_curl.png",
+        "size": 13021,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/tex/hair_back.png",
+        "size": 270792,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/tex/hair_front_left.png",
+        "size": 31357,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/tex/hair_front_right.png",
+        "size": 13950,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/tex/headdress.png",
+        "size": 49738,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/tex/leg_back.png",
+        "size": 41197,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/tex/leg_front.png",
+        "size": 44246,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/tex/sidelocks.png",
+        "size": 31322,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/tex/skirt_sit.png",
+        "size": 104452,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/tex/skirt.png",
+        "size": 77117,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/tex/tail.png",
+        "size": 27769,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/tex/torso_up.png",
+        "size": 34491,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/tex/waist_bow_front.png",
+        "size": 12219,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/tex/waist_bow_sit_front.png",
+        "size": 11971,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/thumbs/chatgpt.png",
+        "size": 34702,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/thumbs/claude.png",
+        "size": 35500,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/thumbs/deepseek.png",
+        "size": 35694,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/thumbs/gemini.png",
+        "size": 36340,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/thumbs/harness.png",
+        "size": 32719,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/thumbs/kimi.png",
+        "size": 33565,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/thumbs/minimax.png",
+        "size": 36362,
+        "mode": 420
+      },
+      {
+        "path": "web/upstream/whale/thumbs/qwen.png",
+        "size": 36208,
+        "mode": 420
+      }
+    ],
+    "entryCount": 663,
+    "bundled": []
+  }
+]

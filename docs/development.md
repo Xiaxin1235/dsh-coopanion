@@ -35,6 +35,10 @@ npm run test:install
 
 ## 关键行为回归
 
+第 4 期先运行 `node docs/design/art-workflow/space-v1/prepare-stage4.mjs`，显式 `?stage=4` 或 `DSH_SPACE_STAGE=4 node scripts/space-desktop.mjs`；事实／策略测试为 `tests/work-facts.test.ts`、`tests/life-work.test.js`，完整可见闭环为 `tests/life-work-ui.mjs`（`--native` 使用隔离 profile）。模拟事实与真实宿主分别结算；原生测试串行，每轮使用新 `SPACE_EVIDENCE_DIR`。
+
+第四阶段事件／多会话增量检查使用 `tests/work-facts.test.ts`、`tests/life-work.test.js`、`tests/work-performance.test.js` 与 `tests/work-semantics-ui.mjs`。正式 loader 的 `tests/work-host-contract.mjs` 对每个支持宿主使用其自己的目标投影包；`--output` 指向新的证据目录，临时 profile 自动清理。运行与边界见[工作语义验证](reports/stage-4-semantics-20261020.md)。
+
 第 3 期定向检查见[空间预览](design/art-workflow/space-v1/README.md#第-3-期连续动作与物件)。`tests/space-action-ui.mjs --native` 与其他原生测试串行执行，自动创建／清理临时 profile；`DSH_SPACE_STAGE=3 node scripts/space-desktop.mjs` 打开同一显式模式。源码身份由 `tests/space-source-identity.mjs` 记录，新证据目录不能覆盖已有结果。
 
 | 改动 | 检查入口与范围 |

@@ -3,7 +3,9 @@ import { loadBody } from '/web/upstream/body-host.js';
 import { decodePngFrame } from '/web/upstream/kit/raster.js';
 import { drawComposite, separateGroundProp } from '../o03-shell-hands-v1/composition.js';
 import { WORLD, BODY, GROUND_BODY, freshLayout, footprint, checkRoute, actionRoute, occlusionOrder, navigationModel as groundNavigationModel, actionNavigationModel } from './geometry.js';
-const continuous = new URLSearchParams(location.search).get('stage') === '3';
+const stage = new URLSearchParams(location.search).get('stage'), coordinated = stage === '4';
+const continuous = coordinated || stage === '3';
+let stage4;
 const navigationModel = continuous ? actionNavigationModel : groundNavigationModel;
 const $ = id => document.getElementById(id), world = $('world');
 const spec = await (await fetch('/web/props/shell/asset.json')).json();
@@ -22,10 +24,10 @@ const phases = { rest:'清醒坐姿', prepare:'起身与收心', idle:'站稳待
 const navigationBusy=()=>navActive || current?.navigation?.id!=null;
 const actionSafe=()=>continuous ? checkPath(navigationModel(layout),[rootPosition(),rootPosition()]).passed : Math.abs(rootPosition().y-layout.actor.y)<.5 && actionRoute({...layout,actor:rootPosition()}).passed;
 const command = c => body?.set({ motionCommand: c });
-const bounds = () => ({ W:WORLD.width, H:WORLD.height, floorY:layout.actor.y, S:BODY.size/256, navigation:true, continuousActions:continuous });
+const bounds = () => ({ W:WORLD.width, H:WORLD.height, floorY:layout.actor.y, S:BODY.size/256, navigation:true, continuousActions:continuous, lifeWork:coordinated });
 const svgRect = (r, attrs='') => `<rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" ${attrs}/>`;
 function geometry() {
-  if (continuous) command({type:'world', model:navigationModel(layout)});
+  if (continuous) command({type:'world', model:navigationModel(layout),workTarget:{x:layout.objects.find(o=>o.id==='station').x+30,y:layout.objects.find(o=>o.id==='station').y+355}});
   const legacy=checkRoute(layout), model=navigationModel(layout), route=navPlan??planPath(model,rootPosition(),navTarget??{x:850,y:600}), action = actionRoute(layout);
   const routePoints=route.points?.length?route.points:[rootPosition(),navTarget??{x:850,y:600}];
   const north=layout.objects.find(o=>o.id==='gate-north'),south=layout.objects.find(o=>o.id==='gate-south');
@@ -61,7 +63,7 @@ function geometry() {
   Object.assign(document.querySelector('.work-label').style,{left:station.x+'px',top:Math.max(250,station.y+station.h+20)+'px'});
   $('report').textContent = JSON.stringify(exportState(),null,2); updateSelection(); updateControls();
 }
-function exportState() { return { schema:continuous?3:2, scope:continuous?'stage-3-continuous-actions':'stage-2-body-navigation', world:WORLD, bodyEnvelope:BODY,groundEnvelope:GROUND_BODY, layout, route:navPlan??planPath(navigationModel(layout),rootPosition(),navTarget??{x:850,y:600}), legacyRoute:checkRoute(layout), navigationModel:navigationModel(layout), navigation:{id:navId,generation:navGeneration,target:navTarget,active:navActive,paused:navPaused}, horizontalAction:actionRoute(layout), measuredRaster:measurements, occlusion:sceneOrder(), asset:'/web/props/shell/asset.json', navigationImplemented:true }; }
+function exportState() { return { schema:coordinated?4:continuous?3:2, scope:coordinated?'stage-4-life-work':continuous?'stage-3-continuous-actions':'stage-2-body-navigation', world:WORLD, bodyEnvelope:BODY,groundEnvelope:GROUND_BODY, layout, route:navPlan??planPath(navigationModel(layout),rootPosition(),navTarget??{x:850,y:600}), legacyRoute:checkRoute(layout), navigationModel:navigationModel(layout), navigation:{id:navId,generation:navGeneration,target:navTarget,active:navActive,paused:navPaused}, horizontalAction:actionRoute(layout), measuredRaster:measurements, occlusion:sceneOrder(), asset:'/web/props/shell/asset.json', navigationImplemented:true }; }
 function selectedRect() {
   if(selected==='actor')return footprint({x:current?.bodyX??layout.actor.x,y:current?.bodyY??layout.actor.y});
   if(selected==='shell') { const q=current?.owner==='ground'?current.groundQuad:current?.heldQuad;if(q){const xs=q.map(p=>p.x),ys=q.map(p=>p.y);return{x:Math.min(...xs),y:Math.min(...ys),w:40,h:Math.max(...ys)-Math.min(...ys)};}return{x:layout.shell.x-20,y:layout.actor.y-33,w:40,h:33}; }
@@ -125,8 +127,9 @@ function moveDrag(e) {
 function endDrag(e) {if(!drag||drag.pointer!==e.pointerId)return;const {id,moved,lastValid}=drag;drag=null;if(e.currentTarget.hasPointerCapture(e.pointerId))e.currentTarget.releasePointerCapture(e.pointerId);if(continuous&&id==='actor'){if(lastValid){layout.actor={...lastValid};layout.revision++;geometry();}select(id);return;}if(e.type==='pointerup'&&moved)void place(id,id==='actor'?(lastValid?.x??rootPosition().x):Number($('edit-x').value),id==='actor'?(lastValid?.y??rootPosition().y):Number($('edit-y').value)).catch(fail);else select(id);}
 function fail(error){$('action-status').textContent=error.message;world.dataset.error=error.message;}
 function updateControls() {
-  const idle=current?.phase==='idle', rest=continuous&&current?.phase==='rest', held=current?.phase==='held', paused=current?.phase==='paused', safe=actionSafe();
-  for(const [id,enabled] of Object.entries({loop:(idle||rest)&&safe&&!navigationBusy(),pickup:(idle||rest)&&safe&&!navigationBusy(),drop:held&&safe,pause:current&&!idle&&!paused,resume:paused&&safe,step:paused&&!navActive&&!['approach','carry'].includes(current?.suspended),'reset-action':!!current,'apply-placement':continuous||idle,'reset-layout':idle||rest,'object-select':continuous||idle,'edit-x':continuous||idle,'speed':!!current,'block-route':continuous||idle,'restore-route':continuous||idle}))$(id).disabled=busyEdit||!enabled;
+  const storyBusy=coordinated&&current?.coordination&&!['idle','ended'].includes(current.coordination.phase);
+  const idle=current?.phase==='idle'&&!storyBusy, rest=continuous&&current?.phase==='rest'&&!storyBusy, held=current?.phase==='held'&&!storyBusy, paused=current?.phase==='paused', safe=actionSafe();
+  for(const [id,enabled] of Object.entries({loop:(idle||rest)&&safe&&!navigationBusy(),pickup:(idle||rest)&&safe&&!navigationBusy(),drop:held&&safe,pause:current&&(!idle||storyBusy)&&!paused,resume:(paused||current?.coordination?.phase==='paused')&&safe,step:paused&&!navActive&&!['approach','carry'].includes(current?.suspended),'reset-action':!!current,'apply-placement':continuous||idle,'reset-layout':idle||rest,'object-select':continuous||idle,'edit-x':continuous||idle,'speed':!!current,'block-route':continuous||idle,'restore-route':continuous||idle}))$(id).disabled=busyEdit||!enabled;
   $('nav-cancel').disabled=busyEdit||!navActive;
   $('nav-pause').disabled=busyEdit||!navActive;
   $('nav-resume').disabled=busyEdit||!navPaused;
@@ -175,7 +178,7 @@ function onFrame(v) {
   const rank=new Map(sceneOrder().map((id,i)=>[id,10+i]));for(const o of layout.objects)document.querySelector(`[data-object="${o.id}"]`).style.zIndex=rank.get(o.id)??3;for(const id of ['composition','actor-hit'])$(id).style.zIndex=rank.get('body-shell-fingers');$('ground-shell').style.zIndex=$('shell-hit').style.zIndex=rank.get(continuous&&separateGroundProp(v)?'ground-shell':'body-shell-fingers');
   const bubble=body?.layout?.bubble;if(bubble){Object.assign($('nav-bubble').style,{left:bubble.x+'px',top:bubble.y+'px'});}
   $('nav-status').textContent=continuous&&v.actionNavigation?`连续动作 · ${phases[v.phase]??v.phase} · (${v.bodyX.toFixed(1)}, ${v.bodyY.toFixed(1)})`:`${navPaused?'暂停 · 可从当前位置继续':navActive?`二维运动 · ${v.navigation?.phase??'规划'} · 操作 ${navId}`:'点选地面目标，或前往岗位'} · (${v.bodyX.toFixed(1)}, ${(v.bodyY??layout.actor.y).toFixed(1)})`;
-  updateControls();updateSelection();if(!busyEdit)void paint(v,detail);
+  stage4?.render(v);updateControls();updateSelection();if(!busyEdit)void paint(v,detail);
 }
 for(const o of layout.objects){const opt=document.createElement('option');opt.value=o.id;opt.textContent=o.label;$('object-select').append(opt);}
 $('object-select').onchange=()=>select($('object-select').value);
@@ -195,7 +198,7 @@ $('download').onclick=e=>{e.preventDefault();const url=URL.createObjectURL(new B
 function cancelNavigation(by){body?.cancelNavigation(by);navActive=false;navPaused=false;navGeneration++;}
 function pauseNavigation(by='pause'){if(!navActive)return;body?.cancelNavigation(by);navActive=false;navPaused=true;navGeneration++;updateControls();}
 function navigateTo(target){
-  if(busyEdit||current?.phase!=='idle')return;
+  if(busyEdit||current?.phase!=='idle'||coordinated&&current?.coordination&&!['idle','ended'].includes(current.coordination.phase))return;
   if(!body?.capabilities.includes('navigation-2d-v1')){$('nav-status').textContent='当前角色仅支持 API 2 水平行走';return;}
   navTarget={...target};navPaused=false;navPlan=planPath(navigationModel(layout),rootPosition(),target);
   const id=++navId;navActive=navPlan.passed;$('nav-bubble').textContent=navPlan.passed?(navPlan.alternative?'绕一下':'出发'):'当前目标不可达';
@@ -216,6 +219,7 @@ $('nav-resume').onclick=async()=>{command({type:'resume'});await waitFor(()=>cur
 world.addEventListener('click',e=>{if(e.target.closest('button,input,select'))return;const r=world.getBoundingClientRect(),scale=r.width/WORLD.width;navigateTo({x:(e.clientX-r.left)/scale,y:(e.clientY-r.top)/scale});});
 function fit(){world.style.transform=`scale(${document.querySelector('.stage-wrap').clientWidth/WORLD.width})`;}
 if(continuous){document.querySelector('.stage-tag').textContent='03 / 连续动作与物件';$('stage-3-link').hidden=true;$('sit').hidden=false;document.querySelector('.boundary').textContent='第三阶段隔离制作预览：坐姿起身、二维走近与持物、稳定接触、打断续接；实体地面绕行，内容禁区完整避让。未接入自主调度或真实工作事实。';}
+if(coordinated){stage4=await(await import('./stage4-preview.js')).mountStage4(command);document.querySelector('.stage-tag').textContent='04 / 生活与工作双线';document.querySelector('.boundary').textContent='第四阶段隔离制作预览：模拟 Harness 事实，经共享完成判断驱动同一身体的交接、到岗与生活续接。未连接真实宿主。';document.querySelector('.world-caption span:last-child').textContent='生活 / 工作 → 唯一协调入口';}
 new ResizeObserver(fit).observe(document.querySelector('.stage-wrap'));fit();geometry();select('actor');
 document.querySelector('details').ontoggle=e=>{if(e.target.open)$('report').textContent=JSON.stringify(exportState(),null,2);};
 // Start the only clock before awaiting edit initialization. A reset is an

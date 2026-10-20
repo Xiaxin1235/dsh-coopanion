@@ -1,0 +1,5093 @@
+{
+  "passed": true,
+  "sourceIdentity": {
+    "baseCommit": "d8a61df9a7e5ce7bdb051f9e9536dabe9afbfab2",
+    "node": "v24.21.0",
+    "platform": "darwin",
+    "sources": {
+      "web/prop-motion.js": "630785f93911f7987a911b878f342322fb8c2aef60b4c09380f0956ed314ce57",
+      "web/upstream/kit/space-action.js": "1797ed8e061e27865cb5c61d5a7b758608c40f55c75a276eb1d421d51afb390e",
+      "web/upstream/kit/navigation.js": "c997f0d031c90a4863c6dc455b31c107e10adae14afe82af9bf83c4f4b856107",
+      "web/upstream/kit/body.js": "f787f44d659d390de9a005285311d70e280e12e4e04222233aeee0a93f871152",
+      "web/upstream/kit/raster.js": "be2ee9bbee2bbccf14548d79c31bfea9ba68304b44b06cf67b8cbdeedb784672",
+      "web/upstream/whale/figure.js": "a6501327640faf7e985314105e4e12a40b53ffccb8e21f1771bcc5f8c7f6d613",
+      "web/upstream/whale/hand-art.js": "d8ff703fc656d90faa86441d116daaa9b26b6bf38aa71e92cc4018668849d119",
+      "web/upstream/body-host.js": "d2b8dba27e2085c75cee6cdf0a8a5673f038ac9a208d175c67fa7a64e45a6e2b",
+      "web/upstream/figure-frame.js": "a4812b5e8c90f4ed9fd58522faf9f33d7aee9e534689a856c2c1f62ecd87a25b",
+      "desktop/space-preview.cjs": "893ac7279e86c3a0c21e91cadc45276239d7cfb8ca36e9ca269ae8156cc09afb",
+      "docs/design/art-workflow/space-v1/scene.js": "de286c3d2ae5224e699c5d660ba048831cf637e4ddc733bedaf40c5c5184c9b7",
+      "docs/design/art-workflow/space-v1/geometry.js": "49bca92c7c77bd447116f5ba34e6508a727f847497d367d20293792974a22e6b",
+      "docs/design/art-workflow/space-v1/index.html": "15f69c0ecda3a740bdab46f87b1f465cefd4ac80435e9c5cdd61af47ac275ce3",
+      "docs/design/art-workflow/space-v1/style.css": "60408e4c6a42e99f36595df6bdad0b44fe3a3cdaa11dc33155480cc291cf3b80",
+      "docs/design/art-workflow/o03-shell-hands-v1/figure.js": "b7297bbb6bf29bb75ce6cac35bc897cfcdebb8ad0428109c36d0e187202428d0",
+      "docs/design/art-workflow/o03-shell-hands-v1/composition.js": "49b35979d8a25efa34284f322043292963a9f8364cad778894de76b5577df9b0",
+      "docs/design/art-workflow/o03-shell-hands-v1/scene-model.json": "542ae9eece080a49a82619e0ae99f8d8bd6e328ec2f7c47d6ccde82c37bd8c77",
+      "web/props/shell/shell.png": "542b49cffbec43e41b4ca75a0ae184302b1e384b27539ff957806c71d28b910d",
+      "web/props/shell/asset.json": "db1cd6cc6dc21dd178fa95b8a49c0bed503755b06f4dee8a5fed52da139a2a65",
+      "web/props/shell/hands/asset.json": "489b3619c85ef34ec430a1c217adec4fcb8f10ebfd116a635d462352e4de26b4",
+      "web/props/shell/hands/grip.png": "5770450595803b4586fb8574e5135148b522b116e7f6d3de25f6e7643f91b930",
+      "tests/space-action-ui.mjs": "0659ee69d9b90b602b12d1f703da43c9a5ca2f3e55024b59c14891ad1d8d456a",
+      "tests/space-feedback.test.js": "5a5d66ae30fe32b1a10f28c90e56587d5d0346441e75c08c0710092a4e49577f",
+      "tests/space-feedback-ui.mjs": "93afe76618511a9a625a5fed45ecbdc7198d4452907214c9764e74419d060c68",
+      "docs/design/art-workflow/space-v1/layouts/stage-3-feedback-20261020.json": "f4991b785c8ab68ba303610f3278828e78cbf70405aa45f4005b194080990877",
+      "docs/design/art-workflow/space-v1/layouts/stage-3-feedback-moved-20261020.json": "c97a792a5fd9d367fe3c1c03944e69453e9f4ace5cb8d4db7d970d6b8828ac61"
+    },
+    "digest": "9df77d44f61d5ca95924acf469e10379edf5a7199e2fa8271cd1757507de94f4"
+  },
+  "native": false,
+  "checks": [
+    {
+      "passed": true,
+      "label": "580/528 flowerbox permits a route to work"
+    },
+    {
+      "passed": true,
+      "label": "real body arrives at work through the reported lower flowerbox layout"
+    },
+    {
+      "passed": true,
+      "label": "moved flowerbox permits work arrival"
+    },
+    {
+      "passed": true,
+      "label": "real pickup after work reaches the shell and commits exactly once"
+    },
+    {
+      "passed": true,
+      "label": "held navigation and drop finish once after changing the target"
+    },
+    {
+      "passed": true,
+      "label": "all observed actual body segments respect the ground/full-body collision model"
+    },
+    {
+      "passed": true,
+      "label": "contact transfer retains texture and anchor continuity"
+    },
+    {
+      "passed": true,
+      "label": "no browser errors"
+    }
+  ],
+  "errors": [],
+  "first": {
+    "schema": 3,
+    "scope": "stage-3-continuous-actions",
+    "world": {
+      "width": 1080,
+      "height": 660,
+      "units": "preview-css-px",
+      "origin": "top-left",
+      "root": "feet-midpoint"
+    },
+    "bodyEnvelope": {
+      "size": 180,
+      "left": 100,
+      "right": 100,
+      "top": 205,
+      "bottom": 8,
+      "turn": 12
+    },
+    "groundEnvelope": {
+      "left": 100,
+      "right": 100,
+      "top": 24,
+      "bottom": 8
+    },
+    "layout": {
+      "revision": 5,
+      "actor": {
+        "x": 112,
+        "y": 640
+      },
+      "shell": {
+        "x": 335,
+        "width": 40,
+        "y": 450
+      },
+      "destination": 390,
+      "objects": [
+        {
+          "id": "home",
+          "label": "小窝",
+          "asset": "home.svg",
+          "x": 65,
+          "y": 155,
+          "w": 210,
+          "h": 175,
+          "solid": true,
+          "layer": "depth",
+          "anchor": [
+            170,
+            330
+          ]
+        },
+        {
+          "id": "station",
+          "label": "工作岗位",
+          "asset": "station.svg",
+          "x": 820,
+          "y": 245,
+          "w": 170,
+          "h": 120,
+          "solid": true,
+          "layer": "depth",
+          "anchor": [
+            850,
+            600
+          ]
+        },
+        {
+          "id": "planter",
+          "label": "珊瑚花箱",
+          "asset": "planter.svg",
+          "x": 580,
+          "y": 528,
+          "w": 112,
+          "h": 105,
+          "solid": true,
+          "layer": "depth"
+        },
+        {
+          "id": "gate-north",
+          "label": "门槛北柱",
+          "asset": "post.svg",
+          "x": 621,
+          "y": 18,
+          "w": 28,
+          "h": 40,
+          "solid": true,
+          "layer": "depth"
+        },
+        {
+          "id": "gate-south",
+          "label": "门槛南柱",
+          "asset": "post.svg",
+          "x": 621,
+          "y": 622,
+          "w": 28,
+          "h": 32,
+          "solid": true,
+          "layer": "depth"
+        },
+        {
+          "id": "panel",
+          "label": "手动内容禁区",
+          "x": 755,
+          "y": 40,
+          "w": 280,
+          "h": 195,
+          "solid": true,
+          "layer": "restricted"
+        }
+      ],
+      "zones": [
+        {
+          "id": "life",
+          "label": "生活区",
+          "x": 35,
+          "y": 155,
+          "w": 410,
+          "h": 470
+        },
+        {
+          "id": "work",
+          "label": "岗位区",
+          "x": 735,
+          "y": 250,
+          "w": 300,
+          "h": 375
+        }
+      ],
+      "route": [
+        {
+          "x": 240,
+          "y": 555
+        },
+        {
+          "x": 450,
+          "y": 555
+        },
+        {
+          "x": 540,
+          "y": 575
+        },
+        {
+          "x": 700,
+          "y": 600
+        },
+        {
+          "x": 850,
+          "y": 600
+        }
+      ],
+      "destinationY": 600,
+      "source": {
+        "kind": "screenshot-feedback-reconstruction",
+        "date": "2026-10-20",
+        "exact": "planter coordinates and actor root read from screenshot controls",
+        "approximate": "north y=18 inferred from 564px threshold gap; shell x=335/y=450 reconstructed near screenshot position, not an exported user layout"
+      }
+    },
+    "route": {
+      "revision": 5,
+      "precision": 0.5,
+      "model": "finite ground bodies / full-body restricted volumes",
+      "direct": {
+        "passed": false,
+        "violations": [
+          {
+            "segment": 1,
+            "obstacle": "planter",
+            "envelope": "ground-solid"
+          }
+        ]
+      },
+      "passed": true,
+      "alternative": true,
+      "points": [
+        {
+          "x": 112,
+          "y": 640
+        },
+        {
+          "x": 473.5,
+          "y": 567.5
+        },
+        {
+          "x": 799.5,
+          "y": 567.5
+        },
+        {
+          "x": 850,
+          "y": 600
+        }
+      ],
+      "length": 754.7525284568123
+    },
+    "legacyRoute": {
+      "passed": false,
+      "violations": [
+        {
+          "segment": 2,
+          "obstacle": "planter"
+        },
+        {
+          "segment": 3,
+          "obstacle": "planter"
+        },
+        {
+          "segment": 4,
+          "obstacle": "planter"
+        }
+      ],
+      "length": 614,
+      "body": {
+        "size": 180,
+        "left": 100,
+        "right": 100,
+        "top": 205,
+        "bottom": 8,
+        "turn": 12
+      },
+      "margin": 12,
+      "revision": 5
+    },
+    "navigationModel": {
+      "revision": 5,
+      "width": 1080,
+      "height": 660,
+      "body": {
+        "size": 180,
+        "left": 100,
+        "right": 100,
+        "top": 205,
+        "bottom": 8,
+        "turn": 12
+      },
+      "groundBody": {
+        "left": 100,
+        "right": 100,
+        "top": 24,
+        "bottom": 8
+      },
+      "margin": 12,
+      "obstacles": [
+        {
+          "id": "home",
+          "label": "小窝",
+          "kind": "ground-solid",
+          "x": 83,
+          "y": 300,
+          "w": 176,
+          "h": 21,
+          "silhouette": {
+            "x": 83,
+            "y": 157,
+            "w": 176,
+            "h": 164
+          },
+          "art": {
+            "x": 65,
+            "y": 155,
+            "w": 210,
+            "h": 175
+          }
+        },
+        {
+          "id": "station",
+          "label": "工作岗位",
+          "kind": "ground-solid",
+          "x": 827,
+          "y": 326,
+          "w": 156,
+          "h": 34,
+          "silhouette": {
+            "x": 827,
+            "y": 251,
+            "w": 156,
+            "h": 109
+          },
+          "art": {
+            "x": 820,
+            "y": 245,
+            "w": 170,
+            "h": 120
+          }
+        },
+        {
+          "id": "planter",
+          "label": "珊瑚花箱",
+          "kind": "ground-solid",
+          "x": 586,
+          "y": 588,
+          "w": 101,
+          "h": 37,
+          "silhouette": {
+            "x": 586,
+            "y": 534,
+            "w": 101,
+            "h": 91
+          },
+          "art": {
+            "x": 580,
+            "y": 528,
+            "w": 112,
+            "h": 105
+          }
+        },
+        {
+          "id": "gate-north",
+          "label": "门槛北柱",
+          "kind": "ground-solid",
+          "x": 624,
+          "y": 40,
+          "w": 22,
+          "h": 14,
+          "silhouette": {
+            "x": 624,
+            "y": 20,
+            "w": 22,
+            "h": 34
+          },
+          "art": {
+            "x": 621,
+            "y": 18,
+            "w": 28,
+            "h": 40
+          }
+        },
+        {
+          "id": "gate-south",
+          "label": "门槛南柱",
+          "kind": "ground-solid",
+          "x": 624,
+          "y": 639.6,
+          "w": 22,
+          "h": 11.2,
+          "silhouette": {
+            "x": 624,
+            "y": 623.6,
+            "w": 22,
+            "h": 27.2
+          },
+          "art": {
+            "x": 621,
+            "y": 622,
+            "w": 28,
+            "h": 32
+          }
+        },
+        {
+          "id": "panel",
+          "label": "手动内容禁区",
+          "kind": "full-body-restricted",
+          "x": 755,
+          "y": 40,
+          "w": 280,
+          "h": 195,
+          "silhouette": {
+            "x": 755,
+            "y": 40,
+            "w": 280,
+            "h": 195
+          },
+          "art": {
+            "x": 755,
+            "y": 40,
+            "w": 280,
+            "h": 195
+          }
+        }
+      ]
+    },
+    "navigation": {
+      "id": 1,
+      "generation": 3,
+      "target": {
+        "x": 850,
+        "y": 600
+      },
+      "active": false,
+      "paused": false
+    },
+    "horizontalAction": {
+      "passed": true,
+      "violations": [],
+      "length": 358,
+      "body": {
+        "size": 180,
+        "left": 100,
+        "right": 100,
+        "top": 205,
+        "bottom": 8,
+        "turn": 12
+      },
+      "margin": 0,
+      "revision": 5
+    },
+    "measuredRaster": {
+      "frames": 31,
+      "left": 73.79446113418976,
+      "right": 54.686499599999934,
+      "top": 166.5,
+      "bottom": 1.2296838175338962,
+      "binding": 0,
+      "wrongLayers": 0,
+      "ownerMismatches": 0,
+      "ownerSwitchJump": 0
+    },
+    "occlusion": [
+      "gate-north",
+      "home",
+      "station",
+      "ground-shell",
+      "body-shell-fingers",
+      "planter",
+      "gate-south"
+    ],
+    "asset": "/web/props/shell/asset.json",
+    "navigationImplemented": true,
+    "frame": {
+      "phase": "idle",
+      "suspended": null,
+      "elapsed": 11.982500000000021,
+      "owner": "ground",
+      "renderedOwner": "ground",
+      "generation": 3,
+      "walkId": null,
+      "commits": {
+        "pickup": 0,
+        "drop": 0
+      },
+      "error": null,
+      "inspection": null,
+      "loop": false,
+      "bodyX": 850,
+      "bodyY": 600,
+      "navigation": {
+        "x": 850,
+        "y": 600,
+        "speed": 0,
+        "facing": 1,
+        "phase": "idle",
+        "id": null,
+        "generation": 1,
+        "revision": 5,
+        "plan": null
+      },
+      "bubble": {
+        "x": 850,
+        "y": 434.2948061224919
+      },
+      "hit": [
+        {
+          "x": 850,
+          "y": 510.88116555650697,
+          "r": 75.9375
+        }
+      ],
+      "moving": false,
+      "facing": 1,
+      "visualFacing": 1,
+      "destinationX": 390,
+      "destinationY": 600,
+      "actionNavigation": null,
+      "actionRevision": null,
+      "objectRevision": 5,
+      "continuous": true,
+      "groundQuad": [
+        {
+          "x": 315,
+          "y": 417.19827586206895
+        },
+        {
+          "x": 355,
+          "y": 417.19827586206895
+        },
+        {
+          "x": 315,
+          "y": 450
+        }
+      ],
+      "groundGrip": {
+        "x": 335,
+        "y": 418.8383620689655
+      },
+      "hand": {
+        "x": 877.4501832135768,
+        "y": 559.6059754740393
+      },
+      "heldGrip": {
+        "x": 877.4501832135768,
+        "y": 559.6059754740393
+      },
+      "heldQuad": [
+        {
+          "x": 857.4501815181558,
+          "y": 557.9658891281108
+        },
+        {
+          "x": 897.4501849089977,
+          "y": 557.9658891281108
+        },
+        {
+          "x": 857.4501815181558,
+          "y": 590.7676160466784
+        }
+      ],
+      "feet": [
+        {
+          "x": 839.0453802359104,
+          "y": 600.0000152587891
+        },
+        {
+          "x": 861.3555383771658,
+          "y": 600.0000152587891
+        }
+      ],
+      "pose": {
+        "waist": 0,
+        "drop": 0,
+        "armNear": 4,
+        "armFar": -2,
+        "propAngle": 0,
+        "look": [
+          0,
+          0
+        ],
+        "plant": true,
+        "plantWeight": 1,
+        "hands": {
+          "original": 1,
+          "reach": 0,
+          "grip": 0,
+          "release": 0
+        },
+        "handArt": true
+      },
+      "sit": 0,
+      "handArt": {
+        "enabled": true,
+        "baseline": false,
+        "weights": {
+          "original": 1,
+          "reach": 0,
+          "grip": 0,
+          "release": 0
+        },
+        "wrist": {
+          "x": 876.3860987355054,
+          "y": 553.311151313533
+        },
+        "wristError": 0,
+        "contactError": 0,
+        "renderMode": "continuous-mesh",
+        "closure": 0.25,
+        "surfaceAlpha": 1,
+        "layers": {
+          "palm": 5.02,
+          "prop": 5.05,
+          "fingers": 5.2
+        },
+        "frontWeight": 1,
+        "externalProp": true
+      },
+      "contact": {
+        "distance": 560.417453557795,
+        "groundDistance": 487.5376067837343
+      },
+      "bindingError": 0,
+      "propMirror": 1,
+      "activeTime": 12.815600000000025,
+      "speed": 1,
+      "sequence": 344
+    },
+    "painted": {
+      "phase": "idle",
+      "suspended": null,
+      "elapsed": 11.89910000000002,
+      "owner": "ground",
+      "renderedOwner": "ground",
+      "generation": 3,
+      "walkId": null,
+      "commits": {
+        "pickup": 0,
+        "drop": 0
+      },
+      "error": null,
+      "inspection": null,
+      "loop": false,
+      "bodyX": 850,
+      "bodyY": 600,
+      "navigation": {
+        "x": 850,
+        "y": 600,
+        "speed": 0,
+        "facing": 1,
+        "phase": "settling",
+        "id": 1,
+        "generation": 3,
+        "revision": 5,
+        "plan": {
+          "revision": 5,
+          "precision": 0.5,
+          "model": "finite ground bodies / full-body restricted volumes",
+          "direct": {
+            "passed": false,
+            "violations": [
+              {
+                "segment": 1,
+                "obstacle": "planter",
+                "envelope": "ground-solid"
+              }
+            ]
+          },
+          "passed": true,
+          "alternative": true,
+          "points": [
+            {
+              "x": 112,
+              "y": 640
+            },
+            {
+              "x": 473.5,
+              "y": 567.5
+            },
+            {
+              "x": 799.5,
+              "y": 567.5
+            },
+            {
+              "x": 850,
+              "y": 600
+            }
+          ],
+          "length": 754.7525284568123
+        }
+      },
+      "bubble": {
+        "x": 850,
+        "y": 434.6835334055359
+      },
+      "hit": [
+        {
+          "x": 850,
+          "y": 511.09002069841,
+          "r": 75.9375
+        }
+      ],
+      "moving": true,
+      "facing": 1,
+      "visualFacing": 1,
+      "destinationX": 390,
+      "destinationY": 600,
+      "actionNavigation": null,
+      "actionRevision": null,
+      "objectRevision": 5,
+      "continuous": true,
+      "groundQuad": [
+        {
+          "x": 315,
+          "y": 417.19827586206895
+        },
+        {
+          "x": 355,
+          "y": 417.19827586206895
+        },
+        {
+          "x": 315,
+          "y": 450
+        }
+      ],
+      "groundGrip": {
+        "x": 335,
+        "y": 418.8383620689655
+      },
+      "hand": {
+        "x": 877.5075735728899,
+        "y": 559.7328147939461
+      },
+      "heldGrip": {
+        "x": 877.5075735728899,
+        "y": 559.7328147939461
+      },
+      "heldQuad": [
+        {
+          "x": 857.4632023974699,
+          "y": 558.0978817916392
+        },
+        {
+          "x": 897.5519422885152,
+          "y": 558.0979112239983
+        },
+        {
+          "x": 857.4632269954163,
+          "y": 590.7962475141852
+        }
+      ],
+      "feet": [
+        {
+          "x": 839.0167727171732,
+          "y": 600.0006220644124
+        },
+        {
+          "x": 861.3848871839306,
+          "y": 599.9719421790356
+        }
+      ],
+      "pose": {
+        "waist": 0,
+        "drop": 0,
+        "propAngle": 0,
+        "look": [
+          3,
+          0
+        ],
+        "plant": false,
+        "plantWeight": 1,
+        "hands": {
+          "original": 1,
+          "reach": 0,
+          "grip": 0,
+          "release": 0
+        },
+        "handArt": true
+      },
+      "sit": 0,
+      "handArt": {
+        "enabled": true,
+        "baseline": false,
+        "weights": {
+          "original": 1,
+          "reach": 0,
+          "grip": 0,
+          "release": 0
+        },
+        "wrist": {
+          "x": 876.4411378691495,
+          "y": 553.4578230422596
+        },
+        "wristError": 0,
+        "contactError": 0,
+        "renderMode": "continuous-mesh",
+        "closure": 0.25,
+        "surfaceAlpha": 1,
+        "layers": {
+          "palm": 5.02,
+          "prop": 5.05,
+          "fingers": 5.2
+        },
+        "frontWeight": 1,
+        "externalProp": true
+      },
+      "contact": {
+        "distance": 560.5048743700775,
+        "groundDistance": 487.5944452922519
+      },
+      "bindingError": 0,
+      "propMirror": 1,
+      "activeTime": 12.732200000000024,
+      "speed": 1,
+      "sequence": 342
+    },
+    "events": [
+      {
+        "type": "reset",
+        "phase": "idle",
+        "generation": 2,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": null,
+        "activeTime": 0,
+        "kind": "motion-action"
+      },
+      {
+        "type": "relocate",
+        "x": 335,
+        "y": 450,
+        "phase": "idle",
+        "generation": 2,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 400.6562629257419,
+          "groundDistance": 703.0105028229209,
+          "settled": false
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 138.38603770034905,
+            "y": 593.3111818311111
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 0.05,
+        "kind": "motion-action"
+      },
+      {
+        "type": "reset",
+        "phase": "idle",
+        "generation": 3,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 266.30186775950494,
+          "groundDistance": 252.43194622235168,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 138.38603770034905,
+            "y": 593.311151313533
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 0.8331000000000001,
+        "kind": "motion-action"
+      },
+      {
+        "type": "relocate",
+        "x": 335,
+        "y": 450,
+        "phase": "idle",
+        "generation": 3,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 400.6562629257419,
+          "groundDistance": 252.43194994198225,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 138.38603770034905,
+            "y": 593.3111818311111
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 0.8831000000000001,
+        "kind": "motion-action"
+      },
+      {
+        "type": "relocate",
+        "x": 335,
+        "y": 450,
+        "phase": "idle",
+        "generation": 3,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 266.30188847505633,
+          "groundDistance": 252.43194994198225,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 138.38603770034905,
+            "y": 593.3111818311111
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 1.1663,
+        "kind": "motion-action"
+      },
+      {
+        "kind": "navigation-arrived",
+        "id": 1,
+        "generation": 3,
+        "revision": 5,
+        "x": 850,
+        "y": 600
+      }
+    ],
+    "bodyLayout": {
+      "x": 850,
+      "y": 600,
+      "navigation": {
+        "x": 850,
+        "y": 600,
+        "speed": 0,
+        "phase": "idle",
+        "id": null,
+        "generation": 1,
+        "revision": 5
+      },
+      "facing": 1,
+      "mode": "idle",
+      "busy": false,
+      "moving": false,
+      "pressing": false,
+      "cursor": "",
+      "box": {
+        "x": 773.6442905659547,
+        "y": 430.11722184209134,
+        "w": 152.7114188680905,
+        "h": 169.88277815790866
+      },
+      "hit": [
+        {
+          "x": 850,
+          "y": 510.88116555650697,
+          "r": 75.9375
+        }
+      ],
+      "bubble": {
+        "x": 850,
+        "y": 434.2948061224919
+      },
+      "side": {
+        "x": 850,
+        "y": 510.8813044723687,
+        "reach": 73.125
+      }
+    },
+    "capabilities": [
+      "navigation-2d-v1"
+    ]
+  },
+  "second": {
+    "schema": 3,
+    "scope": "stage-3-continuous-actions",
+    "world": {
+      "width": 1080,
+      "height": 660,
+      "units": "preview-css-px",
+      "origin": "top-left",
+      "root": "feet-midpoint"
+    },
+    "bodyEnvelope": {
+      "size": 180,
+      "left": 100,
+      "right": 100,
+      "top": 205,
+      "bottom": 8,
+      "turn": 12
+    },
+    "groundEnvelope": {
+      "left": 100,
+      "right": 100,
+      "top": 24,
+      "bottom": 8
+    },
+    "layout": {
+      "revision": 6,
+      "actor": {
+        "x": 112,
+        "y": 640
+      },
+      "shell": {
+        "x": 335,
+        "width": 40,
+        "y": 450
+      },
+      "destination": 390,
+      "objects": [
+        {
+          "id": "home",
+          "label": "小窝",
+          "asset": "home.svg",
+          "x": 65,
+          "y": 155,
+          "w": 210,
+          "h": 175,
+          "solid": true,
+          "layer": "depth",
+          "anchor": [
+            170,
+            330
+          ]
+        },
+        {
+          "id": "station",
+          "label": "工作岗位",
+          "asset": "station.svg",
+          "x": 820,
+          "y": 245,
+          "w": 170,
+          "h": 120,
+          "solid": true,
+          "layer": "depth",
+          "anchor": [
+            850,
+            600
+          ]
+        },
+        {
+          "id": "planter",
+          "label": "珊瑚花箱",
+          "asset": "planter.svg",
+          "x": 558,
+          "y": 252,
+          "w": 112,
+          "h": 105,
+          "solid": true,
+          "layer": "depth"
+        },
+        {
+          "id": "gate-north",
+          "label": "门槛北柱",
+          "asset": "post.svg",
+          "x": 621,
+          "y": 18,
+          "w": 28,
+          "h": 40,
+          "solid": true,
+          "layer": "depth"
+        },
+        {
+          "id": "gate-south",
+          "label": "门槛南柱",
+          "asset": "post.svg",
+          "x": 621,
+          "y": 622,
+          "w": 28,
+          "h": 32,
+          "solid": true,
+          "layer": "depth"
+        },
+        {
+          "id": "panel",
+          "label": "手动内容禁区",
+          "x": 755,
+          "y": 40,
+          "w": 280,
+          "h": 195,
+          "solid": true,
+          "layer": "restricted"
+        }
+      ],
+      "zones": [
+        {
+          "id": "life",
+          "label": "生活区",
+          "x": 35,
+          "y": 155,
+          "w": 410,
+          "h": 470
+        },
+        {
+          "id": "work",
+          "label": "岗位区",
+          "x": 735,
+          "y": 250,
+          "w": 300,
+          "h": 375
+        }
+      ],
+      "route": [
+        {
+          "x": 240,
+          "y": 555
+        },
+        {
+          "x": 450,
+          "y": 555
+        },
+        {
+          "x": 540,
+          "y": 575
+        },
+        {
+          "x": 700,
+          "y": 600
+        },
+        {
+          "x": 850,
+          "y": 600
+        }
+      ],
+      "destinationY": 600,
+      "source": {
+        "kind": "screenshot-feedback-reconstruction",
+        "date": "2026-10-20",
+        "exact": "planter coordinates and actor root read from screenshot controls",
+        "approximate": "north y=18 inferred from 564px threshold gap; shell x=335/y=450 reconstructed near screenshot position, not an exported user layout"
+      }
+    },
+    "route": {
+      "revision": 6,
+      "precision": 0.5,
+      "model": "finite ground bodies / full-body restricted volumes",
+      "direct": {
+        "passed": true,
+        "violations": []
+      },
+      "passed": true,
+      "alternative": false,
+      "points": [
+        {
+          "x": 850,
+          "y": 600
+        },
+        {
+          "x": 362.40658325513954,
+          "y": 450
+        }
+      ]
+    },
+    "legacyRoute": {
+      "passed": false,
+      "violations": [
+        {
+          "segment": 1,
+          "obstacle": "planter"
+        },
+        {
+          "segment": 2,
+          "obstacle": "planter"
+        }
+      ],
+      "length": 614,
+      "body": {
+        "size": 180,
+        "left": 100,
+        "right": 100,
+        "top": 205,
+        "bottom": 8,
+        "turn": 12
+      },
+      "margin": 12,
+      "revision": 6
+    },
+    "navigationModel": {
+      "revision": 6,
+      "width": 1080,
+      "height": 660,
+      "body": {
+        "size": 180,
+        "left": 100,
+        "right": 100,
+        "top": 205,
+        "bottom": 8,
+        "turn": 12
+      },
+      "groundBody": {
+        "left": 100,
+        "right": 100,
+        "top": 24,
+        "bottom": 8
+      },
+      "margin": 12,
+      "obstacles": [
+        {
+          "id": "home",
+          "label": "小窝",
+          "kind": "ground-solid",
+          "x": 83,
+          "y": 300,
+          "w": 176,
+          "h": 21,
+          "silhouette": {
+            "x": 83,
+            "y": 157,
+            "w": 176,
+            "h": 164
+          },
+          "art": {
+            "x": 65,
+            "y": 155,
+            "w": 210,
+            "h": 175
+          }
+        },
+        {
+          "id": "station",
+          "label": "工作岗位",
+          "kind": "ground-solid",
+          "x": 827,
+          "y": 326,
+          "w": 156,
+          "h": 34,
+          "silhouette": {
+            "x": 827,
+            "y": 251,
+            "w": 156,
+            "h": 109
+          },
+          "art": {
+            "x": 820,
+            "y": 245,
+            "w": 170,
+            "h": 120
+          }
+        },
+        {
+          "id": "planter",
+          "label": "珊瑚花箱",
+          "kind": "ground-solid",
+          "x": 564,
+          "y": 312,
+          "w": 101,
+          "h": 37,
+          "silhouette": {
+            "x": 564,
+            "y": 258,
+            "w": 101,
+            "h": 91
+          },
+          "art": {
+            "x": 558,
+            "y": 252,
+            "w": 112,
+            "h": 105
+          }
+        },
+        {
+          "id": "gate-north",
+          "label": "门槛北柱",
+          "kind": "ground-solid",
+          "x": 624,
+          "y": 40,
+          "w": 22,
+          "h": 14,
+          "silhouette": {
+            "x": 624,
+            "y": 20,
+            "w": 22,
+            "h": 34
+          },
+          "art": {
+            "x": 621,
+            "y": 18,
+            "w": 28,
+            "h": 40
+          }
+        },
+        {
+          "id": "gate-south",
+          "label": "门槛南柱",
+          "kind": "ground-solid",
+          "x": 624,
+          "y": 639.6,
+          "w": 22,
+          "h": 11.2,
+          "silhouette": {
+            "x": 624,
+            "y": 623.6,
+            "w": 22,
+            "h": 27.2
+          },
+          "art": {
+            "x": 621,
+            "y": 622,
+            "w": 28,
+            "h": 32
+          }
+        },
+        {
+          "id": "panel",
+          "label": "手动内容禁区",
+          "kind": "full-body-restricted",
+          "x": 755,
+          "y": 40,
+          "w": 280,
+          "h": 195,
+          "silhouette": {
+            "x": 755,
+            "y": 40,
+            "w": 280,
+            "h": 195
+          },
+          "art": {
+            "x": 755,
+            "y": 40,
+            "w": 280,
+            "h": 195
+          }
+        }
+      ]
+    },
+    "navigation": {
+      "id": 2,
+      "generation": 3,
+      "target": {
+        "x": 362.40658325513954,
+        "y": 450
+      },
+      "active": false,
+      "paused": false
+    },
+    "horizontalAction": {
+      "passed": true,
+      "violations": [],
+      "length": 358,
+      "body": {
+        "size": 180,
+        "left": 100,
+        "right": 100,
+        "top": 205,
+        "bottom": 8,
+        "turn": 12
+      },
+      "margin": 0,
+      "revision": 6
+    },
+    "measuredRaster": {
+      "frames": 53,
+      "left": 73.79446113418976,
+      "right": 72.59341674486046,
+      "top": 166.5,
+      "bottom": 1.2296838175338962,
+      "binding": 0,
+      "wrongLayers": 0,
+      "ownerMismatches": 0,
+      "ownerSwitchJump": 0.006601024391516708
+    },
+    "occlusion": [
+      "gate-north",
+      "home",
+      "planter",
+      "station",
+      "body-shell-fingers",
+      "gate-south"
+    ],
+    "asset": "/web/props/shell/asset.json",
+    "navigationImplemented": true,
+    "frame": {
+      "phase": "held",
+      "suspended": null,
+      "elapsed": 0,
+      "owner": "hand",
+      "renderedOwner": "hand",
+      "generation": 3,
+      "walkId": null,
+      "commits": {
+        "pickup": 1,
+        "drop": 0
+      },
+      "error": null,
+      "inspection": null,
+      "loop": false,
+      "bodyX": 362.40658325513954,
+      "bodyY": 450,
+      "navigation": {
+        "x": 362.40658325513954,
+        "y": 450,
+        "speed": 0,
+        "facing": -1,
+        "phase": "idle",
+        "id": null,
+        "generation": 1,
+        "revision": 6,
+        "plan": null
+      },
+      "bubble": {
+        "x": 362.40658325513954,
+        "y": 282.392941397307
+      },
+      "hit": [
+        {
+          "x": 362.40658325513954,
+          "y": 359.8583886506525,
+          "r": 75.9375
+        }
+      ],
+      "moving": false,
+      "facing": -1,
+      "visualFacing": -1,
+      "destinationX": 390,
+      "destinationY": 600,
+      "actionNavigation": null,
+      "actionRevision": 6,
+      "objectRevision": 5,
+      "continuous": true,
+      "groundQuad": [
+        {
+          "x": 315,
+          "y": 417.19827586206895
+        },
+        {
+          "x": 355,
+          "y": 417.19827586206895
+        },
+        {
+          "x": 315,
+          "y": 450
+        }
+      ],
+      "groundGrip": {
+        "x": 335,
+        "y": 418.8383620689655
+      },
+      "hand": {
+        "x": 323.6664374630511,
+        "y": 400.03985248046706
+      },
+      "heldGrip": {
+        "x": 323.6664374630511,
+        "y": 400.03985248046706
+      },
+      "heldQuad": [
+        {
+          "x": 304.4444769152721,
+          "y": 394.27737178734793
+        },
+        {
+          "x": 343.5703842613683,
+          "y": 402.593840125054
+        },
+        {
+          "x": 297.6246144098903,
+          "y": 426.3623022726704
+        }
+      ],
+      "feet": [
+        {
+          "x": 373.3547052133083,
+          "y": 450.00001525878906
+        },
+        {
+          "x": 351.044547072053,
+          "y": 450.00001525878906
+        }
+      ],
+      "pose": {
+        "waist": 2,
+        "drop": 0,
+        "armNear": 1,
+        "armFar": -42,
+        "propAngle": -12,
+        "look": [
+          3,
+          0.5
+        ],
+        "plant": true,
+        "plantWeight": 1,
+        "hands": {
+          "original": 0,
+          "reach": 0,
+          "grip": 1,
+          "release": 0
+        },
+        "handArt": true
+      },
+      "sit": 0,
+      "handArt": {
+        "enabled": true,
+        "baseline": false,
+        "weights": {
+          "original": 0,
+          "reach": 0,
+          "grip": 1,
+          "release": 0
+        },
+        "wrist": {
+          "x": 328.3804282040903,
+          "y": 395.73457916956534
+        },
+        "wristError": 0,
+        "contactError": 0,
+        "renderMode": "continuous-mesh",
+        "closure": 1,
+        "surfaceAlpha": 1,
+        "layers": {
+          "palm": 5.02,
+          "prop": 5.05,
+          "fingers": 5.2
+        },
+        "frontWeight": 1,
+        "externalProp": true
+      },
+      "contact": {
+        "distance": 21.95070847439325,
+        "groundDistance": 181.99843429796945
+      },
+      "bindingError": 0,
+      "propMirror": -1,
+      "activeTime": 24.829900000000134,
+      "speed": 1,
+      "sequence": 659
+    },
+    "painted": {
+      "phase": "lift",
+      "suspended": null,
+      "elapsed": 0.6998999999999977,
+      "owner": "hand",
+      "renderedOwner": "hand",
+      "generation": 3,
+      "walkId": null,
+      "commits": {
+        "pickup": 1,
+        "drop": 0
+      },
+      "error": null,
+      "inspection": null,
+      "loop": false,
+      "bodyX": 362.40658325513954,
+      "bodyY": 450,
+      "navigation": {
+        "x": 362.40658325513954,
+        "y": 450,
+        "speed": 0,
+        "facing": -1,
+        "phase": "idle",
+        "id": null,
+        "generation": 1,
+        "revision": 6,
+        "plan": null
+      },
+      "bubble": {
+        "x": 362.40658325513954,
+        "y": 281.7677307565458
+      },
+      "hit": [
+        {
+          "x": 362.40658325513954,
+          "y": 359.52214091108345,
+          "r": 75.9375
+        }
+      ],
+      "moving": false,
+      "facing": -1,
+      "visualFacing": -1,
+      "destinationX": 390,
+      "destinationY": 600,
+      "actionNavigation": null,
+      "actionRevision": 6,
+      "objectRevision": 5,
+      "continuous": true,
+      "groundQuad": [
+        {
+          "x": 315,
+          "y": 417.19827586206895
+        },
+        {
+          "x": 355,
+          "y": 417.19827586206895
+        },
+        {
+          "x": 315,
+          "y": 450
+        }
+      ],
+      "groundGrip": {
+        "x": 335,
+        "y": 418.8383620689655
+      },
+      "hand": {
+        "x": 323.8107810052012,
+        "y": 400.73430787538393
+      },
+      "heldGrip": {
+        "x": 323.8107810052012,
+        "y": 400.73430787538393
+      },
+      "heldQuad": [
+        {
+          "x": 304.55361831603625,
+          "y": 395.0905824920952
+        },
+        {
+          "x": 343.73011286621835,
+          "y": 403.16539184135706
+        },
+        {
+          "x": 297.93192659751446,
+          "y": 427.21699666525103
+        }
+      ],
+      "feet": [
+        {
+          "x": 373.3546746957302,
+          "y": 450.0000457763672
+        },
+        {
+          "x": 351.04451655447485,
+          "y": 450.0000457763672
+        }
+      ],
+      "pose": {
+        "waist": 2.5304816643150048,
+        "drop": 0.03768311695607052,
+        "armNear": 0.7347591678424976,
+        "armFar": -41.11586389280832,
+        "propAngle": -11.646345557123329,
+        "look": [
+          3,
+          0.6031492125056954
+        ],
+        "plant": true,
+        "plantWeight": 1,
+        "hands": {
+          "original": 0,
+          "reach": 0,
+          "grip": 1,
+          "release": 0
+        },
+        "handArt": true
+      },
+      "sit": 0,
+      "handArt": {
+        "enabled": true,
+        "baseline": false,
+        "weights": {
+          "original": 0,
+          "reach": 0,
+          "grip": 1,
+          "release": 0
+        },
+        "wrist": {
+          "x": 328.4170497645389,
+          "y": 396.31397133786595
+        },
+        "wristError": 0,
+        "contactError": 0,
+        "renderMode": "continuous-mesh",
+        "closure": 1,
+        "surfaceAlpha": 1,
+        "layers": {
+          "palm": 5.02,
+          "prop": 5.05,
+          "fingers": 5.2
+        },
+        "frontWeight": 1,
+        "externalProp": true
+      },
+      "contact": {
+        "distance": 21.282748881610797,
+        "groundDistance": 181.26248861334523
+      },
+      "bindingError": 0,
+      "propMirror": -1,
+      "activeTime": 24.730000000000135,
+      "speed": 1,
+      "sequence": 657
+    },
+    "events": [
+      {
+        "type": "reset",
+        "phase": "idle",
+        "generation": 2,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": null,
+        "activeTime": 0,
+        "kind": "motion-action"
+      },
+      {
+        "type": "relocate",
+        "x": 335,
+        "y": 450,
+        "phase": "idle",
+        "generation": 2,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 400.6562629257419,
+          "groundDistance": 703.0105028229209,
+          "settled": false
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 138.38603770034905,
+            "y": 593.3111818311111
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 0.05,
+        "kind": "motion-action"
+      },
+      {
+        "type": "reset",
+        "phase": "idle",
+        "generation": 3,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 266.30186775950494,
+          "groundDistance": 252.43194622235168,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 138.38603770034905,
+            "y": 593.311151313533
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 0.8331000000000001,
+        "kind": "motion-action"
+      },
+      {
+        "type": "relocate",
+        "x": 335,
+        "y": 450,
+        "phase": "idle",
+        "generation": 3,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 400.6562629257419,
+          "groundDistance": 252.43194994198225,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 138.38603770034905,
+            "y": 593.3111818311111
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 0.8831000000000001,
+        "kind": "motion-action"
+      },
+      {
+        "type": "relocate",
+        "x": 335,
+        "y": 450,
+        "phase": "idle",
+        "generation": 3,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 266.30188847505633,
+          "groundDistance": 252.43194994198225,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 138.38603770034905,
+            "y": 593.3111818311111
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 1.1663,
+        "kind": "motion-action"
+      },
+      {
+        "kind": "navigation-arrived",
+        "id": 1,
+        "generation": 3,
+        "revision": 5,
+        "x": 850,
+        "y": 600
+      },
+      {
+        "kind": "navigation-arrived",
+        "id": 2,
+        "generation": 3,
+        "revision": 6,
+        "x": 850,
+        "y": 600
+      },
+      {
+        "type": "stand",
+        "phase": "prepare",
+        "generation": 3,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 560.4173944794574,
+          "groundDistance": 487.5375457595227,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 876.3860377003491,
+            "y": 553.311151313533
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 14.84840000000003,
+        "kind": "motion-action"
+      },
+      {
+        "type": "navigate",
+        "id": 3000001,
+        "generation": 3,
+        "revision": 6,
+        "target": {
+          "x": 362.40658325513954,
+          "y": 450
+        },
+        "phase": "approach",
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 560.4173944794574,
+          "groundDistance": 487.5375457595227,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 876.3860377003491,
+            "y": 553.311151313533
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 15.631500000000031,
+        "kind": "motion-action"
+      },
+      {
+        "kind": "navigation-arrived",
+        "id": 3000001,
+        "generation": 3,
+        "revision": 6,
+        "x": 362.40658325513954,
+        "y": 450
+      },
+      {
+        "type": "face",
+        "facing": -1,
+        "phase": "settle",
+        "generation": 3,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 9.308655175960961,
+          "groundDistance": 168.482850132403,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 336.05145980725854,
+            "y": 403.22282456711935
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 22.047100000000096,
+        "kind": "motion-action"
+      },
+      {
+        "type": "phase",
+        "phase": "settle",
+        "generation": 3,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 9.308655175960961,
+          "groundDistance": 168.482850132403,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 336.05145980725854,
+            "y": 403.22282456711935
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 22.047100000000096,
+        "kind": "motion-action"
+      },
+      {
+        "type": "phase",
+        "phase": "look",
+        "generation": 3,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 9.230116786103066,
+          "groundDistance": 168.47975762376348,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 336.01280552630715,
+            "y": 403.31394236313486
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 22.4137000000001,
+        "kind": "motion-action"
+      },
+      {
+        "type": "phase",
+        "phase": "reach",
+        "generation": 3,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 9.232522848243796,
+          "groundDistance": 168.47988628708697,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 336.0139256785572,
+            "y": 403.31115131353295
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 22.746900000000114,
+        "kind": "motion-action"
+      },
+      {
+        "type": "phase",
+        "phase": "grasp",
+        "generation": 3,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 0.0065994523028601836,
+          "groundDistance": 159.76768207271974,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 1,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 334.94823458832445,
+            "y": 412.45443723611197
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 23.730200000000124,
+        "kind": "motion-action"
+      },
+      {
+        "type": "pickup",
+        "phase": "lift",
+        "generation": 3,
+        "owner": "hand",
+        "commits": {
+          "pickup": 1,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 0.006599323395874665,
+          "groundDistance": 159.7677107245429,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 0,
+            "grip": 1,
+            "release": 0
+          },
+          "wrist": {
+            "x": 334.94823458832445,
+            "y": 412.45440671853385
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 1,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 23.99680000000013,
+        "kind": "motion-action"
+      },
+      {
+        "type": "phase",
+        "phase": "lift",
+        "generation": 3,
+        "owner": "hand",
+        "commits": {
+          "pickup": 1,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 0.006599323395874665,
+          "groundDistance": 159.7677107245429,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 0,
+            "grip": 1,
+            "release": 0
+          },
+          "wrist": {
+            "x": 334.94823458832445,
+            "y": 412.45440671853385
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 1,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 23.99680000000013,
+        "kind": "motion-action"
+      },
+      {
+        "type": "phase",
+        "phase": "held",
+        "generation": 3,
+        "owner": "hand",
+        "commits": {
+          "pickup": 1,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 21.851407025154476,
+          "groundDistance": 181.88895715147723,
+          "settled": false
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 0,
+            "reach": 0,
+            "grip": 1,
+            "release": 0
+          },
+          "wrist": {
+            "x": 328.38518037582094,
+            "y": 395.82088213311675
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 1,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 24.779900000000133,
+        "kind": "motion-action"
+      }
+    ],
+    "bodyLayout": {
+      "x": 362.40658325513954,
+      "y": 450,
+      "navigation": {
+        "x": 362.40658325513954,
+        "y": 450,
+        "speed": 0,
+        "phase": "idle",
+        "id": null,
+        "generation": 1,
+        "revision": 6
+      },
+      "facing": -1,
+      "mode": "idle",
+      "busy": false,
+      "moving": false,
+      "pressing": false,
+      "cursor": "",
+      "box": {
+        "x": 286.53629332914625,
+        "y": 278.1675533653064,
+        "w": 151.74057985198658,
+        "h": 171.8324466346936
+      },
+      "hit": [
+        {
+          "x": 362.40658325513954,
+          "y": 359.8583886506525,
+          "r": 75.9375
+        }
+      ],
+      "bubble": {
+        "x": 362.40658325513954,
+        "y": 282.392941397307
+      },
+      "side": {
+        "x": 362.40658325513954,
+        "y": 359.8583886506525,
+        "reach": 73.125
+      }
+    },
+    "capabilities": [
+      "navigation-2d-v1"
+    ]
+  },
+  "trace": [
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "idle",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "idle",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "idle",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "idle",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 849.9046115789306,
+      "y": 599.970655339738,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 849.6184463157224,
+      "y": 599.8826213589517,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 848.8304890458438,
+      "y": 599.6402194182716,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 848.0670952255738,
+      "y": 599.405374014072,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 847.1097718738699,
+      "y": 599.1108694169545,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 845.3219561833754,
+      "y": 598.5608776730862,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 843.8859711558197,
+      "y": 598.11912077741,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 842.2580617588347,
+      "y": 597.6183215435361,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 840.4439630482267,
+      "y": 597.0602442659391,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 835.0704841452128,
+      "y": 595.4071829083166,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 831.2717731148812,
+      "y": 594.2385726790118,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 827.05184128937,
+      "y": 592.9403808821404,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 822.4408480103649,
+      "y": 591.521885537252,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 819.2484932294399,
+      "y": 590.5398107169324,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 816.0656963969609,
+      "y": 589.5606762403862,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 811.2867221740194,
+      "y": 588.0905043536802,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 806.517305899524,
+      "y": 586.6232728107477,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 803.324951118599,
+      "y": 585.641197990428,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 798.5459768956574,
+      "y": 584.171026103722,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 795.3631800631784,
+      "y": 583.1918916271759,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 792.1708252822534,
+      "y": 582.2098168068562,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 787.401409007758,
+      "y": 580.7425852639237,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 782.6224347848165,
+      "y": 579.2724133772177,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 777.843460561875,
+      "y": 577.8022414905117,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 773.0740442873796,
+      "y": 576.3350099475792,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 765.1122732319591,
+      "y": 573.8857035843271,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 760.3332990090175,
+      "y": 572.4155316976211,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 757.1505021765386,
+      "y": 571.4363972210749,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 753.9581473956135,
+      "y": 570.4543224007552,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 750.7753505631346,
+      "y": 569.4751879242091,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 747.5925537306556,
+      "y": 568.4960534476629,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 744.4001989497306,
+      "y": 567.5139786273432,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 739.621224726789,
+      "y": 566.0438067406373,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 736.43842789431,
+      "y": 565.0646722640911,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 731.6594536713685,
+      "y": 563.5945003773851,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 726.880479448427,
+      "y": 562.1243284906791,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 723.697682615948,
+      "y": 561.1451940141329,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 720.505327835023,
+      "y": 560.1631191938133,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 715.7263536120814,
+      "y": 558.6929473071073,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 712.5435567796025,
+      "y": 557.7138128305611,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 709.3607599471235,
+      "y": 556.7346783540149,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 706.1779631146445,
+      "y": 555.7555438774688,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 699.8028115012405,
+      "y": 553.7943345806029,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 696.6200146687615,
+      "y": 552.8152001040568,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 691.84104044582,
+      "y": 551.3450282173508,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 687.0620662228785,
+      "y": 549.8748563306448,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 683.8792693903991,
+      "y": 548.8957218540985,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 679.1002951674576,
+      "y": 547.4255499673925,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 674.3213209445161,
+      "y": 545.9553780806865,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 669.5519046700207,
+      "y": 544.488146537754,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 664.7729304470791,
+      "y": 543.017974651048,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 661.5901336145998,
+      "y": 542.0388401745017,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 656.8111593916583,
+      "y": 540.5686682877957,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 653.6283625591793,
+      "y": 539.5895338112496,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 650.4360077782546,
+      "y": 538.60745899093,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 645.6570335553131,
+      "y": 537.137287104224,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 642.4646787743884,
+      "y": 536.1552122839045,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 637.6857045514469,
+      "y": 534.6850403971985,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 631.3105529380429,
+      "y": 532.7238311003326,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 626.5315787151013,
+      "y": 531.2536592136266,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 621.7621624406056,
+      "y": 529.786427670694,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 616.9831882176641,
+      "y": 528.316255783988,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 609.0214171622436,
+      "y": 525.8669494207359,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 605.8290623813189,
+      "y": 524.8848746004163,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 602.6462655488396,
+      "y": 523.90574012387,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 599.4634687163606,
+      "y": 522.9266056473239,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 594.684494493419,
+      "y": 521.4564337606179,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 589.9055202704775,
+      "y": 519.9862618739119,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 586.7227234379985,
+      "y": 519.0071273973657,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 581.943749215057,
+      "y": 517.5369555106597,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 577.1647749921154,
+      "y": 516.0667836239537,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 573.9915361080822,
+      "y": 515.0905894911808,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 570.7991813271572,
+      "y": 514.1085146708612,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 567.6068265462325,
+      "y": 513.1264398505416,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 564.4240297137535,
+      "y": 512.1473053739954,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 559.645055490812,
+      "y": 510.6771334872894,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 553.2794618258537,
+      "y": 508.7188645341968,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 550.0966649933747,
+      "y": 507.7397300576506,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 546.9043102124497,
+      "y": 506.75765523733094,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 543.7215133799707,
+      "y": 505.7785207607847,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 538.9425391570292,
+      "y": 504.30834887407866,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 535.7501843761045,
+      "y": 503.3262740537591,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 532.5673875436252,
+      "y": 502.3471395772128,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 527.7884133206836,
+      "y": 500.8769676905067,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 523.0094390977421,
+      "y": 499.40679580380066,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 519.8266422652631,
+      "y": 498.42766132725444,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 516.6342874843381,
+      "y": 497.4455865069348,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 513.4514906518591,
+      "y": 496.46645203038855,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 510.26869381938013,
+      "y": 495.48731755384233,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 505.48971959643865,
+      "y": 494.0171456671363,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 502.30692276395934,
+      "y": 493.03801119058994,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 499.12412593148036,
+      "y": 492.0588767140437,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 494.3451517085389,
+      "y": 490.58870482733766,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 491.15279692761385,
+      "y": 489.606630007018,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 487.96044214668916,
+      "y": 488.62455518669844,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 484.77764531420985,
+      "y": 487.64542071015217,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 479.99867109126836,
+      "y": 486.1752488234461,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 473.6330774263104,
+      "y": 484.21697987035367,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 470.4407226453854,
+      "y": 483.234905050034,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 467.2579258129064,
+      "y": 482.2557705734878,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 464.07512898042745,
+      "y": 481.27663609694156,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 460.8923321479485,
+      "y": 480.29750162039534,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 457.69997736702345,
+      "y": 479.31542680007567,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 454.5171805345445,
+      "y": 478.33629232352945,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 449.738206311603,
+      "y": 476.8661204368234,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 446.555409479124,
+      "y": 475.8869859602772,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 440.18025786572,
+      "y": 473.92577666341134,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 436.99746103324105,
+      "y": 472.9466421868651,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 432.21848681029957,
+      "y": 471.47647030015906,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 427.4395125873581,
+      "y": 470.00629841345307,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 422.67009631286265,
+      "y": 468.5390668705205,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 419.4777415319376,
+      "y": 467.55699205020085,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 413.1025899185336,
+      "y": 465.595782753335,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 408.3331736440382,
+      "y": 464.12855121040246,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 403.5541994210967,
+      "y": 462.6583793236964,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 397.18860575613877,
+      "y": 460.700110370604,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 394.0058089236598,
+      "y": 459.7209758940578,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 390.82301209118083,
+      "y": 458.74184141751164,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 387.6698135785797,
+      "y": 457.7718123714926,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 381.8337529211514,
+      "y": 455.97644543553514,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 376.7701222518364,
+      "y": 454.4187037304319,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 374.52447218038714,
+      "y": 453.7278668586666,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 372.46371547252835,
+      "y": 453.09390935316446,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 369.7374601461774,
+      "y": 452.25522227309125,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 368.16038837735863,
+      "y": 451.7700623894692,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 366.770217714781,
+      "y": 451.34239952072346,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 365.0478337137011,
+      "y": 450.81253674717175,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 364.13934024751285,
+      "y": 450.533053851693,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 363.42162362346335,
+      "y": 450.3122602767384,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.89468384155265,
+      "y": 450.150156022308,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.41298552119014,
+      "y": 450.0019695506022,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "approach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "settle",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "settle",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "settle",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "settle",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "settle",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "settle",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "settle",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "settle",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "settle",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "look",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "look",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "look",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "look",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "look",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "look",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "look",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "reach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "reach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "reach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "reach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "reach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "reach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "reach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "reach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "reach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "reach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "reach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "reach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "reach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "reach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "reach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "reach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "reach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "reach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "reach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "reach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "reach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "reach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "reach",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "grasp",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "grasp",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "grasp",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "grasp",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "grasp",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "grasp",
+      "owner": "ground"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "lift",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "lift",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "lift",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "lift",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "lift",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "lift",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "lift",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "lift",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "lift",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "lift",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "lift",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "lift",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "lift",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "lift",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "lift",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "lift",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "lift",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "lift",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "lift",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "held",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "held",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "held",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "held",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "held",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "held",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "held",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "held",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "held",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "held",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "held",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "held",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "held",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "held",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "held",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "held",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "held",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "held",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "held",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "held",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "held",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "held",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "held",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "paused",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "paused",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "paused",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "held",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "held",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "held",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "held",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "held",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "prepare",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "prepare",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "prepare",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "prepare",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "prepare",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "prepare",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "prepare",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "prepare",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "prepare",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "prepare",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "prepare",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "prepare",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "prepare",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "prepare",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "prepare",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "prepare",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "prepare",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "prepare",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "prepare",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "prepare",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40658325513954,
+      "y": 450,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.4067075617162,
+      "y": 450.0998000225846,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.4070819757392,
+      "y": 450.40039978940774,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.40770425520833,
+      "y": 450.89999930186576,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.4091055052943,
+      "y": 452.024998429198,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.4103496909396,
+      "y": 453.02389775434654,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.41184248973815,
+      "y": 454.2223971246642,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.41358390168995,
+      "y": 455.62049654015107,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.41666553087896,
+      "y": 458.09459462098005,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.42030766010237,
+      "y": 461.0186923527419,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.4230442712532,
+      "y": 463.2157913484407,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.42762019353387,
+      "y": 466.88958849865674,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.4345858413411,
+      "y": 472.4819861606043,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.43845353819836,
+      "y": 475.58718175188744,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.44251778672367,
+      "y": 478.85017962076296,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.44874556488344,
+      "y": 483.85017574223934,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.4549733430432,
+      "y": 488.8501718637158,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.461201121203,
+      "y": 493.85016798519223,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.4653488214574,
+      "y": 497.18016540209544,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.4736442219662,
+      "y": 503.84016023590226,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.4777919222206,
+      "y": 507.17015765280547,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.481939622475,
+      "y": 510.5001550697087,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.48609977828573,
+      "y": 513.8401524788551,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.49440763435086,
+      "y": 520.5101473049046,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.49855533460527,
+      "y": 523.8401447218079,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.50478311276504,
+      "y": 528.8401408432843,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.50893081301945,
+      "y": 532.1701382601875,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.5151585911792,
+      "y": 537.170134381664,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.51931874698994,
+      "y": 540.5101317908103,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.52346644724435,
+      "y": 543.8401292077135,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.5338419256585,
+      "y": 552.1701227460932,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.53800208146924,
+      "y": 555.5101201552395,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.54214978172365,
+      "y": 558.8401175721427,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.54629748197806,
+      "y": 562.1701149890459,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.5546053380432,
+      "y": 568.8401098150955,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.5646517196653,
+      "y": 576.9058867031541,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.5683199170846,
+      "y": 579.850913388241,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.57172814543065,
+      "y": 582.5872228832261,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.5748877606234,
+      "y": 585.123932333042,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.57779876266295,
+      "y": 587.4610417376888,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.58170274006756,
+      "y": 590.5953653087122,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.5839853339412,
+      "y": 592.427954752713,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.58603231864106,
+      "y": 594.0713844474557,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.58782418819794,
+      "y": 595.5099939490736,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.5900477864995,
+      "y": 597.2952185666003,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59214149251125,
+      "y": 598.9761586498008,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.5928134829995,
+      "y": 599.515668848855,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.5932377573238,
+      "y": 599.8562991541859,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "carry",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "settleDrop",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "settleDrop",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "settleDrop",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "settleDrop",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "settleDrop",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "settleDrop",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "settleDrop",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "settleDrop",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "settleDrop",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "settleDrop",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "lower",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "lower",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "lower",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "lower",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "lower",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "lower",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "lower",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "lower",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "lower",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "lower",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "lower",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "lower",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "lower",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "lower",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "lower",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "lower",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "lower",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "lower",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "lower",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "lower",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "lower",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "lower",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "lower",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "lower",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "lower",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "touch",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "touch",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "touch",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "touch",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "touch",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "release",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "release",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "release",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "release",
+      "owner": "hand"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "retract",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "retract",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "retract",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "retract",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "retract",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "retract",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "retract",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "retract",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "rise",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "rise",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "rise",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "rise",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "rise",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "rise",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "rise",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "rise",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "rise",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "rise",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "rise",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "rise",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "rise",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "rise",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "rise",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "rise",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "rise",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "rise",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "idle",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "idle",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "idle",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "idle",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "idle",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "idle",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "idle",
+      "owner": "ground"
+    },
+    {
+      "x": 362.59341674486046,
+      "y": 600,
+      "phase": "idle",
+      "owner": "ground"
+    }
+  ],
+  "screenshotReconstruction": {
+    "actor": {
+      "x": 112,
+      "y": 640
+    },
+    "planterLower": {
+      "x": 580,
+      "y": 528
+    },
+    "planterMoved": {
+      "x": 558,
+      "y": 252
+    },
+    "northY": 18,
+    "shellY": 450,
+    "notes": "flowerbox and actor coordinates read from screenshot UI; north inferred from 564px gap; shell plane approximated from pixels, also covered over a range in unit checks"
+  },
+  "versions": "156.0.8078.4"
+}

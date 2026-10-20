@@ -1,0 +1,2245 @@
+{
+  "passed": true,
+  "sourceIdentity": {
+    "baseCommit": "d8a61df9a7e5ce7bdb051f9e9536dabe9afbfab2",
+    "node": "v24.21.0",
+    "platform": "darwin",
+    "sources": {
+      "web/prop-motion.js": "630785f93911f7987a911b878f342322fb8c2aef60b4c09380f0956ed314ce57",
+      "web/upstream/kit/space-action.js": "1797ed8e061e27865cb5c61d5a7b758608c40f55c75a276eb1d421d51afb390e",
+      "web/upstream/kit/navigation.js": "c997f0d031c90a4863c6dc455b31c107e10adae14afe82af9bf83c4f4b856107",
+      "web/upstream/kit/body.js": "f787f44d659d390de9a005285311d70e280e12e4e04222233aeee0a93f871152",
+      "web/upstream/kit/raster.js": "be2ee9bbee2bbccf14548d79c31bfea9ba68304b44b06cf67b8cbdeedb784672",
+      "web/upstream/whale/figure.js": "a6501327640faf7e985314105e4e12a40b53ffccb8e21f1771bcc5f8c7f6d613",
+      "web/upstream/whale/hand-art.js": "d8ff703fc656d90faa86441d116daaa9b26b6bf38aa71e92cc4018668849d119",
+      "web/upstream/body-host.js": "d2b8dba27e2085c75cee6cdf0a8a5673f038ac9a208d175c67fa7a64e45a6e2b",
+      "web/upstream/figure-frame.js": "a4812b5e8c90f4ed9fd58522faf9f33d7aee9e534689a856c2c1f62ecd87a25b",
+      "desktop/space-preview.cjs": "893ac7279e86c3a0c21e91cadc45276239d7cfb8ca36e9ca269ae8156cc09afb",
+      "docs/design/art-workflow/space-v1/scene.js": "de286c3d2ae5224e699c5d660ba048831cf637e4ddc733bedaf40c5c5184c9b7",
+      "docs/design/art-workflow/space-v1/geometry.js": "49bca92c7c77bd447116f5ba34e6508a727f847497d367d20293792974a22e6b",
+      "docs/design/art-workflow/space-v1/index.html": "15f69c0ecda3a740bdab46f87b1f465cefd4ac80435e9c5cdd61af47ac275ce3",
+      "docs/design/art-workflow/space-v1/style.css": "60408e4c6a42e99f36595df6bdad0b44fe3a3cdaa11dc33155480cc291cf3b80",
+      "docs/design/art-workflow/o03-shell-hands-v1/figure.js": "b7297bbb6bf29bb75ce6cac35bc897cfcdebb8ad0428109c36d0e187202428d0",
+      "docs/design/art-workflow/o03-shell-hands-v1/composition.js": "49b35979d8a25efa34284f322043292963a9f8364cad778894de76b5577df9b0",
+      "docs/design/art-workflow/o03-shell-hands-v1/scene-model.json": "542ae9eece080a49a82619e0ae99f8d8bd6e328ec2f7c47d6ccde82c37bd8c77",
+      "web/props/shell/shell.png": "542b49cffbec43e41b4ca75a0ae184302b1e384b27539ff957806c71d28b910d",
+      "web/props/shell/asset.json": "db1cd6cc6dc21dd178fa95b8a49c0bed503755b06f4dee8a5fed52da139a2a65",
+      "web/props/shell/hands/asset.json": "489b3619c85ef34ec430a1c217adec4fcb8f10ebfd116a635d462352e4de26b4",
+      "web/props/shell/hands/grip.png": "5770450595803b4586fb8574e5135148b522b116e7f6d3de25f6e7643f91b930",
+      "tests/space-action-ui.mjs": "0659ee69d9b90b602b12d1f703da43c9a5ca2f3e55024b59c14891ad1d8d456a",
+      "tests/space-feedback.test.js": "5a5d66ae30fe32b1a10f28c90e56587d5d0346441e75c08c0710092a4e49577f",
+      "tests/space-feedback-ui.mjs": "93afe76618511a9a625a5fed45ecbdc7198d4452907214c9764e74419d060c68",
+      "docs/design/art-workflow/space-v1/layouts/stage-3-feedback-20261020.json": "f4991b785c8ab68ba303610f3278828e78cbf70405aa45f4005b194080990877",
+      "docs/design/art-workflow/space-v1/layouts/stage-3-feedback-moved-20261020.json": "c97a792a5fd9d367fe3c1c03944e69453e9f4ace5cb8d4db7d970d6b8828ac61",
+      "src/completion.ts": "a051d5b2d29267a53576dfe813a72a3844f1c5aef183f3397f0c2844a95ea8a2",
+      "src/work-facts.ts": "2e920d4f019b9c420d60cc4a502c83332ddd2991c5b7b7fa6247e3bc6d862e75",
+      "src/work-preview.ts": "341e03d893837be82baea74ef1ca3c550236ae05cb4476ba6e69f3954ae6fb8b",
+      "src/work-sources.ts": "64787392fd7447edf40f416a7b11a190dcf2244fb9d762bdbcec4ddd63a8f524",
+      "web/upstream/kit/work-performance.js": "7094223319a7eae59f256f3805eca407146f0a2618aad9ec58c0793da0b907f4",
+      "web/upstream/kit/life-work.js": "e6aec7e1306cd40b3a8da58ec837d08c60c42ac509d44a9ef1a472543387764a",
+      "docs/design/art-workflow/space-v1/stage4-preview.js": "61d8d836b23f98599dd16f931a8d6235e97b177061a4bdfcfc468f3eeaeb47dd",
+      "docs/design/art-workflow/space-v1/prepare-stage4.mjs": "3b7abb40f4e07605743cec3188c3b7c56bfed349a9664b5b9a9cc141bf7a5e45",
+      "docs/design/art-workflow/space-v1/work-facts.generated.js": "4306dd83a6dae73169754ba75dba0cb9d0913a0486c13a00347d5290d9963a2c",
+      "npm-shrinkwrap.json": "e07a7fbcb45dbec5dff78a37a42d293f7ee99fb95001b1f2991ce8b5b3c13d78",
+      "tests/life-work-ui.mjs": "4615c5dcf3d6fe9f7a17abf683982f80da6c2d4e60045c56288cfd377915d771",
+      "tests/work-semantics-ui.mjs": "ff3e47114f6e87aa8b82df3e51a30a448802df506cb37d8e3ba9775396d25395"
+    },
+    "digest": "77029add9849a385fff051d03feeb2f7b09d0847d9527f6a303df68874ee488e"
+  },
+  "native": false,
+  "simulatedHarness": true,
+  "checks": [
+    "A tool, B approval, C completion remain independent",
+    "background completion cannot cover pending approval",
+    "background changes preserve selected session, draft and input focus",
+    "occupied input freezes body while request attention still updates",
+    "approval invites a response standing at the shared station",
+    "interleaved output updates do not switch body focus",
+    "thinking and composing produce distinct actual face and free-arm poses",
+    "one tool result retains the other in-flight call",
+    "long tool wait looks up and stands without moving station or inventing progress",
+    "single tool error does not become terminal task failure",
+    "one settlement retains another approval on the same source",
+    "focus advances to oldest still pending source",
+    "four formal approval outcomes are independently observable",
+    "idle active goal does not occupy body over a continued question",
+    "unobservable driver freezes body and retains unresolved request",
+    "reduced motion suppresses gaze and free-arm cadence",
+    "all actual work released while active goal metadata remains",
+    "no page errors"
+  ],
+  "errors": [],
+  "samples": [
+    {
+      "label": "01-approval",
+      "frame": {
+        "phase": "idle",
+        "suspended": null,
+        "elapsed": 8.249600000000024,
+        "coordination": {
+          "phase": "work-wait",
+          "suspended": null,
+          "reason": null,
+          "life": null,
+          "sessions": [
+            {
+              "sessionId": "A",
+              "epoch": 3,
+              "revision": 3,
+              "driver": "running",
+              "running": true,
+              "activity": "tools",
+              "category": "working",
+              "requests": [],
+              "tools": {
+                "pending": 1,
+                "entered": 0
+              },
+              "goal": {
+                "known": true,
+                "goal": null
+              },
+              "needsAttention": false,
+              "problem": null,
+              "resultId": null,
+              "cue": {
+                "id": "[\"A\",3,\"0\",\"work-start\"]",
+                "kind": "work-start"
+              },
+              "attentionOrder": 1
+            },
+            {
+              "sessionId": "B",
+              "epoch": 3,
+              "revision": 3,
+              "driver": "running",
+              "running": true,
+              "activity": "preparing",
+              "category": "working",
+              "requests": [
+                {
+                  "id": "preview-approval-1",
+                  "kind": "approval",
+                  "state": "open"
+                }
+              ],
+              "tools": {
+                "pending": 0,
+                "entered": 0
+              },
+              "goal": {
+                "known": true,
+                "goal": null
+              },
+              "needsAttention": false,
+              "problem": null,
+              "resultId": null,
+              "cue": {
+                "id": "[\"B\",3,\"1\",\"approval\"]",
+                "kind": "approval"
+              },
+              "attentionOrder": 2
+            },
+            {
+              "sessionId": "C",
+              "epoch": 3,
+              "revision": 6,
+              "driver": "idle",
+              "running": false,
+              "activity": "idle",
+              "category": "completed",
+              "requests": [],
+              "tools": {
+                "pending": 0,
+                "entered": 0
+              },
+              "goal": {
+                "known": true,
+                "goal": {
+                  "id": "preview-goal-1",
+                  "revision": 2,
+                  "round": 0,
+                  "phase": "complete"
+                }
+              },
+              "needsAttention": false,
+              "problem": null,
+              "resultId": "[\"C\",1,3,\"completed\"]",
+              "cue": {
+                "id": "[\"C\",3,\"3\",\"completed\"]",
+                "kind": "completed"
+              },
+              "attentionOrder": 3
+            }
+          ],
+          "focus": "B",
+          "interaction": null,
+          "occupied": false,
+          "admission": 3,
+          "navigation": null,
+          "serial": 1,
+          "elapsed": 0,
+          "lastAt": 10358.5,
+          "revision": 1
+        },
+        "performance": {
+          "kind": "approval",
+          "expression": "listening",
+          "label": "这一步需要你的许可",
+          "age": 9.48290000000002,
+          "cue": null,
+          "look": [
+            -7.799054719079054,
+            -2.0476070067869125
+          ],
+          "armNear": -30.238035033934562,
+          "armFar": 4.502549300103426,
+          "gaze": -7.998578877974465,
+          "arms": [
+            -30.51340008502301,
+            4.736214270229899
+          ]
+        },
+        "owner": "ground",
+        "renderedOwner": "ground",
+        "generation": 2,
+        "walkId": null,
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "error": null,
+        "inspection": null,
+        "loop": false,
+        "bodyX": 850,
+        "bodyY": 600,
+        "navigation": {
+          "x": 850,
+          "y": 600,
+          "speed": 0,
+          "facing": 1,
+          "phase": "idle",
+          "id": null,
+          "generation": 1,
+          "revision": 1,
+          "plan": null
+        },
+        "bubble": {
+          "x": 850,
+          "y": 435.1954012163834
+        },
+        "hit": [
+          {
+            "x": 850,
+            "y": 511.36554082628453,
+            "r": 75.9375
+          }
+        ],
+        "moving": false,
+        "facing": 1,
+        "visualFacing": 1,
+        "destinationX": 390,
+        "destinationY": 600,
+        "actionNavigation": null,
+        "actionRevision": 1,
+        "objectRevision": 2,
+        "continuous": true,
+        "groundQuad": [
+          {
+            "x": 315,
+            "y": 522.198275862069
+          },
+          {
+            "x": 355,
+            "y": 522.198275862069
+          },
+          {
+            "x": 315,
+            "y": 555
+          }
+        ],
+        "groundGrip": {
+          "x": 335,
+          "y": 523.8383620689655
+        },
+        "hand": {
+          "x": 874.9463309257,
+          "y": 560.5668027939007
+        },
+        "heldGrip": {
+          "x": 874.9463309257,
+          "y": 560.5668027939007
+        },
+        "heldQuad": [
+          {
+            "x": 854.9463292302789,
+            "y": 558.9267164479724
+          },
+          {
+            "x": 894.946332621121,
+            "y": 558.9267164479724
+          },
+          {
+            "x": 854.9463292302789,
+            "y": 591.72844336654
+          }
+        ],
+        "feet": [
+          {
+            "x": 839.0453802359104,
+            "y": 600.0000152587891
+          },
+          {
+            "x": 861.3555383771658,
+            "y": 600.0000152587891
+          }
+        ],
+        "pose": {
+          "waist": 0,
+          "drop": 0,
+          "armNear": -30.51340008502301,
+          "armFar": 4.736214270229899,
+          "propAngle": 0,
+          "look": [
+            -7.998578877974465,
+            -2.0476070067869125
+          ],
+          "plant": true,
+          "plantWeight": 1,
+          "hands": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "handArt": true
+        },
+        "sit": 0,
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 874.6279652844089,
+            "y": 554.1906181740351
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "contact": {
+          "distance": 541.1940674455057,
+          "groundDistance": 485.0168682916492
+        },
+        "bindingError": 0,
+        "propMirror": 1,
+        "activeTime": 9.682900000000021,
+        "speed": 1,
+        "sequence": 450
+      }
+    },
+    {
+      "label": "02-thinking",
+      "frame": {
+        "phase": "idle",
+        "suspended": null,
+        "elapsed": 10.48270000000001,
+        "coordination": {
+          "phase": "work-wait",
+          "suspended": null,
+          "reason": null,
+          "life": null,
+          "sessions": [
+            {
+              "sessionId": "A",
+              "epoch": 4,
+              "revision": 12,
+              "driver": "running",
+              "running": true,
+              "activity": "generating",
+              "category": "working",
+              "requests": [],
+              "tools": {
+                "pending": 0,
+                "entered": 0
+              },
+              "goal": {
+                "known": true,
+                "goal": null
+              },
+              "needsAttention": false,
+              "problem": null,
+              "resultId": null,
+              "cue": {
+                "id": "[\"A\",4,\"0\",\"work-start\"]",
+                "kind": "work-start"
+              },
+              "attentionOrder": 1
+            },
+            {
+              "sessionId": "B",
+              "epoch": 4,
+              "revision": 14,
+              "driver": "running",
+              "running": true,
+              "activity": "reasoning",
+              "category": "working",
+              "requests": [],
+              "tools": {
+                "pending": 0,
+                "entered": 0
+              },
+              "goal": {
+                "known": true,
+                "goal": null
+              },
+              "needsAttention": false,
+              "problem": null,
+              "resultId": null,
+              "cue": {
+                "id": "[\"B\",4,\"0\",\"work-start\"]",
+                "kind": "work-start"
+              },
+              "attentionOrder": 4
+            },
+            {
+              "sessionId": "C",
+              "epoch": 4,
+              "revision": 0,
+              "driver": "idle",
+              "running": false,
+              "activity": "idle",
+              "category": "reply",
+              "requests": [],
+              "tools": {
+                "pending": 0,
+                "entered": 0
+              },
+              "goal": {
+                "known": true,
+                "goal": null
+              },
+              "needsAttention": false,
+              "problem": null,
+              "resultId": null,
+              "cue": null,
+              "attentionOrder": 3
+            }
+          ],
+          "focus": "B",
+          "interaction": null,
+          "occupied": false,
+          "admission": 4,
+          "navigation": null,
+          "serial": 1,
+          "elapsed": 2.233099999999999,
+          "lastAt": 12642,
+          "revision": 1
+        },
+        "performance": {
+          "kind": "reasoning",
+          "expression": "thinking",
+          "label": "正在思考",
+          "age": 0.9667000000000011,
+          "cue": null,
+          "look": [
+            -2.588529670680628,
+            -2.7648740975317874
+          ],
+          "armNear": -22.824370487658936,
+          "armFar": -2,
+          "gaze": -2.6165026715476842,
+          "arms": [
+            -22.84856563066561,
+            -1.9982887189729004
+          ]
+        },
+        "owner": "ground",
+        "renderedOwner": "ground",
+        "generation": 2,
+        "walkId": null,
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "error": null,
+        "inspection": null,
+        "loop": false,
+        "bodyX": 850,
+        "bodyY": 600,
+        "navigation": {
+          "x": 850,
+          "y": 600,
+          "speed": 0,
+          "facing": 1,
+          "phase": "idle",
+          "id": null,
+          "generation": 1,
+          "revision": 1,
+          "plan": null
+        },
+        "bubble": {
+          "x": 850,
+          "y": 433.50882932956233
+        },
+        "hit": [
+          {
+            "x": 850,
+            "y": 510.45853005959657,
+            "r": 75.9375
+          }
+        ],
+        "moving": false,
+        "facing": 1,
+        "visualFacing": 1,
+        "destinationX": 390,
+        "destinationY": 600,
+        "actionNavigation": null,
+        "actionRevision": 1,
+        "objectRevision": 2,
+        "continuous": true,
+        "groundQuad": [
+          {
+            "x": 315,
+            "y": 522.198275862069
+          },
+          {
+            "x": 355,
+            "y": 522.198275862069
+          },
+          {
+            "x": 315,
+            "y": 555
+          }
+        ],
+        "groundGrip": {
+          "x": 335,
+          "y": 523.8383620689655
+        },
+        "hand": {
+          "x": 877.4495011723035,
+          "y": 559.6062566658769
+        },
+        "heldGrip": {
+          "x": 877.4495011723035,
+          "y": 559.6062566658769
+        },
+        "heldQuad": [
+          {
+            "x": 857.4494994768825,
+            "y": 557.9661703199486
+          },
+          {
+            "x": 897.4495028677245,
+            "y": 557.9661703199486
+          },
+          {
+            "x": 857.4494994768825,
+            "y": 590.7678972385162
+          }
+        ],
+        "feet": [
+          {
+            "x": 839.0453192007542,
+            "y": 600.0000152587891
+          },
+          {
+            "x": 861.3554773420095,
+            "y": 600.0000152587891
+          }
+        ],
+        "pose": {
+          "waist": 0,
+          "drop": 0,
+          "armNear": -22.84856563066561,
+          "armFar": -1.9982887189729004,
+          "propAngle": 0,
+          "look": [
+            -2.6165026715476842,
+            -2.7648740975317874
+          ],
+          "plant": true,
+          "plantWeight": 1,
+          "hands": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "handArt": true
+        },
+        "sit": 0,
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 876.385604705294,
+            "y": 553.3114007266475
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "contact": {
+          "distance": 543.627449275675,
+          "groundDistance": 487.536919539973
+        },
+        "bindingError": 0,
+        "propMirror": 1,
+        "activeTime": 11.916000000000007,
+        "speed": 1,
+        "sequence": 529
+      }
+    },
+    {
+      "label": "03-composing",
+      "frame": {
+        "phase": "rest",
+        "suspended": null,
+        "elapsed": 10.74930000000001,
+        "coordination": {
+          "phase": "work-wait",
+          "suspended": null,
+          "reason": null,
+          "life": null,
+          "sessions": [
+            {
+              "sessionId": "A",
+              "epoch": 4,
+              "revision": 12,
+              "driver": "running",
+              "running": true,
+              "activity": "generating",
+              "category": "working",
+              "requests": [],
+              "tools": {
+                "pending": 0,
+                "entered": 0
+              },
+              "goal": {
+                "known": true,
+                "goal": null
+              },
+              "needsAttention": false,
+              "problem": null,
+              "resultId": null,
+              "cue": {
+                "id": "[\"A\",4,\"0\",\"work-start\"]",
+                "kind": "work-start"
+              },
+              "attentionOrder": 1
+            },
+            {
+              "sessionId": "B",
+              "epoch": 4,
+              "revision": 16,
+              "driver": "running",
+              "running": true,
+              "activity": "generating",
+              "category": "working",
+              "requests": [],
+              "tools": {
+                "pending": 0,
+                "entered": 0
+              },
+              "goal": {
+                "known": true,
+                "goal": null
+              },
+              "needsAttention": false,
+              "problem": null,
+              "resultId": null,
+              "cue": {
+                "id": "[\"B\",4,\"0\",\"work-start\"]",
+                "kind": "work-start"
+              },
+              "attentionOrder": 4
+            },
+            {
+              "sessionId": "C",
+              "epoch": 4,
+              "revision": 0,
+              "driver": "idle",
+              "running": false,
+              "activity": "idle",
+              "category": "reply",
+              "requests": [],
+              "tools": {
+                "pending": 0,
+                "entered": 0
+              },
+              "goal": {
+                "known": true,
+                "goal": null
+              },
+              "needsAttention": false,
+              "problem": null,
+              "resultId": null,
+              "cue": null,
+              "attentionOrder": 3
+            }
+          ],
+          "focus": "B",
+          "interaction": null,
+          "occupied": false,
+          "admission": 4,
+          "navigation": null,
+          "serial": 1,
+          "elapsed": 3.4496999999999964,
+          "lastAt": 13891.900000095367,
+          "revision": 1
+        },
+        "performance": {
+          "kind": "generating",
+          "expression": "determined",
+          "label": "正在组织回复",
+          "age": 0.9499999999999998,
+          "cue": null,
+          "look": [
+            4.070992590421621,
+            1.0405671945266408
+          ],
+          "armNear": -11.492910068416988,
+          "armFar": -2,
+          "gaze": 4.299742493461319,
+          "arms": [
+            -9.568702103517902,
+            -1.9999905180265898
+          ]
+        },
+        "owner": "ground",
+        "renderedOwner": "ground",
+        "generation": 2,
+        "walkId": null,
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "error": null,
+        "inspection": null,
+        "loop": false,
+        "bodyX": 850,
+        "bodyY": 600,
+        "navigation": {
+          "x": 850,
+          "y": 600,
+          "speed": 0,
+          "facing": 1,
+          "phase": "idle",
+          "id": null,
+          "generation": 1,
+          "revision": 1,
+          "plan": null
+        },
+        "bubble": {
+          "x": 850,
+          "y": 452.73839213493255
+        },
+        "hit": [
+          {
+            "x": 850,
+            "y": 509.85292552245403,
+            "r": 75.9375
+          }
+        ],
+        "moving": false,
+        "facing": 1,
+        "visualFacing": 1,
+        "destinationX": 390,
+        "destinationY": 600,
+        "actionNavigation": null,
+        "actionRevision": 1,
+        "objectRevision": 2,
+        "continuous": true,
+        "groundQuad": [
+          {
+            "x": 315,
+            "y": 522.198275862069
+          },
+          {
+            "x": 355,
+            "y": 522.198275862069
+          },
+          {
+            "x": 315,
+            "y": 555
+          }
+        ],
+        "groundGrip": {
+          "x": 335,
+          "y": 523.8383620689655
+        },
+        "hand": {
+          "x": 877.4425301372269,
+          "y": 573.2246836776294
+        },
+        "heldGrip": {
+          "x": 877.4425301372269,
+          "y": 573.2246836776294
+        },
+        "heldQuad": [
+          {
+            "x": 857.448063010099,
+            "y": 571.5838702188815
+          },
+          {
+            "x": 897.4369972643555,
+            "y": 571.5838702188731
+          },
+          {
+            "x": 857.448063010092,
+            "y": 604.4001393939233
+          }
+        ],
+        "feet": [
+          {
+            "x": 869.5222336565051,
+            "y": 597.6949400719516
+          },
+          {
+            "x": 893.5489735163579,
+            "y": 594.9735583022137
+          }
+        ],
+        "pose": {
+          "waist": 0,
+          "drop": 0,
+          "armNear": -9.568702103517902,
+          "armFar": -1.9999905180265898,
+          "propAngle": 0,
+          "look": [
+            4.299742493461319,
+            1.0405671945266408
+          ],
+          "plant": false,
+          "plantWeight": 1,
+          "hands": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "handArt": true
+        },
+        "sit": 0.9938568627549866,
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 876.3787411622743,
+            "y": 566.9270686054596
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "contact": {
+          "distance": 544.686063034213,
+          "groundDistance": 487.4623897422931
+        },
+        "bindingError": 0,
+        "propMirror": 1,
+        "activeTime": 13.132600000000005,
+        "speed": 1,
+        "sequence": 572
+      }
+    },
+    {
+      "label": "04-tools",
+      "frame": {
+        "phase": "rest",
+        "suspended": null,
+        "elapsed": 10.74930000000001,
+        "coordination": {
+          "phase": "work-wait",
+          "suspended": null,
+          "reason": null,
+          "life": null,
+          "sessions": [
+            {
+              "sessionId": "A",
+              "epoch": 4,
+              "revision": 12,
+              "driver": "running",
+              "running": true,
+              "activity": "generating",
+              "category": "working",
+              "requests": [],
+              "tools": {
+                "pending": 0,
+                "entered": 0
+              },
+              "goal": {
+                "known": true,
+                "goal": null
+              },
+              "needsAttention": false,
+              "problem": null,
+              "resultId": null,
+              "cue": {
+                "id": "[\"A\",4,\"0\",\"work-start\"]",
+                "kind": "work-start"
+              },
+              "attentionOrder": 1
+            },
+            {
+              "sessionId": "B",
+              "epoch": 4,
+              "revision": 19,
+              "driver": "running",
+              "running": true,
+              "activity": "tools",
+              "category": "working",
+              "requests": [],
+              "tools": {
+                "pending": 1,
+                "entered": 0
+              },
+              "goal": {
+                "known": true,
+                "goal": null
+              },
+              "needsAttention": false,
+              "problem": null,
+              "resultId": null,
+              "cue": {
+                "id": "[\"B\",4,\"0\",\"work-start\"]",
+                "kind": "work-start"
+              },
+              "attentionOrder": 4
+            },
+            {
+              "sessionId": "C",
+              "epoch": 4,
+              "revision": 0,
+              "driver": "idle",
+              "running": false,
+              "activity": "idle",
+              "category": "reply",
+              "requests": [],
+              "tools": {
+                "pending": 0,
+                "entered": 0
+              },
+              "goal": {
+                "known": true,
+                "goal": null
+              },
+              "needsAttention": false,
+              "problem": null,
+              "resultId": null,
+              "cue": null,
+              "attentionOrder": 3
+            }
+          ],
+          "focus": "B",
+          "interaction": null,
+          "occupied": false,
+          "admission": 4,
+          "navigation": null,
+          "serial": 1,
+          "elapsed": 3.6829999999999954,
+          "lastAt": 14141.900000095367,
+          "revision": 1
+        },
+        "performance": {
+          "kind": "tools",
+          "expression": "determined",
+          "label": "等待调用结果",
+          "age": 0.05,
+          "cue": null,
+          "look": [
+            4.022745995263589,
+            2.0129977115791937
+          ],
+          "armNear": 0.06498855789596951,
+          "armFar": -2,
+          "gaze": 3.989521365729743,
+          "arms": [
+            -9.421375720456586,
+            -1.9999965201555698
+          ]
+        },
+        "owner": "ground",
+        "renderedOwner": "ground",
+        "generation": 2,
+        "walkId": null,
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "error": null,
+        "inspection": null,
+        "loop": false,
+        "bodyX": 850,
+        "bodyY": 600,
+        "navigation": {
+          "x": 850,
+          "y": 600,
+          "speed": 0,
+          "facing": 1,
+          "phase": "idle",
+          "id": null,
+          "generation": 1,
+          "revision": 1,
+          "plan": null
+        },
+        "bubble": {
+          "x": 850,
+          "y": 451.58414568680433
+        },
+        "hit": [
+          {
+            "x": 850,
+            "y": 509.11457317357525,
+            "r": 75.9375
+          }
+        ],
+        "moving": false,
+        "facing": 1,
+        "visualFacing": 1,
+        "destinationX": 390,
+        "destinationY": 600,
+        "actionNavigation": null,
+        "actionRevision": 1,
+        "objectRevision": 2,
+        "continuous": true,
+        "groundQuad": [
+          {
+            "x": 315,
+            "y": 522.198275862069
+          },
+          {
+            "x": 355,
+            "y": 522.198275862069
+          },
+          {
+            "x": 315,
+            "y": 555
+          }
+        ],
+        "groundGrip": {
+          "x": 335,
+          "y": 523.8383620689655
+        },
+        "hand": {
+          "x": 877.3975702055649,
+          "y": 573.2792198852391
+        },
+        "heldGrip": {
+          "x": 877.3975702055649,
+          "y": 573.2792198852391
+        },
+        "heldQuad": [
+          {
+            "x": 857.4358399938621,
+            "y": 571.6353171244021
+          },
+          {
+            "x": 897.3593004172661,
+            "y": 571.635317124423
+          },
+          {
+            "x": 857.4358399938789,
+            "y": 604.5133723409325
+          }
+        ],
+        "feet": [
+          {
+            "x": 869.4452414096484,
+            "y": 597.8695060057231
+          },
+          {
+            "x": 893.4458949500024,
+            "y": 595.1336218949339
+          }
+        ],
+        "pose": {
+          "waist": 0,
+          "drop": 0,
+          "armNear": -9.421375720456586,
+          "armFar": -1.9999965201555698,
+          "propAngle": 0,
+          "look": [
+            3.989521365729743,
+            2.0129977115791937
+          ],
+          "plant": false,
+          "plantWeight": 1,
+          "hands": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "handArt": true
+        },
+        "sit": 0.9984943686549053,
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 876.3355223137813,
+            "y": 566.9697478575096
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "contact": {
+          "distance": 544.6462361813489,
+          "groundDistance": 487.41846699953476
+        },
+        "bindingError": 0,
+        "propMirror": 1,
+        "activeTime": 13.365900000000005,
+        "speed": 1,
+        "sequence": 580
+      }
+    },
+    {
+      "label": "04a-seated",
+      "frame": {
+        "phase": "rest",
+        "suspended": null,
+        "elapsed": 10.74930000000001,
+        "coordination": {
+          "phase": "work-wait",
+          "suspended": null,
+          "reason": null,
+          "life": null,
+          "sessions": [
+            {
+              "sessionId": "A",
+              "epoch": 4,
+              "revision": 12,
+              "driver": "running",
+              "running": true,
+              "activity": "generating",
+              "category": "working",
+              "requests": [],
+              "tools": {
+                "pending": 0,
+                "entered": 0
+              },
+              "goal": {
+                "known": true,
+                "goal": null
+              },
+              "needsAttention": false,
+              "problem": null,
+              "resultId": null,
+              "cue": {
+                "id": "[\"A\",4,\"0\",\"work-start\"]",
+                "kind": "work-start"
+              },
+              "attentionOrder": 1
+            },
+            {
+              "sessionId": "B",
+              "epoch": 4,
+              "revision": 19,
+              "driver": "running",
+              "running": true,
+              "activity": "tools",
+              "category": "working",
+              "requests": [],
+              "tools": {
+                "pending": 1,
+                "entered": 0
+              },
+              "goal": {
+                "known": true,
+                "goal": null
+              },
+              "needsAttention": false,
+              "problem": null,
+              "resultId": null,
+              "cue": {
+                "id": "[\"B\",4,\"0\",\"work-start\"]",
+                "kind": "work-start"
+              },
+              "attentionOrder": 4
+            },
+            {
+              "sessionId": "C",
+              "epoch": 4,
+              "revision": 0,
+              "driver": "idle",
+              "running": false,
+              "activity": "idle",
+              "category": "reply",
+              "requests": [],
+              "tools": {
+                "pending": 0,
+                "entered": 0
+              },
+              "goal": {
+                "known": true,
+                "goal": null
+              },
+              "needsAttention": false,
+              "problem": null,
+              "resultId": null,
+              "cue": null,
+              "attentionOrder": 3
+            }
+          ],
+          "focus": "B",
+          "interaction": null,
+          "occupied": false,
+          "admission": 4,
+          "navigation": null,
+          "serial": 1,
+          "elapsed": 3.882999999999995,
+          "lastAt": 14389.200000047684,
+          "revision": 1
+        },
+        "performance": {
+          "kind": "tools",
+          "expression": "determined",
+          "label": "等待调用结果",
+          "age": 0.25,
+          "cue": null,
+          "look": [
+            4.113250042067851,
+            2.0647143097530583
+          ],
+          "armNear": 0.3235715487652902,
+          "armFar": -2,
+          "gaze": 4.05234119539652,
+          "arms": [
+            -3.874480675213447,
+            -1.9999985190264409
+          ]
+        },
+        "owner": "ground",
+        "renderedOwner": "ground",
+        "generation": 2,
+        "walkId": null,
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "error": null,
+        "inspection": null,
+        "loop": false,
+        "bodyX": 850,
+        "bodyY": 600,
+        "navigation": {
+          "x": 850,
+          "y": 600,
+          "speed": 0,
+          "facing": 1,
+          "phase": "idle",
+          "id": null,
+          "generation": 1,
+          "revision": 1,
+          "plan": null
+        },
+        "bubble": {
+          "x": 850,
+          "y": 450.9031206654259
+        },
+        "hit": [
+          {
+            "x": 850,
+            "y": 508.6902279676144,
+            "r": 75.9375
+          }
+        ],
+        "moving": false,
+        "facing": 1,
+        "visualFacing": 1,
+        "destinationX": 390,
+        "destinationY": 600,
+        "actionNavigation": null,
+        "actionRevision": 1,
+        "objectRevision": 2,
+        "continuous": true,
+        "groundQuad": [
+          {
+            "x": 315,
+            "y": 522.198275862069
+          },
+          {
+            "x": 355,
+            "y": 522.198275862069
+          },
+          {
+            "x": 315,
+            "y": 555
+          }
+        ],
+        "groundGrip": {
+          "x": 335,
+          "y": 523.8383620689655
+        },
+        "hand": {
+          "x": 877.375196462503,
+          "y": 573.3009234052832
+        },
+        "heldGrip": {
+          "x": 877.375196462503,
+          "y": 573.3009234052832
+        },
+        "heldQuad": [
+          {
+            "x": 857.4297792801428,
+            "y": 571.6550328117326
+          },
+          {
+            "x": 897.3206136448633,
+            "y": 571.6550328117307
+          },
+          {
+            "x": 857.4297792801415,
+            "y": 604.5728446827632
+          }
+        ],
+        "feet": [
+          {
+            "x": 869.4191252331178,
+            "y": 597.9377023597568
+          },
+          {
+            "x": 893.4031793638501,
+            "y": 595.1963844358762
+          }
+        ],
+        "pose": {
+          "waist": 0,
+          "drop": 0,
+          "armNear": -3.874480675213447,
+          "armFar": -1.9999985190264409,
+          "propAngle": 0,
+          "look": [
+            4.05234119539652,
+            2.0647143097530583
+          ],
+          "plant": false,
+          "plantWeight": 1,
+          "hands": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "handArt": true
+        },
+        "sit": 0.9995474456235274,
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 876.3140162730868,
+            "y": 566.9838219033877
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "contact": {
+          "distance": 544.6259254861889,
+          "groundDistance": 487.3966485680386
+        },
+        "bindingError": 0,
+        "propMirror": 1,
+        "activeTime": 13.565900000000005,
+        "speed": 1,
+        "sequence": 588
+      }
+    },
+    {
+      "label": "04b-standing",
+      "frame": {
+        "phase": "idle",
+        "suspended": null,
+        "elapsed": 0.5332999999999992,
+        "coordination": {
+          "phase": "work-wait",
+          "suspended": null,
+          "reason": null,
+          "life": null,
+          "sessions": [
+            {
+              "sessionId": "A",
+              "epoch": 4,
+              "revision": 12,
+              "driver": "running",
+              "running": true,
+              "activity": "generating",
+              "category": "working",
+              "requests": [],
+              "tools": {
+                "pending": 0,
+                "entered": 0
+              },
+              "goal": {
+                "known": true,
+                "goal": null
+              },
+              "needsAttention": false,
+              "problem": null,
+              "resultId": null,
+              "cue": {
+                "id": "[\"A\",4,\"0\",\"work-start\"]",
+                "kind": "work-start"
+              },
+              "attentionOrder": 1
+            },
+            {
+              "sessionId": "B",
+              "epoch": 4,
+              "revision": 19,
+              "driver": "running",
+              "running": true,
+              "activity": "tools",
+              "category": "working",
+              "requests": [],
+              "tools": {
+                "pending": 1,
+                "entered": 0
+              },
+              "goal": {
+                "known": true,
+                "goal": null
+              },
+              "needsAttention": false,
+              "problem": null,
+              "resultId": null,
+              "cue": {
+                "id": "[\"B\",4,\"0\",\"work-start\"]",
+                "kind": "work-start"
+              },
+              "attentionOrder": 4
+            },
+            {
+              "sessionId": "C",
+              "epoch": 4,
+              "revision": 0,
+              "driver": "idle",
+              "running": false,
+              "activity": "idle",
+              "category": "reply",
+              "requests": [],
+              "tools": {
+                "pending": 0,
+                "entered": 0
+              },
+              "goal": {
+                "known": true,
+                "goal": null
+              },
+              "needsAttention": false,
+              "problem": null,
+              "resultId": null,
+              "cue": null,
+              "attentionOrder": 3
+            }
+          ],
+          "focus": "B",
+          "interaction": null,
+          "occupied": false,
+          "admission": 4,
+          "navigation": null,
+          "serial": 1,
+          "elapsed": 13.615800000000005,
+          "lastAt": 24141.60000014305,
+          "revision": 1
+        },
+        "performance": {
+          "kind": "tools",
+          "expression": "determined",
+          "label": "等待调用结果",
+          "age": 9.982800000000012,
+          "cue": null,
+          "look": [
+            1.2765552838495675,
+            2.0816754087354807
+          ],
+          "armNear": 0.40837704367740363,
+          "armFar": 3.0161591925156666,
+          "gaze": 0.8966050650142776,
+          "arms": [
+            0.1301391801052956,
+            3.668734816072912
+          ]
+        },
+        "owner": "ground",
+        "renderedOwner": "ground",
+        "generation": 2,
+        "walkId": null,
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "error": null,
+        "inspection": null,
+        "loop": false,
+        "bodyX": 850,
+        "bodyY": 600,
+        "navigation": {
+          "x": 850,
+          "y": 600,
+          "speed": 0,
+          "facing": 1,
+          "phase": "idle",
+          "id": null,
+          "generation": 1,
+          "revision": 1,
+          "plan": null
+        },
+        "bubble": {
+          "x": 850,
+          "y": 434.49782584170714
+        },
+        "hit": [
+          {
+            "x": 850,
+            "y": 510.5460364550221,
+            "r": 75.9375
+          }
+        ],
+        "moving": false,
+        "facing": 1,
+        "visualFacing": 1,
+        "destinationX": 390,
+        "destinationY": 600,
+        "actionNavigation": null,
+        "actionRevision": 1,
+        "objectRevision": 2,
+        "continuous": true,
+        "groundQuad": [
+          {
+            "x": 315,
+            "y": 522.198275862069
+          },
+          {
+            "x": 355,
+            "y": 522.198275862069
+          },
+          {
+            "x": 315,
+            "y": 555
+          }
+        ],
+        "groundGrip": {
+          "x": 335,
+          "y": 523.8383620689655
+        },
+        "hand": {
+          "x": 875.3503227991259,
+          "y": 560.434304513679
+        },
+        "heldGrip": {
+          "x": 875.3503227991259,
+          "y": 560.434304513679
+        },
+        "heldQuad": [
+          {
+            "x": 855.3503211037049,
+            "y": 558.7942181677505
+          },
+          {
+            "x": 895.350324494547,
+            "y": 558.7942181677506
+          },
+          {
+            "x": 855.3503211037049,
+            "y": 591.5959450863182
+          }
+        ],
+        "feet": [
+          {
+            "x": 839.0453192007542,
+            "y": 600.0000457763672
+          },
+          {
+            "x": 861.3554773420095,
+            "y": 600.0000457763672
+          }
+        ],
+        "pose": {
+          "waist": 0,
+          "drop": 0,
+          "armNear": 0.1301391801052956,
+          "armFar": 3.668734816072912,
+          "propAngle": 0,
+          "look": [
+            0.8966050650142776,
+            2.0816754087354807
+          ],
+          "plant": true,
+          "plantWeight": 1,
+          "hands": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "handArt": true
+        },
+        "sit": 0.07278982339262402,
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 874.9132243890875,
+            "y": 554.0651576345351
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "contact": {
+          "distance": 541.5881593540763,
+          "groundDistance": 485.4230773049505
+        },
+        "bindingError": 0,
+        "propMirror": 1,
+        "activeTime": 23.29870000000003,
+        "speed": 1,
+        "sequence": 931
+      }
+    },
+    {
+      "label": "05-continued",
+      "frame": {
+        "phase": "idle",
+        "suspended": null,
+        "elapsed": 1.783200000000001,
+        "coordination": {
+          "phase": "work-wait",
+          "suspended": null,
+          "reason": null,
+          "life": null,
+          "sessions": [
+            {
+              "sessionId": "A",
+              "epoch": 5,
+              "revision": 5,
+              "driver": "idle",
+              "running": false,
+              "activity": "idle",
+              "category": "goal-progress",
+              "requests": [],
+              "tools": {
+                "pending": 0,
+                "entered": 0
+              },
+              "goal": {
+                "known": true,
+                "goal": {
+                  "id": "preview-goal-1",
+                  "revision": 1,
+                  "round": 0,
+                  "phase": "active"
+                }
+              },
+              "needsAttention": false,
+              "problem": null,
+              "resultId": "[\"A\",1,2,\"goal-progress\"]",
+              "cue": {
+                "id": "[\"A\",5,\"2\",\"goal-progress\"]",
+                "kind": "goal-progress"
+              },
+              "attentionOrder": 15
+            },
+            {
+              "sessionId": "B",
+              "epoch": 5,
+              "revision": 2,
+              "driver": "idle",
+              "running": false,
+              "activity": "idle",
+              "category": "reply",
+              "requests": [
+                {
+                  "id": "preview-question-1",
+                  "kind": "question",
+                  "state": "continued"
+                }
+              ],
+              "tools": {
+                "pending": 0,
+                "entered": 0
+              },
+              "goal": {
+                "known": true,
+                "goal": null
+              },
+              "needsAttention": false,
+              "problem": null,
+              "resultId": null,
+              "cue": {
+                "id": "[\"B\",5,1,\"question\"]",
+                "kind": "question"
+              },
+              "attentionOrder": 16
+            },
+            {
+              "sessionId": "C",
+              "epoch": 5,
+              "revision": 0,
+              "driver": "idle",
+              "running": false,
+              "activity": "idle",
+              "category": "reply",
+              "requests": [],
+              "tools": {
+                "pending": 0,
+                "entered": 0
+              },
+              "goal": {
+                "known": true,
+                "goal": null
+              },
+              "needsAttention": false,
+              "problem": null,
+              "resultId": null,
+              "cue": null,
+              "attentionOrder": 3
+            }
+          ],
+          "focus": "B",
+          "interaction": null,
+          "occupied": false,
+          "admission": 16,
+          "navigation": null,
+          "serial": 1,
+          "elapsed": 14.865700000000004,
+          "lastAt": 25425.300000190735,
+          "revision": 1
+        },
+        "performance": {
+          "kind": "continued",
+          "expression": "listening",
+          "label": "问题保留着，等你方便再答",
+          "age": 0.06659999999999855,
+          "cue": "question",
+          "look": [
+            -2.969706463871898,
+            -0.9826894079267988
+          ],
+          "armNear": -13.913447039633994,
+          "armFar": -2,
+          "gaze": 0.042441264329529105,
+          "arms": [
+            -9.548976442040509,
+            -1.9253131348932393
+          ]
+        },
+        "owner": "ground",
+        "renderedOwner": "ground",
+        "generation": 2,
+        "walkId": null,
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "error": null,
+        "inspection": null,
+        "loop": false,
+        "bodyX": 850,
+        "bodyY": 600,
+        "navigation": {
+          "x": 850,
+          "y": 600,
+          "speed": 0,
+          "facing": 1,
+          "phase": "idle",
+          "id": null,
+          "generation": 1,
+          "revision": 1,
+          "plan": null
+        },
+        "bubble": {
+          "x": 850,
+          "y": 430.78586819042766
+        },
+        "hit": [
+          {
+            "x": 850,
+            "y": 508.99383017071676,
+            "r": 75.9375
+          }
+        ],
+        "moving": false,
+        "facing": 1,
+        "visualFacing": 1,
+        "destinationX": 390,
+        "destinationY": 600,
+        "actionNavigation": null,
+        "actionRevision": 1,
+        "objectRevision": 2,
+        "continuous": true,
+        "groundQuad": [
+          {
+            "x": 315,
+            "y": 522.198275862069
+          },
+          {
+            "x": 355,
+            "y": 522.198275862069
+          },
+          {
+            "x": 315,
+            "y": 555
+          }
+        ],
+        "groundGrip": {
+          "x": 335,
+          "y": 523.8383620689655
+        },
+        "hand": {
+          "x": 877.4230112825524,
+          "y": 559.6182305004611
+        },
+        "heldGrip": {
+          "x": 877.4230112825524,
+          "y": 559.6182305004611
+        },
+        "heldQuad": [
+          {
+            "x": 857.4230095871313,
+            "y": 557.9781441545326
+          },
+          {
+            "x": 897.4230129779734,
+            "y": 557.9781441545326
+          },
+          {
+            "x": 857.4230095871313,
+            "y": 590.7798710731004
+          }
+        ],
+        "feet": [
+          {
+            "x": 839.0453192007542,
+            "y": 600.0000152587891
+          },
+          {
+            "x": 861.3554773420095,
+            "y": 600.0000152587891
+          }
+        ],
+        "pose": {
+          "waist": 0,
+          "drop": 0,
+          "armNear": -9.548976442040509,
+          "armFar": -1.9253131348932393,
+          "propAngle": 0,
+          "look": [
+            0.042441264329529105,
+            -0.9826894079267988
+          ],
+          "plant": true,
+          "plantWeight": 1,
+          "hands": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "handArt": true
+        },
+        "sit": 0.00004120104336307153,
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 876.3671332090655,
+            "y": 553.3220246205603
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "contact": {
+          "distance": 543.6018047742364,
+          "groundDistance": 487.51020779587765
+        },
+        "bindingError": 0,
+        "propMirror": 1,
+        "activeTime": 24.54860000000004,
+        "speed": 1,
+        "sequence": 973
+      }
+    }
+  ],
+  "final": {
+    "phase": "idle",
+    "suspended": null,
+    "elapsed": 1.8332000000000004,
+    "coordination": {
+      "phase": "idle",
+      "suspended": null,
+      "reason": null,
+      "life": null,
+      "sessions": [
+        {
+          "sessionId": "A",
+          "epoch": 5,
+          "revision": 5,
+          "driver": "idle",
+          "running": false,
+          "activity": "idle",
+          "category": "goal-progress",
+          "requests": [],
+          "tools": {
+            "pending": 0,
+            "entered": 0
+          },
+          "goal": {
+            "known": true,
+            "goal": {
+              "id": "preview-goal-1",
+              "revision": 1,
+              "round": 0,
+              "phase": "active"
+            }
+          },
+          "needsAttention": false,
+          "problem": null,
+          "resultId": "[\"A\",1,2,\"goal-progress\"]",
+          "cue": {
+            "id": "[\"A\",5,\"2\",\"goal-progress\"]",
+            "kind": "goal-progress"
+          },
+          "attentionOrder": 15
+        },
+        {
+          "sessionId": "B",
+          "epoch": 5,
+          "revision": 5,
+          "driver": "idle",
+          "running": false,
+          "activity": "idle",
+          "category": "reply",
+          "requests": [],
+          "tools": {
+            "pending": 0,
+            "entered": 0
+          },
+          "goal": {
+            "known": true,
+            "goal": null
+          },
+          "needsAttention": false,
+          "problem": null,
+          "resultId": null,
+          "cue": {
+            "id": "[\"B\",5,2,\"answered\"]",
+            "kind": "answered"
+          },
+          "attentionOrder": 17
+        },
+        {
+          "sessionId": "C",
+          "epoch": 5,
+          "revision": 0,
+          "driver": "idle",
+          "running": false,
+          "activity": "idle",
+          "category": "reply",
+          "requests": [],
+          "tools": {
+            "pending": 0,
+            "entered": 0
+          },
+          "goal": {
+            "known": true,
+            "goal": null
+          },
+          "needsAttention": false,
+          "problem": null,
+          "resultId": null,
+          "cue": null,
+          "attentionOrder": 3
+        }
+      ],
+      "focus": null,
+      "interaction": null,
+      "occupied": false,
+      "admission": 17,
+      "navigation": null,
+      "serial": 2,
+      "elapsed": 0.033299999999999275,
+      "lastAt": 28974.900000095367,
+      "revision": 1
+    },
+    "performance": {
+      "kind": "idle",
+      "expression": "neutral",
+      "label": "歇一会儿",
+      "age": 0.06660000000000219,
+      "cue": null,
+      "look": [
+        0,
+        0
+      ],
+      "armNear": 4,
+      "armFar": -2,
+      "gaze": -0.8635194805728139,
+      "arms": [
+        -3.354149053473435,
+        -1.9999999180493062
+      ]
+    },
+    "owner": "ground",
+    "renderedOwner": "ground",
+    "generation": 2,
+    "walkId": null,
+    "commits": {
+      "pickup": 0,
+      "drop": 0
+    },
+    "error": null,
+    "inspection": null,
+    "loop": false,
+    "bodyX": 850,
+    "bodyY": 600,
+    "navigation": {
+      "x": 850,
+      "y": 600,
+      "speed": 0,
+      "facing": 1,
+      "phase": "idle",
+      "id": null,
+      "generation": 1,
+      "revision": 1,
+      "plan": null
+    },
+    "bubble": {
+      "x": 850,
+      "y": 434.3042809146725
+    },
+    "hit": [
+      {
+        "x": 850,
+        "y": 510.8863359541086,
+        "r": 75.9375
+      }
+    ],
+    "moving": false,
+    "facing": 1,
+    "visualFacing": 1,
+    "destinationX": 390,
+    "destinationY": 600,
+    "actionNavigation": null,
+    "actionRevision": 1,
+    "objectRevision": 2,
+    "continuous": true,
+    "groundQuad": [
+      {
+        "x": 315,
+        "y": 522.198275862069
+      },
+      {
+        "x": 355,
+        "y": 522.198275862069
+      },
+      {
+        "x": 315,
+        "y": 555
+      }
+    ],
+    "groundGrip": {
+      "x": 335,
+      "y": 523.8383620689655
+    },
+    "hand": {
+      "x": 877.4501832135768,
+      "y": 559.6059754740393
+    },
+    "heldGrip": {
+      "x": 877.4501832135768,
+      "y": 559.6059754740393
+    },
+    "heldQuad": [
+      {
+        "x": 857.4501815181558,
+        "y": 557.9658891281108
+      },
+      {
+        "x": 897.4501849089977,
+        "y": 557.9658891281108
+      },
+      {
+        "x": 857.4501815181558,
+        "y": 590.7676160466784
+      }
+    ],
+    "feet": [
+      {
+        "x": 839.0453802359104,
+        "y": 600.0000152587891
+      },
+      {
+        "x": 861.3555383771658,
+        "y": 600.0000152587891
+      }
+    ],
+    "pose": {
+      "waist": 0,
+      "drop": 0,
+      "armNear": 4,
+      "armFar": -2,
+      "propAngle": 0,
+      "look": [
+        -0.8635194805728139,
+        0
+      ],
+      "plant": true,
+      "plantWeight": 1,
+      "hands": {
+        "original": 1,
+        "reach": 0,
+        "grip": 0,
+        "release": 0
+      },
+      "handArt": true
+    },
+    "sit": 1.7106029212258505e-13,
+    "handArt": {
+      "enabled": true,
+      "baseline": false,
+      "weights": {
+        "original": 1,
+        "reach": 0,
+        "grip": 0,
+        "release": 0
+      },
+      "wrist": {
+        "x": 876.3860987355054,
+        "y": 553.311151313533
+      },
+      "wristError": 0,
+      "contactError": 0,
+      "renderMode": "continuous-mesh",
+      "closure": 0.25,
+      "surfaceAlpha": 1,
+      "layers": {
+        "palm": 5.02,
+        "prop": 5.05,
+        "fingers": 5.2
+      },
+      "frontWeight": 1,
+      "externalProp": true
+    },
+    "contact": {
+      "distance": 543.6281113381995,
+      "groundDistance": 487.5376067837343
+    },
+    "bindingError": 0,
+    "propMirror": 1,
+    "activeTime": 27.76520000000005,
+    "speed": 1,
+    "sequence": 1107
+  }
+}

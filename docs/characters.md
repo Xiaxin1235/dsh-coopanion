@@ -145,6 +145,8 @@ NPC 日常复用水平定点 `walk`、按身份 `stopWalk`、姿态、表情与�
 
 显式第 3 期制作工厂通过 `bounds.continuousActions=true` 组合已有 `navigation-2d-v1` 与 O03 接触；没有新增面向任意角色的持物能力声明。导航身份、姿态与物件拥有权由同一执行器管理，默认 API 2 工厂和日常未接入。可选 `gripPose().mirror=-1` 仅反射物件的手部局部坐标，使反向接近时保留地面物件的纹理朝向，抓握点保持绑定。站稳、接触、中断及包络见[连续动作契约](design/continuous-action-contract.md)。
 
+显式第 4 期另设 `bounds.lifeWork=true`，在同一工厂 tick 内由唯一协调器调用上述导航／接触能力，增加安全合作退出、工作守候和生活续接。它只在制作预览接纳明确标注的模拟事实，不新增 API 2 通用能力或开放角色自报可信任务结果；契约与真实宿主边界见[双线协调](design/life-work-contract.md)。
+
 内置鲸鱼的 figure 工厂可由显式 body factory 提供 `gripProp`（纹理、UV、局部矩形、手部／抓握／落地锚点）及 `gripPose()`。物件在同一 armFar 变形链中绘制，前袖口层覆盖其前景；`figure.gripFrame` 只读返回实际变形后的手部、物件抓握点、地面锚点及三角矩形坐标。未提供选项时不加载物件，也不更改默认角色行为。
 
 这是固定鲸鱼渲染器的可选制作接口，不是 API 2 的通用持物或二维移动声明。[当前 O03 工作台](design/art-workflow/o03-shell-hands-v1/README.md)负责动作准入、拥有权和接触检查；主产品的日常、关系与任务结算没有启用此物件。物件 PNG 与使用规格位于 `web/props/shell/`，素材来源及未覆盖的验收范围由该场景记录。

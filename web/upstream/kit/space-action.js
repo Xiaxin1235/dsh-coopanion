@@ -38,6 +38,24 @@ export function stepSpaceAction(state, input, profile) {
     if (Number.isFinite(cmd.x) && Number.isFinite(cmd.y)) effects.push({ type:'relocate', x:cmd.x, y:cmd.y });
     return out();
   }
+  // Cooperative yield keeps committed ownership. Uncommitted contact exits
+  // from the sampled pose; an owned object must still use the real drop gates.
+  if (cmd?.type === 'yield') {
+    next.loop = false;
+    if (next.phase === 'idle' && next.owner === 'ground') return out();
+    if (next.owner === 'ground') {
+      if (['retract','rise'].includes(activePhase(next))) {
+        next.phase = activePhase(next); next.suspended = null;
+      } else {
+        next.from = sampleSpaceAction(next, profile); next.phase = 'retract'; next.suspended = null; next.elapsed = next.stable = 0;
+      }
+      stop(); next.revision = input.revision; next.objectRevision = input.objectRevision; next.error = null;
+      effects.push({type:'stand'});
+    } else if (['lower','touch','release'].includes(activePhase(next))) {
+      next.phase = activePhase(next); next.suspended = null; next.revision = input.revision; next.objectRevision = input.objectRevision;
+    } else prepare('carry');
+    return out();
+  }
   if (cmd?.type === 'sit' && next.phase === 'idle' && next.owner === 'ground') { next.phase = 'rest'; effects.push({ type: 'sit' }); return out(); }
   if (cmd?.type === 'pause' || input.blocked || state.lastAt !== null && (input.now < state.lastAt || input.now - state.lastAt > 1000)) { pause(); return out(); }
   if (!['idle','rest','paused'].includes(next.phase) && (next.revision !== input.revision || next.objectRevision !== input.objectRevision)) { pause('world-changed'); return out(); }

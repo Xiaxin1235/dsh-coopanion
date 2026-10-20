@@ -71,3 +71,15 @@ it('preserves the specific navigation rejection for actionable feedback without 
  const f=fixture();f.start();f.tick({event:{kind:'navigation-interrupted',...f.state.navigation,by:'target-blocked'}});
  expect(f.state.phase).toBe('paused');expect(f.state.error).toBe('target-blocked');expect(f.state.owner).toBe('ground');expect(f.state.commits.pickup).toBe(0);
 });
+
+// Coordination may arrive on either side of every real contact commit.
+it.each(['settle','look','reach','grasp','lift','held','carry','settleDrop','lower','touch','release','retract','rise'])('cooperative yield at %s preserves real ownership and never repeats a commit',phase=>{
+ const f=fixture();f.start();f.arrive();
+ if(['settleDrop','lower','touch','release','retract','rise'].includes(phase)){f.until('carry');f.arrive();}
+ f.until(phase);const before={owner:f.state.owner,commits:{...f.state.commits}},pose=sampleSpaceAction(f.state,profile);
+ f.tick({command:{type:'yield'}});expect(f.state.owner).toBe(before.owner);expect(f.state.commits).toEqual(before.commits);
+ if(!['lower','touch','release','retract','rise'].includes(phase))expect(sampleSpaceAction(f.state,profile)).toEqual(pose);
+ for(let i=0;i<500&&f.state.phase!=='idle';i++){if(f.state.navigation)f.arrive();else f.tick();}
+ expect(f.state.phase).toBe('idle');expect(f.state.owner).toBe('ground');expect(f.state.commits.pickup).toBe(before.commits.pickup);
+ expect(f.state.commits.drop).toBe(before.commits.drop+(before.owner==='hand'?1:0));
+});
