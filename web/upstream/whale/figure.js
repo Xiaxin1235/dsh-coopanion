@@ -603,7 +603,7 @@ export async function createWhaleFigure(base = new URL('./', import.meta.url), o
     st.body = { a: -sway * 1.2 + (held ? o.swing * .15 : 0), ty: low - 9.6 * sitK, sx: (1 + .006 * breath + .04 * plop) * (1 - .03 * shiver), sy: 1 - .012 * breath - .06 * plop };
     st.waist = { a: bow * 20 };
     if (motion) {
-      st.waist.a = clamp(motion.waist ?? 0, 0, 24);
+      if(Number.isFinite(motion.waist))st.waist.a = clamp(motion.waist, 0, 24);
       if (motion.plant) st.body = { a: lerp(st.body.a, 0, plantWeight), ty: lerp(st.body.ty, clamp(motion.drop ?? 0, 0, 22), plantWeight), sx: lerp(st.body.sx, 1, plantWeight), sy: lerp(st.body.sy, 1, plantWeight) };
     }
     st.skirt = {
@@ -718,7 +718,7 @@ export async function createWhaleFigure(base = new URL('./', import.meta.url), o
       };
       if (matrix) {
         const [x, y, w, h] = prop.box;
-        gripFrame = { hand: project(...prop.hand, 'armFar'), propGrip: project(x+w*prop.grip[0],y+h*prop.grip[1]), quad: [project(x,y),project(x+w,y),project(x,y+h)],
+        gripFrame = { gazeOrigin:project(140,117,'headFeat'),renderedFace:o.face,gesture:o.gesture?{...o.gesture}:null,posture:{bodyY:st.body.ty,waist:st.waist.a,plantWeight},hand: project(...prop.hand, 'armFar'), propGrip: project(x+w*prop.grip[0],y+h*prop.grip[1]), quad: [project(x,y),project(x+w,y),project(x,y+h)],
           ground: project(x+w*prop.ground[0],y+h*prop.ground[1]), visible: !!gripPose?.visible,
           ...(motion ? { facing: o.facing, pose: { ...motion }, sit: sitK, angles: { armNear: armN, armFar: armF, waist: st.waist.a },
             feet: [project(PV.legBack[0], 256, 'legBack'), project(PV.legFront[0], 256, 'legFront')] } : {}) };

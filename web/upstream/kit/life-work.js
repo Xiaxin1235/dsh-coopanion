@@ -1,8 +1,8 @@
-import {initialPersonality,configurePersonality,personalityGate,choosePersonality} from './personality.js';
+import {initialPersonality,configurePersonality,personalityGate,choosePersonality,interestKey,completeObservation} from './personality.js';
 // Local opt-in courtyard coordinator. One body, one tick, one navigator.
 // Work facts are metadata projected by the trusted owner, never inferred here.
 export const initialLifeWork = () => ({ phase:'idle', suspended:null, reason:null, life:null, sessions:[], focus:null,
-  interaction:null, occupied:false, admission:0, navigation:null, serial:0, elapsed:0, lastAt:null, revision:null, personality:null });
+  interaction:null, occupied:false, admission:0, navigation:null, serial:0, elapsed:0, lastAt:null, revision:null, personality:null, observed:0, workRest:null });
 // A bounded last-result ledger per source survives metadata changes and restarts.
 export function workCelebration(previous, sessions) {
   const old=new Map(previous.map(entry=>[entry.sessionId,entry.id]));
@@ -32,7 +32,7 @@ export function stepLifeWork(state, input) {
   const out=()=>({state:next,effects});
   const action=command=>effects.push({type:'action',command});
   const stop=()=>{if(next.navigation||input.moving||input.physicalNavigation?.id!=null)effects.push({type:'cancel-navigation'});next.navigation=null;};
-  const enter=phase=>{next.phase=phase;next.elapsed=0;next.revision=input.revision;next.reason=null;};
+  const enter=phase=>{if(phase==='work-wait')next.workRest=null;next.phase=phase;next.elapsed=0;next.revision=input.revision;next.reason=null;};
   const pause=reason=>{if(next.phase!=='paused'){next.suspended=next.phase;enter('paused');stop();action({type:'pause'});}next.reason=reason;};
   const demand=()=>next.sessions.some(workDemand);
   const handoff=()=>{
@@ -101,6 +101,7 @@ export function stepLifeWork(state, input) {
   if(demand() && (['idle','ended','life','return'].includes(next.phase)||personal())) {handoff();return out();}
   if(reconfigure){handoff();return out();}
   const dt=Number.isFinite(input.dt)?Math.max(0,Math.min(.05,input.dt)):0;next.elapsed+=dt;
+  if(next.personality?.enabled)next.personality={...next.personality,clock:(next.personality.clock??0)+dt};
   if(input.action.phase==='paused' && !['idle','ended'].includes(next.phase)) {pause(input.action.error??'action-paused');return out();}
   if(next.personality?.enabled && next.phase==='ended' && ['life-complete','target-already-reached'].includes(next.reason))next.life=null;
   if(next.personality?.enabled && ['idle','ended'].includes(next.phase) && !next.life && !demand()) {handoff();return out();}
@@ -129,9 +130,11 @@ export function stepLifeWork(state, input) {
       }else if(next.elapsed>30)pause('work-arrival-timeout');
     } else if(next.phase==='work-wait') {
       const focused=next.sessions.find(f=>f.sessionId===next.focus);
-      const stand=!!focused?.requests.length || !input.reduced && Math.floor(next.elapsed/12)%2===1;
-      if(stand && input.action.phase==='rest')action({type:'yield'});
-      else if(!stand && next.elapsed>=2.5 && input.action.phase==='idle')action({type:'sit'});
+      const key=JSON.stringify([focused?.sessionId,focused?.activity,focused?.tools?.pending,focused?.tools?.entered,focused?.cue?.id,focused?.requests.length,focused?.needsAttention]);
+      next.workRest=next.workRest?.key===key?{...next.workRest,stable:next.workRest.stable+dt}:{key,stable:0};
+      const rest=!input.reduced && !focused?.requests.length && !focused?.needsAttention && ['tools','requesting'].includes(focused?.activity) && next.workRest.stable>=35;
+      if(!rest && input.action.phase==='rest')action({type:'yield'});
+      else if(rest && input.action.phase==='idle')action({type:'sit'});
     }
   } else if(next.phase==='return') {
     if(!next.life){
@@ -144,12 +147,21 @@ export function stepLifeWork(state, input) {
     if(input.action.owner==='ground' && Math.hypot(input.object.x-next.life.target.x,input.object.y-next.life.target.y)<=1.5){enter('ended');next.reason='target-already-reached';return out();}
     effects.push({type:'destination',...next.life.target});action({type:'loop'});enter('life');
   }
+  const attend=()=>{
+    enter('personal-align');next.observed=0;
+    const focus=next.personality.decision.focus;
+    if(focus&&Number.isFinite(input.facing)&&Math.abs(focus.x-input.bodyX)>1&&input.facing!==(focus.x>input.bodyX?1:-1))effects.push({type:'face',facing:focus.x>input.bodyX?1:-1});
+  };
+  const decision=next.personality?.decision;
+  if(personal() && next.phase!=='personal-choose' && decision?.interestId && !(input.interests??[]).some(i=>i.id===decision.interestId&&interestKey(i)===decision.interestKey)) {
+    handoff();next.reason='interest-changed';return out();
+  }
   if(next.phase==='personal-choose') {
     if(input.action.owner!=='ground' || input.action.phase!=='idle' || input.moving || input.physicalNavigation?.id!=null){handoff();return out();}
     next.personality=choosePersonality(next.personality,input);
     effects.push({type:'personality-choice',decision:next.personality.decision});
     if(next.personality.decision.kind==='explore'){enter('personal-prepare');effects.push({type:'stand'});}
-    else {enter('personal-dwell');if(input.words?.includes('sit'))action({type:'sit'});}
+    else attend();
   } else if(next.phase==='personal-prepare') {
     if(next.elapsed>=.8 && input.standingReady && !input.moving){
       next.serial++;next.navigation={id:8e12+next.serial,generation:1,revision:input.revision,target:{...next.personality.decision.target}};
@@ -159,11 +171,21 @@ export function stepLifeWork(state, input) {
     const n=next.navigation,e=input.event;
     if(e&&n&&e.id===n.id&&e.generation===n.generation&&e.revision===n.revision){
       if(e.kind==='navigation-arrived'&&Math.hypot(input.bodyX-n.target.x,input.bodyY-n.target.y)<=.5&&input.speed<=.001&&!input.moving){
-        next.navigation=null;enter('personal-dwell');if(input.words?.includes('sit'))action({type:'sit'});
+        next.navigation=null;attend();
       }else pause(e.by??'arrival-mismatch');
     }else if(next.elapsed>30)pause('personal-arrival-timeout');
+  } else if(next.phase==='personal-align') {
+    if(next.elapsed>=.35 && !input.moving && input.facingReady!==false && input.gazeReady!==false)enter('personal-dwell');
+    else if(next.elapsed>6)pause('attention-timeout');
   } else if(next.phase==='personal-dwell') {
-    if(next.elapsed>=next.personality.decision.duration)handoff();
+    if(!input.moving && input.facingReady!==false && input.gazeReady!==false)next.observed+=dt;
+    if(next.personality.decision.focus && next.observed>=2.5 && next.personality.decision.result==='pending'){
+      next.personality=completeObservation(next.personality);
+      effects.push({type:'observed',id:next.personality.decision.interestId});
+      if(!input.reduced && next.personality.decision.attention==='investigate' && input.words?.includes('nod'))effects.push({type:'gesture',word:'nod'});
+    }
+    if(next.elapsed>=next.personality.decision.duration && (!next.personality.decision.focus || next.personality.decision.result==='observed'))handoff();
+    else if(next.elapsed>next.personality.decision.duration+6)pause('attention-timeout');
   }
   return out();
 }

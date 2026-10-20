@@ -13,6 +13,7 @@ await mkdir(output,{recursive:false});
 const sourceIdentity=await spaceSourceIdentity({stage4:true,stage5:true}),profile=native?await mkdtemp(join(tmpdir(),'coopanion-stage5a-')):null;
 const browser=native?await _electron.launch({executablePath:createRequire(import.meta.url)('electron'),args:['--no-sandbox',resolve('desktop/space-preview.cjs')],env:{...process.env,DSH_SPACE_STAGE:'5a',DSH_PET_TEST_DATA_DIR:profile,DSH_PET_TEST_NO_SANDBOX:'1'}}):await chromium.launch({headless:true,args:['--no-sandbox','--enable-unsafe-swiftshader']});
 const context=native?browser.context():await browser.newContext({viewport:{width:1500,height:1120},recordVideo:{dir:output,size:{width:1500,height:1120}}});
+const equalComparison=[];
 let page=native?await browser.firstWindow():await context.newPage();
 const checks=[],errors=[],milestones=[];
 const bind=()=>page.on('pageerror',e=>errors.push(e.stack));bind();
@@ -29,18 +30,22 @@ const stable=async ms=>{const before=await frame();await page.waitForTimeout(ms)
 try{
  if(native)await ready();else await open();
  if((await frame()).coordination.phase==='paused'){await click('resume');await coord('idle');}
+ await click('sit');await wait(()=>JSON.parse(document.querySelector('#world').dataset.frame).sit>.95);
+ await page.evaluate(()=>{window.poseSamples=[];const sample=()=>{const f=JSON.parse(document.querySelector('#world').dataset.frame);if(window.poseSamples.length<240){window.poseSamples.push({sit:f.sit,waist:f.posture.waist,phase:f.phase,x:f.bodyX,y:f.bodyY});requestAnimationFrame(sample);}};requestAnimationFrame(sample);});
  await click('personality-start');await coord('paused');check((await frame()).coordination.personality.ordinal===0,'off default consumes no choice');
  await page.selectOption('#personality-mode','quiet');await page.check('#personality-roam');await page.selectOption('#personality-input','idle');await coord('personal-dwell');
  const quiet=(await frame()).coordination.personality.decision;
- check(quiet.kind==='stay'&&quiet.personality==='quiet','seed 7 quiet chooses actual stationary dwell');await wait(()=>JSON.parse(document.querySelector('#world').dataset.frame).sit>.9);await mark('01-quiet-stay');
+ check(quiet.kind==='stay'&&quiet.personality==='quiet','seed 7 quiet chooses stationary object attention');check((await frame()).sit<.05,'ordinary observation stays standing');
+ const poses=await page.evaluate(()=>window.poseSamples);check(Math.max(...poses.map(p=>Math.abs(p.waist)))<1,'seated exit never uses the prop-reaching bend');await wait(()=>JSON.parse(document.querySelector('#world').dataset.frame).renderedFace==='thinking');await mark('01-quiet-observes-shell');
  await click('personality-stop');await coord('idle');
  // A fresh isolated page for exact same-map/seed/fact comparison; original user pages untouched.
  if(native){await page.reload();await ready();if((await frame()).coordination.phase==='paused'){await click('resume');await coord('idle');}}
  else {const video=page.video();await page.close();await video.saveAs(join(output,'quiet.webm'));page=await context.newPage();bind();await open();}
+ await page.evaluate(()=>{window.renderedGestures=[];new MutationObserver(()=>{const f=JSON.parse(document.querySelector('#world').dataset.frame);if(f.gesture?.kind && !window.renderedGestures.includes(f.gesture.kind))window.renderedGestures.push(f.gesture.kind);}).observe(document.querySelector('#world'),{attributes:true,attributeFilter:['data-frame']});});
  await enable('lively');await coord('personal-travel');const lively=(await frame()).coordination.personality.decision;
- check(lively.kind==='explore'&&JSON.stringify(quiet.samples)===JSON.stringify(lively.samples)&&JSON.stringify(quiet.origin)===JSON.stringify(lively.origin),'same map/facts/seed yields a different real choice for lively');
+ check(lively.interestId==='planter'&&quiet.interestId==='o03-shell'&&lively.attention!==quiet.attention&&lively.kind==='explore'&&JSON.stringify(quiet.samples)===JSON.stringify(lively.samples)&&JSON.stringify(quiet.origin)===JSON.stringify(lively.origin),'same map/facts/seed yields a different real choice for lively');
  check(quiet.duration>lively.duration,'personality also changes bounded dwell duration');
- await coord('personal-dwell');let f=await frame();check(Math.hypot(f.bodyX-lively.target.x,f.bodyY-lively.target.y)<.5&&!f.moving&&f.navigation.id===null,'exploration only completes on actual stopped arrival');await mark('02-lively-arrived');
+ await coord('personal-dwell');let f=await frame();check(Math.hypot(f.bodyX-lively.target.x,f.bodyY-lively.target.y)<.5&&!f.moving&&f.navigation.id===null,'exploration only completes on actual stopped arrival');check(f.sit<.05,'arrival does not automatically sit');await wait(()=>JSON.parse(document.querySelector('#world').dataset.frame).coordination.personality.decision.result==='observed');check((await frame()).renderedFace==='happy','lively observation uses supported expression after actual attention');check((await page.evaluate(()=>window.renderedGestures)).includes('nod'),'existing nod gesture reaches the actual rendered rig');await mark('02-lively-observes-plant');
  // Switch from seated dwell, then while actually moving. Both re-evaluate the live root.
  await page.selectOption('#personality-id','quiet');await wait(()=>JSON.parse(document.querySelector('#world').dataset.frame).coordination.personality.ordinal>=2);await coord('personal-dwell');
  await page.selectOption('#personality-id','lively');await coord('personal-travel');await wait(()=>JSON.parse(document.querySelector('#world').dataset.frame).navigation.speed>5);
@@ -68,8 +73,19 @@ try{
  if(native)await browser.evaluate(({powerMonitor})=>powerMonitor.emit('suspend'));else await page.evaluate(()=>window.dispatchEvent(new Event('space-suspend')));
  await coord('paused');await stable(1200);await page.selectOption('#personality-id','quiet');check((await frame()).coordination.phase==='paused','profile change cannot override lifecycle pause');await click('resume');await wait(()=>JSON.parse(document.querySelector('#world').dataset.frame).coordination.phase.startsWith('personal-'));await page.locator('#work-facts-panel').evaluate(el=>el.open=false);await mark('06-geometry-lifecycle');
  await click('personality-stop');await coord('idle');f=await frame();check(f.owner==='ground'&&f.commits.pickup===0&&f.commits.drop===0,'stop preserves real object and contact counts');
+ // Equalize time and movement probability: differences must still be visible.
+ for(const id of ['quiet','lively']){
+   if(native){await page.reload();await ready();if((await frame()).coordination.phase==='paused'){await click('resume');await coord('idle');}}
+   else {const video=page.video();await page.close();if(id==='quiet')await video.saveAs(join(output,'story.webm'));page=await context.newPage();bind();await open();}
+   await page.selectOption('#personality-id',id);await page.locator('#personality-panel details').evaluate(el=>el.open=true);
+   await page.fill('#personality-dwell','12');await page.fill('#personality-explore','0.95');await click('personality-apply');
+   await enable(id);await coord('personal-dwell');await wait(face=>JSON.parse(document.querySelector('#world').dataset.frame).renderedFace===face,id==='quiet'?'thinking':'surprised');
+   equalComparison.push(await frame());await mark('equal-'+id);
+ }
+ check(equalComparison[0].coordination.personality.decision.duration===equalComparison[1].coordination.personality.decision.duration,'equal timing stays exactly equal in both real runs');
+ check(equalComparison[0].coordination.personality.decision.interestId!==equalComparison[1].coordination.personality.decision.interestId&&equalComparison[0].renderedFace!==equalComparison[1].renderedFace,'equal timing still changes actual object choice, stance and rendered expression');
  check(errors.length===0,'no page errors');
- await writeFile(join(output,'personality.json'),JSON.stringify({passed:true,sourceIdentity,native,simulatedPermissions:true,simulatedHarness:true,modelCalls:0,realHarness:false,physicalDeviceAcceptance:false,userAcceptance:false,runtime:native?await browser.evaluate(()=>process.versions):browser.version(),checks,errors,quiet,lively,milestones,snapshot:await page.evaluate(()=>window.spacePreview.snapshot())},null,2)+'\n');
+ await writeFile(join(output,'personality.json'),JSON.stringify({passed:true,sourceIdentity,native,simulatedPermissions:true,simulatedHarness:true,modelCalls:0,realHarness:false,physicalDeviceAcceptance:false,userAcceptance:false,runtime:native?await browser.evaluate(()=>process.versions):browser.version(),checks,errors,quiet,lively,equalComparison,milestones,snapshot:await page.evaluate(()=>window.spacePreview.snapshot())},null,2)+'\n');
  console.log(JSON.stringify({passed:true,checks:checks.length,native,output}));
-}catch(e){await page.screenshot({path:join(output,'failure.png'),fullPage:true}).catch(()=>{});await writeFile(join(output,'failure.json'),JSON.stringify({sourceIdentity,checks,errors,error:e.stack,frame:await frame().catch(()=>null)},null,2));throw e;}
+}catch(e){await page.screenshot({path:join(output,'failure.png'),fullPage:true}).catch(()=>{});await writeFile(join(output,'failure.json'),JSON.stringify({sourceIdentity,checks,errors,equalComparison,error:e.stack,frame:await frame().catch(()=>null)},null,2));throw e;}
 finally{if(!native)await context.close();await browser.close();if(profile){await rm(profile,{recursive:true,force:true});await writeFile(join(output,'cleanup.json'),JSON.stringify({profile,removed:true})+'\n');}}

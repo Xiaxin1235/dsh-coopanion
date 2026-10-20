@@ -1,7 +1,8 @@
 import { createWhaleFigure } from '/web/upstream/whale/figure.js';
 import { initialMotion, sampleMotion, stepMotion, contactRoute } from '/web/prop-motion.js';
 import { initialSpaceAction, sampleSpaceAction, stepSpaceAction, pickupMirror, createSpaceNavigationChannel } from '/web/upstream/kit/space-action.js';
-import { initialPersonality } from '/web/upstream/kit/personality.js';
+import {personalityPerformance} from '/web/upstream/kit/personality-performance.js';
+import { initialPersonality, shellInterest } from '/web/upstream/kit/personality.js';
 import { initialLifeWork, stepLifeWork } from '/web/upstream/kit/life-work.js';
 import { initialWorkPerformance, stepWorkPerformance } from '/web/upstream/kit/work-performance.js';
 import { handWeights } from '/web/upstream/whale/hand-art.js';
@@ -15,7 +16,7 @@ export async function createMotionBody(base, options) {
   let coordination = initialLifeWork(), coordinationQueue = [], gaze = 0, taskExpression = null, workTarget = null, performanceState = initialWorkPerformance(), performanceView = null, reducedWork = false, freeArm = [4,-2];
   if(bounds().personality===true)coordination.personality=initialPersonality();
   const initial = continuous ? initialSpaceAction : initialMotion, sample = continuous ? sampleSpaceAction : sampleMotion, advance = continuous ? stepSpaceAction : stepMotion;
-  let spaceModel = null, objectRevision = 0, propMirror = 1;
+  let spaceModel = null, interests = [], personalView = null, personalLook = [0,0], objectRevision = 0, propMirror = 1;
   const navigationChannel = continuous ? createSpaceNavigationChannel() : null;
   const actionLayout = () => { const value=actor.layout(); return navigationChannel ? {...value,navigation:navigationChannel.decode(value.navigation)} : value; };
   const navigate = command => actor.navigate(navigationChannel ? navigationChannel.encode(command) : command);
@@ -34,8 +35,9 @@ export async function createMotionBody(base, options) {
     const navigation=actor?.layout().navigation;
     const walking = ['approach', 'carry'].includes(phase) || !!navigation && navigation.phase !== 'idle';
     const k = ['settle', 'settleDrop'].includes(phase) ? Math.min(1, state.elapsed / profile.seconds[phase]) : continuous && phase === 'prepare' ? Math.max(state.preparePlantFrom ?? 0, Math.min(1,state.elapsed/.8)) : 1;
+    const libraryFree=state.owner==='ground' && (phase==='standUp' || bounds().personality===true && ['idle','rest'].includes(phase) && coordination.phase.startsWith('personal-'));
     const free=coordinated && coordination.phase==='work-wait' && state.owner==='ground' && ['idle','rest'].includes(phase) && !walking && !coordination.occupied;
-    return { ...pose, ...(free ? {armNear:freeArm[0],armFar:freeArm[1]} : {}), ...(coordinated ? {look:[pose.look[0]+gaze,pose.look[1]+(performanceView?.look[1]??0)]} : {}), plant: !walking && phase !== 'rest' && (phase !== 'prepare' || !state.prepareSeated), plantWeight: k * k * (3 - 2 * k), hands: handWeights(continuous && phase === 'prepare' && state.owner === 'hand' ? {...state, phase:'held'} : state, profile), handArt: handArtEnabled,
+    return { ...pose, ...(libraryFree?{waist:undefined,armNear:undefined,armFar:undefined}:{}), ...(free ? {armNear:freeArm[0],armFar:freeArm[1]} : {}), ...(personalView?.active && libraryFree ? {look:personalLook} : coordinated ? {look:[pose.look[0]+gaze,pose.look[1]+(performanceView?.look[1]??0)]} : {}), plant: !libraryFree && !walking && phase !== 'rest' && (phase !== 'prepare' || !state.prepareSeated), plantWeight: k * k * (3 - 2 * k), hands: handWeights(continuous && phase === 'prepare' && state.owner === 'hand' ? {...state, phase:'held'} : state, profile), handArt: handArtEnabled,
       ...(walking ? { armNear: undefined, ...(state.owner === 'ground' ? { armFar: undefined, look: [3 + gaze, 0] } : {}) } : {}) };
   };
   const figure = await createWhaleFigure(new URL('/web/upstream/whale/', base), {
@@ -99,13 +101,17 @@ export async function createMotionBody(base, options) {
   };
   function coordinate(now, dt, command, event) {
     const layout=actor.layout();
-    const input={...inputs(now,dt,null,null), command,event,reduced:reducedWork,personalityEnabled:bounds().personality===true,model:spaceModel,words:actor.words,action:state,objectId:'o03-shell',object:{x:groundGrip().x,y:groundQuad[2].y},
+    const currentInterests=interests.map(i=>i.kind==='shell'?shellInterest({x:groundGrip().x,y:groundQuad[2].y}):i);
+    const preview=personalityPerformance(coordination,{bodyX:layout.x,bodyY:layout.y,gazeOrigin:figure.gripFrame?.gazeOrigin,facing:layout.facing,words:actor.words},{reduced:reducedWork});
+    const input={...inputs(now,dt,null,null), command,event,reduced:reducedWork,personalityEnabled:bounds().personality===true,model:spaceModel,interests:currentInterests,gazeOrigin:figure.gripFrame?.gazeOrigin,facing:layout.facing,gazeReady:personalLook.every((v,i)=>Math.abs(v-preview.look[i])<.65),words:actor.words,action:state,objectId:'o03-shell',object:{x:groundGrip().x,y:groundQuad[2].y},
       physicalNavigation:layout.navigation,destination:{x:destination,y:destinationY},parking:parking(),station:workTarget??bounds().workTarget??{x:850,y:600}};
     const result=stepLifeWork(coordination,input);coordination=result.state;
     for(const e of result.effects){
       if(e.type==='destination'){destination=e.x;destinationY=e.y;objectRevision++;}
       if(e.type==='action'){const i=inputs(now,0,e.command,null);apply(advance(state,i,profile),i);}
       if(e.type==='stand')actor.do('stand');
+      if(e.type==='face' && actor.layout().facing!==e.facing)actor.do('turn');
+      if(e.type==='gesture' && state.owner==='ground' && state.phase==='idle' && !reducedWork)actor.do(e.word);
       if(e.type==='navigate')navigate({id:e.id,generation:e.generation,model:spaceModel,target:e.target});
       if(e.type==='cancel-navigation'){actor.cancelNavigation('coordination');arrival=null;}
       options.host.emit('coordination-action',{...e,phase:coordination.phase});
@@ -113,10 +119,14 @@ export async function createMotionBody(base, options) {
     const focused=coordination.sessions.find(f=>f.sessionId===coordination.focus);
     const performance=stepWorkPerformance(performanceState,coordination,dt,{reduced:reducedWork});
     performanceState=performance.state;performanceView=performance.view;
-    const expression=performanceView.expression;
+    personalView=personalityPerformance(coordination,input,{reduced:reducedWork});
+    if(!personalView.active)actor.set({clearGesture:true});
+    const workFeedback=performanceState.cue&&performanceState.cueAge<2.5;
+    const expression=personalView.active&&!workFeedback?personalView.expression:performanceView.expression;
     if(expression!==taskExpression){actor.set({expression});taskExpression=expression;}
     const aim=focused ? performanceView.look[0] : 0;
     if(coordination.phase!=='paused'){
+      personalLook=personalLook.map((v,i)=>v+(personalView.look[i]-v)*Math.min(1,dt*6));
       gaze+=(aim-gaze)*Math.min(1,dt*5);
       freeArm=freeArm.map((v,i)=>v+((i?performanceView.armFar:performanceView.armNear)-v)*Math.min(1,dt*4));
     }
@@ -125,10 +135,10 @@ export async function createMotionBody(base, options) {
     const grip = figure.gripFrame, layout = actionLayout(), point = groundGrip();
     const contact = grip ? { distance: Math.hypot(grip.hand.x - point.x, grip.hand.y - point.y), groundDistance: (continuous ? Math.hypot(grip.propGrip.x - destination, grip.ground.y - destinationY) : Math.abs(grip.ground.y - bounds().floorY)) } : null;
     options.host.emit('motion-frame', { phase: state.phase, suspended: state.suspended, elapsed: state.elapsed,
-      ...(coordinated ? {coordination:structuredClone(coordination),performance:performanceView?{...performanceView,gaze,arms:[...freeArm]}:null} : {}), owner: state.owner, renderedOwner: grip?.visible ? 'hand' : 'ground', generation: state.generation, walkId: state.walkId,
+      ...(coordinated ? {coordination:structuredClone(coordination),personalityPerformance:personalView?{...personalView,look:[...personalLook]}:null,performance:performanceView?{...performanceView,gaze,arms:[...freeArm]}:null} : {}), owner: state.owner, renderedOwner: grip?.visible ? 'hand' : 'ground', generation: state.generation, walkId: state.walkId,
       commits: { ...state.commits }, error: state.error, inspection: state.inspection, loop: state.loop,
       bodyX: layout.x, bodyY:layout.y, navigation:layout.navigation, bubble:layout.bubble, hit:layout.hit, moving: layout.moving, facing: layout.facing, visualFacing: grip?.facing, destinationX: destination, destinationY, actionNavigation: state.navigation, actionRevision: state.revision, objectRevision, continuous,
-      groundQuad, groundGrip: point, hand: grip?.hand, heldGrip: grip?.propGrip, heldQuad: grip?.quad, feet: grip?.feet, pose: grip?.pose, sit: grip?.sit,
+      groundQuad, groundGrip: point, hand: grip?.hand, heldGrip: grip?.propGrip, heldQuad: grip?.quad, feet: grip?.feet,gazeOrigin:grip?.gazeOrigin,renderedFace:grip?.renderedFace,gesture:grip?.gesture,posture:grip?.posture, pose: grip?.pose, sit: grip?.sit,
       handArt: grip?.handArt,
       detail: grip?.detail,
       contact, bindingError: grip ? Math.hypot(grip.hand.x - grip.propGrip.x, grip.hand.y - grip.propGrip.y) : null,
@@ -181,7 +191,7 @@ export async function createMotionBody(base, options) {
         if (cmd.type === 'hand-art' && ['idle', 'inspect'].includes(state.phase)) handArtEnabled = cmd.enabled !== false;
         if (cmd.type === 'step') stepOnce = true;
         if (cmd.type === 'destination' && Number.isFinite(cmd.x)) { destination = Math.max(125, Math.min(bounds().W - 100, cmd.x)); if (continuous && Number.isFinite(cmd.y)) destinationY = cmd.y; objectRevision++; if(coordinated)coordinationQueue.push({type:'target',x:destination,y:destinationY}); }
-        if (continuous && cmd.type === 'world' && cmd.model) { spaceModel = cmd.model; workTarget=cmd.workTarget??workTarget; }
+        if (continuous && cmd.type === 'world' && cmd.model) { spaceModel = cmd.model; workTarget=cmd.workTarget??workTarget;interests=Array.isArray(cmd.interests)?cmd.interests.slice(0,8):interests; }
       }
       if (value.bounds) { actor.resize(); forcePause = !['idle', 'inspect'].includes(state.phase); }
       actor.set(value);

@@ -1,9 +1,9 @@
 import {it,expect} from 'vitest';
 import {initialPersonality,configurePersonality,choosePersonality,personalityParameters,personalityGate} from '../web/upstream/kit/personality.js';
 import {initialLifeWork,stepLifeWork} from '../web/upstream/kit/life-work.js';
-import {freshLayout,actionNavigationModel} from '../docs/design/art-workflow/space-v1/geometry.js';
+import {freshLayout,actionNavigationModel,personalityInterests} from '../docs/design/art-workflow/space-v1/geometry.js';
 import {checkPath} from '../web/upstream/kit/navigation.js';
-const input=()=>({now:0,dt:.05,personalityEnabled:true,action:{phase:'idle',owner:'ground',commits:{pickup:0,drop:0}},model:actionNavigationModel(freshLayout()),revision:1,words:['sit','stand'],canNavigate:true,standingReady:true,bodyX:240,bodyY:555,moving:false,speed:0,station:{x:850,y:600}});
+const input=()=>({now:0,dt:.05,personalityEnabled:true,action:{phase:'idle',owner:'ground',commits:{pickup:0,drop:0}},model:actionNavigationModel(freshLayout()),interests:personalityInterests(freshLayout()),revision:1,words:['sit','stand'],canNavigate:true,standingReady:true,bodyX:240,bodyY:555,moving:false,speed:0,station:{x:850,y:600}});
 const configured=(id='quiet')=>configurePersonality(initialPersonality(),{id,permissions:{mode:'quiet',roam:true,input:'idle'}});
 function fixture(id='lively'){let state={...initialLifeWork(),personality:{...configured(id),enabled:true}},i=input();return {get state(){return state;},i,tick(command=null,extra={}){i.now+=50;const r=stepLifeWork(state,{...i,...extra,command});state=r.state;return r;},until(phase){for(let n=0;n<200&&state.phase!==phase;n++)this.tick();expect(state.phase).toBe(phase);}};}
 it('same map, facts and seed select quiet stay vs lively real exploration, with reproducible reasons',()=>{
@@ -43,8 +43,8 @@ it.each([{bodyX:1},{speed:1},{moving:true}])('does not infer arrival from a time
 });
 it('arrival, dwell, missing sit and interruption use the existing executor; history stays bounded',()=>{
  const f=fixture();f.i.words=['stand'];f.until('personal-travel');const n=f.state.navigation;
- const r=f.tick(null,{bodyX:n.target.x,bodyY:n.target.y,event:{kind:'navigation-arrived',...n}});expect(f.state.phase).toBe('personal-dwell');expect(r.effects).not.toContainEqual({type:'action',command:{type:'sit'}});
- f.tick(null,{revision:2});expect(f.state.reason).toBe('world-changed');f.i.revision=2;f.tick({type:'resume'});f.until('personal-travel');expect(f.state.navigation.revision).toBe(2);
+ f.i.bodyX=n.target.x;f.i.bodyY=n.target.y;const r=f.tick(null,{bodyX:n.target.x,bodyY:n.target.y,event:{kind:'navigation-arrived',...n}});expect(f.state.phase).toBe('personal-align');expect(r.effects).not.toContainEqual({type:'action',command:{type:'sit'}});
+ f.tick(null,{revision:2});expect(f.state.reason).toBe('world-changed');f.i.revision=2;f.tick({type:'resume'});f.until('personal-dwell');expect(f.state.personality.decision.revision).toBe(2);
  let p=configured();for(let n=0;n<40;n++)p=choosePersonality(p,input());expect(p.history).toHaveLength(16);expect(p.ordinal).toBe(40);
 });
 it('work preempts personal travel and is independent of off mode; acceptance cannot complete work',()=>{

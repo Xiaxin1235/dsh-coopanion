@@ -958,6 +958,7 @@ export function createBody(host, opts) {
       if (facing === 1 || facing === -1) ctl.pet.facing = ctl.pet.faceVis = facing;
     },
     set(s) {
+      if (s.clearGesture===true) ctl.pet.pulse=null;
       if (s.roam) ctl.setRoam(s.roam);
       if (typeof s.hold === 'number') ctl.holdRoam(s.hold);
       if (typeof s.dialogOpen === 'boolean') dialogOpen = s.dialogOpen;

@@ -2,7 +2,7 @@ import { planPath, checkPath, obstaclesFor } from '/web/upstream/kit/navigation.
 import { loadBody } from '/web/upstream/body-host.js';
 import { decodePngFrame } from '/web/upstream/kit/raster.js';
 import { drawComposite, separateGroundProp } from '../o03-shell-hands-v1/composition.js';
-import { WORLD, BODY, GROUND_BODY, freshLayout, footprint, checkRoute, actionRoute, occlusionOrder, navigationModel as groundNavigationModel, actionNavigationModel } from './geometry.js';
+import { WORLD, BODY, GROUND_BODY, personalityInterests, freshLayout, footprint, checkRoute, actionRoute, occlusionOrder, navigationModel as groundNavigationModel, actionNavigationModel } from './geometry.js';
 const stage = new URLSearchParams(location.search).get('stage'), personality = stage === '5a', coordinated = stage === '4' || personality;
 const continuous = coordinated || stage === '3';
 let stage4, stage5;
@@ -20,14 +20,14 @@ const sceneOrder=()=>occlusionOrder(continuous&&separateGroundProp(current)?[...
 const rootPosition=()=>({x:current?.bodyX??layout.actor.x,y:current?.bodyY??layout.actor.y});
 let desktopOverlay=false;
 const history = [], measurements = { frames: 0, left: 0, right: 0, top: 0, bottom: 0, binding: 0, wrongLayers: 0, ownerMismatches: 0, ownerSwitchJump: 0 };
-const phases = { rest:'清醒坐姿', prepare:'起身与收心', idle:'站稳待机', approach:'接近贝壳', settle:'收步站稳', look:'先看向贝壳', reach:'俯身伸手', grasp:'指尖闭合', lift:'起身抬起', held:'保持持物', carry:'携带行走', settleDrop:'收步站稳', lower:'俯身放低', touch:'接触地面', release:'张手放开', retract:'收手', rise:'起身', paused:'暂停', inspect:'试摆' };
+const phases = { standUp:'自然起身', rest:'清醒坐姿', prepare:'起身与收心', idle:'站稳待机', approach:'接近贝壳', settle:'收步站稳', look:'先看向贝壳', reach:'俯身伸手', grasp:'指尖闭合', lift:'起身抬起', held:'保持持物', carry:'携带行走', settleDrop:'收步站稳', lower:'俯身放低', touch:'接触地面', release:'张手放开', retract:'收手', rise:'起身', paused:'暂停', inspect:'试摆' };
 const navigationBusy=()=>navActive || current?.navigation?.id!=null;
 const actionSafe=()=>continuous ? checkPath(navigationModel(layout),[rootPosition(),rootPosition()]).passed : Math.abs(rootPosition().y-layout.actor.y)<.5 && actionRoute({...layout,actor:rootPosition()}).passed;
 const command = c => body?.set({ motionCommand: c });
 const bounds = () => ({ W:WORLD.width, H:WORLD.height, floorY:layout.actor.y, S:BODY.size/256, navigation:true, continuousActions:continuous, lifeWork:coordinated, personality });
 const svgRect = (r, attrs='') => `<rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" ${attrs}/>`;
 function geometry() {
-  if (continuous) command({type:'world', model:navigationModel(layout),workTarget:{x:layout.objects.find(o=>o.id==='station').x+30,y:layout.objects.find(o=>o.id==='station').y+355}});
+  if (continuous) command({type:'world', model:navigationModel(layout),interests:personalityInterests(layout),workTarget:{x:layout.objects.find(o=>o.id==='station').x+30,y:layout.objects.find(o=>o.id==='station').y+355}});
   const legacy=checkRoute(layout), model=navigationModel(layout), route=navPlan??planPath(model,rootPosition(),navTarget??{x:850,y:600}), action = actionRoute(layout);
   const routePoints=route.points?.length?route.points:[rootPosition(),navTarget??{x:850,y:600}];
   const north=layout.objects.find(o=>o.id==='gate-north'),south=layout.objects.find(o=>o.id==='gate-south');

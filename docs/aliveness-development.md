@@ -4,7 +4,7 @@
 
 ## 当前授权：第 5A 期人格影响行为，本地开发与提交
 
-2026-10-20 用户要求整理全部文档、清除接手歧义、提交，然后在新 session 开始下一阶段。按[七阶段路线](design/aliveness-implementation-plan.md#5-敏捷顺序与可见交付)进入 **5A 人格影响行为**，先完成一个可运行、可对照的小交付。整理结果已提交为 `235be43`；本会话已完成 5A 可操作切片及工程检查，结果见[本轮报告](reports/stage-5a-20261020.md)。允许本地开发、验证与提交；推送、合并、标签、日用 profile 安装及发布分别授权。
+2026-10-20 用户要求整理全部文档、清除接手歧义、提交，然后在新 session 开始下一阶段。按[七阶段路线](design/aliveness-implementation-plan.md#5-敏捷顺序与可见交付)进入 **5A 人格影响行为**，先完成一个可运行、可对照的小交付。整理结果已提交为 `235be43`；首版 `e4858dd` 的工程结果见[固定报告](reports/stage-5a-20261020.md)；用户随后否定其坐站、人格差异与随机移动表现。本轮按五项反馈修正，结果见[反馈报告](reports/stage-5a-feedback-20261020.md)。允许本地开发、验证与提交；推送、合并、标签、日用 profile 安装及发布分别授权。
 
 第 5A 期从[蓝图 §7.2](design/aliveness-implementation-plan.md#72-人格影响选择情绪保留当下)与[§7.5 验收](design/aliveness-implementation-plan.md#75-小交付与验收)进入：
 
@@ -22,7 +22,7 @@
 | 第 1–2 期空间与二维运动 | 指定 180px 主配色角色／40px O03、同地图二维运动与花箱绕路已验收；现行模型见[生活空间契约](design/living-space-contract.md) |
 | 第 3 期连续动作与物件 | 用户已确认连续拿放及花箱／到岗拾取修正通过；行为见[连续动作契约](design/continuous-action-contract.md)，提交与固定结果见[阶段归档](archive/2026-10-aliveness/stage-3/README.md) |
 | 第 4 期生活／工作双线 | 本地实现已具备独立意图、真实交接／续接、正式工作事实适配、稳定多会话关注和第一轮表情／守候增强；规则见[双线契约](design/life-work-contract.md)，来源与工程结果见[第四阶段归档](archive/2026-10-aliveness/stage-4/README.md) |
-| 第 5A 期人格影响行为 | 已实现显式安静／活泼配置、同种子选择解释、真实短程探索与停留；规则见[人格行为契约](design/personality-behavior-contract.md)，本轮验证见[5A 报告](reports/stage-5a-20261020.md)，观感待用户验收 |
+| 第 5A 期人格影响行为 | 首版观感未通过；已修正为对象关注、侧向接近、实际注视、词表表现、少坐与自然起身，并有同时间参数对照。规则见[人格行为契约](design/personality-behavior-contract.md)，结果见[反馈报告](reports/stage-5a-feedback-20261020.md)，修正后的观感仍待用户验收 |
 
 第 4 期事实适配通过四个支持版本的正式 Harness profile loader／受控模型验证；页面仍使用明确标注的模拟事实，未接入默认产品 PetModel／NotificationBroker 的二维故事。默认产品继续按现有自主陪伴、通知和会话契约运行。受控宿主、页面模拟、真实模型服务、系统实机和主观观感分别结算。
 

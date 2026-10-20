@@ -60,7 +60,7 @@ it('cancelling while paused during pickup resumes through safe yield instead of 
 });
 
 it('long work wait changes to an awake seated posture without another route or lifecycle clock',()=>{
- const f=fixture();f.atWork();for(let i=0;i<50;i++)f.tick();const r=f.tick();expect(r.effects).toContainEqual({type:'action',command:{type:'sit'}});expect(f.state.phase).toBe('work-wait');expect(f.state.navigation).toBeNull();
+ const f=fixture();f.atWork();f.tick({command:{type:'fact',fact:fact('A',2,{activity:'tools'})}});for(let i=0;i<60;i++)expect(f.tick().effects).not.toContainEqual({type:'action',command:{type:'sit'}});for(let i=0;i<640;i++)f.tick();const r=f.tick();expect(r.effects).toContainEqual({type:'action',command:{type:'sit'}});expect(f.state.phase).toBe('work-wait');expect(f.state.navigation).toBeNull();
 });
 
 it('work preempts a manual navigator through the same body channel, and life cannot start on top of it',()=>{
@@ -100,4 +100,11 @@ it('unknown source freezes rather than inventing idle or activity, reattachment 
  const f=fixture();f.start();f.work();f.tick({command:{type:'fact',fact:fact('A',2,{driver:'unknown',running:false})}});expect(f.state.reason).toBe('source-unavailable');
  f.tick({command:{type:'fact',fact:fact('A',3,{driver:'idle',running:false})}});expect(f.state.phase).toBe('handoff');
  const g=fixture();g.start();g.tick({command:{type:'pause',reason:'drag'}});g.tick({command:{type:'occupancy',occupied:true}});g.tick({command:{type:'occupancy',occupied:false}});expect(g.state.reason).toBe('drag');expect(g.state.phase).toBe('paused');
+});
+
+it('real tool progress resets a seated wait without inventing completion or another route',()=>{
+ const f=fixture();f.atWork();f.tick({command:{type:'fact',fact:fact('A',2,{activity:'tools',tools:{pending:2,entered:2}})}});
+ for(let i=0;i<710;i++)f.tick();f.input.action.phase='rest';
+ const r=f.tick({command:{type:'fact',fact:fact('A',3,{activity:'tools',tools:{pending:1,entered:2}})}});
+ expect(r.effects).toContainEqual({type:'action',command:{type:'yield'}});expect(f.state.phase).toBe('work-wait');expect(f.state.sessions[0].running).toBe(true);expect(f.state.navigation).toBeNull();
 });

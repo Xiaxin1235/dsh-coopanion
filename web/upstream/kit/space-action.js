@@ -8,6 +8,7 @@ export const initialSpaceAction = (profile, generation = 1) => ({ ...initialMoti
   navigation: null, revision: null, objectRevision: null, afterPrepare: null });
 export function sampleSpaceAction(state, profile) {
   const phase = activePhase(state);
+  if (phase === 'standUp') return {...profile.poses.stand};
   if (phase === 'prepare') return blendPose(state.from, profile.poses[state.owner === 'hand' ? 'carry' : 'stand'], state.elapsed / .8);
   return sampleMotion(state, profile);
 }
@@ -44,6 +45,11 @@ export function stepSpaceAction(state, input, profile) {
     next.loop = false;
     if (next.phase === 'idle' && next.owner === 'ground') return out();
     if (next.owner === 'ground') {
+      if (['rest','standUp'].includes(activePhase(next))) {
+        next.phase='standUp';next.suspended=null;next.elapsed=0;next.error=null;
+        next.revision=input.revision;next.objectRevision=input.objectRevision;stop();
+        effects.push({type:'stand'});return out();
+      }
       if (['retract','rise'].includes(activePhase(next))) {
         next.phase = activePhase(next); next.suspended = null;
       } else {
@@ -64,7 +70,7 @@ export function stepSpaceAction(state, input, profile) {
     if (['idle','rest'].includes(next.suspended)) { next.phase = next.suspended; next.suspended = null; return out(); }
     if (traveling(next.suspended) || next.suspended === 'prepare' || next.revision !== input.revision || next.objectRevision !== input.objectRevision) {
       // Re-evaluate the still-owned object and target from the actual pose/root.
-      if (['lift','held','retract','rise'].includes(next.suspended)) { next.phase = next.suspended; next.suspended = null; next.revision = input.revision; next.objectRevision = input.objectRevision; next.stable = 0; }
+      if (['lift','held','retract','rise','standUp'].includes(next.suspended)) { next.phase = next.suspended; next.suspended = null; next.revision = input.revision; next.objectRevision = input.objectRevision; next.stable = 0; }
       else prepare(next.owner === 'ground' ? 'approach' : 'carry');
     } else { next.phase = next.suspended; next.suspended = null; next.stable = 0; }
     return out();
@@ -75,6 +81,12 @@ export function stepSpaceAction(state, input, profile) {
   if (next.phase === 'held' && next.loop && next.elapsed >= profile.seconds.held) { prepare('carry'); return out(); }
   const dt = Number.isFinite(input.dt) ? Math.max(0, Math.min(.05, input.dt)) : 0;
   if (next.phase === 'rest') return out();
+  if (next.phase === 'standUp') {
+    next.elapsed+=dt;
+    if(next.elapsed>=.8 && input.standingReady && !input.moving){next.phase='idle';next.elapsed=0;}
+    else if(next.elapsed>6)pause('stance-timeout');
+    return out();
+  }
   if (next.phase === 'prepare') {
     next.elapsed += dt;
     if (next.elapsed >= .8 && !input.moving && input.standingReady) {

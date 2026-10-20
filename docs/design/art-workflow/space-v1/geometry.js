@@ -1,3 +1,4 @@
+import {shellInterest} from '../../../../web/upstream/kit/personality.js';
 // Stage 1 editor geometry. These polylines prove clearance, never drive a body.
 export const WORLD = { width: 1080, height: 660, units: 'preview-css-px', origin: 'top-left', root: 'feet-midpoint' };
 // Conservative visual envelope for 180px DeepSeek + O03; checked against real
@@ -86,4 +87,15 @@ export function navigationModel(layout) {
 // screen-height elevations must not turn into floor walls or blocked contacts.
 export function actionNavigationModel(layout) {
   return navigationModel(layout);
+}
+
+// Only authored courtyard objects are interests; restricted content is never inspected.
+export function personalityInterests(layout) {
+ const plant=layout.objects.find(o=>o.id==='planter'),home=layout.objects.find(o=>o.id==='home');
+ return [plant&&{id:plant.id,kind:'plant',label:'花箱',focus:{x:plant.x+plant.w*.5,y:plant.y+plant.h*.35},targets:{
+   quiet:[{x:plant.x+plant.w*.5-210,y:plant.y+plant.h+125},{x:plant.x+plant.w*.5+210,y:plant.y+plant.h+125}],
+   lively:[{x:plant.x+plant.w*.5-160,y:plant.y+plant.h+60},{x:plant.x+plant.w*.5+160,y:plant.y+plant.h+60}]}},
+   home&&{id:home.id,kind:'home',label:'小窝',focus:{x:home.x+home.w*.5,y:home.y+home.h*.5},targets:{
+     quiet:[{x:home.x+home.w*.5+200,y:home.y+home.h+90}],lively:[{x:home.x+home.w*.5+200,y:home.y+home.h+90}]}},
+   shellInterest({x:layout.shell.x,y:layout.shell.y??layout.actor.y})].filter(Boolean);
 }
