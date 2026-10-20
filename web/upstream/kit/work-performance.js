@@ -26,10 +26,12 @@ export function stepWorkPerformance(previous,coordination,dt,{reduced=false}={})
  const seen=new Map(previous.seen),fresh=coordination.sessions.filter(f=>f.cue&&seen.get(f.sessionId)!==f.cue.id);
  for(const f of fresh)seen.set(f.sessionId,f.cue.id);
  const urgent=coordination.sessions.some(f=>f.requests.length||f.needsAttention);
- // Consume even suppressed/quiet cues: occupation release must not replay a backlog.
- const event=quiet?null:fresh.find(f=>f.sessionId===coordination.focus)??(!urgent?fresh.find(f=>f.cue.kind==='completed'||f.cue.kind==='stopped'||f.cue.kind==='reply'):null);
+ // Keep invitations/errors continuous, consuming suppressed cues without a
+ // backlog. Discard an earlier pulse too, so request release cannot reveal it.
+ const suppress=quiet||urgent;
+ const event=suppress?null:fresh.find(f=>f.sessionId===coordination.focus)??fresh.find(f=>f.cue.kind==='completed'||f.cue.kind==='stopped'||f.cue.kind==='reply');
  const state={key,age:previous.key===key?previous.age+step:0,time:previous.time+step,seen:[...seen],
-  cue:quiet?null:event?.cue??previous.cue,cueAge:event?0:previous.cueAge+step};
+  cue:suppress?null:event?.cue??previous.cue,cueAge:event?0:previous.cueAge+step};
  const style=styles[kind]??styles.unknown;
  let expression=style.expression, label=style.label;
  const pulse=state.cueAge<1.3?state.cue?.kind:null;

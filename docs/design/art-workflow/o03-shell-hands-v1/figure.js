@@ -123,7 +123,11 @@ export async function createMotionBody(base, options) {
     if(!personalView.active)actor.set({clearGesture:true});
     const workFeedback=performanceState.cue&&performanceState.cueAge<2.5;
     const expression=personalView.active&&!workFeedback?personalView.expression:performanceView.expression;
-    if(expression!==taskExpression){actor.set({expression});taskExpression=expression;}
+    if(expression!==taskExpression){
+      // Listening is a held body state, not an expression word. Clear the old
+      // expression when using it (or a missing word), then release it explicitly.
+      actor.set({listening:expression==='listening',expression:actor.words.includes(expression)?expression:null});taskExpression=expression;
+    }
     const aim=focused ? performanceView.look[0] : 0;
     if(coordination.phase!=='paused'){
       personalLook=personalLook.map((v,i)=>v+(personalView.look[i]-v)*Math.min(1,dt*6));

@@ -22,10 +22,10 @@ PORT=4189 node docs/design/art-workflow/preview-art-workflow.mjs
 3. 展开“参数与选择依据”，查看对象身份、注视点、可达站位、替代对象与评分、实际观察结果及理由。可分别修改两组参数；切换保留修改，“恢复本组参数”仅清除当前组覆盖。“模拟未知版本回退”会回到安静 v1，保留种子、序号和有效修改。
 4. 在坐姿或探索途中切换，观察从当前姿态安全退出、用当前根重新选择；不复位身体或拿放计数。输入 active／unknown、占用、关闭模式或移动许可会停下；拖动、Escape、布局变化和生命周期暂停仍须“继续”。
 5. 展开“工作事实与占用（模拟）”，注入审批／工作。原唯一协调器立即关注、取消探索并真实到岗；off 只限制可选日常，不吞工作请求。结算审批后驱动可能仍在运行，可用“普通回复”结束该轮；只有工作需求真正解除才重评日常。
-6. “减少动态”只保留中性原地停留；缺能力或缺词保守降级。对象要在真实到达、转向和注视后才算看过，刚看过的对象不立即重复来回，移动花箱后会重评新位置。无新邀请、台词、成长、相处存档或模型调用。“停止日常”安全退出，不删除实际物件。日常开启时手动拿放由协调器独占，可先停止再“开始整理”。
+6. “减少动态”只保留中性原地停留；缺能力或缺词保守降级。对象要在真实到达、转向和注视后才算看过，刚看过的对象不立即重复来回，移动花箱后会重评新位置；偏好对象的观察站位受阻时改选可达对象，全部受阻则中性停留，不记成看过。无新邀请、台词、成长、相处存档或模型调用。“停止日常”安全退出，不删除实际物件。日常开启时手动拿放由协调器独占，可先停止再“开始整理”。
 
 ```bash
-node node_modules/vitest/vitest.mjs run tests/personality.test.js tests/personality-feedback.test.js tests/stage5-controls.test.js tests/life-work.test.js tests/space-action.test.js tests/navigation.test.js
+node node_modules/vitest/vitest.mjs run tests/personality.test.js tests/personality-feedback.test.js tests/personality-controls.test.js tests/life-work.test.js tests/space-action.test.js tests/navigation.test.js
 SPACE_EVIDENCE_DIR=artifacts/stage-5a-browser-new node tests/personality-ui.mjs
 SPACE_EVIDENCE_DIR=artifacts/stage-5a-native-new node tests/personality-ui.mjs --native
 ```
@@ -63,7 +63,7 @@ SPACE_EVIDENCE_DIR=artifacts/stage-4-native-new node tests/life-work-ui.mjs --na
 
 第四阶段现在提供 A／B／C 独立来源、思考／输出／工具等待与单个返回、重试、完整审批 outcome、open／continued 问题、输出上限与取消。每次请求有独立身份；“发送已接受”仍不改变完成或请求。三个组合故事显式重建模拟来源，原子替换事实，不复位生活目标；可分别观察 A 工具／B 审批／C 完成、双流输出、active 目标与 continued 问题。
 
-交互会话与身体关注分别显示；选中 C 不会把身体从 B 的审批抢走。模拟草稿按会话保存，聚焦时暂停身体，后台状态继续更新；离开后重评。减少动态关闭空闲视线／手臂节奏及可选坐站。工具守候仅在持续等待时坐下、低频抬眼；新活动才起身，不周期反复坐站或假报进度。审批与问题以站立邀请回应；情绪幅度与节奏仍需主观验收。
+交互会话与身体关注分别显示；选中 C 不会把身体从 B 的审批抢走。模拟草稿按会话保存，聚焦时暂停身体，后台状态继续更新；离开后重评。减少动态关闭空闲视线／手臂节奏及可选坐站。工具守候仅在持续等待时坐下、低频抬眼；新活动才起身，不周期反复坐站或假报进度。审批与问题以站立邀请回应；期间的工具失败、重试和部分审批结算不会打断当前邀请，被抑制的短反馈也不在请求解除后补播。情绪幅度与节奏仍需主观验收。
 
 继续复用 4189 服务；为查看更新请另开页面，不刷新持有未导出布局的原页。执行 `node docs/design/art-workflow/space-v1/prepare-stage4.mjs` 准备同源模块。新增定向检查：
 

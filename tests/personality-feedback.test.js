@@ -1,7 +1,7 @@
 import {it,expect} from 'vitest';
 import {initialPersonality,configurePersonality,choosePersonality} from '../web/upstream/kit/personality.js';
 import {initialLifeWork,stepLifeWork} from '../web/upstream/kit/life-work.js';
-import {freshLayout,actionNavigationModel} from '../docs/design/art-workflow/space-v1/geometry.js';
+import {freshLayout,actionNavigationModel,personalityInterests} from '../docs/design/art-workflow/space-v1/geometry.js';
 const preset=id=>({...configurePersonality(initialPersonality(),{id,permissions:{mode:'quiet',input:'idle',roam:true}}),enabled:true});
 const inputs=()=>({now:50,dt:.05,personalityEnabled:true,action:{phase:'idle',owner:'ground',commits:{pickup:0,drop:0}},revision:1,model:actionNavigationModel(freshLayout()),bodyX:240,bodyY:555,words:['stand','sit','thinking','surprised','curious','happy','look','tilt','nod'],canNavigate:true,moving:false,speed:0,standingReady:true,interests:[]});
 it('ordinary quiet observation away from home does not automatically sit down',()=>{
@@ -10,6 +10,25 @@ it('ordinary quiet observation away from home does not automatically sit down',(
 });
 it('an empty courtyard supplies no object to explore and cannot be replaced by random waypoints',()=>{
  const p=choosePersonality(preset('lively'),inputs());expect(p.decision.kind).toBe('stay');expect(p.decision.target).toBeNull();
+});
+it('a blocked preferred object yields to a reachable object, including one already nearby',()=>{
+ const layout=freshLayout();layout.objects.find(o=>o.id==='planter').y=480;
+ const select=()=>choosePersonality(preset('lively'),{...inputs(),model:actionNavigationModel(layout),interests:personalityInterests(layout)}).decision;
+ const nearby=select();
+ expect(nearby.alternatives.find(i=>i.id==='planter').reachable).toBe(false);
+ expect(nearby).toMatchObject({interestId:'o03-shell',kind:'stay',reason:'observe-here'});
+ layout.shell.x=800;
+ const farther=select();expect(farther).toMatchObject({interestId:'o03-shell',kind:'explore',reason:'inspect-object'});
+ expect(farther.target).not.toBeNull();expect(farther.alternatives.find(i=>i.id===farther.interestId).reachable).toBe(true);
+});
+it('an entirely blocked courtyard stays neutral without recording an unreachable object as observed',()=>{
+ const layout=freshLayout();layout.objects.find(o=>o.id==='planter').y=480;
+ const input={...inputs(),model:actionNavigationModel(layout),interests:personalityInterests(layout).filter(i=>i.id==='planter')};
+ const personality=choosePersonality(preset('lively'),input);
+ expect(personality.decision).toMatchObject({kind:'stay',reason:'no-safe-target',interestId:null,focus:null,target:null});
+ let state={...initialLifeWork(),phase:'personal-dwell',revision:1,personality};
+ for(let n=0;n<60;n++)state=stepLifeWork(state,{...input,now:n*50,gazeReady:true,facingReady:true}).state;
+ expect(state.personality.observations).toEqual([]);expect(state.personality.decision.result).not.toBe('observed');
 });
 it('equal timing and movement probability still leave different ways of attending to the same object',()=>{
  const input={...inputs(),interests:[{id:'planter',kind:'plant',focus:{x:541,y:285},target:{x:400,y:440}}]};

@@ -84,6 +84,20 @@ try{
  }
  check(equalComparison[0].coordination.personality.decision.duration===equalComparison[1].coordination.personality.decision.duration,'equal timing stays exactly equal in both real runs');
  check(equalComparison[0].coordination.personality.decision.interestId!==equalComparison[1].coordination.personality.decision.interestId&&equalComparison[0].renderedFace!==equalComparison[1].renderedFace,'equal timing still changes actual object choice, stance and rendered expression');
+ // An unreachable preferred object must give way to a real reachable interest.
+ if(native){await page.reload();await ready();if((await frame()).coordination.phase==='paused'){await click('resume');await coord('idle');}}
+ else {await page.close();page=await context.newPage();bind();await open();}
+ await page.locator('.space-inspector').evaluate(el=>el.open=true);
+ for(const [id,x,y] of [['planter',485,480],['shell',800,555]]){
+   await page.selectOption('#object-select',id);await page.fill('#edit-x',String(x));await page.fill('#edit-y',String(y));await click('apply-placement');
+ }
+ await wait(()=>Math.abs(JSON.parse(document.querySelector('#world').dataset.frame).groundGrip.x-800)<1);
+ await enable('lively');await coord('personal-travel');const alternative=(await frame()).coordination.personality.decision;
+ check(alternative.interestId==='o03-shell'&&alternative.alternatives.find(i=>i.id==='planter').reachable===false&&alternative.target!==null,'blocked preferred flowerbox yields to a reachable shell route');
+ await coord('personal-dwell');f=await frame();
+ check(Math.hypot(f.bodyX-alternative.target.x,f.bodyY-alternative.target.y)<.5&&!f.moving&&f.sit<.05&&f.commits.pickup===0&&f.commits.drop===0,'alternative exploration really arrives standing without changing object ownership');
+ await wait(()=>JSON.parse(document.querySelector('#world').dataset.frame).coordination.personality.decision.result==='observed');f=await frame();
+ check(f.coordination.personality.observations.some(o=>o.id==='o03-shell')&&!f.coordination.personality.observations.some(o=>o.id==='planter'),'only the reachable attended object is recorded as observed');await mark('07-blocked-interest-alternative');
  check(errors.length===0,'no page errors');
  await writeFile(join(output,'personality.json'),JSON.stringify({passed:true,sourceIdentity,native,simulatedPermissions:true,simulatedHarness:true,modelCalls:0,realHarness:false,physicalDeviceAcceptance:false,userAcceptance:false,runtime:native?await browser.evaluate(()=>process.versions):browser.version(),checks,errors,quiet,lively,equalComparison,milestones,snapshot:await page.evaluate(()=>window.spacePreview.snapshot())},null,2)+'\n');
  console.log(JSON.stringify({passed:true,checks:checks.length,native,output}));
