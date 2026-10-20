@@ -9,8 +9,9 @@ const $ = id => document.getElementById(id), world = $('world');
 const spec = await (await fetch('/web/props/shell/asset.json')).json();
 const shellImage = new Image(); shellImage.src = '/web/props/shell/shell.png'; await shellImage.decode();
 const preset=new URLSearchParams(location.search).get('layout');
-const startingLayout=preset==='flowerbox-570-515'?await(await fetch('./layouts/flowerbox-570-515.json')).json():freshLayout();
-if (continuous) { startingLayout.shell.y = startingLayout.actor.y; startingLayout.destinationY = 600; }
+const layoutPresets={'flowerbox-570-515':'flowerbox-570-515.json','stage-3-feedback-20261020':'stage-3-feedback-20261020.json','stage-3-feedback-moved-20261020':'stage-3-feedback-moved-20261020.json'};
+const startingLayout=layoutPresets[preset]?await(await fetch('./layouts/'+layoutPresets[preset])).json():freshLayout();
+if (continuous) { startingLayout.shell.y ??= startingLayout.actor.y; startingLayout.destinationY ??= 600; }
 let layout = startingLayout, body, current, painted, selected = 'actor', busyEdit = true, drag, blockedBackup, pending, painting = false, epoch = 0;
 let navId=0, navGeneration=1, navTarget=null, navPlan=null, navActive=false, navPaused=false;
 const sceneOrder=()=>occlusionOrder(continuous&&separateGroundProp(current)?[...layout.objects,{id:'ground-shell',layer:'depth',y:current.groundQuad[2].y,h:0}]:layout.objects,rootPosition().y);
@@ -37,9 +38,9 @@ function geometry() {
   const conflicts=route.direct?.violations??[];
   const reasons={'start-blocked':'当前位置与实体或禁区重叠','target-blocked':'目标与实体或禁区重叠','disconnected-in-rectangle-model':'当前模型与精度内各通道受阻'};
   const envelopeLabel=k=>k==='ground-solid'?'实体地面占用':k==='full-body-restricted'?'完整身体禁区':'完整身体范围';
-  $('route-detail').textContent = `${reasons[route.reason]??(route.alternative?'当前直线路线冲突，已搜索绕路':'直线路线无冲突')}。${conflicts.map(v=>`第 ${v.segment} 段 / ${layout.objects.find(o=>o.id===v.obstacle)?.label??v.obstacle} / ${envelopeLabel(v.envelope)}`).join('；')}。${continuous?'连续动作模式：实体立面、内容禁区和世界边界均按 200×213px 完整身体／持物包络避让。':'实体按 200×32px 身体占地绕行；禁区和边界按 200×213px 完整身体避让。立面可前后遮挡。'}均另留 12px；规划精度 0.5px。`;
+  $('route-detail').textContent = `${reasons[route.reason]??(route.alternative?'当前直线路线冲突，已搜索绕路':'直线路线无冲突')}。${conflicts.map(v=>`第 ${v.segment} 段 / ${layout.objects.find(o=>o.id===v.obstacle)?.label??v.obstacle} / ${envelopeLabel(v.envelope)}`).join('；')}。${continuous?'连续动作模式：实体按 200×32px 地面占地绕行；内容禁区、边界及未标定实体按 200×213px 完整身体／持物包络避让。立面参与纵深遮挡。':'实体按 200×32px 身体占地绕行；禁区和边界按 200×213px 完整身体避让。立面可前后遮挡。'}均另留 12px；规划精度 0.5px。`;
   const points = routePoints.map(p=>`${p.x},${p.y}`).join(' ');
-  $('route-layer').innerHTML = `<path d="M${gateTop.x} ${gateTop.y}L${gateBottom.x} ${gateBottom.y}" stroke="#b6bca0" stroke-width="25" opacity=".2"/><path d="M${gateTop.x} ${gateTop.y}L${gateBottom.x} ${gateBottom.y}" stroke="#b3b99a" stroke-dasharray="4 7"/>${routePoints.map(p=>svgRect(footprint(p,continuous?BODY:GROUND_BODY,BODY.turn),'rx="10" fill="#abc5bb" fill-opacity=".07" stroke="#9bb8aa" stroke-dasharray="3 6" stroke-opacity=".5"')).join('')}<polyline points="${points}" fill="none" stroke="${route.passed?'#8caba1':'#c49a71'}" stroke-width="3" stroke-linejoin="round" stroke-dasharray="4 9"/>${routePoints.map((p,i)=>`<circle cx="${p.x}" cy="${p.y}" r="${i===0||i===routePoints.length-1?6:3}" fill="#f6f7ed" stroke="#8eada2"/><text x="${p.x+10}" y="${p.y+20}" fill="#8fa89d" font-size="9">${i===0?'路线起点':i===routePoints.length-1?'当前目标':i}</text>`).join('')}<ellipse cx="${layout.destination}" cy="${continuous?layout.destinationY:layout.actor.y}" rx="24" ry="6" fill="none" stroke="#b4a27a" stroke-dasharray="3 3"/><text x="${layout.destination-18}" y="${(continuous?layout.destinationY:layout.actor.y)+25}" font-size="9" fill="#a89879">放置点</text>`;
+  $('route-layer').innerHTML = `<path d="M${gateTop.x} ${gateTop.y}L${gateBottom.x} ${gateBottom.y}" stroke="#b6bca0" stroke-width="25" opacity=".2"/><path d="M${gateTop.x} ${gateTop.y}L${gateBottom.x} ${gateBottom.y}" stroke="#b3b99a" stroke-dasharray="4 7"/>${routePoints.map(p=>svgRect(footprint(p,GROUND_BODY,BODY.turn),'rx="10" fill="#abc5bb" fill-opacity=".07" stroke="#9bb8aa" stroke-dasharray="3 6" stroke-opacity=".5"')).join('')}<polyline points="${points}" fill="none" stroke="${route.passed?'#8caba1':'#c49a71'}" stroke-width="3" stroke-linejoin="round" stroke-dasharray="4 9"/>${routePoints.map((p,i)=>`<circle cx="${p.x}" cy="${p.y}" r="${i===0||i===routePoints.length-1?6:3}" fill="#f6f7ed" stroke="#8eada2"/><text x="${p.x+10}" y="${p.y+20}" fill="#8fa89d" font-size="9">${i===0?'路线起点':i===routePoints.length-1?'当前目标':i}</text>`).join('')}<ellipse cx="${layout.destination}" cy="${continuous?layout.destinationY:layout.actor.y}" rx="24" ry="6" fill="none" stroke="#b4a27a" stroke-dasharray="3 3"/><text x="${layout.destination-18}" y="${(continuous?layout.destinationY:layout.actor.y)+25}" font-size="9" fill="#a89879">放置点</text>`;
   $('zones').innerHTML = layout.zones.map(z=>`<div class="zone ${z.id==='work'?'work':''}" style="left:${z.x}px;top:${z.y}px;width:${z.w}px;height:${z.h}px"></div>`).join('');
   const order = sceneOrder(), ranks = new Map(order.map((id,i)=>[id,10+i]));
   for (const object of layout.objects) {
@@ -152,6 +153,7 @@ async function paint(v,detail) {
   }finally{bodyImage?.close();frontImage?.close();}
   }}catch(error){fail(error);}finally{painting=false;}
 }
+const actionErrors={'target-blocked':'接近站位被实体占地或内容禁区挡住','start-blocked':'当前位置与实体占地或内容禁区重叠','disconnected-in-rectangle-model':'当前地面模型下没有可达路线','world-changed':'布局已改变，需要从当前位置重新规划'};
 function onFrame(v) {
   const detail=v.detail;v={...v};delete v.detail;
   if(!v.handArt||!detail?.frontHref)return;
@@ -164,7 +166,7 @@ function onFrame(v) {
   if(before&&before.generation===v.generation&&before.owner!==v.owner){const a=before.owner==='ground'?before.groundQuad:before.heldQuad,b=v.owner==='ground'?v.groundQuad:v.heldQuad;for(let i=0;i<3;i++)measurements.ownerSwitchJump=Math.max(measurements.ownerSwitchJump,Math.hypot(a[i].x-b[i].x,a[i].y-b[i].y));}
   $('counts').textContent=`${v.commits.pickup} / ${v.commits.drop}`;$('binding').textContent=`${v.bindingError.toFixed(3)} px`;$('owner').textContent=v.owner==='ground'?'地面':'手中';
   $('phase-label').textContent=`${v.navigation?.id!=null?'二维运动 / '+v.navigation.phase:phases[v.phase]??v.phase} · ${Number($('speed').value)}×`;
-  $('action-status').textContent=continuous ? v.error?`已暂停：${v.error}，核对目标后继续。`:`${phases[v.phase]??v.phase} · 真实二维接近 / 接触提交 / 拥有权保留` : v.error?`接触暂停：${v.error}`:busyEdit?'编辑试摆中…':v.phase==='idle'?navigationBusy()?'正在沿完整身体路径行走；拿放在停稳并返回水平平面后可用。':!actionSafe()?'离开操作平面或实体冲突，请复位动作后拿放。':actionRoute(layout).passed?'点击“重复拿放”执行一次完整闭环，可继续重复；编辑对象后检查布局。':'操作平面与实体冲突，拿放已锁定。先移动对象或恢复样板。':v.phase==='paused'?'动作时钟与物件拥有权已冻结，可继续或在非行走阶段逐帧检查。':`${phases[v.phase]??v.phase} · 真实水平拿放，未执行二维导航`;
+  $('action-status').textContent=continuous ? v.error?`已暂停：${actionErrors[v.error]??v.error}，核对目标后继续。`:`${phases[v.phase]??v.phase} · 真实二维接近 / 接触提交 / 拥有权保留` : v.error?`接触暂停：${v.error}`:busyEdit?'编辑试摆中…':v.phase==='idle'?navigationBusy()?'正在沿完整身体路径行走；拿放在停稳并返回水平平面后可用。':!actionSafe()?'离开操作平面或实体冲突，请复位动作后拿放。':actionRoute(layout).passed?'点击“重复拿放”执行一次完整闭环，可继续重复；编辑对象后检查布局。':'操作平面与实体冲突，拿放已锁定。先移动对象或恢复样板。':v.phase==='paused'?'动作时钟与物件拥有权已冻结，可继续或在非行走阶段逐帧检查。':`${phases[v.phase]??v.phase} · 真实水平拿放，未执行二维导航`;
   const r=footprint({x:v.bodyX,y:current?.bodyY??layout.actor.y});Object.assign($('actor-hit').style,{left:r.x+'px',top:r.y+'px',width:r.w+'px',height:r.h+'px'});
   const q=v.owner==='ground'?v.groundQuad:v.heldQuad;Object.assign($('shell-hit').style,{left:Math.min(...q.map(p=>p.x))-5+'px',top:Math.min(...q.map(p=>p.y))-5+'px',width:'50px',height:'42px'});
   $('anchors-layer').innerHTML=anchorSvg(v)+(document.getElementById('show-occlusion').checked?navigationModel(layout).obstacles.map(o=>svgRect(o,'fill="#b08e7722" stroke="#b08e77"')+svgRect(o.silhouette,'fill="none" stroke="#b08e77" stroke-dasharray="4 3"')).join('')+obstaclesFor(navigationModel(layout)).map(o=>svgRect(o,'fill="none" stroke="#739c9b" opacity=".3"')).join(''):'');
@@ -213,7 +215,7 @@ $('nav-pause').onclick=()=>pauseNavigation();
 $('nav-resume').onclick=async()=>{command({type:'resume'});await waitFor(()=>current?.phase==='idle');if(navTarget)navigateTo(navTarget);};
 world.addEventListener('click',e=>{if(e.target.closest('button,input,select'))return;const r=world.getBoundingClientRect(),scale=r.width/WORLD.width;navigateTo({x:(e.clientX-r.left)/scale,y:(e.clientY-r.top)/scale});});
 function fit(){world.style.transform=`scale(${document.querySelector('.stage-wrap').clientWidth/WORLD.width})`;}
-if(continuous){document.querySelector('.stage-tag').textContent='03 / 连续动作与物件';$('stage-3-link').hidden=true;$('sit').hidden=false;document.querySelector('.boundary').textContent='第三阶段隔离制作预览：坐姿起身、二维走近与持物、稳定接触、打断续接；完整身体避让立面。未接入自主调度或真实工作事实。';}
+if(continuous){document.querySelector('.stage-tag').textContent='03 / 连续动作与物件';$('stage-3-link').hidden=true;$('sit').hidden=false;document.querySelector('.boundary').textContent='第三阶段隔离制作预览：坐姿起身、二维走近与持物、稳定接触、打断续接；实体地面绕行，内容禁区完整避让。未接入自主调度或真实工作事实。';}
 new ResizeObserver(fit).observe(document.querySelector('.stage-wrap'));fit();geometry();select('actor');
 document.querySelector('details').ontoggle=e=>{if(e.target.open)$('report').textContent=JSON.stringify(exportState(),null,2);};
 // Start the only clock before awaiting edit initialization. A reset is an

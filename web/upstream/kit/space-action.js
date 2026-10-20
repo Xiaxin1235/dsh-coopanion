@@ -73,7 +73,7 @@ export function stepSpaceAction(state, input, profile) {
     if (next.walkingTime > 30) { pause('arrival-timeout'); return out(); }
     const event = input.event, identity = next.navigation;
     if (!identity || !event || event.id !== identity.id || event.generation !== identity.generation || event.revision !== identity.revision) return out();
-    if (event.kind !== 'navigation-arrived' || Math.hypot(input.bodyX-next.route.x, input.bodyY-next.route.y) > .5 || input.speed > .001) { pause('interrupted'); return out(); }
+    if (event.kind !== 'navigation-arrived' || Math.hypot(input.bodyX-next.route.x, input.bodyY-next.route.y) > .5 || input.speed > .001) { pause(event.kind === 'navigation-interrupted' ? event.by || 'interrupted' : 'interrupted'); return out(); }
     next.navigation = null; next.walkId = null;
     next.from = { ...sampleSpaceAction(next, profile), ...input.angles, look: [3, 0] };
     next.phase = next.phase === 'approach' ? 'settle' : 'settleDrop'; next.elapsed = next.stable = 0;

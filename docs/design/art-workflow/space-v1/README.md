@@ -57,7 +57,7 @@ SPACE_EVIDENCE_DIR=artifacts/stage-2-showcase-new node tests/navigation-showcase
 1. 按“坐下”，再按“拿起”或“重复拿放”：从当前坐姿起身，实际走近、停稳、转身、伸手并稳定接触后拿起。
 2. 选择“贝壳落点”编辑 X / Y；物件和落点不再绑定角色初始平面。按“放下”执行持物二维行走、接触、张手、收手与起身退出。完整闭环也可反复执行。
 3. “暂停／继续”保留姿态、位置、开合和拥有权；伸手前后或持物时直接拖动角色会暂停，松手再继续时从实际位置重规划。实体或落点修改也暂停旧目标，拿放提交不重复。
-4. “复位动作”及数值试摆角色是明确重置，清空计数；直接拖动保留计数。该模式采用完整身体／持物包络避让实体立面，部分第 2 期地面路线会保守拒绝；界面与导出 `schema:3` 标明当前模式。
+4. “复位动作”及数值试摆角色是明确重置，清空计数；直接拖动保留计数。该模式与手动行走共用实体地面占地绕行及完整内容禁区避让；完整身体／持物包络继续检查。界面与导出 `schema:3` 标明当前模式。
 
 ```bash
 node node_modules/vitest/vitest.mjs run tests/space-action.test.js
@@ -68,3 +68,15 @@ DSH_SPACE_STAGE=3 node scripts/space-desktop.mjs
 ```
 
 原生操作串行。测试绑定源码 SHA-256 和实际运行时，输出 JSON、画面和页面实录；原生额外覆盖受控 `powerMonitor` suspend，并清理 profile。该入口未接入真实 Harness、模型、自主生活／工作双线或持久存档。
+
+### 第 3 期花箱反馈复现
+
+[花箱原位 `(580,528)`](http://127.0.0.1:4189/docs/design/art-workflow/space-v1/index.html?stage=3&layout=stage-3-feedback-20261020)可点击“走到岗位”绕行；[移开至 `(558,252)` 并从岗位接近贝壳](http://127.0.0.1:4189/docs/design/art-workflow/space-v1/index.html?stage=3&layout=stage-3-feedback-moved-20261020)可直接按“拿起”。它们是独立新页面，不覆盖已有未导出布局。
+
+花箱和角色坐标来自截图控件；北柱 y=18 按 564px 门槛间隙重建，贝壳约按 x=335/y=450 重建，属于截图近似而非用户布局导出。单元覆盖邻近贝壳纵深，真实浏览器／原生复测沿用上述明确夹具。修复统一手动／动作的实体地面模型，内容禁区和世界边界不缩小。
+
+```bash
+node node_modules/vitest/vitest.mjs run tests/space-feedback.test.js
+SPACE_EVIDENCE_DIR=artifacts/stage-3-feedback-new node tests/space-feedback-ui.mjs
+SPACE_EVIDENCE_DIR=artifacts/stage-3-feedback-native-new node tests/space-feedback-ui.mjs --native
+```

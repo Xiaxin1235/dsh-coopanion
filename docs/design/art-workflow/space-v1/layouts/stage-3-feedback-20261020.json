@@ -1,0 +1,135 @@
+{
+  "revision": 1,
+  "actor": {
+    "x": 112,
+    "y": 640
+  },
+  "shell": {
+    "x": 335,
+    "width": 40,
+    "y": 450
+  },
+  "destination": 390,
+  "objects": [
+    {
+      "id": "home",
+      "label": "小窝",
+      "asset": "home.svg",
+      "x": 65,
+      "y": 155,
+      "w": 210,
+      "h": 175,
+      "solid": true,
+      "layer": "depth",
+      "anchor": [
+        170,
+        330
+      ]
+    },
+    {
+      "id": "station",
+      "label": "工作岗位",
+      "asset": "station.svg",
+      "x": 820,
+      "y": 245,
+      "w": 170,
+      "h": 120,
+      "solid": true,
+      "layer": "depth",
+      "anchor": [
+        850,
+        600
+      ]
+    },
+    {
+      "id": "planter",
+      "label": "珊瑚花箱",
+      "asset": "planter.svg",
+      "x": 580,
+      "y": 528,
+      "w": 112,
+      "h": 105,
+      "solid": true,
+      "layer": "depth"
+    },
+    {
+      "id": "gate-north",
+      "label": "门槛北柱",
+      "asset": "post.svg",
+      "x": 621,
+      "y": 18,
+      "w": 28,
+      "h": 40,
+      "solid": true,
+      "layer": "depth"
+    },
+    {
+      "id": "gate-south",
+      "label": "门槛南柱",
+      "asset": "post.svg",
+      "x": 621,
+      "y": 622,
+      "w": 28,
+      "h": 32,
+      "solid": true,
+      "layer": "depth"
+    },
+    {
+      "id": "panel",
+      "label": "手动内容禁区",
+      "x": 755,
+      "y": 40,
+      "w": 280,
+      "h": 195,
+      "solid": true,
+      "layer": "restricted"
+    }
+  ],
+  "zones": [
+    {
+      "id": "life",
+      "label": "生活区",
+      "x": 35,
+      "y": 155,
+      "w": 410,
+      "h": 470
+    },
+    {
+      "id": "work",
+      "label": "岗位区",
+      "x": 735,
+      "y": 250,
+      "w": 300,
+      "h": 375
+    }
+  ],
+  "route": [
+    {
+      "x": 240,
+      "y": 555
+    },
+    {
+      "x": 450,
+      "y": 555
+    },
+    {
+      "x": 540,
+      "y": 575
+    },
+    {
+      "x": 700,
+      "y": 600
+    },
+    {
+      "x": 850,
+      "y": 600
+    }
+  ],
+  "destinationY": 600,
+  "source": {
+    "kind": "screenshot-feedback-reconstruction",
+    "date": "2026-10-20",
+    "exact": "planter coordinates and actor root read from screenshot controls",
+    "approximate": "north y=18 inferred from 564px threshold gap; shell x=335/y=450 reconstructed near screenshot position, not an exported user layout"
+  }
+}

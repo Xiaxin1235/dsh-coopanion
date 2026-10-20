@@ -81,9 +81,9 @@ export function navigationModel(layout) {
     })};
 }
 
-// Stage 3 uses the complete body/held-prop envelope against visible solids too.
-// This conservative mode does not generalize the stage-2 ground-only promise.
+// Actions share the calibrated depth-space model with manual navigation.
+// The full horizontal body/held-prop envelope remains in the ground footprint;
+// screen-height elevations must not turn into floor walls or blocked contacts.
 export function actionNavigationModel(layout) {
-  const model = navigationModel(layout);
-  return { ...model, obstacles: model.obstacles.map(o => ({ ...o, ...o.silhouette, kind: 'full-body-restricted' })) };
+  return navigationModel(layout);
 }

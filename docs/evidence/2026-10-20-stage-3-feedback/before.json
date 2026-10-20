@@ -1,0 +1,2289 @@
+{
+  "passed": false,
+  "sourceIdentity": {
+    "baseCommit": "2c3971bfb60693cc6d22d1ef167dfb8ce8ebb024",
+    "node": "v24.21.0",
+    "platform": "darwin",
+    "sources": {
+      "web/prop-motion.js": "630785f93911f7987a911b878f342322fb8c2aef60b4c09380f0956ed314ce57",
+      "web/upstream/kit/space-action.js": "c8e73c5004a2173bb2be761dc1c438aa8835c057212d60dec0dcc62cc78cab76",
+      "web/upstream/kit/navigation.js": "c997f0d031c90a4863c6dc455b31c107e10adae14afe82af9bf83c4f4b856107",
+      "web/upstream/kit/body.js": "f787f44d659d390de9a005285311d70e280e12e4e04222233aeee0a93f871152",
+      "web/upstream/kit/raster.js": "be2ee9bbee2bbccf14548d79c31bfea9ba68304b44b06cf67b8cbdeedb784672",
+      "web/upstream/whale/figure.js": "a6501327640faf7e985314105e4e12a40b53ffccb8e21f1771bcc5f8c7f6d613",
+      "web/upstream/whale/hand-art.js": "d8ff703fc656d90faa86441d116daaa9b26b6bf38aa71e92cc4018668849d119",
+      "web/upstream/body-host.js": "d2b8dba27e2085c75cee6cdf0a8a5673f038ac9a208d175c67fa7a64e45a6e2b",
+      "web/upstream/figure-frame.js": "a4812b5e8c90f4ed9fd58522faf9f33d7aee9e534689a856c2c1f62ecd87a25b",
+      "desktop/space-preview.cjs": "ecb05a1a01bcb3e88deb96fb2d244c7e3f8fa3d4d5f59e87659b8187cf7ed131",
+      "docs/design/art-workflow/space-v1/scene.js": "5f83033cd87e3f94c6e99f67b786938288820043829d7f1e7a3d149598db88ff",
+      "docs/design/art-workflow/space-v1/geometry.js": "dcabbd66cf197740132526464458a3c680cb1a75ef4b3b37a5c6731dd26204db",
+      "docs/design/art-workflow/space-v1/index.html": "15f69c0ecda3a740bdab46f87b1f465cefd4ac80435e9c5cdd61af47ac275ce3",
+      "docs/design/art-workflow/space-v1/style.css": "92cb34bef2ee090a0c731ce9d00fdb98429c76b8c8fbbcfcbda19ec416881546",
+      "docs/design/art-workflow/o03-shell-hands-v1/figure.js": "4f8e3451435de66261f55b4f8c0264be0541b0e0edd4c5623a104e53cd53ebaa",
+      "docs/design/art-workflow/o03-shell-hands-v1/composition.js": "49b35979d8a25efa34284f322043292963a9f8364cad778894de76b5577df9b0",
+      "docs/design/art-workflow/o03-shell-hands-v1/scene-model.json": "542ae9eece080a49a82619e0ae99f8d8bd6e328ec2f7c47d6ccde82c37bd8c77",
+      "web/props/shell/shell.png": "542b49cffbec43e41b4ca75a0ae184302b1e384b27539ff957806c71d28b910d",
+      "web/props/shell/asset.json": "db1cd6cc6dc21dd178fa95b8a49c0bed503755b06f4dee8a5fed52da139a2a65",
+      "web/props/shell/hands/asset.json": "489b3619c85ef34ec430a1c217adec4fcb8f10ebfd116a635d462352e4de26b4",
+      "web/props/shell/hands/grip.png": "5770450595803b4586fb8574e5135148b522b116e7f6d3de25f6e7643f91b930",
+      "tests/space-action-ui.mjs": "0659ee69d9b90b602b12d1f703da43c9a5ca2f3e55024b59c14891ad1d8d456a"
+    },
+    "digest": "5302d5703d0824b19f8e5c8ecd05b35b55ef49954fbe8d4b5c4e33cc0c9fffd4"
+  },
+  "native": false,
+  "checks": [
+    {
+      "passed": false,
+      "label": "580/528 flowerbox permits a route to work"
+    },
+    {
+      "passed": true,
+      "label": "moved flowerbox permits work arrival"
+    },
+    {
+      "passed": false,
+      "label": "real pickup after work reaches the shell and commits exactly once"
+    },
+    {
+      "passed": true,
+      "label": "all observed actual body segments respect the ground/full-body collision model"
+    },
+    {
+      "passed": true,
+      "label": "contact transfer retains texture and anchor continuity"
+    },
+    {
+      "passed": true,
+      "label": "no browser errors"
+    }
+  ],
+  "errors": [],
+  "first": {
+    "schema": 3,
+    "scope": "stage-3-continuous-actions",
+    "world": {
+      "width": 1080,
+      "height": 660,
+      "units": "preview-css-px",
+      "origin": "top-left",
+      "root": "feet-midpoint"
+    },
+    "bodyEnvelope": {
+      "size": 180,
+      "left": 100,
+      "right": 100,
+      "top": 205,
+      "bottom": 8,
+      "turn": 12
+    },
+    "groundEnvelope": {
+      "left": 100,
+      "right": 100,
+      "top": 24,
+      "bottom": 8
+    },
+    "layout": {
+      "revision": 5,
+      "actor": {
+        "x": 112,
+        "y": 640
+      },
+      "shell": {
+        "x": 335,
+        "width": 40,
+        "y": 450
+      },
+      "destination": 390,
+      "objects": [
+        {
+          "id": "home",
+          "label": "小窝",
+          "asset": "home.svg",
+          "x": 65,
+          "y": 155,
+          "w": 210,
+          "h": 175,
+          "solid": true,
+          "layer": "depth",
+          "anchor": [
+            170,
+            330
+          ]
+        },
+        {
+          "id": "station",
+          "label": "工作岗位",
+          "asset": "station.svg",
+          "x": 820,
+          "y": 245,
+          "w": 170,
+          "h": 120,
+          "solid": true,
+          "layer": "depth",
+          "anchor": [
+            850,
+            600
+          ]
+        },
+        {
+          "id": "planter",
+          "label": "珊瑚花箱",
+          "asset": "planter.svg",
+          "x": 580,
+          "y": 528,
+          "w": 112,
+          "h": 105,
+          "solid": true,
+          "layer": "depth"
+        },
+        {
+          "id": "gate-north",
+          "label": "门槛北柱",
+          "asset": "post.svg",
+          "x": 621,
+          "y": 18,
+          "w": 28,
+          "h": 40,
+          "solid": true,
+          "layer": "depth"
+        },
+        {
+          "id": "gate-south",
+          "label": "门槛南柱",
+          "asset": "post.svg",
+          "x": 621,
+          "y": 622,
+          "w": 28,
+          "h": 32,
+          "solid": true,
+          "layer": "depth"
+        },
+        {
+          "id": "panel",
+          "label": "手动内容禁区",
+          "x": 755,
+          "y": 40,
+          "w": 280,
+          "h": 195,
+          "solid": true,
+          "layer": "restricted"
+        }
+      ],
+      "zones": [
+        {
+          "id": "life",
+          "label": "生活区",
+          "x": 35,
+          "y": 155,
+          "w": 410,
+          "h": 470
+        },
+        {
+          "id": "work",
+          "label": "岗位区",
+          "x": 735,
+          "y": 250,
+          "w": 300,
+          "h": 375
+        }
+      ],
+      "route": [
+        {
+          "x": 240,
+          "y": 555
+        },
+        {
+          "x": 450,
+          "y": 555
+        },
+        {
+          "x": 540,
+          "y": 575
+        },
+        {
+          "x": 700,
+          "y": 600
+        },
+        {
+          "x": 850,
+          "y": 600
+        }
+      ],
+      "destinationY": 600
+    },
+    "route": {
+      "revision": 5,
+      "precision": 0.5,
+      "model": "finite ground bodies / full-body restricted volumes",
+      "direct": {
+        "passed": false,
+        "violations": [
+          {
+            "segment": 1,
+            "obstacle": "planter",
+            "envelope": "full-body-restricted"
+          },
+          {
+            "segment": 1,
+            "obstacle": "gate-south",
+            "envelope": "full-body-restricted"
+          }
+        ]
+      },
+      "passed": false,
+      "reason": "disconnected-in-rectangle-model",
+      "points": []
+    },
+    "legacyRoute": {
+      "passed": false,
+      "violations": [
+        {
+          "segment": 2,
+          "obstacle": "planter"
+        },
+        {
+          "segment": 3,
+          "obstacle": "planter"
+        },
+        {
+          "segment": 4,
+          "obstacle": "planter"
+        }
+      ],
+      "length": 614,
+      "body": {
+        "size": 180,
+        "left": 100,
+        "right": 100,
+        "top": 205,
+        "bottom": 8,
+        "turn": 12
+      },
+      "margin": 12,
+      "revision": 5
+    },
+    "navigationModel": {
+      "revision": 5,
+      "width": 1080,
+      "height": 660,
+      "body": {
+        "size": 180,
+        "left": 100,
+        "right": 100,
+        "top": 205,
+        "bottom": 8,
+        "turn": 12
+      },
+      "groundBody": {
+        "left": 100,
+        "right": 100,
+        "top": 24,
+        "bottom": 8
+      },
+      "margin": 12,
+      "obstacles": [
+        {
+          "id": "home",
+          "label": "小窝",
+          "kind": "full-body-restricted",
+          "x": 83,
+          "y": 157,
+          "w": 176,
+          "h": 164,
+          "silhouette": {
+            "x": 83,
+            "y": 157,
+            "w": 176,
+            "h": 164
+          },
+          "art": {
+            "x": 65,
+            "y": 155,
+            "w": 210,
+            "h": 175
+          }
+        },
+        {
+          "id": "station",
+          "label": "工作岗位",
+          "kind": "full-body-restricted",
+          "x": 827,
+          "y": 251,
+          "w": 156,
+          "h": 109,
+          "silhouette": {
+            "x": 827,
+            "y": 251,
+            "w": 156,
+            "h": 109
+          },
+          "art": {
+            "x": 820,
+            "y": 245,
+            "w": 170,
+            "h": 120
+          }
+        },
+        {
+          "id": "planter",
+          "label": "珊瑚花箱",
+          "kind": "full-body-restricted",
+          "x": 586,
+          "y": 534,
+          "w": 101,
+          "h": 91,
+          "silhouette": {
+            "x": 586,
+            "y": 534,
+            "w": 101,
+            "h": 91
+          },
+          "art": {
+            "x": 580,
+            "y": 528,
+            "w": 112,
+            "h": 105
+          }
+        },
+        {
+          "id": "gate-north",
+          "label": "门槛北柱",
+          "kind": "full-body-restricted",
+          "x": 624,
+          "y": 20,
+          "w": 22,
+          "h": 34,
+          "silhouette": {
+            "x": 624,
+            "y": 20,
+            "w": 22,
+            "h": 34
+          },
+          "art": {
+            "x": 621,
+            "y": 18,
+            "w": 28,
+            "h": 40
+          }
+        },
+        {
+          "id": "gate-south",
+          "label": "门槛南柱",
+          "kind": "full-body-restricted",
+          "x": 624,
+          "y": 623.6,
+          "w": 22,
+          "h": 27.2,
+          "silhouette": {
+            "x": 624,
+            "y": 623.6,
+            "w": 22,
+            "h": 27.2
+          },
+          "art": {
+            "x": 621,
+            "y": 622,
+            "w": 28,
+            "h": 32
+          }
+        },
+        {
+          "id": "panel",
+          "label": "手动内容禁区",
+          "kind": "full-body-restricted",
+          "x": 755,
+          "y": 40,
+          "w": 280,
+          "h": 195,
+          "silhouette": {
+            "x": 755,
+            "y": 40,
+            "w": 280,
+            "h": 195
+          },
+          "art": {
+            "x": 755,
+            "y": 40,
+            "w": 280,
+            "h": 195
+          }
+        }
+      ]
+    },
+    "navigation": {
+      "id": 1,
+      "generation": 3,
+      "target": {
+        "x": 850,
+        "y": 600
+      },
+      "active": false,
+      "paused": false
+    },
+    "horizontalAction": {
+      "passed": true,
+      "violations": [],
+      "length": 358,
+      "body": {
+        "size": 180,
+        "left": 100,
+        "right": 100,
+        "top": 205,
+        "bottom": 8,
+        "turn": 12
+      },
+      "margin": 0,
+      "revision": 5
+    },
+    "measuredRaster": {
+      "frames": 2,
+      "left": 71,
+      "right": 53,
+      "top": 165,
+      "bottom": 0,
+      "binding": 0,
+      "wrongLayers": 0,
+      "ownerMismatches": 0,
+      "ownerSwitchJump": 0
+    },
+    "occlusion": [
+      "gate-north",
+      "home",
+      "station",
+      "ground-shell",
+      "planter",
+      "body-shell-fingers",
+      "gate-south"
+    ],
+    "asset": "/web/props/shell/asset.json",
+    "navigationImplemented": true,
+    "frame": {
+      "phase": "idle",
+      "suspended": null,
+      "elapsed": 0.41660000000000014,
+      "owner": "ground",
+      "renderedOwner": "ground",
+      "generation": 3,
+      "walkId": null,
+      "commits": {
+        "pickup": 0,
+        "drop": 0
+      },
+      "error": null,
+      "inspection": null,
+      "loop": false,
+      "bodyX": 112,
+      "bodyY": 640,
+      "navigation": {
+        "x": 112,
+        "y": 640,
+        "speed": 0,
+        "facing": 1,
+        "phase": "idle",
+        "id": null,
+        "generation": 0,
+        "revision": 0,
+        "plan": null
+      },
+      "bubble": {
+        "x": 112,
+        "y": 470.0486270433544
+      },
+      "hit": [
+        {
+          "x": 112,
+          "y": 548.5975809308796,
+          "r": 75.9375
+        }
+      ],
+      "moving": false,
+      "facing": 1,
+      "visualFacing": 1,
+      "destinationX": 390,
+      "destinationY": 600,
+      "actionNavigation": null,
+      "actionRevision": null,
+      "objectRevision": 5,
+      "continuous": true,
+      "groundQuad": [
+        {
+          "x": 315,
+          "y": 417.19827586206895
+        },
+        {
+          "x": 355,
+          "y": 417.19827586206895
+        },
+        {
+          "x": 315,
+          "y": 450
+        }
+      ],
+      "groundGrip": {
+        "x": 335,
+        "y": 418.8383620689655
+      },
+      "hand": {
+        "x": 139.4501221784205,
+        "y": 599.6059754740393
+      },
+      "heldGrip": {
+        "x": 139.4501221784205,
+        "y": 599.6059754740393
+      },
+      "heldQuad": [
+        {
+          "x": 119.45012048299948,
+          "y": 597.9658891281108
+        },
+        {
+          "x": 159.45012387384148,
+          "y": 597.9658891281108
+        },
+        {
+          "x": 119.45012048299948,
+          "y": 630.7676160466784
+        }
+      ],
+      "feet": [
+        {
+          "x": 101.04531920075416,
+          "y": 640.0000152587891
+        },
+        {
+          "x": 123.35547734200955,
+          "y": 640.0000152587891
+        }
+      ],
+      "pose": {
+        "waist": 0,
+        "drop": 0,
+        "armNear": 4,
+        "armFar": -2,
+        "propAngle": 0,
+        "look": [
+          0,
+          0
+        ],
+        "plant": true,
+        "plantWeight": 1,
+        "hands": {
+          "original": 1,
+          "reach": 0,
+          "grip": 0,
+          "release": 0
+        },
+        "handArt": true
+      },
+      "sit": 0,
+      "handArt": {
+        "enabled": true,
+        "baseline": false,
+        "weights": {
+          "original": 1,
+          "reach": 0,
+          "grip": 0,
+          "release": 0
+        },
+        "wrist": {
+          "x": 138.38603770034905,
+          "y": 593.311151313533
+        },
+        "wristError": 0,
+        "contactError": 0,
+        "renderMode": "continuous-mesh",
+        "closure": 0.25,
+        "surfaceAlpha": 1,
+        "layers": {
+          "palm": 5.02,
+          "prop": 5.05,
+          "fingers": 5.2
+        },
+        "frontWeight": 1,
+        "externalProp": true
+      },
+      "contact": {
+        "distance": 266.30186775950494,
+        "groundDistance": 252.43194622235168
+      },
+      "bindingError": 0,
+      "propMirror": 1,
+      "activeTime": 0.7499000000000002,
+      "speed": 1,
+      "sequence": 37
+    },
+    "painted": {
+      "phase": "idle",
+      "suspended": null,
+      "elapsed": 0.41660000000000014,
+      "owner": "ground",
+      "renderedOwner": "ground",
+      "generation": 3,
+      "walkId": null,
+      "commits": {
+        "pickup": 0,
+        "drop": 0
+      },
+      "error": null,
+      "inspection": null,
+      "loop": false,
+      "bodyX": 112,
+      "bodyY": 640,
+      "navigation": {
+        "x": 112,
+        "y": 640,
+        "speed": 0,
+        "facing": 1,
+        "phase": "idle",
+        "id": null,
+        "generation": 0,
+        "revision": 0,
+        "plan": null
+      },
+      "bubble": {
+        "x": 112,
+        "y": 470.0486270433544
+      },
+      "hit": [
+        {
+          "x": 112,
+          "y": 548.5975809308796,
+          "r": 75.9375
+        }
+      ],
+      "moving": false,
+      "facing": 1,
+      "visualFacing": 1,
+      "destinationX": 390,
+      "destinationY": 600,
+      "actionNavigation": null,
+      "actionRevision": null,
+      "objectRevision": 5,
+      "continuous": true,
+      "groundQuad": [
+        {
+          "x": 315,
+          "y": 417.19827586206895
+        },
+        {
+          "x": 355,
+          "y": 417.19827586206895
+        },
+        {
+          "x": 315,
+          "y": 450
+        }
+      ],
+      "groundGrip": {
+        "x": 335,
+        "y": 418.8383620689655
+      },
+      "hand": {
+        "x": 139.4501221784205,
+        "y": 599.6059754740393
+      },
+      "heldGrip": {
+        "x": 139.4501221784205,
+        "y": 599.6059754740393
+      },
+      "heldQuad": [
+        {
+          "x": 119.45012048299948,
+          "y": 597.9658891281108
+        },
+        {
+          "x": 159.45012387384148,
+          "y": 597.9658891281108
+        },
+        {
+          "x": 119.45012048299948,
+          "y": 630.7676160466784
+        }
+      ],
+      "feet": [
+        {
+          "x": 101.04531920075416,
+          "y": 640.0000152587891
+        },
+        {
+          "x": 123.35547734200955,
+          "y": 640.0000152587891
+        }
+      ],
+      "pose": {
+        "waist": 0,
+        "drop": 0,
+        "armNear": 4,
+        "armFar": -2,
+        "propAngle": 0,
+        "look": [
+          0,
+          0
+        ],
+        "plant": true,
+        "plantWeight": 1,
+        "hands": {
+          "original": 1,
+          "reach": 0,
+          "grip": 0,
+          "release": 0
+        },
+        "handArt": true
+      },
+      "sit": 0,
+      "handArt": {
+        "enabled": true,
+        "baseline": false,
+        "weights": {
+          "original": 1,
+          "reach": 0,
+          "grip": 0,
+          "release": 0
+        },
+        "wrist": {
+          "x": 138.38603770034905,
+          "y": 593.311151313533
+        },
+        "wristError": 0,
+        "contactError": 0,
+        "renderMode": "continuous-mesh",
+        "closure": 0.25,
+        "surfaceAlpha": 1,
+        "layers": {
+          "palm": 5.02,
+          "prop": 5.05,
+          "fingers": 5.2
+        },
+        "frontWeight": 1,
+        "externalProp": true
+      },
+      "contact": {
+        "distance": 266.30186775950494,
+        "groundDistance": 252.43194622235168
+      },
+      "bindingError": 0,
+      "propMirror": 1,
+      "activeTime": 0.7499000000000002,
+      "speed": 1,
+      "sequence": 37
+    },
+    "events": [
+      {
+        "type": "reset",
+        "phase": "idle",
+        "generation": 2,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": null,
+        "activeTime": 0,
+        "kind": "motion-action"
+      },
+      {
+        "type": "relocate",
+        "x": 335,
+        "y": 555,
+        "phase": "idle",
+        "generation": 2,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 272.7062014316815,
+          "groundDistance": 575.0239980705255,
+          "settled": false
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 266.38603770034905,
+            "y": 508.31118183111107
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 0.05,
+        "kind": "motion-action"
+      },
+      {
+        "type": "reset",
+        "phase": "idle",
+        "generation": 3,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 68.17787732064187,
+          "groundDistance": 134.0135217929316,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 266.38603770034905,
+            "y": 508.31115131353295
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 0.3333,
+        "kind": "motion-action"
+      },
+      {
+        "type": "relocate",
+        "x": 335,
+        "y": 555,
+        "phase": "idle",
+        "generation": 3,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 400.6562629257419,
+          "groundDistance": 252.43194994198225,
+          "settled": false
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 138.38603770034905,
+            "y": 593.3111818311111
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 0.35000000000000003,
+        "kind": "motion-action"
+      },
+      {
+        "type": "relocate",
+        "x": 335,
+        "y": 450,
+        "phase": "idle",
+        "generation": 3,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 209.71526072659674,
+          "groundDistance": 252.43194994198225,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 138.38603770034905,
+            "y": 593.3111818311111
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 0.49989999999999996,
+        "kind": "motion-action"
+      }
+    ],
+    "bodyLayout": {
+      "x": 112,
+      "y": 640,
+      "navigation": {
+        "x": 112,
+        "y": 640,
+        "speed": 0,
+        "phase": "idle",
+        "id": null,
+        "generation": 0,
+        "revision": 0
+      },
+      "facing": 1,
+      "mode": "idle",
+      "busy": false,
+      "moving": false,
+      "pressing": false,
+      "cursor": "",
+      "box": {
+        "x": 36.728101237883294,
+        "y": 465.7641386494893,
+        "w": 150.5437975242334,
+        "h": 174.23586135051067
+      },
+      "hit": [
+        {
+          "x": 112,
+          "y": 548.5975809308796,
+          "r": 75.9375
+        }
+      ],
+      "bubble": {
+        "x": 112,
+        "y": 470.0486270433544
+      },
+      "side": {
+        "x": 112,
+        "y": 548.5975809308796,
+        "reach": 73.125
+      }
+    },
+    "capabilities": [
+      "navigation-2d-v1"
+    ]
+  },
+  "second": {
+    "schema": 3,
+    "scope": "stage-3-continuous-actions",
+    "world": {
+      "width": 1080,
+      "height": 660,
+      "units": "preview-css-px",
+      "origin": "top-left",
+      "root": "feet-midpoint"
+    },
+    "bodyEnvelope": {
+      "size": 180,
+      "left": 100,
+      "right": 100,
+      "top": 205,
+      "bottom": 8,
+      "turn": 12
+    },
+    "groundEnvelope": {
+      "left": 100,
+      "right": 100,
+      "top": 24,
+      "bottom": 8
+    },
+    "layout": {
+      "revision": 6,
+      "actor": {
+        "x": 112,
+        "y": 640
+      },
+      "shell": {
+        "x": 335,
+        "width": 40,
+        "y": 450
+      },
+      "destination": 390,
+      "objects": [
+        {
+          "id": "home",
+          "label": "小窝",
+          "asset": "home.svg",
+          "x": 65,
+          "y": 155,
+          "w": 210,
+          "h": 175,
+          "solid": true,
+          "layer": "depth",
+          "anchor": [
+            170,
+            330
+          ]
+        },
+        {
+          "id": "station",
+          "label": "工作岗位",
+          "asset": "station.svg",
+          "x": 820,
+          "y": 245,
+          "w": 170,
+          "h": 120,
+          "solid": true,
+          "layer": "depth",
+          "anchor": [
+            850,
+            600
+          ]
+        },
+        {
+          "id": "planter",
+          "label": "珊瑚花箱",
+          "asset": "planter.svg",
+          "x": 558,
+          "y": 252,
+          "w": 112,
+          "h": 105,
+          "solid": true,
+          "layer": "depth"
+        },
+        {
+          "id": "gate-north",
+          "label": "门槛北柱",
+          "asset": "post.svg",
+          "x": 621,
+          "y": 18,
+          "w": 28,
+          "h": 40,
+          "solid": true,
+          "layer": "depth"
+        },
+        {
+          "id": "gate-south",
+          "label": "门槛南柱",
+          "asset": "post.svg",
+          "x": 621,
+          "y": 622,
+          "w": 28,
+          "h": 32,
+          "solid": true,
+          "layer": "depth"
+        },
+        {
+          "id": "panel",
+          "label": "手动内容禁区",
+          "x": 755,
+          "y": 40,
+          "w": 280,
+          "h": 195,
+          "solid": true,
+          "layer": "restricted"
+        }
+      ],
+      "zones": [
+        {
+          "id": "life",
+          "label": "生活区",
+          "x": 35,
+          "y": 155,
+          "w": 410,
+          "h": 470
+        },
+        {
+          "id": "work",
+          "label": "岗位区",
+          "x": 735,
+          "y": 250,
+          "w": 300,
+          "h": 375
+        }
+      ],
+      "route": [
+        {
+          "x": 240,
+          "y": 555
+        },
+        {
+          "x": 450,
+          "y": 555
+        },
+        {
+          "x": 540,
+          "y": 575
+        },
+        {
+          "x": 700,
+          "y": 600
+        },
+        {
+          "x": 850,
+          "y": 600
+        }
+      ],
+      "destinationY": 600
+    },
+    "route": {
+      "revision": 6,
+      "precision": 0.5,
+      "model": "finite ground bodies / full-body restricted volumes",
+      "direct": {
+        "passed": false,
+        "violations": [
+          {
+            "segment": 1,
+            "obstacle": "gate-south",
+            "envelope": "full-body-restricted"
+          }
+        ]
+      },
+      "passed": true,
+      "alternative": true,
+      "points": [
+        {
+          "x": 112,
+          "y": 640
+        },
+        {
+          "x": 511.5,
+          "y": 603.1
+        },
+        {
+          "x": 850,
+          "y": 600
+        }
+      ],
+      "length": 739.7147181095925
+    },
+    "legacyRoute": {
+      "passed": false,
+      "violations": [
+        {
+          "segment": 1,
+          "obstacle": "planter"
+        },
+        {
+          "segment": 2,
+          "obstacle": "planter"
+        }
+      ],
+      "length": 614,
+      "body": {
+        "size": 180,
+        "left": 100,
+        "right": 100,
+        "top": 205,
+        "bottom": 8,
+        "turn": 12
+      },
+      "margin": 12,
+      "revision": 6
+    },
+    "navigationModel": {
+      "revision": 6,
+      "width": 1080,
+      "height": 660,
+      "body": {
+        "size": 180,
+        "left": 100,
+        "right": 100,
+        "top": 205,
+        "bottom": 8,
+        "turn": 12
+      },
+      "groundBody": {
+        "left": 100,
+        "right": 100,
+        "top": 24,
+        "bottom": 8
+      },
+      "margin": 12,
+      "obstacles": [
+        {
+          "id": "home",
+          "label": "小窝",
+          "kind": "full-body-restricted",
+          "x": 83,
+          "y": 157,
+          "w": 176,
+          "h": 164,
+          "silhouette": {
+            "x": 83,
+            "y": 157,
+            "w": 176,
+            "h": 164
+          },
+          "art": {
+            "x": 65,
+            "y": 155,
+            "w": 210,
+            "h": 175
+          }
+        },
+        {
+          "id": "station",
+          "label": "工作岗位",
+          "kind": "full-body-restricted",
+          "x": 827,
+          "y": 251,
+          "w": 156,
+          "h": 109,
+          "silhouette": {
+            "x": 827,
+            "y": 251,
+            "w": 156,
+            "h": 109
+          },
+          "art": {
+            "x": 820,
+            "y": 245,
+            "w": 170,
+            "h": 120
+          }
+        },
+        {
+          "id": "planter",
+          "label": "珊瑚花箱",
+          "kind": "full-body-restricted",
+          "x": 564,
+          "y": 258,
+          "w": 101,
+          "h": 91,
+          "silhouette": {
+            "x": 564,
+            "y": 258,
+            "w": 101,
+            "h": 91
+          },
+          "art": {
+            "x": 558,
+            "y": 252,
+            "w": 112,
+            "h": 105
+          }
+        },
+        {
+          "id": "gate-north",
+          "label": "门槛北柱",
+          "kind": "full-body-restricted",
+          "x": 624,
+          "y": 20,
+          "w": 22,
+          "h": 34,
+          "silhouette": {
+            "x": 624,
+            "y": 20,
+            "w": 22,
+            "h": 34
+          },
+          "art": {
+            "x": 621,
+            "y": 18,
+            "w": 28,
+            "h": 40
+          }
+        },
+        {
+          "id": "gate-south",
+          "label": "门槛南柱",
+          "kind": "full-body-restricted",
+          "x": 624,
+          "y": 623.6,
+          "w": 22,
+          "h": 27.2,
+          "silhouette": {
+            "x": 624,
+            "y": 623.6,
+            "w": 22,
+            "h": 27.2
+          },
+          "art": {
+            "x": 621,
+            "y": 622,
+            "w": 28,
+            "h": 32
+          }
+        },
+        {
+          "id": "panel",
+          "label": "手动内容禁区",
+          "kind": "full-body-restricted",
+          "x": 755,
+          "y": 40,
+          "w": 280,
+          "h": 195,
+          "silhouette": {
+            "x": 755,
+            "y": 40,
+            "w": 280,
+            "h": 195
+          },
+          "art": {
+            "x": 755,
+            "y": 40,
+            "w": 280,
+            "h": 195
+          }
+        }
+      ]
+    },
+    "navigation": {
+      "id": 2,
+      "generation": 3,
+      "target": {
+        "x": 850,
+        "y": 600
+      },
+      "active": false,
+      "paused": false
+    },
+    "horizontalAction": {
+      "passed": true,
+      "violations": [],
+      "length": 358,
+      "body": {
+        "size": 180,
+        "left": 100,
+        "right": 100,
+        "top": 205,
+        "bottom": 8,
+        "turn": 12
+      },
+      "margin": 0,
+      "revision": 6
+    },
+    "measuredRaster": {
+      "frames": 82,
+      "left": 74.03163623288754,
+      "right": 54.71003145024986,
+      "top": 166.23305772167964,
+      "bottom": 1.1564922492004825,
+      "binding": 0,
+      "wrongLayers": 0,
+      "ownerMismatches": 0,
+      "ownerSwitchJump": 0
+    },
+    "occlusion": [
+      "gate-north",
+      "home",
+      "planter",
+      "station",
+      "ground-shell",
+      "body-shell-fingers",
+      "gate-south"
+    ],
+    "asset": "/web/props/shell/asset.json",
+    "navigationImplemented": true,
+    "frame": {
+      "phase": "paused",
+      "suspended": "approach",
+      "elapsed": 0,
+      "owner": "ground",
+      "renderedOwner": "ground",
+      "generation": 3,
+      "walkId": null,
+      "commits": {
+        "pickup": 0,
+        "drop": 0
+      },
+      "error": "interrupted",
+      "inspection": null,
+      "loop": false,
+      "bodyX": 850,
+      "bodyY": 600,
+      "navigation": {
+        "x": 850,
+        "y": 600,
+        "speed": 0,
+        "facing": 1,
+        "phase": "idle",
+        "id": null,
+        "generation": 1,
+        "revision": 6,
+        "plan": null
+      },
+      "bubble": {
+        "x": 850,
+        "y": 430.8205047323288
+      },
+      "hit": [
+        {
+          "x": 850,
+          "y": 509.0127084274168,
+          "r": 75.9375
+        }
+      ],
+      "moving": false,
+      "facing": 1,
+      "visualFacing": 1,
+      "destinationX": 390,
+      "destinationY": 600,
+      "actionNavigation": null,
+      "actionRevision": 6,
+      "objectRevision": 5,
+      "continuous": true,
+      "groundQuad": [
+        {
+          "x": 315,
+          "y": 417.19827586206895
+        },
+        {
+          "x": 355,
+          "y": 417.19827586206895
+        },
+        {
+          "x": 315,
+          "y": 450
+        }
+      ],
+      "groundGrip": {
+        "x": 335,
+        "y": 418.8383620689655
+      },
+      "hand": {
+        "x": 877.393538833704,
+        "y": 559.5010539438275
+      },
+      "heldGrip": {
+        "x": 877.393538833704,
+        "y": 559.5010539438275
+      },
+      "heldQuad": [
+        {
+          "x": 857.4347903299132,
+          "y": 557.8567060091841
+        },
+        {
+          "x": 897.3522872924759,
+          "y": 557.8567065675943
+        },
+        {
+          "x": 857.434790780103,
+          "y": 590.7436591179519
+        }
+      ],
+      "feet": [
+        {
+          "x": 839.0679073757217,
+          "y": 600.0000010021473
+        },
+        {
+          "x": 861.3320472325181,
+          "y": 600.0000281569052
+        }
+      ],
+      "pose": {
+        "waist": 0,
+        "drop": 0,
+        "propAngle": 0,
+        "look": [
+          3,
+          0
+        ],
+        "plant": false,
+        "plantWeight": 1,
+        "hands": {
+          "original": 1,
+          "reach": 0,
+          "grip": 0,
+          "release": 0
+        },
+        "handArt": true
+      },
+      "sit": 0,
+      "handArt": {
+        "enabled": true,
+        "baseline": false,
+        "weights": {
+          "original": 1,
+          "reach": 0,
+          "grip": 0,
+          "release": 0
+        },
+        "wrist": {
+          "x": 876.3316561435608,
+          "y": 553.1898732199045
+        },
+        "wristError": 0,
+        "contactError": 0,
+        "renderMode": "continuous-mesh",
+        "closure": 0.25,
+        "surfaceAlpha": 1,
+        "layers": {
+          "palm": 5.02,
+          "prop": 5.05,
+          "fingers": 5.2
+        },
+        "frontWeight": 1,
+        "externalProp": true
+      },
+      "contact": {
+        "distance": 560.3362774745458,
+        "groundDistance": 487.4814268648573
+      },
+      "bindingError": 0,
+      "propMirror": 1,
+      "activeTime": 11.466199999999995,
+      "speed": 1,
+      "sequence": 672
+    },
+    "painted": {
+      "phase": "paused",
+      "suspended": "approach",
+      "elapsed": 0,
+      "owner": "ground",
+      "renderedOwner": "ground",
+      "generation": 3,
+      "walkId": null,
+      "commits": {
+        "pickup": 0,
+        "drop": 0
+      },
+      "error": "interrupted",
+      "inspection": null,
+      "loop": false,
+      "bodyX": 850,
+      "bodyY": 600,
+      "navigation": {
+        "x": 850,
+        "y": 600,
+        "speed": 0,
+        "facing": 1,
+        "phase": "idle",
+        "id": null,
+        "generation": 1,
+        "revision": 6,
+        "plan": null
+      },
+      "bubble": {
+        "x": 850,
+        "y": 430.8205047323288
+      },
+      "hit": [
+        {
+          "x": 850,
+          "y": 509.0127084274168,
+          "r": 75.9375
+        }
+      ],
+      "moving": false,
+      "facing": 1,
+      "visualFacing": 1,
+      "destinationX": 390,
+      "destinationY": 600,
+      "actionNavigation": null,
+      "actionRevision": 6,
+      "objectRevision": 5,
+      "continuous": true,
+      "groundQuad": [
+        {
+          "x": 315,
+          "y": 417.19827586206895
+        },
+        {
+          "x": 355,
+          "y": 417.19827586206895
+        },
+        {
+          "x": 315,
+          "y": 450
+        }
+      ],
+      "groundGrip": {
+        "x": 335,
+        "y": 418.8383620689655
+      },
+      "hand": {
+        "x": 877.393538833704,
+        "y": 559.5010539438275
+      },
+      "heldGrip": {
+        "x": 877.393538833704,
+        "y": 559.5010539438275
+      },
+      "heldQuad": [
+        {
+          "x": 857.4347903299132,
+          "y": 557.8567060091841
+        },
+        {
+          "x": 897.3522872924759,
+          "y": 557.8567065675943
+        },
+        {
+          "x": 857.434790780103,
+          "y": 590.7436591179519
+        }
+      ],
+      "feet": [
+        {
+          "x": 839.0679073757217,
+          "y": 600.0000010021473
+        },
+        {
+          "x": 861.3320472325181,
+          "y": 600.0000281569052
+        }
+      ],
+      "pose": {
+        "waist": 0,
+        "drop": 0,
+        "propAngle": 0,
+        "look": [
+          3,
+          0
+        ],
+        "plant": false,
+        "plantWeight": 1,
+        "hands": {
+          "original": 1,
+          "reach": 0,
+          "grip": 0,
+          "release": 0
+        },
+        "handArt": true
+      },
+      "sit": 0,
+      "handArt": {
+        "enabled": true,
+        "baseline": false,
+        "weights": {
+          "original": 1,
+          "reach": 0,
+          "grip": 0,
+          "release": 0
+        },
+        "wrist": {
+          "x": 876.3316561435608,
+          "y": 553.1898732199045
+        },
+        "wristError": 0,
+        "contactError": 0,
+        "renderMode": "continuous-mesh",
+        "closure": 0.25,
+        "surfaceAlpha": 1,
+        "layers": {
+          "palm": 5.02,
+          "prop": 5.05,
+          "fingers": 5.2
+        },
+        "frontWeight": 1,
+        "externalProp": true
+      },
+      "contact": {
+        "distance": 560.3362774745458,
+        "groundDistance": 487.4814268648573
+      },
+      "bindingError": 0,
+      "propMirror": 1,
+      "activeTime": 11.466199999999995,
+      "speed": 1,
+      "sequence": 672
+    },
+    "events": [
+      {
+        "type": "reset",
+        "phase": "idle",
+        "generation": 2,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": null,
+        "activeTime": 0,
+        "kind": "motion-action"
+      },
+      {
+        "type": "relocate",
+        "x": 335,
+        "y": 555,
+        "phase": "idle",
+        "generation": 2,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 272.7062014316815,
+          "groundDistance": 575.0239980705255,
+          "settled": false
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 266.38603770034905,
+            "y": 508.31118183111107
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 0.05,
+        "kind": "motion-action"
+      },
+      {
+        "type": "reset",
+        "phase": "idle",
+        "generation": 3,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 68.17787732064187,
+          "groundDistance": 134.0135217929316,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 266.38603770034905,
+            "y": 508.31115131353295
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 0.3333,
+        "kind": "motion-action"
+      },
+      {
+        "type": "relocate",
+        "x": 335,
+        "y": 555,
+        "phase": "idle",
+        "generation": 3,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 400.6562629257419,
+          "groundDistance": 252.43194994198225,
+          "settled": false
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 138.38603770034905,
+            "y": 593.3111818311111
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 0.35000000000000003,
+        "kind": "motion-action"
+      },
+      {
+        "type": "relocate",
+        "x": 335,
+        "y": 450,
+        "phase": "idle",
+        "generation": 3,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 209.71526072659674,
+          "groundDistance": 252.43194994198225,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 138.38603770034905,
+            "y": 593.3111818311111
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 0.49989999999999996,
+        "kind": "motion-action"
+      },
+      {
+        "kind": "navigation-interrupted",
+        "id": 1,
+        "generation": 3,
+        "revision": 5,
+        "x": 112,
+        "y": 640,
+        "by": "disconnected-in-rectangle-model"
+      },
+      {
+        "kind": "navigation-arrived",
+        "id": 2,
+        "generation": 3,
+        "revision": 6,
+        "x": 850,
+        "y": 600
+      },
+      {
+        "type": "stand",
+        "phase": "prepare",
+        "generation": 3,
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 560.4173944794574,
+          "groundDistance": 487.5375457595227,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 876.3860377003491,
+            "y": 553.311151313533
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 10.632900000000008,
+        "kind": "motion-action"
+      },
+      {
+        "kind": "navigation-interrupted",
+        "id": 3000001,
+        "generation": 3,
+        "revision": 6,
+        "x": 850,
+        "y": 600,
+        "by": "target-blocked"
+      },
+      {
+        "type": "navigate",
+        "id": 3000001,
+        "generation": 3,
+        "revision": 6,
+        "target": {
+          "x": 362.40658325513954,
+          "y": 450
+        },
+        "phase": "approach",
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 560.4174021449707,
+          "groundDistance": 487.53754518161946,
+          "settled": true
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 876.3860377003491,
+            "y": 553.3111818311111
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 11.432799999999997,
+        "kind": "motion-action"
+      },
+      {
+        "type": "cancel-navigation",
+        "id": 3000001,
+        "generation": 3,
+        "revision": 6,
+        "phase": "paused",
+        "owner": "ground",
+        "commits": {
+          "pickup": 0,
+          "drop": 0
+        },
+        "contact": {
+          "distance": 560.3310908852702,
+          "groundDistance": 487.47837853462363,
+          "settled": false
+        },
+        "handArt": {
+          "enabled": true,
+          "baseline": false,
+          "weights": {
+            "original": 1,
+            "reach": 0,
+            "grip": 0,
+            "release": 0
+          },
+          "wrist": {
+            "x": 876.328698021669,
+            "y": 553.1797494936549
+          },
+          "wristError": 0,
+          "contactError": 0,
+          "renderMode": "continuous-mesh",
+          "closure": 0.25,
+          "surfaceAlpha": 1,
+          "layers": {
+            "palm": 5.02,
+            "prop": 5.05,
+            "fingers": 5.2
+          },
+          "frontWeight": 1,
+          "externalProp": true
+        },
+        "activeTime": 11.449499999999997,
+        "kind": "motion-action"
+      }
+    ],
+    "bodyLayout": {
+      "x": 850,
+      "y": 600,
+      "navigation": {
+        "x": 850,
+        "y": 600,
+        "speed": 0,
+        "phase": "idle",
+        "id": null,
+        "generation": 1,
+        "revision": 6
+      },
+      "facing": 1,
+      "mode": "idle",
+      "busy": false,
+      "moving": false,
+      "pressing": false,
+      "cursor": "",
+      "box": {
+        "x": 774.5310778362065,
+        "y": 426.5554754397633,
+        "w": 150.93784432758707,
+        "h": 173.4445245602367
+      },
+      "hit": [
+        {
+          "x": 850,
+          "y": 509.0127084274168,
+          "r": 75.9375
+        }
+      ],
+      "bubble": {
+        "x": 850,
+        "y": 430.8205047323288
+      },
+      "side": {
+        "x": 850,
+        "y": 509.01270842751745,
+        "reach": 73.125
+      }
+    },
+    "capabilities": [
+      "navigation-2d-v1"
+    ]
+  },
+  "trace": [
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "idle",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "prepare",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "paused",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "paused",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "paused",
+      "owner": "ground"
+    },
+    {
+      "x": 850,
+      "y": 600,
+      "phase": "paused",
+      "owner": "ground"
+    }
+  ],
+  "screenshotReconstruction": {
+    "actor": {
+      "x": 112,
+      "y": 640
+    },
+    "planterLower": {
+      "x": 580,
+      "y": 528
+    },
+    "planterMoved": {
+      "x": 558,
+      "y": 252
+    },
+    "northY": 18,
+    "shellY": 450,
+    "notes": "flowerbox and actor coordinates read from screenshot UI; north inferred from 564px gap; shell plane approximated from pixels, also covered over a range in unit checks"
+  },
+  "versions": "156.0.8078.4"
+}

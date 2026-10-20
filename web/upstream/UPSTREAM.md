@@ -79,6 +79,11 @@ Native raster inspection correction, 2026-10-19:
 Local courtyard continuous actions, 2026-10-20:
 
 - `kit/space-action.js` is a locally authored, opt-in executor composing existing navigation receipts and `web/prop-motion.js` contact/pose gates. It preserves ownership, pose and committed operations across interruption, requires standing before navigation, and rejects stale identities. This is not imported upstream behavior.
-- Only the isolated O03 factory with `bounds.continuousActions=true` uses this executor. The map owns independent object/destination planes and a conservative full-body/held-prop model. A distant ground object has its own depth plane; contact retains the existing atomic palm/prop/finger composition.
+- Only the isolated O03 factory with `bounds.continuousActions=true` uses this executor. The map owns independent object/destination planes and uses the calibrated ground-footprint/full-body restriction model. A distant ground object has its own depth plane; contact retains the existing atomic palm/prop/finger composition.
 - `whale/figure.js` accepts optional `gripPose().mirror=-1` on the prop's hand-local deformer. The adapter preserves ground texture orientation when approaching from the opposite side, instead of flipping the prop on pickup. The grip anchor is fixed and default factories retain scale 1.
 - The API 2 capability and default factory are unchanged. No new model, texture, hand artwork or license bytes are introduced. See `docs/design/continuous-action-contract.md` for scope and verification.
+
+Stage 3 feedback geometry correction, 2026-10-20:
+
+- The initial action model had expanded all visible elevations into full-body restricted rectangles, recreating the earlier floor/elevation regression. In the reported 580/528 planter layout it linked the station and planter into a virtual wall; after moving the planter to 558/252 it still rejected the shell approach beside the home as target-blocked.
+- `actionNavigationModel` now shares the calibrated `navigationModel`: full-width finite ground footprints for known bases, full-body bounds for restricted content, world edges and unknown solids. The held-prop raster/envelope checks remain mandatory. Navigation rejection reasons are preserved through the action executor for actionable preview feedback. No upstream asset, rig or license bytes change.

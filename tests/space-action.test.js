@@ -66,3 +66,8 @@ it('manual and action routes share monotonic physical identities without changin
  expect(c.decode({...a,generation:0,revision:4})).toBeNull();expect(c.decode({...a,revision:3})).toBeNull();
  for(let i=0;i<64;i++)c.encode({id:i,generation:4,model});expect(c.decode({...a,revision:4})).toBeNull();
 });
+
+it('preserves the specific navigation rejection for actionable feedback without committing',()=>{
+ const f=fixture();f.start();f.tick({event:{kind:'navigation-interrupted',...f.state.navigation,by:'target-blocked'}});
+ expect(f.state.phase).toBe('paused');expect(f.state.error).toBe('target-blocked');expect(f.state.owner).toBe('ground');expect(f.state.commits.pickup).toBe(0);
+});

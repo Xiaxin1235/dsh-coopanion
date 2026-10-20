@@ -1,0 +1,80 @@
+
+> @takboo/dsh-coopanion@0.4.13 test:inbox-ui
+> node tests/inbox-ui.mjs && node --test --test-concurrency=1 tests/session-replies-ui.mjs tests/text-scale-ui.mjs && node --test tests/multi-display-ui.mjs && node --test tests/npc-controls-ui.mjs tests/attention-size-ui.mjs tests/npc-drag-ui.mjs && node --test tests/companionship-ui.mjs
+
+Inbox UI passed: one-click full reply, direct source actions, mixed pending items, stable chat focus and reading order, Unicode/text safety, bilingual copy and narrow layout.
+✔ unread replies coalesce by session and reading does not expose old turns again (1241.100416ms)
+✔ native recovery baseline preserves unread results without speaking or acknowledging them again (800.346583ms)
+✔ full replies render Markdown headings, emphasis, tables and fenced code (697.383083ms)
+✔ multiple turns of a single session still open directly with one click (569.964ms)
+✔ reply markup cannot inject HTML, active URLs or external images (549.21575ms)
+✔ chat freezes the target, keeps per-session drafts and retries a lost receipt with the same request ID (646.410333ms)
+✔ full-result continue opens the exact source composer without replacing the reading snapshot (653.75425ms)
+✔ composer timeout preserves identity and acceptance remains monotonic (1.466125ms)
+✔ zh-CN: all text scales × character extremes keep reader, inbox and draft usable (2181.477625ms)
+✔ en-US: all text scales × character extremes keep reader, inbox and draft usable (1615.073292ms)
+✔ text scaling keeps final bubble font and original dismissal clock (2439.774625ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12542.060542
+✔ controlled irregular layout and mixed DPR preserve reading, draft, in-flight identity and hit areas (2446.831ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2796.246833
+✔ Take a look acknowledges this generic error, clearing envelope and sad expression (1499.155917ms)
+✔ typing, hovering and reading retain the configured body scale (3082.00425ms)
+✔ Take a look never dismisses a real approval or question (735.859709ms)
+✔ off and automatic permission never fall back to random roaming; quiet and interactive use NPC (2534.428541ms)
+✔ hot preference keeps reader DOM/scroll, draft/focus/selection, request identity and bubble expiry (3759.30475ms)
+✔ selection, typing and dragging always retain the configured size (1464.52425ms)
+✔ a fast placement at the edge drops without an automatic reverse throw (off, 10) (1971.239708ms)
+✔ a fast placement at the edge drops without an automatic reverse throw (off, 990) (1930.416959ms)
+✔ a fast placement at the edge drops without an automatic reverse throw (quiet, 10) (1746.898042ms)
+✔ a fast placement at the edge drops without an automatic reverse throw (quiet, 990) (1784.971042ms)
+✔ manual relocation before the first NPC departure cannot be overwritten by home placement (1122.415ms)
+✔ dragging an outbound pet releases its old walk target (961.938ms)
+✔ cancelling a drag drops at the last valid pointer without retaining a held body (697.385292ms)
+Home marker drag positions: [["before",850],["held-990",850],["held-15",850],["held-850",850],["released",850]]
+✔ home marker remains fixed throughout a held drag and release (3866.817667ms)
+✔ home marker follows explicit settings but stays fixed while dragging a large pet at either edge (2872.740292ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 18765.818958
+✔ NPC follows real arrival, pauses typing, resumes retained intent and returns home (9818.76325ms)
+✔ invitation reserves once, ignores naturally, persists quiet and cannot send model/task messages (48875.041542ms)
+✔ manual play grows only after completion, aborted play does not, archive survives renderer reload (4120.512792ms)
+✔ hot companionship modes preserve captured reader, draft selection, and in-flight identities (488.74675ms)
+✔ real strokes count once, forged sandbox touches do not, missing words remain safe (4943.305292ms)
+✔ twenty manual activities react within 500ms and interrupted trials never grow (1084.537541ms)
+✔ twenty real strokes keep visible feedback while hovering and share the growth cooldown (61118.222417ms)
+✔ six stored moments across three dates unlock the real familiar greeting after rehydration (14031.692917ms)
+✔ reduced motion cancels an in-progress activity and a small large-text menu remains reachable (549.228792ms)
+✔ idle rendering is bounded while real elapsed time, work and input keep their cadence (8405.564167ms)
+✔ unknown input, mouse proximity, lifecycle and limited star keep control and vocabulary safe (2830.52625ms)
+✔ native NPC waits for acknowledged workArea before establishing home (1569.784375ms)
+✔ manual interaction survives a frame timestamp preceding the click event clock (5142.888583ms)
+✔ manual interaction follows a real poke reaction while actual work still preempts it (jump=false) (1447.354083ms)
+✔ manual interaction follows a real poke reaction while actual work still preempts it (jump=true) (1504.474708ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 166211.56575
