@@ -1,6 +1,7 @@
 import { createWhaleFigure } from '/web/upstream/whale/figure.js';
 import { initialMotion, sampleMotion, stepMotion, contactRoute } from '/web/prop-motion.js';
 import { initialSpaceAction, sampleSpaceAction, stepSpaceAction, pickupMirror, createSpaceNavigationChannel } from '/web/upstream/kit/space-action.js';
+import { initialPersonality } from '/web/upstream/kit/personality.js';
 import { initialLifeWork, stepLifeWork } from '/web/upstream/kit/life-work.js';
 import { initialWorkPerformance, stepWorkPerformance } from '/web/upstream/kit/work-performance.js';
 import { handWeights } from '/web/upstream/whale/hand-art.js';
@@ -12,6 +13,7 @@ export async function createMotionBody(base, options) {
   const continuous = bounds().continuousActions === true;
   const coordinated = bounds().lifeWork === true;
   let coordination = initialLifeWork(), coordinationQueue = [], gaze = 0, taskExpression = null, workTarget = null, performanceState = initialWorkPerformance(), performanceView = null, reducedWork = false, freeArm = [4,-2];
+  if(bounds().personality===true)coordination.personality=initialPersonality();
   const initial = continuous ? initialSpaceAction : initialMotion, sample = continuous ? sampleSpaceAction : sampleMotion, advance = continuous ? stepSpaceAction : stepMotion;
   let spaceModel = null, objectRevision = 0, propMirror = 1;
   const navigationChannel = continuous ? createSpaceNavigationChannel() : null;
@@ -97,7 +99,7 @@ export async function createMotionBody(base, options) {
   };
   function coordinate(now, dt, command, event) {
     const layout=actor.layout();
-    const input={...inputs(now,dt,null,null), command,event,reduced:reducedWork,action:state,objectId:'o03-shell',object:{x:groundGrip().x,y:groundQuad[2].y},
+    const input={...inputs(now,dt,null,null), command,event,reduced:reducedWork,personalityEnabled:bounds().personality===true,model:spaceModel,words:actor.words,action:state,objectId:'o03-shell',object:{x:groundGrip().x,y:groundQuad[2].y},
       physicalNavigation:layout.navigation,destination:{x:destination,y:destinationY},parking:parking(),station:workTarget??bounds().workTarget??{x:850,y:600}};
     const result=stepLifeWork(coordination,input);coordination=result.state;
     for(const e of result.effects){
@@ -162,8 +164,9 @@ export async function createMotionBody(base, options) {
     set(value) {
       if (value.motionCommand) {
         const cmd = value.motionCommand;
+        if(coordinated && bounds().personality===true && ['personality','personality-start','personality-stop'].includes(cmd.type)){coordinationQueue.push(cmd);return;}
         if(coordinated && cmd.type==='work-facts'){coordinationQueue.push({type:'facts',facts:cmd.facts});return;}
-        if(coordinated && cmd.type==='work-reduced'){reducedWork=cmd.reduced===true;return;}
+        if(coordinated && cmd.type==='work-reduced'){reducedWork=cmd.reduced===true;if(bounds().personality===true)coordinationQueue.push({type:'personality'});return;}
         if(coordinated && cmd.type==='work-occupancy'){coordinationQueue.push({type:'occupancy',occupied:cmd.occupied});return;}
         if(coordinated && ['story-start','story-cancel','story-pause','story-resume','work-fact'].includes(cmd.type)){
           coordinationQueue.push(cmd.type==='work-fact'?{type:'fact',fact:cmd.fact}:{type:({'story-start':'start','story-cancel':'cancel','story-pause':'pause','story-resume':'resume'})[cmd.type]});

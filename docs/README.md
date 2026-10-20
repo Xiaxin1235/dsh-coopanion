@@ -8,6 +8,7 @@
 |---|---|
 | 安装、配置、操作与升级 | [使用指南](usage.md) |
 | 生活感分支接手、当前阶段与验收边界 | [当前开发状态](aliveness-development.md) |
+| 第 5A 期安静／活泼、参数与行为选择 | [人格行为契约](design/personality-behavior-contract.md) |
 | 第 4 期生活／工作交接与事实适配 | [双线协调契约](design/life-work-contract.md) |
 | 第 3 期连续动作与物件预览 | [连续动作契约](design/continuous-action-contract.md) |
 | 开发、构建、测试与录制回归 | [开发指南](development.md) |
@@ -27,7 +28,7 @@
 
 | 需要查阅的内容 | 入口与适用范围 |
 |---|---|
-| 生活感规划与制作 | [设计与制作索引](design/README.md)：第 1–3 期已验收，第 4 期本地交付，现行空间／动作／双线契约；新会话的 5A 授权只看开发状态 |
+| 生活感规划与制作 | [设计与制作索引](design/README.md)：第 1–3 期已验收，第 4／5A 期本地交付，现行空间／动作／双线／人格契约；阶段授权只看开发状态 |
 | 上游借鉴与已选补丁 | [蓝图第 7 节](design/aliveness-implementation-plan.md#7-上游借鉴人格记忆与互动节奏)维护后续取舍；[固定调研与回归归档](archive/2026-10-aliveness/upstream-motion/README.md)区分当时建议、已移植两项和原生超时修正 |
 | 固定版本的资源与生命周期结果 | [观察报告](reports/README.md)：周末采集已结束、托管已禁用；0.4.10 数据不作为新版验收 |
 | 早期发散、候选诊断与发布过程 | [历史说明](archive/README.md)：其中的计划、问题和进度只属于当时快照 |

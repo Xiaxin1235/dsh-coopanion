@@ -1,7 +1,8 @@
+import {initialPersonality,configurePersonality,personalityGate,choosePersonality} from './personality.js';
 // Local opt-in courtyard coordinator. One body, one tick, one navigator.
 // Work facts are metadata projected by the trusted owner, never inferred here.
 export const initialLifeWork = () => ({ phase:'idle', suspended:null, reason:null, life:null, sessions:[], focus:null,
-  interaction:null, occupied:false, admission:0, navigation:null, serial:0, elapsed:0, lastAt:null, revision:null });
+  interaction:null, occupied:false, admission:0, navigation:null, serial:0, elapsed:0, lastAt:null, revision:null, personality:null });
 // A bounded last-result ledger per source survives metadata changes and restarts.
 export function workCelebration(previous, sessions) {
   const old=new Map(previous.map(entry=>[entry.sessionId,entry.id]));
@@ -42,10 +43,24 @@ export function stepLifeWork(state, input) {
     }
     action({type:'yield'});
   };
+  const personal=()=>next.phase.startsWith('personal-');
   const cmd=input.command;
+  let reconfigure=false;
+  if(cmd?.type==='personality' && input.personalityEnabled) {
+    next.personality=configurePersonality(next.personality??initialPersonality(),cmd);
+    reconfigure=personal();
+  }
+  if(cmd?.type==='personality-start' && input.personalityEnabled){
+    next.personality={...(next.personality??initialPersonality()),enabled:true};
+  }
+  if(cmd?.type==='personality-stop' && next.personality){
+    next.personality={...next.personality,enabled:false};
+    reconfigure=personal();
+  }
   if(cmd?.type==='fact')next=acceptWorkFact(next,cmd.fact);
   if(cmd?.type==='facts' && Array.isArray(cmd.facts))for(const fact of cmd.facts)next=acceptWorkFact(next,fact);
   if(cmd?.type==='interaction')next.interaction=cmd.sessionId??null;
+  if(cmd?.type==='pause' || input.blocked || state.lastAt!==null && (input.now<state.lastAt||input.now-state.lastAt>1000)) {pause(cmd?.reason??'lifecycle');return out();}
   if(cmd?.type==='occupancy') {
     next.occupied=cmd.occupied===true;
     if(next.occupied){if(next.phase!=='paused')pause('user-occupied');return out();}
@@ -53,6 +68,16 @@ export function stepLifeWork(state, input) {
   }
   if(next.occupied){if(next.phase!=='paused')pause('user-occupied');return out();}
   if(next.sessions.some(f=>f.driver==='unknown')){if(next.phase!=='paused')pause('source-unavailable');return out();}
+  const permissions=next.personality?.permissions;
+  const occupation=next.personality?.enabled && (permissions.occupied?'user-occupied':permissions.input!=='idle'?'input-'+permissions.input:null);
+  // Occupation freezes the body, including work travel; facts above still settle.
+  // Mode/roam only constrain optional life and never suppress work attention.
+  if(occupation){if(next.phase!=='paused')pause('personality:'+occupation);return out();}
+  const gate=next.personality?.enabled?personalityGate(next.personality):null;
+  if(gate && !demand() && !next.life && (personal() || ['idle','ended'].includes(next.phase) || next.phase==='handoff' || next.reason?.startsWith('personality:'))) {
+    pause('personality:'+gate);return out();
+  }
+  if(next.phase==='paused' && next.reason?.startsWith('personality:') && (!gate || demand()) && !input.blocked && cmd?.type!=='pause') {next.suspended=null;handoff();return out();}
   if(next.phase==='paused' && next.reason==='source-unavailable' && !input.blocked && cmd?.type!=='pause') {next.suspended=null;handoff();return out();}
   if(cmd?.type==='start' && ['idle','ended'].includes(next.phase) && ['idle','rest'].includes(input.action.phase) && !input.moving && input.physicalNavigation?.id==null) {
     next.life={objectId:input.objectId,target:{...input.destination},pickup:input.action.commits.pickup,drop:input.action.commits.drop};
@@ -65,7 +90,6 @@ export function stepLifeWork(state, input) {
   }
   if(cmd?.type==='reset') {stop();next.life=null;if(demand()){next.suspended='handoff';enter('paused');next.reason='explicit-reset';}else{next.suspended=null;enter('idle');}return out();}
   if(cmd?.type==='target' && next.life && Number.isFinite(cmd.x)&&Number.isFinite(cmd.y))next.life={...next.life,target:{x:cmd.x,y:cmd.y}};
-  if(cmd?.type==='pause' || input.blocked || state.lastAt!==null && (input.now<state.lastAt||input.now-state.lastAt>1000)) {pause(cmd?.reason??'lifecycle');return out();}
   if(cmd?.type==='resume' && next.phase==='paused' && !input.blocked) {
     const suspended=next.suspended;next.suspended=null;
     if(suspended==='life' && !demand() && next.life) {enter('life');action({type:'resume'});}
@@ -74,9 +98,12 @@ export function stepLifeWork(state, input) {
   }
   if(next.phase==='paused')return out();
   if(!['idle','ended'].includes(next.phase) && next.revision!==input.revision) {pause('world-changed');return out();}
-  if(demand() && ['idle','ended','life','return'].includes(next.phase)) {handoff();return out();}
+  if(demand() && (['idle','ended','life','return'].includes(next.phase)||personal())) {handoff();return out();}
+  if(reconfigure){handoff();return out();}
   const dt=Number.isFinite(input.dt)?Math.max(0,Math.min(.05,input.dt)):0;next.elapsed+=dt;
   if(input.action.phase==='paused' && !['idle','ended'].includes(next.phase)) {pause(input.action.error??'action-paused');return out();}
+  if(next.personality?.enabled && next.phase==='ended' && ['life-complete','target-already-reached'].includes(next.reason))next.life=null;
+  if(next.personality?.enabled && ['idle','ended'].includes(next.phase) && !next.life && !demand()) {handoff();return out();}
   if(next.phase==='life') {
     if(!next.life || input.objectId!==next.life.objectId){next.life=null;handoff();next.reason='object-unavailable';return out();}
     if(input.action.phase==='idle' && input.action.commits.drop>next.life.drop){enter('ended');next.reason='life-complete';}
@@ -107,12 +134,36 @@ export function stepLifeWork(state, input) {
       else if(!stand && next.elapsed>=2.5 && input.action.phase==='idle')action({type:'sit'});
     }
   } else if(next.phase==='return') {
-    if(!next.life){enter('idle');return out();}
+    if(!next.life){
+      if(next.personality?.enabled && !demand())enter('personal-choose');else enter('idle');
+      return out();
+    }
     if(input.objectId!==next.life.objectId || !input.object || ![input.object.x,input.object.y,next.life.target.x,next.life.target.y].every(Number.isFinite)) {
       enter('ended');next.reason='object-unavailable';next.life=null;return out();
     }
     if(input.action.owner==='ground' && Math.hypot(input.object.x-next.life.target.x,input.object.y-next.life.target.y)<=1.5){enter('ended');next.reason='target-already-reached';return out();}
     effects.push({type:'destination',...next.life.target});action({type:'loop'});enter('life');
+  }
+  if(next.phase==='personal-choose') {
+    if(input.action.owner!=='ground' || input.action.phase!=='idle' || input.moving || input.physicalNavigation?.id!=null){handoff();return out();}
+    next.personality=choosePersonality(next.personality,input);
+    effects.push({type:'personality-choice',decision:next.personality.decision});
+    if(next.personality.decision.kind==='explore'){enter('personal-prepare');effects.push({type:'stand'});}
+    else {enter('personal-dwell');if(input.words?.includes('sit'))action({type:'sit'});}
+  } else if(next.phase==='personal-prepare') {
+    if(next.elapsed>=.8 && input.standingReady && !input.moving){
+      next.serial++;next.navigation={id:8e12+next.serial,generation:1,revision:input.revision,target:{...next.personality.decision.target}};
+      enter('personal-travel');effects.push({type:'navigate',...next.navigation});
+    }else if(next.elapsed>6)pause('stance-timeout');
+  } else if(next.phase==='personal-travel') {
+    const n=next.navigation,e=input.event;
+    if(e&&n&&e.id===n.id&&e.generation===n.generation&&e.revision===n.revision){
+      if(e.kind==='navigation-arrived'&&Math.hypot(input.bodyX-n.target.x,input.bodyY-n.target.y)<=.5&&input.speed<=.001&&!input.moving){
+        next.navigation=null;enter('personal-dwell');if(input.words?.includes('sit'))action({type:'sit'});
+      }else pause(e.by??'arrival-mismatch');
+    }else if(next.elapsed>30)pause('personal-arrival-timeout');
+  } else if(next.phase==='personal-dwell') {
+    if(next.elapsed>=next.personality.decision.duration)handoff();
   }
   return out();
 }

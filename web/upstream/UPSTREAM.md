@@ -95,3 +95,8 @@ Local courtyard life/work coordination, 2026-10-20:
 - The opt-in factory overlays bounded gaze/task expression, uses the existing awake sit at the actual station and rechecks the retained object/target on release. No original artwork, rig, model, prompt or license bytes change. Scope and verification are in `docs/design/life-work-contract.md` and `docs/aliveness-development.md`.
 
 2026-10-20 第四阶段增量：`kit/work-performance.js` 是本仓库的元数据表现策略，沿既有身体时钟采样，区分模型／工具活动、审批与问题，冻结占用并提供减少动态；只在空闲且地面拥有权时覆盖手臂。`kit/life-work.js` 改为真实运行／请求／异常驻岗与稳定多来源仲裁，目标 active 独立保存。来源与测试见[本轮报告](../../docs/reports/stage-4-semantics-20261020.md)。
+
+Local courtyard personality slice, 2026-10-20:
+
+- `kit/personality.js` is a locally authored version-1 preference policy: explicit quiet/lively selection, bounded per-preset overrides, deterministic counter sampling, safe nearby candidates and a bounded explanation trace. It has no timers, persistence, invitations or model calls.
+- Only the authoring factory with `bounds.personality=true` opts into the Stage 5A branches of `kit/life-work.js`. Existing work arbitration, contact executor and one navigator retain ownership; switching and permission changes re-evaluate from the actual body. No upstream persona service, assets, model or license bytes change. See `docs/design/personality-behavior-contract.md`.

@@ -11,7 +11,26 @@ node docs/design/art-workflow/o03-shell-hands-v1/prepare-model.mjs --check
 PORT=4189 node docs/design/art-workflow/preview-art-workflow.mjs
 ```
 
-已有 4189 服务直接复用。布局只保存在当前页，刷新会恢复初值；保护用户未导出的布局，复现与测试另开隔离页面。根路径仍进入第 2 期页面，第 3／4 期各用显式入口。
+已有 4189 服务直接复用。布局只保存在当前页，刷新会恢复初值；保护用户未导出的布局，复现与测试另开隔离页面。根路径仍进入第 2 期页面，第 3／4／5A 期各用显式入口。
+
+## 第 5A 期：同地图的人格行为对照
+
+复用现有服务，先执行 `node docs/design/art-workflow/space-v1/prepare-stage4.mjs`，另开[第 5A 期页面](http://127.0.0.1:4189/docs/design/art-workflow/space-v1/index.html?stage=5a)。不刷新原有未导出布局。隔离原生入口为 `DSH_SPACE_STAGE=5a node scripts/space-desktop.mjs`。
+
+1. 默认 off、移动未许可、输入 unknown。“开始人格日常”仍需把模式改为 quiet 或 interactive、许可移动、将模拟粗粒度输入设为 idle。
+2. 保持种子 7，先选安静并开始：首选原地坐下，停留约 25.3 秒。另开相同新页面选活泼、输入相同许可：首选沿真实导航到邻近空地，再停留约 9.7 秒。两页起点、地图和事实相同；页面模拟并非默认产品自主陪伴。
+3. 展开“参数与选择依据”，查看采样、合法目标、实际起点、时长及理由。可分别修改两组参数；切换保留修改，“恢复本组参数”仅清除当前组覆盖。“模拟未知版本回退”会回到安静 v1，保留种子、序号和有效修改。
+4. 在坐姿或探索途中切换，观察从当前姿态安全退出、用当前根重新选择；不复位身体或拿放计数。输入 active／unknown、占用、关闭模式或移动许可会停下；拖动、Escape、布局变化和生命周期暂停仍须“继续”。
+5. 展开“工作事实与占用（模拟）”，注入审批／工作。原唯一协调器立即关注、取消探索并真实到岗；off 只限制可选日常，不吞工作请求。结算审批后驱动可能仍在运行，可用“普通回复”结束该轮；只有工作需求真正解除才重评日常。
+6. “减少动态”只保留原地停留；无新邀请、台词、成长、记忆或模型调用。“停止日常”安全退出，不删除实际物件。日常开启时手动拿放由协调器独占，可先停止再“开始整理”。
+
+```bash
+node node_modules/vitest/vitest.mjs run tests/personality.test.js tests/life-work.test.js tests/space-action.test.js tests/navigation.test.js
+SPACE_EVIDENCE_DIR=artifacts/stage-5a-browser-new node tests/personality-ui.mjs
+SPACE_EVIDENCE_DIR=artifacts/stage-5a-native-new node tests/personality-ui.mjs --native
+```
+
+每轮新建证据目录；原生操作串行，临时 profile 退出清理。完整边界见[人格行为契约](../../personality-behavior-contract.md)，来源与结果见[5A 报告](../../../reports/stage-5a-20261020.md)。本页参数只在运行页保留，刷新不恢复布局、参数或执行进度；不扩展 5B 存档。
 
 ## 第 4 期：生活／工作双线
 

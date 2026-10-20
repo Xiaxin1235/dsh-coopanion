@@ -35,6 +35,8 @@ npm run test:install
 
 ## 关键行为回归
 
+第 5A 期使用 `?stage=5a`／`DSH_SPACE_STAGE=5a`。参数及准入见[人格行为契约](design/personality-behavior-contract.md)，运行前仍准备 `prepare-stage4.mjs` 的共享事实模块。策略为 `tests/personality.test.js`；`tests/personality-ui.mjs` 用公共控件对照同种子安静／活泼、真实抵达、途中切换、占用／减少动态、回退、审批优先、障碍编辑及生命周期，`--native` 使用临时 profile。每次指定新的 `SPACE_EVIDENCE_DIR`，并执行既有导航／连续动作／生活工作回归和完整 `test:inbox-ui`。
+
 第 4 期先运行 `node docs/design/art-workflow/space-v1/prepare-stage4.mjs`，显式 `?stage=4` 或 `DSH_SPACE_STAGE=4 node scripts/space-desktop.mjs`；事实／策略测试为 `tests/work-facts.test.ts`、`tests/life-work.test.js`，完整可见闭环为 `tests/life-work-ui.mjs`（`--native` 使用隔离 profile）。模拟事实与真实宿主分别结算；原生测试串行，每轮使用新 `SPACE_EVIDENCE_DIR`。
 
 第四阶段事件／多会话增量检查使用 `tests/work-facts.test.ts`、`tests/life-work.test.js`、`tests/work-performance.test.js` 与 `tests/work-semantics-ui.mjs`。正式 loader 的 `tests/work-host-contract.mjs` 对每个支持宿主使用其自己的目标投影包；`--output` 指向新的证据目录，临时 profile 自动清理。运行与边界见[工作语义验证](reports/stage-4-semantics-20261020.md)。

@@ -163,6 +163,6 @@ npm run character:pack -- examples/star paper-star.zip
 
 ## 生活感分支制作预览
 
-`codex/aliveness-foundation` 的[潮汐小院工作台](design/art-workflow/space-v1/README.md)提供显式第四阶段生活／工作预览，默认安装尚未接入该二维故事。页面使用模拟事实，可以检查安全留物、真实到岗、多会话关注、守候反应和生活续接；正式宿主适配、页面模拟与用户观感分别验证。启动、控件、第三／第二阶段兼容入口和定向回归统一看工作台，阶段进度与授权统一看[开发状态](aliveness-development.md)。
+`codex/aliveness-foundation` 的[潮汐小院工作台](design/art-workflow/space-v1/README.md)提供显式 `?stage=5a` 人格行为及 `?stage=4` 生活／工作预览，默认安装尚未接入该二维故事。5A 可显式选择安静／活泼，在同种子下对照原地停留与真实短程探索，并查看参数与选择理由；许可和工作事实均为模拟输入。第四阶段可以检查安全留物、真实到岗、多会话关注、守候反应和生活续接；正式宿主适配、页面模拟与用户观感分别验证。启动、控件、第三／第二阶段兼容入口和定向回归统一看工作台，阶段进度与授权统一看[开发状态](aliveness-development.md)。
 
 已有 4189 服务直接复用；新页面生效，保留用户原页未导出的布局。原生预览使用临时 profile，不改变日用安装；系统桌面操作串行。

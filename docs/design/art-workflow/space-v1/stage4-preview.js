@@ -3,7 +3,7 @@ import { WorkPreview } from './work-facts.generated.js';
 const labels={working:'工作进行中',reply:'本轮已回复','goal-progress':'目标仍在进行',completed:'目标已完成',error:'异常需关注',blocked:'目标受阻',stopped:'已停止',interrupted:'历史中断','max-tokens':'输出 token 达到上限',unknown:'状态未知'};
 const activities={idle:'驱动空闲',preparing:'准备与收尾',requesting:'等待模型',reasoning:'出现思考活动',generating:'组织回复','tool-arguments':'准备工具参数',tools:'等待调用结果',recovering:'请求遇到问题',unknown:'来源不可观测'};
 const reasons={'source-unavailable':'工作来源暂不可观测，先停稳','user-occupied':'保留你的阅读与输入','world-changed':'布局已改变，请核对后继续',lifecycle:'生命周期中断',drag:'拖动已暂停','life-complete':'原目标已完成','target-already-reached':'贝壳已在目标处','object-unavailable':'原物件已失效','handoff-timeout':'交接超时，物件状态已保留','explicit-reset':'已复位，请核对后继续'};
-const phases={idle:'待机',life:'整理贝壳',handoff:'安全交接物件与身体','work-prepare':'准备到岗','work-travel':'前往岗位','work-wait':'已实际到岗 · 守候',return:'核对原生活目标',paused:'暂停 · 等待继续',ended:'本次整理结束'};
+const phases={'personal-choose':'核对附近空地','personal-prepare':'从当前姿态起身','personal-travel':'人格日常 · 探索','personal-dwell':'人格日常 · 停留',idle:'待机',life:'整理贝壳',handoff:'安全交接物件与身体','work-prepare':'准备到岗','work-travel':'前往岗位','work-wait':'已实际到岗 · 守候',return:'核对原生活目标',paused:'暂停 · 等待继续',ended:'本次整理结束'};
 const buttons={disconnect:'来源不可观测',reconnect:'重新核对驱动',start:'工作开始',accepted:'发送已接受',reasoning:'思考活动',generating:'组织回复','tool-arguments':'准备工具参数',tool:'提出工具调用','tool-done':'单个调用返回','tool-error':'单个调用失败',retry:'失败后新尝试',progress:'回合结束 · 目标未完成',reply:'普通回复',complete:'目标完成',approval:'请求审批',approved:'结算一条审批',question:'提出问题',continued:'转为 continued',answered:'结算一条问题',error:'终止异常',limit:'输出达到上限',cancel:'用户取消',ack:'确认异常',repeat:'重复上一事件'};
 export function mountStage4(command){
   const panel=document.createElement('section');panel.className='work-panel';panel.id='work-panel';
