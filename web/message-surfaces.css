@@ -7,6 +7,7 @@
   --ui-rule: color-mix(in srgb, var(--accent) 16%, var(--ui-paper));
   --ui-outline: color-mix(in srgb, var(--ui-ink) 85%, var(--accent));
   --ui-muted: color-mix(in srgb, var(--ui-ink) 65%, var(--ui-paper));
+  --ui-danger: color-mix(in srgb, #a23b43 80%, var(--ui-ink));
   --ui-radius: 20px;
   --ui-control-radius: 11px;
   --ui-shadow: 0 12px 30px color-mix(in srgb, var(--ui-ink) 12%, transparent), 0 2px 5px color-mix(in srgb, var(--ui-ink) 5%, transparent);
@@ -103,6 +104,72 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 .menu-primary button, .conversation-tabs [aria-pressed=true], .menu-switches button[aria-checked=true] { background: var(--ui-wash); border-color: var(--ui-rule); color: var(--ui-accent); }
 .conversation-footer, .menu-footer, .requests footer { border-top: 1px solid var(--ui-rule); }
 #send, .character-buttons #character-use { background: var(--ui-accent); border-radius: var(--ui-control-radius); }
+/* Settings use the same paper and action roles, with one inset scroll well. */
+.menu {
+  display: flex; flex-direction: column; width: min(calc(360px * var(--text-scale)), calc(100vw - 24px));
+  padding: 0; overflow: visible; max-height: min(720px, calc(100vh - 24px));
+}
+.menu>.companion-heading { flex-shrink: 0; margin: 0; padding: 16px 18px 12px; gap: 12px; }
+.menu .portrait { width: 42px; height: 48px; border-radius: 12px; background: var(--ui-wash); }
+.menu .companion-heading small { color: var(--ui-muted); font-size: calc(10px * var(--text-scale)); line-height: 1.4; }
+.menu .companion-heading strong { color: var(--ui-ink); font-size: calc(14px * var(--text-scale)); line-height: 1.4; white-space: normal; overflow-wrap: anywhere; }
+.menu #menu-state { color: var(--ui-accent); font-size: calc(10px * var(--text-scale)); }
+.menu .companion-heading>button { align-self: flex-start; padding: 0; }
+.menu-content {
+  min-height: 0; flex: 0 1 auto; margin: 0 10px; padding: 0 8px 4px;
+  overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; overflow-anchor: none;
+}
+.menu .menu-primary { gap: 8px; margin: 0 0 16px; }
+.menu .menu-primary button { padding: 12px; gap: 12px; border-radius: var(--ui-control-radius); }
+.menu .menu-primary span { color: var(--ui-ink); font-size: calc(12px * var(--text-scale)); line-height: 1.45; }
+.menu .menu-primary small { color: var(--ui-muted); font-size: calc(10px * var(--text-scale)); line-height: 1.4; margin-top: 3px; }
+.menu .menu-primary svg { width: 20px; height: 20px; }
+.menu .companion-controls { padding: 16px 0; border-block: 1px solid var(--ui-rule); font-size: calc(12px * var(--text-scale)); line-height: 1.5; }
+.menu .companion-controls label { display: block; margin: 0 0 8px; font-size: calc(12px * var(--text-scale)); font-weight: 600; }
+.menu .companion-controls select {
+  width: 100%; min-height: 36px; padding: 8px 10px; border: 1px solid var(--ui-rule); border-radius: var(--ui-control-radius);
+  background: var(--ui-paper); color: var(--ui-ink); font: inherit; text-overflow: ellipsis;
+}
+.menu .companion-controls p { margin: 8px 0 12px; color: var(--ui-muted); font-size: calc(11px * var(--text-scale)); line-height: 1.6; overflow-wrap: anywhere; }
+.companion-actions, .memory-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.menu .companion-controls button {
+  min-height: 32px; padding: 7px 10px; border: 1px solid var(--ui-rule); border-radius: var(--ui-control-radius);
+  background: var(--ui-wash); color: var(--ui-accent); font-size: calc(11px * var(--text-scale)); line-height: 1.45; font-weight: 550; text-align: start;
+}
+.menu #companion-play { background: var(--ui-accent); border-color: var(--ui-accent); color: var(--ui-paper); }
+.menu #companion-memories { margin-top: 16px; padding: 12px; border: 1px solid var(--ui-rule); border-radius: 12px; background: var(--ui-wash); }
+.menu #companion-memories summary { display: flex; align-items: center; gap: 8px; list-style: none; color: var(--ui-ink); font-weight: 600; cursor: pointer; }
+.menu #companion-memories summary::-webkit-details-marker { display: none; }
+.menu #companion-memories summary::before { content: ''; width: 6px; height: 6px; flex: 0 0 auto; border-right: 1.5px solid var(--ui-accent); border-bottom: 1.5px solid var(--ui-accent); transform: rotate(-45deg); margin-right: 3px; }
+.menu #companion-memories[open] summary::before { transform: rotate(45deg); }
+.menu #companion-memories>p { margin-bottom: 0; }
+.menu #memory-status:empty { display: none; }
+.menu #memory-list { list-style: none; margin: 12px 0; padding: 0; max-height: none; overflow: visible; }
+.menu #memory-list:empty { display: none; }
+.menu #memory-list li { margin: 0; padding: 12px 0; border-top: 1px solid var(--ui-rule); }
+.menu #memory-list p { display: flex; flex-direction: column; gap: 4px; margin: 0 0 8px; }
+.menu #memory-list strong { color: var(--ui-ink); font-size: calc(12px * var(--text-scale)); font-weight: 550; }
+.menu #memory-list time { color: var(--ui-muted); font-size: calc(10px * var(--text-scale)); }
+.menu #memory-list button { margin: 0; }
+.menu #memory-clear, .menu .companion-controls [data-memory-action=memory-delete] { color: var(--ui-danger); background: var(--ui-paper); border-color: color-mix(in srgb, var(--ui-danger) 24%, var(--ui-paper)); }
+.menu .companion-controls button:disabled, .menu #companion-play:disabled, .menu #memory-clear:disabled {
+  opacity: 1; color: var(--ui-muted); border-color: var(--ui-rule); background: var(--ui-wash); cursor: default;
+}
+.menu .menu-switches { display: flex; flex-direction: column; gap: 4px; margin-top: 12px; }
+.menu .menu-switches button {
+  display: grid; grid-template-columns: 20px minmax(0, 1fr) 28px; align-items: center; gap: 12px; padding: 10px 8px;
+  border: 1px solid transparent; border-radius: var(--ui-control-radius); background: transparent; color: var(--ui-accent);
+}
+.menu .menu-switches span { font-size: calc(12px * var(--text-scale)); color: var(--ui-ink); line-height: 1.45; }
+.menu .menu-switches small { font-size: calc(10px * var(--text-scale)); color: var(--ui-muted); margin-top: 3px; }
+.menu .menu-switches i { position: relative; inset: auto; width: 28px; height: 16px; background: var(--ui-rule); }
+.menu .menu-switches i::after { width: 12px; height: 12px; background: var(--ui-paper); }
+.menu .menu-switches [aria-checked=true] i { background: var(--ui-accent); }
+.menu .menu-switches [aria-checked=true] i::after { transform: translateX(12px); }
+.menu button:not(:disabled):hover { border-color: var(--ui-rule); filter: brightness(.98); }
+.menu .menu-switches button:hover { background: var(--ui-wash); }
+.menu>.menu-footer { flex-shrink: 0; margin: 8px 18px 0; padding: 12px 0; gap: 12px; border-top: 1px solid var(--ui-rule); }
+.menu-footer button, .menu-footer a { color: var(--ui-muted); font-size: calc(10px * var(--text-scale)); line-height: 1.5; }
 /* Inset, quiet scroll rails. A scrollable child never touches the paper's outline. */
 *::-webkit-scrollbar { width: 6px; height: 6px; }
 *::-webkit-scrollbar-track { background: transparent; margin-block: 10px; }

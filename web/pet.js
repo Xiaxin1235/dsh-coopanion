@@ -251,16 +251,19 @@ function refreshCompanionMemory() {
   const list = $('memory-list'), focusedId = document.activeElement?.dataset.memoryId, focusedAction = document.activeElement?.dataset.memoryAction;
   list.replaceChildren();
   for (const entry of [...entries].reverse()) {
-    const row = document.createElement('li'), description = document.createElement('p');
+    const row = document.createElement('li'), description = document.createElement('p'), title = document.createElement('strong'), time = document.createElement('time'), actions = document.createElement('div');
     const kind = entry.correctedKind ?? entry.kind;
-    description.textContent = `${new Date(entry.at).toLocaleString(notificationLocale())} · ${kind === 'pet' ? copy.memoryPet : copy.memoryPlay}${entry.correctedKind ? copy.memoryCorrected : ''}`;
+    title.textContent = `${kind === 'pet' ? copy.memoryPet : copy.memoryPlay}${entry.correctedKind ? copy.memoryCorrected : ''}`;
+    time.dateTime = new Date(entry.at).toISOString(); time.textContent = new Date(entry.at).toLocaleString(notificationLocale());
+    description.append(title, time); actions.className = 'memory-actions';
     row.append(description);
     for (const [type, label] of [['memory-correct', kind === 'pet' ? copy.memoryCorrectPlay : copy.memoryCorrectPet], ['memory-delete', copy.memoryDelete]]) {
       const button = document.createElement('button'); button.type = 'button'; button.textContent = label; button.disabled = disabled;
       button.dataset.memoryId = entry.id; button.dataset.memoryAction = type;
       button.onclick = () => { void companionClient.request(type, crypto.randomUUID(), { entryId: entry.id, kind: kind === 'pet' ? 'play' : 'pet' }); };
-      row.append(button);
+      actions.append(button);
     }
+    row.append(actions);
     list.append(row);
   }
   if (focusedId) ([...list.querySelectorAll('button')].find(button => button.dataset.memoryId === focusedId && button.dataset.memoryAction === focusedAction) ?? $('companion-memories').querySelector('summary')).focus({ preventScroll: true });

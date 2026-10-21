@@ -16,7 +16,7 @@
 | 完成判断、通知身份与请求结算 | [提醒契约](notification-contract.md) |
 | 会话续接、接受回执、草稿与去重 | [会话契约](session-chat-contract.md) |
 | 进程退出、有限恢复与临时状态 | [恢复契约](desktop-recovery-contract.md) |
-| 消息气泡、全文与统一视觉体系 | [消息视觉体系](design/message-visual-system.md) |
+| 消息气泡、全文与右键设置视觉体系 | [消息视觉体系](design/message-visual-system.md) |
 | 字号、阅读与输入状态保持 | [文字契约](text-readability-contract.md) |
 | 显示器归属、坐标与拖放切屏 | [多屏契约](multi-display-contract.md) |
 | NPC 日常、小窝、邀请与关系存档 | [自主陪伴契约](companionship-contract.md) |

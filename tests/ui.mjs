@@ -206,3 +206,4 @@ await import('./mouth-ui.mjs');
 
 // Shared output surfaces keep their scroll rails and actions inside the viewport.
 await import('./message-surfaces-ui.mjs');
+await import('./menu-surfaces-ui.mjs');

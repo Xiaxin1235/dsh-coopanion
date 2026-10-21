@@ -76,10 +76,11 @@
     </section>
     <section id="menu" class="menu interactive" hidden>
       <header class="companion-heading"><span class="portrait"><img id="menu-portrait" alt="" hidden><svg id="menu-emblem" viewBox="0 0 40 40" aria-hidden="true"><path d="M8 24c0-8 6-13 14-13 7 0 11 6 11 12l4-5v8l-6 2c-4 5-15 5-20 0l-5-1 2-3Z"/><path d="M19 12c-1-5 7-7 8-2M13 28l-2 4 8-2"/><circle cx="26" cy="20" r="1"/></svg></span><span><small data-i18n="companion">桌上的小伙伴</small><strong id="menu-name">DeepSeek 大肥鱼</strong><small id="menu-state">在这里陪你</small></span><button id="menu-close" aria-label="收起伙伴菜单" data-i18n-aria-label="menuClose">×</button></header>
+      <div class="menu-content" tabindex="0" role="region" aria-labelledby="menu-name">
       <div class="menu-primary"><button id="open-characters"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 3-5 3 3 5 2-1v11h8V10l2 1 3-5-5-3c-1 4-7 4-8 0Z"/></svg><span><span data-i18n="appearance">换个模样</span><small data-i18n="appearanceHint">角色 · 配色 · 动作</small></span><b>›</b></button><button id="menu-chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-7l-5 4v-4H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/><path d="M7 9h10M7 13h6"/></svg><span><span data-i18n="say">说句话</span><small data-i18n="sayHint">接着你的会话聊</small></span><b>›</b></button></div>
       <div class="companion-controls">
         <label for="companion-mode" data-i18n="companionMode">自主陪伴</label><select id="companion-mode"><option value="off" data-i18n="companionOff">关闭（停止自主活动）</option><option value="quiet" data-i18n="companionQuiet">安静陪伴</option><option value="interactive" data-i18n="companionInteractive">互动陪伴</option></select>
-        <p id="companion-status" role="status"></p><button id="companion-play" data-i18n="companionTogether">一起活动</button><button id="companion-resume" data-i18n="companionResume">恢复邀请</button>
+        <p id="companion-status" role="status"></p><div class="companion-actions"><button id="companion-play" data-i18n="companionTogether">一起活动</button><button id="companion-resume" data-i18n="companionResume">恢复邀请</button></div>
         <details id="companion-memories">
           <summary data-i18n="memoryTitle">相处记忆</summary>
           <p data-i18n="memoryHint">只记确认的抚摸和完成的活动；最多保留 30 天。删除记忆不改变关系进度。</p>
@@ -92,6 +93,7 @@
         <button id="toggle-sleep" role="switch" aria-checked="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14A8 8 0 0 1 10 4a8 8 0 1 0 10 10Z"/><path d="M16 3v4M14 5h4"/></svg><span><span data-i18n="sleep">歇一会</span><small data-i18n="sleepHint">忙起来会醒</small></span><i></i></button>
         <button id="toggle-notices" role="switch" aria-checked="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17h14l-2-3V9a5 5 0 0 0-10 0v5l-2 3ZM10 21h4"/></svg><span><span data-i18n="notices">提醒我</span><small data-i18n="noticesHint">要紧事不漏掉</small></span><i></i></button>
         <button id="toggle-sound" role="switch" aria-checked="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 4-6 5H3v6h3l6 5V4ZM16 8c3 2 3 6 0 8M19 5c5 4 5 10 0 14"/></svg><span><span data-i18n="sound">小小声</span><small data-i18n="soundHint">动作与说话音效</small></span><i></i></button>
+      </div>
       </div>
       <footer class="menu-footer"><button id="hide" data-i18n="hide">暂时藏起来</button><a href="source" download data-i18n="source" data-i18n-title="sourceHint" title="下载当前版本完整对应源码">源码 · AGPL ↗</a></footer>
     </section>
