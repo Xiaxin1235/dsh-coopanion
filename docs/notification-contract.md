@@ -30,6 +30,10 @@ Host 的共享 `CompletionTracker` 使用支持版本的 `@deepseek-ai/dsh-goal`
 
 发送接受回执独立于提醒与任务结果，详见[会话续接契约](session-chat-contract.md)。阅读结果不改变关注会话；显式点击“继续对话”才选择来源会话并打开输入框。审批与提问仍只由 Harness 的实际处理结算。
 
+## 实时口型
+
+`PetModel` 的会话和快照可带 `speechRevision`：只在已接纳的新非空文本增量或新增的完整文本块时单调递增，不随 reasoning、重复 block-end、旧 index 或相同快照增长，不传递正文。主页面按该进度驱动最长 1.2 秒的实时口型；重复状态、窗口恢复或减少动态解除不补播，流结束即停发。旧数据／浏览器演示按原会话 revision 提供一次有界动画。此进度只影响渲染，不结算回复、任务完成、邀请或关系。最终回复气泡继续由实际逐字展示驱动口型。
+
 ## 运行与领取
 
 `NotificationRuntime` 包含阶段、运行代次 `generation`、显示状态版本 `visibilityRevision`、原生可见性、休眠状态和有界错误。

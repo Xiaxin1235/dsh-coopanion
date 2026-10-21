@@ -1,3 +1,4 @@
+import { createLiveMouth } from './live-mouth.js';
 import { advanceRenderCadence } from './render-cadence.js';
 import { createDiagnosticCounters } from './diagnostics.js';
 import { createCompanionStroke } from './companion-touch.js';
@@ -45,7 +46,7 @@ let snapshot = { mood: 'idle', text: '你好。点点我，或双击和我说话
 let x = innerWidth * .68, y = innerHeight - 155, hovered = false, asleep = false, toastTimer, noticeSession;
 let cursorPoint, lastHit;
 let renderedSessionId = null, reactionUntil = 0, reactionMood, bubbleSession, trayKey, touchTimer, touchBlockedUntil = 0;
-let bubbleResult, readerResult, pendingOnly = false, talkAt = 0;
+let bubbleResult, readerResult, pendingOnly = false;
 let readerQueue, inboxState = { requests: [], issues: [], replies: [], total: 0 };
 let resizeLayout, displayGeometry, pendingDisplayPlacement, resizeOrigin;
 let stageWidth = innerWidth, pressedPointerId;
@@ -58,6 +59,7 @@ let activityWords = [], actionRestorePending = false, localHour, hourCheckedAt =
 let companion = initialCompanionship(), companionAction, companionManualId, companionManualGeneration, companionManualEpoch, companionFeedbackUntil = 0, companionReadAt = 0;
 const companionStroke = createCompanionStroke();
 const diagnosticCounters = createDiagnosticCounters();
+const liveMouth = createLiveMouth();
 const companionClient = new CompanionClient(native?.companionship ?? browserCompanionship, () => refreshCompanionCopy());
 const shownResults = new Set(), acknowledgedResults = new Set();
 let renderedLocale;
@@ -883,7 +885,7 @@ function animate(now) {
   }
   presentNextNotice();
   updateMood();
-  if (!reduced && pet.dataset.mood === 'talking' && now >= talkAt) { body?.talk(); talkAt = now + 180; }
+  if (liveMouth.step(attentionSnapshot, now, !reduced && !document.hidden && pet.dataset.mood === 'talking')) body?.talk();
   // Only P1's fully idle pose renders at 30fps. Work and input retain the original cadence.
   // Accumulate real dt so rendering fewer frames never slows physics.
   const companionIdle = options.companionship !== 'off' && pet.dataset.mood === 'idle' && !companion.active && !hovered && !pressing && !dragging && !reducedNeedsStep && body?.layout && !body.layout.moving && !userInputOccupied() && ![...composer.sessions.values()].some(s => !!s.text.trim() || s.phase === 'sending') && interaction.hidden && companionInvitation.hidden;

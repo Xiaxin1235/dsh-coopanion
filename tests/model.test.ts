@@ -35,17 +35,18 @@ describe('Harness task presentation', () => {
     m.consume(s, event('turn/start', { turn: 1 }));
     m.stream(s, { type: 'start', attemptId, revision: 1, turn: 1, step: 1 });
     m.stream(s, { type: 'chunk', attemptId, revision: 1, index: 0, time: 1, chunk: { type: 'reasoning-delta', index: 0, text: 'private reasoning' } });
-    expect(m.snapshot()).toMatchObject({ mood: 'thinking', active: true, streaming: true });
+    expect(m.snapshot()).toMatchObject({ mood: 'thinking', active: true, streaming: true, speechRevision: 0 });
     expect(m.snapshot().text).not.toContain('private');
     for (const [index, text] of ['你好', '，正在输出'].entries()) m.stream(s, { type: 'chunk', attemptId, revision: 1, index: index + 1, time: 2, chunk: { type: 'text-delta', index: 1, text } });
-    expect(m.snapshot()).toMatchObject({ mood: 'talking', speechId: attemptId, results: [] });
+    expect(m.snapshot()).toMatchObject({ mood: 'talking', speechId: attemptId, speechRevision: 2, results: [] });
     expect(m.snapshot().sessions[0].reply).toBe('');
     expect(m.stream(s, { type: 'chunk', attemptId, revision: 1, index: 1, time: 1, chunk: { type: 'text-delta', index: 1, text: '重复' } })).toBe(false);
     m.stream(s, { type: 'chunk', attemptId, revision: 1, index: 3, time: 3, chunk: { type: 'block-end', index: 1, block: { type: 'text', text: '你好，正在输出' } } });
+    expect(m.snapshot().speechRevision).toBe(2); // duplicate block-end and stale deltas do not animate again
     m.stream(s, { type: 'chunk', attemptId, revision: 1, index: 4, time: 4, chunk: { type: 'text-delta', index: 2, text: '第二段' } });
     expect(m.snapshot().results).toEqual([]);
     m.consume(s, event('assistant/message', { turn: 1, step: 1, message: createAssistantMessage({ content: [{ type: 'text', text: '你好，正在输出' }, { type: 'text', text: '第二段' }], source: { provider: 'test', model: 'test' } }), stream: [] }));
-    expect(m.snapshot()).toMatchObject({ mood: 'talking', streaming: false, speechId: attemptId });
+    expect(m.snapshot()).toMatchObject({ mood: 'talking', streaming: false, speechId: attemptId, speechRevision: 3 });
     m.consume(s, event('turn/end', { turn: 1, reason: { kind: 'completed' } }));
     expect(m.snapshot()).toMatchObject({ mood: 'idle', active: false });
     expect(m.snapshot().results[0].text).toBe('你好，正在输出\n第二段');

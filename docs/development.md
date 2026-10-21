@@ -35,6 +35,8 @@ npm run test:install
 
 ## 关键行为回归
 
+持续开合嘴巴的回归为 `tests/live-mouth.test.js`、`tests/model.test.ts` 与 `node tests/mouth-ui.mjs`（也纳入 `tests/ui.mjs`）：实际 API 2 iframe 必须在无新输出后停止收到 talk，渲染包络收拢；新内容进度恢复口型，重复快照不续播。`MOUTH_EVIDENCE_DIR=<新目录> node tests/mouth-native.mjs` 在临时 Electron profile 验证相同进度停止、新进度恢复与流结束停止，并纳入 `tests/desktop.mjs` 串行链。`speechRevision` 只传递单调进度，不带流式正文；工作状态与最终回复完成判断不依赖它。
+
 第 5B 期在默认产品主页面的右键菜单 → 相处记忆操作，见[记忆契约](design/companion-memory-contract.md)。先 `npm run build`；存档定向测试为 `tests/companion-memory.test.ts`、`tests/companion-client.test.js`、`tests/companion-http.test.ts` 与 `tests/companionship.test.js`；真实 UI 纳入完整 `test:inbox-ui`。`COMPANION_EVIDENCE_DIR=<新目录> node tests/companionship-native.mjs` 串行使用隔离 profile 验证真实 IPC 与跨重启查看／纠正／删除。此入口与 `?stage=5a` 二维制作预览分别运行。
 
 第 5A 期使用 `?stage=5a`／`DSH_SPACE_STAGE=5a`。参数及准入见[人格行为契约](design/personality-behavior-contract.md)，运行前仍准备 `prepare-stage4.mjs` 的共享事实模块。策略为 `tests/personality.test.js`、`tests/personality-feedback.test.js` 与 `tests/personality-controls.test.js`（参数控件旧帧回写）；`tests/personality-ui.mjs` 用公共控件对照同种子及同时间参数的安静／活泼、对象关注、实际 rig 表情／点头、真实起立／抵达、途中切换、占用／减少动态、回退、审批优先、障碍编辑及生命周期，`--native` 使用临时 profile。每次指定新的 `SPACE_EVIDENCE_DIR`，并执行既有导航／连续动作／生活工作回归和完整 `test:inbox-ui`。

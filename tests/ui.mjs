@@ -200,3 +200,6 @@ try {
   assert.deepEqual(errors, []);
   console.log('UI passed: native WebGL animation, speech/mouth synchronization, physics, sessions, chat, outfits, API 2 import, persistence, rejection and sandbox isolation.');
 } finally { await browser.close(); await new Promise(resolve => server.close(resolve)); await rm(directory, { recursive: true, force: true }); }
+
+// Bound live mouth motion independently of an unchanged talking task status.
+await import('./mouth-ui.mjs');
