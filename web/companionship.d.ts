@@ -8,4 +8,4 @@ export interface CompanionState {
   blocked: boolean;
 }
 export function initialCompanionship(): CompanionState;
-export function stepCompanionship(state: CompanionState, input: { mode: unknown; now: number; hour: number; words?: string[]; occupied?: boolean; automatic?: boolean; eligible?: boolean; motionBusy?: boolean; unlocked?: boolean; action?: string }, random?: () => number): { state: CompanionState; release?: boolean; word?: string; hideInvitation?: boolean; showInvitation?: boolean; reserveInvitation?: boolean; completed?: boolean };
+export function stepCompanionship(state: CompanionState, input: { mode: unknown; now: number; hour: number; words?: string[]; occupied?: boolean; automatic?: boolean; eligible?: boolean; motionBusy?: boolean; unlocked?: boolean; rememberedKind?: 'pet' | 'play'; action?: string }, random?: () => number): { state: CompanionState; release?: boolean; word?: string; hideInvitation?: boolean; showInvitation?: boolean; reserveInvitation?: boolean; completed?: boolean };

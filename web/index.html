@@ -76,6 +76,12 @@
       <div class="companion-controls">
         <label for="companion-mode" data-i18n="companionMode">自主陪伴</label><select id="companion-mode"><option value="off" data-i18n="companionOff">关闭（停止自主活动）</option><option value="quiet" data-i18n="companionQuiet">安静陪伴</option><option value="interactive" data-i18n="companionInteractive">互动陪伴</option></select>
         <p id="companion-status" role="status"></p><button id="companion-play" data-i18n="companionTogether">一起活动</button><button id="companion-resume" data-i18n="companionResume">恢复邀请</button>
+        <details id="companion-memories">
+          <summary data-i18n="memoryTitle">相处记忆</summary>
+          <p data-i18n="memoryHint">只记确认的抚摸和完成的活动；最多保留 30 天。删除记忆不改变关系进度。</p>
+          <p id="memory-status" role="status"></p><ol id="memory-list"></ol>
+          <button id="memory-clear" data-i18n="memoryClear">清空这个角色的记忆</button>
+        </details>
       </div>
       <div class="menu-switches">
         <button id="toggle-roam" role="switch" aria-checked="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 18 5-5 4 3 6-10M14 6h5v5"/></svg><span><span data-i18n="roam">散散步</span><small data-i18n="roamHint">自在走动</small></span><i></i></button>

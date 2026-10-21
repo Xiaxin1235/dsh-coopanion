@@ -57,3 +57,14 @@ it('cannot invite a character that has no complete shared activity', () => {
   const f = fixture({ words: ['neutral', 'stand', 'wave', 'love'] }); f.tick(); f.to(1800000);
   expect(f.events.some(e => e.reserveInvitation)).toBe(false);
 });
+
+it('uses a remembered shared activity only inside an authorized greeting and falls back to available words', () => {
+  for (const rememberedKind of ['play', 'pet', undefined]) {
+    const f = fixture({ rememberedKind, unlocked: true }); f.tick(); f.to(1800000); f.tick({ action: 'reserved' }); f.to(1802100);
+    expect(f.events.some(e => e.word === (rememberedKind === 'play' ? 'nod' : 'love'))).toBe(true);
+  }
+  const missing = fixture({ rememberedKind: 'play', words: ['neutral', 'wave', 'happy', 'dance'], unlocked: true });
+  missing.tick(); missing.to(1800000); missing.tick({ action: 'reserved' }); missing.to(1802100);
+  expect(missing.events.filter(e => e.word).map(e => e.word)).toEqual(['wave', 'neutral']);
+  const quiet = fixture({ rememberedKind: 'play', mode: 'quiet' }); quiet.tick(); quiet.to(3600000); expect(quiet.events).toEqual([]);
+});

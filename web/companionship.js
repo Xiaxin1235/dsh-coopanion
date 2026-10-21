@@ -30,7 +30,7 @@ export function stepCompanionship(state, input, random = Math.random) {
   if (action === 'reserved') {
     if (state.invitation === 'pending' && automatic && mode === 'interactive' && period === 'day') {
       next.invitation = 'shown'; next.invitationUntil = now + 10000;
-      const steps = words.includes('wave') ? [['wave', 2000], ...(unlocked && words.includes('love') ? [['love', 1200]] : []), ['neutral', 200]] : null;
+      const steps = words.includes('wave') ? [['wave', 2000], ...(input.rememberedKind === 'play' && words.includes('nod') ? [['nod', 1000]] : []), ...(unlocked && words.includes('love') ? [['love', 1200]] : []), ['neutral', 200]] : null;
       if (steps && words.includes('neutral')) { next.active = { kind: 'greeting', steps, index: 0, dueAt: now + steps[0][1], manual: false, deadline: now + 20000 }; output.word = steps[0][0]; }
       output.showInvitation = true;
     }

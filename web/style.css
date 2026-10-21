@@ -235,3 +235,9 @@ h1 { font-size: clamp(32px, 4vw, 54px); font-weight: 500; line-height: 1.4; lett
 .companion-invitation, .companion-feedback { font-size: calc(13px * var(--text-scale)); }
 
 #npc-home { position: fixed; bottom: 14px; height: 5px; transform: translateX(-50%); border-radius: 50%; background: #91b2be55; border-bottom: 1px solid #7095a877; pointer-events: none; z-index: 0; }
+
+#companion-memories { margin-top: 10px; }
+#companion-memories summary { cursor: pointer; }
+#memory-list { max-height: min(240px, 30vh); overflow: auto; padding-inline-start: 22px; }
+#memory-list li { margin: 8px 0; }
+#memory-list button { margin: 2px; }

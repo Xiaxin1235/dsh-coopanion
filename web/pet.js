@@ -55,7 +55,7 @@ let attentionSnapshot = snapshot;
 const chatTimers = new Map();
 let draftSessionId;
 let activityWords = [], actionRestorePending = false, localHour, hourCheckedAt = -Infinity;
-let companion = initialCompanionship(), companionAction, companionManualId, companionFeedbackUntil = 0, companionReadAt = 0;
+let companion = initialCompanionship(), companionAction, companionManualId, companionManualGeneration, companionManualEpoch, companionFeedbackUntil = 0, companionReadAt = 0;
 const companionStroke = createCompanionStroke();
 const diagnosticCounters = createDiagnosticCounters();
 const companionClient = new CompanionClient(native?.companionship ?? browserCompanionship, () => refreshCompanionCopy());
@@ -110,7 +110,7 @@ function applyLocale() {
   pet.setAttribute('aria-label', text.petLabel(activeName));
   if (bubbleResult) bubble.setAttribute('aria-label', text.finalReply(snapshot.sessions.find(session => session.id === bubbleResult.sessionId)?.label ?? activeName));
   if (libraryState) for (const option of $('character-select').options) { const view = libraryState.characters.find(view => view.id === option.value); if (view) option.textContent = nameIn(view.name); }
-  refreshPreviewCopy(); characterStatus(characterFeedback.key, ...characterFeedback.args);
+  refreshCompanionMemory(); refreshPreviewCopy(); characterStatus(characterFeedback.key, ...characterFeedback.args);
   if (currentNotice && !interaction.hidden) {
     const value = notificationPresentation(currentNotice, locale, body?.words ?? []);
     $('interaction-title').textContent = value.title; $('interaction-preview').textContent = value.body;
@@ -225,14 +225,46 @@ function act(actor, pack, word) {
 }
 function refreshCompanionCopy() {
   const copy = uiCopy(), summary = companionClient.summary;
+  const remembered = summary?.memory?.entries.at(-1);
+  const memoryCopy = remembered ? (remembered.correctedKind ?? remembered.kind) === 'play' ? copy.memoryLastPlay : copy.memoryLastPet : '';
   const text = options.companionship === 'off' ? copy.companionDisabled : companionClient.error ? copy.companionUnavailable : summary?.relation.unlocked ? copy.companionFamiliar : summary?.relation.total ? copy.companionProgress(summary.relation.total) : copy.companionNew;
-  if ($('companion-status').textContent !== text) $('companion-status').textContent = text;
+  const status = memoryCopy && !companionClient.error && options.companionship !== 'off' ? `${text} · ${memoryCopy}` : text;
+  if ($('companion-status').textContent !== status) $('companion-status').textContent = status;
+  refreshCompanionMemory();
   if ($('companion-mode').value !== options.companionship) $('companion-mode').value = options.companionship;
   const disabled = options.companionship === 'off' || !!companion.active?.manual;
   if ($('companion-play').disabled !== disabled) $('companion-play').disabled = disabled;
   const hidden = !summary?.invitation.quiet && !(summary?.invitation.laterUntil > Date.now());
   if ($('companion-resume').hidden !== hidden) $('companion-resume').hidden = hidden;
 }
+let renderedMemorySummary, renderedMemoryLocale, renderedMemoryCharacter, renderedMemoryDisabled;
+function refreshCompanionMemory() {
+  const summary = companionClient.summary, entries = summary?.memory?.entries ?? [], copy = uiCopy();
+  const disabled = !summary?.writable || !!companionClient.error;
+  const locale = notificationLocale();
+  if (summary === renderedMemorySummary && locale === renderedMemoryLocale && companionClient.characterId === renderedMemoryCharacter && disabled === renderedMemoryDisabled) return;
+  renderedMemorySummary = summary; renderedMemoryLocale = locale; renderedMemoryCharacter = companionClient.characterId; renderedMemoryDisabled = disabled;
+  $('memory-status').textContent = disabled ? copy.memoryUnavailable : entries.length ? '' : copy.memoryEmpty;
+  $('memory-clear').disabled = disabled || !entries.length;
+  const list = $('memory-list'), focusedId = document.activeElement?.dataset.memoryId, focusedAction = document.activeElement?.dataset.memoryAction;
+  list.replaceChildren();
+  for (const entry of [...entries].reverse()) {
+    const row = document.createElement('li'), description = document.createElement('p');
+    const kind = entry.correctedKind ?? entry.kind;
+    description.textContent = `${new Date(entry.at).toLocaleString(notificationLocale())} · ${kind === 'pet' ? copy.memoryPet : copy.memoryPlay}${entry.correctedKind ? copy.memoryCorrected : ''}`;
+    row.append(description);
+    for (const [type, label] of [['memory-correct', kind === 'pet' ? copy.memoryCorrectPlay : copy.memoryCorrectPet], ['memory-delete', copy.memoryDelete]]) {
+      const button = document.createElement('button'); button.type = 'button'; button.textContent = label; button.disabled = disabled;
+      button.dataset.memoryId = entry.id; button.dataset.memoryAction = type;
+      button.onclick = () => { void companionClient.request(type, crypto.randomUUID(), { entryId: entry.id, kind: kind === 'pet' ? 'play' : 'pet' }); };
+      row.append(button);
+    }
+    list.append(row);
+  }
+  if (focusedId) ([...list.querySelectorAll('button')].find(button => button.dataset.memoryId === focusedId && button.dataset.memoryAction === focusedAction) ?? $('companion-memories').querySelector('summary')).focus({ preventScroll: true });
+}
+$('memory-clear').onclick = () => { void companionClient.request('memory-clear'); };
+$('companion-memories').ontoggle = () => { if ($('companion-memories').open && activeView) void companionClient.request('read'); };
 function companionBlocked(manual, mood, readingAttention, active) {
   const runtime = notificationState?.runtime, layout = body?.layout;
   return active || mood !== 'idle' || pendingRequests().length > 0 || userInputOccupied() || !interaction.hidden || readingAttention ||
@@ -253,7 +285,7 @@ function updateCompanion(now, mood, readingAttention, active) {
   const summary = companionClient.summary;
   const eligible = !!summary?.writable && !companionClient.error && summary.invitation.remaining > 0 && !summary.invitation.quiet && Date.now() >= summary.invitation.laterUntil;
   const inputQuiet = keyboardActivity !== 'idle' || performance.now() - keyboardAt > 2500;
-  const result = stepCompanionship(companion, { mode, now, hour: localHour, words: activityWords, occupied: blocked, motionBusy: !!body?.layout?.moving, automatic: options.roam && !reduced && !inputQuiet && !['pointer', 'work'].includes(npc.reason), eligible: eligible && !npc.walkId, unlocked: summary?.relation.unlocked, action: companionAction });
+  const result = stepCompanionship(companion, { mode, now, hour: localHour, words: activityWords, occupied: blocked, motionBusy: !!body?.layout?.moving, automatic: options.roam && !reduced && !inputQuiet && !['pointer', 'work'].includes(npc.reason), eligible: eligible && !npc.walkId, unlocked: summary?.relation.unlocked, rememberedKind: summary?.memory?.entries.at(-1)?.correctedKind ?? summary?.memory?.entries.at(-1)?.kind, action: companionAction });
   if (result.showInvitation) diagnosticCounters.event('invitationsShown');
   if (result.hideInvitation && companion.invitation === 'shown' && now >= companion.invitationUntil) diagnosticCounters.event('invitationsExpired');
   companionAction = undefined; companion = result.state;
@@ -273,7 +305,7 @@ function updateCompanion(now, mood, readingAttention, active) {
   }
   if (result.completed && companionManualId) {
     const id = companionManualId; companionManualId = undefined;
-    companionMessage(uiCopy().companionPlayed, now); void companionClient.request('play', id);
+    companionMessage(uiCopy().companionPlayed, now); if (companionManualEpoch === companionClient.epoch) void companionClient.request('play', id, { memoryGeneration: companionManualGeneration });
   }
   // A stroke necessarily hovers the pet. Keep its feedback visible while still
   // yielding to work, reading, input and physical interaction.
@@ -315,7 +347,7 @@ function startCompanionPlay() {
   const activity = sessionActivity(attentionSnapshot);
   if (options.companionship === 'off' || companionBlocked(true, activity.mood, false, activity.active)) { companionMessage(uiCopy().companionBusy); return; }
   if (!companionInvitation.hidden) diagnosticCounters.event('invitationsAccepted');
-  companionInvitation.hidden = true; companionAction = 'play'; companionManualId = crypto.randomUUID();
+  companionInvitation.hidden = true; companionAction = 'play'; companionManualId = crypto.randomUUID(); companionManualGeneration = companionClient.summary?.memory?.generation; companionManualEpoch = companionClient.epoch;
   companionMessage(uiCopy().companionPlaying); updateMood();
   if (!companion.active?.manual) { companionManualId = undefined; companionMessage(uiCopy().companionNoActivity); }
 }
@@ -928,7 +960,7 @@ async function setCharacter(view, scheme = '') {
   // input region until position() receives the new body's first frame.
   pet.hidden = true; delete pet.dataset.mode; delete pet.dataset.pressing;
   appliedMood = appliedControls = undefined;
-  if (options.companionship !== 'off') { void companionClient.load(view.id); companionReadAt = performance.now() + 60000; } else { companionClient.epoch++; companionClient.characterId = view.id; companionClient.summary = null; }
+  void companionClient.load(view.id); companionReadAt = performance.now() + 60000;
   sfx.usePack(view.base, view.sounds);
   pet.dataset.character = view.id; pet.dataset.scheme = activeScheme;
   applyAppearance();

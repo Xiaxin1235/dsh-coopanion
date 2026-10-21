@@ -20,3 +20,13 @@ describe('trusted companionship request adapter', () => {
     expect(calls).toEqual(['read', 'play', 'read']); expect(client.summary.relation.total).toBe(0); expect(client.error).toContain('conflict');
   });
 });
+
+it('captures memory generation before queued writes and keeps a play’s original generation after deletion', async () => {
+  const calls = []; let generation = 'before';
+  const client = new CompanionClient(async request => { calls.push(request); if (request.type === 'memory-clear') generation = 'after'; return { ...summary(calls.length), memory: { generation, entries: [] } }; });
+  await client.load('whale');
+  await Promise.all([client.request('memory-clear'), client.request('pet', 'queued')]);
+  await client.request('play', 'started-before-delete', { memoryGeneration: 'before' });
+  await client.request('pet', 'fresh');
+  expect(calls.filter(call => ['pet', 'play'].includes(call.type)).map(call => call.memoryGeneration)).toEqual(['before', 'before', 'after']);
+});

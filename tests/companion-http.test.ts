@@ -19,6 +19,14 @@ it('preview companionship writes require trusted origin, installed character and
     expect((await call({ ...read, characterId: 'not-installed' }, origin)).status).toBe(404);
     expect((await call({ type: 'pet', characterId: 'whale', requestId: 'manual', revision: 0, date: '2099-01-01' }, origin)).status).toBe(400);
     const grown = await (await call({ type: 'pet', characterId: 'whale', requestId: 'manual', revision: 0 }, origin)).json(); expect(grown.value.relation.total).toBe(1);
+    const remembered = await (await call({ type: 'play', characterId: 'whale', requestId: 'completed', revision: 1, memoryGeneration: grown.value.memory.generation }, origin)).json();
+    expect(remembered.value.memory.entries[0].kind).toBe('play'); expect(remembered.value.relation.total).toBe(1);
+    const correction = { type: 'memory-correct', characterId: 'whale', requestId: 'correct', revision: 2, entryId: 'completed', kind: 'pet' };
+    expect((await call(correction, 'null')).status).toBe(403);
+    expect((await call({ ...correction, kind: 'work' }, origin)).status).toBe(400);
+    const corrected = await (await call(correction, origin)).json(); expect(corrected.value.memory.entries[0].correctedKind).toBe('pet');
+    const cleared = await (await call({ type: 'memory-clear', characterId: 'whale', requestId: 'clear', revision: 3 }, origin)).json();
+    expect(cleared.value.memory.entries).toEqual([]); expect(cleared.value.relation.total).toBe(1);
     expect((await call({ type: 'remove', characterId: 'whale', requestId: 'remove', revision: 1 }, origin)).status).toBe(400);
   } finally { await new Promise<void>(r => server.close(() => r())); await companions.close(); await rm(directory, { recursive: true, force: true }); }
 });

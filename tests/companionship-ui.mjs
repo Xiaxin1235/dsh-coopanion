@@ -330,3 +330,59 @@ for (const jump of [false, true]) test(`manual interaction follows a real poke r
   await page.waitForSelector('#pet[data-companion-activity=idle][data-mood=working]');
   assert.equal((await read()).relation.total, 0, 'Work interruption never grants growth');
 });
+
+// Stage 5B uses genuine trusted play completion, not a forged sandbox event.
+test('shared memory can be inspected, corrected and deleted after real play and reload, including while off', async t => {
+  const { page, read, receive, configure, directory } = await fixture(t, 'quiet');
+  await menu(page); await page.locator('#companion-play').click(); await page.mouse.move(0, 0);
+  assert.equal((await read()).memory.entries.length, 0);
+  await finishActivity(page);
+  await page.waitForFunction(() => document.querySelector('#companion-status').textContent.includes('记得上次一起活动'));
+  assert.equal((await read()).memory.entries[0].kind, 'play');
+  if (process.env.COMPANION_EVIDENCE_DIR) { await mkdir(process.env.COMPANION_EVIDENCE_DIR, { recursive: true }); await menu(page); await page.locator('#companion-memories summary').click(); await page.locator('#memory-list li').waitFor(); await page.screenshot({ path: join(process.env.COMPANION_EVIDENCE_DIR, 'memory-completed.png') }); await page.keyboard.press('Escape'); }
+  await page.reload(); await page.waitForSelector('#pet[data-mode]');
+  await receive({ type: 'init', baseline: true, options: { companionship: 'quiet', roam: true, locale: 'zh' }, snapshot: snapshot() });
+  await menu(page); await page.locator('#companion-memories summary').click();
+  await page.locator('#memory-list li').waitFor();
+  await page.getByRole('button', { name: '纠正为抚摸', exact: true }).click();
+  await page.waitForFunction(() => document.querySelector('#memory-list').textContent.includes('已纠正'));
+  assert.equal((await read()).memory.entries[0].correctedKind, 'pet');
+  assert.equal((await read()).relation.total, 1);
+  await configure({ companionship: 'off' });
+  await page.getByRole('button', { name: '删除这条', exact: true }).click();
+  await page.waitForFunction(() => document.querySelector('#memory-status').textContent.includes('还没有'));
+  assert.equal((await read()).memory.entries.length, 0); assert.equal((await read()).relation.total, 1);
+  const saved = JSON.parse(await readFile(join(directory, 'care/state.json'), 'utf8')); assert.equal(saved.schema, 2);
+  const out = process.env.COMPANION_EVIDENCE_DIR;
+  if (out) { await mkdir(out, { recursive: true }); await page.screenshot({ path: join(out, 'memory-deleted-off.png') }); }
+});
+
+test('opening memory controls interrupts real play and a cleared memory stays empty', async t => {
+  const { page, read, store } = await fixture(t, 'quiet');
+  await menu(page); await page.locator('#companion-play').click(); await page.mouse.move(0, 0);
+  const before = await read();
+  await store.request({ type: 'memory-clear', characterId: 'whale', revision: before.revision, requestId: 'clear-during-play' });
+  // Viewing memories is user occupation, so the running play must yield.
+  await menu(page); await page.locator('#companion-memories summary').click();
+  await page.keyboard.press('Escape');
+  // Opening the menu correctly interrupts play; no success may be inferred.
+  await finishActivity(page);
+  assert.equal((await read()).memory.entries.length, 0); assert.equal((await read()).relation.total, 0);
+});
+
+
+test('remembered play changes the next permitted greeting without another interaction or model call', async t => {
+  const { page, read, body } = await fixture(t, 'interactive', ['neutral', 'stand', 'wave', 'happy', 'nod']);
+  await menu(page); await page.locator('#companion-play').click(); await page.mouse.move(0, 0); await finishActivity(page);
+  await page.waitForFunction(() => document.querySelector('#companion-status').textContent.includes('记得上次一起活动'));
+  const before = await read();
+  await body.evaluate(() => { window.bodyOrders = []; });
+  await advanceCompanion(page, await page.evaluate(() => window.companionState.inviteAt));
+  await page.locator('#companion-invitation').waitFor();
+  await advanceCompanion(page, await page.evaluate(() => window.companionState.active.dueAt + 1));
+  await body.waitForFunction(() => window.bodyOrders.some(order => order.t === 'do' && order.word === 'nod'));
+  assert.ok(await body.evaluate(() => window.bodyOrders.some(order => order.t === 'do' && order.word === 'nod')));
+  const after = await read(); assert.deepEqual(after.relation, before.relation); assert.deepEqual(after.memory.entries, before.memory.entries);
+  assert.equal(after.invitation.remaining, before.invitation.remaining - 1);
+  assert.deepEqual(await page.evaluate(() => window.actions.filter(a => a.type !== 'presentation')), []);
+});
