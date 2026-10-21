@@ -22,6 +22,7 @@ const native = window.dshPetBridge;
 const pet = $('pet'), bubble = $('bubble'), conversations = $('conversations'), chat = $('chat'), menu = $('menu'), characters = $('characters'), reader = $('reader');
 const interaction = $('interaction'), requests = $('requests');
 const companionInvitation = $('companion-invitation'), companionFeedback = $('companion-feedback');
+const companionTurn = $('companion-turn');
 const panels = [conversations, chat, menu, characters, reader, requests];
 const noticeQueue = createNoticeQueue();
 let notificationState, currentNotice, interactionExpires = 0;
@@ -56,7 +57,7 @@ let attentionSnapshot = snapshot;
 const chatTimers = new Map();
 let draftSessionId;
 let activityWords = [], actionRestorePending = false, localHour, hourCheckedAt = -Infinity;
-let companion = initialCompanionship(), companionAction, companionManualId, companionManualGeneration, companionManualEpoch, companionFeedbackUntil = 0, companionReadAt = 0;
+let companion = initialCompanionship(), companionAction, companionManualId, companionManualGeneration, companionManualEpoch, companionFeedbackUntil = 0, companionReadAt = 0, companionFeedbackTicket = 0;
 const companionStroke = createCompanionStroke();
 const diagnosticCounters = createDiagnosticCounters();
 const liveMouth = createLiveMouth();
@@ -129,7 +130,7 @@ function position() {
   const box = layout?.box;
   // Bounds are applied inside the figure frame. Reanchor once its new geometry arrives.
   if (resizeLayout && layout !== resizeLayout && box?.w > 0 && box?.h > 0) {
-    for (const panel of [bubble, interaction, companionInvitation, companionFeedback, ...panels, $('attention')]) panelAnchors.delete(panel);
+    for (const panel of [bubble, interaction, companionInvitation, companionFeedback, companionTurn, ...panels, $('attention')]) panelAnchors.delete(panel);
     resizeLayout = undefined;
   }
   if (box) {
@@ -143,7 +144,7 @@ function position() {
     pet.style.cursor = layout.cursor || 'grab';
   }
   const anchor = layout?.bubble ?? { x: x + options.size / 2, y };
-  for (const panel of [bubble, interaction, companionInvitation, companionFeedback, ...panels]) {
+  for (const panel of [bubble, interaction, companionInvitation, companionFeedback, companionTurn, ...panels]) {
     if (panel.hidden) { panelAnchors.delete(panel); continue; }
     if (!panelAnchors.has(panel)) panelAnchors.set(panel, { ...anchor });
     const panelAnchor = panelAnchors.get(panel);
@@ -278,7 +279,18 @@ function companionBlocked(manual, mood, readingAttention, active) {
     document.hidden || !!runtime && (runtime.phase !== 'running' || !runtime.visible || runtime.suspended);
 }
 function companionMessage(text, now = performance.now()) {
+  companionFeedbackTicket++;
   companionFeedback.textContent = text; companionFeedback.hidden = false; companionFeedbackUntil = now + 3000; panelAnchors.delete(companionFeedback);
+}
+function rememberCompanion(type, id = crypto.randomUUID(), details = {}) {
+  const epoch = companionClient.epoch, ticket = companionFeedbackTicket;
+  return companionClient.request(type, id, details).then(receipt => {
+    if (epoch !== companionClient.epoch || ticket !== companionFeedbackTicket || options.companionship === 'off' || companionFeedback.hidden) return;
+    const activity = sessionActivity(attentionSnapshot);
+    if (companionBlocked(true, activity.mood, !$('attention').hidden && ($('attention').matches(':hover') || document.activeElement === $('attention')), activity.active)) return;
+    const saved = receipt?.memory?.entries.some(entry => entry.id === id);
+    companionMessage(saved ? type === 'play' ? uiCopy().memorySavedPlay : uiCopy().memorySavedPet : uiCopy().memoryNotSaved);
+  });
 }
 function updateCompanion(now, mood, readingAttention, active) {
   const mode = options.companionship;
@@ -294,6 +306,14 @@ function updateCompanion(now, mood, readingAttention, active) {
   if (result.showInvitation) diagnosticCounters.event('invitationsShown');
   if (result.hideInvitation && companion.invitation === 'shown' && now >= companion.invitationUntil) diagnosticCounters.event('invitationsExpired');
   companionAction = undefined; companion = result.state;
+  const awaiting = companion.active?.manual && companion.active.phase === 'await';
+  companionTurn.hidden = !awaiting;
+  if (awaiting) {
+    const remembered = summary?.memory?.entries.at(-1), kind = remembered?.correctedKind ?? remembered?.kind;
+    const hint = kind === 'play' ? uiCopy().companionRecallPlay : kind === 'pet' ? uiCopy().companionRecallPet : uiCopy().companionTurnHint;
+    if ($('companion-turn-hint').textContent !== hint) $('companion-turn-hint').textContent = hint;
+    companionFeedback.hidden = true;
+  }
   diagnosticCounters.activity(companion.active?.kind ?? 'idle');
   pet.dataset.companionship = mode; pet.dataset.companionActivity = companion.active?.kind ?? 'idle';
   if (result.hideInvitation || mode === 'off') companionInvitation.hidden = true;
@@ -310,7 +330,7 @@ function updateCompanion(now, mood, readingAttention, active) {
   }
   if (result.completed && companionManualId) {
     const id = companionManualId; companionManualId = undefined;
-    companionMessage(uiCopy().companionPlayed, now); if (companionManualEpoch === companionClient.epoch) void companionClient.request('play', id, { memoryGeneration: companionManualGeneration });
+    companionMessage(uiCopy().companionPlayed, now); if (companionManualEpoch === companionClient.epoch) void rememberCompanion('play', id, { memoryGeneration: companionManualGeneration });
   }
   // A stroke necessarily hovers the pet. Keep its feedback visible while still
   // yielding to work, reading, input and physical interaction.
@@ -353,11 +373,19 @@ function startCompanionPlay() {
   if (options.companionship === 'off' || companionBlocked(true, activity.mood, false, activity.active)) { companionMessage(uiCopy().companionBusy); return; }
   if (!companionInvitation.hidden) diagnosticCounters.event('invitationsAccepted');
   companionInvitation.hidden = true; companionAction = 'play'; companionManualId = crypto.randomUUID(); companionManualGeneration = companionClient.summary?.memory?.generation; companionManualEpoch = companionClient.epoch;
-  companionMessage(uiCopy().companionPlaying); updateMood();
+  companionFeedbackTicket++; companionFeedback.hidden = true; panelAnchors.delete(companionTurn); updateMood();
   if (!companion.active?.manual) { companionManualId = undefined; companionMessage(uiCopy().companionNoActivity); }
 }
 $('companion-play').onclick = startCompanionPlay;
 $('companion-accept').onclick = startCompanionPlay;
+$('companion-respond').onclick = () => {
+  if (!companion.active?.manual || companion.active.phase !== 'await') return;
+  companionAction = 'respond'; companionTurn.hidden = true;
+  companionMessage(uiCopy().companionPlaying); updateMood();
+};
+$('companion-cancel').onclick = () => {
+  companionAction = 'dismiss'; companionFeedbackTicket++; companionFeedback.hidden = companionTurn.hidden = true; updateMood();
+};
 for (const [id, type] of [['companion-later', 'later'], ['companion-quiet', 'quiet']]) $(id).onclick = () => {
   diagnosticCounters.event(type === 'later' ? 'invitationsLater' : 'invitationsQuiet');
   companionAction = type; companionInvitation.hidden = true; void companionClient.request(type); updateMood();
@@ -581,7 +609,7 @@ function applyOptions(value) {
 }
 // Font reflow and async Markdown/locale layout changes need fresh panel bounds.
 const panelResize = new ResizeObserver(() => position());
-for (const panel of [bubble, interaction, companionInvitation, companionFeedback, ...panels, $('attention')]) panelResize.observe(panel);
+for (const panel of [bubble, interaction, companionInvitation, companionFeedback, companionTurn, ...panels, $('attention')]) panelResize.observe(panel);
 
 function receive(message) {
   if (!message || typeof message !== 'object') return;
@@ -835,7 +863,7 @@ $('toggle-sleep').onclick = () => { if ($('toggle-sleep').disabled) return; asle
 $('toggle-notices').onclick = () => preference('notifications');
 $('hide').onclick = () => { if (native) send({ type: 'hide' }); else closePanels(); };
 $('toast').onclick = () => { $('toast').hidden = true; openSession(noticeSession); };
-document.addEventListener('keydown', event => { if (event.key === 'Escape') closePanels(); });
+document.addEventListener('keydown', event => { if (event.key === 'Escape') { if (companion.active?.manual) $('companion-cancel').click(); closePanels(); } });
 $('message').onkeydown = event => { if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) { event.preventDefault(); $('chat-form').requestSubmit(); } };
 document.querySelectorAll('[data-gesture]').forEach(button => { button.onclick = () => {
   closePanels(); act(body, activeView, button.dataset.gesture === 'wave' ? 'wave' : 'love');
@@ -849,8 +877,8 @@ document.addEventListener('pointermove', event => {
     dragging = true; npcRelocated = true; clearTimeout(touchTimer); closePanels(); bubble.hidden = true;
   }
   const activity = sessionActivity(attentionSnapshot);
-  const canCare = options.companionship !== 'off' && !activity.active && activity.mood === 'idle' && !pendingRequests().length && !userInputOccupied() && !asleep && interaction.hidden && ['idle', 'look', 'sit'].includes(body?.layout?.mode);
-  if (companionStroke.move(point, { trusted: event.isTrusted, over: canCare && !!body?.hit(point), pressing, now: performance.now() })) { void companionClient.request('pet'); companionMessage(uiCopy().companionPetThanks); }
+  const canCare = options.companionship !== 'off' && !companion.active && !activity.active && activity.mood === 'idle' && !pendingRequests().length && !userInputOccupied() && !asleep && interaction.hidden && ['idle', 'look', 'sit'].includes(body?.layout?.mode);
+  if (companionStroke.move(point, { trusted: event.isTrusted, over: canCare && !!body?.hit(point), pressing, now: performance.now() })) { companionMessage(uiCopy().companionPetThanks); void rememberCompanion('pet'); }
   body?.pointer('move', point); hit(point.x, point.y);
 });
 document.addEventListener('pointerleave', () => {
@@ -958,7 +986,7 @@ async function setCharacter(view, scheme = '') {
   });
   if (npc.walkId) body?.stopWalk(npc.walkId);
   npc = initialNpc(++npcGeneration); npcEvent = undefined; npcRelocated = false; npcGeometry = undefined; npcGroundLayout = undefined; npcSeated = false;
-  companionStroke.reset(); companion = initialCompanionship(); companionAction = companionManualId = undefined; companionInvitation.hidden = companionFeedback.hidden = true;
+  companionStroke.reset(); companion = initialCompanionship(); companionAction = companionManualId = undefined; companionFeedbackTicket++; companionInvitation.hidden = companionFeedback.hidden = companionTurn.hidden = true;
   body?.dispose(); body = next; body.set({ bounds: bounds() }); activeView = view; activeScheme = knownScheme(view, scheme); activeName = nameIn(view.name);
   actionRestorePending = false; activityWords = view.vocab.map(w => w.id).filter(w => next.words?.includes(w)); hourCheckedAt = -Infinity;
   // A new body has not reported its geometry yet. Retire the previous body's

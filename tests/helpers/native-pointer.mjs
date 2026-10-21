@@ -129,7 +129,9 @@ export async function nativeClick(page, selector) {
   await page.mouse.move(x, y);
   await page.waitForSelector('#pet[data-native-hit=true]');
   await page.mouse.click(x, y);
-  const observed = await nativeMeasurement(page, selector);
+  // A delete action can remove its own button before the IPC receipt arrives.
+  // Read the OS cursor at the original CSS point, without reacquiring that node.
+  const observed = await page.evaluate(css => window.dshPetBridge.testScreenPoint({ ...css, width: innerWidth, height: innerHeight }), measurement.css);
   assert.ok(Math.hypot(observed.cursor.x - measurement.dip.x, observed.cursor.y - measurement.dip.y) <= 2,
     `OS cursor reaches the measured DIP point: ${JSON.stringify({ measurement, observed })}`);
   return { ...measurement, cursorAfterClick: observed.cursor };

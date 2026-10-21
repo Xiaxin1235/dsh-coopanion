@@ -25,8 +25,14 @@ try {
   const errors = []; page.on('pageerror', e => errors.push(e.message));
   assert.equal(await page.evaluate(() => typeof window.dshPetBridge.companionship), 'function');
   assert.equal(await page.locator('#body-layer iframe').contentFrame().locator('body').evaluate(() => typeof window.dshPetBridge), 'undefined');
-  await petClick(page, { button: 'right' }); await nativeClick(page, '#companion-play'); await page.mouse.move(0, 0);
+  await petClick(page, { button: 'right' }); await nativeClick(page, '#companion-play');
+  await page.locator('#companion-turn').waitFor();
+  if (process.env.COMPANION_EVIDENCE_DIR) {await mkdir(process.env.COMPANION_EVIDENCE_DIR,{recursive:true});await page.screenshot({path:join(process.env.COMPANION_EVIDENCE_DIR,'turn-native.png')});}
+  await nativeClick(page, '#companion-respond'); await page.mouse.move(0, 0);
   await page.waitForFunction(() => document.querySelector('#companion-status').textContent.includes('1'));
+  await page.waitForFunction(() => document.querySelector('#companion-feedback').textContent.includes('记住') && !document.querySelector('#companion-feedback').hidden);
+  assert.equal(await page.locator('#companion-feedback').evaluate(e=>getComputedStyle(e).overflowY),'visible');
+  if (process.env.COMPANION_EVIDENCE_DIR) await page.screenshot({path:join(process.env.COMPANION_EVIDENCE_DIR,'memory-receipt-native.png')});
   const saved = JSON.parse(await readFile(join(directory, 'companionship-v1/state.json'), 'utf8')); assert.equal(saved.characters.whale.total, 1); assert.equal(saved.memories.whale.entries[0].kind, 'play');
   await send({ type: 'snapshot', snapshot: { ...snapshot, sessionId: 'native-chat', sessions: [{ id: 'native-chat', mood: 'idle', active: false, chatAvailable: true, label: 'Native chat' }] } });
   await petClick(page, {}, true); await page.locator('#message').fill('P1 native draft'); await page.locator('#message').evaluate(n => n.setSelectionRange(2, 6));

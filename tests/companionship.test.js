@@ -36,7 +36,10 @@ describe('local companionship decisions', () => {
     f.to(1810000); expect(f.state.invitation).toBe(null); expect(f.events.at(-1).hideInvitation).toBe(true);
   });
   it('manual activity completes only once and interruptions never count', () => {
-    const f = fixture(); f.tick(); expect(f.tick({ action: 'play' }).word).toBe('happy'); f.to(6000);
+    const f = fixture(); f.tick(); expect(f.tick({ action: 'play' }).word).toBe('wave');
+    expect(f.state.active.phase).toBe('await'); f.to(6000);
+    expect(f.events.filter(e => e.completed)).toHaveLength(0);
+    f.tick({ action: 'respond' }); f.to(12000);
     expect(f.events.filter(e => e.completed)).toHaveLength(1); f.to(20000); expect(f.events.filter(e => e.completed)).toHaveLength(1);
     f.tick({ action: 'play' }); expect(f.tick({ occupied: true }).release).toBe(true); f.to(40000); expect(f.events.filter(e => e.completed)).toHaveLength(1);
   });
@@ -47,8 +50,17 @@ describe('local companionship decisions', () => {
   });
 });
 
+it('requires a fresh response inside the active turn; timeout and late responses cannot earn a memory', () => {
+  const f=fixture(); f.tick(); f.tick({action:'respond'}); expect(f.state.active).toBeNull();
+  f.tick({action:'play'}); f.to(20000); expect(f.state.active).toBeNull();
+  f.tick({action:'respond'}); expect(f.events.some(e=>e.completed)).toBe(false);
+  f.tick({action:'play'}); f.tick({action:'respond'}); f.tick({action:'respond'}); f.to(26000);
+  expect(f.events.filter(e=>e.completed)).toHaveLength(1);
+});
+
 it('a slow or stuck real body cannot turn the activity timer into false growth', () => {
   const f = fixture(); f.tick(); f.tick({ action: 'play' });
+  f.tick({ action: 'respond' });
   f.tick({ motionBusy: true }); f.to(19000); expect(f.events.some(e => e.completed)).toBe(false);
   f.to(20000); expect(f.state.active).toBe(null); expect(f.events.some(e => e.completed)).toBe(false);
 });

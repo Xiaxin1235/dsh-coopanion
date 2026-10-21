@@ -170,6 +170,22 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 .menu .menu-switches button:hover { background: var(--ui-wash); }
 .menu>.menu-footer { flex-shrink: 0; margin: 8px 18px 0; padding: 12px 0; gap: 12px; border-top: 1px solid var(--ui-rule); }
 .menu-footer button, .menu-footer a { color: var(--ui-muted); font-size: calc(10px * var(--text-scale)); line-height: 1.5; }
+/* Close-range companionship cues are small notes, separate from long replies. */
+.companion-feedback, .companion-turn, .companion-invitation {
+  width: max-content; max-width: min(calc(252px * var(--text-scale)), calc(100vw - 24px)); max-height: none;
+  padding: 11px 14px; overflow: visible; border: 1.5px solid var(--ui-outline); border-radius: 16px;
+  font-size: calc(12px * var(--text-scale)); line-height: 1.55; overflow-wrap: anywhere;
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--ui-ink) 10%, transparent);
+}
+.companion-turn strong, .companion-invitation strong { color: var(--ui-accent); font-size: calc(12px * var(--text-scale)); font-weight: 600; }
+.companion-turn p { margin: 5px 0 10px; color: var(--ui-muted); font-size: calc(11px * var(--text-scale)); line-height: 1.6; }
+.companion-turn-actions, .companion-invitation .reply-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; justify-content: flex-start; }
+.companion-turn-actions button, .companion-invitation .reply-actions button {
+  margin: 0; padding: 7px 10px; min-height: 32px; border: 1px solid var(--ui-rule); border-radius: var(--ui-control-radius);
+  background: var(--ui-wash); color: var(--ui-accent); font-size: calc(11px * var(--text-scale)); line-height: 1.4;
+}
+#companion-respond, #companion-accept { background: var(--ui-accent); border-color: var(--ui-accent); color: var(--ui-paper); }
+.companion-invitation .reply-actions { margin-top: 10px; }
 /* Inset, quiet scroll rails. A scrollable child never touches the paper's outline. */
 *::-webkit-scrollbar { width: 6px; height: 6px; }
 *::-webkit-scrollbar-track { background: transparent; margin-block: 10px; }

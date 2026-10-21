@@ -51,6 +51,9 @@ async function fixture(t, mode = 'interactive', vocab, star = false, timing = nu
 }
 async function tickNext(page, extra = 0) { await advanceCompanion(page, await page.evaluate(() => window.companionState.active?.dueAt) + extra); }
 async function finishActivity(page) {
+  if (await page.evaluate(() => window.companionState.active?.phase === 'await')) {
+    await page.locator('#companion-respond').click(); await page.mouse.move(0, 0);
+  }
   for (let i = 0; i < 6 && await page.evaluate(() => !!window.companionState.active); i++) {
     const index = await page.evaluate(() => window.companionState.active.index);
     await tickNext(page);
@@ -172,14 +175,16 @@ test('twenty manual activities react within 500ms and interrupted trials never g
 test('twenty real strokes keep visible feedback while hovering and share the growth cooldown', async t => {
   const { page, read, receive } = await fixture(t, 'quiet');
   await page.evaluate(() => {
-    window.strokeLatencies = [];
+    window.strokeLatencies = []; window.strokeRecorded = -1; window.strokeTrial = 0;
     document.addEventListener('pointermove', () => { window.strokeInputAt = performance.now(); }, { capture: true });
     new MutationObserver(records => {
-      if (records.some(r => r.type === 'childList') && !document.querySelector('#companion-feedback').hidden)
-        window.strokeLatencies.push(performance.now() - window.strokeInputAt);
+      if (records.some(r => r.type === 'childList') && !document.querySelector('#companion-feedback').hidden && window.strokeRecorded !== window.strokeTrial) {
+        window.strokeRecorded = window.strokeTrial; window.strokeLatencies.push(performance.now() - window.strokeInputAt);
+      }
     }).observe(document.querySelector('#companion-feedback'), { childList: true });
   });
   for (let trial = 0; trial < 20; trial++) {
+    await page.evaluate(trial => { window.strokeTrial = trial; }, trial);
     await page.mouse.move(0, 0);
     if (trial) await page.waitForTimeout(2550);
     const b = await page.locator('#pet').boundingBox();
@@ -298,6 +303,7 @@ test('manual interaction survives a frame timestamp preceding the click event cl
   await page.waitForTimeout(200);
   assert.equal(await page.locator('#pet').getAttribute('data-companion-activity'), 'play', 'A stale frame timestamp must not cancel explicit play');
   assert.equal((await read()).relation.total, 0, 'Starting still does not grant growth');
+  await page.locator('#companion-respond').click();
   await page.waitForFunction(() => document.querySelector('#companion-status').textContent.includes('1'));
   assert.equal((await read()).relation.total, 1);
 });
@@ -368,6 +374,55 @@ test('opening memory controls interrupts real play and a cleared memory stays em
   // Opening the menu correctly interrupts play; no success may be inferred.
   await finishActivity(page);
   assert.equal((await read()).memory.entries.length, 0); assert.equal((await read()).relation.total, 0);
+});
+
+test('shared play waits for a real response, confirms saved memory and recalls it next time', async t => {
+  const {page,read,configure}=await fixture(t,'quiet');
+  await menu(page);await page.locator('#companion-play').click();
+  await page.locator('#companion-turn').waitFor();
+  await advanceCompanion(page,5000);
+  assert.equal((await read()).memory.entries.length,0);
+  assert.equal(await page.evaluate(()=>window.companionState.active.phase),'await');
+  await page.locator('#companion-respond').focus();await page.keyboard.press('Enter');
+  await finishActivity(page);
+  await page.waitForFunction(()=>document.querySelector('#companion-feedback').textContent.includes('记住'));
+  assert.equal((await read()).memory.entries.length,1);
+  const feedback=await page.locator('#companion-feedback').evaluate(e=>({width:e.getBoundingClientRect().width,overflow:getComputedStyle(e).overflowY}));
+  assert.ok(feedback.width<=252);assert.equal(feedback.overflow,'visible');
+  await menu(page);await page.locator('#companion-play').click();
+  assert.match(await page.locator('#companion-turn-hint').innerText(),/上次一起玩/);
+  await page.locator('#companion-cancel').click();
+  assert.equal((await read()).memory.entries.length,1);
+  for(const locale of ['zh','en']) for(const textScale of [1,1.25,1.5]) {
+    await page.setViewportSize({width:320,height:640});await configure({locale,textScale});
+    await menu(page);await page.locator('#companion-play').click();await page.locator('#companion-turn').waitFor();
+    await page.waitForFunction(()=>{const r=document.querySelector('#companion-turn').getBoundingClientRect();return r.x>=0&&r.y>=0&&r.right<=innerWidth&&r.bottom<=innerHeight;});
+    const geometry=await page.locator('#companion-turn').evaluate(e=>({overflow:getComputedStyle(e).overflowY,noX:e.scrollWidth<=e.clientWidth+1}));
+    assert.equal(geometry.overflow,'visible');assert.ok(geometry.noX);
+    if(process.env.COMPANION_EVIDENCE_DIR) {await mkdir(process.env.COMPANION_EVIDENCE_DIR,{recursive:true});await page.screenshot({path:join(process.env.COMPANION_EVIDENCE_DIR,`turn-${locale}-${textScale}.png`)});}
+    await page.keyboard.press('Escape');assert.equal(await page.locator('#companion-turn').isVisible(),false);
+  }
+});
+
+test('waiting expires without growth and an in-flight save cannot promise success or revive after work', async t => {
+  const {page,read,receive}=await fixture(t,'quiet');
+  await menu(page);await page.locator('#companion-play').click();await advanceCompanion(page,20001);
+  assert.equal(await page.locator('#companion-turn').isVisible(),false);assert.equal((await read()).memory.entries.length,0);
+  let release;const gate=new Promise(r=>{release=r;});let requested=false;
+  await page.route('**/api/companionship',async route=>{if(route.request().postDataJSON().type==='play'){requested=true;await gate;}await route.continue();});
+  await menu(page);await page.locator('#companion-play').click();await finishActivity(page);
+  await page.waitForFunction(()=>document.querySelector('#pet').dataset.companionActivity==='idle');
+  assert.equal(requested,true);assert.doesNotMatch(await page.locator('#companion-feedback').innerText(),/记住/);
+  assert.equal((await read()).memory.entries.length,0);
+  await receive({type:'snapshot',snapshot:snapshot({mood:'working',active:true,sessions:[{...session,mood:'working',active:true}]})});
+  release();await page.waitForFunction(()=>document.querySelector('#companion-status').textContent.includes('记得上次一起活动'));
+  assert.equal(await page.locator('#companion-feedback').isVisible(),false);assert.equal((await read()).memory.entries.length,1);
+  await receive({type:'snapshot',snapshot:snapshot()});
+  await page.unroute('**/api/companionship');
+  await page.route('**/api/companionship',async route=>{if(route.request().postDataJSON().type==='play')await route.fulfill({status:503,json:{ok:false,error:'companion/write-failed'}});else await route.continue();});
+  await menu(page);await page.locator('#companion-play').click();await finishActivity(page);
+  await page.waitForFunction(()=>document.querySelector('#companion-feedback').textContent.includes('没能保存'));
+  assert.equal((await read()).memory.entries.length,1);
 });
 
 

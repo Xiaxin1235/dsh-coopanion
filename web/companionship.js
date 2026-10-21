@@ -24,7 +24,12 @@ export function stepCompanionship(state, input, random = Math.random) {
   if (action === 'play') {
     const steps = recipe('play', words);
     reset();
-    if (steps) { next.active = { kind: 'play', steps, index: 0, dueAt: now + steps[0][1], manual: true, deadline: now + 20000 }; output.word = steps[0][0]; }
+    if (steps) { next.active = { kind: 'play', phase: 'await', steps, index: 0, dueAt: now + 20000, manual: true, deadline: now + 20000 }; output.word = words.includes('wave') ? 'wave' : steps[0][0]; }
+    return output;
+  }
+  if (action === 'respond' && state.active?.manual && state.active.phase === 'await' && now < state.active.deadline) {
+    next.active = { ...state.active, phase: 'reply', dueAt: now + state.active.steps[0][1], deadline: now + 20000 };
+    output.word = state.active.steps[0][0];
     return output;
   }
   if (action === 'reserved') {
@@ -44,6 +49,7 @@ export function stepCompanionship(state, input, random = Math.random) {
   }
   if (state.active) {
     if (now >= state.active.deadline) { reset(); return output; }
+    if (state.active.phase === 'await') return output;
     if (!automatic && !state.active.manual) { reset(); return output; }
     if (now < state.active.dueAt || input.motionBusy) return output;
     const index = state.active.index + 1;
