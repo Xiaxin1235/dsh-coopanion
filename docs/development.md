@@ -35,6 +35,8 @@ npm run test:install
 
 ## 关键行为回归
 
+消息样式的 token、层级与滚动归属见[视觉体系](design/message-visual-system.md)。`MESSAGE_EVIDENCE_DIR=<新目录> node tests/message-surfaces-ui.mjs` 执行中英文三档字号布局／实际滚动检查，并纳入 `tests/ui.mjs`；`tests/message-surfaces-native.mjs` 在临时 profile 串行检查真实 Electron。涉及阅读与气泡的改动仍包含完整 `test:inbox-ui`，不能用截图替代草稿／身份／计时回归。
+
 持续开合嘴巴的回归为 `tests/live-mouth.test.js`、`tests/model.test.ts` 与 `node tests/mouth-ui.mjs`（也纳入 `tests/ui.mjs`）：实际 API 2 iframe 必须在无新输出后停止收到 talk，渲染包络收拢；新内容进度恢复口型，重复快照不续播。`MOUTH_EVIDENCE_DIR=<新目录> node tests/mouth-native.mjs` 在临时 Electron profile 验证相同进度停止、新进度恢复与流结束停止，并纳入 `tests/desktop.mjs` 串行链。`speechRevision` 只传递单调进度，不带流式正文；工作状态与最终回复完成判断不依赖它。
 
 第 5B 期在默认产品主页面的右键菜单 → 相处记忆操作，见[记忆契约](design/companion-memory-contract.md)。先 `npm run build`；存档定向测试为 `tests/companion-memory.test.ts`、`tests/companion-client.test.js`、`tests/companion-http.test.ts` 与 `tests/companionship.test.js`；真实 UI 纳入完整 `test:inbox-ui`。`COMPANION_EVIDENCE_DIR=<新目录> node tests/companionship-native.mjs` 串行使用隔离 profile 验证真实 IPC 与跨重启查看／纠正／删除。此入口与 `?stage=5a` 二维制作预览分别运行。

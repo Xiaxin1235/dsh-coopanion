@@ -4,6 +4,7 @@
 
 | 资料 | 查阅条件 |
 |---|---|
+| [消息视觉体系](message-visual-system.md) | 输出气泡、全文、滚动区域、色彩／轮廓／动作层级与人物协调 |
 | [有限记忆契约](companion-memory-contract.md) | 第 5B 期可信互动记忆、容量／迁移、查看／纠正／删除与招呼 |
 | [人格行为契约](personality-behavior-contract.md) | 第 5A 期安静／活泼参数、选择理由、许可与从实际姿态重评 |
 | [双线协调契约](life-work-contract.md) | 第 4 期生活意图、工作事实、唯一身体拥有权、交接与恢复 |

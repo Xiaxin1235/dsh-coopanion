@@ -1,0 +1,125 @@
+/* Shared companion stationery: character-derived ink, paper, controls and reading wells. */
+:root {
+  --ui-ink: var(--skin-ink);
+  --ui-accent: color-mix(in srgb, var(--accent) 50%, var(--ui-ink));
+  --ui-paper: var(--surface);
+  --ui-wash: color-mix(in srgb, var(--accent) 6%, var(--ui-paper));
+  --ui-rule: color-mix(in srgb, var(--accent) 16%, var(--ui-paper));
+  --ui-outline: color-mix(in srgb, var(--ui-ink) 85%, var(--accent));
+  --ui-muted: color-mix(in srgb, var(--ui-ink) 65%, var(--ui-paper));
+  --ui-radius: 20px;
+  --ui-control-radius: 11px;
+  --ui-shadow: 0 12px 30px color-mix(in srgb, var(--ui-ink) 12%, transparent), 0 2px 5px color-mix(in srgb, var(--ui-ink) 5%, transparent);
+}
+.bubble, .panel, .menu {
+  border: 1.5px solid var(--ui-outline);
+  border-radius: var(--ui-radius);
+  background: var(--ui-paper);
+  color: var(--ui-ink);
+  box-shadow: var(--ui-shadow), inset 0 1px 0 #ffffffc0;
+}
+/* The tail is part of the paper, outside its scroll well. */
+.bubble::before, .panel::before, .menu::before {
+  left: calc(var(--tail, 50%) - 8px); bottom: -8px; width: 15px; height: 15px;
+  background: var(--ui-paper); clip-path: none; transform: rotate(45deg);
+  border-right: 1.5px solid var(--ui-outline); border-bottom: 1.5px solid var(--ui-outline); border-radius: 0 0 3px 0;
+}
+.bubble::after, .panel::after, .menu::after { content: none; }
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
+  outline-color: var(--ui-accent); outline-offset: 3px;
+}
+.b-close, header>button {
+  width: 28px; height: 28px; min-width: 28px; border-radius: 9px;
+  color: var(--ui-muted); background: transparent; font-size: calc(20px * var(--text-scale));
+}
+.b-close:hover, header>button:hover { color: var(--ui-ink); background: var(--ui-wash); }
+#bubble {
+  display: flex; flex-direction: column; width: min(calc(356px * var(--text-scale)), calc(100vw - 24px));
+  padding: 0; overflow: visible;
+}
+.message-header { padding: 14px 16px 12px; gap: 10px; flex-shrink: 0; }
+.message-mark {
+  display: grid; place-items: center; flex: 0 0 auto; width: 32px; height: 32px;
+  background: var(--ui-wash); border: 1px solid var(--ui-rule); border-radius: 11px; color: var(--ui-accent);
+}
+.message-mark svg { width: 17px; height: 17px; stroke-width: 1.6; }
+.message-heading { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 3px; }
+.message-caption, .conversation-heading small { color: var(--ui-muted); font-size: calc(10px * var(--text-scale)); font-weight: 500; letter-spacing: .02em; }
+.message-heading #bubble-status { display: block; max-width: none; color: var(--ui-accent); font-size: calc(12px * var(--text-scale)); font-weight: 600; line-height: 1.35; }
+.message-heading #bubble-status:empty { display: none; }
+.message-header .b-close { position: static; align-self: flex-start; }
+#bubble>.b-text {
+  min-height: 0; flex: 0 1 auto; max-height: min(240px, 36vh); margin: 0 10px; padding: 0 8px;
+  overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain;
+  font-size: calc(14px * var(--text-scale)); line-height: 1.75;
+}
+#bubble>.bubble-footer {
+  flex-shrink: 0; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px;
+  margin: 14px 16px 0; padding: 12px 0 14px; border-top: 1px solid var(--ui-rule);
+}
+#bubble>.bubble-footer:has(#bubble-session[hidden]):has(#bubble-expand[hidden]):has(#bubble-reveal[hidden]) { display: none; }
+#bubble .reply-actions { display: contents; }
+#bubble .bubble-footer button, .reader-footer .session-link {
+  flex: 1 1 auto; margin: 0; padding: 8px 11px; min-height: 32px; border: 1px solid var(--ui-rule);
+  border-radius: var(--ui-control-radius); background: var(--ui-wash); color: var(--ui-accent);
+  font-size: calc(11px * var(--text-scale)); font-weight: 550; line-height: 1.45; white-space: normal;
+}
+#bubble .bubble-footer #bubble-expand, .reader-footer #reader-session {
+  background: var(--ui-accent); border-color: var(--ui-accent); color: var(--ui-paper);
+}
+#bubble .bubble-footer button:hover, .reader-footer .session-link:hover { filter: brightness(.96); }
+.panel.reader { padding: 0; overflow: visible; }
+.reader>header { padding: 16px 18px 12px; gap: 10px; }
+.reader .conversation-heading { flex: 1; }
+.reader .conversation-heading strong { color: var(--ui-ink); font-size: calc(14px * var(--text-scale)); line-height: 1.45; }
+.reader>.reader-detail { margin: 0; padding: 0 18px 12px; color: var(--ui-muted); line-height: 1.5; overflow-wrap: anywhere; }
+.reader>.reader-text {
+  margin-inline: 10px; padding: 16px 10px; min-height: 0; max-height: 420px; border-radius: 10px;
+  border-top: 1px solid var(--ui-rule); border-bottom: 1px solid var(--ui-rule);
+  background: color-mix(in srgb, var(--ui-wash) 45%, var(--ui-paper));
+  font-size: calc(14px * var(--text-scale)); line-height: 1.85;
+}
+.reader-text blockquote { border-color: var(--ui-rule); color: var(--ui-muted); }
+.reader-text pre { border: 1px solid var(--ui-rule); background: var(--ui-paper); border-radius: 12px; padding: 12px; }
+.reader-text code, .reader-text th { background: var(--ui-wash); }
+.reader-text pre code { background: transparent; }
+.reader-text a { color: var(--ui-accent); }
+.reader>.reader-footer { gap: 8px; margin: 0; padding: 12px 16px; border: 0; }
+.reader-footer>button:not(.session-link) {
+  min-width: 30px; width: 30px; height: 32px; border: 1px solid var(--ui-rule);
+  border-radius: var(--ui-control-radius); background: var(--ui-wash); color: var(--ui-accent);
+}
+.reader-footer .session-link { flex: 0 1 auto; }
+.reader-footer #reader-session { margin-left: auto; }
+#reader-count { color: var(--ui-muted); font-size: calc(10px * var(--text-scale)); }
+.attention {
+  gap: 5px; min-height: 28px; padding: 5px 9px; border: 1.5px solid var(--ui-outline);
+  border-radius: 12px 12px 12px 4px; color: var(--ui-accent); background: var(--ui-paper);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--ui-ink) 10%, transparent);
+}
+/* Shared surfaces retain their existing input and lifecycle semantics. */
+.panel .session-link, .conversation-heading strong, .menu-primary button { color: var(--ui-accent); }
+.session-search, .chat-current, textarea, select, .request-card, .inbox-card { border-color: var(--ui-rule); }
+.menu-primary button, .conversation-tabs [aria-pressed=true], .menu-switches button[aria-checked=true] { background: var(--ui-wash); border-color: var(--ui-rule); color: var(--ui-accent); }
+.conversation-footer, .menu-footer, .requests footer { border-top: 1px solid var(--ui-rule); }
+#send, .character-buttons #character-use { background: var(--ui-accent); border-radius: var(--ui-control-radius); }
+/* Inset, quiet scroll rails. A scrollable child never touches the paper's outline. */
+*::-webkit-scrollbar { width: 6px; height: 6px; }
+*::-webkit-scrollbar-track { background: transparent; margin-block: 10px; }
+*::-webkit-scrollbar-thumb {
+  min-height: 28px; border: 1px solid transparent; border-radius: 6px;
+  background: color-mix(in srgb, var(--accent) 24%, var(--ui-paper)); background-clip: padding-box;
+}
+*::-webkit-scrollbar-thumb:hover { background-color: color-mix(in srgb, var(--accent) 40%, var(--ui-paper)); }
+*::-webkit-scrollbar-corner { background: transparent; }
+@supports not selector(::-webkit-scrollbar) {
+  * { scrollbar-width: thin; scrollbar-color: var(--ui-rule) transparent; }
+}
+@media (max-width: 380px) {
+  .message-header { padding-inline: 13px; }
+  #bubble>.b-text { margin-inline: 8px; padding-inline: 6px; }
+  #bubble>.bubble-footer { margin-inline: 12px; }
+  .reader>.reader-text { margin-inline: 8px; padding-inline: 6px; }
+  .reader>header { padding-inline: 14px; }
+}
+@media (prefers-reduced-motion: reduce) { #bubble.pop { animation: none; } }

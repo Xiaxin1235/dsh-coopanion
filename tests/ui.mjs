@@ -203,3 +203,6 @@ try {
 
 // Bound live mouth motion independently of an unchanged talking task status.
 await import('./mouth-ui.mjs');
+
+// Shared output surfaces keep their scroll rails and actions inside the viewport.
+await import('./message-surfaces-ui.mjs');

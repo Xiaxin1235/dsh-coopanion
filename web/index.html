@@ -7,6 +7,7 @@
   <link rel="icon" href="data:,">
   <title>DeepSeek 大肥鱼 · Harness</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="message-surfaces.css">
 </head>
 <body>
   <aside id="demo" hidden>
@@ -25,10 +26,13 @@
   <main id="stage" aria-label="桌宠活动区域" data-i18n-aria-label="stage">
     <div id="body-layer" aria-hidden="true"></div>
     <section id="bubble" class="bubble interactive" hidden aria-live="polite">
-      <button id="dismiss" class="b-close" aria-label="收起气泡" data-i18n-aria-label="dismiss">×</button>
+      <header class="message-header">
+        <span class="message-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg></span>
+        <span class="message-heading"><small class="message-caption" data-i18n="notice:replyCaption">捎回来的回复</small><span id="bubble-status"></span></span>
+        <button id="dismiss" class="b-close" aria-label="收起气泡" data-i18n-aria-label="dismiss">×</button>
+      </header>
       <p id="bubble-text" class="b-text"></p>
-      <div class="reply-actions"><button id="bubble-reveal" data-i18n="reveal">立即显示</button><button id="bubble-expand" hidden data-i18n="expand">展开完整回复 ↗</button></div>
-      <div class="bubble-footer"><span id="bubble-status"></span><button id="bubble-session" hidden data-i18n="back">回到会话 ↗</button></div>
+      <footer class="bubble-footer"><div class="reply-actions"><button id="bubble-reveal" data-i18n="reveal">立即显示</button><button id="bubble-expand" hidden data-i18n="expand">展开完整回复 ↗</button></div><button id="bubble-session" hidden data-i18n="back">回到会话 ↗</button></footer>
     </section>
     <section id="interaction" class="bubble interaction interactive" hidden aria-live="polite" aria-labelledby="interaction-title">
       <button id="interaction-close" class="b-close" aria-label="先收起来" data-i18n-aria-label="notice:close">×</button>
@@ -48,7 +52,7 @@
       <footer><span id="inbox-focus"></span></footer>
     </section>
     <section id="reader" class="panel reader interactive" hidden role="dialog" aria-labelledby="reader-title">
-      <header><span class="conversation-heading"><small id="reader-caption" data-i18n="notice:replyCaption">捎回来的回复</small><strong id="reader-title"></strong></span><button id="reader-close" aria-label="收起完整回复" data-i18n-aria-label="readerClose">×</button></header>
+      <header><span class="message-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"/></svg></span><span class="conversation-heading"><small id="reader-caption" data-i18n="notice:replyCaption">捎回来的回复</small><strong id="reader-title"></strong></span><button id="reader-close" aria-label="收起完整回复" data-i18n-aria-label="readerClose">×</button></header>
       <small id="reader-detail" class="reader-detail"></small>
       <div id="reader-text" class="reader-text" tabindex="0"></div>
       <footer class="reader-footer"><button id="reader-prev" aria-label="上一份回复" data-i18n-aria-label="notice:previous">‹</button><span id="reader-count"></span><button id="reader-next" aria-label="下一份回复" data-i18n-aria-label="notice:next">›</button><button id="reader-inbox" class="session-link" hidden data-i18n="notice:inbox">收件箱 ↩</button><button id="reader-session" class="session-link" data-i18n="notice:continue">继续对话 ↗</button></footer>

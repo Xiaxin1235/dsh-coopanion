@@ -272,6 +272,7 @@ try {
   await import('./diagnostics-native.mjs');
   await import('./lifecycle-startup-native.mjs');
   await import('./mouth-native.mjs');
+  await import('./message-surfaces-native.mjs');
   console.log('Native recovery passed: hidden and visible crashes, full Host state, no replay, stop and unload during backoff.');
   console.log('Native smoke passed: Electron ready handshake, isolated renderer, two-way chat IPC, host reply, notification, and clean shutdown.');
   console.log('Native character smoke passed: import, selection, disk persistence across process restart, and removal.');
