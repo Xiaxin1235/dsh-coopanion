@@ -43,7 +43,7 @@ async function fixture(t, mode = 'interactive', vocab, star = false, timing = nu
   await page.goto(`http://127.0.0.1:${server.address().port}`);
   await page.waitForSelector('#pet[data-mode]');
   const receive = msg => page.evaluate(msg => window.receive(msg), msg);
-  await receive({ type: 'init', baseline: true, options: { companionship: mode, roam: true, locale: 'zh' }, snapshot: snapshot() });
+  await receive({ type: 'init', baseline: true, options: { livingSpace:false,companionship: mode, roam: true, locale: 'zh' }, snapshot: snapshot() });
   await page.mouse.move(0, 0);
   if (timing) await page.waitForSelector('#pet[data-mode=idle]');
   else await page.waitForFunction(() => window.companionState?.blocked === false);
@@ -121,7 +121,7 @@ test('manual play grows only after completion, aborted play does not, archive su
   await f.receive({ type: 'snapshot', snapshot: snapshot({ mood: 'working', active: true, sessions: [{ ...session, mood: 'working', active: true }] }) });
   await advanceCompanion(page, await page.evaluate(() => window.companionNow + 20000)); assert.equal((await read()).relation.total, 1);
   await page.reload(); await page.waitForSelector('#pet[data-mode]');
-  await f.receive({ type: 'init', baseline: true, options: { companionship: 'quiet', roam: true }, snapshot: snapshot() });
+  await f.receive({ type: 'init', baseline: true, options: { livingSpace:false,companionship: 'quiet', roam: true }, snapshot: snapshot() });
   await page.waitForFunction(() => document.querySelector('#companion-status').textContent.includes('1'));
   const raw = JSON.parse(await readFile(join(f.directory, 'care/state.json'), 'utf8')); assert.equal(raw.characters.whale.total, 1);
 });
@@ -288,7 +288,7 @@ test('native NPC waits for acknowledged workArea before establishing home', asyn
   const { page, receive } = await fixture(t, 'quiet');
   await page.reload(); await page.waitForSelector('#pet[data-mode]');
   await page.evaluate(() => { window.dshPetBridge.nativeGeometry = true; });
-  await receive({ type: 'init', baseline: true, options: { companionship: 'quiet', roam: true }, snapshot: snapshot() });
+  await receive({ type: 'init', baseline: true, options: { livingSpace:false,companionship: 'quiet', roam: true }, snapshot: snapshot() });
   for (let i = 0; i < 10; i++) await npcTick(page);
   assert.equal(await page.evaluate(() => window.npcState.placed), false);
   assert.equal(await page.evaluate(() => window.npcState.reason), 'geometry');
@@ -348,7 +348,7 @@ test('shared memory can be inspected, corrected and deleted after real play and 
   assert.equal((await read()).memory.entries[0].kind, 'play');
   if (process.env.COMPANION_EVIDENCE_DIR) { await mkdir(process.env.COMPANION_EVIDENCE_DIR, { recursive: true }); await menu(page); await page.locator('#companion-memories summary').click(); await page.locator('#memory-list li').waitFor(); await page.screenshot({ path: join(process.env.COMPANION_EVIDENCE_DIR, 'memory-completed.png') }); await page.keyboard.press('Escape'); }
   await page.reload(); await page.waitForSelector('#pet[data-mode]');
-  await receive({ type: 'init', baseline: true, options: { companionship: 'quiet', roam: true, locale: 'zh' }, snapshot: snapshot() });
+  await receive({ type: 'init', baseline: true, options: { livingSpace:false,companionship: 'quiet', roam: true, locale: 'zh' }, snapshot: snapshot() });
   await menu(page); await page.locator('#companion-memories summary').click();
   await page.locator('#memory-list li').waitFor();
   await page.getByRole('button', { name: '纠正为抚摸', exact: true }).click();
@@ -409,10 +409,11 @@ test('waiting expires without growth and an in-flight save cannot promise succes
   const {page,read,receive}=await fixture(t,'quiet');
   await menu(page);await page.locator('#companion-play').click();await advanceCompanion(page,20001);
   assert.equal(await page.locator('#companion-turn').isVisible(),false);assert.equal((await read()).memory.entries.length,0);
-  let release;const gate=new Promise(r=>{release=r;});let requested=false;
-  await page.route('**/api/companionship',async route=>{if(route.request().postDataJSON().type==='play'){requested=true;await gate;}await route.continue();});
+  let release,requestSeen;const gate=new Promise(r=>{release=r;}),seen=new Promise(r=>{requestSeen=r;});let requested=false;
+  await page.route('**/api/companionship',async route=>{if(route.request().postDataJSON().type==='play'){requested=true;requestSeen();await gate;}await route.continue();});
   await menu(page);await page.locator('#companion-play').click();await finishActivity(page);
   await page.waitForFunction(()=>document.querySelector('#pet').dataset.companionActivity==='idle');
+  await Promise.race([seen,page.waitForTimeout(3000).then(()=>{throw Error('play save request was not sent');})]);
   assert.equal(requested,true);assert.doesNotMatch(await page.locator('#companion-feedback').innerText(),/记住/);
   assert.equal((await read()).memory.entries.length,0);
   await receive({type:'snapshot',snapshot:snapshot({mood:'working',active:true,sessions:[{...session,mood:'working',active:true}]})});
@@ -458,13 +459,14 @@ test('continuous strokes keep immediate feedback, merge into one saved response 
   assert.doesNotMatch(await page.locator('#companion-feedback').innerText(), /保存|记住/);
   await page.waitForFunction(() => window.responseState?.sources.length === 2 && window.responseState.sources.every(s => s.saved === 'saved'));
   const before = await read(); assert.equal(before.memory.entries.length, 2); assert.equal(before.relation.total, 1);
-  const orders = await body.evaluate(() => window.bodyOrders.length);
+  await body.waitForFunction(()=>window.bodyOrders.filter(order=>order.t==='do'&&order.word==='happy').length>=2);
+  const orders = await body.evaluate(() => window.bodyOrders.filter(order=>!(order.t==='set'&&order.state.livingContext)).length);
   await responseTick(page, 6499); assert.equal(await page.evaluate(() => window.responseEvents.length), 0);
   await responseTick(page, 6500); await page.locator('#companion-feedback[data-kind=response]').waitFor();
   assert.match(await page.locator('#companion-feedback').innerText(), /保存好/);
   await page.waitForTimeout(150); assert.equal(await page.locator('#companion-feedback').isVisible(), true);
   assert.deepEqual(await page.evaluate(() => window.responseEvents), [{ saved: true, count: 2 }]);
-  assert.equal(await body.evaluate(() => window.bodyOrders.length), orders);
+  assert.equal(await body.evaluate(() => window.bodyOrders.filter(order=>!(order.t==='set'&&order.state.livingContext)).length), orders);
   await responseTick(page, 19000); assert.equal(await page.evaluate(() => window.responseEvents.length), 1);
   assert.deepEqual((await read()).relation, before.relation); assert.deepEqual((await read()).memory.entries, before.memory.entries);
   assert.deepEqual(await page.evaluate(() => window.actions.filter(a => a.type !== 'presentation')), []);
@@ -570,7 +572,7 @@ test('captured reading defers a stroke response and renderer reload never restor
   await responseTick(page, 5000); assert.equal(await page.evaluate(() => window.responseEvents.length), 0);
   assert.equal(await page.locator('#reader-text').evaluate(n => n.firstChild === window.rhythmReader && n.scrollTop === 120), true);
   await page.reload(); await page.waitForSelector('#pet[data-mode]');
-  await receive({ type: 'init', baseline: true, options: { companionship: 'quiet', roam: true }, snapshot: snapshot() });
+  await receive({ type: 'init', baseline: true, options: { livingSpace:false,companionship: 'quiet', roam: true }, snapshot: snapshot() });
   await responseTick(page, 6000); assert.equal(await page.evaluate(() => window.responseState), null);
   assert.equal(await page.evaluate(() => window.responseEvents.length), 0);
   assert.equal((await read()).memory.entries.length, 1);

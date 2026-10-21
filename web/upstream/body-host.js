@@ -45,6 +45,7 @@ export function readLayout(l, size) {
   const pt = (p) => ({ x: clampTo(num(p?.x), 0, W), y: clampTo(num(p?.y), 0, H) });
   return {
     x: clampTo(num(l.x, W / 2), 0, W), y:clampTo(num(l.y, size.floorY ?? H),0,H), navigation:l.navigation ? {x:clampTo(num(l.navigation.x),0,W),y:clampTo(num(l.navigation.y),0,H),speed:clampTo(num(l.navigation.speed),0,100),phase:['idle','turning','moving','braking','settling'].includes(l.navigation.phase)?l.navigation.phase:'idle',id:Number.isSafeInteger(l.navigation.id)?l.navigation.id:null,generation:num(l.navigation.generation),revision:num(l.navigation.revision)} : null, facing: l.facing === -1 ? -1 : 1, mode: typeof l.mode === 'string' ? l.mode.slice(0, 32) : 'idle',
+    living:l.living?{phase:String(l.living.phase??'').slice(0,32),reason:String(l.living.reason??'').slice(0,64),action:String(l.living.action??'').slice(0,32),suspended:l.living.suspended==null?null:String(l.living.suspended).slice(0,32),owner:l.living.owner==='hand'?'hand':'ground',pickup:Math.max(0,num(l.living.pickup)),drop:Math.max(0,num(l.living.drop)),goal:String(l.living.goal??'').slice(0,64),socialReady:l.living.socialReady===true}:null,
     busy: !!l.busy, moving: !!l.moving, pressing: !!l.pressing,
     cursor: l.cursor === 'grab' || l.cursor === 'grabbing' ? l.cursor : '',
     box,
@@ -175,7 +176,8 @@ export function loadBody({ layer, pack, start, theme, bounds, onEvent, onSound, 
       const m = e.data || {};
       if (m.t === 'loaded' && !ready) {
         try {
-          const model = pack.model ? await (await fetch(new URL(pack.base + pack.model, location.href))).json() : null;
+          let model = pack.model ? await (await fetch(new URL(pack.base + pack.model, location.href))).json() : null;
+          if(pack.builtin && pack.id==='whale'){const [shell,motion,hands]=await Promise.all(['asset.json','motion-with-hands.json','hands/asset.json'].map(file=>fetch(new URL('../props/shell/'+file,import.meta.url)).then(r=>r.json())));model={...model,living:{shell,motion,hands}};}
           post({
             t: 'init', entry: new URL(pack.base + pack.entry, location.href).href, export: pack.export,
             base: new URL(pack.base, location.href).href, model, scheme: knownScheme(pack, start.scheme), start: { x: start.x, facing: start.facing, enter: start.enter, skin: start.skin }, theme, bounds: size,

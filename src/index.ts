@@ -13,6 +13,8 @@ import { notificationPreferencesSchema, notificationEndpoints, notificationReque
 import { ChatSubmission } from './chat.ts';
 import z from '@deepseek-ai/schemastery';
 import { ElectronBridge, isRecord, type PetBridge, type DesktopOptions } from './bridge.ts';
+import { WorkSources } from './work-sources.ts';
+import type { WorkFact } from './work-facts.ts';
 import { PetModel } from './model.ts';
 import { PetControls } from './controls.ts';
 import { z as wire } from 'zod';
@@ -23,13 +25,15 @@ import { COMPANIONSHIP_MODES, type CompanionshipMode } from '../web/companionshi
 export const name = 'dsh-coopanion';
 export const inject = ['agents'];
 export interface Config {
-  size: Volatile<number>; npcHome: Volatile<number>; npcRange: Volatile<number>; textScale: Volatile<TextScale>; roam: Volatile<boolean>; diagnostics: Volatile<boolean>; companionship: Volatile<CompanionshipMode>; notifications: Volatile<boolean>;
+  livingSpace?:Volatile<boolean>;npcPersonality?:Volatile<'quiet'|'lively'>;size: Volatile<number>; npcHome: Volatile<number>; npcRange: Volatile<number>; textScale: Volatile<TextScale>; roam: Volatile<boolean>; diagnostics: Volatile<boolean>; companionship: Volatile<CompanionshipMode>; notifications: Volatile<boolean>;
   systemNotifications: Volatile<boolean>; reminders: Volatile<boolean>; reminderDelayMs: Volatile<number>;
   bubbleDurationMs: Volatile<number>; autoStart: Volatile<boolean>; electronPath?: string;
 }
 export const Config = z.object({
   size: z.number().min(90).max(240).default(180).volatile(),
   textScale: z.union(TEXT_SCALES.map(value => z.const(value))).default(DEFAULT_TEXT_SCALE).volatile(),
+  livingSpace: z.boolean().default(true).volatile(),
+  npcPersonality:z.union([z.const('quiet'),z.const('lively')]).default('quiet').volatile(),
   roam: z.boolean().default(true).volatile(),
   diagnostics: z.boolean().default(false).volatile(),
   npcHome: z.number().min(.05).max(.95).step(.01).default(.85).volatile(),
@@ -53,13 +57,23 @@ export async function apply(ctx: Context, config: Config): Promise<void> {
 /** Shared assembly used by integration tests with an IPC substitute for the native window. */
 export async function mountPet(ctx: Context, options: Config, bridge: PetBridge): Promise<void> {
   const model = new PetModel();
+  const workFacts = new Map<string, WorkFact>(), workHandles = new Map<string, ReturnType<WorkSources['attach']>>();
+  const agentWork = new WeakMap<object, ReturnType<WorkSources['attach']>>();
+  let workCapacity=false;
+  const workSources=new WorkSources(fact=>workFacts.set(fact.sessionId,fact));
+  const attachWork=(session: Pick<Session,'id'|'header'|'snapshotEvents'>, running=false, replace=false)=>{
+    if(session.header.origin==='subagent')return;
+    if(!replace && workHandles.has(session.id))return workHandles.get(session.id);
+    try{const handle=workSources.attach(session.id,session.snapshotEvents?.()??[],'idle');handle.status(running?'running':'idle');workHandles.set(session.id,handle);return handle;}
+    catch{workCapacity=true;return;}
+  };
   const chat = new ChatSubmission(ctx);
   const chatLifetime = new AbortController();
   ctx.effect(() => () => chatLifetime.abort());
-  const preferences: Partial<Pick<DesktopOptions, 'roam' | 'notifications' | 'companionship'>> = {};
-  let savePreference: ((field: 'roam' | 'notifications' | 'companionship', value: boolean | CompanionshipMode) => Promise<void>) | undefined;
+  const preferences: Partial<Pick<DesktopOptions, 'roam' | 'notifications' | 'companionship' | 'livingSpace' | 'npcPersonality'>> = {};
+  let savePreference: ((field: 'roam' | 'notifications' | 'companionship' | 'livingSpace' | 'npcPersonality', value: boolean | CompanionshipMode | 'lively') => Promise<void>) | undefined;
   ctx.inject(['settings'], child => { savePreference = (field, value) => child.settings.mutate('dsh-coopanion', [{ op: 'set', path: [field], value }]); });
-  const currentOptions = (): DesktopOptions => ({ size: options.size.get(), npcHome: options.npcHome.get(), npcRange: options.npcRange.get(), textScale: options.textScale.get(), roam: options.roam.get(), diagnostics: options.diagnostics.get(), companionship: options.companionship.get(), notifications: options.notifications.get(), bubbleDurationMs: options.bubbleDurationMs.get(), systemNotifications: options.systemNotifications.get(), reminders: options.reminders.get(), reminderDelayMs: options.reminderDelayMs.get(), electronPath: options.electronPath, locale, ...preferences });
+  const currentOptions = (): DesktopOptions => ({ livingSpace:options.livingSpace?.get()??true,npcPersonality:options.npcPersonality?.get()??'quiet',size: options.size.get(), npcHome: options.npcHome.get(), npcRange: options.npcRange.get(), textScale: options.textScale.get(), roam: options.roam.get(), diagnostics: options.diagnostics.get(), companionship: options.companionship.get(), notifications: options.notifications.get(), bubbleDurationMs: options.bubbleDurationMs.get(), systemNotifications: options.systemNotifications.get(), reminders: options.reminders.get(), reminderDelayMs: options.reminderDelayMs.get(), electronPath: options.electronPath, locale, ...preferences });
   const controls = new PetControls(bridge, currentOptions);
   let locale: string | undefined;
   let clientLocale: string | undefined;
@@ -91,7 +105,7 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
     // rehydrates this view; it must not restore sessions or submit chat again.
     const snapshot = model.snapshot();
     const available = !!ctx.get('sessionController') && !!ctx.get('sessionQuery');
-    bridge.update({ ...snapshot, sessions: snapshot.sessions.map(session => ({ ...session, chatAvailable: available })) });
+    bridge.update({ ...snapshot, workFacts:[...workFacts.values()],workCapacity, sessions: snapshot.sessions.map(session => ({ ...session, chatAvailable: available })) });
   };
   let mounted = false;
   const notificationPrefs = () => notificationPreferencesSchema.parse({ notifications: currentOptions().notifications, systemNotifications: options.systemNotifications.get(), reminders: options.reminders.get(), reminderDelayMs: options.reminderDelayMs.get() });
@@ -108,7 +122,7 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
     const sync = (session: Session, live = true) => {
       try {
         const view = child.sessionProjections.snapshot(session, ['userQuestions']).values.userQuestions;
-        if (view) broker.questions(session, view, live);
+        if (view) {broker.questions(session, view, live);const handle=workHandles.get(session.id)??(view.active.length?attachWork(session):undefined);handle?.questions(view);}
       } catch (error) { child.logger.warn(`Question projection unavailable: ${String(error).slice(0, 300)}`); }
     };
     questions = sync;
@@ -196,10 +210,10 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
     model.restore(session);
     // A stored open turn is history, not evidence of an Agent running in this Host.
     if (running) model.running(session); else model.idle(session.id);
-    broker.restore(session); questions?.(session, false);
+    broker.restore(session);if(running||workHandles.has(session.id)||broker.snapshot().interactions.some(i=>i.sessionId===session.id&&i.state!=='settled'))attachWork(session,running);questions?.(session, false);
   };
   ctx.inject(['sessions'], child => { for (const session of child.sessions.list()) restoreSession(session); syncNotifications(); update(); });
-  for (const agent of ctx.agents.list()) restoreSession(agent.session, agent.status === 'running');
+  for (const agent of ctx.agents.list()) {restoreSession(agent.session, agent.status === 'running');const handle=attachWork(agent.session,agent.status==='running');if(handle)agentWork.set(agent,handle);}
   ctx.inject(['sessionController', 'sessionQuery'], child => {
     const lifetime = new AbortController(); child.effect(() => () => lifetime.abort());
     void (async () => {
@@ -210,7 +224,7 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
         try {
           // A live event may arrive while the read is pending; restore is seq-aware.
           const source = { id: observed.header.id, header: observed.header, snapshotEvents: () => observed.events };
-          model.restore(source); broker.restore(source, observed.projections?.values.userQuestions);
+          model.restore(source);const view=observed.projections?.values.userQuestions;const handle=workHandles.get(source.id)??(view?.active.length?attachWork(source as Pick<Session,'id'|'header'|'snapshotEvents'>):undefined);if(observed.projections?.values.userQuestions)handle?.questions(observed.projections.values.userQuestions);broker.restore(source, observed.projections?.values.userQuestions);
           if (!ctx.agents.list().some(agent => agent.session.id === item.sessionId && agent.status === 'running')) model.idle(item.sessionId);
         } finally { observed[Symbol.dispose](); }
       }
@@ -219,16 +233,16 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
     update();
   });
   ctx.on('session/created', session => { restoreSession(session); syncNotifications(); update(); });
-  ctx.on('agent/created', ({ agent }) => { restoreSession(agent.session, agent.status === 'running'); syncNotifications(); update(); return undefined; });
-  ctx.on('agent/status', ({ agent, status }) => { if (status === 'running') model.running(agent.session); else model.idle(agent.session.id); update(); });
-  ctx.on('agent/assistant-stream', ({ agent, frame }) => {
+  ctx.on('agent/created', ({ agent }) => { restoreSession(agent.session, agent.status === 'running');const handle=attachWork(agent.session,agent.status==='running',true);if(handle)agentWork.set(agent,handle);syncNotifications(); update(); return undefined; });
+  ctx.on('agent/status', ({ agent, status }) => {const handle=agentWork.get(agent);if(handle && handle!==workHandles.get(agent.session.id))return;handle?.status(status==='running'?'running':'idle'); if (status === 'running') model.running(agent.session); else model.idle(agent.session.id); update(); });
+  ctx.on('agent/assistant-stream', ({ agent, frame }) => {const handle=agentWork.get(agent);if(handle && handle!==workHandles.get(agent.session.id))return;handle?.stream(frame);
     if (!model.stream(agent.session, frame) || streamUpdate) return;
     // Coalesce high-frequency provider deltas; durable events still publish immediately.
     streamUpdate = setTimeout(() => { streamUpdate = undefined; update(); }, 40);
   });
-  ctx.on('agent/disposed', ({ agent }) => { model.idle(agent.session.id); model.detached(agent.session.id); update(); });
-  ctx.on('session/event', (session, event) => { broker.consume(session, event); model.consume(session, event); questions?.(session); syncNotifications(); update(); });
-  ctx.on('session/disposed', session => { broker.remove(session.id); model.idle(session.id); model.detached(session.id); update(); });
+  ctx.on('agent/disposed', ({ agent }) => {const handle=agentWork.get(agent);if(handle && handle!==workHandles.get(agent.session.id))return;handle?.detach('idle');workHandles.delete(agent.session.id); model.idle(agent.session.id); model.detached(agent.session.id); update(); });
+  ctx.on('session/event', (session, event) => { broker.consume(session, event);attachWork(session)?.event(event);model.consume(session, event); questions?.(session); syncNotifications(); update(); });
+  ctx.on('session/disposed', session => { broker.remove(session.id);workHandles.get(session.id)?.detach('idle');workFacts.delete(session.id);workHandles.delete(session.id);model.idle(session.id); model.detached(session.id); update(); });
   ctx.inject(['userQuestions'], child => {
     child.on('user-questions/request', async (request, next) => {
       const session = request.agent?.session;
@@ -239,22 +253,28 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
       const origin = callId ? events.findLast(event => (event.type === 'tool/call' && event.data.callId === callId) || (event.type === 'tool/ptc-dispatch' && event.data.subCallId === callId)) : undefined;
       const anchor = origin ?? events.at(-1);
       const turnEvent = events.findLast(event => event.type === 'turn/start');
-      const finish = broker.question(session, { nativeId: origin && callId ? callId : randomUUID(), turn: turnEvent?.type === 'turn/start' ? turnEvent.data.turn : 0, seq: anchor?.seq ?? 0, preview: request.questions.map(q => q.question).join('\n'), signal: request.signal, source: origin ? 'event' : 'runtime' });
+      const nativeId=origin && callId ? callId : randomUUID();
+      const runtimeWork=!origin?attachWork(session):undefined;
+      runtimeWork?.question(nativeId,'open');
+      const finish = broker.question(session, { nativeId, turn: turnEvent?.type === 'turn/start' ? turnEvent.data.turn : 0, seq: anchor?.seq ?? 0, preview: request.questions.map(q => q.question).join('\n'), signal: request.signal, source: origin ? 'event' : 'runtime' });
       questions?.(session); syncNotifications();
       try { return await next(); }
-      finally { questions?.(session); finish(); syncNotifications(); }
+      finally { runtimeWork?.question(nativeId,'settled');questions?.(session); finish(); syncNotifications(); }
     }, { prepend: true });
   });
   const onAction = (action: unknown) => {
     if (!isRecord(action)) return;
+    if(action.type==='acknowledge-work' && typeof action.sessionId==='string' && Number.isSafeInteger(action.epoch) && Number.isSafeInteger(action.revision)) {
+      if(workSources.acknowledge(action.sessionId,action.epoch as number,action.revision as number))update();return;
+    }
     if (action.type === 'notification-snooze') {
       const input = notificationRequests.snooze.safeParse({ interactionId: action.interactionId, generation: action.generation });
       const ok = input.success && broker.snooze(input.data.interactionId, input.data.generation);
       if (typeof action.interactionId === 'string') bridge.snoozeResult?.(action.interactionId, ok, ok ? undefined : '待处理请求已变化或提醒暂不可用');
       syncNotifications(); return;
     }
-    if (action.type === 'preference' && ((action.field === 'roam' || action.field === 'notifications') && typeof action.value === 'boolean' || action.field === 'companionship' && COMPANIONSHIP_MODES.includes(action.value as CompanionshipMode))) {
-      const field = action.field as 'roam' | 'notifications' | 'companionship', value = action.value as boolean | CompanionshipMode;
+    if (action.type === 'preference' && ((action.field === 'roam' || action.field === 'notifications' || action.field==='livingSpace') && typeof action.value === 'boolean' || action.field === 'companionship' && COMPANIONSHIP_MODES.includes(action.value as CompanionshipMode) || action.field==='npcPersonality' && ['quiet','lively'].includes(String(action.value)))) {
+      const field = action.field as 'roam' | 'notifications' | 'companionship' | 'livingSpace' | 'npcPersonality', value = action.value as boolean | CompanionshipMode | 'lively';
       void (async () => {
         try {
           if (savePreference) await savePreference(field, value); else Object.assign(preferences, { [field]: value });

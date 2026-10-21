@@ -16,7 +16,7 @@ try {
   page = await app.firstWindow(); page.setDefaultTimeout(15000);
   const errors = []; page.on('pageerror', error => errors.push(error.message));
   const send = value => app.evaluate((_, value) => process.emit('message', value), value);
-  const options = { size: 180, roam: true, companionship: 'quiet', diagnostics: true, npcHome: .85, npcRange: .3, notifications: false, bubbleDurationMs: 12000 };
+  const options = { livingSpace:false,size: 180, roam: true, companionship: 'quiet', diagnostics: true, npcHome: .85, npcRange: .3, notifications: false, bubbleDurationMs: 12000 };
   await send({ type: 'init', baseline: true, options, snapshot: { mood: 'idle', active: false, sessionId: null, sessions: [], results: [] } });
   await page.waitForSelector('#pet[data-mode]'); await parkNativePointer(page);
   let endpoint;

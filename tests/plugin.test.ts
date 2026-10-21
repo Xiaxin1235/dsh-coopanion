@@ -221,3 +221,17 @@ it('persists relative NPC home/range and hot-syncs the complete options', async 
     expect(bridge.start).toHaveBeenCalledOnce();
   } finally { await fiber.dispose(); await ctx.fiber.dispose(); }
 });
+
+it('delivers metadata-only work facts through the real assembly and isolates a replaced Agent',async()=>{
+ const ctx=new Context(),session={id:SessionId('living-host'),header:{id:SessionId('living-host'),createdAt:0,cwd:'/project'},snapshotEvents:()=>[]} as unknown as Session;
+ const old={session,status:'idle'} as Agent;ctx.provide('agents',{list:()=>[old]});const bridge=nativeBridge();const fiber=ctx.plugin(scope=>mountPet(scope,Config({autoStart:false}),bridge));
+ try{await fiber.await();ctx.emit('agent/status',{agent:old,status:'running'});ctx.emit('session/event',session,{seq:SessionSeq(0),time:1,type:'turn/start',data:{turn:1}});
+ const current=()=>vi.mocked(bridge.update).mock.calls.at(-1)![0];
+ expect(current().workFacts).toEqual([expect.objectContaining({sessionId:session.id,driver:'running',activity:'preparing'})]);
+ ctx.emit('session/event',session,{seq:SessionSeq(1),time:2,type:'approval/asked',data:{id:ApprovalRequestId('safe-request'),toolName:'PRIVATE TOOL'}});
+ expect(current().workFacts?.[0]?.requests).toEqual([{id:'safe-request',kind:'approval',state:'open'}]);expect(JSON.stringify(current().workFacts)).not.toContain('PRIVATE');
+ const fresh={...old} as Agent;ctx.emit('agent/created',{agent:fresh,source:'resume'});ctx.emit('agent/status',{agent:fresh,status:'running'});const before=current().workFacts?.[0];expect(before?.epoch).toBe(2);
+ ctx.emit('agent/status',{agent:old,status:'idle'});ctx.emit('agent/disposed',{agent:old});expect(current().workFacts?.[0]).toEqual(before);
+ ctx.emit('agent/disposed',{agent:fresh});expect(current().workFacts?.[0]?.driver).toBe('idle');expect(current().workCapacity).toBe(false);
+ }finally{await fiber.dispose();await ctx.fiber.dispose();}
+});

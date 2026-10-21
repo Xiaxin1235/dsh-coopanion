@@ -28,7 +28,7 @@ async function fixture(t, mode = 'quiet') {
   await page.goto(`http://127.0.0.1:${server.address().port}`);
   await page.waitForSelector('#pet[data-mode]');
   const receive = message => page.evaluate(message => window.npcControlsReceive(message), message);
-  await receive({ type: 'init', baseline: true, options: { companionship: mode, size: 180, roam: true }, snapshot: snapshot() });
+  await receive({ type: 'init', baseline: true, options: { livingSpace:false,companionship: mode, size: 180, roam: true }, snapshot: snapshot() });
   await page.mouse.move(0, 0);
   await page.waitForFunction(() => !['air', 'crouch', 'drag'].includes(document.querySelector('#pet').dataset.mode));
   return { page, receive, configure: options => receive({ type: 'configure', options }), body: await recordBodyOrders(page) };
@@ -50,7 +50,7 @@ test('off and automatic permission never fall back to random roaming; quiet and 
   }
   const orders = await body.evaluate(() => window.bodyOrders);
   assert.ok(orders.some(e => e.t === 'set'));
-  assert.ok(orders.filter(e => e.t === 'set').every(e => e.state.roam === 'off'));
+  assert.ok(orders.filter(e => e.t === 'set' && 'roam' in e.state).every(e => e.state.roam === 'off'));
 });
 
 test('hot preference keeps reader DOM/scroll, draft/focus/selection, request identity and bubble expiry', async t => {

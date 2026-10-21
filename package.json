@@ -90,7 +90,7 @@
     "demo": "node scripts/demo.mjs",
     "prepack": "npm run build",
     "test:notification-ui": "node tests/notification-ui.mjs",
-    "test:inbox-ui": "node tests/inbox-ui.mjs && node --test --test-concurrency=1 tests/session-replies-ui.mjs tests/text-scale-ui.mjs && node --test tests/multi-display-ui.mjs && node --test tests/npc-controls-ui.mjs tests/attention-size-ui.mjs tests/npc-drag-ui.mjs && node --test tests/companionship-ui.mjs",
+    "test:inbox-ui": "node tests/inbox-ui.mjs && node --test --test-concurrency=1 tests/session-replies-ui.mjs tests/text-scale-ui.mjs && node --test tests/multi-display-ui.mjs && node --test tests/npc-controls-ui.mjs tests/attention-size-ui.mjs tests/npc-drag-ui.mjs && node --test tests/companionship-ui.mjs && node --test tests/living-integration-ui.mjs",
     "test:locale-ui": "node --test tests/locale-ui.mjs",
     "test:m1:host": "node tests/goal-host-contract.mjs",
     "test:m2:host": "node tests/session-host-contract.mjs"

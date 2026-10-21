@@ -720,8 +720,8 @@ export async function createWhaleFigure(base = new URL('./', import.meta.url), o
         const [x, y, w, h] = prop.box;
         gripFrame = { gazeOrigin:project(140,117,'headFeat'),renderedFace:o.face,gesture:o.gesture?{...o.gesture}:null,posture:{bodyY:st.body.ty,waist:st.waist.a,plantWeight},hand: project(...prop.hand, 'armFar'), propGrip: project(x+w*prop.grip[0],y+h*prop.grip[1]), quad: [project(x,y),project(x+w,y),project(x,y+h)],
           ground: project(x+w*prop.ground[0],y+h*prop.ground[1]), visible: !!gripPose?.visible,
-          ...(motion ? { facing: o.facing, pose: { ...motion }, sit: sitK, angles: { armNear: armN, armFar: armF, waist: st.waist.a },
-            feet: [project(PV.legBack[0], 256, 'legBack'), project(PV.legFront[0], 256, 'legFront')] } : {}) };
+          facing: o.facing, ...(motion ? {pose:{...motion}}:{}), sit: sitK, angles: { armNear: armN, armFar: armF, waist: st.waist.a },
+          feet: [project(PV.legBack[0], 256, 'legBack'), project(PV.legFront[0], 256, 'legFront')] };
         if (handSurface) {
           const projectedWrist = project(...handArt.wrist, 'armFar');
           const wrist = project(...handArt.wrist,'__handShape'), contact = project(...handSurface.plan.sourceContact,'__handShape');
@@ -854,5 +854,6 @@ export async function createWhaleFigure(base = new URL('./', import.meta.url), o
 
 /** The whale pack's entry (figure.json): her body for the figure frame, the kit's body drawn by her figure. */
 export async function createWhaleBody(base, opts) {
+  if(opts.host.bounds().livingSpace && opts.model?.living){const {createMotionBody}=await import('../kit/living-body.js');return createMotionBody(base,{...opts,model:{whale:opts.model,...opts.model.living}});}
   return opts.kit.createBody(opts.host, { figure: await createWhaleFigure(base, opts) });
 }

@@ -39,4 +39,4 @@
 - `COMPANION_EVIDENCE_DIR=<新目录> node tests/response-rhythm-native.mjs` 使用隔离 Electron profile、真实 IPC、可信指针与实际时钟，验证两次抚摸合批、20 秒忙碌过期和手动活动优先；已接入 `test:desktop` 串行执行。物理键盘操作与跨平台验收独立。
 - `tests/companionship-native.mjs` 保留明确回应、真实存档、重启与查看／纠正／删除的独立原生检查。
 
-本期固定结果见[5C 报告](../reports/stage-5c-20261021.md)。自动化、用户观感、三平台 CI、日用 Host 安装、发布、长期资源及物理多屏分别结算；旧全套原生限制以本期报告复核结果为准。第 6／7 期、人格扩张和默认二维装配仍需独立授权。
+本期固定结果见[5C 报告](../reports/stage-5c-20261021.md)。自动化、用户观感、三平台 CI、日用 Host 安装、发布、长期资源及物理多屏分别结算；旧全套原生限制以本期报告复核结果为准。第 6／7 期与人格扩张仍未扩展；后续已获授权的默认二维装配见[装配契约](living-integration-contract.md)，沿用本期回应容量与撤销规则。

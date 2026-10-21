@@ -113,3 +113,5 @@ VM 需图形依赖、Xvfb、Openbox、Python 3、procps 及固定工具链。观
 高频事件只发送动画元数据，完整结果在结果或已读状态变化时传输。角色脚本运行于 `sandbox="allow-scripts"` 的 opaque-origin iframe，仅通过有限协议交互；没有 Node、Electron 桥、外部网络或顶层导航权限。本地资源服务只监听 `127.0.0.1`，原生实例使用随机路径，写入校验可信页面来源。
 
 上游代码和资源固定在仓库，不在启动时在线拉取；Electron 首次准备仍下载并校验运行时。插件不收集遥测，也不提供独立模型 API。许可及对应源码要求见[第三方声明](../THIRD_PARTY_NOTICES.md)。
+
+默认产品生活装配使用 `web/upstream/kit/living-body.js` 共享身体与 `living-routine.js` 有限目标策略；原工作台重导出同一工厂。`test:inbox-ui` 包含 `tests/living-integration-ui.mjs` 的真实导航／接触、工作／互动交接、输入／热切／草稿、90–240px 与持物拖放回归；`test:desktop` 串行包含 `living-integration-native.mjs`。浏览器用受控输入和元数据，原生用真实 IPC／系统输入枚举、隔离存档；真实日用 Host／物理键盘／多屏和用户观感分别验收。旧简单日常用显式 `livingSpace:false` 回归。

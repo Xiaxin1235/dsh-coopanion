@@ -7,6 +7,11 @@ import type { UserQuestionProjectionView } from '@deepseek-ai/dsh-user-questions
 export class WorkSources {
   private sources=new Map<string,{epoch:number;facts:WorkFacts;live:boolean}>();
   constructor(private publish:(fact:WorkFact)=>void) {}
+  acknowledge(id:string,epoch:number,revision:number):boolean {
+    const source=this.sources.get(id),fact=source?.facts.snapshot();
+    if(!source||!fact||fact.epoch!==epoch||fact.revision!==revision||!fact.needsAttention)return false;
+    this.publish(source.facts.acknowledge());return true;
+  }
   attach(id:string,events:readonly SessionEvent[],status:'idle'|'running',questions?:UserQuestionProjectionView) {
     const old=this.sources.get(id);
     if(!old && this.sources.size>=32)throw Error('Work source capacity reached; unresolved sources retained');
@@ -23,7 +28,7 @@ export class WorkSources {
       questions:(view:UserQuestionProjectionView)=>emit(()=>source.facts.questions(view,++questionRevision)),
       question:(id:string,state:'open'|'continued'|'settled',intent?:'plan-review')=>emit(()=>source.facts.question(id,++questionRevision,state,intent)),
       acknowledge:()=>emit(()=>source.facts.acknowledge()),
-      detach:()=>{emit(()=>source.facts.status('unknown'));source.live=false;},
+      detach:(status:'idle'|'unknown'='unknown')=>{emit(()=>source.facts.status(status));source.live=false;},
     };
   }
 }

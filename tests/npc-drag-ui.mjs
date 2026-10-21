@@ -20,7 +20,7 @@ async function fixture(t, mode = 'quiet', videoPath) {
   await page.addInitScript(() => { window.dshPetBridge = { subscribe(fn) { window.receive = fn; }, action() {}, hit() {} }; });
   await page.goto(`http://127.0.0.1:${server.address().port}`); await page.waitForSelector('#pet[data-mode]');
   const receive = value => page.evaluate(value => window.receive(value), value);
-  await receive({ type: 'init', baseline: true, options: { companionship: mode, roam: true, size: 180 }, snapshot: { mood: 'idle', active: false, sessionId: null, sessions: [], results: [] } });
+  await receive({ type: 'init', baseline: true, options: { livingSpace:false,companionship: mode, roam: true, size: 180 }, snapshot: { mood: 'idle', active: false, sessionId: null, sessions: [], results: [] } });
   await page.mouse.move(0, 0);
   await page.waitForFunction(() => !['air', 'drag', 'crouch'].includes(document.querySelector('#pet').dataset.mode));
   const frame = page.frames().find(f => f.url().includes('figure-frame.html'));

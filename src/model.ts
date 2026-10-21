@@ -1,3 +1,4 @@
+import type { WorkFact } from './work-facts.ts';
 import { CompletionTracker } from './completion.ts';
 import { basename } from 'node:path';
 import type { Session, SessionEvent } from '@deepseek-ai/dsh-session';
@@ -8,7 +9,7 @@ import { type PendingInteraction, type TaskNotice } from './notification-contrac
 export type Mood = 'idle' | 'thinking' | 'talking' | 'working' | 'waiting' | 'happy' | 'error' | 'sleeping';
 export interface PetResult { id: string; sessionId: string; text: string; time: number; read: boolean; }
 export interface PetSession { id: string; label: string; project: string; cwd: string; prompt: string; createdAt: number; updatedAt: number; mood: Mood; text: string; reply: string; replyId: string; unread: number; revision: number; active: boolean; streaming: boolean; speechId: string; speechRevision?: number; chatAvailable?: boolean; completion?: TaskNotice['category']; }
-export interface PetSnapshot { mood: Mood; text: string; sessionId: string | null; revision: number; active: boolean; streaming: boolean; speechId: string; speechRevision?: number; results: PetResult[]; sessions: PetSession[]; }
+export interface PetSnapshot { workFacts?: WorkFact[]; workCapacity?: boolean; mood: Mood; text: string; sessionId: string | null; revision: number; active: boolean; streaming: boolean; speechId: string; speechRevision?: number; results: PetResult[]; sessions: PetSession[]; }
 export interface PetNotice extends Partial<Omit<TaskNotice, 'title' | 'body' | 'sessionId'>> { title: string; body: string; sessionId: string; kind?: 'task' | 'message'; }
 interface TaskState { completion: CompletionTracker; ended: number; seq: number; turn: number; active: boolean; finalText?: string; tools: Map<string, string>; approvals: Set<symbol | string>; questions: Set<string>; requests: Set<string>; celebrateUntil: number; stream?: { id: string; revision: number; index: number; text: string; blocks: Map<number, string> }; }
 type ObservedSession = Pick<Session, 'id' | 'header'> & Partial<Pick<Session, 'snapshotEvents'>>;

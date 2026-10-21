@@ -82,9 +82,9 @@ export function createPetServer({ webRoot, store, companions, prefix = '/' }: { 
       const custom = file.match(/^packs\/([a-z0-9-]+)\/([a-f0-9]{64})\/(.+)$/);
       const bytes = custom ? await store.asset(custom[1]!, custom[2]!, custom[3]!) : await readFile(join(webRoot, file));
       const headers: Record<string, string> = { 'Content-Type': MIME[extname(file)] ?? 'application/octet-stream', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'no-referrer' };
-      if (file.startsWith('upstream/') || custom) headers['Access-Control-Allow-Origin'] = '*';
+      if (file.startsWith('upstream/') || file.startsWith('props/') || file==='prop-motion.js' || custom) headers['Access-Control-Allow-Origin'] = '*';
       if (file === 'upstream/figure-frame.html') {
-        headers['Content-Security-Policy'] = `default-src 'none'; script-src ${origin}${prefix}upstream/ ${origin}${prefix}packs/; img-src ${origin}${prefix}upstream/ ${origin}${prefix}packs/ data: blob:; style-src 'unsafe-inline'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'self'`;
+        headers['Content-Security-Policy'] = `default-src 'none'; script-src ${origin}${prefix}upstream/ ${origin}${prefix}prop-motion.js ${origin}${prefix}packs/; img-src ${origin}${prefix}upstream/ ${origin}${prefix}props/ ${origin}${prefix}packs/ data: blob:; style-src 'unsafe-inline'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'self'`;
       }
       res.writeHead(200, headers); res.end(req.method === 'HEAD' ? undefined : bytes);
     } catch (error) {

@@ -16,12 +16,12 @@ vi.mock('../web/upstream/kit/rig.js', () => ({
 
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); });
 
-function body(roam = 'off') {
+function body(roam = 'off', options = {}) {
   let frame;
   const element = () => ({ setAttribute() {}, innerHTML: '' });
   const pet = createPet({ petG: element(), shadowEl: element(), fxG: element() }, {
     figure: { draw(_group, face, pose) { frame = { face, pose }; } },
-    sfx: { play() {} }, roam,
+    sfx: { play() {} }, roam, ...options,
     bounds: () => ({ W: 1200, H: 800, floorY: 740, S: 180 / 256 }),
   });
   return { pet, get frame() { return frame; }, run(seconds) {
@@ -126,6 +126,13 @@ const correlation = (pairs) => {
 };
 
 describe('upstream whale arm phase with local pose ownership', () => {
+  it('reports actual standing geometry after releasing authored poses for work travel', async () => {
+    const r=await whale({gripProp:{url:'shell.png',box:[150,180,20,20],hand:[166,199],grip:[.5,.05],ground:[.5,1]}});
+    r.draw(0,{mode:'idle'});
+    expect(r.figure.gripFrame.sit).toBe(0);
+    expect(r.figure.gripFrame.facing).toBe(1);
+    expect(r.figure.gripFrame.feet).toHaveLength(2);
+  });
   it('bounds raster image URL ownership across draws, disposal and remount', async () => {
     const live = new Set(); let sequence = 0;
     vi.spyOn(URL, 'createObjectURL').mockImplementation(() => { const url = 'blob:frame-' + sequence++; live.add(url); return url; });
@@ -186,4 +193,16 @@ describe('upstream whale arm phase with local pose ownership', () => {
     used.figure.reset();
     for (let i = 0; i < 30; i++) expect(used.draw(i)).toEqual(fresh.draw(i));
   });
+});
+
+it('keeps the contact heading owned while a nearby cursor is behind the body', () => {
+  let owned = true;
+  const r = body('off', { facingOwned: () => owned });
+  r.run(.1);
+  const heading = r.pet.pet.facing, gaze = r.pet.toStage(140,117);
+  r.pet.pointerMove({x:gaze.x-heading*200,y:gaze.y,t:10});
+  r.run(2);
+  expect(r.pet.pet.facing).toBe(heading);
+  owned = false; r.run(2);
+  expect(r.pet.pet.facing).toBe(-heading);
 });

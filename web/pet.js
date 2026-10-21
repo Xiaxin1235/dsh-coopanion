@@ -2,6 +2,7 @@ import { createLiveMouth } from './live-mouth.js';
 import { advanceRenderCadence } from './render-cadence.js';
 import { createDiagnosticCounters } from './diagnostics.js';
 import { createCompanionStroke } from './companion-touch.js';
+import { livingScene } from './living-space.js';
 import { ResponseRhythm } from './response-rhythm.js';
 import { initialNpc, stepNpc, npcSpace } from './npc-life.js';
 import { initialCompanionship, stepCompanionship, companionshipMode } from './companionship.js';
@@ -43,7 +44,7 @@ let npc = initialNpc(1), npcGeneration = 1, npcEvent, npcRelocated = false, keyb
 const homeMarker = document.createElement('div'); homeMarker.id = 'npc-home'; homeMarker.hidden = true; homeMarker.setAttribute('aria-hidden', 'true'); document.body.appendChild(homeMarker);
 let body, previewBody, previewCharacter, activeView, activeScheme, activeName = 'DeepSeek 大肥鱼', libraryState, libraryBusy = false;
 let appliedMood, appliedControls, speech, speechExpires = Infinity, pressing = false, dragStart, dragPoint, dragging = false, previewScheme = "", reducedNeedsStep = true;
-let options = { textScale: 1, size: 180, roam: true, companionship: 'off', notifications: true, bubbleDurationMs: 12000 };
+let options = { livingSpace: true, npcPersonality: 'quiet', textScale: 1, size: 180, roam: true, companionship: 'off', notifications: true, bubbleDurationMs: 12000 };
 let snapshot = { mood: 'idle', text: '你好。点点我，或双击和我说话。', sessionId: null, sessions: [] };
 let x = innerWidth * .68, y = innerHeight - 155, hovered = false, asleep = false, toastTimer, noticeSession;
 let cursorPoint, lastHit;
@@ -59,6 +60,9 @@ const chatTimers = new Map();
 let draftSessionId;
 let activityWords = [], actionRestorePending = false, localHour, hourCheckedAt = -Infinity;
 let companion = initialCompanionship(), companionAction, companionManualId, companionManualGeneration, companionManualEpoch, companionFeedbackUntil = 0, companionReadAt = 0, companionFeedbackTicket = 0;
+let fallbackRevision=0;const fallbackFacts=new Map();
+let livingEngaged=false,livingEnabled=false, livingSceneKey='', livingRevision=0, livingWorldSent=0, livingWorld=null, livingContextKey='', livingPlaced=false, livingManualPending=0, livingReserved=false;
+const livingLayer=document.createElement('div');livingLayer.id='living-space';livingLayer.hidden=true;$('stage').prepend(livingLayer);
 const companionStroke = createCompanionStroke();
 const responseRhythm = new ResponseRhythm();
 let companionFeedbackKind;
@@ -127,7 +131,7 @@ function applyLocale() {
   trayKey = undefined;
 }
 
-function bounds() { return { W: innerWidth, H: innerHeight, floorY: innerHeight - 24, S: options.size / 256 }; }
+function bounds() { return { W: innerWidth, H: innerHeight, floorY: innerHeight - 24, S: options.size / 256, navigation:true,continuousActions:true,lifeWork:true,personality:true,livingSpace:true }; }
 function previewBounds() { const el = $('character-preview'); return { W: el.clientWidth, H: el.clientHeight, floorY: el.clientHeight - 14, S: Math.min(el.clientWidth, el.clientHeight - 22) / 256 }; }
 function position() {
   const layout = body?.layout;
@@ -239,6 +243,7 @@ function refreshCompanionCopy() {
   if ($('companion-status').textContent !== status) $('companion-status').textContent = status;
   refreshCompanionMemory();
   if ($('companion-mode').value !== options.companionship) $('companion-mode').value = options.companionship;
+  $('living-space-mode').value=options.livingSpace!==false?'on':'off';$('npc-personality').value=options.npcPersonality==='lively'?'lively':'quiet';
   const disabled = options.companionship === 'off' || !!companion.active?.manual;
   if ($('companion-play').disabled !== disabled) $('companion-play').disabled = disabled;
   const hidden = !summary?.invitation.quiet && !(summary?.invitation.laterUntil > Date.now());
@@ -310,6 +315,8 @@ function rememberStroke(now) {
 }
 function updateCompanion(now, mood, readingAttention, active) {
   const mode = options.companionship;
+  if(livingManualPending){const a=sessionActivity(attentionSnapshot);if(now>=livingManualPending||mode==='off'||a.active||a.mood!=='idle')livingManualPending=0;else if(body?.layout?.living?.socialReady){livingManualPending=0;beginCompanionPlay();return;}}
+  if(livingReserved && (!livingEnabled || body?.layout?.living?.socialReady)){livingReserved=false;companionAction='reserved';}
   if (mode === 'off' && companion.mode === 'off') { responseRhythm.cancel(); return; }
   if (now < hourCheckedAt || now - hourCheckedAt >= 1000) { localHour = new Date().getHours(); hourCheckedAt = now; }
   const manual = companionAction === 'play' || companion.active?.manual;
@@ -318,7 +325,7 @@ function updateCompanion(now, mood, readingAttention, active) {
   const summary = companionClient.summary;
   const eligible = !!summary?.writable && !companionClient.error && summary.invitation.remaining > 0 && !summary.invitation.quiet && Date.now() >= summary.invitation.laterUntil;
   const inputQuiet = keyboardActivity !== 'idle' || performance.now() - keyboardAt > 2500;
-  const result = stepCompanionship(companion, { mode, now, hour: localHour, words: activityWords, occupied: blocked, motionBusy: !!body?.layout?.moving, automatic: options.roam && !reduced && !inputQuiet && !['pointer', 'work'].includes(npc.reason), eligible: eligible && !npc.walkId && !responseRhythm.pending, unlocked: summary?.relation.unlocked, rememberedKind: summary?.memory?.entries.at(-1)?.correctedKind ?? summary?.memory?.entries.at(-1)?.kind, action: companionAction });
+  const result = stepCompanionship(companion, { mode, now, hour: localHour, words: activityWords, occupied: blocked, motionBusy: !!body?.layout?.moving, automatic: options.roam && !reduced && !inputQuiet && !['pointer', 'work'].includes(npc.reason), eligible: eligible && !npc.walkId && !responseRhythm.pending && (!livingEnabled || body?.layout?.living?.action==='idle' && !body.layout.moving), unlocked: summary?.relation.unlocked, rememberedKind: summary?.memory?.entries.at(-1)?.correctedKind ?? summary?.memory?.entries.at(-1)?.kind, action: companionAction });
   if (result.showInvitation) diagnosticCounters.event('invitationsShown');
   if (result.hideInvitation && companion.invitation === 'shown' && now >= companion.invitationUntil) diagnosticCounters.event('invitationsExpired');
   companionAction = undefined; companion = result.state;
@@ -342,7 +349,7 @@ function updateCompanion(now, mood, readingAttention, active) {
   if (result.showInvitation) { companionInvitation.hidden = false; panelAnchors.delete(companionInvitation); }
   if (result.reserveInvitation) {
     const epoch = companionClient.epoch;
-    void companionClient.request('invite').then(receipt => { if (epoch === companionClient.epoch && companion.invitation === 'pending') companionAction = receipt?.applied ? 'reserved' : 'failed'; });
+    void companionClient.request('invite').then(receipt => { if (epoch === companionClient.epoch && companion.invitation === 'pending') {if(receipt?.applied && livingEnabled)livingReserved=true;else companionAction=receipt?.applied?'reserved':'failed';} });
   }
   if (result.completed && companionManualId) {
     const id = companionManualId; companionManualId = undefined;
@@ -362,7 +369,40 @@ function updateCompanion(now, mood, readingAttention, active) {
   if (mode !== 'off' && activeView && now >= companionReadAt) { companionReadAt = now + 60000; void companionClient.request('read'); }
   refreshCompanionCopy();
 }
+function updateLiving(now,active,readingAttention){
+  const key=[innerWidth,innerHeight,options.size,options.npcHome??.85,options.npcRange??.3].join(':');
+  if(key!==livingSceneKey){livingSceneKey=key;livingWorld=livingScene({width:innerWidth,height:innerHeight,size:options.size,home:options.npcHome,range:options.npcRange,revision:++livingRevision});livingContextKey='';
+    livingLayer.replaceChildren();
+    for(const object of livingWorld?.objects??[]){const image=document.createElement('img');image.src=new URL('props/living/'+object.asset,import.meta.url);image.alt='';image.dataset.kind=object.kind;Object.assign(image.style,{left:object.x+'px',top:object.y+'px',width:object.w+'px',height:object.h+'px'});livingLayer.append(image);}
+  }
+  if(livingWorld&&body?.layout?.living&&livingWorldSent!==livingWorld.model.revision){
+    livingWorldSent=livingWorld.model.revision;
+    body.set({motionCommand:{type:'world',model:livingWorld.model,interests:livingWorld.interests,workTarget:livingWorld.station}});
+    if(!livingPlaced){body.set({motionCommand:{type:'relocate',...livingWorld.shell}});livingPlaced=true;}
+    body.set({motionCommand:{type:'destination',...livingWorld.destination}});
+  }
+  const layout=body?.layout, runtime=notificationState?.runtime;
+  const wanted=!!livingWorld&&!!layout?.living&&activeView?.builtin&&options.livingSpace!==false;
+  if(wanted&&options.companionship!=='off')livingEngaged=true;
+  const retiring=livingEngaged&&options.livingSpace===false&&!!livingWorld&&!!layout?.living&&(layout.living.owner==='hand'||!['idle','rest','paused'].includes(layout.living.action)||layout.living.suspended&&!['idle','rest'].includes(layout.living.suspended));
+  const supported=wanted||retiring;
+  livingEnabled=supported&&options.companionship!=='off';
+  const lifecycle=document.hidden||!!runtime&&(runtime.phase!=='running'||!runtime.visible||runtime.suspended);
+  livingLayer.hidden=!wanted||!livingEnabled||!options.roam||reduced||lifecycle;
+  const memory=companionClient.summary?.memory, remembered=memory?.entries.at(-1);
+  const fallback=Array.isArray(snapshot.workFacts)?snapshot.workFacts:snapshot.sessions.slice(0,32).map(session=>{const signature=JSON.stringify([session.active,session.mood,session.revision]);const previous=fallbackFacts.get(session.id);const revision=previous?.signature===signature?previous.revision:++fallbackRevision;fallbackFacts.set(session.id,{signature,revision});return{sessionId:session.id,epoch:1,revision,driver:session.active?'running':'idle',running:!!session.active,activity:session.mood==='thinking'?'reasoning':session.active?'preparing':'idle',category:'working',requests:[],needsAttention:['waiting','error'].includes(session.mood),tools:{pending:0,entered:0},cue:null,resultId:null};});
+  for(const id of fallbackFacts.keys())if(!snapshot.sessions.some(s=>s.id===id))fallbackFacts.delete(id);
+  const context={supported,enabled:livingEnabled&&options.roam&&!reduced,mode:options.companionship,keyboard:now-keyboardAt<=2500?keyboardActivity:'unknown',reduced,lifecycle:lifecycle||snapshot.workCapacity===true,occupied:!!livingWorld&&!!layout&&(layout.x<livingWorld.rootRange.min-options.size*.56||layout.x>livingWorld.rootRange.max+options.size*.56)||userInputOccupied()||readingAttention||!interaction.hidden||hovered||asleep||[...composer.sessions.values()].some(s=>!!s.text.trim()||s.phase==='sending'),social:supported&&(retiring||!!livingManualPending||!!companion.active||!!companion.invitation||livingReserved),personality:options.npcPersonality==='lively'?'lively':'quiet',memory:memory?{generation:memory.generation,id:remembered?.id,kind:remembered?.correctedKind??remembered?.kind}:null,facts:fallback};
+  const contextKey=JSON.stringify(context);if(contextKey!==livingContextKey){livingContextKey=contextKey;body?.set({livingContext:context});}
+  if(!livingEnabled)return false;
+  homeMarker.hidden=true;
+  const phase=layout.living.phase, reason=context.lifecycle?'lifecycle':context.keyboard!=='idle'?context.keyboard==='active'?'input':'unknown':context.occupied?'user':active?'work':'none';
+  npc={...npc,placed:true,target:null,returning:false,phase:phase==='life'?'outbound':phase==='return'?'return':phase==='personal-dwell'?'observe':'home',reason,walkId:null,emotion:'neutral'};
+  pet.dataset.npcPhase=npc.phase;pet.dataset.npcReason=reason;pet.dataset.lifePhase=phase;pet.dataset.lifeReason=layout.living.reason;pet.dataset.lifeAction=layout.living.action;pet.dataset.lifeGoal=layout.living.goal;pet.dataset.lifePickup=layout.living.pickup;pet.dataset.lifeDrop=layout.living.drop;
+  return true;
+}
 function updateNpc(now, active, readingAttention) {
+  if(updateLiving(now,active,readingAttention))return;
   const runtime = notificationState?.runtime, layout = body?.layout;
   const lifecycle = document.hidden || !!runtime && (runtime.phase !== 'running' || !runtime.visible || runtime.suspended);
   const user = userInputOccupied() || !interaction.hidden || readingAttention || hovered || pressing || dragging || asleep ||
@@ -391,7 +431,11 @@ function updateNpc(now, active, readingAttention) {
 }
 let npcWorkUntil = 0;
 function attentionToWork() { npcWorkUntil = performance.now() + 12000; }
-function startCompanionPlay() {
+function startCompanionPlay(){
+  if(livingEnabled && options.companionship!=='off' && !sessionActivity(attentionSnapshot).active && !body?.layout?.living?.socialReady){closePanels();livingManualPending=performance.now()+15000;companionFeedback.hidden=true;responseRhythm.cancel();updateMood();return;}
+  beginCompanionPlay();
+}
+function beginCompanionPlay() {
   responseRhythm.cancel();
   closePanels();
   const activity = sessionActivity(attentionSnapshot);
@@ -416,6 +460,7 @@ for (const [id, type] of [['companion-later', 'later'], ['companion-quiet', 'qui
   companionAction = type; companionInvitation.hidden = true; void companionClient.request(type); updateMood();
 };
 $('companion-resume').onclick = () => { void companionClient.request('resume'); };
+for(const [id,field] of [['living-space-mode','livingSpace'],['npc-personality','npcPersonality']])$(id).onchange=event=>{const value=field==='livingSpace'?event.target.value==='on':event.target.value;if(native)send({type:'preference',field,value});else{applyOptions({[field]:value});updateMood();}};
 $('companion-mode').onchange = event => {
   const value = companionshipMode(event.target.value);
   if (native) send({ type: 'preference', field: 'companionship', value }); else { applyOptions({ companionship: value }); updateMood(); }
@@ -434,7 +479,7 @@ function updateMood() {
   const readingAttention = !$('attention').hidden && ($('attention').matches(':hover') || document.activeElement === $('attention'));
   updateCompanion(now, mood, readingAttention, active);
   updateNpc(now, active, readingAttention);
-  if (mood !== appliedMood && !npc.walkId && !companion.active && !body.layout?.busy && (!actionRestorePending || !pressing && !dragging)) {
+  if (mood !== appliedMood && (!livingEnabled || asleep || body.layout?.living?.socialReady) && !npc.walkId && !companion.active && !body.layout?.busy && (!actionRestorePending || !pressing && !dragging)) {
     reducedNeedsStep = true;
     if (mood !== 'sleeping' && (appliedMood === 'sleeping' || ['sleep', 'sit'].includes(body.layout?.mode))) act(body, activeView, 'stand');
     const word = { idle: 'neutral', thinking: 'thinking', talking: 'neutral', working: 'determined', waiting: 'worried', happy: 'happy', error: 'sad', sleeping: 'sleep' }[mood];
@@ -443,6 +488,7 @@ function updateMood() {
     actionRestorePending = false;
   }
   const controls = { roam: 'off', dialogOpen: dialogOpen || !interaction.hidden, thinking: mood === 'thinking', thoughtShown: false, expression: { thinking: 'thinking', talking: 'determined', working: 'determined', waiting: 'worried', error: 'sad' }[mood] ?? (npc.reason === 'none' && !userInputOccupied() && activityWords.includes(npc.emotion) ? npc.emotion : null), listening: !chat.hidden && !active };
+  if(livingEnabled)delete controls.expression;
   const key = JSON.stringify(controls);
   if (key !== appliedControls) { body.set(controls); appliedControls = key; }
   $('toggle-roam').setAttribute('aria-checked', String(options.roam));
@@ -647,7 +693,7 @@ function receive(message) {
       pet.dataset.hostReady = 'true';
       body?.set({ bounds: bounds() }); render(); break;
     case 'configure': {
-      const changed = Object.keys(message.options ?? {}).some(key => !['textScale', 'size', 'companionship', 'diagnostics', 'npcHome', 'npcRange'].includes(key) && options[key] !== message.options[key]);
+      const changed = Object.keys(message.options ?? {}).some(key => !['textScale', 'size', 'companionship', 'diagnostics', 'npcHome', 'npcRange', 'livingSpace', 'npcPersonality'].includes(key) && options[key] !== message.options[key]);
       applyOptions(message.options);
       if (changed) render();
       else updateMood();
@@ -853,6 +899,8 @@ function continueSession(id) {
 function openSession(id) {
   if (!id) return;
   if (sessionAttention.acknowledge(snapshot, pendingRequests(), id)) {
+    const fact=snapshot.workFacts?.find(f=>f.sessionId===id);
+    if(fact)send({type:'acknowledge-work',sessionId:id,epoch:fact.epoch,revision:fact.revision});
     reactionUntil = 0; appliedMood = undefined;
     noticeQueue.discard(notice => notice.sessionId === id && !notice.requestIds.length && ['error', 'blocked', 'interrupted', 'max-tokens'].includes(notice.category));
   }
@@ -1011,6 +1059,7 @@ async function setCharacter(view, scheme = '') {
   });
   if (npc.walkId) body?.stopWalk(npc.walkId);
   npc = initialNpc(++npcGeneration); npcEvent = undefined; npcRelocated = false; npcGeometry = undefined; npcGroundLayout = undefined; npcSeated = false;
+  livingSceneKey=livingContextKey='';livingWorld=null;livingWorldSent=0;livingPlaced=false;livingManualPending=0;livingEnabled=false;livingEngaged=false;
   responseRhythm.cancel(); companionStroke.reset(); companion = initialCompanionship(); companionAction = companionManualId = undefined; companionFeedbackTicket++; companionInvitation.hidden = companionFeedback.hidden = companionTurn.hidden = true;
   body?.dispose(); body = next; body.set({ bounds: bounds() }); activeView = view; activeScheme = knownScheme(view, scheme); activeName = nameIn(view.name);
   actionRestorePending = false; activityWords = view.vocab.map(w => w.id).filter(w => next.words?.includes(w)); hourCheckedAt = -Infinity;

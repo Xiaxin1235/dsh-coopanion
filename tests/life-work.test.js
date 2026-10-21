@@ -108,3 +108,12 @@ it('real tool progress resets a seated wait without inventing completion or anot
  const r=f.tick({command:{type:'fact',fact:fact('A',3,{activity:'tools',tools:{pending:1,entered:2}})}});
  expect(r.effects).toContainEqual({type:'action',command:{type:'yield'}});expect(f.state.phase).toBe('work-wait');expect(f.state.sessions[0].running).toBe(true);expect(f.state.navigation).toBeNull();
 });
+
+it('invalid full snapshots cannot erase unresolved requests; valid owner removal can release a source',()=>{
+ const f=fixture();f.tick({command:{type:'fact',fact:fact('A',1,{requests:[{id:'q',kind:'question'}]})}});
+ for(const facts of [[{sessionId:'B'}],[fact('B'),fact('B')]]){
+   f.tick({command:{type:'facts',replace:true,facts}});
+   expect(f.state.sessions[0].requests).toHaveLength(1);
+ }
+ f.tick({command:{type:'facts',replace:true,facts:[]}});expect(f.state.sessions).toEqual([]);
+});

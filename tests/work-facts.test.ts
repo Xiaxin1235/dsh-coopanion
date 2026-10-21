@@ -102,3 +102,8 @@ it('unknown driver retains known in-flight calls until authoritative idle or exa
  expect(r.facts.status('running')).toMatchObject({activity:'tools',tools:{pending:1}});
  expect(r.facts.status('idle')).toMatchObject({activity:'idle',tools:{pending:0}});
 });
+
+it('acknowledges only the current error identity, even after a known idle detach',async()=>{
+ const {WorkSources}=await import('../src/work-sources.ts');let last:ReturnType<WorkFacts['snapshot']>;const owner=new WorkSources(f=>{last=f;});const handle=owner.attach('ack',[],'running');handle.event({type:'turn/start',seq:0,time:0,data:{turn:1}} as SessionEvent);handle.event({type:'turn/end',seq:1,time:1,data:{turn:1,reason:{kind:'error',error:{message:'PRIVATE'}}}} as unknown as SessionEvent);
+ handle.detach('idle');expect(last!.needsAttention).toBe(true);expect(owner.acknowledge('ack',last!.epoch,last!.revision-1)).toBe(false);expect(owner.acknowledge('ack',last!.epoch,last!.revision)).toBe(true);expect(last!.needsAttention).toBe(false);
+});

@@ -384,7 +384,7 @@ export function createPet(els, opts) {
       }
       case 'idle': {
         lookT = track();
-        if (pointer.inside && !press && pdx * pet.facing < -50 && pm < 600) {
+        if (!opts.facingOwned?.() && pointer.inside && !press && pdx * pet.facing < -50 && pm < 600) {
           pet.turnAcc += dt;
           if (pet.turnAcc > .9) { pet.facing *= -1; pet.turnAcc = 0; }
         } else pet.turnAcc = 0;

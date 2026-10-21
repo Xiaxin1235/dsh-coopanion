@@ -46,6 +46,8 @@ export function choosePersonality(p,input) {
   const samples=[random(),random(),random()],origin={x:input.bodyX,y:input.bodyY};
   const words=input.words??[],canMove=input.canNavigate&&words.includes('stand')&&!input.reduced;
   const affinities=p.id==='quiet'?{shell:5,plant:2,home:3}:{plant:5,shell:3,home:1};
+  if(input.rememberedKind==='pet')affinities.shell+=2;
+  if(input.rememberedKind==='play')affinities.plant+=2;
   const known=(input.interests??[]).slice(0,8).filter(i=>i && typeof i.id==='string' && Object.hasOwn(affinities,i.kind) && [i.focus?.x,i.focus?.y].every(Number.isFinite));
   const available=known.filter(i=>!(p.observations??[]).some(o=>o.key===interestKey(i)&&(p.clock??0)-o.at<90)).map(i=>{
     const points=Array.isArray(i.targets?.[p.id])?i.targets[p.id]:i.target?[i.target]:[];

@@ -4,7 +4,7 @@
 
 ## 配置与感知
 
-`companionship: off | quiet | interactive` 默认 `off`。off 停止自主行为；quiet 使用 NPC 日常和显式互动；interactive 额外允许低频邀请。三种模式均关闭角色引擎的随机漫游，唯一自动日常调度为 `web/npc-life.js`。`roam=true` 是自动活动与邀请的总许可；减少动态、用户休息、隐藏、锁屏和休眠优先。热切沿完整 DesktopOptions／ready／configure 同步，不重建角色 frame、阅读、输入或在途请求。
+`companionship: off | quiet | interactive` 默认 `off`。off 停止自主行为；quiet 使用 NPC 日常和显式互动；interactive 额外允许低频邀请。三种模式均关闭角色引擎的随机漫游。内置鲸鱼在支持的小景中由共享生活／工作协调器唯一调度；关闭小景、自定义角色或小视口使用 `web/npc-life.js` 回退，两者不并行拥有身体。`roam=true` 是自动活动与邀请的总许可；减少动态、用户休息、隐藏、锁屏和休眠优先。热切沿完整 DesktopOptions／ready／configure 同步，不重建角色 frame、阅读、输入或在途请求。
 
 `dailyRhythm` 已从 schema、设置页及 DesktopOptions 中删除。旧配置的该字段被忽略，不迁移成活动或邀请许可；既有 `companionship` 与 `roam` 保持原值。原先 off 模式下的随机漫游／时段动作停止，需要选择 quiet 或 interactive 才能启用 NPC。默认仍为 off。`web/companionship.js` 只负责显式一起活动和邀请，不再维护自动片段的权重、精力、兴致或截止时间；NPC 独自管理日常意图与情绪。
 
@@ -23,7 +23,11 @@ Windows／X11 注册完成后至少观察 1.5 秒才允许 idle。所有辅助�
 
 辅助进程只在原生窗口可见、未挂起且新模式启用时运行，关闭／隐藏／挂起／退出时停止；不持久保存输入历史。诊断开关独立，不启用自动活动。配置组合见[使用指南](usage.md#自主陪伴)。
 
-## 日常状态与动作拥有权
+## 默认生活小景
+
+生活感分支提供 `livingSpace`（默认 true）与 `npcPersonality: quiet | lively`（默认 quiet），均可在设置或右键菜单热切；陪伴总开关仍默认 off。小窝、花箱与贝壳在当前屏幕底部形成有限场景。对象关注、真实拿放、工作和显式互动的安全交接、原目标续接由同一协调器完成。近期已确认的 pet/play 类别影响关注偏好与整理前等待；自动观察和整理不写相处记忆或关系分数。支持范围与生命周期见[装配契约](design/living-integration-contract.md)。
+
+## 简单日常回退与动作拥有权
 
 纯策略 `web/npc-life.js` 显式接收单调时间、几何、能力、占用与有限输入枚举；保留目标、返回意图、最近三个地点、精力／兴致与情绪。仅运行期保留，重载／换角色重新建立日常，不补算离线探索或成长。
 

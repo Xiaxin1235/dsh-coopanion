@@ -7,7 +7,7 @@ import type { PetCommand, PetStatus } from '../controls.ts';
 import type { NotificationSettings, NotificationClientStatus } from './notification-client.ts';
 import { TEXT_SCALES, textScale, type TextScale } from '../../web/text-scale.js';
 
-export interface Preferences { size: number; npcHome: number; npcRange: number; textScale: TextScale; roam: boolean; diagnostics: boolean; companionship: CompanionshipMode; notifications: boolean; systemNotifications: boolean; reminders: boolean; reminderDelayMs: number; bubbleDurationMs: number; autoStart: boolean; }
+export interface Preferences { livingSpace?:boolean;npcPersonality?:'quiet'|'lively';size: number; npcHome: number; npcRange: number; textScale: TextScale; roam: boolean; diagnostics: boolean; companionship: CompanionshipMode; notifications: boolean; systemNotifications: boolean; reminders: boolean; reminderDelayMs: number; bubbleDurationMs: number; autoStart: boolean; }
 export interface SettingsFace { form: ConfigForm<Preferences>; call: (command?: PetCommand, signal?: AbortSignal) => Promise<PetStatus>; local: boolean; notifier?: NotificationSettings; }
 export type SettingsProps = SettingsFace & PropsLocale<'coopanion'>;
 
@@ -61,7 +61,7 @@ export function Settings({ form, call, local, notifier, t }: SettingsProps) {
     catch (error) { setFailure(String(error instanceof Error ? error.message : error)); }
     finally { setBusy(false); }
   };
-  const save = async (field: keyof Preferences, value: number | boolean | CompanionshipMode) => {
+  const save = async (field: keyof Preferences, value: number | boolean | CompanionshipMode | 'lively') => {
     setSaving(true); setFeedback(undefined); setSaveFailure('');
     try { setFeedback(await form.set(field, value) ? 'saved' : 'refused'); }
     catch (error) { setSaveFailure(String(error instanceof Error ? error.message : error)); }
@@ -108,7 +108,7 @@ export function Settings({ form, call, local, notifier, t }: SettingsProps) {
     <section className="pet-card" aria-label={t('preferences')}>
       <h3>{t('preferences')}</h3>
       {!accepted.writable || !local ? <p>{t('unavailable')}</p> : null}
-      {(['autoStart', 'roam', 'notifications', 'diagnostics'] as const).map(field => <div className="pet-row" key={field}>
+      {(['autoStart', 'roam', 'livingSpace', 'notifications', 'diagnostics'] as const).map(field => <div className="pet-row" key={field}>
         <div className="pet-label"><strong>{t(field)}</strong><p>{t(`${field}Hint`)}</p></div>
         <Switch checked={prefs?.[field] ?? false} disabled={!ready || !local} label={t(field)} onChange={value => void save(field, value)} />
       </div>)}
@@ -117,6 +117,7 @@ export function Settings({ form, call, local, notifier, t }: SettingsProps) {
           <select id="coopanion-companionship" className="pet-number" aria-describedby="coopanion-companionship-hint" value={prefs.companionship ?? 'off'} disabled={!ready || !local} onChange={event => void save('companionship', event.target.value as CompanionshipMode)}>
             {COMPANIONSHIP_MODES.map(value => <option key={value} value={value}>{t(`companionship_${value}`)}</option>)}
           </select></div>
+        <div className="pet-row"><div className="pet-label"><label htmlFor="coopanion-npc-personality">{t('npcPersonality')}</label><p>{t('npcPersonalityHint')}</p></div><select id="coopanion-npc-personality" className="pet-number" value={prefs.npcPersonality??'quiet'} disabled={!ready||!local} onChange={event=>void save('npcPersonality',event.target.value as 'quiet'|'lively')}><option value="quiet">{t('npcQuiet')}</option><option value="lively">{t('npcLively')}</option></select></div>
         {(['npcHome', 'npcRange'] as const).map(field => <NumberPreference key={field} id={`coopanion-${field}`} label={t(field)} hint={t(`${field}Hint`)} invalidHint={t('invalid')} value={Math.round((prefs[field] ?? (field === 'npcHome' ? .85 : .3)) * 100)} min={field === 'npcHome' ? 5 : 10} max={field === 'npcHome' ? 95 : 60} disabled={!ready || !local} save={value => void save(field, value / 100)} />)}
         <NumberPreference id="coopanion-size" label={t('size')} hint={t('sizeHint')} invalidHint={t('invalid')} value={prefs.size} min={90} max={240} disabled={!ready || !local} save={value => void save('size', value)} />
         <div className="pet-row">

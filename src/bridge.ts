@@ -11,7 +11,7 @@ export { NativeStartError, type StartLifetime, type NativeLifecycle } from './de
 import type { CompanionshipMode } from '../web/companionship.js';
 import type { TextScale } from '../web/text-scale.js';
 
-export interface DesktopOptions { size: number; npcHome?: number; npcRange?: number; textScale?: TextScale; roam: boolean; diagnostics?: boolean; companionship?: CompanionshipMode; notifications: boolean; bubbleDurationMs: number; electronPath?: string; locale?: string; systemNotifications?: boolean; reminders?: boolean; reminderDelayMs?: number; }
+export interface DesktopOptions { livingSpace?: boolean; npcPersonality?: 'quiet'|'lively'; size: number; npcHome?: number; npcRange?: number; textScale?: TextScale; roam: boolean; diagnostics?: boolean; companionship?: CompanionshipMode; notifications: boolean; bubbleDurationMs: number; electronPath?: string; locale?: string; systemNotifications?: boolean; reminders?: boolean; reminderDelayMs?: number; }
 export interface PetBridge {
   start(options: DesktopOptions, lifetime?: StartLifetime): Promise<void>;
   update(snapshot: PetSnapshot): void;
