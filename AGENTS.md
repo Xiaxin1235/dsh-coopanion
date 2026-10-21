@@ -7,6 +7,6 @@
 - 诊断和资源观察按 [诊断契约](docs/diagnostics-contract.md) 解释有效时间、缺口和报告状态；进程存活本身不证明自主活动可用。
 - 发布前读 [发布流程](docs/releasing.md)，保持同一分发包贯穿安装、npm 和 Release；本地构建或安装成功分别记录，不能代替发布成功。
 - 生活感功能接手、继续实施或调整范围，先读 [当前开发状态](docs/aliveness-development.md)，核对本期授权、交付状态与验收边界，按该页进入当前阶段契约，历史“下一步”不作为任务；后续在 `codex/aliveness-foundation` 开发，阶段实施、推送、合并和发布按用户实际授权执行。
-- 设计讨论从 [设计草稿](docs/design/README.md)进入；追溯旧讨论和采样结果分别查 [归档](docs/archive/README.md)与 [观察报告](docs/reports/README.md)。这些目录按需显式检索，方案、历史阶段与固定版本结果各按其状态解释。
+- 设计与契约查阅从 [设计与制作索引](docs/design/README.md)进入；追溯旧讨论和采样结果分别查 [归档](docs/archive/README.md)与 [观察报告](docs/reports/README.md)。这些目录按需显式检索，方案、历史阶段与固定版本结果各按其状态解释。
 - `docs/evidence/` 只用于追溯提交、复现旧问题或核对原始证据；先读其 [说明](docs/evidence/README.md)，用 `rg --no-ignore docs/evidence` 显式检索。报告、日志、截图、摘要及第三方许可保留原字节，新验证绑定实际提交、宿主版本和包摘要。
 - `.cache/`、`artifacts/`、`dist/` 和 `node_modules/` 是本机或生成内容，使用前核对来源与实际源码。

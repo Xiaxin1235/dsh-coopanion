@@ -8,6 +8,7 @@
 |---|---|
 | 安装、配置、操作与升级 | [使用指南](usage.md) |
 | 生活感分支接手、当前阶段与验收边界 | [当前开发状态](aliveness-development.md) |
+| 第 5C 期回应合批与安静节奏（已授权，待实现） | [执行范围](design/response-rhythm-contract.md) |
 | 第 5B 期相处记忆、查看／纠正／删除 | [有限记忆契约](design/companion-memory-contract.md) |
 | 第 5A 期安静／活泼、参数与行为选择 | [人格行为契约](design/personality-behavior-contract.md) |
 | 第 4 期生活／工作交接与事实适配 | [双线协调契约](design/life-work-contract.md) |
@@ -30,14 +31,14 @@
 
 | 需要查阅的内容 | 入口与适用范围 |
 |---|---|
-| 生活感规划与制作 | [设计与制作索引](design/README.md)：第 1–3 期已验收，第 4／5A 期本地交付，现行空间／动作／双线／人格契约；阶段授权只看开发状态 |
+| 生活感规划与制作 | [设计与制作索引](design/README.md)：现行空间／动作／双线／人格／记忆／视觉契约与 5C 执行范围；阶段状态和授权只看开发入口 |
 | 上游借鉴与已选补丁 | [蓝图第 7 节](design/aliveness-implementation-plan.md#7-上游借鉴人格记忆与互动节奏)维护后续取舍；[固定调研与回归归档](archive/2026-10-aliveness/upstream-motion/README.md)区分当时建议、已移植两项和原生超时修正 |
-| 固定源码验证与资源／生命周期结果 | [固定报告](reports/README.md)：5A 首版与反馈修正分别解释；周末采集已结束、托管已禁用，0.4.10 数据不作为新版验收 |
+| 固定源码验证与资源／生命周期结果 | [固定报告](reports/README.md)：按固定源码区分 5A／5B 首版与反馈修正；旧报告不是当前执行指令 |
 | 早期发散、候选诊断与发布过程 | [历史说明](archive/README.md)：其中的计划、问题和进度只属于当时快照 |
 
-第 1–5A 期的旧范围、提案、失败模型、反馈修正与固定验证从[阶段历史](archive/2026-10-aliveness/README.md)追溯。当前授权、交付与用户验收只看[开发状态](aliveness-development.md)；原始报告中的待验收、旧下一步和推送限制均属于当时快照。
+第 1–5B 期的旧范围、提案、失败模型、反馈修正与固定验证从[阶段历史](archive/2026-10-aliveness/README.md)追溯。当前授权、交付与用户验收只看[开发状态](aliveness-development.md)；原始报告中的待验收、旧下一步和推送限制均属于当时快照。
 
-普通搜索覆盖现行契约、当前分支状态与当前设计文本；归档、旧场景夹具、原始报告／画面／提示词及本地产物由 `.ignore` 屏蔽。历史追溯使用 `rg --no-ignore docs/archive`，核对原始工作台证据使用 `rg --no-ignore docs/design/art-workflow`，观察结果使用 `rg --no-ignore docs/reports`。设计、归档及报告目录不随安装包分发，当前执行范围仍来自用户。
+普通搜索覆盖现行契约、当前分支状态、当前规划范围和运行源码；归档、历史版本说明、旧场景夹具、原始报告／画面／提示词及本地产物由 `.ignore` 屏蔽。历史追溯使用 `rg --no-ignore docs/archive`，核对原始工作台证据使用 `rg --no-ignore docs/design/art-workflow`，观察结果使用 `rg --no-ignore docs/reports`，发布历史使用 `rg --no-ignore docs/release-notes.md`。设计、归档及报告目录不随安装包分发，当前执行范围仍来自用户。
 
 ## 验证与产物身份
 
@@ -46,3 +47,9 @@
 正式发布使用 [GitHub Release](https://github.com/takboo/dsh-coopanion/releases) 中的版本、提交和包摘要核验；`verification.json`、`SHA256SUMS` 与版本包一起提供。本地试装包不代表该版本的正式分发产物。
 
 仓库的 `docs/evidence/` 只保留历史原始证据，普通搜索及安装包均排除它。追溯时先读其说明并核对实际产物身份。`.cache/`、`artifacts/` 与 `dist/` 属于本机或生成内容，可能来自其他提交。
+
+## 文档维护边界
+
+当前开发入口只放本次授权、最新基线、已知限制和操作指引；旧授权／过程／测试数量整体存档，不在入口不断追加。现行契约直接描述最终行为，蓝图与素材入口不复制执行参数或生成待办。新阶段范围标出“已授权”和“是否实现”，进入下一阶段不等于上一阶段主观验收。
+
+原始报告、截图、日志、素材来源、许可和固定快照保留字节；用索引解释被后续修正的旧结论，不改写原记录。整理时检查当前链接、默认搜索可见性和快照摘要。使用指南跟随源码分支，分支未发布增量须显式标明，版本号和本地测试不能代替发布结论。

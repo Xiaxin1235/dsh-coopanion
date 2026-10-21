@@ -1,5 +1,7 @@
 # 美术与动作工作流
 
+本工作流只用于素材与二维制作；5B／5C 的默认产品互动从[开发状态](../../aliveness-development.md)进入，不把制作页当作默认产品装配。
+
 第 5A 期使用[人格行为对照](space-v1/README.md#第-5a-期同地图的人格行为对照)，对象关注与表现规则见[人格契约](../personality-behavior-contract.md)。第 4 期使用[生活／工作双线预览](space-v1/README.md#第-4-期生活工作双线)，模拟事实与真实宿主分别结算。第 3 期[连续动作空间预览](space-v1/README.md#第-3-期连续动作与物件)已验收，使用 `?stage=3`；[O03 连续拿放工作台](o03-shell-hands-v1/README.md)与无参数第 2 期入口继续保留。分支范围和接手顺序见[当前开发状态](../../aliveness-development.md)。原 O03 仍可由右上角链接或原路径进入；早期生成、绑定和动作叙述见[归档](../../archive/2026-10-aliveness/README.md)。
 
 ## 制作美术
@@ -12,7 +14,7 @@
 | 放回运行环境 | 目标渲染器中验证角色比例、显示尺寸、底色、接触和遮挡；按实际画面补局部素材 |
 | 交付 | 原图、规格、来源、实际预览和验证边界齐全；用户观感验收单独记录 |
 
-本期简单空间道具直接创作为分层 SVG，源文件就是运行资产；需求、作者、许可与原始字节摘要见 [space-v1/assets/source.json](space-v1/assets/source.json)，未调用图像生成。需要复杂栅格或补手／关节时再执行上表生成流程。
+既有简单空间道具直接创作为分层 SVG，源文件就是运行资产；需求、作者、许可与原始字节摘要见 [space-v1/assets/source.json](space-v1/assets/source.json)，未调用图像生成。需要复杂栅格或补手／关节时再执行上表生成流程。
 
 当前 O03 源图规格和检查入口为 `web/props/shell/asset.json`、`hands/asset.json`、`scripts/check-hand-art.mjs`。通用 PNG 检查器是 `inspect-art-asset.mjs`，只支持非交错 8-bit RGBA，不改写像素、不验证 PNG chunk CRC；浏览器解码与视觉质量分别验证。
 

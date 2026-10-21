@@ -35,6 +35,8 @@ npm run test:install
 
 ## 关键行为回归
 
+当前 5C 的授权和未实现边界见[回应与安静节奏](design/response-rhythm-contract.md)。按该页新增确定性合批回归，并保留下面既有入口；不要仅凭旧报告数字跳过本次测试。
+
 消息样式的 token、层级与滚动归属见[视觉体系](design/message-visual-system.md)。`MESSAGE_EVIDENCE_DIR=<新目录> node tests/message-surfaces-ui.mjs` 执行中英文三档字号布局／实际滚动检查，并纳入 `tests/ui.mjs`；`tests/message-surfaces-native.mjs` 在临时 profile 串行检查真实 Electron。涉及阅读与气泡的改动仍包含完整 `test:inbox-ui`，不能用截图替代草稿／身份／计时回归。
 
 右键设置使用同一视觉体系的设置组件表。`MENU_EVIDENCE_DIR=<新目录> node tests/menu-surfaces-ui.mjs` 覆盖两种窗口、中英文、三档字号、折叠／展开、16 条记忆、空态／受控只读、禁用样式、键盘可达性及字号更新保留节点／焦点；已纳入 `tests/ui.mjs`。`tests/menu-surfaces-native.mjs` 用临时 profile 的真实存档与 IPC 验六组原生结构，纳入 `tests/desktop.mjs`；真实指针操作与记忆纠正／删除仍用 `tests/companionship-native.mjs`，各原生入口串行运行。
