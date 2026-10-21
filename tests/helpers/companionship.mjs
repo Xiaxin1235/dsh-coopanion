@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 export async function controlCompanionClock(page) {
   await page.addInitScript(() => { window.companionNow = 0; window.companionHour = 12; window.companionRandom = .1; window.companionEvents = [];
-    const keyboard = () => { window.receive?.({ type: 'keyboard-activity', value: 'idle' }); requestAnimationFrame(keyboard); }; requestAnimationFrame(keyboard); });
+    const keyboard = () => { window.receive?.({ type: 'keyboard-activity', value: window.companionKeyboard ?? 'idle' }); requestAnimationFrame(keyboard); }; requestAnimationFrame(keyboard); });
   await page.route('**/companionship.js', async route => {
     const response = await route.fetch(), source = await response.text();
     assert.ok(source.includes('export function stepCompanionship('));

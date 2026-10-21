@@ -2,6 +2,7 @@ import { createLiveMouth } from './live-mouth.js';
 import { advanceRenderCadence } from './render-cadence.js';
 import { createDiagnosticCounters } from './diagnostics.js';
 import { createCompanionStroke } from './companion-touch.js';
+import { ResponseRhythm } from './response-rhythm.js';
 import { initialNpc, stepNpc, npcSpace } from './npc-life.js';
 import { initialCompanionship, stepCompanionship, companionshipMode } from './companionship.js';
 import { CompanionClient, browserCompanionship } from './companion-client.js';
@@ -59,6 +60,8 @@ let draftSessionId;
 let activityWords = [], actionRestorePending = false, localHour, hourCheckedAt = -Infinity;
 let companion = initialCompanionship(), companionAction, companionManualId, companionManualGeneration, companionManualEpoch, companionFeedbackUntil = 0, companionReadAt = 0, companionFeedbackTicket = 0;
 const companionStroke = createCompanionStroke();
+const responseRhythm = new ResponseRhythm();
+let companionFeedbackKind;
 const diagnosticCounters = createDiagnosticCounters();
 const liveMouth = createLiveMouth();
 const companionClient = new CompanionClient(native?.companionship ?? browserCompanionship, () => refreshCompanionCopy());
@@ -67,7 +70,8 @@ let renderedLocale;
 let characterFeedback = { key: 'characterHint', args: [] };
 const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
 let reduced = motionPreference.matches;
-motionPreference.addEventListener('change', event => { reduced = event.matches; if (reduced && companion.active) companionAction = 'dismiss'; });
+motionPreference.addEventListener('change', event => { reduced = event.matches; if (reduced) responseRhythm.cancel(); if (reduced && companion.active) companionAction = 'dismiss'; });
+document.addEventListener('visibilitychange', () => { if (document.hidden) responseRhythm.cancel(); });
 
 function send(action) {
   if (native) { native.action(action); return; }
@@ -261,7 +265,7 @@ function refreshCompanionMemory() {
     for (const [type, label] of [['memory-correct', kind === 'pet' ? copy.memoryCorrectPlay : copy.memoryCorrectPet], ['memory-delete', copy.memoryDelete]]) {
       const button = document.createElement('button'); button.type = 'button'; button.textContent = label; button.disabled = disabled;
       button.dataset.memoryId = entry.id; button.dataset.memoryAction = type;
-      button.onclick = () => { void companionClient.request(type, crypto.randomUUID(), { entryId: entry.id, kind: kind === 'pet' ? 'play' : 'pet' }); };
+      button.onclick = () => { responseRhythm.cancel(); void companionClient.request(type, crypto.randomUUID(), { entryId: entry.id, kind: kind === 'pet' ? 'play' : 'pet' }); };
       actions.append(button);
     }
     row.append(actions);
@@ -269,8 +273,8 @@ function refreshCompanionMemory() {
   }
   if (focusedId) ([...list.querySelectorAll('button')].find(button => button.dataset.memoryId === focusedId && button.dataset.memoryAction === focusedAction) ?? $('companion-memories').querySelector('summary')).focus({ preventScroll: true });
 }
-$('memory-clear').onclick = () => { void companionClient.request('memory-clear'); };
-$('companion-memories').ontoggle = () => { if ($('companion-memories').open && activeView) void companionClient.request('read'); };
+$('memory-clear').onclick = () => { responseRhythm.cancel(); void companionClient.request('memory-clear'); };
+$('companion-memories').ontoggle = () => { if ($('companion-memories').open && activeView) { responseRhythm.cancel(); void companionClient.request('read'); } };
 function companionBlocked(manual, mood, readingAttention, active) {
   const runtime = notificationState?.runtime, layout = body?.layout;
   return active || mood !== 'idle' || pendingRequests().length > 0 || userInputOccupied() || !interaction.hidden || readingAttention ||
@@ -278,8 +282,9 @@ function companionBlocked(manual, mood, readingAttention, active) {
     !layout || ['air', 'drag', 'crouch'].includes(layout.mode) || layout.busy && !companion.active || hovered && !manual ||
     document.hidden || !!runtime && (runtime.phase !== 'running' || !runtime.visible || runtime.suspended);
 }
-function companionMessage(text, now = performance.now()) {
+function companionMessage(text, now = performance.now(), kind = 'manual') {
   companionFeedbackTicket++;
+  companionFeedbackKind = kind; companionFeedback.dataset.kind = kind;
   companionFeedback.textContent = text; companionFeedback.hidden = false; companionFeedbackUntil = now + 3000; panelAnchors.delete(companionFeedback);
 }
 function rememberCompanion(type, id = crypto.randomUUID(), details = {}) {
@@ -292,9 +297,20 @@ function rememberCompanion(type, id = crypto.randomUUID(), details = {}) {
     companionMessage(saved ? type === 'play' ? uiCopy().memorySavedPlay : uiCopy().memorySavedPet : uiCopy().memoryNotSaved);
   });
 }
+function responseContext() {
+  return { characterId: companionClient.characterId, epoch: companionClient.epoch, generation: companionClient.summary?.memory?.generation };
+}
+function rememberStroke(now) {
+  const id = crypto.randomUUID(), context = responseContext();
+  responseRhythm.observe({ ...context, id, now, reacted: true });
+  // Saving is independent of queue admission and each source keeps its own identity.
+  void companionClient.request('pet', id, { memoryGeneration: context.generation }).then(receipt => {
+    responseRhythm.receipt({ ...context, id, now: performance.now(), saved: !!receipt?.memory?.entries.some(entry => entry.id === id && entry.kind === 'pet') });
+  });
+}
 function updateCompanion(now, mood, readingAttention, active) {
   const mode = options.companionship;
-  if (mode === 'off' && companion.mode === 'off') return;
+  if (mode === 'off' && companion.mode === 'off') { responseRhythm.cancel(); return; }
   if (now < hourCheckedAt || now - hourCheckedAt >= 1000) { localHour = new Date().getHours(); hourCheckedAt = now; }
   const manual = companionAction === 'play' || companion.active?.manual;
   // A poke's short expression is presentation, not a busy Host session.
@@ -302,7 +318,7 @@ function updateCompanion(now, mood, readingAttention, active) {
   const summary = companionClient.summary;
   const eligible = !!summary?.writable && !companionClient.error && summary.invitation.remaining > 0 && !summary.invitation.quiet && Date.now() >= summary.invitation.laterUntil;
   const inputQuiet = keyboardActivity !== 'idle' || performance.now() - keyboardAt > 2500;
-  const result = stepCompanionship(companion, { mode, now, hour: localHour, words: activityWords, occupied: blocked, motionBusy: !!body?.layout?.moving, automatic: options.roam && !reduced && !inputQuiet && !['pointer', 'work'].includes(npc.reason), eligible: eligible && !npc.walkId, unlocked: summary?.relation.unlocked, rememberedKind: summary?.memory?.entries.at(-1)?.correctedKind ?? summary?.memory?.entries.at(-1)?.kind, action: companionAction });
+  const result = stepCompanionship(companion, { mode, now, hour: localHour, words: activityWords, occupied: blocked, motionBusy: !!body?.layout?.moving, automatic: options.roam && !reduced && !inputQuiet && !['pointer', 'work'].includes(npc.reason), eligible: eligible && !npc.walkId && !responseRhythm.pending, unlocked: summary?.relation.unlocked, rememberedKind: summary?.memory?.entries.at(-1)?.correctedKind ?? summary?.memory?.entries.at(-1)?.kind, action: companionAction });
   if (result.showInvitation) diagnosticCounters.event('invitationsShown');
   if (result.hideInvitation && companion.invitation === 'shown' && now >= companion.invitationUntil) diagnosticCounters.event('invitationsExpired');
   companionAction = undefined; companion = result.state;
@@ -335,6 +351,14 @@ function updateCompanion(now, mood, readingAttention, active) {
   // A stroke necessarily hovers the pet. Keep its feedback visible while still
   // yielding to work, reading, input and physical interaction.
   if (companionBlocked(true, sessionActivity(attentionSnapshot).mood, readingAttention, active) || mode === 'off' || now >= companionFeedbackUntil) companionFeedback.hidden = true;
+  const runtime = notificationState?.runtime;
+  const cancelResponse = !options.roam || reduced || asleep || document.hidden || !!runtime && (runtime.phase !== 'running' || !runtime.visible || runtime.suspended);
+  const responsePermitted = !inputQuiet && !companionBlocked(true, sessionActivity(attentionSnapshot).mood, readingAttention, active) &&
+    !companion.active && companionInvitation.hidden && companionTurn.hidden && !body?.layout?.moving && options.roam && !reduced &&
+    (companionFeedback.hidden || companionFeedbackKind !== 'manual');
+  const response = responseRhythm.step({ ...responseContext(), now, mode, cancel: cancelResponse, permitted: responsePermitted, entries: summary?.memory?.entries });
+  if (response) companionMessage(response.saved ? uiCopy().companionStrokeRemembered : uiCopy().companionStrokeUnsaved, now, 'response');
+  if (companionFeedbackKind === 'response' && (!responsePermitted || cancelResponse)) companionFeedback.hidden = true;
   if (mode !== 'off' && activeView && now >= companionReadAt) { companionReadAt = now + 60000; void companionClient.request('read'); }
   refreshCompanionCopy();
 }
@@ -368,6 +392,7 @@ function updateNpc(now, active, readingAttention) {
 let npcWorkUntil = 0;
 function attentionToWork() { npcWorkUntil = performance.now() + 12000; }
 function startCompanionPlay() {
+  responseRhythm.cancel();
   closePanels();
   const activity = sessionActivity(attentionSnapshot);
   if (options.companionship === 'off' || companionBlocked(true, activity.mood, false, activity.active)) { companionMessage(uiCopy().companionBusy); return; }
@@ -602,7 +627,7 @@ function applyOptions(value) {
   diagnosticCounters.configure(options.diagnostics === true);
   document.documentElement.style.setProperty('--size', `${options.size}px`);
   document.documentElement.style.setProperty('--text-scale', String(options.textScale));
-  if (options.companionship !== previousCompanionship && activeView) { void companionClient.load(activeView.id); companionReadAt = performance.now() + 60000; }
+  if (options.companionship !== previousCompanionship && activeView) { responseRhythm.cancel(); void companionClient.load(activeView.id); companionReadAt = performance.now() + 60000; }
   if (options.size !== previousSize) body?.set({ bounds: bounds() });
   // Keep DOM, captured reader result, composer, speech and expiry clocks intact.
   position();
@@ -878,7 +903,7 @@ document.addEventListener('pointermove', event => {
   }
   const activity = sessionActivity(attentionSnapshot);
   const canCare = options.companionship !== 'off' && !companion.active && !activity.active && activity.mood === 'idle' && !pendingRequests().length && !userInputOccupied() && !asleep && interaction.hidden && ['idle', 'look', 'sit'].includes(body?.layout?.mode);
-  if (companionStroke.move(point, { trusted: event.isTrusted, over: canCare && !!body?.hit(point), pressing, now: performance.now() })) { companionMessage(uiCopy().companionPetThanks); void rememberCompanion('pet'); }
+  if (companionStroke.move(point, { trusted: event.isTrusted, over: canCare && !!body?.hit(point), pressing, now: performance.now() })) { companionMessage(uiCopy().companionPetThanks, performance.now(), 'stroke'); rememberStroke(performance.now()); }
   body?.pointer('move', point); hit(point.x, point.y);
 });
 document.addEventListener('pointerleave', () => {
@@ -986,7 +1011,7 @@ async function setCharacter(view, scheme = '') {
   });
   if (npc.walkId) body?.stopWalk(npc.walkId);
   npc = initialNpc(++npcGeneration); npcEvent = undefined; npcRelocated = false; npcGeometry = undefined; npcGroundLayout = undefined; npcSeated = false;
-  companionStroke.reset(); companion = initialCompanionship(); companionAction = companionManualId = undefined; companionFeedbackTicket++; companionInvitation.hidden = companionFeedback.hidden = companionTurn.hidden = true;
+  responseRhythm.cancel(); companionStroke.reset(); companion = initialCompanionship(); companionAction = companionManualId = undefined; companionFeedbackTicket++; companionInvitation.hidden = companionFeedback.hidden = companionTurn.hidden = true;
   body?.dispose(); body = next; body.set({ bounds: bounds() }); activeView = view; activeScheme = knownScheme(view, scheme); activeName = nameIn(view.name);
   actionRestorePending = false; activityWords = view.vocab.map(w => w.id).filter(w => next.words?.includes(w)); hourCheckedAt = -Infinity;
   // A new body has not reported its geometry yet. Retire the previous body's

@@ -8,7 +8,7 @@
 |---|---|
 | 安装、配置、操作与升级 | [使用指南](usage.md) |
 | 生活感分支接手、当前阶段与验收边界 | [当前开发状态](aliveness-development.md) |
-| 第 5C 期回应合批与安静节奏（已授权，待实现） | [执行范围](design/response-rhythm-contract.md) |
+| 第 5C 期回应合批与安静节奏 | [执行范围](design/response-rhythm-contract.md) |
 | 第 5B 期相处记忆、查看／纠正／删除 | [有限记忆契约](design/companion-memory-contract.md) |
 | 第 5A 期安静／活泼、参数与行为选择 | [人格行为契约](design/personality-behavior-contract.md) |
 | 第 4 期生活／工作交接与事实适配 | [双线协调契约](design/life-work-contract.md) |

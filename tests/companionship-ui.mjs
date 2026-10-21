@@ -10,6 +10,7 @@ import { chromium } from 'playwright-core';
 import { controlCompanionClock, advanceCompanion } from './helpers/companionship.mjs';
 import { controlNpc, npcTick, npcUntil } from './helpers/npc-life.mjs';
 import { recordBodyOrders } from './helpers/body-orders.mjs';
+import { controlResponseClock, responseTick } from './helpers/response-rhythm.mjs';
 const require = createRequire(import.meta.url);
 const { CharacterStore } = require('../dist/character-store.cjs'), { CompanionStore } = require('../dist/companion-store.cjs'), { createPetServer } = require('../dist/figure-server.cjs');
 let browser;
@@ -36,7 +37,7 @@ async function fixture(t, mode = 'interactive', vocab, star = false, timing = nu
     // A frame timestamp can precede a click callback's performance.now().
     // Keep real event time and physics; expose that ordering deterministically.
     await page.addInitScript(lag => { const raf = requestAnimationFrame.bind(window); window.requestAnimationFrame = callback => raf(time => callback(time - lag)); }, timing.frameLag ?? 0);
-  } else { await controlCompanionClock(page); await controlNpc(page); }
+  } else { await controlCompanionClock(page); await controlNpc(page); await controlResponseClock(page); }
   if (vocab) await page.route('**/api/characters/load', async route => { const response = await route.fetch(), result = await response.json(); result.value.vocab = result.value.vocab.filter(w => vocab.includes(w.id)); await route.fulfill({ response, json: result }); });
   await page.addInitScript(() => { window.actions = []; addEventListener('message', e => { if (e.data?.t === 'frame' && e.data.layout) window.lastNpcLayout = e.data.layout; }); window.dshPetBridge = { subscribe(fn) { window.receive = fn; }, action(a) { window.actions.push(a); }, hit() {} }; });
   await page.goto(`http://127.0.0.1:${server.address().port}`);
@@ -440,4 +441,137 @@ test('remembered play changes the next permitted greeting without another intera
   const after = await read(); assert.deepEqual(after.relation, before.relation); assert.deepEqual(after.memory.entries, before.memory.entries);
   assert.equal(after.invitation.remaining, before.invitation.remaining - 1);
   assert.deepEqual(await page.evaluate(() => window.actions.filter(a => a.type !== 'presentation')), []);
+});
+
+async function stroke(page) {
+  await page.mouse.move(0, 0);
+  await page.waitForFunction(() => { const e = document.querySelector('#pet'), r = e.getBoundingClientRect(); return r.right <= innerWidth && r.bottom <= innerHeight && ['idle','look','sit'].includes(e.dataset.mode); });
+  const b = await page.locator('#pet').boundingBox();
+  for (let i = 0; i < 18; i++) await page.mouse.move(b.x + b.width * (i % 2 ? .35 : .65), b.y + b.height * .45);
+  await page.waitForFunction(() => window.responseState?.sources.some(s => s.saved !== 'pending'));
+}
+
+test('continuous strokes keep immediate feedback, merge into one saved response and never replay reflexes', async t => {
+  const { page, read, body } = await fixture(t, 'quiet');
+  await stroke(page); await page.waitForTimeout(2550); await responseTick(page, 2500); await stroke(page);
+  assert.equal(await page.locator('#companion-feedback').getAttribute('data-kind'), 'stroke');
+  assert.doesNotMatch(await page.locator('#companion-feedback').innerText(), /保存|记住/);
+  await page.waitForFunction(() => window.responseState?.sources.length === 2 && window.responseState.sources.every(s => s.saved === 'saved'));
+  const before = await read(); assert.equal(before.memory.entries.length, 2); assert.equal(before.relation.total, 1);
+  const orders = await body.evaluate(() => window.bodyOrders.length);
+  await responseTick(page, 6499); assert.equal(await page.evaluate(() => window.responseEvents.length), 0);
+  await responseTick(page, 6500); await page.locator('#companion-feedback[data-kind=response]').waitFor();
+  assert.match(await page.locator('#companion-feedback').innerText(), /保存好/);
+  await page.waitForTimeout(150); assert.equal(await page.locator('#companion-feedback').isVisible(), true);
+  assert.deepEqual(await page.evaluate(() => window.responseEvents), [{ saved: true, count: 2 }]);
+  assert.equal(await body.evaluate(() => window.bodyOrders.length), orders);
+  await responseTick(page, 19000); assert.equal(await page.evaluate(() => window.responseEvents.length), 1);
+  assert.deepEqual((await read()).relation, before.relation); assert.deepEqual((await read()).memory.entries, before.memory.entries);
+  assert.deepEqual(await page.evaluate(() => window.actions.filter(a => a.type !== 'presentation')), []);
+});
+
+test('work, input active or unknown, reading and drafts gate the same candidate until expiry', async t => {
+  const { page, receive, read } = await fixture(t, 'quiet'); await stroke(page);
+  const before = await read();
+  await receive({ type: 'snapshot', snapshot: snapshot({ mood: 'working', active: true, sessions: [{ ...session, mood: 'working', active: true }] }) });
+  await responseTick(page, 5000); assert.equal(await page.evaluate(() => window.responseEvents.length), 0);
+  await page.evaluate(() => { window.companionKeyboard = 'active'; window.receive({ type: 'keyboard-activity', value: 'active' }); });
+  await receive({ type: 'snapshot', snapshot: snapshot() });
+  await responseTick(page, 6000); assert.equal(await page.evaluate(() => window.responseEvents.length), 0);
+  await page.evaluate(() => { window.companionKeyboard = 'unknown'; }); await responseTick(page, 7000);
+  assert.equal(await page.evaluate(() => window.responseEvents.length), 0);
+  await page.evaluate(() => { window.companionKeyboard = 'idle'; });
+  await receive({ type: 'ui-control', command: 'chat' }); await page.locator('#message').fill('keep this draft');
+  await page.locator('#message').evaluate(n => n.setSelectionRange(2, 7));
+  await responseTick(page, 8000); assert.equal(await page.evaluate(() => window.responseEvents.length), 0);
+  assert.deepEqual(await page.locator('#message').evaluate(n => [n.value, n === document.activeElement, n.selectionStart, n.selectionEnd]), ['keep this draft', true, 2, 7]);
+  await page.keyboard.press('Escape'); await responseTick(page, 20000);
+  assert.equal(await page.evaluate(() => window.responseState), null);
+  await receive({ type: 'ui-control', command: 'chat' }); await page.locator('#message').fill(''); await page.keyboard.press('Escape');
+  await responseTick(page, 25000); assert.equal(await page.evaluate(() => window.responseEvents.length), 0);
+  assert.deepEqual((await read()).memory.entries, before.memory.entries);
+});
+
+test('a still valid response regains permission, then input interruption cannot replay it', async t => {
+  const { page, receive } = await fixture(t, 'quiet'); await stroke(page);
+  await receive({ type: 'snapshot', snapshot: snapshot({ mood: 'working', active: true, sessions: [{ ...session, mood: 'working', active: true }] }) });
+  await responseTick(page, 5000);
+  await receive({ type: 'snapshot', snapshot: snapshot() }); await responseTick(page, 6000);
+  await page.locator('#companion-feedback[data-kind=response]').waitFor();
+  await receive({ type: 'ui-control', command: 'chat' }); await page.locator('#companion-feedback').waitFor({ state: 'hidden' });
+  await page.keyboard.press('Escape'); await responseTick(page, 7000);
+  assert.equal(await page.locator('#companion-feedback').isVisible(), false);
+  assert.equal(await page.evaluate(() => window.responseEvents.length), 1);
+});
+
+test('a delayed or failed stroke receipt cannot promise success or revive revoked candidates', async t => {
+  const { page, read, configure } = await fixture(t, 'quiet');
+  let release; const gate = new Promise(r => { release = r; });
+  await page.route('**/api/companionship', async route => { if (route.request().postDataJSON().type === 'pet') await gate; await route.continue(); });
+  const b = await page.locator('#pet').boundingBox();
+  for (let i = 0; i < 18; i++) await page.mouse.move(b.x + b.width * (i % 2 ? .35 : .65), b.y + b.height * .45);
+  await page.waitForFunction(() => window.responseState?.sources.length);
+  await responseTick(page, 5000); assert.equal(await page.evaluate(() => window.responseEvents.length), 0);
+  await configure({ companionship: 'off' }); release(); await configure({ companionship: 'quiet' });
+  await responseTick(page, 6000); assert.equal(await page.evaluate(() => window.responseEvents.length), 0);
+  await page.unroute('**/api/companionship');
+  await page.route('**/api/companionship', async route => { if (route.request().postDataJSON().type === 'pet') await route.fulfill({ status: 503, json: { ok: false, error: 'companion/write-failed' } }); else await route.continue(); });
+  await page.waitForTimeout(2550); await stroke(page); await responseTick(page, 10000);
+  await page.locator('#companion-feedback[data-kind=response]').waitFor();
+  assert.match(await page.locator('#companion-feedback').innerText(), /没能保存/);
+  assert.ok((await read()).memory.entries.length <= 1);
+});
+
+test('memory correction/deletion, manual play, reduced motion and hidden lifecycle revoke the queue', async t => {
+  for (const reason of ['correct', 'delete', 'manual', 'reduced', 'hidden', 'roam']) {
+    const { page, configure, receive } = await fixture(t, 'quiet'); await stroke(page);
+    if (reason === 'correct' || reason === 'delete') {
+      await menu(page); await page.locator('#companion-memories summary').click(); await page.locator('#memory-list li').waitFor();
+      await page.locator(`[data-memory-action=memory-${reason}]`).first().click(); await page.keyboard.press('Escape');
+    } else if (reason === 'manual') { await menu(page); await page.locator('#companion-play').click(); await page.locator('#companion-turn').waitFor(); }
+    else if (reason === 'reduced') { await page.emulateMedia({ reducedMotion: 'reduce' }); await page.waitForFunction(() => window.responseState === null); }
+    else if (reason === 'roam') await configure({ roam: false });
+    else await receive({ type: 'notification-state', snapshot: { protocol: 1, interactions: [], runtime: { generation: 1, phase: 'running', visible: false, suspended: false } } });
+    await responseTick(page, 5000); assert.equal(await page.evaluate(() => window.responseState), null, reason);
+    assert.equal(await page.evaluate(() => window.responseEvents.length), 0, reason);
+  }
+});
+
+test('merged response fits Chinese/English large type in a small window without changing the bubble clock', async t => {
+  for (const locale of ['zh', 'en']) {
+    const { page, configure } = await fixture(t, 'quiet');
+    await configure({ locale, textScale: 1.5 }); await page.setViewportSize({ width: 320, height: 640 });
+    await stroke(page); await responseTick(page, 4000); await page.locator('#companion-feedback[data-kind=response]').waitFor();
+    await page.waitForFunction(() => { const e = document.querySelector('#companion-feedback'), r = e.getBoundingClientRect(); return r.x >= 0 && r.y >= 0 && r.right <= innerWidth && r.bottom <= innerHeight && e.scrollWidth <= e.clientWidth + 1; });
+    assert.equal(await page.locator('#companion-feedback').evaluate(e => getComputedStyle(e).overflowY), 'visible');
+    if (process.env.COMPANION_EVIDENCE_DIR) { await mkdir(process.env.COMPANION_EVIDENCE_DIR, { recursive: true }); await page.screenshot({ path: join(process.env.COMPANION_EVIDENCE_DIR, `response-${locale}-large.png`) }); }
+    await page.emulateMedia({ reducedMotion: 'reduce' }); await page.locator('#companion-feedback').waitFor({ state: 'hidden' });
+  }
+});
+
+test('pending stroke gates only new invitation admission and preserves its scheduled time', async t => {
+  const { page, read } = await fixture(t, 'interactive'); await stroke(page); await page.mouse.move(0, 0);
+  await page.waitForFunction(() => window.companionInput.occupied === false);
+  const due = await page.evaluate(() => window.companionState.inviteAt);
+  await advanceCompanion(page, due);
+  assert.equal(await page.evaluate(() => window.companionInput.automatic), true);
+  assert.equal(await page.evaluate(() => window.companionInput.eligible), false);
+  assert.equal(await page.evaluate(() => window.companionState.inviteAt), due);
+  assert.equal(await page.locator('#companion-invitation').isVisible(), false);
+  assert.equal((await read()).invitation.remaining, 2);
+});
+
+test('captured reading defers a stroke response and renderer reload never restores its queue', async t => {
+  const { page, receive, read } = await fixture(t, 'quiet'); await stroke(page);
+  const result = { id: 'rhythm-reader', sessionId: session.id, text: '## Captured\n\n' + 'Keep this reading.\n\n'.repeat(80), time: 1, read: false };
+  await receive({ type: 'snapshot', snapshot: snapshot({ results: [result], sessions: [{ ...session, replyId: result.id, reply: result.text }] }) });
+  await receive({ type: 'ui-control', command: 'chat' }); await page.locator('#chat-read').click();
+  await page.locator('#reader-text').evaluate(n => { n.scrollTop = 120; window.rhythmReader = n.firstChild; });
+  await responseTick(page, 5000); assert.equal(await page.evaluate(() => window.responseEvents.length), 0);
+  assert.equal(await page.locator('#reader-text').evaluate(n => n.firstChild === window.rhythmReader && n.scrollTop === 120), true);
+  await page.reload(); await page.waitForSelector('#pet[data-mode]');
+  await receive({ type: 'init', baseline: true, options: { companionship: 'quiet', roam: true }, snapshot: snapshot() });
+  await responseTick(page, 6000); assert.equal(await page.evaluate(() => window.responseState), null);
+  assert.equal(await page.evaluate(() => window.responseEvents.length), 0);
+  assert.equal((await read()).memory.entries.length, 1);
 });

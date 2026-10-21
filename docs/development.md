@@ -35,7 +35,7 @@ npm run test:install
 
 ## 关键行为回归
 
-当前 5C 的授权和未实现边界见[回应与安静节奏](design/response-rhythm-contract.md)。按该页新增确定性合批回归，并保留下面既有入口；不要仅凭旧报告数字跳过本次测试。
+5C 的最终时序、上限与许可见[回应与安静节奏](design/response-rhythm-contract.md)。`tests/response-rhythm.test.js` 验证有界策略；完整 `test:inbox-ui` 包含主页面合批与占用回归；`COMPANION_EVIDENCE_DIR=<新目录> node tests/response-rhythm-native.mjs` 在隔离 profile 验证实际时钟、真实 IPC 与指针，已纳入 `test:desktop` 串行执行。当前源码与工具链需重新绑定，不以旧报告数字代替本次测试。
 
 消息样式的 token、层级与滚动归属见[视觉体系](design/message-visual-system.md)。`MESSAGE_EVIDENCE_DIR=<新目录> node tests/message-surfaces-ui.mjs` 执行中英文三档字号布局／实际滚动检查，并纳入 `tests/ui.mjs`；`tests/message-surfaces-native.mjs` 在临时 profile 串行检查真实 Electron。涉及阅读与气泡的改动仍包含完整 `test:inbox-ui`，不能用截图替代草稿／身份／计时回归。
 
