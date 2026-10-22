@@ -6,7 +6,7 @@
 |---|---|
 | [空间与身体复核](space-body-review.md) | 接手生活感、调整空间／拖放／朝向或选择下一步前，先核对已知缺口与待实施目标 |
 | [跨平台桌面互动方案](desktop-environment-plan.md) | 选择整体路线、建立环境 Module／Adapter、评估 Windows／macOS／X11／Wayland 或准备 D0–D4 工作包；实施路线与门槛，实际状态看开发入口 |
-| [默认产品生活装配](living-integration-contract.md) | 现有底部目标、共享动作身体、正式工作事实与回退；当前默认拖放仍下落 |
+| [默认产品生活装配](living-integration-contract.md) | 平面放置、运行期停靠、跨区域返回、共享动作身体、正式工作事实与旧角色回退 |
 | [回应与安静节奏](response-rhythm-contract.md) | 第 5C 期即时反应、有限合批、当前许可与过期撤销 |
 | [消息视觉体系](message-visual-system.md) | 输出气泡、全文、滚动区域、色彩／轮廓／动作层级与人物协调 |
 | [有限记忆契约](companion-memory-contract.md) | 第 5B 期可信互动记忆、容量／迁移、查看／纠正／删除与招呼 |

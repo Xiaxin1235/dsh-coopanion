@@ -1,0 +1,663 @@
+diff --git a/docs/README.md b/docs/README.md
+index 38cbd84..f4a708e 100644
+--- a/docs/README.md
++++ b/docs/README.md
+@@ -41,7 +41,7 @@
+ | 固定源码验证与资源／生命周期结果 | [固定报告](reports/README.md)：按固定源码区分 5A／5B 首版与反馈修正；旧报告不是当前执行指令 |
+ | 早期发散、候选诊断与发布过程 | [历史说明](archive/README.md)：其中的计划、问题和进度只属于当时快照 |
+ 
+-前期阶段与默认装配的旧范围、提案、失败模型、反馈修正与固定验证从[阶段历史](archive/2026-10-aliveness/README.md)追溯。默认产品尚有底部活动、拖放下落和左右朝向限制，最新问题见[空间与身体复核](design/space-body-review.md)，后续路线与平台能力门槛见[跨平台桌面互动方案](design/desktop-environment-plan.md)。当前交付与用户验收看[开发状态](aliveness-development.md)，执行范围来自用户最新指令；原始报告中的待验收、旧下一步和推送限制均属于当时快照。
++前期阶段与默认装配的旧范围、提案、失败模型、反馈修正与固定验证从[阶段历史](archive/2026-10-aliveness/README.md)追溯。默认产品已开始交付平面空间切片，多方向身体与整体体验仍待验收；基线问题及完整目标见[空间与身体复核](design/space-body-review.md)，后续路线与平台能力门槛见[跨平台桌面互动方案](design/desktop-environment-plan.md)。当前交付与用户验收看[开发状态](aliveness-development.md)，执行范围来自用户最新指令；原始报告中的待验收、旧下一步和推送限制均属于当时快照。
+ 
+ 普通搜索覆盖现行契约、分支交付状态、规划范围和运行源码；归档、历史版本说明、旧场景夹具、原始报告／画面／提示词及本地产物由 `.ignore` 屏蔽。历史追溯使用 `rg --no-ignore docs/archive`，核对原始工作台证据使用 `rg --no-ignore docs/design/art-workflow`，观察结果使用 `rg --no-ignore docs/reports`，发布历史使用 `rg --no-ignore docs/release-notes.md`。设计、归档及报告目录不随安装包分发。
+ 
+diff --git a/docs/aliveness-development.md b/docs/aliveness-development.md
+index 3bc5879..eaf9965 100644
+--- a/docs/aliveness-development.md
++++ b/docs/aliveness-development.md
+@@ -6,22 +6,22 @@
+ 
+ 本页记录分支交付、缺口与验收边界，执行范围来自用户最新指令。项目清理、缓存治理及 macOS 测试机配置均已结束，固定结果从[报告索引](reports/README.md)追溯；没有遗留快照恢复或环境配置任务。macOS 原生回归按[隔离测试机](macos-vm-testing.md)运行，每轮现场核对状态并同步源码。已结束的维护授权与交接原文见[维护归档](archive/2026-10-maintenance/README.md)。
+ 
+-产品专项继续采用[跨平台桌面互动方案](design/desktop-environment-plan.md)的现有路线，共用身体／导航／协调器，由平台 Adapter 提供环境事实。D0 首个原生窗口探针切片已提交为 `124ff80` 并完成本机验证；D0 整体验收尚未完成，产品平面空间、多方向身体和窗口互动尚未实现。后续工作依用户届时的执行范围推进；固定历史授权不作为新的接手任务。
++产品专项继续采用[跨平台桌面互动方案](design/desktop-environment-plan.md)的现有路线，共用身体／导航／协调器，由平台 Adapter 提供环境事实。D0 首个原生窗口探针切片已提交为 `124ff80` 并完成本机验证；D0 整体验收尚未完成，D1 首个平面空间切片已接入默认产品，多方向身体和窗口互动尚未实现。后续工作依用户届时的执行范围推进；固定历史授权不作为新的接手任务。
+ 
+-最近行为实现提交为 `2737a3ebae40bd1028628aa5cf4e602a362ecb0d`，修正活动帧节奏、空手恢复和重复整理，撤下默认常驻家具，接通有限探索返回循环与粗粒度环境信号。固定自动化结果见[反馈修正报告](reports/desktop-feedback-20261022.md)，现行行为见[桌面生活契约](design/living-integration-contract.md)。本分支增量尚未发布。
++本轮在 `2737a3e` 行为基础上实现 D1 平面切片：拖放／取消在合法平面位置停稳，跳跃落回当前支撑，阴影与身体一致；临时停靠点随视口缩放，观察路线跨越纵向区域再返回。现行迁移与回退见[桌面生活契约](design/living-integration-contract.md)。验证结果在本轮完成后记录；本分支增量尚未发布。
+ 
+ ## 最新体验结论与基础缺口
+ 
+ 2026-10-22 用户体验反馈指出：活动仍主要位于屏幕下方，拖高后仍会下落，人物只朝左／右，二维空间和面向用户的表现缺失，与 main 的可感知差异有限，尚无足够 LIVE 感。当前默认产品的空间与身体体验未通过验收；旧自动化和工作台验收保持其原范围。
+ 
+-源码核对确认：默认目标集中在底部窄带，拖放仍进入重力下落，身体朝向仍为左右镜像。完整问题、证据位置、影响和建议验收集中在[空间与身体复核](design/space-body-review.md)，后续接手必须先读该页。该页明确区分已实现能力与待实施目标。
++原反馈基线的默认目标集中底部、拖放下落；D1 首个切片已改变这两项行为，身体朝向仍为左右镜像。完整问题、证据位置、影响和建议验收集中在[空间与身体复核](design/space-body-review.md)，后续接手必须先读该页。该页明确区分已实现能力与待实施目标。
+ 
+ | 层次 | 已有交付与验收范围 | 当前限制 |
+ |---|---|---|
+ | 第 1–3 期制作工作台 | 指定地图、180px 主配色／40px O03、二维寻路与连续物件的原范围用户确认 | 不外推为默认产品全屏平面、平面拖放或多方向身体验收 |
+ | 第 4–5C 期 | 生活／工作协调、人格、有限记忆、回应节奏的工程交付；默认产品按各契约复用 | 自然度与整体生活感没有因模块接通而通过 |
+ | 默认产品 `2737a3e` | 共享身体、有限底部循环、粗粒度输入／工作／生命周期响应及本地回归 | 最新用户指出空间与身体基础缺口，体验需重做验证 |
+-| D1 空间与身体 | 已纳入实施路线并明确可见验收条件 | 尚未实现；先完善基础，再扩展人格、出门或自主跨屏 |
++| D1 空间与身体 | 首个切片已实现平面拖放、当前支撑上的跳跃／阴影、运行期停靠与跨区域返回 | 方向素材、跨重启二维停靠、三平台原生及用户 LIVE 感尚未完成；先完善基础，再扩展人格、出门或自主跨屏 |
+ | D0 原生窗口探针 | 三平台采集工具、同一双窗口场景与 CI 入口已实现；macOS 9 项原生检查通过，见[固定报告](reports/desktop-environment-d0-20261022.md) | Windows／X11 尚未运行；Wayland 只检查不可用分类，覆盖层与定位仍待探针；D0 资源预算及产品能力尚未冻结 |
+ 
+ ## 验证与运行边界
+@@ -36,6 +36,6 @@
+ 
+ ## 继续产品实施时
+ 
+-用户要求继续产品实施时，按[跨平台方案](design/desktop-environment-plan.md)选择剩余工作。D0 尚缺 Windows／X11 的同场景结果、装饰窗口／跨应用及原生 Wayland 覆盖层验证；现有 `probe:desktop-environment` 的运行与结果语义见[开发指南](development.md#d0-真实桌面窗口探针)。缺少平台设备或实机结果时记录未验证，不用 macOS 代签。D1 的平面位置与多方向身体可独立推进，具体可见要求见[空间与身体复核](design/space-body-review.md)；D2／D3 受 D0 能力门槛约束，第 6／7 期仍是后续候选。这些路线不自动扩展文档、清理或环境维护任务的执行范围。
++用户要求继续产品实施时，按[跨平台方案](design/desktop-environment-plan.md)选择剩余工作。D0 尚缺 Windows／X11 的同场景结果、装饰窗口／跨应用及原生 Wayland 覆盖层验证；现有 `probe:desktop-environment` 的运行与结果语义见[开发指南](development.md#d0-真实桌面窗口探针)。缺少平台设备或实机结果时记录未验证，不用 macOS 代签。D1 剩余工作包括真正的正背面／斜向站立、行走和转身；最小样片规格见[素材入口](design/aliveness-art-assets.md#d1-最小方向样片准备)。跨重启停靠和长期遮挡策略仍待设计与验证，具体可见要求见[空间与身体复核](design/space-body-review.md)；D2／D3 受 D0 能力门槛约束，第 6／7 期仍是后续候选。这些路线不自动扩展文档、清理或环境维护任务的执行范围。
+ 
+ 桌面专项实施前的方案与入口见[规划快照](archive/2026-10-aliveness/desktop-environment-planning/README.md)。更早的开发状态、路线、素材入口与装配契约原字节见[空间与身体复核前快照](archive/2026-10-aliveness/space-body-review/README.md)。其他历史从[阶段归档](archive/2026-10-aliveness/README.md)进入；旧授权、旧下一步和进程状态只按形成时解释。
+diff --git a/docs/design/aliveness-art-assets.md b/docs/design/aliveness-art-assets.md
+index 6e6f8eb..92589b5 100644
+--- a/docs/design/aliveness-art-assets.md
++++ b/docs/design/aliveness-art-assets.md
+@@ -15,6 +15,14 @@
+ 
+ 先用现有资源做真实运动与互动，定位可见缺口，再通过[制作工作流](art-workflow/README.md)补最小资源组。记录参考、用途、许可、锚点、尺寸与替换边界，保留原图／提示词／摘要；实际帧与交互通过后才绑定进产品。
+ 
+-2026-10-22 [空间与身体复核](space-body-review.md)已确认当前产品缺少正面、背面和斜向身体表现，建议将最小方向组提前到空间基础切片；尚未生成、绑定或验收。实施时需检查站立／行走／转身的实际连续性和接触锚点，不能用左右镜像或移动视线代替新身体方向。
++2026-10-22 [空间与身体复核](space-body-review.md)已确认当前产品缺少正面、背面和斜向身体表现，最小方向组属于 D1 的下一块制作范围；平面支撑已先接入默认产品，方向素材尚未生成、绑定或验收。实施时需检查站立／行走／转身的实际连续性和接触锚点，不能用左右镜像或移动视线代替新身体方向。
+ 
+ 5C 回应节奏复用已有动作与便笺。出门、留言、归来与完整关节等仍为后续候选；素材工作按专项 D1 的实际缺口与最小资源组推进。当前交付、验收和授权见[开发状态](../aliveness-development.md)。
++
++## D1 最小方向样片准备
++
++先以默认主配色、180px 和空手为样片基准：正面、背面、左／右斜前、左／右斜后站立与行走，再验证它们之间的转身。沿用当前角色的头身比、发型、裙摆、尾部和轮廓，不重新设计角色。现有左右镜像保留为兼容回退，不能充当背面资源。
++
++每个方向须提供同一脚下原点、完整可见边界、命中轮廓、气泡与注视锚点；动作不能把根位移烘焙进图像。移动方向由导航轨迹给出，身体朝向由方向过渡选择，注视目标继续独立。拿放仍由现有手部拥有权控制，样片通过后再校准多方向持物，不先切换持物姿态。
++
++运行验收顺序为：原地转向 → 纵向及对角行走 → 松手停稳／跳跃落回同一支撑点 → 鼠标或工作打断后恢复 → 90／240px 比例复核。使用默认产品同一路线和固定输入录制对照，并在 macOS VM 内验证原生装配；Windows／Linux、物理设备与用户观感单独结算。资源来源、许可、原图、导出摘要与实际绑定结果按制作工作流保留。
+diff --git a/docs/design/living-integration-contract.md b/docs/design/living-integration-contract.md
+index 0b6a859..4328bb6 100644
+--- a/docs/design/living-integration-contract.md
++++ b/docs/design/living-integration-contract.md
+@@ -1,12 +1,16 @@
+ # 默认产品：桌面生活与环境响应
+ 
+-本页描述 `2737a3e` 已实现的默认产品行为；当前交付与验收从[开发状态](../aliveness-development.md)结算。该实现修正帧率、空抓、探索链条、屏幕遮挡和环境互动，但最新用户体验仍指出空间与身体不足，见[问题复核与下一步建议](space-body-review.md)。复用前期导航、连续动作、唯一生活／工作协调器、人格、可信记忆与回应，不新增模型调度或独立身体心跳。
++本页描述本分支已实现的默认产品行为，包含 D1 首个平面空间切片；当前交付与验收从[开发状态](../aliveness-development.md)结算。该实现修正帧率、空抓、探索链条、屏幕遮挡和环境互动，但最新用户体验仍指出空间与身体不足，见[问题复核与下一步建议](space-body-review.md)。复用前期导航、连续动作、唯一生活／工作协调器、人格、可信记忆与回应，不新增模型调度或独立身体心跳。
+ 
+ ## 默认空间与生活循环
+ 
+ 默认不摆放常驻小屋和珊瑚，只保留身体、有限活动范围、用户设置的停靠位置和一枚小贝壳。制作预览保留原布局／资源；可见物件与桌面边界、停靠位置这些明确空间用途，才可以成为生活目标，不生成匿名随机空地点或对不存在的家具假装观察。
+ 
+-当前停靠位置由 `npcHome` 横向设置决定，拖动不会设置二维停靠点。`web/living-space.js` 将默认目标布置在屏幕底部附近，尚未形成跨区域平面；主产品松手沿 API 2 drop 进入重力下落，身体只有左右朝向。制作工作台中的二维拖动规则不代表这里已经采用平面拖放。上述为已知限制，后续目标不作为当前能力描述。
++内置角色在自主生活空间内使用二维平面。普通拖放和取消拖动停在释放点对应的合法脚下位置，按完整身体包络收紧屏幕边界；不沿重力回到底边。身体保留单独的支撑高度，跳跃落回当前支撑点，阴影位于脚下；命中区、气泡仍来自同一实际身体布局。没有窗口吸附或真实桌面障碍识别。
++
++`npcHome`／`npcRange` 保留横向百分比配置：未拖动时，从原横向位置靠底部起步。一次平面拖放把当前位置设为本次角色运行的停靠点，以视口归一化 x／y 维护；尺寸／视口变化重算合法位置，恢复后不复用旧路线。重启、切换角色或显式更改 `npcHome` 清除临时停靠；关闭再开启自主生活不清除它。尚不写入持久设置或相处记忆。
++
++观察目标相对停靠点向内侧、另一纵向区域展开，再返回该点；范围配置影响横向距离。贝壳和整理目的地不会随一次拖放瞬移，完成标记与持物拥有权保留。拖出旧横向活动段不再被当成永久用户占用。当前身体仍只有左右镜像，纵向位移的正背面、斜向行走和转身素材尚未实现，因此完整 D1 与 LIVE 感尚待验收。
+ 
+ 先实际观察贝壳，再尝试一次整理。只有导航回执、实际位置、速度、稳定接触和手部开合共同提交拿放；耗时不证明进度。归位后保留完成标记，不反复拿放。随后外出观察活动范围边界，经真实抵达、视线对齐和有效观察确认，返回指定停靠点，清醒休息，再进入下一轮。安静／活泼改变停留、关注与恢复后的休息间隔；步行与观察都经同一协调器，工作和用户接管保留未完成目标。
+ 
+@@ -32,8 +36,10 @@
+ 
+ ## 支持和验证
+ 
+-90–240px 按角色比例构造几何。关闭自主生活、自定义角色或小视口保守回退简单日常，手中物件先安全交接；关闭陪伴停止自主行为。热切保留角色 frame、阅读、草稿、选区和在途请求。
++90–240px 按角色比例构造几何。关闭自主生活、自定义角色或小视口保守回退简单日常及原重力拖放，手中物件先安全交接；关闭陪伴或闲时走动停止自主行为，但可用生活空间内的手动平面放置仍保留。热切保留角色 frame、阅读、草稿、选区和在途请求。
+ 
+ 工作事实最多 32 个源，容量或来源不可用时保留未决请求并暂停；完成继续复用共享 CompletionTracker，普通回复／接受回执／查看均不代替真实完成。
+ 
+-验证包括纯策略、真实默认主页面的完整循环／键鼠变化／不空抓、原生动作帧比例、真实拿放／工作交接与记忆、完整 inbox、旧阶段和默认窗口兼容。实际 GPU 设备、物理键盘／多屏、真实模型、长期资源及用户 LIVE 感分别验收。
++验证包括纯策略、真实默认主页面的完整循环／键鼠变化／不空抓、平面放置／取消／跳跃／阴影／缩放和二维返回、原生动作帧比例、真实拿放／工作交接与记忆、完整 inbox、旧阶段和默认窗口兼容。实际 GPU 设备、物理键盘／多屏、真实模型、长期资源及用户 LIVE 感分别验收。
++
++macOS 原生回归在[隔离 VM](../macos-vm-testing.md)内串行运行；先核对来宾源码和工具链，再构建、验证和取回结果。VM 图形会话结果不代替物理多屏、真实键盘或用户观感验收。
+diff --git a/docs/design/space-body-review.md b/docs/design/space-body-review.md
+index dc7fa19..29e162b 100644
+--- a/docs/design/space-body-review.md
++++ b/docs/design/space-body-review.md
+@@ -6,18 +6,18 @@
+ 
+ 用户指出默认体验仍局限于屏幕下方，拖起人物会坠落，人物始终朝左或右、没有朝向用户，与 main 的体验差异有限。此前还指出探索链条机械、重复弯腰空抓、动作卡顿、家具遮挡及环境互动缺少因果。`2737a3e` 对前一轮问题做了工程修正，固定测量见[报告](../reports/desktop-feedback-20261022.md)；最新反馈表明空间与身体体验仍不足。没有本次 main／分支同场景对照录像，不把主观比较改写成量化测量。
+ 
+-| 问题 | 当前源码依据 | 对体验的影响 |
++| 问题 | `2737a3e` 基线源码依据 | 对体验的影响 |
+ |---|---|---|
+ | S1 默认目标集中于底部 | `web/living-space.js` 用 `height - 24` 定义 floor；贝壳、边界观察与停靠目标均邻近该高度，配置主要提供横向 home／range | 寻路可处理 x／y，默认目标却没有形成跨区域二维活动 |
+ | S2 拖放仍有重力语义 | `web/upstream/kit/body.js` 的 `dropAt` 将 drag 切为 air，沿既有物理系统落向 floorY；主产品拖放沿用 API 2 drop | 用户放到上方的位置无法成为稳定生活位置；导航根 y、物理高度和拖放平面尚未统一 |
+ | S3 身体朝向仍为左右 | 同一 body 的 facing 为 ±1，经 faceVis 镜像绘制；当前产品缺少正面／背面／斜向完整身体表现 | 纵向位移仍像侧身平移；视线移动不能替代正面面向用户 |
+ | S4 已接通的模块缺少共同空间表现 | `living-routine.js`、`life-work.js` 与 `living-body.js` 共享目标和身体，但消费 S1 的底部目标与 S2／S3 的身体语义 | 记忆、人格和工作交接已有作用，整体仍易被感知为横向巡逻和响应事件 |
+ 
+-`navigation-2d-v1` 证明可选择二维导航能力，不证明平面拖放、自由停靠或多方向角色已经完成。[制作工作台](art-workflow/space-v1/README.md)中“松手停在最后合法位置”的规则只属于该入口，默认产品仍有上述下落行为。前期指定地图的用户验收保持原范围，不能扩成默认产品的空间验收。
++`navigation-2d-v1` 证明可选择二维导航能力，不证明平面拖放、自由停靠或多方向角色已经完成。[制作工作台](art-workflow/space-v1/README.md)中“松手停在最后合法位置”的规则只属于该入口，上述基线默认产品仍有下落行为；后续平面切片已改变其拖放语义。前期指定地图的用户验收保持原范围，不能扩成默认产品的空间验收。
+ 
+ ## 建议优先交付的默认产品切片
+ 
+-以下均为待实施目标。先修复空间和身体基础，再检验生活／工作、人格与记忆的可感知作用；第 6／7 期继续保留为后续候选。
++以下是完整 D1 的目标清单；首个平面切片的现行语义见[生活装配契约](living-integration-contract.md)，交付与验收见[开发状态](../aliveness-development.md)。表中基线问题不代表后续切片仍全部未实现。先修复空间和身体基础，再检验生活／工作、人格与记忆的可感知作用；第 6／7 期继续保留为后续候选。
+ 
+ 后续整合路线见[跨平台桌面互动方案](desktop-environment-plan.md)：本页的基础缺口纳入 D1，原生能力探针、共享桌面几何与窗口互动分别设门槛。新增窗口附着不改变普通平面放置的目标，也不以 macOS 单机结果代替三平台验收。
+ 
+diff --git a/docs/usage.md b/docs/usage.md
+index cfa6983..de24768 100644
+--- a/docs/usage.md
++++ b/docs/usage.md
+@@ -59,7 +59,7 @@ dsh plugin --profile desktop add /absolute/path/dsh-coopanion.tgz
+ 
+ 生活感分支的右键菜单沿角色的便笺视觉显示设置：标题与底栏固定，中间内容可滚动；开关使用统一设置行。“相处记忆”展开后按类型、时间和操作分组，纠正与删除有不同视觉层级。关闭陪伴时“一起活动”不可用，已有记忆仍可管理。大字号和小窗口下，可聚焦内容区用方向键／PageDown／End 滚动，或用 Tab 到达操作。
+ 
+-在 **Settings → 桌宠 → 自主陪伴** 或角色右键菜单中选择“安静陪伴”或“互动陪伴”。默认关闭，停止自主活动；安静模式从小窝沿当前屏幕底部的一段空间慢走、观察、停留并返回，互动模式额外在白天低频邀请，每天最多两次。所有自动日常统一使用 NPC 调度；关闭陪伴后停止自动日常和邀请。
++在 **Settings → 桌宠 → 自主陪伴** 或角色右键菜单中选择“安静陪伴”或“互动陪伴”。默认关闭，停止自主活动；安静模式从停靠点出发，观察、停留并返回；简单日常沿屏幕底部活动，生活感分支的自主生活使用下述二维空间；互动模式额外在白天低频邀请，每天最多两次。所有自动日常统一使用 NPC 调度；关闭陪伴后停止自动日常和邀请。
+ 
+ 启用自主行为与邀请时使用以下组合；英文界面的开关名称一并列出：
+ 
+@@ -73,11 +73,11 @@ dsh plugin --profile desktop add /absolute/path/dsh-coopanion.tgz
+ 
+ “闲时走动”同时控制自动活动许可。身体由当前日常协调器唯一调度，不自主跨屏或沿其他窗口行走。
+ 
+-生活感分支的“自主生活”默认开启；开启陪伴后，内置大肥鱼会观察并整理一次贝壳，再外出留意活动边界、返回停靠和清醒休息。默认不摆放常驻小屋、珊瑚。工作、阅读、输入或主动互动会打断生活；工作解除后核对原目标再续接。右键菜单或 Settings 的“安静／活泼”影响关注偏好和接近方式；“自主生活”关闭后使用简单日常。自定义角色或过小窗口也使用简单日常。目前目标仍集中底部、拖放会下落、身体只有左右朝向；平面位置与方向表现的待实施要求见[问题复核](design/space-body-review.md)。
++生活感分支的“自主生活”默认开启；开启陪伴后，内置大肥鱼会观察并整理一次贝壳，再外出留意活动边界、返回停靠和清醒休息。默认不摆放常驻小屋、珊瑚。工作、阅读、输入或主动互动会打断生活；工作解除后核对原目标再续接。右键菜单或 Settings 的“安静／活泼”影响关注偏好和接近方式；“自主生活”关闭后使用简单日常。自定义角色或过小窗口也使用简单日常。当前分支已接入二维平面放置与跨区域返回，身体仍只有左右朝向；方向素材和整体体验的剩余验收见[问题复核](design/space-body-review.md)。
+ 
+ 生活感分支中，NPC 回到小窝后的普通坐下保持清醒，右键“休息”仍会睡觉；大肥鱼自由行走时手臂与同侧腿反向摆动，拿放时保留指定手臂姿势。
+ 
+-**Settings → 桌宠 → 小窝横向位置／探索范围** 可调整相对当前显示器工作区的百分比，默认 85%／30%；角色实际边界、尺寸及工作区会进一步收紧范围。自主生活的停靠位置是空间锚点，不显示常驻家具；简单日常的浅蓝色椭圆表示停靠点。拖动角色不改变小窝位置。也可从菜单临时隐藏、关闭自动活动或手动拖动；拖出当前活动段后先安静停留，拖回或调整位置／范围后恢复。拖动松手后不延续抛掷惯性，但仍沿重力落向屏幕底部，不会停留在释放时的高度；不恢复拖动前的旧路线或首次归位；区域内安静等待后重新安排。正文阅读和手动操作始终优先。
++**Settings → 桌宠 → 小窝横向位置／探索范围** 可调整相对当前显示器工作区的百分比，默认 85%／30%；角色实际边界、尺寸及工作区会进一步收紧范围。自主生活的停靠点不显示常驻家具。内置角色可拖到屏幕中上部，松手后停在完整身体能够容纳的位置；跳跃也落回该处。该位置成为本次运行的停靠点，后续观察会跨越纵向区域再返回。窗口尺寸变化按相对位置调整；重启、切换角色或更改“小窝横向位置”恢复初始停靠。此临时位置尚不跨重启保存。关闭自主生活、自定义角色或过小窗口使用简单日常：浅蓝色椭圆仍表示原小窝，拖动不改小窝，松手沿重力落到底部，拖出原活动段后先停留。正文阅读和手动操作始终优先。
+ 
+ 鼠标靠近时先让位并留意鼠标，点击与拖动由用户接管；打字时安全结束手上动作后守候，停止输入约 8 秒再考虑继续。unknown 保守暂停，保留未完成目标。角色始终保持设置中的尺寸，打字、选中、悬停或拖动都不自动缩放；恢复空闲后重新核对当前目标；简单日常保留至少 12 秒退让。键盘感知包含 macOS 聚合事件时间、Windows Raw Input 通知和 Linux X11／XInput2 适配，辅助进程仅输出 active／idle／unknown；不能区分打字与快捷键，也不读取具体按键或其他应用内容。Windows 需要系统 Windows PowerShell；X11 需要 `/usr/bin/python3`、libX11 与 libXi。Wayland（含 Xwayland）、无图形会话、非交互／远程 Windows、接口或依赖不可用均为 unknown，此时安静停留。macOS 不再将“事件监听授权”误当成聚合时间接口的前置条件，无需先授予额外权限。若辅助进程失效，可关闭再开启陪伴重试；诊断中的 keyboardBackend／keyboardStatus 可区分不支持、缺依赖、失败与过期。物理键盘、跨应用／锁屏场景及资源表现按平台分别验证。
+ 
+diff --git a/tests/living-integration-native.mjs b/tests/living-integration-native.mjs
+index 5a7e992..c8b6714 100644
+--- a/tests/living-integration-native.mjs
++++ b/tests/living-integration-native.mjs
+@@ -1,14 +1,28 @@
+ import assert from 'node:assert/strict';import {createRequire} from 'node:module';import {mkdtemp,rm,mkdir,readFile,writeFile} from 'node:fs/promises';import {tmpdir} from 'node:os';import {join,resolve} from 'node:path';import {createHash} from 'node:crypto';import {execFileSync} from 'node:child_process';import {_electron} from '../scripts/lib/playwright.mjs';import {parkNativePointer,petClick,nativeClick} from './helpers/native-pointer.mjs';
+ const require=createRequire(import.meta.url),directory=await mkdtemp(join(tmpdir(),'dsh-live-native-')),output=process.env.LIVING_EVIDENCE_DIR??'artifacts/living-integration-native';let app;
+-const paths=['web/pet.js','web/living-space.js','web/upstream/kit/living-body.js','web/upstream/kit/living-routine.js','web/upstream/kit/life-work.js','web/upstream/whale/figure.js','src/index.ts','src/work-sources.ts','tests/living-integration-native.mjs'];const hashes=()=>Promise.all(paths.map(async p=>[p,createHash('sha256').update(await readFile(p)).digest('hex')])).then(Object.fromEntries);const sources=await hashes();
++const paths=['web/pet.js','web/living-space.js','web/upstream/kit/living-body.js','web/upstream/kit/body.js','web/upstream/kit/desktop-plane.js','web/upstream/kit/living-routine.js','web/upstream/kit/life-work.js','web/upstream/whale/figure.js','src/index.ts','src/work-sources.ts','tests/living-integration-native.mjs'];const hashes=()=>Promise.all(paths.map(async p=>[p,createHash('sha256').update(await readFile(p)).digest('hex')])).then(Object.fromEntries);const sources=await hashes();
+ const idle={mood:'idle',active:false,sessionId:null,sessions:[],results:[]};const work=(revision,running)=>({sessionId:'native-life-work',epoch:1,revision,driver:running?'running':'idle',running,activity:running?'tools':'idle',category:running?'working':'reply',requests:[],needsAttention:false,tools:{pending:running?1:0,entered:running?1:0},cue:null,resultId:null});
+ try{await mkdir(output,{recursive:true});app=await _electron.launch({executablePath:require('electron'),args:['--no-sandbox',resolve('desktop/main.cjs')],env:{...process.env,DSH_PET_TEST_DATA_DIR:directory,DSH_PET_TEST_NO_SANDBOX:'1',DSH_PET_TEST_DEBUG_PORT:'0'}});const page=await app.firstWindow();page.setDefaultTimeout(30000);
+ // Keep the real system adapter running, but control this scenario's public enum
+ // so concurrent physical typing cannot prevent a bounded idle-resumption test.
+ await app.evaluate(({BrowserWindow})=>{const w=BrowserWindow.getAllWindows()[0],send=w.webContents.send.bind(w.webContents);globalThis.realKeyboard=[];w.webContents.send=(channel,message,...args)=>{if(channel==='pet:update'&&message?.type==='keyboard-activity'){globalThis.realKeyboard.push({value:message.value,backend:message.backend,status:message.status});globalThis.realKeyboard=globalThis.realKeyboard.slice(-32);message={...message,value:'idle'};}return send(channel,message,...args);};});
+-const errors=[];page.on('pageerror',e=>errors.push(e.message));const send=message=>app.evaluate((_,message)=>process.emit('message',message),message);await page.waitForSelector('#pet[data-mode]');await page.evaluate(()=>addEventListener('message',e=>{if(e.data?.t==='frame'){window.nativeLiving=e.data.layout?.living;if(window.motionRate?.record)window.motionRate.body.push(performance.now());}}));await send({type:'init',baseline:true,options:{size:180,roam:true,companionship:'quiet',livingSpace:true,npcPersonality:'lively',locale:'zh',notifications:false},snapshot:idle});await app.evaluate(({app,BrowserWindow})=>{app.focus({steal:true});const w=BrowserWindow.getAllWindows()[0];w.show();w.focus();});await parkNativePointer(page);
++const errors=[];page.on('pageerror',e=>errors.push(e.message));const send=message=>app.evaluate((_,message)=>process.emit('message',message),message);await page.waitForSelector('#pet[data-mode]');await page.evaluate(()=>addEventListener('message',e=>{if(e.data?.t==='frame'){window.nativeLiving=e.data.layout?.living;window.nativeLayout=e.data.layout;if(window.motionRate?.record)window.motionRate.body.push(performance.now());}}));await send({type:'init',baseline:true,options:{size:180,roam:true,companionship:'quiet',livingSpace:true,npcPersonality:'lively',locale:'zh',notifications:false},snapshot:idle});await app.evaluate(({app,BrowserWindow})=>{app.focus({steal:true});const w=BrowserWindow.getAllWindows()[0];w.show();w.focus();});await parkNativePointer(page);
+ await page.evaluate(()=>{window.motionRate={record:false,raf:[],body:[]};const frame=t=>{if(motionRate.record)motionRate.raf.push(t);requestAnimationFrame(frame);};requestAnimationFrame(frame);});
+ await page.waitForSelector('#pet[data-life-action=reach]',{timeout:90000});await page.evaluate(()=>{motionRate.record=true;});await page.waitForTimeout(2400);const activeCadence=await page.evaluate(()=>{motionRate.record=false;return{displayFrames:motionRate.raf.length,bodyFrames:motionRate.body.length,ratio:motionRate.body.length/motionRate.raf.length};});assert.ok(activeCadence.ratio>=.8,'active contact follows display cadence');await page.waitForSelector('#pet[data-life-action=carry]',{timeout:90000});await page.screenshot({path:join(output,'native-carry.png')});await send({type:'snapshot',snapshot:{...idle,mood:'working',active:true,workFacts:[work(1,true)]}});await page.waitForSelector('#pet[data-life-phase=work-wait]');assert.equal(await page.locator('#pet').getAttribute('data-life-drop'),'1');assert.equal(await page.locator('#pet').getAttribute('data-life-goal'),'arrange');await page.screenshot({path:join(output,'native-work-parked.png')});await send({type:'snapshot',snapshot:{...idle,workFacts:[work(2,false)]}});await page.waitForFunction(()=>Number(document.querySelector('#pet').dataset.lifeDrop)===2,null,{timeout:60000});assert.equal(await page.locator('#pet').getAttribute('data-life-pickup'),'2');await page.screenshot({path:join(output,'native-resumed.png')});const read=()=>page.evaluate(()=>window.dshPetBridge.companionship({type:'read',characterId:'whale'}));assert.equal((await read()).memory.entries.length,0);assert.equal((await read()).relation.total,0);
+-await petClick(page,{button:'right'});await nativeClick(page,'#companion-play');await parkNativePointer(page);await page.locator('#companion-turn').waitFor();await nativeClick(page,'#companion-respond');await parkNativePointer(page);await page.waitForFunction(()=>document.querySelector('#companion-feedback').textContent.includes('记住'));assert.equal((await read()).memory.entries[0].kind,'play');assert.equal((await read()).relation.total,1);assert.equal(await page.locator('#body-layer iframe').contentFrame().locator('body').evaluate(()=>typeof window.dshPetBridge),'undefined');assert.deepEqual(errors,[]);assert.deepEqual(await hashes(),sources);
+-await writeFile(join(output,'living-native.json'),JSON.stringify({sourceBaseCommit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),sources,platform:process.platform,arch:process.arch,electron:require('electron/package.json').version,realNativeIpc:true,actualSystemKeyboardAdapter:true,controlledKeyboardForScenario:true,actualKeyboardObservations:await app.evaluate(()=>globalThis.realKeyboard),activeCadence,physicalKeyboardAcceptance:false,realNavigationAndContact:true,parkAndResumeOriginalGoal:true,noAutonomousMemoryOrScore:true,explicitResponseSaved:true,harnessFacts:'controlled injection; Host owner assembly tested separately'},null,2)+'\n');console.log('Integrated native life: real observation/carry, work parking, goal resumption, isolated IPC and explicit shared memory passed.');
++await petClick(page,{button:'right'});await nativeClick(page,'#companion-play');await parkNativePointer(page);await page.locator('#companion-turn').waitFor();await nativeClick(page,'#companion-respond');await parkNativePointer(page);await page.waitForFunction(()=>document.querySelector('#companion-feedback').textContent.includes('记住'));assert.equal((await read()).memory.entries[0].kind,'play');assert.equal((await read()).relation.total,1);assert.equal(await page.locator('#body-layer iframe').contentFrame().locator('body').evaluate(()=>typeof window.dshPetBridge),'undefined');
++await send({type:'configure',options:{roam:false}});await page.waitForTimeout(500);
++await petClick(page,{button:'right'});await page.keyboard.press('Escape');
++const box=await page.locator('#pet').boundingBox();await page.mouse.move(box.x+box.width/2,box.y+box.height/2);await page.mouse.down();await page.mouse.move(400,240,{steps:15});await page.waitForSelector('#pet[data-mode=drag]');await page.mouse.up();await parkNativePointer(page);
++await page.waitForFunction(()=>window.nativeLayout?.mode==='idle');
++const planeDock=await page.evaluate(()=>({x:nativeLayout.x,y:nativeLayout.y}));assert.ok(planeDock.y<500);
++await page.waitForTimeout(1800);assert.deepEqual(await page.evaluate(()=>({x:nativeLayout.x,y:nativeLayout.y})),planeDock);
++await page.evaluate(()=>document.querySelector('#body-layer iframe').contentWindow.postMessage({t:'do',word:'jump'},'*'));
++await page.waitForSelector('#pet[data-mode=air]');await send({type:'configure',options:{size:240}});await page.waitForFunction(()=>nativeLayout.mode==='idle');assert.equal(await page.evaluate(()=>nativeLayout.y),planeDock.y);await send({type:'configure',options:{size:180}});await page.waitForTimeout(300);
++await page.screenshot({path:join(output,'native-plane-dock.png')});
++const cycles=await page.evaluate(()=>Number(document.querySelector('#pet').dataset.lifeCycles));await send({type:'configure',options:{roam:true}});
++await page.waitForFunction(c=>Number(document.querySelector('#pet').dataset.lifeCycles)>c,cycles,{timeout:140000});
++const returned=await page.evaluate(()=>({x:nativeLayout.x,y:nativeLayout.y}));assert.ok(Math.hypot(returned.x-planeDock.x,returned.y-planeDock.y)<2);
++await page.screenshot({path:join(output,'native-plane-return.png')});
++assert.deepEqual(errors,[]);assert.deepEqual(await hashes(),sources);
++await writeFile(join(output,'living-native.json'),JSON.stringify({sourceBaseCommit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),sources,platform:process.platform,arch:process.arch,electron:require('electron/package.json').version,realNativeIpc:true,actualSystemKeyboardAdapter:true,controlledKeyboardForScenario:true,actualKeyboardObservations:await app.evaluate(()=>globalThis.realKeyboard),activeCadence,planePlacement:{dock:planeDock,returned,jumpReturnsToSupport:true,sizeChangedWhileAirborne:true},physicalKeyboardAcceptance:false,realNavigationAndContact:true,parkAndResumeOriginalGoal:true,noAutonomousMemoryOrScore:true,explicitResponseSaved:true,harnessFacts:'controlled injection; Host owner assembly tested separately'},null,2)+'\n');console.log('Integrated native life: real observation/carry, work parking, goal resumption, isolated IPC and explicit shared memory passed.');
+ }catch(error){if(app){const page=(await app.windows())[0];if(page)await writeFile(join(output,'native-failure.json'),JSON.stringify(await page.locator('#pet').evaluate(n=>({pet:{...n.dataset},living:window.nativeLiving})),null,2));}throw error;}finally{await app?.close();await rm(directory,{recursive:true,force:true});}
+diff --git a/tests/living-integration-ui.mjs b/tests/living-integration-ui.mjs
+index 7994ce7..0f679b2 100644
+--- a/tests/living-integration-ui.mjs
++++ b/tests/living-integration-ui.mjs
+@@ -8,7 +8,7 @@ const idle={mood:'idle',active:false,sessionId:null,sessions:[],results:[]};
+ const fact=(revision,extra={})=>({sessionId:'live-work',epoch:1,revision,driver:'running',running:true,activity:'tools',category:'working',requests:[],needsAttention:false,tools:{pending:1,entered:1},resultId:null,cue:null,...extra});
+ async function fixture(t,options={}){const directory=await mkdtemp(join(tmpdir(),'dsh-live-ui-')),server=previewServer({dataDir:directory});server.listen(0,'127.0.0.1');await once(server,'listening');const page=await browser.newPage({viewport:{width:1100,height:800}});page.setDefaultTimeout(20000);const errors=[];page.on('pageerror',e=>errors.push(e.message));
+  t.after(async()=>{await writeFile(join(output,t.name.replace(/[^a-z0-9]/gi,'-').slice(0,70)+'.json'),JSON.stringify(await page.evaluate(()=>({pet:{...document.querySelector('#pet').dataset},events:window.lifeEvents?.slice(-30)})),null,2));await page.close();await new Promise(r=>server.close(r));await rm(directory,{recursive:true,force:true});assert.deepEqual(errors,[]);});
+- await page.addInitScript(()=>{window.actions=[];window.lifeEvents=[];window.lifeInput='idle';window.dshPetBridge={subscribe(fn){window.receive=fn;},action(a){window.actions.push(a);},hit(){}};const feed=()=>{window.receive?.({type:'keyboard-activity',value:window.lifeInput});requestAnimationFrame(feed);};requestAnimationFrame(feed);addEventListener('message',e=>{if(e.data?.t==='frame'){window.lifeFrame=e.data.layout?.living;}if(e.data?.t==='frame')for(const v of e.data.events??[]){if(v.kind==='motion-action'){window.lifeEvents.push(v.detail);window.lifeEvents=window.lifeEvents.slice(-400);}}});});
++ await page.addInitScript(()=>{window.actions=[];window.lifeEvents=[];window.lifeInput='idle';window.dshPetBridge={subscribe(fn){window.receive=fn;},action(a){window.actions.push(a);},hit(){}};const feed=()=>{window.receive?.({type:'keyboard-activity',value:window.lifeInput});requestAnimationFrame(feed);};requestAnimationFrame(feed);addEventListener('message',e=>{if(e.data?.t==='frame'){window.lifeFrame=e.data.layout?.living;window.lifeLayout=e.data.layout;}if(e.data?.t==='frame')for(const v of e.data.events??[]){if(v.kind==='motion-action'){window.lifeEvents.push(v.detail);window.lifeEvents=window.lifeEvents.slice(-400);}}});});
+  await page.goto(`http://127.0.0.1:${server.address().port}`);await page.waitForSelector('#pet[data-mode]');const receive=msg=>page.evaluate(msg=>window.receive(msg),msg);await receive({type:'init',baseline:true,options:{companionship:'quiet',roam:true,npcPersonality:'lively',livingSpace:true,locale:'zh',...options},snapshot:idle});await page.mouse.move(0,0);const read=()=>page.evaluate(async()=>{const r=await fetch('./api/companionship',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'read',characterId:'whale'})});return(await r.json()).value;});return{page,receive,read,configure:options=>receive({type:'configure',options})};}
+ async function menu(page){await page.locator('#pet').dispatchEvent('contextmenu',{button:2});await page.locator('#menu').waitFor();}
+ const drop=async(page,count)=>page.waitForFunction(count=>Number(document.querySelector('#pet').dataset.lifeDrop)>=count,count,{timeout:90000});
+@@ -44,8 +44,14 @@ test('dragging and switching the living scene off while carrying preserve the bo
+ test('desktop life forms an observed outward-return-rest cycle without permanent furniture or fictional memories',async t=>{
+  const{page,read}=await fixture(t);
+  assert.equal(await page.locator('#living-space img').count(),0);
++ await drop(page,1);
++ const b=await page.locator('#pet').boundingBox();await page.mouse.move(b.x+b.width/2,b.y+b.height/2);await page.mouse.down();await page.mouse.move(350,240,{steps:12});await page.waitForSelector('#pet[data-mode=drag]');await page.mouse.up();await page.mouse.move(0,0);await page.waitForFunction(()=>lifeLayout.mode==='idle');
++ const dock=await page.evaluate(()=>({x:lifeLayout.x,y:lifeLayout.y}));
++ await page.evaluate(()=>{window.planeTravel={min:Infinity,max:-Infinity};addEventListener('message',e=>{const l=e.data?.t==='frame'&&e.data.layout;if(l?.navigation?.speed>0){planeTravel.min=Math.min(planeTravel.min,l.y);planeTravel.max=Math.max(planeTravel.max,l.y);}});});
+  await page.waitForFunction(()=>Number(document.querySelector('#pet').dataset.lifeCycles)>=1,null,{timeout:140000});
+  assert.equal(await page.locator('#pet').getAttribute('data-life-routine'),'rest');
++ const returned=await page.evaluate(()=>({x:lifeLayout.x,y:lifeLayout.y,travel:planeTravel.max-planeTravel.min}));
++ assert.ok(Math.hypot(returned.x-dock.x,returned.y-dock.y)<2);assert.ok(returned.travel>100);
+  assert.equal(await page.locator('#pet').getAttribute('data-life-pickup'),'1');
+  assert.equal(await page.locator('#pet').getAttribute('data-life-drop'),'1');
+  await page.screenshot({path:join(output,'desktop-rest-after-return.png')});
+@@ -73,3 +79,41 @@ test('typing and mouse proximity produce one safe wait and a retained goal, with
+  assert.equal(await page.locator('#pet').getAttribute('data-life-pickup'),'1');
+  assert.equal((await read()).memory.entries.length,0);
+ });
++
++for(const size of [90,180,240])test(`planar placement at ${size}px keeps support, shadow, resize and cancelled drag local`,async t=>{
++ const{page}=await fixture(t,{size,roam:false});
++ await page.waitForFunction(()=>!['air','drag'].includes(document.querySelector('#pet').dataset.mode));
++ const frame=page.frames().find(f=>f.url().includes('figure-frame.html'));
++ await frame.evaluate(()=>{window.worlds=[];addEventListener('message',e=>{if(e.data?.state?.motionCommand?.type==='world')window.worlds.push(e.data.state.motionCommand);});});
++ await page.waitForTimeout(300); // let the configured size reach the isolated body frame
++ const move=async(x,y,cancel=false)=>{const p=await page.evaluate(()=>lifeLayout.hit.find(p=>p.x>lifeLayout.box.x&&p.y>lifeLayout.box.y&&p.x<lifeLayout.box.x+lifeLayout.box.w&&p.y<lifeLayout.box.y+lifeLayout.box.h));await page.mouse.move(p.x,p.y);await page.mouse.down();await page.mouse.move(x,y,{steps:12});await page.waitForSelector('#pet[data-mode=drag]');if(cancel)await page.locator('#pet').dispatchEvent('pointercancel',{pointerId:1,clientX:0,clientY:0});await page.mouse.up();await page.mouse.move(0,0);await page.waitForFunction(()=>window.lifeLayout?.mode==='idle');};
++ await move(350,220);const placed=await page.evaluate(()=>({x:lifeLayout.x,y:lifeLayout.y}));
++ assert.ok(placed.y<500);await page.waitForTimeout(900);
++ assert.deepEqual(await page.evaluate(()=>({x:lifeLayout.x,y:lifeLayout.y})),placed);
++ await page.screenshot({path:join(output,`plane-middle-${size}.png`)});
++ const shadow=await frame.locator('.shadow').evaluate(n=>({x:+n.getAttribute('cx'),y:+n.getAttribute('cy'),opacity:+n.getAttribute('opacity')}));
++ assert.ok(Math.abs(shadow.x-placed.x)<1&&Math.abs(shadow.y-(placed.y-2))<1&&shadow.opacity===1);
++ await page.evaluate(()=>document.querySelector('#body-layer iframe').contentWindow.postMessage({t:'do',word:'jump'},'*'));
++ await page.waitForSelector('#pet[data-mode=air]');await page.waitForFunction(y=>window.lifeLayout.y<y-10,placed.y);
++ await page.waitForFunction(()=>window.lifeLayout?.mode==='idle');assert.equal(await page.evaluate(()=>lifeLayout.y),placed.y);
++ await page.evaluate(()=>document.querySelector('#body-layer iframe').contentWindow.postMessage({t:'do',word:'jump'},'*'));await page.waitForSelector('#pet[data-mode=air]');
++ await page.setViewportSize({width:1000,height:700});await page.waitForFunction(()=>lifeLayout.mode==='idle');await page.waitForTimeout(200);
++ assert.ok(Math.abs(await page.evaluate(()=>lifeLayout.y)-placed.y*700/800)<1);
++ const world=await frame.evaluate(()=>worlds.at(-1));assert.ok(Math.abs(world.workTarget.y-placed.y*700/800)<1);
++ await move(5,5,true);await page.waitForTimeout(500);
++ const b=await page.locator('#pet').boundingBox();assert.ok(b.x>=0&&b.y>=0&&b.x+b.width<=1000&&b.y+b.height<=700);
++ const final=await page.evaluate(()=>({x:lifeLayout.x,y:lifeLayout.y}));await page.mouse.move(900,600);await page.waitForTimeout(300);assert.deepEqual(await page.evaluate(()=>({x:lifeLayout.x,y:lifeLayout.y})),final);
++ await page.screenshot({path:join(output,`plane-${size}.png`)});
++});
++
++test('planar placement survives both viewport and display-event orders without returning to the floor',async t=>{
++ const{page,receive}=await fixture(t,{roam:false});await page.waitForTimeout(300);
++ const geometry=(displayId,width,height,revision)=>({type:'display-changed',displayId,revision,scaleFactor:2,contentBounds:{x:0,y:0,width,height},workArea:{x:0,y:0,width,height}});
++ await receive(geometry(1,1100,800,1));
++ const b=await page.locator('#pet').boundingBox();await page.mouse.move(b.x+b.width/2,b.y+b.height/2);await page.mouse.down();await page.mouse.move(400,250,{steps:12});await page.waitForSelector('#pet[data-mode=drag]');await page.mouse.up();await page.mouse.move(0,0);await page.waitForFunction(()=>lifeLayout.mode==='idle');
++ const initial=await page.evaluate(()=>({x:lifeLayout.x/innerWidth,y:lifeLayout.y/innerHeight}));
++ await receive(geometry(2,1000,700,2));await page.setViewportSize({width:1000,height:700});await page.waitForTimeout(400);
++ let current=await page.evaluate(()=>({x:lifeLayout.x/innerWidth,y:lifeLayout.y/innerHeight}));assert.ok(Math.hypot(current.x-initial.x,current.y-initial.y)<.002);
++ await page.setViewportSize({width:1200,height:900});await page.waitForTimeout(150);await receive(geometry(3,1200,900,3));await page.waitForTimeout(400);
++ current=await page.evaluate(()=>({x:lifeLayout.x/innerWidth,y:lifeLayout.y/innerHeight}));assert.ok(Math.hypot(current.x-initial.x,current.y-initial.y)<.002);
++});
+diff --git a/tests/living-routine.test.js b/tests/living-routine.test.js
+index 25eabd5..be09087 100644
+--- a/tests/living-routine.test.js
++++ b/tests/living-routine.test.js
+@@ -16,3 +16,24 @@ it.each([90,180,240])('keeps the actual product floor inside the %ipx navigation
+  const scene=livingScene({width:1100,height:800,size});
+  expect(planPath(scene.model,{x:660,y:776},scene.station).passed).toBe(true);
+ });
++
++it.each([90,180,240])('user dock produces reachable routes in both axes at %ipx without relocating the prop',size=>{
++ const original=livingScene({width:1100,height:800,size});
++ for(const dock of [{x:.05,y:.05},{x:.8,y:.8},{x:.4,y:.4}]){
++  const scene=livingScene({width:1100,height:800,size,dock});
++  const outlook=scene.interests.find(i=>i.id==='desk-outlook').targets.quiet[0];
++  expect(planPath(scene.model,scene.station,outlook).passed).toBe(true);
++  expect(Math.abs(scene.station.y-outlook.y)).toBeGreaterThan(80);
++  expect(scene.shell).toEqual(original.shell);expect(scene.destination).toEqual(original.destination);
++ }
++});
++
++it('a dock against each edge tolerates projected contact round-trip error without weakening navigation bounds',()=>{
++ for(const dock of [{x:0,y:0},{x:1,y:1}]){
++  const scene=livingScene({width:1100,height:800,dock});
++  for(const delta of [-.0001,.0001]){
++   const reconstructed={x:scene.station.x+delta,y:scene.station.y+delta};
++   expect(planPath(scene.model,scene.station,reconstructed).passed).toBe(true);
++  }
++ }
++});
+diff --git a/web/living-space.js b/web/living-space.js
+index ed394af..37eb106 100644
+--- a/web/living-space.js
++++ b/web/living-space.js
+@@ -1,6 +1,7 @@
+-// Authored floor affordances. It consumes viewport/configuration, never screen content.
++// Authored desktop affordances. It consumes viewport/configuration, never screen content.
++import { desktopPlane, planePoint } from './upstream/kit/desktop-plane.js';
+ const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
+-export function livingScene({ width, height, size = 180, home = .85, range = .3, revision = 1, decorated = false }) {
++export function livingScene({ width, height, size = 180, home = .85, range = .3, revision = 1, decorated = false, dock = null }) {
+   const s = size / 180, floor = height - 24, edge = 112 * s;
+   if (width < 650 * s || height < 420 * s) return null;
+   const homeX = clamp(width * home, edge + 80 * s, width - edge), sign = home > .5 ? -1 : 1;
+@@ -11,17 +12,22 @@ export function livingScene({ width, height, size = 180, home = .85, range = .3,
+     { id: 'home', kind: 'home', asset: 'home.svg', x: homeX - 84 * s, y: floor - 285 * s, w: 168 * s, h: 140 * s, band: [18/210,145/175,176/210,21/175] },
+     { id: 'plant', kind: 'plant', asset: 'planter.svg', x: inner - 45 * s, y: floor - 170 * s, w: 90 * s, h: 84 * s, band: [6/112,60/105,101/112,37/105] },
+   ] : [];
+-  const model = { revision, width, height, body: { left: 100*s, right: 100*s, top: 205*s, bottom: 8*s }, groundBody: { left: 100*s, right: 100*s, top: 24*s, bottom: 8*s }, margin: Math.min(12*s,24-8*s),
+-    obstacles: objects.map(o => ({ id: o.id, kind: 'ground-solid', x: o.x+o.w*o.band[0], y: o.y+o.h*o.band[1], w: o.w*o.band[2], h: o.h*o.band[3] })) };
++  const model = desktopPlane({width,height,size,revision});
++  model.obstacles = objects.map(o => ({ id: o.id, kind: 'ground-solid', x: o.x+o.w*o.band[0], y: o.y+o.h*o.band[1], w: o.w*o.band[2], h: o.h*o.band[3] }));
+   const rootRange={min:Math.min(inner,homeX),max:Math.max(inner,homeX)};
+   const targets = (x,kind) => [clamp(x - 115*s,rootRange.min,rootRange.max),clamp(x + 115*s,rootRange.min,rootRange.max)].map(x => ({ x, y: floor - (kind==='home'?96:28)*s }));
+   const interests = objects.map(o => ({ id: o.id, kind: o.kind, focus: { x: o.x+o.w*.5, y: o.y+o.h*.45 }, targets: { quiet: targets(o.x+o.w*.5,o.kind), lively: targets(o.x+o.w*.5,o.kind) } }));
+-  const station={x:homeX,y:floor-12*s};
++  // Old horizontal home remains the initial dock. A user placement lasts for
++  // this body session, normalized so a viewport resize preserves its region.
++  const station=planePoint(model,dock?{x:dock.x*width,y:dock.y*height}:{x:homeX,y:floor-12*s});
++  const direction=station.x>width/2?-1:1;
++  const outlook=planePoint(model,{x:station.x+direction*Math.max(280*s,width*range),
++    y:station.y+(station.y>(model.body.top+height)/2?-1:1)*Math.min(height*.28,210*s)});
+   const affordance=(id,kind,label,target,focus)=>({id,kind,label,focus,targets:{quiet:[target],lively:[target]}});
+   interests.push(
+     affordance('o03-shell','shell','贝壳',{x:shell.x+100*s,y:shell.y},{x:shell.x,y:shell.y-18*s}),
+-    affordance('desk-outlook','edge','可活动的桌面边界',{x:inner,y:floor-28*s},{x:inner+sign*75*s,y:floor-100*s}),
+-    affordance('desk-dock','place','停靠位置',station,{x:homeX-sign*60*s,y:floor-160*s})
++    affordance('desk-outlook','edge','可活动的桌面边界',outlook,{x:outlook.x+direction*75*s,y:outlook.y-72*s}),
++    affordance('desk-dock','place','停靠位置',station,{x:station.x-direction*60*s,y:station.y-148*s})
+   );
+   const desktop={shell:'o03-shell',outlook:'desk-outlook',dock:'desk-dock',revision};
+   return { model, objects, interests, desktop, rootRange, shell, destination, station, homeX };
+diff --git a/web/pet.js b/web/pet.js
+index 12dd871..194feee 100644
+--- a/web/pet.js
++++ b/web/pet.js
+@@ -52,7 +52,7 @@ let renderedSessionId = null, reactionUntil = 0, reactionMood, bubbleSession, tr
+ let bubbleResult, readerResult, pendingOnly = false;
+ let readerQueue, inboxState = { requests: [], issues: [], replies: [], total: 0 };
+ let resizeLayout, displayGeometry, pendingDisplayPlacement, resizeOrigin;
+-let stageWidth = innerWidth, pressedPointerId;
++let stageWidth = innerWidth, stageHeight = innerHeight, pressedPointerId;
+ const composer = new ChatComposer();
+ const sessionAttention = new SessionAttention();
+ let attentionSnapshot = snapshot;
+@@ -61,6 +61,7 @@ let draftSessionId;
+ let activityWords = [], actionRestorePending = false, localHour, hourCheckedAt = -Infinity;
+ let companion = initialCompanionship(), companionAction, companionManualId, companionManualGeneration, companionManualEpoch, companionFeedbackUntil = 0, companionReadAt = 0, companionFeedbackTicket = 0;
+ let fallbackRevision=0;const fallbackFacts=new Map();
++let livingDock=null;
+ let livingEngaged=false,livingEnabled=false, livingSceneKey='', livingRevision=0, livingWorldSent=0, livingWorld=null, livingContextKey='', livingPlaced=false, livingManualPending=0, livingReserved=false;
+ const livingLayer=document.createElement('div');livingLayer.id='living-space';livingLayer.hidden=true;$('stage').prepend(livingLayer);
+ const companionStroke = createCompanionStroke();
+@@ -370,8 +371,8 @@ function updateCompanion(now, mood, readingAttention, active) {
+   refreshCompanionCopy();
+ }
+ function updateLiving(now,active,readingAttention){
+-  const key=[innerWidth,innerHeight,options.size,options.npcHome??.85,options.npcRange??.3].join(':');
+-  if(key!==livingSceneKey){livingSceneKey=key;livingWorld=livingScene({width:innerWidth,height:innerHeight,size:options.size,home:options.npcHome,range:options.npcRange,revision:++livingRevision});livingContextKey='';
++  const key=[innerWidth,innerHeight,options.size,options.npcHome??.85,options.npcRange??.3,livingDock?.x,livingDock?.y].join(':');
++  if(key!==livingSceneKey){livingSceneKey=key;livingWorld=livingScene({width:innerWidth,height:innerHeight,size:options.size,home:options.npcHome,range:options.npcRange,dock:livingDock,revision:++livingRevision});livingContextKey='';
+     livingLayer.replaceChildren();
+     for(const object of livingWorld?.objects??[]){const image=document.createElement('img');image.src=new URL('props/living/'+object.asset,import.meta.url);image.alt='';image.dataset.kind=object.kind;Object.assign(image.style,{left:object.x+'px',top:object.y+'px',width:object.w+'px',height:object.h+'px'});livingLayer.append(image);}
+   }
+@@ -394,7 +395,7 @@ function updateLiving(now,active,readingAttention){
+   for(const id of fallbackFacts.keys())if(!snapshot.sessions.some(s=>s.id===id))fallbackFacts.delete(id);
+   const box=layout?.box,pointerNear=!!box&&!!cursorPoint&&cursorPoint.x>=box.x-45&&cursorPoint.x<=box.x+box.w+45&&cursorPoint.y>=box.y-45&&cursorPoint.y<=box.y+box.h+45;
+   const desktop=supported?{...livingWorld.desktop,pointerNear,pointer:cursorPoint&&(pointerNear||now-pointerMovedAt<4000)?{x:Math.round(cursorPoint.x/8)*8,y:Math.round(cursorPoint.y/8)*8}:null}:null;
+-  const context={desktop,supported,enabled:livingEnabled&&options.roam&&!reduced,mode:options.companionship,keyboard:now-keyboardAt<=2500?keyboardActivity:'unknown',reduced,lifecycle:lifecycle||snapshot.workCapacity===true,occupied:!!livingWorld&&!!layout&&(layout.x<livingWorld.rootRange.min-options.size*.56||layout.x>livingWorld.rootRange.max+options.size*.56)||userInputOccupied()||readingAttention||!interaction.hidden||(!supported&&hovered)||asleep||[...composer.sessions.values()].some(s=>!!s.text.trim()||s.phase==='sending'),social:supported&&(retiring||!!livingManualPending||!!companion.active||!!companion.invitation||livingReserved),personality:options.npcPersonality==='lively'?'lively':'quiet',memory:memory?{generation:memory.generation,id:remembered?.id,kind:remembered?.correctedKind??remembered?.kind}:null,facts:fallback};
++  const context={desktop,supported,planar:wanted,enabled:livingEnabled&&options.roam&&!reduced,mode:options.companionship,keyboard:now-keyboardAt<=2500?keyboardActivity:'unknown',reduced,lifecycle:lifecycle||snapshot.workCapacity===true,occupied:userInputOccupied()||readingAttention||!interaction.hidden||(!supported&&hovered)||asleep||[...composer.sessions.values()].some(s=>!!s.text.trim()||s.phase==='sending'),social:supported&&(retiring||!!livingManualPending||!!companion.active||!!companion.invitation||livingReserved),personality:options.npcPersonality==='lively'?'lively':'quiet',memory:memory?{generation:memory.generation,id:remembered?.id,kind:remembered?.correctedKind??remembered?.kind}:null,facts:fallback};
+   const contextKey=JSON.stringify(context);if(contextKey!==livingContextKey){livingContextKey=contextKey;body?.set({livingContext:context});}
+   if(!livingEnabled)return false;
+   homeMarker.hidden=true;
+@@ -671,6 +672,7 @@ $('interaction-pending').onclick = () => openRequests(false);
+ 
+ function applyOptions(value) {
+   const previousSize = options.size, previousCompanionship = options.companionship;
++  if (Object.hasOwn(value ?? {}, 'npcHome') && value.npcHome !== options.npcHome) livingDock=null;
+   options = { ...options, ...value, companionship: Object.hasOwn(value ?? {}, 'companionship') ? companionshipMode(value.companionship) : options.companionship, textScale: Object.hasOwn(value ?? {}, 'textScale') ? textScale(value.textScale) : options.textScale };
+   diagnosticCounters.configure(options.diagnostics === true);
+   document.documentElement.style.setProperty('--size', `${options.size}px`);
+@@ -778,7 +780,7 @@ function receive(message) {
+       if (!Number.isSafeInteger(message.revision) || message.revision <= (displayGeometry?.revision ?? 0)) break;
+       const interrupted = pressing || dragging || ['drag', 'air'].includes(body?.layout?.mode);
+       if (displayGeometry && (message.displayId !== displayGeometry.displayId || interrupted)) {
+-        pendingDisplayPlacement = { ...(resizeOrigin ?? { ratio: (body?.layout?.x ?? stageWidth * .6) / stageWidth, facing: body?.layout?.facing ?? 1 }), drop: interrupted };
++        pendingDisplayPlacement = { ...(resizeOrigin ?? { ratio: (body?.layout?.x ?? stageWidth * .6) / stageWidth, ratioY:(body?.layout?.y ?? stageHeight-24)/stageHeight, facing: body?.layout?.facing ?? 1 }), drop: interrupted };
+       }
+       if (pressing) {
+         // API 2 drop clears its held pointer after the new bounds arrive.
+@@ -838,6 +840,10 @@ pet.addEventListener('pointerup', release); pet.addEventListener('pointercancel'
+ function onBody(kind, detail) {
+   if (['arrived', 'interrupted'].includes(kind) && Number.isSafeInteger(detail.walkId) && detail.walkId > 0 && detail.walkId === npc.walkId) { npcEvent = { kind, walkId: detail.walkId }; return; }
+   if (kind !== 'touch') return;
++  if (detail.kind === 'drop' && detail.placement === 'plane' && activeView?.builtin && options.livingSpace !== false && Number.isFinite(detail.x) && Number.isFinite(detail.y)) {
++    livingDock={x:Math.max(0,Math.min(1,detail.x/innerWidth)),y:Math.max(0,Math.min(1,detail.y/innerHeight))};
++    return;
++  }
+   if (detail.kind === 'grab') {
+     clearTimeout(touchTimer);
+     // Body events arrive with a later animation frame. A completed drag must
+@@ -962,15 +968,18 @@ document.addEventListener('pointerleave', () => {
+   if (!pressing) { cursorPoint = undefined; lastHit = false; native?.hit(false); }
+ });
+ function resizeStage() {
+-  if (innerWidth !== stageWidth) resizeOrigin ??= { ratio: (body?.layout?.x ?? stageWidth * .6) / stageWidth, facing: body?.layout?.facing ?? 1 };
+-  stageWidth = innerWidth;
++  if (innerWidth !== stageWidth || innerHeight !== stageHeight) resizeOrigin ??= { ratio: (body?.layout?.x ?? stageWidth * .6) / stageWidth, ratioY:(body?.layout?.y ?? stageHeight-24)/stageHeight, facing: body?.layout?.facing ?? 1 };
++  stageWidth = innerWidth; stageHeight=innerHeight;
+   resizeLayout = body?.layout;
+   body?.set({ bounds: bounds() });
+   // Native geometry and viewport resize can arrive in either order. Placement
+   // waits until this viewport reflects the newly acknowledged content bounds.
+   if (pendingDisplayPlacement && innerWidth === displayGeometry?.contentBounds.width && innerHeight === displayGeometry?.contentBounds.height) {
+     const targetX = innerWidth * pendingDisplayPlacement.ratio;
+-    if (pendingDisplayPlacement.drop) { const b = bounds(); body?.drop({ x: targetX, y: b.floorY - 220 * b.S }); }
++    const planar=!!livingWorld && !!body?.layout?.living && activeView?.builtin && options.livingSpace!==false;
++    const targetY=innerHeight*pendingDisplayPlacement.ratioY;
++    if (pendingDisplayPlacement.drop) { const b = bounds(); body?.drop({ x: targetX, y: (planar?targetY:b.floorY) - 220 * b.S }); }
++    else if(planar)body?.place2d({x:targetX,y:targetY});
+     else body?.place(targetX, pendingDisplayPlacement.facing);
+     pendingDisplayPlacement = undefined;
+   }
+@@ -1062,7 +1071,7 @@ async function setCharacter(view, scheme = '') {
+   });
+   if (npc.walkId) body?.stopWalk(npc.walkId);
+   npc = initialNpc(++npcGeneration); npcEvent = undefined; npcRelocated = false; npcGeometry = undefined; npcGroundLayout = undefined; npcSeated = false;
+-  livingSceneKey=livingContextKey='';livingWorld=null;livingWorldSent=0;livingPlaced=false;livingManualPending=0;livingEnabled=false;livingEngaged=false;
++  livingDock=null;livingSceneKey=livingContextKey='';livingWorld=null;livingWorldSent=0;livingPlaced=false;livingManualPending=0;livingEnabled=false;livingEngaged=false;
+   responseRhythm.cancel(); companionStroke.reset(); companion = initialCompanionship(); companionAction = companionManualId = undefined; companionFeedbackTicket++; companionInvitation.hidden = companionFeedback.hidden = companionTurn.hidden = true;
+   body?.dispose(); body = next; body.set({ bounds: bounds() }); activeView = view; activeScheme = knownScheme(view, scheme); activeName = nameIn(view.name);
+   actionRestorePending = false; activityWords = view.vocab.map(w => w.id).filter(w => next.words?.includes(w)); hourCheckedAt = -Infinity;
+diff --git a/web/upstream/UPSTREAM.md b/web/upstream/UPSTREAM.md
+index 0c24f59..d73ce5a 100644
+--- a/web/upstream/UPSTREAM.md
++++ b/web/upstream/UPSTREAM.md
+@@ -109,3 +109,8 @@ Stage 5A visual feedback correction, 2026-10-20:
+ - The first Stage 5A engineering report is retained as a fixed pre-feedback snapshot; current scope and verification are in `docs/design/personality-behavior-contract.md` and `docs/aliveness-development.md`. Original models, textures, licenses and prior evidence bytes are unchanged.
+ 
+ 2026-10-20 审查修正：本地人格策略先从可达观察站位选择对象，偏好对象受阻时改选，全部受阻时不结算观察。工作表现消费并丢弃未决请求／异常期间的短反馈，避免覆盖邀请或解除后补播；隔离 O03 工厂用既有 `listening` 身体控制保持实际倾听表情，并显式释放。未新增词表、素材、模型调用、调度器或许可。
++
++Local default-product desktop plane, 2026-10-22:
++
++- `kit/desktop-plane.js` shares the calibrated full-body envelope between default scene targets and manual placement. `kit/body.js` adds opt-in support-plane placement and jump landing; legacy factories retain gravity drops. `kit/living-body.js` enables it only for the supported default product, keeps one navigator and contact owner, and remaps position on viewport changes.
++- The host retains a normalized, session-only dock after authenticated pointer release. Existing horizontal home settings seed or reset it; the outward/return route now spans both axes. No original assets or licenses changed; front/back bodies and directional animation are still pending.
+diff --git a/web/upstream/kit/body.js b/web/upstream/kit/body.js
+index c8f9bde..71943a8 100644
+--- a/web/upstream/kit/body.js
++++ b/web/upstream/kit/body.js
+@@ -151,6 +151,9 @@ export function createPet(els, opts) {
+   const navigator = opts.navigation ? createNavigator({x:opts.startX ?? opts.bounds().W*.7,y:opts.bounds().floorY}, onEvent) : null;
+   const pointer = { x: -1e4, y: -1e4, inside: false, vx: 0, samples: [] };
+   let press = null, strokeAcc = 0, petCool = 0;
++  let supportY = null;
++  const planar = () => opts.planeEnabled?.() === true;
++  const groundY = () => planar() ? supportY ?? floorY : floorY;
+   /** Whether the last frame found the horizontal speed not finite: a run of such frames is logged once. */
+   let velXBad = false;
+   const P = [];
+@@ -160,8 +163,15 @@ export function createPet(els, opts) {
+   const faceDef = n => FACES[n] ?? FACES[words[n]?.expression?.like] ?? FACES.neutral;
+ 
+   function resize() {
++    const previous={W,H,S,ground:groundY()};
+     const b = opts.bounds();
+     W = b.W; H = b.H; floorY = b.floorY; S = b.S;
++    supportY ??= floorY;
++    if (planar() && pet.mode==='air' && previous.W>0 && previous.H>0) {
++      const p=opts.planePoint({x:pet.x/previous.W*W,y:previous.ground/previous.H*H});
++      const elevation=previous.ground-pet.fy;
++      supportY=p.y; pet.x=p.x; pet.fy=supportY-elevation*S/previous.S;
++    }
+     if (!pet.placed && W > 0) {
+       pet.x = opts.startX != null ? opts.startX : W * .7; pet.placed = true;
+       if (opts.enter === 'drop') { pet.fy = -8; pet.vy = 0; pet.vx = 0; pet.airKind = 'drop'; setMode('air'); }
+@@ -376,7 +386,7 @@ export function createPet(els, opts) {
+ 
+     switch (m) {
+       case 'navigate': {
+-        const n=navigator.step(dt);pet.x=n.x;pet.fy=n.y;pet.speed=n.speed;pet.facing=n.facing;
++        const n=navigator.step(dt);pet.x=n.x;pet.fy=n.y;supportY=n.y;pet.speed=n.speed;pet.facing=n.facing;
+         const k=n.speed/100;strideT=10*k;liftT=8*k;bobT=3*k;leanT=4*k;lookT=[3,0];
+         pet.phase+=Math.PI*2*2.1*dt*k;
+         if(n.phase==='idle')setMode('idle');
+@@ -480,7 +490,7 @@ export function createPet(els, opts) {
+         sqT = -Math.min(.12, Math.abs(pet.vy) / 6000);
+         tiltT = clamp(pet.vx * .025, -30, 30);
+         tk = 70; tc = 8;
+-        if (pet.fy >= floorY && pet.vy > 0) land();
++        if (pet.fy >= groundY() && pet.vy > 0) land();
+         break;
+       }
+       case 'land': {
+@@ -635,7 +645,7 @@ export function createPet(els, opts) {
+ 
+   function land() {
+     const impact = pet.vy, kind = pet.airKind;
+-    pet.fy = floorY; pet.vy = 0; pet.vx = 0;
++    pet.fy = groundY(); pet.vy = 0; pet.vx = 0;
+     pet.sqv += clamp(impact * .0024, .8, 4.5);
+     play('land', 'move', kind !== 'jump' && impact > 1000);
+     dustAt(128, impact > 900 ? 7 : 3, 70);
+@@ -676,8 +686,9 @@ export function createPet(els, opts) {
+     });
+ 
+     const footY = drag ? pet.dy + 220 * S * 1.09 : pet.fy;
+-    const k = clamp(1 - (floorY - footY) / 420, .3, 1);
+-    shadowEl.setAttribute('cx', f(AX)); shadowEl.setAttribute('cy', f((navigator ? pet.fy : floorY) - 2));
++    const support = planar() ? (drag ? opts.planePoint({x:AX,y:footY}).y : groundY()) : navigator ? pet.fy : floorY;
++    const k = clamp(1 - ((planar() ? support : floorY) - footY) / 420, .3, 1);
++    shadowEl.setAttribute('cx', f(AX)); shadowEl.setAttribute('cy', f(support - 2));
+     shadowEl.setAttribute('rx', f(72 * S * k * (1 + pet.sq * .5))); shadowEl.setAttribute('ry', f(10 * S * k + 1));
+     shadowEl.setAttribute('opacity', f(k));
+ 
+@@ -757,6 +768,7 @@ export function createPet(els, opts) {
+     if (pet.mode === 'drag') {
+       // hand over from the scruff anchor to the feet anchor without a visual jump
+       const foot = toStage(128, 256);
++      if (planar()) { settlePlane(foot); press=null; return; }
+       const v = velocity();
+       pet.x = clamp(foot.x, minX(), maxX());
+       pet.fy = Math.min(floorY, foot.y);
+@@ -790,6 +802,7 @@ export function createPet(els, opts) {
+   function dropAt(p) {
+     press = null;
+     if (pet.mode !== 'drag') return;
++    if (planar()) { settlePlane({x:p.x,y:p.y+220*S}); return; }
+     Object.assign(pointer, { x: p.x, y: p.y, vx: 0, samples: [] });
+     pet.x = clamp(p.x, minX(), maxX());
+     pet.fy = Math.min(floorY, p.y + 220 * S);
+@@ -798,6 +811,16 @@ export function createPet(els, opts) {
+     setMode('air');
+     onEvent('touch', { kind: 'drop', x: Math.round(pet.x) });
+   }
++  function place2d(p) {
++    navigator?.relocate(p); pet.x=p.x; pet.fy=supportY=p.y;
++  }
++  function settlePlane(point) {
++    const p=opts.planePoint(point);
++    place2d(p); pet.vx=pet.vy=0; pet.cursor='';
++    pointer.vx=0; pointer.samples=[];
++    setMode('idle'); pet.nextAt=T+2;
++    onEvent('touch',{kind:'drop',placement:'plane',...p});
++  }
+   /**
+    * Keeps a held body under the pointer when the stage moved to another display mid-drag: every
+    * point on screen now sits (dx, dy) stage pixels from where it was.
+@@ -844,7 +867,7 @@ export function createPet(els, opts) {
+       return result;
+     },
+     cancelNavigation(by){navigator?.cancel(by);if(pet.mode==='navigate')setMode('idle');},
+-    pet, step, render, resize, act, setExpr, doWord, walkTo, stopWalk, toStage, hitPet, busy, layout,
++    pet, step, render, resize, act, setExpr, doWord, walkTo, stopWalk, toStage, hitPet, busy, layout, place2d,
+     pointerDown, pointerMove, pointerUp, pointerLeave, dropAt, shiftDrag,
+     get pressing() { return !!press; },
+     /** Pressed, carried, airborne, walking, running, dancing, turning round, or in a short gesture (nod, wave, bow…): motion that frames far apart show as jumps. */
+@@ -933,7 +956,7 @@ export function createBody(host, opts) {
+     capabilities: opts.navigation ? [NAVIGATION] : [],
+     navigate: ctl.navigate,
+     cancelNavigation: ctl.cancelNavigation,
+-    place2d(p){if(!ctl.navigator)return;ctl.cancelNavigation('drag');ctl.navigator.relocate(p);ctl.pet.x=p.x;ctl.pet.fy=p.y;ctl.render();},
++    place2d(p){if(!ctl.navigator)return;ctl.cancelNavigation('drag');ctl.place2d(p);ctl.render();},
+     step(dt) { ctl.step(dt); ctl.render(); },
+     layout: ctl.layout,
+     resize(){ctl.cancelNavigation('geometry');ctl.resize();},
+@@ -954,7 +977,7 @@ export function createBody(host, opts) {
+       if (ctl.pet.mode === 'drag' || ctl.pet.mode === 'air') return;
+       const { minX, maxX } = ctl.bounds;
+       ctl.pet.x = ctl.pet.target = clamp(x, minX, maxX);
+-      if(ctl.navigator){ctl.navigator.relocate({x:ctl.pet.x,y:ctl.bounds.floorY});ctl.pet.fy=ctl.bounds.floorY;}
++      if(ctl.navigator)ctl.place2d({x:ctl.pet.x,y:ctl.bounds.floorY});
+       if (facing === 1 || facing === -1) ctl.pet.facing = ctl.pet.faceVis = facing;
+     },
+     set(s) {
+diff --git a/web/upstream/kit/living-body.js b/web/upstream/kit/living-body.js
+index 44e6aef..fe82df2 100644
+--- a/web/upstream/kit/living-body.js
++++ b/web/upstream/kit/living-body.js
+@@ -7,6 +7,7 @@ import { initialPersonality, shellInterest } from './personality.js';
+ import { initialLifeWork, stepLifeWork } from './life-work.js';
+ import { initialWorkPerformance, stepWorkPerformance } from './work-performance.js';
+ import { handWeights } from '../whale/hand-art.js';
++import { desktopPlane, planePoint } from './desktop-plane.js';
+ 
+ export async function createMotionBody(base, options) {
+   const { shell: originalSpec, whale: model, motion: profile, hands: handSpec } = options.model;
+@@ -18,6 +19,8 @@ export async function createMotionBody(base, options) {
+   if(product)Object.defineProperty(spec,'displayWidth',{get:()=>originalSpec.displayWidth*bounds().S/resourceScale});
+   const whaleBase = new URL('../whale/', import.meta.url), shellBase = new URL('../../props/shell/', import.meta.url);
+   let livingContext = null, living = null;
++  const planar = () => product && livingContext?.planar === true;
++  const legalPoint = point => { const b=bounds(); return planePoint(desktopPlane({width:b.W,height:b.H,size:b.S*256}),point); };
+   const continuous = bounds().continuousActions === true;
+   const coordinated = bounds().lifeWork === true;
+   let coordination = initialLifeWork(), coordinationQueue = [], gaze = 0, taskExpression = null, workTarget = null, performanceState = initialWorkPerformance(), performanceView = null, reducedWork = false, freeArm = [4,-2];
+@@ -60,6 +63,7 @@ export async function createMotionBody(base, options) {
+     if ((continuous ? ['navigation-arrived','navigation-interrupted'] : ['arrived', 'interrupted']).includes(kind)) arrival = { kind, ...detail };
+     options.host.emit(kind, detail);
+   } }, { figure, navigation: options.host.bounds().navigation === true,
++    planeEnabled:planar, planePoint:legalPoint,
+     facingOwned: () => !['idle','rest'].includes(state.phase==='paused'?state.suspended:state.phase) || ['personal-align','personal-dwell','environment-wait'].includes(coordination.phase) });
+   actor.set({ roam: 'off' });
+   let groundLayer=null, groundImage=null;
+@@ -176,7 +180,7 @@ export async function createMotionBody(base, options) {
+       propMirror, activeTime, speed, sequence: ++sequence });
+   }
+   return {
+-    words: actor.words, capabilities:actor.capabilities, navigate(command){if(state.phase!=='idle'||coordinated&&!['idle','ended'].includes(coordination.phase)){options.host.emit('navigation-interrupted',{id:command.id,generation:command.generation,revision:command.model.revision,by:'body-owned'});return false;}wallAt=performance.now();return navigate(command);}, cancelNavigation:actor.cancelNavigation, place2d:actor.place2d,
++    words: actor.words, capabilities:actor.capabilities, navigate(command){if(state.phase!=='idle'||coordinated&&!['idle','ended'].includes(coordination.phase)){options.host.emit('navigation-interrupted',{id:command.id,generation:command.generation,revision:command.model.revision,by:'body-owned'});return false;}wallAt=performance.now();return navigate(command);}, cancelNavigation:actor.cancelNavigation, place2d(p){actor.place2d(planar()?legalPoint(p):p);},
+     step(dt) {
+       const now = performance.now(), gap = now - wallAt; wallAt = now;
+       if (gap > 1000 || forcePause) { if(coordinated)coordinationQueue.push({type:'pause',reason:'lifecycle'}); actor.cancelNavigation('lifecycle-gap'); pending = ['reset','resume'].includes(pending?.type) ? pending : { type: 'pause' }; forcePause = false; }
+@@ -231,16 +235,16 @@ export async function createMotionBody(base, options) {
+       actor.set(value);
+     },
+     layout() { const layout=actionLayout(); return {...layout, ...(product?{living:{phase:coordination.phase,reason:coordination.reason,action:state.phase,suspended:state.suspended,owner:state.owner,pickup:state.commits.pickup,drop:state.commits.drop,routine:living?.stage??'tidy',cycles:living?.cycles??0,environment:coordination.environmentKind,animating:personalView?.active&&personalLook.some((v,i)=>Math.abs(v-personalView.look[i])>.05),goal:coordination.life?'arrange':coordination.personality?.decision?.interestId??null,socialReady:coordination.phase==='social-wait'}}:{})}; }, resize() {
+-      const next={...bounds()}; actor.resize();
++      const next={...bounds()}, before=actor.layout(); actor.resize();
+       if(product){
+         const layout=actor.layout();
+         if(!['drag','air'].includes(layout.mode)) {
+-          const p={x:Math.max(104*next.S+8,Math.min(next.W-104*next.S-8,layout.x)),y:Math.max(Math.min(next.floorY,205*next.S),Math.min(next.floorY,layout.y))};
++          const p=planar()?legalPoint({x:before.x/geometry.W*next.W,y:before.y/geometry.H*next.H}):{x:Math.max(104*next.S+8,Math.min(next.W-104*next.S-8,layout.x)),y:Math.max(Math.min(next.floorY,205*next.S),Math.min(next.floorY,layout.y))};
+           if(p.x!==layout.x||p.y!==layout.y)actor.place2d(p);
+         }
+         if(state.owner==='ground' && geometry.W>0){
+           const old=groundQuad[2], center=(groundQuad[0].x+groundQuad[1].x)/2;
+-          putGround(Math.max(104*next.S+8,Math.min(next.W-104*next.S-8,center/geometry.W*next.W)),next.floorY-(geometry.floorY-old.y)*next.S/geometry.S);
++          putGround(Math.max(104*next.S+8,Math.min(next.W-104*next.S-8,center/geometry.W*next.W)),planar()?old.y/geometry.H*next.H:next.floorY-(geometry.floorY-old.y)*next.S/geometry.S);
+         }
+       }
+       geometry=next;forcePause = !['idle', 'inspect'].includes(state.phase);
+diff --git a/web/upstream/kit/desktop-plane.js b/web/upstream/kit/desktop-plane.js
+new file mode 100644
+index 0000000..aade803
+--- /dev/null
++++ b/web/upstream/kit/desktop-plane.js
+@@ -0,0 +1,18 @@
++// Calibrated default-whale envelope. Desktop pixels are ground coordinates;
++// an animation's elevation is separate from this support plane.
++export function desktopPlane({ width, height, size = 180, revision = 1 }) {
++  const s = size / 180;
++  return { revision, width, height,
++    body: { left: 100*s, right: 100*s, top: 205*s, bottom: 8*s },
++    groundBody: { left: 100*s, right: 100*s, top: 24*s, bottom: 8*s },
++    margin: Math.min(12*s, 24-8*s), obstacles: [] };
++}
++export function planePoint(model, point) {
++  // Leave half a pixel for the raster rig's projected contact round-trip.
++  // A prop parked exactly on the world edge can otherwise reconstruct its
++  // pickup root a few float32 ulps outside the strict navigation domain.
++  const b = model.body, m = model.margin + .5;
++  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
++  return { x: clamp(point.x, b.left+m, model.width-b.right-m),
++    y: clamp(point.y, b.top+m, model.height-b.bottom-m) };
++}

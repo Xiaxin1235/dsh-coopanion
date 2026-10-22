@@ -92,7 +92,7 @@ body.place2d({x, y});
 
 `model` 包含 `revision,width,height,body:{left,right,top,bottom},margin,obstacles:[{id,x,y,w,h,kind}]`，可选 `groundBody:{left,right,top,bottom}`。仅显式标定为 `kind:ground-solid` 的实体采用有限地面占用；其余实体、禁区和世界边界保持完整 `body`。缺少 `groundBody` 时保持原全身模型。`layout` 增加实际根 `y` 和有界 `navigation` 状态，原 box／hit／bubble 同源。事件为 `navigation-arrived`／`navigation-interrupted`，包含 `{id,generation,revision,x,y,by}`；与旧水平 `{walkId,x}` 的 arrived 分开。调用方必须核对三元身份，不能由路程计时合成到达。
 
-旧角色没有 capability 时 `navigate` 返回 false，调用方保留水平回退。二维角色的旧 `walk(x,run,id)` 仍可用，并中断当前二维路线；显式动作、指针和几何调整也中断导航。标定、规划精度和限制见[空间契约](design/living-space-contract.md)。二维能力由显式启用的空间工厂使用；当前分支的内置鲸鱼默认生活装配也复用该工厂，已发布版本保持其原行为。`navigation-2d-v1` 不包含平面拖放或多方向身体承诺，当前产品仍有底部目标、重力下落和左右朝向限制，见[空间与身体复核](design/space-body-review.md)。
+旧角色没有 capability 时 `navigate` 返回 false，调用方保留水平回退。二维角色的旧 `walk(x,run,id)` 仍可用，并中断当前二维路线；显式动作、指针和几何调整也中断导航。标定、规划精度和限制见[空间契约](design/living-space-contract.md)。二维能力由显式启用的空间工厂使用；当前分支的内置鲸鱼默认生活装配也复用该工厂，已发布版本保持其原行为。`navigation-2d-v1` 不包含平面拖放或多方向身体承诺，内置默认生活空间已单独接入平面放置，旧角色仍保留原拖放语义；身体方向素材仍待补齐，见[空间与身体复核](design/space-body-review.md)。
 
 ## Harness 状态映射
 

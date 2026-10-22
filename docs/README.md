@@ -41,7 +41,7 @@
 | 固定源码验证与资源／生命周期结果 | [固定报告](reports/README.md)：按固定源码区分 5A／5B 首版与反馈修正；旧报告不是当前执行指令 |
 | 早期发散、候选诊断与发布过程 | [历史说明](archive/README.md)：其中的计划、问题和进度只属于当时快照 |
 
-前期阶段与默认装配的旧范围、提案、失败模型、反馈修正与固定验证从[阶段历史](archive/2026-10-aliveness/README.md)追溯。默认产品尚有底部活动、拖放下落和左右朝向限制，最新问题见[空间与身体复核](design/space-body-review.md)，后续路线与平台能力门槛见[跨平台桌面互动方案](design/desktop-environment-plan.md)。当前交付与用户验收看[开发状态](aliveness-development.md)，执行范围来自用户最新指令；原始报告中的待验收、旧下一步和推送限制均属于当时快照。
+前期阶段与默认装配的旧范围、提案、失败模型、反馈修正与固定验证从[阶段历史](archive/2026-10-aliveness/README.md)追溯。默认产品已开始交付平面空间切片，多方向身体与整体体验仍待验收；基线问题及完整目标见[空间与身体复核](design/space-body-review.md)，后续路线与平台能力门槛见[跨平台桌面互动方案](design/desktop-environment-plan.md)。当前交付与用户验收看[开发状态](aliveness-development.md)，执行范围来自用户最新指令；原始报告中的待验收、旧下一步和推送限制均属于当时快照。
 
 普通搜索覆盖现行契约、分支交付状态、规划范围和运行源码；归档、历史版本说明、旧场景夹具、原始报告／画面／提示词及本地产物由 `.ignore` 屏蔽。历史追溯使用 `rg --no-ignore docs/archive`，核对原始工作台证据使用 `rg --no-ignore docs/design/art-workflow`，观察结果使用 `rg --no-ignore docs/reports`，发布历史使用 `rg --no-ignore docs/release-notes.md`。设计、归档及报告目录不随安装包分发。
 
