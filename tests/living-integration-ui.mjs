@@ -40,3 +40,36 @@ test('dragging and switching the living scene off while carrying preserve the bo
  await configure({livingSpace:true});await drop(page,2);
  assert.equal(await page.locator('#pet').getAttribute('data-life-pickup'),'2');
 });
+
+test('desktop life forms an observed outward-return-rest cycle without permanent furniture or fictional memories',async t=>{
+ const{page,read}=await fixture(t);
+ assert.equal(await page.locator('#living-space img').count(),0);
+ await page.waitForFunction(()=>Number(document.querySelector('#pet').dataset.lifeCycles)>=1,null,{timeout:140000});
+ assert.equal(await page.locator('#pet').getAttribute('data-life-routine'),'rest');
+ assert.equal(await page.locator('#pet').getAttribute('data-life-pickup'),'1');
+ assert.equal(await page.locator('#pet').getAttribute('data-life-drop'),'1');
+ await page.screenshot({path:join(output,'desktop-rest-after-return.png')});
+ await page.waitForFunction(()=>document.querySelector('#pet').dataset.lifeRoutine==='outbound',null,{timeout:45000});
+ assert.equal((await read()).memory.entries.length,0);
+ assert.equal((await read()).relation.total,0);
+});
+
+test('typing and mouse proximity produce one safe wait and a retained goal, without empty grabbing on recovery',async t=>{
+ const{page,read}=await fixture(t);await drop(page,1);
+ await page.waitForFunction(()=>document.querySelector('#pet').dataset.lifeAction==='idle');
+ await page.evaluate(()=>{window.lifeEvents=[];window.lifeInput='active';});
+ await page.waitForSelector('#pet[data-life-phase=environment-wait]');
+ for(let i=0;i<3;i++){await page.evaluate(()=>{window.lifeInput='idle';});await page.waitForTimeout(100);await page.evaluate(()=>{window.lifeInput='active';});await page.waitForTimeout(100);}
+ await page.evaluate(()=>{window.lifeInput='idle';});
+ await page.waitForTimeout(1000);
+ assert.equal(await page.locator('#pet').getAttribute('data-life-environment'),'typing');
+ const box=await page.locator('#pet').boundingBox();await page.mouse.move(box.x+box.width+25,box.y+box.height/2);
+ await page.waitForSelector('#pet[data-life-environment=pointer]',{timeout:12000});
+ assert.equal(await page.locator('#pet').getAttribute('data-life-phase'),'environment-wait');
+ await page.mouse.move(0,0);
+ await page.waitForFunction(()=>!document.querySelector('#pet').dataset.lifeEnvironment,null,{timeout:10000});
+ const events=await page.evaluate(()=>window.lifeEvents);
+ assert.equal(events.filter(e=>e.type==='phase'&&['reach','grasp','retract'].includes(e.phase)).length,0);
+ assert.equal(await page.locator('#pet').getAttribute('data-life-pickup'),'1');
+ assert.equal((await read()).memory.entries.length,0);
+});

@@ -38,12 +38,12 @@ export async function createMotionBody(base, options) {
     groundQuad = [{ x: x - spec.displayWidth / 2, y: y - height }, { x: x + spec.displayWidth / 2, y: y - height }, { x: x - spec.displayWidth / 2, y }]; };
   putGround(bounds().W * .50);
   const authoredPose = () => {
-    if(product && state.owner==='ground' && ['idle','rest'].includes(state.phase==='paused'?state.suspended:state.phase) && !coordination.phase.startsWith('personal-') && coordination.phase!=='work-wait') return null;
+    if(product && state.owner==='ground' && ['idle','rest'].includes(state.phase==='paused'?state.suspended:state.phase) && !coordination.phase.startsWith('personal-') && !['work-wait','environment-wait'].includes(coordination.phase)) return null;
     const pose = sample(state, profile), phase = state.phase === 'paused' ? state.suspended : state.phase;
     const navigation=actor?.layout().navigation;
     const walking = ['approach', 'carry'].includes(phase) || !!navigation && navigation.phase !== 'idle';
     const k = ['settle', 'settleDrop'].includes(phase) ? Math.min(1, state.elapsed / profile.seconds[phase]) : continuous && phase === 'prepare' ? Math.max(state.preparePlantFrom ?? 0, Math.min(1,state.elapsed/.8)) : 1;
-    const libraryFree=state.owner==='ground' && (phase==='standUp' || bounds().personality===true && ['idle','rest'].includes(phase) && coordination.phase.startsWith('personal-'));
+    const libraryFree=state.owner==='ground' && (phase==='standUp' || bounds().personality===true && ['idle','rest'].includes(phase) && (coordination.phase.startsWith('personal-')||coordination.phase==='environment-wait'));
     const free=coordinated && coordination.phase==='work-wait' && state.owner==='ground' && ['idle','rest'].includes(phase) && !walking && !coordination.occupied;
     return { ...pose, ...(libraryFree?{waist:undefined,armNear:undefined,armFar:undefined}:{}), ...(free ? {armNear:freeArm[0],armFar:freeArm[1]} : {}), ...(personalView?.active && libraryFree ? {look:personalLook} : coordinated ? {look:[pose.look[0]+gaze,pose.look[1]+(performanceView?.look[1]??0)]} : {}), plant: !libraryFree && !walking && phase !== 'rest' && (phase !== 'prepare' || !state.prepareSeated), plantWeight: k * k * (3 - 2 * k), hands: handWeights(continuous && phase === 'prepare' && state.owner === 'hand' ? {...state, phase:'held'} : state, profile), handArt: handArtEnabled,
       ...(walking ? { armNear: undefined, ...(state.owner === 'ground' ? { armFar: undefined, look: [3 + gaze, 0] } : {}) } : {}) };
@@ -60,7 +60,7 @@ export async function createMotionBody(base, options) {
     if ((continuous ? ['navigation-arrived','navigation-interrupted'] : ['arrived', 'interrupted']).includes(kind)) arrival = { kind, ...detail };
     options.host.emit(kind, detail);
   } }, { figure, navigation: options.host.bounds().navigation === true,
-    facingOwned: () => !['idle','rest'].includes(state.phase==='paused'?state.suspended:state.phase) || ['personal-align','personal-dwell'].includes(coordination.phase) });
+    facingOwned: () => !['idle','rest'].includes(state.phase==='paused'?state.suspended:state.phase) || ['personal-align','personal-dwell','environment-wait'].includes(coordination.phase) });
   actor.set({ roam: 'off' });
   let groundLayer=null, groundImage=null;
   if(product){const ns='http://www.w3.org/2000/svg';groundLayer=document.createElementNS(ns,'svg');groundLayer.style.cssText='position:absolute;inset:0;width:100%;height:100%;pointer-events:none';groundImage=document.createElementNS(ns,'image');groundImage.setAttribute('href',new URL('shell.png',shellBase));groundImage.setAttribute('width',spec.canvas.width);groundImage.setAttribute('height',spec.canvas.height);groundLayer.append(groundImage);options.host.root.prepend(groundLayer);}
@@ -114,14 +114,23 @@ export async function createMotionBody(base, options) {
   function coordinate(now, dt, command, event) {
     const layout=actor.layout();
     const currentInterests=interests.map(i=>i.kind==='shell'?shellInterest({x:groundGrip().x,y:groundQuad[2].y}):i);
-    const preview=personalityPerformance(coordination,{bodyX:layout.x,bodyY:layout.y,gazeOrigin:figure.gripFrame?.gazeOrigin,facing:layout.facing,words:actor.words},{reduced:reducedWork});
-    const input={...inputs(now,dt,null,null), command,event,reduced:reducedWork,personalityEnabled:bounds().personality===true,rememberedKind:livingContext?.memory?.kind,model:spaceModel,interests:currentInterests,gazeOrigin:figure.gripFrame?.gazeOrigin,facing:layout.facing,gazeReady:personalLook.every((v,i)=>Math.abs(v-preview.look[i])<.65),words:actor.words,action:state,objectId:'o03-shell',object:{x:groundGrip().x,y:groundQuad[2].y},
+    const viewInput={bodyX:layout.x,bodyY:layout.y,gazeOrigin:figure.gripFrame?.gazeOrigin,facing:layout.facing,words:actor.words};
+    const attention=()=>{
+      const value=personalityPerformance(coordination,viewInput,{reduced:reducedWork});
+      if(!product||coordination.phase!=='environment-wait'||coordination.focus||reducedWork)return value;
+      const eye=figure.gripFrame?.gazeOrigin??{x:layout.x,y:layout.y-130};
+      const target=livingContext?.desktop?.pointer??{x:layout.x+layout.facing*35,y:layout.y-230*bounds().S};
+      return {...value,active:true,expression:'neutral',look:[Math.max(-5.5,Math.min(5.5,(target.x-eye.x)*layout.facing/24)),Math.max(-4,Math.min(4,(target.y-eye.y)/28))]};
+    };
+    const preview=attention();
+    const input={...inputs(now,dt,null,null), command,event,reduced:reducedWork,directedLife:product&&!!livingContext?.desktop,environmentFocus:livingContext?.desktop?.pointer,personalityEnabled:bounds().personality===true,rememberedKind:livingContext?.memory?.kind,model:spaceModel,interests:currentInterests,gazeOrigin:figure.gripFrame?.gazeOrigin,facing:layout.facing,gazeReady:personalLook.every((v,i)=>Math.abs(v-preview.look[i])<.65),words:actor.words,action:state,objectId:'o03-shell',object:{x:groundGrip().x,y:groundQuad[2].y},
       physicalNavigation:layout.navigation,destination:{x:destination,y:destinationY},parking:parking(),station:workTarget??bounds().workTarget??{x:850,y:600}};
     const result=stepLifeWork(coordination,input);coordination=result.state;
     for(const e of result.effects){
       if(e.type==='destination'){destination=e.x;destinationY=e.y;objectRevision++;}
       if(e.type==='action'){const i=inputs(now,0,e.command,null);apply(advance(state,i,profile),i);}
       if(e.type==='stand')actor.do('stand');
+      if(e.type==='cue')actor.cue(e.kind);
       if(e.type==='face' && actor.layout().facing!==e.facing)actor.do('turn');
       if(e.type==='gesture' && state.owner==='ground' && state.phase==='idle' && !reducedWork)actor.do(e.word);
       if(e.type==='navigate')navigate({id:e.id,generation:e.generation,model:spaceModel,target:e.target});
@@ -132,7 +141,7 @@ export async function createMotionBody(base, options) {
     const performance=stepWorkPerformance(performanceState,coordination,dt,{reduced:reducedWork});
     performanceState=performance.state;performanceView=performance.view;
     const hadPersonal=personalView?.active;
-    personalView=personalityPerformance(coordination,input,{reduced:reducedWork});
+    personalView=attention();
     if(hadPersonal && !personalView.active)actor.set({clearGesture:true});
     const workFeedback=performanceState.cue&&performanceState.cueAge<2.5;
     const expression=personalView.active&&!workFeedback?personalView.expression:performanceView.expression;
@@ -221,7 +230,7 @@ export async function createMotionBody(base, options) {
       
       actor.set(value);
     },
-    layout() { const layout=actionLayout(); return {...layout, ...(product?{living:{phase:coordination.phase,reason:coordination.reason,action:state.phase,suspended:state.suspended,owner:state.owner,pickup:state.commits.pickup,drop:state.commits.drop,goal:coordination.life?'arrange':coordination.personality?.decision?.interestId??null,socialReady:coordination.phase==='social-wait'}}:{})}; }, resize() {
+    layout() { const layout=actionLayout(); return {...layout, ...(product?{living:{phase:coordination.phase,reason:coordination.reason,action:state.phase,suspended:state.suspended,owner:state.owner,pickup:state.commits.pickup,drop:state.commits.drop,routine:living?.stage??'tidy',cycles:living?.cycles??0,environment:coordination.environmentKind,animating:personalView?.active&&personalLook.some((v,i)=>Math.abs(v-personalView.look[i])>.05),goal:coordination.life?'arrange':coordination.personality?.decision?.interestId??null,socialReady:coordination.phase==='social-wait'}}:{})}; }, resize() {
       const next={...bounds()}; actor.resize();
       if(product){
         const layout=actor.layout();

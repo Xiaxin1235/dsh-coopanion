@@ -45,22 +45,22 @@ export function choosePersonality(p,input) {
   const random=()=>{seed=(Math.imul(1664525,seed)+1013904223)>>>0;return seed/4294967296;};
   const samples=[random(),random(),random()],origin={x:input.bodyX,y:input.bodyY};
   const words=input.words??[],canMove=input.canNavigate&&words.includes('stand')&&!input.reduced;
-  const affinities=p.id==='quiet'?{shell:5,plant:2,home:3}:{plant:5,shell:3,home:1};
+  const affinities=p.id==='quiet'?{shell:5,plant:2,home:3,edge:3,place:1}:{plant:5,shell:3,home:1,edge:5,place:1};
   if(input.rememberedKind==='pet')affinities.shell+=2;
   if(input.rememberedKind==='play')affinities.plant+=2;
   const known=(input.interests??[]).slice(0,8).filter(i=>i && typeof i.id==='string' && Object.hasOwn(affinities,i.kind) && [i.focus?.x,i.focus?.y].every(Number.isFinite));
-  const available=known.filter(i=>!(p.observations??[]).some(o=>o.key===interestKey(i)&&(p.clock??0)-o.at<90)).map(i=>{
+  const available=known.filter(i=>(!input.visitId||i.id===input.visitId)&&(!!input.visitId||!(p.observations??[]).some(o=>o.key===interestKey(i)&&(p.clock??0)-o.at<90))).map(i=>{
     const points=Array.isArray(i.targets?.[p.id])?i.targets[p.id]:i.target?[i.target]:[];
     const paths=canMove&&input.model?points.filter(t=>[t.x,t.y].every(Number.isFinite)).map(target=>({target,plan:planPath(input.model,origin,target)})).filter(p=>p.plan.passed):[];
     const route=paths.sort((a,b)=>(a.plan.length??Math.hypot(a.target.x-origin.x,a.target.y-origin.y))-(b.plan.length??Math.hypot(b.target.x-origin.x,b.target.y-origin.y)))[0];
     const distance=route?(route.plan.length??Math.hypot(route.target.x-origin.x,route.target.y-origin.y)):Math.hypot(i.focus.x-origin.x,i.focus.y-origin.y);
     return {...i,key:interestKey(i),route,score:affinities[i.kind]-distance*.002};
   }).sort((a,b)=>b.score-a.score||a.id.localeCompare(b.id));
-  // Distance is a choice about a named object. Empty ground never becomes an interest.
+  // Choose a named object or an explicit desktop affordance, never anonymous random ground.
   // Reconsider the object before giving up a route. With navigation available,
   // only a reachable observation position can authorize an object observation.
   const eligible=canMove?available.filter(i=>i.route):available;
-  const interest=input.reduced?null:eligible[0]??null,wanted=samples[0]<parameters.explore;
+  const interest=input.reduced?null:eligible[0]??null,wanted=!!input.visitId||samples[0]<parameters.explore;
   const target=wanted&&interest?.route&&Math.hypot(interest.route.target.x-origin.x,interest.route.target.y-origin.y)>12?interest.route.target:null;
   const kind=target?'explore':'stay';
   const reason=personalityGate(p)??(input.reduced?'reduced-motion':!input.canNavigate?'no-navigation':!words.includes('stand')?'no-stand':!known.length?'no-interest':!available.length?'observed-all':!interest?'no-safe-target':kind==='explore'?'inspect-object':'observe-here');

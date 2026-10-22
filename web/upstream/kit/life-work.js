@@ -2,7 +2,7 @@ import {initialPersonality,configurePersonality,personalityGate,choosePersonalit
 // Local opt-in courtyard coordinator. One body, one tick, one navigator.
 // Work facts are metadata projected by the trusted owner, never inferred here.
 export const initialLifeWork = () => ({ phase:'idle', suspended:null, reason:null, life:null, sessions:[], focus:null,
-  interaction:null, occupied:false, social:false, admission:0, navigation:null, serial:0, elapsed:0, lastAt:null, revision:null, personality:null, observed:0, workRest:null });
+  interaction:null, occupied:false, social:false, environmentBusy:false, environmentKind:null, visit:null, admission:0, navigation:null, serial:0, elapsed:0, lastAt:null, revision:null, personality:null, observed:0, workRest:null });
 // A bounded last-result ledger per source survives metadata changes and restarts.
 export function workCelebration(previous, sessions) {
   const old=new Map(previous.map(entry=>[entry.sessionId,entry.id]));
@@ -64,9 +64,17 @@ export function stepLifeWork(state, input) {
     for(const fact of cmd.facts)next=acceptWorkFact(next,fact);
   }
   if(cmd?.type==='interaction')next.interaction=cmd.sessionId??null;
+  if(cmd?.type==='environment') {
+    next.environmentBusy=cmd.busy===true;next.environmentKind=next.environmentBusy?cmd.kind:null;
+    if(next.environmentBusy)handoff();else if(next.phase==='environment-wait')enter('return');
+    return out();
+  }
+  if(cmd?.type==='environment-cue' && input.action.owner==='ground' && input.action.phase==='idle' && !input.moving && !demand() && !next.social) {
+    effects.push({type:'cue',kind:'perk'});return out();
+  }
   if(cmd?.type==='social') {
     next.social=cmd.occupied===true;
-    if(next.social)handoff();else if(next.phase==='social-wait')enter('return');
+    if(next.social)handoff();else if(next.phase==='social-wait')enter(next.environmentBusy?'environment-wait':'return');
     return out();
   }
   if(cmd?.type==='pause' || input.blocked || state.lastAt!==null && (input.now<state.lastAt||input.now-state.lastAt>1000)) {pause(cmd?.reason??'lifecycle');return out();}
@@ -107,6 +115,10 @@ export function stepLifeWork(state, input) {
     return out();
   }
   if(next.phase==='paused')return out();
+  if(input.action.phase==='paused'&&input.action.suspended==='idle'&&input.action.owner==='ground'){action({type:'yield'});return out();}
+  if(cmd?.type==='visit' && input.directedLife && !demand() && !next.environmentBusy && !next.social && (personal()||['idle','ended'].includes(next.phase)) && input.action.owner==='ground' && input.action.phase==='idle' && !input.moving && Number.isSafeInteger(cmd.token)) {
+    stop();next.visit={id:cmd.id,token:cmd.token,status:'pending',revision:input.revision};enter('personal-choose');
+  }
   if(cmd?.type==='rest' && !demand() && personal() && input.action.owner==='ground' && input.action.phase==='idle' && !input.moving) {enter('personal-rest');action({type:'sit'});return out();}
   if(!['idle','ended'].includes(next.phase) && next.revision!==input.revision) {pause('world-changed');return out();}
   if(demand() && (['idle','ended','life','return'].includes(next.phase)||personal())) {handoff();return out();}
@@ -122,9 +134,16 @@ export function stepLifeWork(state, input) {
   } else if(next.phase==='handoff') {
     if(input.action.phase==='idle' && input.action.owner==='ground') {
       if(next.social)enter('social-wait');
+      else if(next.environmentBusy){
+        enter('environment-wait');
+        const x=input.environmentFocus?.x;
+        if(next.environmentKind==='pointer'&&Number.isFinite(x)&&Math.abs(x-input.bodyX)>40&&input.facing!==(x>input.bodyX?1:-1))effects.push({type:'face',facing:x>input.bodyX?1:-1});
+      }
       else if(demand()){enter('work-prepare');effects.push({type:'stand'});}
       else enter('return');
     } else if(next.elapsed>15)pause('handoff-timeout');
+  } else if(next.phase==='environment-wait') {
+    if(!next.environmentBusy)enter('return');
   } else if(next.phase==='social-wait') {
     if(!next.social)enter('return');
   } else if(['work-prepare','work-travel','work-wait'].includes(next.phase)) {
@@ -173,7 +192,9 @@ export function stepLifeWork(state, input) {
   if(next.phase==='personal-rest') { if(next.elapsed>=20)handoff(); }
   else if(next.phase==='personal-choose') {
     if(input.action.owner!=='ground' || input.action.phase!=='idle' || input.moving || input.physicalNavigation?.id!=null){handoff();return out();}
-    next.personality=choosePersonality(next.personality,input);
+    if(input.directedLife && next.visit?.status!=='pending')return out();
+    next.personality=choosePersonality(next.personality,{...input,...(input.directedLife?{visitId:next.visit.id}:{})});
+    if(input.directedLife && next.personality.decision.interestId!==next.visit.id){next.visit={...next.visit,status:'blocked'};return out();}
     effects.push({type:'personality-choice',decision:next.personality.decision});
     if(next.personality.decision.kind==='explore'){enter('personal-prepare');effects.push({type:'stand'});}
     else attend();
@@ -196,6 +217,7 @@ export function stepLifeWork(state, input) {
     if(!input.moving && input.facingReady!==false && input.gazeReady!==false)next.observed+=dt;
     if(next.personality.decision.focus && next.observed>=2.5 && next.personality.decision.result==='pending'){
       next.personality=completeObservation(next.personality);
+      if(input.directedLife && next.visit?.id===next.personality.decision.interestId)next.visit={...next.visit,status:'done'};
       effects.push({type:'observed',id:next.personality.decision.interestId});
       if(!input.reduced && next.personality.decision.attention==='investigate' && input.words?.includes('nod'))effects.push({type:'gesture',word:'nod'});
     }

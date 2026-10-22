@@ -43,7 +43,9 @@ export function stepSpaceAction(state, input, profile) {
   // from the sampled pose; an owned object must still use the real drop gates.
   if (cmd?.type === 'yield') {
     next.loop = false;
-    if (next.phase === 'idle' && next.owner === 'ground') return out();
+    if (activePhase(next) === 'idle' && next.owner === 'ground') {
+      next.phase='idle';next.suspended=null;next.error=null;next.stable=0;stop();return out();
+    }
     if (next.owner === 'ground') {
       if (['rest','standUp'].includes(activePhase(next))) {
         next.phase='standUp';next.suspended=null;next.elapsed=0;next.error=null;
