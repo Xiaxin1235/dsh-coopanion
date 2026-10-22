@@ -1,3 +1,6 @@
+import {artifactRoot as nativeArtifacts} from '../scripts/lib/playwright.mjs';
+import {mkdirSync as ensureNativeArtifacts} from 'node:fs';
+ensureNativeArtifacts(nativeArtifacts,{recursive:true});
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -63,6 +66,6 @@ try {
   await send({ type: 'snapshot', snapshot: { ...snapshot, mood: 'working', active: true, sessionId: 'native-work', sessions: [{ id: 'native-work', mood: 'working', active: true }] } });
   await page.waitForSelector('#pet[data-mood=working]'); assert.equal(await page.locator('#companion-invitation').isVisible(), false); assert.equal(await page.locator('#pet').getAttribute('data-mood'), 'working');
   assert.deepEqual(errors, []);
-  await writeFile(process.env.COMPANION_EVIDENCE_DIR ? join(process.env.COMPANION_EVIDENCE_DIR, 'companionship-native.json') : 'artifacts/companionship-native.json', JSON.stringify({ sourceBaseCommit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), sources: Object.fromEntries(await Promise.all(['desktop/main.cjs', 'web/pet.js', 'web/companionship.js', 'src/companion-store.ts'].map(async file => [file, createHash('sha256').update(await readFile(file)).digest('hex')]))), platform: process.platform, arch: process.arch, nativeIpc: true, memoryRestoreCorrectDelete: true, realInputPlay: true, durableRelationship: summary.relation, noSessionRequired: true, hotDraftSelection: true, hotCapturedReaderAndScroll: true, taskPreemption: true, sandboxUnchanged: true }, null, 2) + '\n');
+  await writeFile(process.env.COMPANION_EVIDENCE_DIR ? join(process.env.COMPANION_EVIDENCE_DIR, 'companionship-native.json') : (nativeArtifacts + '/companionship-native.json'), JSON.stringify({ sourceBaseCommit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), sources: Object.fromEntries(await Promise.all(['desktop/main.cjs', 'web/pet.js', 'web/companionship.js', 'src/companion-store.ts'].map(async file => [file, createHash('sha256').update(await readFile(file)).digest('hex')]))), platform: process.platform, arch: process.arch, nativeIpc: true, memoryRestoreCorrectDelete: true, realInputPlay: true, durableRelationship: summary.relation, noSessionRequired: true, hotDraftSelection: true, hotCapturedReaderAndScroll: true, taskPreemption: true, sandboxUnchanged: true }, null, 2) + '\n');
   console.log('P1 native companion play, durable progress, recovery, settings and task precedence passed.');
 } finally { await app?.close(); await rm(directory, { recursive: true, force: true }); }

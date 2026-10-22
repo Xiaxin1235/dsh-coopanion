@@ -1,3 +1,6 @@
+import {artifactRoot as nativeArtifacts} from '../scripts/lib/playwright.mjs';
+import {mkdirSync as ensureNativeArtifacts} from 'node:fs';
+ensureNativeArtifacts(nativeArtifacts,{recursive:true});
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { mkdtemp, rm, mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -9,7 +12,7 @@ import { _electron } from '../scripts/lib/playwright.mjs';
 import { petClick, nativeClick, parkNativePointer } from './helpers/native-pointer.mjs';
 
 const require = createRequire(import.meta.url), directory = await mkdtemp(join(tmpdir(), 'dsh-response-native-'));
-const output = process.env.COMPANION_EVIDENCE_DIR ?? 'artifacts';
+const output = process.env.COMPANION_EVIDENCE_DIR ?? nativeArtifacts;
 let app;
 const idle = { mood: 'idle', active: false, sessionId: null, sessions: [], results: [] };
 const options = { size: 180, roam: true, companionship: 'quiet', locale: 'zh', notifications: true };

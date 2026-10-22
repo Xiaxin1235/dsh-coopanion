@@ -15,7 +15,7 @@
 
 安装、空间桌面预览、首页截图和 Linux 资源观察使用 `.cache/tmp/<用途>-<UUID>`；租约记录父进程、创建时间和共享运行时引用。正常结束与异常抛出走清理；预览的取消信号转交 Electron，退出后清理。硬终止可能留下目录，由下次显式回收检查。资源观察的包、日志、采样、摘要、截图仍写在指定的新输出目录，安装 profile／依赖工作区结束后删除。Xvfb 启动日志仍按观察脚本独立保留，用于失败诊断。
 
-`test:inbox-ui` 各入口默认把新截图／JSON 写到 `artifacts/runs/<时间>-<UUID>`，不会覆盖顶层旧结果；可指定 `DSH_TEST_ARTIFACTS=<本轮新目录>` 汇总，生活／陪伴专用 `LIVING_EVIDENCE_DIR`、`COMPANION_EVIDENCE_DIR` 仍优先。显式输出目录由调用者保证全新。其他定向验证仍按各自已有证据参数指定新目录；截图、录像、报告、提示词、素材与许可不自动到期删除。
+`test:inbox-ui` 各入口默认把新截图／JSON 写到 `artifacts/runs/<时间>-<UUID>`，不会覆盖顶层旧结果；可指定 `DSH_TEST_ARTIFACTS=<本轮新目录>` 汇总，生活／陪伴专用 `LIVING_EVIDENCE_DIR`、`COMPANION_EVIDENCE_DIR` 仍优先。显式输出目录由调用者保证全新。通用原生 `test:desktop` 及固定名称子测试也使用独立 `artifactRoot`，陪伴／生活／口型／消息／菜单各有子目录。其他定向验证仍按各自已有证据参数指定新目录；截图、录像、报告、提示词、素材与许可不自动到期删除。
 
 ## 可预览回收与保留策略
 

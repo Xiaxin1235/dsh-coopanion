@@ -1,3 +1,6 @@
+import {artifactRoot as nativeArtifacts} from '../scripts/lib/playwright.mjs';
+import {mkdirSync as ensureNativeArtifacts} from 'node:fs';
+ensureNativeArtifacts(nativeArtifacts,{recursive:true});
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -27,7 +30,7 @@ try {
   const syntheticX11 = process.platform === 'linux' && observation.backend === 'x11' && process.env.DSH_KEYBOARD_TEST_X11_INPUT === '1'
     ? JSON.parse(execFileSync('/usr/bin/python3', ['-I', resolve(root, 'tests/helpers/keyboard-x11-probe.py'), resolve(root, 'desktop/keyboard-activity-x11.py')], { encoding: 'utf8', timeout: 15000 })) : null;
   await mkdir('artifacts', { recursive: true });
-  await writeFile('artifacts/keyboard-activity-native.json', JSON.stringify({
+  await writeFile((nativeArtifacts + '/keyboard-activity-native.json'), JSON.stringify({
     build: JSON.parse(await readFile(resolve(root, 'dist/build-info.json'), 'utf8')),
     platform: process.platform, arch: process.arch, backend: observation.backend,
     statuses: [...statuses], samples: counts,

@@ -1,3 +1,7 @@
+import {artifactRoot as nativeArtifacts} from '../scripts/lib/playwright.mjs';
+import {mkdirSync as ensureNativeArtifacts} from 'node:fs';
+ensureNativeArtifacts(nativeArtifacts,{recursive:true});
+for(const [key,dir]of Object.entries({COMPANION_EVIDENCE_DIR:'companionship',LIVING_EVIDENCE_DIR:'living',MOUTH_EVIDENCE_DIR:'mouth',MESSAGE_EVIDENCE_DIR:'messages',MENU_EVIDENCE_DIR:'menu'}))process.env[key]??=nativeArtifacts+'/'+dir;
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:net';
@@ -121,7 +125,7 @@ try {
   assert.match(await page.locator('#character-credit').innerText(), /Pal-AI-Lab.*ZipZipPipe/);
   await waitTray(state => state?.scheme === 'claude' && state.characterId === 'whale');
   assert.equal(actions.filter(action => action.type === 'chat').length, 2, 'character import and session navigation do not send extra model messages');
-  await mkdir('artifacts', { recursive: true }); await page.screenshot({ path: 'artifacts/native-pet.png' });
+  await mkdir(nativeArtifacts, { recursive: true }); await page.screenshot({ path: (nativeArtifacts + '/native-pet.png') });
   await page.locator('#character-select').selectOption('paper-star');
   await page.waitForFunction(() => !document.getElementById('character-use').disabled);
   await page.locator('#character-scheme').selectOption('night');
@@ -263,7 +267,7 @@ try {
   await recoveryControls.dispose();
   const disposedGeneration = recoveryControls.status().generation;
   await pause(1200); assert.equal(recoveryControls.status().generation, disposedGeneration); assert.equal(recoveryControls.status().phase, 'stopped');
-  await writeFile('artifacts/desktop-recovery.json', JSON.stringify({ sourceCommit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), platform: process.platform, arch: process.arch, electron: '44.7.0', retryDelaysMs: [100, 300, 1000], crashedPid, cases: { hiddenNoFlash: true, visibleRecovery: true, fullResults: true, validRequests: true, noChatReplay: true, noOldReplySpeech: true, stopDuringBackoff: true, unloadDuringBackoff: true, rendererDraftLoss: true }, events: recoveryEvents, native: nativeEvents }, null, 2) + '\n');
+  await writeFile((nativeArtifacts + '/desktop-recovery.json'), JSON.stringify({ sourceCommit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), platform: process.platform, arch: process.arch, electron: '44.7.0', retryDelaysMs: [100, 300, 1000], crashedPid, cases: { hiddenNoFlash: true, visibleRecovery: true, fullResults: true, validRequests: true, noChatReplay: true, noOldReplySpeech: true, stopDuringBackoff: true, unloadDuringBackoff: true, rendererDraftLoss: true }, events: recoveryEvents, native: nativeEvents }, null, 2) + '\n');
   await bridge.dispose();
   if (browser) { await browser.close(); browser = undefined; }
   await import('./multi-display-native.mjs');

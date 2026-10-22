@@ -1,3 +1,6 @@
+import {artifactRoot as nativeArtifacts} from '../scripts/lib/playwright.mjs';
+import {mkdirSync as ensureNativeArtifacts} from 'node:fs';
+ensureNativeArtifacts(nativeArtifacts,{recursive:true});
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
 import assert from 'node:assert/strict';
@@ -77,6 +80,6 @@ try {
   assert.deepEqual(await listDiagnostics(registry), []);
   assert.deepEqual(await page.locator('#message').evaluate(n => [n.value, n.selectionStart, n.selectionEnd]), ['diagnostic private draft', 2, 8]);
   await mkdir('artifacts', { recursive: true });
-  await writeFile('artifacts/diagnostics-native.json', JSON.stringify({ version: first.version, build: first.build, defaultOff: true, controlledLifecycleCounters: true, lifecycleClearsOnDisable: true, hotTogglePreservesDraft: true, readOnlyStoreRevision: true, tokenAndDraftOmitted: true, sandboxIsolated: true, interfaceWithdrawn: true, standaloneSampler: { supported: resourceCollectorSupported, samples: collectorSummary?.samples ?? 0, textAndTokenOmitted: resourceCollectorSupported, fullTwoHourObservation: false } }, null, 2) + '\n');
+  await writeFile((nativeArtifacts + '/diagnostics-native.json'), JSON.stringify({ version: first.version, build: first.build, defaultOff: true, controlledLifecycleCounters: true, lifecycleClearsOnDisable: true, hotTogglePreservesDraft: true, readOnlyStoreRevision: true, tokenAndDraftOmitted: true, sandboxIsolated: true, interfaceWithdrawn: true, standaloneSampler: { supported: resourceCollectorSupported, samples: collectorSummary?.samples ?? 0, textAndTokenOmitted: resourceCollectorSupported, fullTwoHourObservation: false } }, null, 2) + '\n');
   console.log('Native diagnostics: default off, authenticated read, no draft text, hot toggle, read-only archive and sandbox isolation passed.');
 } finally { await app?.close(); await rm(root, { recursive: true, force: true }); }

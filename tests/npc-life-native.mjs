@@ -1,3 +1,6 @@
+import {artifactRoot as nativeArtifacts} from '../scripts/lib/playwright.mjs';
+import {mkdirSync as ensureNativeArtifacts} from 'node:fs';
+ensureNativeArtifacts(nativeArtifacts,{recursive:true});
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { mkdtemp, rm, readFile, mkdir, writeFile } from 'node:fs/promises';
@@ -49,7 +52,7 @@ try {
   await npcUntil(page, 'outbound'); assert.ok(await page.evaluate(id => window.npcState.walkId > id, id));
   await page.waitForFunction(() => window.npcState.phase === 'observe', null, { timeout: 25000 });
   await npcUntil(page, 'return'); await page.waitForFunction(() => window.npcState.phase === 'home', null, { timeout: 25000 });
-  await page.screenshot({ path: 'artifacts/npc-life-native-home.png' });
+  await page.screenshot({ path: (nativeArtifacts + '/npc-life-native-home.png') });
   await send({ type: 'snapshot', snapshot: { mood: 'working', active: true, sessionId: 'npc-work', sessions: [{ id: 'npc-work', mood: 'working', active: true }], results: [] } });
   await npcTick(page);
   await page.waitForSelector('#pet[data-mood=working]');
@@ -86,6 +89,6 @@ try {
   assert.equal(await page.locator('#body-layer iframe').contentFrame().locator('body').evaluate(() => typeof window.dshPetBridge), 'undefined');
   assert.deepEqual(errors, []);
   await mkdir('artifacts', { recursive: true });
-  await writeFile('artifacts/npc-life-native.json', JSON.stringify({ build: JSON.parse(await readFile(join(packageRoot, 'dist/build-info.json'), 'utf8')), electron: await app.evaluate(() => process.versions.electron), platform: process.platform, arch: process.arch, actualKeyboard: actual.value.renderer.npc.keyboard, keyboardBackend: actual.value.renderer.npc.keyboardBackend, keyboardStatus: actual.value.renderer.npc.keyboardStatus, controlledPerceptionForMovement: true, controlledPointerForMovement: true, realNativeWalkArrivalReturn: true, interruptionRetainsTarget: true, stableRecovery: true, nativeFixedSize: true, nativeEdgeDropNoRecoil: true, manualPlacementOwnsPosition: true, hotRelativeSettings: true, lifecyclePause: true, workPreemptsNpc: true, sandboxIsolated: true, physicalTypingValidated: false }, null, 2) + '\n');
+  await writeFile((nativeArtifacts + '/npc-life-native.json'), JSON.stringify({ build: JSON.parse(await readFile(join(packageRoot, 'dist/build-info.json'), 'utf8')), electron: await app.evaluate(() => process.versions.electron), platform: process.platform, arch: process.arch, actualKeyboard: actual.value.renderer.npc.keyboard, keyboardBackend: actual.value.renderer.npc.keyboardBackend, keyboardStatus: actual.value.renderer.npc.keyboardStatus, controlledPerceptionForMovement: true, controlledPointerForMovement: true, realNativeWalkArrivalReturn: true, interruptionRetainsTarget: true, stableRecovery: true, nativeFixedSize: true, nativeEdgeDropNoRecoil: true, manualPlacementOwnsPosition: true, hotRelativeSettings: true, lifecyclePause: true, workPreemptsNpc: true, sandboxIsolated: true, physicalTypingValidated: false }, null, 2) + '\n');
   console.log('NPC isolated native cycle, interruption, arrival, return, relative settings and diagnostics passed.');
 } catch (error) { console.error('NPC native state:', JSON.stringify(await page?.evaluate(() => ({ state: window.npcState, input: window.npcInput, events: window.npcEvents?.slice(-8), trace: window.npcTrace, mode: document.querySelector('#pet').dataset.mode })).catch(() => null))); throw error; } finally { await app?.close(); await rm(root, { recursive: true, force: true }); }

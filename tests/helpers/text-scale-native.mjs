@@ -1,3 +1,6 @@
+import {artifactRoot as nativeArtifacts} from '../../scripts/lib/playwright.mjs';
+import {mkdirSync as ensureNativeArtifacts} from 'node:fs';
+ensureNativeArtifacts(nativeArtifacts,{recursive:true});
 import assert from 'node:assert/strict';
 import { writeFile } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
@@ -22,7 +25,7 @@ export async function verifyNativeTextScale({ page, bridge, snapshot }) {
     assert.equal(await page.locator('#reader-text').evaluate(n => n.scrollTop), 120);
     samples.push({ locale, size, textScale, rect, display: await sampleNativeDisplay(page, '#reader-text') });
   }
-  await page.screenshot({ path: 'artifacts/text-scale-native.png' });
+  await page.screenshot({ path: (nativeArtifacts + '/text-scale-native.png') });
   await page.keyboard.press('Escape');
   await petClick(page, {}, true); await page.locator('#message').fill('native preserved draft');
   for (const textScale of [1, 1.25, 1.5]) bridge.configure({ size: 150, textScale, locale: 'zh', roam: false, notifications: true, bubbleDurationMs: 12000 });
@@ -30,5 +33,5 @@ export async function verifyNativeTextScale({ page, bridge, snapshot }) {
   assert.equal(await page.locator('#message').inputValue(), 'native preserved draft');
   await page.locator('#message').fill(''); await page.keyboard.press('Escape');
   bridge.configure({ size: 150, textScale: 1, locale: 'zh', roam: false, notifications: true, bubbleDurationMs: 12000 });
-  await writeFile('artifacts/text-scale-native.json', JSON.stringify({ sourceCommit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), platform: process.platform, arch: process.arch, samples, capturedReader: true, scrollRetained: true, draftRetained: true }, null, 2) + '\n');
+  await writeFile((nativeArtifacts + '/text-scale-native.json'), JSON.stringify({ sourceCommit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), platform: process.platform, arch: process.arch, samples, capturedReader: true, scrollRetained: true, draftRetained: true }, null, 2) + '\n');
 }

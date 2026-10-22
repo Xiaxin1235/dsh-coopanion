@@ -49,7 +49,7 @@ bash scripts/macos-vm.sh exec 'cd ~/dsh-testing/dsh-coopanion && git rev-parse H
 
 有未提交改动时先核对归属和保留要求。已提交的本地源码可通过 Git bundle 经专用 SSH 传入，在来宾用 `git bundle verify` 核对后 fetch、`git merge --ff-only` 更新；不需要推送到远端。未提交补丁单独传入并记录文件摘要，不能只比较 HEAD 就宣称源码相同。依赖锁或工具链变化时在来宾按[开发指南](development.md)重新准备，缓存身份与复用按[缓存管理](cache-management.md)核对；不从宿主复制 node_modules 或跨平台浏览器。
 
-测试在来宾 `~/dsh-testing/dsh-coopanion` 执行，先构建对应源码，每轮使用全新产物目录。通用 `test:desktop` 需要根目录的 `paper-star.zip` 测试夹具：构建后用 `npm run character:pack -- examples/star paper-star.zip` 从当前源码重新生成；已有 Node、Electron、浏览器和依赖按锁与缓存身份复用，不因开始新一轮而重复安装。部分通用原生脚本仍写 `artifacts/` 下固定文件名，执行前先将已存在的对应产物按来源移入旧运行目录；支持 `*_EVIDENCE_DIR` 的脚本使用本轮独立目录。结果经专用 SSH 取回宿主独立 artifacts 目录，保留源码／补丁、系统、工具链与包身份。来宾旧结果不能替代宿主新提交的测试，`provisioning.json` 也不证明来宾源码仍是创建时版本。
+测试在来宾 `~/dsh-testing/dsh-coopanion` 执行，先构建对应源码，每轮使用全新产物目录。通用 `test:desktop` 需要根目录的 `paper-star.zip` 测试夹具：构建后用 `npm run character:pack -- examples/star paper-star.zip` 从当前源码重新生成；已有 Node、Electron、浏览器和依赖按锁与缓存身份复用，不因开始新一轮而重复安装。通用原生回归及其子脚本默认写每轮独立 `artifactRoot`；可用 `DSH_TEST_ARTIFACTS` 指定本轮全新目录，专用 `*_EVIDENCE_DIR` 继续优先。`test:desktop` 为陪伴、生活、口型、消息和菜单分别设置子目录，不能复用已有运行目录。旧版脚本仍需先枚举其所有子脚本的固定输出并保留，不能只检查父入口。结果经专用 SSH 取回宿主独立 artifacts 目录，保留源码／补丁、系统、工具链与包身份。来宾旧结果不能替代宿主新提交的测试，`provisioning.json` 也不证明来宾源码仍是创建时版本。
 
 基线准备好后停机，从基线克隆单台测试机。每轮运行应记录实际源码提交、是否有修改、工具链、镜像摘要和包摘要。正式安装仍消费同一规范 `.tgz`；源码浏览器测试、原生探针、真实 Host 安装与物理实机结果分别结算。准备基线不接入日用 Host／Apple 账号；系统休眠和显示器休眠只在来宾关闭。
 

@@ -1,3 +1,6 @@
+import {artifactRoot as nativeArtifacts} from '../scripts/lib/playwright.mjs';
+import {mkdirSync as ensureNativeArtifacts} from 'node:fs';
+ensureNativeArtifacts(nativeArtifacts,{recursive:true});
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
@@ -66,5 +69,5 @@ for (const initialState of real ? ['system'] : ['locked', 'unknown', 'restore-lo
   }
 }
 await mkdir('artifacts', { recursive: true });
-await writeFile(real ? 'artifacts/lifecycle-startup-real.json' : 'artifacts/lifecycle-startup-native.json', JSON.stringify({ records }, null, 2) + '\n');
+await writeFile(real ? (nativeArtifacts + '/lifecycle-startup-real.json') : (nativeArtifacts + '/lifecycle-startup-native.json'), JSON.stringify({ records }, null, 2) + '\n');
 console.log('Native lifecycle startup passed: ' + (real ? 'ordinary sandbox, expected ' + expectedRealState : 'controlled locked/unknown and system adapter observation') + '.');
