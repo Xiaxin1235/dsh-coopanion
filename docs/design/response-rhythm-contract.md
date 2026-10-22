@@ -1,6 +1,6 @@
 # 第 5C 期：回应与安静节奏
 
-默认产品主页面已实现第 5C 期，使用 `web/response-rhythm.js` 的纯本地策略与既有帧调度；当前交付身份、验证与用户验收见[开发状态](../aliveness-development.md)。本轮授权为实现、测试、说明和本地提交；未推送、合并或发布。二维制作预览与默认二维产品装配不在本期。
+默认产品主页面已实现第 5C 期，使用 `web/response-rhythm.js` 的纯本地策略与既有帧调度；当前交付身份、验证与用户验收见[开发状态](../aliveness-development.md)。本契约只定义回应策略；产品空间与装配另由对应契约约束。
 
 ## 可见闭环
 
@@ -39,4 +39,4 @@
 - `COMPANION_EVIDENCE_DIR=<新目录> node tests/response-rhythm-native.mjs` 使用隔离 Electron profile、真实 IPC、可信指针与实际时钟，验证两次抚摸合批、20 秒忙碌过期和手动活动优先；已接入 `test:desktop` 串行执行。物理键盘操作与跨平台验收独立。
 - `tests/companionship-native.mjs` 保留明确回应、真实存档、重启与查看／纠正／删除的独立原生检查。
 
-本期固定结果见[5C 报告](../reports/stage-5c-20261021.md)。自动化、用户观感、三平台 CI、日用 Host 安装、发布、长期资源及物理多屏分别结算；旧全套原生限制以本期报告复核结果为准。第 6／7 期与人格扩张仍未扩展；后续已获授权的默认二维装配见[装配契约](living-integration-contract.md)，沿用本期回应容量与撤销规则。
+本期固定结果见[5C 报告](../reports/stage-5c-20261021.md)。自动化、用户观感、三平台 CI、日用 Host 安装、发布、长期资源及物理多屏分别结算；旧全套原生限制以本期报告复核结果为准。第 6／7 期与人格扩张仍未扩展；默认产品的既有装配与限制见[装配契约](living-integration-contract.md)，沿用本期回应容量与撤销规则。

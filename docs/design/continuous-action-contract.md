@@ -1,6 +1,6 @@
 # 连续动作与物件：第 3 期预览契约
 
-状态：第 3 期及花箱／拾取反馈修正已于 2026-10-20 获用户确认“测试通过”。实现在 `codex/aliveness-foundation` 的显式制作预览。工程验证与用户观感分别结算，当前结果看[开发状态](../aliveness-development.md)。本契约覆盖同地图、180px 主配色鲸鱼与 40px O03；后续默认产品通过[生活装配](living-integration-contract.md)复用同一工厂，尺寸与场景范围独立验证；第 4 期[双线预览](life-work-contract.md)在此执行器之上增加唯一协调入口。
+状态：第 3 期及花箱／拾取反馈修正已于 2026-10-20 获用户确认“测试通过”。实现在 `codex/aliveness-foundation` 的显式制作预览。工程验证与用户观感分别结算，当前结果看[开发状态](../aliveness-development.md)。本契约覆盖同地图、180px 主配色鲸鱼与 40px O03；默认产品通过[生活装配](living-integration-contract.md)复用同一工厂，尺寸与场景范围独立验证；第 4 期[双线预览](life-work-contract.md)在此执行器之上增加唯一协调入口。
 
 ## 入口与身体拥有权
 
