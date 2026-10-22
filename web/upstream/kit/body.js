@@ -151,6 +151,9 @@ export function createPet(els, opts) {
   const navigator = opts.navigation ? createNavigator({x:opts.startX ?? opts.bounds().W*.7,y:opts.bounds().floorY}, onEvent) : null;
   const pointer = { x: -1e4, y: -1e4, inside: false, vx: 0, samples: [] };
   let press = null, strokeAcc = 0, petCool = 0;
+  let supportY = null;
+  const planar = () => opts.planeEnabled?.() === true;
+  const groundY = () => planar() ? supportY ?? floorY : floorY;
   /** Whether the last frame found the horizontal speed not finite: a run of such frames is logged once. */
   let velXBad = false;
   const P = [];
@@ -160,8 +163,15 @@ export function createPet(els, opts) {
   const faceDef = n => FACES[n] ?? FACES[words[n]?.expression?.like] ?? FACES.neutral;
 
   function resize() {
+    const previous={W,H,S,ground:groundY()};
     const b = opts.bounds();
     W = b.W; H = b.H; floorY = b.floorY; S = b.S;
+    supportY ??= floorY;
+    if (planar() && pet.mode==='air' && previous.W>0 && previous.H>0) {
+      const p=opts.planePoint({x:pet.x/previous.W*W,y:previous.ground/previous.H*H});
+      const elevation=previous.ground-pet.fy;
+      supportY=p.y; pet.x=p.x; pet.fy=supportY-elevation*S/previous.S;
+    }
     if (!pet.placed && W > 0) {
       pet.x = opts.startX != null ? opts.startX : W * .7; pet.placed = true;
       if (opts.enter === 'drop') { pet.fy = -8; pet.vy = 0; pet.vx = 0; pet.airKind = 'drop'; setMode('air'); }
@@ -376,7 +386,7 @@ export function createPet(els, opts) {
 
     switch (m) {
       case 'navigate': {
-        const n=navigator.step(dt);pet.x=n.x;pet.fy=n.y;pet.speed=n.speed;pet.facing=n.facing;
+        const n=navigator.step(dt);pet.x=n.x;pet.fy=n.y;supportY=n.y;pet.speed=n.speed;pet.facing=n.facing;
         const k=n.speed/100;strideT=10*k;liftT=8*k;bobT=3*k;leanT=4*k;lookT=[3,0];
         pet.phase+=Math.PI*2*2.1*dt*k;
         if(n.phase==='idle')setMode('idle');
@@ -480,7 +490,7 @@ export function createPet(els, opts) {
         sqT = -Math.min(.12, Math.abs(pet.vy) / 6000);
         tiltT = clamp(pet.vx * .025, -30, 30);
         tk = 70; tc = 8;
-        if (pet.fy >= floorY && pet.vy > 0) land();
+        if (pet.fy >= groundY() && pet.vy > 0) land();
         break;
       }
       case 'land': {
@@ -635,7 +645,7 @@ export function createPet(els, opts) {
 
   function land() {
     const impact = pet.vy, kind = pet.airKind;
-    pet.fy = floorY; pet.vy = 0; pet.vx = 0;
+    pet.fy = groundY(); pet.vy = 0; pet.vx = 0;
     pet.sqv += clamp(impact * .0024, .8, 4.5);
     play('land', 'move', kind !== 'jump' && impact > 1000);
     dustAt(128, impact > 900 ? 7 : 3, 70);
@@ -676,8 +686,9 @@ export function createPet(els, opts) {
     });
 
     const footY = drag ? pet.dy + 220 * S * 1.09 : pet.fy;
-    const k = clamp(1 - (floorY - footY) / 420, .3, 1);
-    shadowEl.setAttribute('cx', f(AX)); shadowEl.setAttribute('cy', f((navigator ? pet.fy : floorY) - 2));
+    const support = planar() ? (drag ? opts.planePoint({x:AX,y:footY}).y : groundY()) : navigator ? pet.fy : floorY;
+    const k = clamp(1 - ((planar() ? support : floorY) - footY) / 420, .3, 1);
+    shadowEl.setAttribute('cx', f(AX)); shadowEl.setAttribute('cy', f(support - 2));
     shadowEl.setAttribute('rx', f(72 * S * k * (1 + pet.sq * .5))); shadowEl.setAttribute('ry', f(10 * S * k + 1));
     shadowEl.setAttribute('opacity', f(k));
 
@@ -757,6 +768,7 @@ export function createPet(els, opts) {
     if (pet.mode === 'drag') {
       // hand over from the scruff anchor to the feet anchor without a visual jump
       const foot = toStage(128, 256);
+      if (planar()) { settlePlane(foot); press=null; return; }
       const v = velocity();
       pet.x = clamp(foot.x, minX(), maxX());
       pet.fy = Math.min(floorY, foot.y);
@@ -790,6 +802,7 @@ export function createPet(els, opts) {
   function dropAt(p) {
     press = null;
     if (pet.mode !== 'drag') return;
+    if (planar()) { settlePlane({x:p.x,y:p.y+220*S}); return; }
     Object.assign(pointer, { x: p.x, y: p.y, vx: 0, samples: [] });
     pet.x = clamp(p.x, minX(), maxX());
     pet.fy = Math.min(floorY, p.y + 220 * S);
@@ -797,6 +810,16 @@ export function createPet(els, opts) {
     pet.airKind = 'drop';
     setMode('air');
     onEvent('touch', { kind: 'drop', x: Math.round(pet.x) });
+  }
+  function place2d(p) {
+    navigator?.relocate(p); pet.x=p.x; pet.fy=supportY=p.y;
+  }
+  function settlePlane(point) {
+    const p=opts.planePoint(point);
+    place2d(p); pet.vx=pet.vy=0; pet.cursor='';
+    pointer.vx=0; pointer.samples=[];
+    setMode('idle'); pet.nextAt=T+2;
+    onEvent('touch',{kind:'drop',placement:'plane',...p});
   }
   /**
    * Keeps a held body under the pointer when the stage moved to another display mid-drag: every
@@ -844,7 +867,7 @@ export function createPet(els, opts) {
       return result;
     },
     cancelNavigation(by){navigator?.cancel(by);if(pet.mode==='navigate')setMode('idle');},
-    pet, step, render, resize, act, setExpr, doWord, walkTo, stopWalk, toStage, hitPet, busy, layout,
+    pet, step, render, resize, act, setExpr, doWord, walkTo, stopWalk, toStage, hitPet, busy, layout, place2d,
     pointerDown, pointerMove, pointerUp, pointerLeave, dropAt, shiftDrag,
     get pressing() { return !!press; },
     /** Pressed, carried, airborne, walking, running, dancing, turning round, or in a short gesture (nod, wave, bow…): motion that frames far apart show as jumps. */
@@ -933,7 +956,7 @@ export function createBody(host, opts) {
     capabilities: opts.navigation ? [NAVIGATION] : [],
     navigate: ctl.navigate,
     cancelNavigation: ctl.cancelNavigation,
-    place2d(p){if(!ctl.navigator)return;ctl.cancelNavigation('drag');ctl.navigator.relocate(p);ctl.pet.x=p.x;ctl.pet.fy=p.y;ctl.render();},
+    place2d(p){if(!ctl.navigator)return;ctl.cancelNavigation('drag');ctl.place2d(p);ctl.render();},
     step(dt) { ctl.step(dt); ctl.render(); },
     layout: ctl.layout,
     resize(){ctl.cancelNavigation('geometry');ctl.resize();},
@@ -954,7 +977,7 @@ export function createBody(host, opts) {
       if (ctl.pet.mode === 'drag' || ctl.pet.mode === 'air') return;
       const { minX, maxX } = ctl.bounds;
       ctl.pet.x = ctl.pet.target = clamp(x, minX, maxX);
-      if(ctl.navigator){ctl.navigator.relocate({x:ctl.pet.x,y:ctl.bounds.floorY});ctl.pet.fy=ctl.bounds.floorY;}
+      if(ctl.navigator)ctl.place2d({x:ctl.pet.x,y:ctl.bounds.floorY});
       if (facing === 1 || facing === -1) ctl.pet.facing = ctl.pet.faceVis = facing;
     },
     set(s) {

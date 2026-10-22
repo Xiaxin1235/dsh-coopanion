@@ -7,6 +7,7 @@ import { initialPersonality, shellInterest } from './personality.js';
 import { initialLifeWork, stepLifeWork } from './life-work.js';
 import { initialWorkPerformance, stepWorkPerformance } from './work-performance.js';
 import { handWeights } from '../whale/hand-art.js';
+import { desktopPlane, planePoint } from './desktop-plane.js';
 
 export async function createMotionBody(base, options) {
   const { shell: originalSpec, whale: model, motion: profile, hands: handSpec } = options.model;
@@ -18,6 +19,8 @@ export async function createMotionBody(base, options) {
   if(product)Object.defineProperty(spec,'displayWidth',{get:()=>originalSpec.displayWidth*bounds().S/resourceScale});
   const whaleBase = new URL('../whale/', import.meta.url), shellBase = new URL('../../props/shell/', import.meta.url);
   let livingContext = null, living = null;
+  const planar = () => product && livingContext?.planar === true;
+  const legalPoint = point => { const b=bounds(); return planePoint(desktopPlane({width:b.W,height:b.H,size:b.S*256}),point); };
   const continuous = bounds().continuousActions === true;
   const coordinated = bounds().lifeWork === true;
   let coordination = initialLifeWork(), coordinationQueue = [], gaze = 0, taskExpression = null, workTarget = null, performanceState = initialWorkPerformance(), performanceView = null, reducedWork = false, freeArm = [4,-2];
@@ -60,6 +63,7 @@ export async function createMotionBody(base, options) {
     if ((continuous ? ['navigation-arrived','navigation-interrupted'] : ['arrived', 'interrupted']).includes(kind)) arrival = { kind, ...detail };
     options.host.emit(kind, detail);
   } }, { figure, navigation: options.host.bounds().navigation === true,
+    planeEnabled:planar, planePoint:legalPoint,
     facingOwned: () => !['idle','rest'].includes(state.phase==='paused'?state.suspended:state.phase) || ['personal-align','personal-dwell','environment-wait'].includes(coordination.phase) });
   actor.set({ roam: 'off' });
   let groundLayer=null, groundImage=null;
@@ -176,7 +180,7 @@ export async function createMotionBody(base, options) {
       propMirror, activeTime, speed, sequence: ++sequence });
   }
   return {
-    words: actor.words, capabilities:actor.capabilities, navigate(command){if(state.phase!=='idle'||coordinated&&!['idle','ended'].includes(coordination.phase)){options.host.emit('navigation-interrupted',{id:command.id,generation:command.generation,revision:command.model.revision,by:'body-owned'});return false;}wallAt=performance.now();return navigate(command);}, cancelNavigation:actor.cancelNavigation, place2d:actor.place2d,
+    words: actor.words, capabilities:actor.capabilities, navigate(command){if(state.phase!=='idle'||coordinated&&!['idle','ended'].includes(coordination.phase)){options.host.emit('navigation-interrupted',{id:command.id,generation:command.generation,revision:command.model.revision,by:'body-owned'});return false;}wallAt=performance.now();return navigate(command);}, cancelNavigation:actor.cancelNavigation, place2d(p){actor.place2d(planar()?legalPoint(p):p);},
     step(dt) {
       const now = performance.now(), gap = now - wallAt; wallAt = now;
       if (gap > 1000 || forcePause) { if(coordinated)coordinationQueue.push({type:'pause',reason:'lifecycle'}); actor.cancelNavigation('lifecycle-gap'); pending = ['reset','resume'].includes(pending?.type) ? pending : { type: 'pause' }; forcePause = false; }
@@ -231,16 +235,16 @@ export async function createMotionBody(base, options) {
       actor.set(value);
     },
     layout() { const layout=actionLayout(); return {...layout, ...(product?{living:{phase:coordination.phase,reason:coordination.reason,action:state.phase,suspended:state.suspended,owner:state.owner,pickup:state.commits.pickup,drop:state.commits.drop,routine:living?.stage??'tidy',cycles:living?.cycles??0,environment:coordination.environmentKind,animating:personalView?.active&&personalLook.some((v,i)=>Math.abs(v-personalView.look[i])>.05),goal:coordination.life?'arrange':coordination.personality?.decision?.interestId??null,socialReady:coordination.phase==='social-wait'}}:{})}; }, resize() {
-      const next={...bounds()}; actor.resize();
+      const next={...bounds()}, before=actor.layout(); actor.resize();
       if(product){
         const layout=actor.layout();
         if(!['drag','air'].includes(layout.mode)) {
-          const p={x:Math.max(104*next.S+8,Math.min(next.W-104*next.S-8,layout.x)),y:Math.max(Math.min(next.floorY,205*next.S),Math.min(next.floorY,layout.y))};
+          const p=planar()?legalPoint({x:before.x/geometry.W*next.W,y:before.y/geometry.H*next.H}):{x:Math.max(104*next.S+8,Math.min(next.W-104*next.S-8,layout.x)),y:Math.max(Math.min(next.floorY,205*next.S),Math.min(next.floorY,layout.y))};
           if(p.x!==layout.x||p.y!==layout.y)actor.place2d(p);
         }
         if(state.owner==='ground' && geometry.W>0){
           const old=groundQuad[2], center=(groundQuad[0].x+groundQuad[1].x)/2;
-          putGround(Math.max(104*next.S+8,Math.min(next.W-104*next.S-8,center/geometry.W*next.W)),next.floorY-(geometry.floorY-old.y)*next.S/geometry.S);
+          putGround(Math.max(104*next.S+8,Math.min(next.W-104*next.S-8,center/geometry.W*next.W)),planar()?old.y/geometry.H*next.H:next.floorY-(geometry.floorY-old.y)*next.S/geometry.S);
         }
       }
       geometry=next;forcePause = !['idle', 'inspect'].includes(state.phase);

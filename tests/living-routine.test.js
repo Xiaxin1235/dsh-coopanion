@@ -16,3 +16,24 @@ it.each([90,180,240])('keeps the actual product floor inside the %ipx navigation
  const scene=livingScene({width:1100,height:800,size});
  expect(planPath(scene.model,{x:660,y:776},scene.station).passed).toBe(true);
 });
+
+it.each([90,180,240])('user dock produces reachable routes in both axes at %ipx without relocating the prop',size=>{
+ const original=livingScene({width:1100,height:800,size});
+ for(const dock of [{x:.05,y:.05},{x:.8,y:.8},{x:.4,y:.4}]){
+  const scene=livingScene({width:1100,height:800,size,dock});
+  const outlook=scene.interests.find(i=>i.id==='desk-outlook').targets.quiet[0];
+  expect(planPath(scene.model,scene.station,outlook).passed).toBe(true);
+  expect(Math.abs(scene.station.y-outlook.y)).toBeGreaterThan(80);
+  expect(scene.shell).toEqual(original.shell);expect(scene.destination).toEqual(original.destination);
+ }
+});
+
+it('a dock against each edge tolerates projected contact round-trip error without weakening navigation bounds',()=>{
+ for(const dock of [{x:0,y:0},{x:1,y:1}]){
+  const scene=livingScene({width:1100,height:800,dock});
+  for(const delta of [-.0001,.0001]){
+   const reconstructed={x:scene.station.x+delta,y:scene.station.y+delta};
+   expect(planPath(scene.model,scene.station,reconstructed).passed).toBe(true);
+  }
+ }
+});

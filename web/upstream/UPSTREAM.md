@@ -109,3 +109,8 @@ Stage 5A visual feedback correction, 2026-10-20:
 - The first Stage 5A engineering report is retained as a fixed pre-feedback snapshot; current scope and verification are in `docs/design/personality-behavior-contract.md` and `docs/aliveness-development.md`. Original models, textures, licenses and prior evidence bytes are unchanged.
 
 2026-10-20 审查修正：本地人格策略先从可达观察站位选择对象，偏好对象受阻时改选，全部受阻时不结算观察。工作表现消费并丢弃未决请求／异常期间的短反馈，避免覆盖邀请或解除后补播；隔离 O03 工厂用既有 `listening` 身体控制保持实际倾听表情，并显式释放。未新增词表、素材、模型调用、调度器或许可。
+
+Local default-product desktop plane, 2026-10-22:
+
+- `kit/desktop-plane.js` shares the calibrated full-body envelope between default scene targets and manual placement. `kit/body.js` adds opt-in support-plane placement and jump landing; legacy factories retain gravity drops. `kit/living-body.js` enables it only for the supported default product, keeps one navigator and contact owner, and remaps position on viewport changes.
+- The host retains a normalized, session-only dock after authenticated pointer release. Existing horizontal home settings seed or reset it; the outward/return route now spans both axes. No original assets or licenses changed; front/back bodies and directional animation are still pending.

@@ -52,7 +52,7 @@ let renderedSessionId = null, reactionUntil = 0, reactionMood, bubbleSession, tr
 let bubbleResult, readerResult, pendingOnly = false;
 let readerQueue, inboxState = { requests: [], issues: [], replies: [], total: 0 };
 let resizeLayout, displayGeometry, pendingDisplayPlacement, resizeOrigin;
-let stageWidth = innerWidth, pressedPointerId;
+let stageWidth = innerWidth, stageHeight = innerHeight, pressedPointerId;
 const composer = new ChatComposer();
 const sessionAttention = new SessionAttention();
 let attentionSnapshot = snapshot;
@@ -61,6 +61,7 @@ let draftSessionId;
 let activityWords = [], actionRestorePending = false, localHour, hourCheckedAt = -Infinity;
 let companion = initialCompanionship(), companionAction, companionManualId, companionManualGeneration, companionManualEpoch, companionFeedbackUntil = 0, companionReadAt = 0, companionFeedbackTicket = 0;
 let fallbackRevision=0;const fallbackFacts=new Map();
+let livingDock=null;
 let livingEngaged=false,livingEnabled=false, livingSceneKey='', livingRevision=0, livingWorldSent=0, livingWorld=null, livingContextKey='', livingPlaced=false, livingManualPending=0, livingReserved=false;
 const livingLayer=document.createElement('div');livingLayer.id='living-space';livingLayer.hidden=true;$('stage').prepend(livingLayer);
 const companionStroke = createCompanionStroke();
@@ -370,8 +371,8 @@ function updateCompanion(now, mood, readingAttention, active) {
   refreshCompanionCopy();
 }
 function updateLiving(now,active,readingAttention){
-  const key=[innerWidth,innerHeight,options.size,options.npcHome??.85,options.npcRange??.3].join(':');
-  if(key!==livingSceneKey){livingSceneKey=key;livingWorld=livingScene({width:innerWidth,height:innerHeight,size:options.size,home:options.npcHome,range:options.npcRange,revision:++livingRevision});livingContextKey='';
+  const key=[innerWidth,innerHeight,options.size,options.npcHome??.85,options.npcRange??.3,livingDock?.x,livingDock?.y].join(':');
+  if(key!==livingSceneKey){livingSceneKey=key;livingWorld=livingScene({width:innerWidth,height:innerHeight,size:options.size,home:options.npcHome,range:options.npcRange,dock:livingDock,revision:++livingRevision});livingContextKey='';
     livingLayer.replaceChildren();
     for(const object of livingWorld?.objects??[]){const image=document.createElement('img');image.src=new URL('props/living/'+object.asset,import.meta.url);image.alt='';image.dataset.kind=object.kind;Object.assign(image.style,{left:object.x+'px',top:object.y+'px',width:object.w+'px',height:object.h+'px'});livingLayer.append(image);}
   }
@@ -394,7 +395,7 @@ function updateLiving(now,active,readingAttention){
   for(const id of fallbackFacts.keys())if(!snapshot.sessions.some(s=>s.id===id))fallbackFacts.delete(id);
   const box=layout?.box,pointerNear=!!box&&!!cursorPoint&&cursorPoint.x>=box.x-45&&cursorPoint.x<=box.x+box.w+45&&cursorPoint.y>=box.y-45&&cursorPoint.y<=box.y+box.h+45;
   const desktop=supported?{...livingWorld.desktop,pointerNear,pointer:cursorPoint&&(pointerNear||now-pointerMovedAt<4000)?{x:Math.round(cursorPoint.x/8)*8,y:Math.round(cursorPoint.y/8)*8}:null}:null;
-  const context={desktop,supported,enabled:livingEnabled&&options.roam&&!reduced,mode:options.companionship,keyboard:now-keyboardAt<=2500?keyboardActivity:'unknown',reduced,lifecycle:lifecycle||snapshot.workCapacity===true,occupied:!!livingWorld&&!!layout&&(layout.x<livingWorld.rootRange.min-options.size*.56||layout.x>livingWorld.rootRange.max+options.size*.56)||userInputOccupied()||readingAttention||!interaction.hidden||(!supported&&hovered)||asleep||[...composer.sessions.values()].some(s=>!!s.text.trim()||s.phase==='sending'),social:supported&&(retiring||!!livingManualPending||!!companion.active||!!companion.invitation||livingReserved),personality:options.npcPersonality==='lively'?'lively':'quiet',memory:memory?{generation:memory.generation,id:remembered?.id,kind:remembered?.correctedKind??remembered?.kind}:null,facts:fallback};
+  const context={desktop,supported,planar:wanted,enabled:livingEnabled&&options.roam&&!reduced,mode:options.companionship,keyboard:now-keyboardAt<=2500?keyboardActivity:'unknown',reduced,lifecycle:lifecycle||snapshot.workCapacity===true,occupied:userInputOccupied()||readingAttention||!interaction.hidden||(!supported&&hovered)||asleep||[...composer.sessions.values()].some(s=>!!s.text.trim()||s.phase==='sending'),social:supported&&(retiring||!!livingManualPending||!!companion.active||!!companion.invitation||livingReserved),personality:options.npcPersonality==='lively'?'lively':'quiet',memory:memory?{generation:memory.generation,id:remembered?.id,kind:remembered?.correctedKind??remembered?.kind}:null,facts:fallback};
   const contextKey=JSON.stringify(context);if(contextKey!==livingContextKey){livingContextKey=contextKey;body?.set({livingContext:context});}
   if(!livingEnabled)return false;
   homeMarker.hidden=true;
@@ -671,6 +672,7 @@ $('interaction-pending').onclick = () => openRequests(false);
 
 function applyOptions(value) {
   const previousSize = options.size, previousCompanionship = options.companionship;
+  if (Object.hasOwn(value ?? {}, 'npcHome') && value.npcHome !== options.npcHome) livingDock=null;
   options = { ...options, ...value, companionship: Object.hasOwn(value ?? {}, 'companionship') ? companionshipMode(value.companionship) : options.companionship, textScale: Object.hasOwn(value ?? {}, 'textScale') ? textScale(value.textScale) : options.textScale };
   diagnosticCounters.configure(options.diagnostics === true);
   document.documentElement.style.setProperty('--size', `${options.size}px`);
@@ -778,7 +780,7 @@ function receive(message) {
       if (!Number.isSafeInteger(message.revision) || message.revision <= (displayGeometry?.revision ?? 0)) break;
       const interrupted = pressing || dragging || ['drag', 'air'].includes(body?.layout?.mode);
       if (displayGeometry && (message.displayId !== displayGeometry.displayId || interrupted)) {
-        pendingDisplayPlacement = { ...(resizeOrigin ?? { ratio: (body?.layout?.x ?? stageWidth * .6) / stageWidth, facing: body?.layout?.facing ?? 1 }), drop: interrupted };
+        pendingDisplayPlacement = { ...(resizeOrigin ?? { ratio: (body?.layout?.x ?? stageWidth * .6) / stageWidth, ratioY:(body?.layout?.y ?? stageHeight-24)/stageHeight, facing: body?.layout?.facing ?? 1 }), drop: interrupted };
       }
       if (pressing) {
         // API 2 drop clears its held pointer after the new bounds arrive.
@@ -838,6 +840,10 @@ pet.addEventListener('pointerup', release); pet.addEventListener('pointercancel'
 function onBody(kind, detail) {
   if (['arrived', 'interrupted'].includes(kind) && Number.isSafeInteger(detail.walkId) && detail.walkId > 0 && detail.walkId === npc.walkId) { npcEvent = { kind, walkId: detail.walkId }; return; }
   if (kind !== 'touch') return;
+  if (detail.kind === 'drop' && detail.placement === 'plane' && activeView?.builtin && options.livingSpace !== false && Number.isFinite(detail.x) && Number.isFinite(detail.y)) {
+    livingDock={x:Math.max(0,Math.min(1,detail.x/innerWidth)),y:Math.max(0,Math.min(1,detail.y/innerHeight))};
+    return;
+  }
   if (detail.kind === 'grab') {
     clearTimeout(touchTimer);
     // Body events arrive with a later animation frame. A completed drag must
@@ -962,15 +968,18 @@ document.addEventListener('pointerleave', () => {
   if (!pressing) { cursorPoint = undefined; lastHit = false; native?.hit(false); }
 });
 function resizeStage() {
-  if (innerWidth !== stageWidth) resizeOrigin ??= { ratio: (body?.layout?.x ?? stageWidth * .6) / stageWidth, facing: body?.layout?.facing ?? 1 };
-  stageWidth = innerWidth;
+  if (innerWidth !== stageWidth || innerHeight !== stageHeight) resizeOrigin ??= { ratio: (body?.layout?.x ?? stageWidth * .6) / stageWidth, ratioY:(body?.layout?.y ?? stageHeight-24)/stageHeight, facing: body?.layout?.facing ?? 1 };
+  stageWidth = innerWidth; stageHeight=innerHeight;
   resizeLayout = body?.layout;
   body?.set({ bounds: bounds() });
   // Native geometry and viewport resize can arrive in either order. Placement
   // waits until this viewport reflects the newly acknowledged content bounds.
   if (pendingDisplayPlacement && innerWidth === displayGeometry?.contentBounds.width && innerHeight === displayGeometry?.contentBounds.height) {
     const targetX = innerWidth * pendingDisplayPlacement.ratio;
-    if (pendingDisplayPlacement.drop) { const b = bounds(); body?.drop({ x: targetX, y: b.floorY - 220 * b.S }); }
+    const planar=!!livingWorld && !!body?.layout?.living && activeView?.builtin && options.livingSpace!==false;
+    const targetY=innerHeight*pendingDisplayPlacement.ratioY;
+    if (pendingDisplayPlacement.drop) { const b = bounds(); body?.drop({ x: targetX, y: (planar?targetY:b.floorY) - 220 * b.S }); }
+    else if(planar)body?.place2d({x:targetX,y:targetY});
     else body?.place(targetX, pendingDisplayPlacement.facing);
     pendingDisplayPlacement = undefined;
   }
@@ -1062,7 +1071,7 @@ async function setCharacter(view, scheme = '') {
   });
   if (npc.walkId) body?.stopWalk(npc.walkId);
   npc = initialNpc(++npcGeneration); npcEvent = undefined; npcRelocated = false; npcGeometry = undefined; npcGroundLayout = undefined; npcSeated = false;
-  livingSceneKey=livingContextKey='';livingWorld=null;livingWorldSent=0;livingPlaced=false;livingManualPending=0;livingEnabled=false;livingEngaged=false;
+  livingDock=null;livingSceneKey=livingContextKey='';livingWorld=null;livingWorldSent=0;livingPlaced=false;livingManualPending=0;livingEnabled=false;livingEngaged=false;
   responseRhythm.cancel(); companionStroke.reset(); companion = initialCompanionship(); companionAction = companionManualId = undefined; companionFeedbackTicket++; companionInvitation.hidden = companionFeedback.hidden = companionTurn.hidden = true;
   body?.dispose(); body = next; body.set({ bounds: bounds() }); activeView = view; activeScheme = knownScheme(view, scheme); activeName = nameIn(view.name);
   actionRestorePending = false; activityWords = view.vocab.map(w => w.id).filter(w => next.words?.includes(w)); hourCheckedAt = -Infinity;
