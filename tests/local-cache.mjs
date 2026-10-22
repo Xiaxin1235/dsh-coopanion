@@ -41,12 +41,16 @@ test('cleanup protects live owners, orphan users, recent runs, pins and unknown 
   await removeGenerated(root, dead);
   assert.deepEqual(await cacheCandidates(root, Date.now(), p => p === orphan), []);
 });
-test('a live child whose supervisor exited still protects its open working directory', async t => {
+test('an active working directory protects a stale-owner lease, including partial lsof matches', async t => {
   if (process.platform === 'win32') return;
   const { root } = await fixture(t), path = await stale(root, 'orphan-real');
   // Current process working directory is visible to lsof even with no open file.
   const old = process.cwd();
-  try { process.chdir(path); assert.equal(inUse(path), true); } finally { process.chdir(old); }
+  try {
+    process.chdir(path);
+    assert.equal(inUse(path), true);
+    assert.deepEqual(await cacheCandidates(root), []);
+  } finally { process.chdir(old); }
 });
 test('refuses root, parent traversal and symlink ancestors; nested links cannot delete targets', async t => {
   const { root, parent } = await fixture(t), outside = join(parent, 'outside'); await mkdir(outside);

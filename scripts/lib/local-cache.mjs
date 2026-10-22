@@ -39,7 +39,12 @@ export function inUse(path) {
     if (execFileSync('ps', ['-axo', 'command='], { encoding: 'utf8', timeout: 10000 }).includes(path)) return true;
     execFileSync('lsof', ['-n', '-P', '-t', '+D', path], { stdio: 'pipe', timeout: 10000 });
     return true;
-  } catch (e) { return e.status !== 1 || e.stderr?.length > 0; }
+  } catch (e) {
+    // lsof may report matching PIDs yet exit 1 when another selected entry has
+    // no match. Those PIDs still prove use; do not discard partial stdout.
+    if (e.stdout?.length) return true;
+    return e.status !== 1 || e.stderr?.length > 0;
+  }
 }
 
 // Profiles are private per run; only immutable runtime directories are shared.
