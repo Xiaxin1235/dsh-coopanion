@@ -230,7 +230,7 @@ export function createPet(els, opts) {
       case 'jump': setMode('crouch', { jumpV: 720, jumpVx: pet.facing * 40 }); break;
       case 'hop': setMode('crouch', { jumpV: 480, jumpVx: 0 }); break;
       case 'look': setMode('look'); break;
-      case 'turn': if (!seated) setMode('idle'); pet.facing *= -1; play('tick', 'move'); break;
+      case 'turn': if (!seated) setMode('idle'); pet.facing *= -1; custom?.turn?.(pet.facing,T); play('tick', 'move'); break;
       case 'nod': pulse('nod', .7); play('nod', 'move'); break;
       case 'shake': pulse('shake', .7); play('shake', 'move'); break;
       case 'spin': if (!seated) setMode('idle'); pulse('spin', .6); play('spin', 'move'); break;
@@ -667,7 +667,8 @@ export function createPet(els, opts) {
     if (fc.shake) AX += Math.sin(T * 60) * 1.4;
     else if (pet.pulse?.kind === 'shiver') AX += Math.sin(T * 75) * 1.1 * envelope((T - pet.pulse.t0) / pet.pulse.dur, .08, .85);
     // a figure may keep tilt and lean off the whole group and bend its own parts instead
-    const kx = S * pet.faceVis * sx, ky = S * sy, lean = pet.lean * pet.faceVis;
+    const visualFacing = custom?.prepare?.({t:T,x:pet.x,y:pet.fy,mode:pet.mode,sit:pet.sitK,facing:pet.facing,gesture:pet.pulse}) ?? pet.faceVis;
+    const kx = S * visualFacing * sx, ky = S * sy, lean = pet.lean * visualFacing;
     const rot = custom?.groupTilt ? custom.groupTilt(pet.mode, pet.tilt, lean) : pet.tilt + lean;
     pet.xf = { AX, AY, ax, ay, kx, ky, rot };
     petG.setAttribute('transform', `translate(${f(AX)} ${f(AY)}) rotate(${f(rot)}) scale(${kx.toFixed(4)} ${ky.toFixed(4)}) translate(${-ax} ${-ay})`);
@@ -682,7 +683,7 @@ export function createPet(els, opts) {
     const gesture = pet.pulse ? { kind: pet.pulse.kind, k: clamp((T - pet.pulse.t0) / pet.pulse.dur, 0, 1) } : null;
     custom.draw(petG, face, {
       look: pet.look, legs, low: pet.low, t: T, blink, eyeClose, acc: skin, swing: pet.swing,
-      face: fname, mode: pet.mode, modeT: pet.modeT, talk: pet.talkK, drowse: pet.drowse, sit: pet.sitK, facing: pet.faceVis, tilt: pet.tilt, lean, groupRot: rot, gesture,
+      face: fname, mode: pet.mode, modeT: pet.modeT, talk: pet.talkK, drowse: pet.drowse, sit: pet.sitK, facing: custom?.prepare ? pet.facing : pet.faceVis, tilt: pet.tilt, lean, groupRot: rot, gesture,
     });
 
     const footY = drag ? pet.dy + 220 * S * 1.09 : pet.fy;
@@ -848,8 +849,8 @@ export function createPet(els, opts) {
     const xs = corners.map((p) => p.x), ys = corners.map((p) => p.y);
     const side = toStage(128, 128 + pet.low);
     return {
-      x: pet.x, y:pet.fy, navigation:navigator?.state, facing: pet.facing, mode: pet.mode, busy: busy(), pressing: !!press, cursor: pet.cursor,
-      moving: !!press || (MOVING_MODES.has(pet.mode) || pet.mode === 'navigate') || !!pet.pulse || Math.abs(pet.faceVis - pet.facing) > .05,
+      x: pet.x, y:pet.fy, direction:custom?.direction, navigation:navigator?.state, facing: pet.facing, mode: pet.mode, busy: busy(), pressing: !!press, cursor: pet.cursor,
+      moving: !!custom?.direction?.turning || !!press || (MOVING_MODES.has(pet.mode) || pet.mode === 'navigate') || !!pet.pulse || Math.abs(pet.faceVis - pet.facing) > .05,
       box: { x: Math.min(...xs), y: Math.min(...ys), w: Math.max(...xs) - Math.min(...xs), h: Math.max(...ys) - Math.min(...ys) },
       hit: hits(), bubble: anchor(), side: { x: side.x, y: side.y, reach: 104 * S },
     };
@@ -872,7 +873,7 @@ export function createPet(els, opts) {
     get pressing() { return !!press; },
     /** Pressed, carried, airborne, walking, running, dancing, turning round, or in a short gesture (nod, wave, bow…): motion that frames far apart show as jumps. */
     get moving() {
-      return !!press || (MOVING_MODES.has(pet.mode) || pet.mode === 'navigate') || !!pet.pulse || Math.abs(pet.faceVis - pet.facing) > .05;
+      return !!custom?.direction?.turning || !!press || (MOVING_MODES.has(pet.mode) || pet.mode === 'navigate') || !!pet.pulse || Math.abs(pet.faceVis - pet.facing) > .05;
     },
     get time() { return T; },
     get bounds() { return { W, H, floorY, S, minX: minX(), maxX: maxX() }; },

@@ -53,6 +53,7 @@ export async function createMotionBody(base, options) {
   };
   const figure = await createWhaleFigure(whaleBase, {
     ...options, model, raster: !product, handDetail: !product, externalProp:!product, asset: path => new URL(path, whaleBase),
+    ...(product ? {directionContext:()=>({enabled:planar(),compatible:state.owner==='ground'&&['idle','rest'].includes(state.phase==='paused'?state.suspended:state.phase),attention:['work-wait','environment-wait'].includes(coordination.phase)})} : {}),
     gripProp: { url: new URL('shell.png', shellBase), box, hand,
       uvBox: [b.x / c.width, b.y / c.height, (b.x + b.width) / c.width, (b.y + b.height) / c.height], grip: [spec.grip.x, spec.grip.y], ground: [spec.ground.x, spec.ground.y] },
     gripPose: () => ({ visible: state.owner === 'hand', mirror: continuous ? state.owner === 'ground' ? pickupMirror(groundQuad, actor?.layout().facing) : propMirror : 1 }), motionPose: authoredPose,
@@ -83,7 +84,7 @@ export async function createMotionBody(base, options) {
       canWalk: true, minX: 104 * bounds().S + 8, maxX: bounds().W - 104 * bounds().S - 8,
       pickupRoute: { ...route({ ...point, floor }, point.x >= layout.x ? 1 : -1), ...(continuous ? { y: floor } : {}) },
       dropRoute: { ...route({ x: destination, y: (continuous ? destinationY : bounds().floorY) - spec.displayWidth * b.height / b.width * (1 - spec.grip.y), floor: destinationY }, destination >= layout.x ? 1 : -1), ...(continuous ? { y: destinationY } : {}) },
-      contact: grip ? { distance: Math.hypot(grip.hand.x - point.x, grip.hand.y - point.y), groundDistance: (continuous ? Math.hypot(grip.propGrip.x - destination, grip.ground.y - destinationY) : Math.abs(grip.ground.y - bounds().floorY)), settled: motion < .1 } : null,
+      contact: grip && grip.contactEligible!==false ? { distance: Math.hypot(grip.hand.x - point.x, grip.hand.y - point.y), groundDistance: (continuous ? Math.hypot(grip.propGrip.x - destination, grip.ground.y - destinationY) : Math.abs(grip.ground.y - bounds().floorY)), settled: motion < .1 } : null,
       hand: grip?.handArt,
     };
   }

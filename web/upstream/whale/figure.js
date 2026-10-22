@@ -15,6 +15,7 @@
  * model.json keeps the master drawing's pixel frame for the face sprites; U/V convert.
  */
 import { createRig } from '../kit/rig.js';
+import { directionalRig } from './directional-rig.js';
 import { pngFrameBlob } from '../kit/raster.js';
 import { handSurfaceModel, handSurfaceState, splitHandRgba } from './hand-art.js';
 
@@ -176,6 +177,16 @@ export async function createWhaleFigure(base = new URL('./', import.meta.url), o
     deformers.creases = { kind: 'warp', parent: 'headFeat', rect: rectOf('eye_creases') };
     creases.parent = 'creases';
   }
+
+  const directions = opts.directionContext ? await directionalRig(asset, load) : null;
+  const originalIds = parts.map(p => p.id);
+  if (directions) {
+    const bowPart=parts.find(p=>p.id==='bow');
+    deformers.dir_originalBow={kind:'rot',pivot:[80,106],parent:bowPart.parent};bowPart.parent='dir_originalBow';
+    Object.assign(deformers,directions.deformers);parts.push(...directions.parts);
+  }
+  const frontCv = directions ? document.createElement('canvas') : null;
+  if(frontCv){frontCv.width=840;frontCv.height=840;}
 
   /* ---------- face painting (master pixels) ---------- */
   const faceCv = document.createElement('canvas');
@@ -360,6 +371,23 @@ export async function createWhaleFigure(base = new URL('./', import.meta.url), o
     else sprite(m);
   }
 
+  // Repaint the existing expression vocabulary onto two frontal eyes. Both eyes
+  // use the near-eye anatomy, with independent wink/closure and world-space gaze.
+  function paintFront(fc, face, o, t) {
+    const g=frontCv.getContext('2d');g.setTransform(3,0,0,3,36,24);g.clearRect(-12,-8,280,280);
+    for(let i=0;i<2;i++){
+      const eye=fc.eyes[i];
+      paintFace({...fc,eyes:[eye,eye]},face,{...o,look:[o.look[0]*(i?-1:1),o.look[1]]},t);
+      g.save();g.translate(i?155:111,133);if(i)g.scale(-1,1);
+      g.drawImage(faceCv,15,0,185,200,-19,-18,37,40);g.restore();
+    }
+    paintFace(fc,face,o,t);
+    g.drawImage(faceCv,194,160,100,80,118,142,20,16);
+    const [lift,inner]=BROW[face]||[0,0];
+    for(let i=0;i<2;i++){g.save();g.translate(i?155:111,116-lift*.3);if(i)g.scale(-1,1);g.rotate(-inner*.025);g.drawImage(tex.brows,0,0,70,tex.brows.height,-15,0,27,6);g.restore();}
+    rig.upload('dir_features',frontCv);
+  }
+
   /* ---------- mounting inside the pet's SVG group ---------- */
   const VIEW = model.view;
   let fo = null, canvas = null, fxG = null, rig = null, mountedIn = null, pxScale = 0, frameN = 0, rasterUrl = null;
@@ -388,6 +416,7 @@ export async function createWhaleFigure(base = new URL('./', import.meta.url), o
     petG.append(fo, fxG);
     rig = createRig(canvas, { deformers, parts, view: VIEW });
     for (const n in tex) rig.upload(n, tex[n]);
+    if(directions)for(const [key,texture]of Object.entries(directions.textures))rig.upload(key,texture);
     if (fade) for (const n in fade.set.tex) rig.upload(n + '@mix', fade.set.tex[n]);
     mountedIn = petG; pxScale = 0;
   }
@@ -733,7 +762,21 @@ export async function createWhaleFigure(base = new URL('./', import.meta.url), o
       }
     }
     const externalHands = handsEnabled && opts.externalProp;
-    rig.render(st,externalHands ? {hidden:{__hand_fingers:true}} : {});
+    const directional = directions?.apply(st,o,originalIds);
+    if(directional?.group==='front')paintFront(fc,face,{...o,look:[o.look[0]*o.facing,o.look[1]]},t);
+    if(directional?.group && gripFrame){
+      const prefix=`dir_${directional.group}_`,matrix=petG.getCTM();
+      const project=(x,y,parent)=>{const p=rig.point(prefix+parent,st,x,y);return{x:matrix.a*p[0]+matrix.c*p[1]+matrix.e,y:matrix.b*p[0]+matrix.d*p[1]+matrix.f};};
+      const hand=project(162,204,'armR');
+      gripFrame={...gripFrame,contactEligible:false,hand,propGrip:hand,visible:false,sit:0,pose:null,
+        gazeOrigin:project(133,135,'head'),feet:[project(116,256,'legL'),project(149,256,'legR')],
+        handArt:{enabled:false},angles:{armNear:st[prefix+'armL'].a,armFar:st[prefix+'armR'].a,waist:0}};
+    }else if(directional && !directional.legacy && gripFrame){
+      const m=petG.getCTM();
+      const project=(x,y,parent)=>{const p=rig.point(parent,st,x,y);return{x:m.a*p[0]+m.c*p[1]+m.e,y:m.b*p[0]+m.d*p[1]+m.f};};
+      gripFrame={...gripFrame,contactEligible:false,gazeOrigin:project(140,117,'headFeat'),hand:project(...prop.hand,'armFar'),feet:[project(PV.legBack[0],256,'legBack'),project(PV.legFront[0],256,'legFront')]};
+    }else if(gripFrame)gripFrame.contactEligible=true;
+    rig.render(st,{hidden:{...directional?.hidden,...(externalHands?{__hand_fingers:true}:{})}});
     if (opts.raster) {
       const href = canvas.toDataURL('image/png');
       const previousUrl = rasterUrl;
@@ -801,6 +844,13 @@ export async function createWhaleFigure(base = new URL('./', import.meta.url), o
 
   return {
     draw,
+    prepare: directions ? o => {
+      const context=opts.directionContext();
+      const compatible=context.compatible && scheme===SCHEMES[0].id && !fade && o.sit<.01 && sitK<.01 && !o.gesture && ['idle','walk','run','navigate'].includes(o.mode);
+      return directions.prepare({...o,attention:context.attention},context.enabled,compatible);
+    } : undefined,
+    turn: directions ? (facing,t)=>directions.turn(facing,t) : undefined,
+    get direction(){return directions?.state;},
     get gripFrame() { return gripFrame; },
     groupTilt,
     /** The gestures she draws herself, from the frame's `gesture` (the kit leaves them off the body). */
@@ -833,6 +883,7 @@ export async function createWhaleFigure(base = new URL('./', import.meta.url), o
     },
     reset() {
       endFade();
+      directions?.reset();
       for (const k in sp) { sp[k].x = 0; sp[k].v = 0; }
       lastT = null; prevTilt = 0; prevYaw = 0; prevLow = 0; headTilt = 0; wTilt = 0; wLean = 0; finMood = 0; tailMood = 0; wagAmp = 0; sitK = 0; walkK = 0; runK = 0; swingK = 0;
     },
@@ -844,10 +895,10 @@ export async function createWhaleFigure(base = new URL('./', import.meta.url), o
     get colors() { return { z: accent() }; },
     schemes: SCHEMES,
     // points the kit uses: eye tracking, a tear and one under each eye (where the streams run), sleep z's, hearts [x from, x to, y], bubble
-    anchors: {
+    get anchors() { return directions && !directions.state.legacy && directions.state.current==='front' ? {gaze:[133,135],tear:[111,146],tears:[[111,146],[155,146]],z:[196,44],hearts:[96,176,62],bubble:[128,18]} : {
       gaze: [U(745), V(690)], tear: [U(640), V(752)], tears: [[U(654), V(752)], [U(852), V(750)]], z: [196, 44],
       hearts: [96, 176, 62], bubble: [128, 18],
-    },
+    }; },
     model,
   };
 }

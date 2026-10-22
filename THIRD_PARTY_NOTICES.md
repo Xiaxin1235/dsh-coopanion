@@ -71,3 +71,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+## D1 directional character assets
+
+`web/upstream/whale/directions/` contains selected directional artwork generated with OpenAI's built-in image tool from the existing whale maid, plus project-authored mesh calibration. Original character: 溟月（上善无形）; maid reinterpretation: ZipZipPipe; prior generated/split artwork: Pal-AI-Lab. Existing character and trademark rights remain with their respective holders; the source-code license does not relicense those rights. `provenance.json` records the selected source digests and the additional head-decoration repair. Full prompts, original candidates and editable calibration remain in `docs/design/art-workflow/d1-directions-v1/`; those authoring files are not required at runtime.

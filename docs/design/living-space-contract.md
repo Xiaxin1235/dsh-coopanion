@@ -1,6 +1,6 @@
 # 生活空间契约：单屏制作预览
 
-状态：约束 `codex/aliveness-foundation` 的[潮汐小院](art-workflow/space-v1/README.md)及隔离 Electron 单屏预览，第 2–5A 期共用本页坐标与几何模型。第 3 期连续物件规则见[连续动作契约](continuous-action-contract.md)，验收与下一阶段授权见[开发状态](../aliveness-development.md)。默认产品按[自主陪伴契约](../companionship-contract.md)和[生活装配契约](living-integration-contract.md)运行；第 4 期[双线预览](life-work-contract.md)消费明确标注的模拟事实；正式宿主事实适配已单独验证，默认产品已复用导航与几何模型，D1 首个切片已加入平面放置和临时停靠，身体仍为左右朝向；产品行为以生活装配契约为准，本页工作台验收不外推为产品体验，最新缺口见[复核](space-body-review.md)，自主跨屏仍未扩展。
+状态：约束 `codex/aliveness-foundation` 的[潮汐小院](art-workflow/space-v1/README.md)及隔离 Electron 单屏预览，第 2–5A 期共用本页坐标与几何模型。第 3 期连续物件规则见[连续动作契约](continuous-action-contract.md)，验收与下一阶段授权见[开发状态](../aliveness-development.md)。默认产品按[自主陪伴契约](../companionship-contract.md)和[生活装配契约](living-integration-contract.md)运行；第 4 期[双线预览](life-work-contract.md)消费明确标注的模拟事实；正式宿主事实适配已单独验证，默认产品已复用导航与几何模型，D1 首个切片已加入平面放置和临时停靠，主配色方向身体已进入默认产品，兼容范围见装配契约；产品行为以生活装配契约为准，本页工作台验收不外推为产品体验，最新缺口见[复核](space-body-review.md)，自主跨屏仍未扩展。
 
 ## 坐标、身体和绘制
 

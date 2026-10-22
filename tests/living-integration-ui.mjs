@@ -47,11 +47,11 @@ test('desktop life forms an observed outward-return-rest cycle without permanent
  await drop(page,1);
  const b=await page.locator('#pet').boundingBox();await page.mouse.move(b.x+b.width/2,b.y+b.height/2);await page.mouse.down();await page.mouse.move(350,240,{steps:12});await page.waitForSelector('#pet[data-mode=drag]');await page.mouse.up();await page.mouse.move(0,0);await page.waitForFunction(()=>lifeLayout.mode==='idle');
  const dock=await page.evaluate(()=>({x:lifeLayout.x,y:lifeLayout.y}));
- await page.evaluate(()=>{window.planeTravel={min:Infinity,max:-Infinity};addEventListener('message',e=>{const l=e.data?.t==='frame'&&e.data.layout;if(l?.navigation?.speed>0){planeTravel.min=Math.min(planeTravel.min,l.y);planeTravel.max=Math.max(planeTravel.max,l.y);}});});
+ await page.evaluate(()=>{window.planeTravel={min:Infinity,max:-Infinity,directions:[]};addEventListener('message',e=>{const l=e.data?.t==='frame'&&e.data.layout;if(l?.navigation?.speed>0){planeTravel.min=Math.min(planeTravel.min,l.y);planeTravel.max=Math.max(planeTravel.max,l.y);if(l.direction&&!l.direction.legacy&&!planeTravel.directions.includes(l.direction.current))planeTravel.directions.push(l.direction.current);}});});
  await page.waitForFunction(()=>Number(document.querySelector('#pet').dataset.lifeCycles)>=1,null,{timeout:140000});
  assert.equal(await page.locator('#pet').getAttribute('data-life-routine'),'rest');
- const returned=await page.evaluate(()=>({x:lifeLayout.x,y:lifeLayout.y,travel:planeTravel.max-planeTravel.min}));
- assert.ok(Math.hypot(returned.x-dock.x,returned.y-dock.y)<2);assert.ok(returned.travel>100);
+ const returned=await page.evaluate(()=>({x:lifeLayout.x,y:lifeLayout.y,travel:planeTravel.max-planeTravel.min,directions:planeTravel.directions}));
+ assert.ok(Math.hypot(returned.x-dock.x,returned.y-dock.y)<2);assert.ok(returned.travel>100);assert.ok(returned.directions.some(d=>d.startsWith('back')));assert.ok(returned.directions.some(d=>d.startsWith('front')));
  assert.equal(await page.locator('#pet').getAttribute('data-life-pickup'),'1');
  assert.equal(await page.locator('#pet').getAttribute('data-life-drop'),'1');
  await page.screenshot({path:join(output,'desktop-rest-after-return.png')});
