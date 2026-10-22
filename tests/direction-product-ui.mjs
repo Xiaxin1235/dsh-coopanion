@@ -24,7 +24,7 @@ try{
   window.directionEvents=[];window.directionActor=await createWhaleBody(new URL('/upstream/whale/',location.href),{model:whale,kit,host:{root,bounds:()=>testBounds,emit:(kind,detail)=>directionEvents.push({kind,detail}),start:{x:550,facing:1}}});
   directionActor.set({livingContext:{planar:true}});directionActor.place2d({x:550,y:500});
   window.advance=(frames=1,dt=1/60)=>{for(let i=0;i<frames;i++)directionActor.step(dt);return directionActor.layout();};
-  window.travel=(dx,dy,id)=>{directionActor.cancelNavigation('test');directionActor.place2d({x:550,y:500});directionActor.navigate({id,generation:1,model:{width:1100,height:800,body:{left:104,right:104,top:205,bottom:8},margin:10,obstacles:[],revision:1},target:{x:550+dx,y:500+dy}});return advance(180);};
+  window.travel=(dx,dy,id)=>{directionActor.step(1/60);directionActor.set({motionCommand:{type:'resume'}});directionActor.step(1/60);directionActor.cancelNavigation('test');directionActor.place2d({x:550,y:500});directionActor.navigate({id,generation:1,model:{width:1100,height:800,body:{left:104,right:104,top:205,bottom:8},margin:10,obstacles:[],revision:1},target:{x:550+dx,y:500+dy}});return advance(180);};
   advance(100);
  });
  check('shipped product factory, meshes and assets load without authoring resources');
