@@ -25,7 +25,7 @@ node scripts/check-package.mjs
 npm run test:install
 ```
 
-缓存复用、独立证据目录、临时 profile 回收及保留策略见[缓存管理](cache-management.md)。macOS 原生操作可在[隔离测试机](macos-vm-testing.md)中执行，须先确认来宾图形会话、输入与渲染能力。
+缓存复用、独立证据目录、临时 profile 回收及保留策略见[缓存管理](cache-management.md)。
 
 按改动选择检查；完整发布门槛见[发布流程](releasing.md)。Linux 原生窗口需要 X11／Xvfb 和窗口管理器，测试光标还需要 Python 3 与 libX11；浏览器及网格动画需要 Chromium WebGL。CI 的 Linux 显示准备由 `.github/actions/setup-linux-display` 完成。
 
@@ -130,4 +130,4 @@ VM 需图形依赖、Xvfb、Openbox、Python 3、procps 及固定工具链。观
 
 默认产品生活装配使用 `web/upstream/kit/living-body.js` 共享身体与 `living-routine.js` 有限目标策略；原工作台重导出同一工厂。`test:inbox-ui` 包含 `tests/living-integration-ui.mjs` 的真实导航／接触、工作／互动交接、输入／热切／草稿、90–240px 与持物拖放回归；`test:desktop` 串行包含 `living-integration-native.mjs`。浏览器用受控输入和元数据，原生用真实 IPC／系统输入枚举、隔离存档；真实日用 Host／物理键盘／多屏和用户观感分别验收。旧简单日常用显式 `livingSpace:false` 回归。
 
-2026-10-22 反馈修正增加 `tests/living-feedback.test.js` 和 `tests/desktop-life.test.js`：根不动的动作仍保持显示节奏、暂停空手站立不弯腰、访问 token／几何、环境交接／输入冷却和有界系统恢复。完整 inbox 包含 9 项真实生活装配测试；原生装配在整理阶段记录显示／身体帧比例。原生受控工作恢复显式覆盖输入枚举，保留真实键盘适配器观察，不把受控输入当作物理键盘验收。以上为现有回归入口，未覆盖尚未实施的平面拖放和多方向身体；仅文档整理按链接、检索与身份检查结算；脚本或运行时入口变更仍执行对应回归，固定运行结果从[报告索引](reports/README.md)追溯。
+`tests/living-feedback.test.js` 与 `tests/desktop-life.test.js` 覆盖动作显示节奏、空手站立、访问 token／几何、环境交接／输入冷却和有界系统恢复。原生装配记录显示／身体帧比例；受控工作恢复显式覆盖输入枚举，另存真实键盘适配器观察。以上回归未覆盖尚未实施的平面拖放和多方向身体。文档整理检查链接、检索与身份；脚本或运行时入口变更执行对应回归，固定结果从[报告索引](reports/README.md)追溯。

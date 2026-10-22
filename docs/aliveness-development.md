@@ -2,9 +2,9 @@
 
 生活感分支唯一接手入口；先读[文档索引](README.md)，继续使用 `codex/aliveness-foundation`。版本、依赖与命令以 package、shrinkwrap 和工作流为准。
 
-## 当前任务与基线
+## 接手范围与基线
 
-本轮授权为配置 macOS 隔离测试机并验证，现已完成来宾桌面、工具链、浏览器与原生回归的工程检查；运行入口及源码同步边界见[隔离测试机](macos-vm-testing.md)。先前[磁盘清理与缓存治理](reports/disk-cleanup-20261022.md)已结束。本轮未推进产品 D0–D4 实施或用户体验验收，推送、合并、发布和日用安装继续按用户实际授权执行。
+本页记录分支交付、缺口与验收边界，执行范围来自用户最新指令。项目清理、缓存治理及 macOS 测试机配置均已结束，固定结果从[报告索引](reports/README.md)追溯；没有遗留快照恢复或环境配置任务。macOS 原生回归按[隔离测试机](macos-vm-testing.md)运行，每轮现场核对状态并同步源码。已结束的维护授权与交接原文见[维护归档](archive/2026-10-maintenance/README.md)。
 
 产品专项继续采用[跨平台桌面互动方案](design/desktop-environment-plan.md)的现有路线，共用身体／导航／协调器，由平台 Adapter 提供环境事实。D0 首个原生窗口探针切片已提交为 `124ff80` 并完成本机验证；D0 整体验收尚未完成，产品平面空间、多方向身体和窗口互动尚未实现。后续工作依用户届时的执行范围推进；固定历史授权不作为新的接手任务。
 
@@ -12,7 +12,7 @@
 
 ## 最新体验结论与基础缺口
 
-用户在本轮体验后明确指出：活动仍主要位于屏幕下方，拖高后仍会下落，人物只朝左／右，二维空间和面向用户的表现缺失，与 main 的可感知差异有限，尚无足够 LIVE 感。这是最新用户反馈，当前默认产品的空间与身体体验未通过验收；旧自动化和工作台验收保持其原范围。
+2026-10-22 用户体验反馈指出：活动仍主要位于屏幕下方，拖高后仍会下落，人物只朝左／右，二维空间和面向用户的表现缺失，与 main 的可感知差异有限，尚无足够 LIVE 感。当前默认产品的空间与身体体验未通过验收；旧自动化和工作台验收保持其原范围。
 
 源码核对确认：默认目标集中在底部窄带，拖放仍进入重力下落，身体朝向仍为左右镜像。完整问题、证据位置、影响和建议验收集中在[空间与身体复核](design/space-body-review.md)，后续接手必须先读该页。该页明确区分已实现能力与待实施目标。
 
@@ -34,8 +34,8 @@
 
 制作工作台、独立产品预览与正式 Host 分开使用。端口 4189 和本机 profile 的运行状态需现场核对；已有制作页可能包含未导出布局，复用前核对监听者，保留原页面。`.cache/`、`artifacts/`、`dist/` 只是本机或生成内容，不能作为接手入口或当前源码证明；启动和检查按[开发指南](development.md)进行，原生操作串行并使用隔离 profile。
 
-## 后续阅读
+## 继续产品实施时
 
-继续按[跨平台方案](design/desktop-environment-plan.md)完成 D0。现有 `probe:desktop-environment` 的运行与结果语义见[开发指南](development.md#d0-真实桌面窗口探针)；下一步补 Windows／X11 的同场景结果，并验证装饰窗口、跨应用与原生 Wayland 覆盖层。缺少平台设备或实机结果时记录未验证，不用 macOS 代签。D1 的平面位置与多方向身体可独立推进，具体可见要求见[空间与身体复核](design/space-body-review.md)；D2／D3 受 D0 能力门槛约束，第 6／7 期仍是后续候选。
+用户要求继续产品实施时，按[跨平台方案](design/desktop-environment-plan.md)选择剩余工作。D0 尚缺 Windows／X11 的同场景结果、装饰窗口／跨应用及原生 Wayland 覆盖层验证；现有 `probe:desktop-environment` 的运行与结果语义见[开发指南](development.md#d0-真实桌面窗口探针)。缺少平台设备或实机结果时记录未验证，不用 macOS 代签。D1 的平面位置与多方向身体可独立推进，具体可见要求见[空间与身体复核](design/space-body-review.md)；D2／D3 受 D0 能力门槛约束，第 6／7 期仍是后续候选。这些路线不自动扩展文档、清理或环境维护任务的执行范围。
 
-本次实施授权前的方案与入口见[规划快照](archive/2026-10-aliveness/desktop-environment-planning/README.md)。更早的开发状态、路线、素材入口与装配契约原字节见[空间与身体复核前快照](archive/2026-10-aliveness/space-body-review/README.md)。其他历史从[阶段归档](archive/2026-10-aliveness/README.md)进入；旧授权、旧下一步和进程状态只按形成时解释。
+桌面专项实施前的方案与入口见[规划快照](archive/2026-10-aliveness/desktop-environment-planning/README.md)。更早的开发状态、路线、素材入口与装配契约原字节见[空间与身体复核前快照](archive/2026-10-aliveness/space-body-review/README.md)。其他历史从[阶段归档](archive/2026-10-aliveness/README.md)进入；旧授权、旧下一步和进程状态只按形成时解释。

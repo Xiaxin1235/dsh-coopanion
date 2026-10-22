@@ -45,7 +45,7 @@
 | Linux 原生 Wayland | 同一核心与数据兼容；桌面自由定位、全局输入和覆盖层体验需探针确定 | 通用 Electron 路径无法假定全局坐标与完整窗口几何；合成器扩展为单独候选 | 不标注为 X11 等效；GNOME／KDE 分别记录。基础显示／操作若未成立，明确列为未通过 |
 | Wayland 中的 Xwayland | 不能因存在 DISPLAY 就判为纯 X11 | 必须核对 native Wayland 窗口是否可见；部分枚举不能用于全桌面避让 | 不自动强制切换后端，不以只看见 X11 子集证明完整桌面支持 |
 
-建议保留三平台产品目标，并将 Linux 会话类型列入支持与验收表。Windows、macOS、Linux X11 是本轮完整窗口互动的共同交付门槛；Wayland 的受限体验或完整扩展方案必须单独评审，不能悄悄把 Linux 的对外承诺改成仅 X11。
+保留三平台产品目标，并将 Linux 会话类型列入支持与验收表。Windows、macOS、Linux X11 是 D3 完整窗口互动的共同交付门槛；Wayland 的受限体验或完整扩展方案必须单独评审，不能悄悄把 Linux 的对外承诺改成仅 X11。
 
 若产品要求原生 GNOME／KDE Wayland 也具备相同的全桌面停靠与避让效果，则在 D0 后增加合成器集成工作包，并将该要求纳入发布阻断条件。普通应用窗口内的角色展示可作为待验证的替代体验，但它不等于全桌面伴侣，不能用它宣布功能对等。没有跨合成器验证时不承诺“任意 Linux 桌面均同等支持”。
 
@@ -167,4 +167,4 @@ D0 的部分探针与 D1 美术样片可独立推进，但不能先完成 macOS 
 | [Hammerspoon 窗口过滤](https://www.hammerspoon.org/docs/hs.window.filter.html) | 窗口事件整理与会话状态处理 | macOS 参考；该模块文档有实验性提示，不作为必装运行依赖 |
 | [Apple 窗口信息](https://developer.apple.com/documentation/coregraphics/quartz-window-services) 与 [Windows 枚举](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumwindows) | 平台 Adapter 的官方能力依据 | 具体权限、会话及数据完整性由 D0 实测 |
 
-后续授权实施时，从 D0 与 D1 的具体范围进入；形成的正式 Interface、配置迁移和行为规则更新到对应现行契约。本页继续维护路线与选择依据，不替代现行产品行为说明。
+继续实施时，先从[开发状态](../aliveness-development.md)核对已完成部分，再按用户授权选择 D0／D1 的剩余范围；形成的正式 Interface、配置迁移和行为规则更新到对应现行契约。本页维护路线与选择依据。

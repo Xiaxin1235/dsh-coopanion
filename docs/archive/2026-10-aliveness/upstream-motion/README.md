@@ -44,7 +44,7 @@
 | 原生原流程 | 原 7 项行为通过；恢复后拖动、真实 macOS 光标命中及旧 API 2 水平回退完成 |
 | 原生扩展流程 | 8 项通过两次，主流程分别 24.239 秒与 25.143 秒；最终脚本确认记录 PNG data URL 为 0，隔离 profile 已移除、光标已恢复 |
 
-最终确认见[native-confirmed/native.json](../../../evidence/2026-10-19-upstream-motion/native-regression-followup-20261019/native-confirmed/native.json)和[cleanup.json](../../../evidence/2026-10-19-upstream-motion/native-regression-followup-20261019/native-confirmed/cleanup.json)。原生脚本的 120 秒期限覆盖主流程，退出清理另行有界执行；复现命令见[空间预览](../../../design/art-workflow/space-v1/README.md#回归与新证据)，动作测试入口见[开发指南](../../../development.md)。新运行使用新的输出目录。
+最终确认见[native-confirmed/native.json](../../../evidence/2026-10-19-upstream-motion/native-regression-followup-20261019/native-confirmed/native.json)和[cleanup.json](../../../evidence/2026-10-19-upstream-motion/native-regression-followup-20261019/native-confirmed/cleanup.json)。原生脚本的 120 秒期限覆盖主流程，退出清理另行有界执行；复现命令见[空间预览](../../../design/art-workflow/space-v1/README.md#隔离原生与定向回归)，动作测试入口见[开发指南](../../../development.md)。新运行使用新的输出目录。
 
 ## 源码身份与证据保存
 
@@ -54,6 +54,6 @@
 
 [保存清单](preserved-files.json)记录 36 个文件的原路径、归档路径、字节数和 SHA-256：原调研快照、首轮不完整验证清单，以及最终验证清单及其引用的 33 份报告／日志／采样。原文件按原字节复制，最终证据目录内的相对位置保持。它们已收入 Git，可在新机器读取；内部绝对路径仍只标识原运行环境。
 
-首轮[不完整验证](../../../evidence/2026-10-19-upstream-motion/upstream-motion-20261019/verification.json)保留 `allChecksPassed:false` 和原生只完成 4 项的结论。该清单所列的其余首轮附件仍在本机 `artifacts/upstream-motion-20261019/`；后续完整目录的截图、录像和临时调试脚本仍在本机 `artifacts/native-regression-followup-20261019/`，没有收入这次保存集合。原报告里对这些文件的路径引用不代表 GitHub 附件；维护中的回归入口是 `tests/space-native.mjs`，临时探针不是新的开发入口。
+首轮[不完整验证](../../../evidence/2026-10-19-upstream-motion/upstream-motion-20261019/verification.json)保留 `allChecksPassed:false` 和原生只完成 4 项的结论。清单外的首轮附件当时位于本机 `artifacts/upstream-motion-20261019/`，后续截图、录像和临时调试脚本当时位于 `artifacts/native-regression-followup-20261019/`，没有收入这次保存集合；部分本地媒体后来经空间清理授权删除，历史路径不保证仍可读取。原报告里的引用不代表 GitHub 附件；维护中的回归入口是 `tests/space-native.mjs`，临时探针不是新的开发入口。
 
 本次验证不覆盖三平台 CI／安装矩阵、Linux／Windows 原生、物理多屏／混合 DPI、真实 OS 休眠／锁屏、底层应用点击送达、长期稳定性、真实 Harness／模型会话或正式安装／发布。第 2 期早期一次原生并行失响应仍为独立、未定位的历史观察，不能用本次 CDP 根因替它补写结论。
