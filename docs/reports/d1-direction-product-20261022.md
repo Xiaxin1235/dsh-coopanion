@@ -20,9 +20,9 @@
 | macOS VM 生产工厂 | 相同 8 组通过；macOS 15.7.7 (24G720) arm64、Electron 44.7.0／Chromium 152.0.7977.130 |
 | macOS VM 默认主页面 | 通过真实 IPC、观察／拿放、工作交接／续接、明确互动存档、平面停靠、跳跃中改尺寸及方向往返；接触阶段 145 次显示回调中绘制 144 帧。这不是长期帧率或能耗结论 |
 | VM 完整 `test:desktop` | 通过；含原生恢复、旧角色导入／切换、多屏受控几何、陪伴／回应、生活、诊断、生命周期、口型、消息和菜单 |
-| 本地分发包 | 725 文件检查通过，图集与模型逐项核验摘要；包身份为 `beb4179`，未安装或发布 |
+| 本地分发包 | 725 文件检查通过，图集与模型逐项核验摘要；最终包身份为 `25bec35`，未安装或发布 |
 
-本地包：`artifacts/runs/d1-product-20261022/package-delivery/takboo-dsh-coopanion-0.4.13.tgz`。SHA-256：`99ebc4657d24d0f2fc2d840346ffaf106aeb2a91e03bd46d7e08676d3cd1eeed`。宿主浏览器运行于 macOS 15.8.1 (24H32)，固定 Node 24.21.0／npm 11.19.1。原始身份、日志、实录和画面见[证据](../evidence/2026-10-22-d1-direction-product/README.md)。后续测试输出修正没有改变这 519 个产品源文件。
+本地包：`artifacts/runs/d1-product-20261022/package-final/takboo-dsh-coopanion-0.4.13.tgz`。SHA-256：`af2895604172d63e92547eabd8323ed3b04a3d6104bd1049280fd4f23d676151`。宿主浏览器运行于 macOS 15.8.1 (24H32)，固定 Node 24.21.0／npm 11.19.1。原始身份、日志、实录和画面见[证据](../evidence/2026-10-22-d1-direction-product/README.md)。测试输出修正与最终文档没有改变这 519 个产品源文件。最终包包含 `dd971b8` 的测试隔离修正和使用说明；此前 `beb4179` 包身份保留在证据的 `package.json`，最终包看 `package-final.json`。
 
 ## 遇到的问题与处理
 

@@ -9,3 +9,5 @@
 本目录不随安装包分发，不参与普通搜索。原始工作目录为 `artifacts/runs/d1-product-20261022/`，完整 VM 输出保存在其 `vm/` 和后续独立目录中。
 
 `vm-desktop-isolated.log` 和 `native-output-audit.json` 绑定 `dd971b8` 的完整原生回归：50 个新输出，13 个旧固定路径文件未变。产品运行代码与前述候选相同。
+
+最终本地包由干净的 `25bec35` 构建，`package-final.json`／`package-final.log` 记录其身份；包含测试输出隔离修正，未发布或日用安装。较早的 `package.json`／`package.log` 原字节保留。
