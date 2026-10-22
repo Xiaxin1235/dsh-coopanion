@@ -60,7 +60,7 @@ jobs:
       - name: Verify N0 notification contract and prepare the private probe
         run: npm run test:n0
       - run: npm run build
-      - run: npx playwright-core install --with-deps chromium
+      - run: npm run setup:browser -- --with-deps
       - uses: ./.github/actions/setup-linux-display
         if: runner.os == 'Linux'
       - run: npm run character:pack -- examples/star paper-star.zip
@@ -150,7 +150,7 @@ jobs:
           cache: ${{ !inputs.release-tag && 'npm' || '' }}
       - run: npm ci --ignore-scripts
       - run: npm run verify:metadata
-      - run: npx playwright-core install --with-deps chromium
+      - run: npm run setup:browser -- --with-deps
       - uses: ./.github/actions/setup-linux-display
         if: runner.os == 'Linux'
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2

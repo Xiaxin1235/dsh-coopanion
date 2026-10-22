@@ -5,7 +5,7 @@ import { createRequire } from 'node:module';
 import { mkdtemp, rm, readFile, writeFile, mkdir } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
-import { _electron } from 'playwright-core';
+import { _electron } from '../scripts/lib/playwright.mjs';
 import { petClick, nativeClick } from './helpers/native-pointer.mjs';
 const require = createRequire(import.meta.url), directory = await mkdtemp(join(tmpdir(), 'dsh-p1-native-'));
 let app;

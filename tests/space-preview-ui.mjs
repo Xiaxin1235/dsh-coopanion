@@ -1,7 +1,7 @@
 // Isolated browser acceptance for the stage 1 editor. Reuses the one local
 // preview service; never talks to a real Harness or an OS desktop instance.
 import assert from 'node:assert/strict';
-import { chromium } from 'playwright-core';
+import { chromium } from '../scripts/lib/playwright.mjs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 const base=process.env.SPACE_PREVIEW_URL??'http://127.0.0.1:4189';

@@ -3,7 +3,7 @@ import { once } from 'node:events';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { chromium } from 'playwright-core';
+import { chromium } from '../scripts/lib/playwright.mjs';
 import { previewServer } from '../scripts/preview.mjs';
 const directory = await mkdtemp(join(tmpdir(), 'dsh-mouth-'));
 const server = previewServer({ dataDir: directory }); server.listen(0, '127.0.0.1'); await once(server, 'listening');

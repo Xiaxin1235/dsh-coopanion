@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { chromium } from 'playwright-core';
+import { chromium } from '../../scripts/lib/playwright.mjs';
 
 const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
 export async function waitRecovery(check, description, timeout = 20000) {

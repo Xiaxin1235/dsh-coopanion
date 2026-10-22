@@ -4,7 +4,7 @@ import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { execFileSync } from 'node:child_process';
-import { _electron } from 'playwright-core';
+import { _electron } from '../scripts/lib/playwright.mjs';
 import { petClick, nativeClick } from './helpers/native-pointer.mjs';
 import { sampleNativeDisplay } from './helpers/multi-display-native.mjs';
 const require=createRequire(import.meta.url), root=await mkdtemp(join(tmpdir(),'dsh-m5-native-'));

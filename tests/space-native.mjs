@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { _electron } from 'playwright-core';
+import { _electron } from '../scripts/lib/playwright.mjs';
 import { createRequire } from 'node:module';
 import { mkdtemp,rm,mkdir,writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';

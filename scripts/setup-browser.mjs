@@ -1,0 +1,11 @@
+import { spawn } from 'node:child_process';
+import { createRequire } from 'node:module';
+import { dirname, join } from 'node:path';
+import './lib/playwright.mjs';
+const require = createRequire(import.meta.url);
+const args = process.argv.slice(2);
+if (args.some(a => a !== '--with-deps')) throw Error('Only --with-deps is supported');
+const child = spawn(process.execPath, [join(dirname(require.resolve('playwright-core/package.json')), 'cli.js'), 'install', ...args, 'chromium'], { stdio: 'inherit', env: process.env });
+for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => child.kill(signal));
+child.on('error', error => { console.error(error); process.exitCode = 1; });
+child.on('exit', code => { process.exitCode = code ?? 1; });

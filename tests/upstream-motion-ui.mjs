@@ -5,7 +5,7 @@ import { createServer } from 'node:http';
 import { readFile, mkdir, mkdtemp, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { extname, join, resolve, sep } from 'node:path';
-import { chromium } from 'playwright-core';
+import { chromium } from '../scripts/lib/playwright.mjs';
 
 const output = resolve(process.env.UPSTREAM_MOTION_EVIDENCE_DIR ?? await mkdtemp(join(tmpdir(), 'dsh-motion-ui-')));
 await mkdir(output, { recursive: true });

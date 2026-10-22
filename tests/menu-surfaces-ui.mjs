@@ -4,7 +4,7 @@ import { createRequire } from 'node:module';
 import { mkdtemp, rm, mkdir, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { chromium } from 'playwright-core';
+import { chromium } from '../scripts/lib/playwright.mjs';
 import { previewServer } from '../scripts/preview.mjs';
 import { checkMenuSurface, menuSnapshot } from './helpers/menu-surfaces.mjs';
 const require=createRequire(import.meta.url), { CompanionStore }=require('../dist/companion-store.cjs');

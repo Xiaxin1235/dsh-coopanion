@@ -4,7 +4,7 @@ import { mkdtemp, rm, mkdir, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { before, after, test } from 'node:test';
-import { chromium } from 'playwright-core';
+import { chromium, artifactRoot } from '../scripts/lib/playwright.mjs';
 import { previewServer } from '../scripts/preview.mjs';
 import { controlNpc, npcTick, npcUntil } from './helpers/npc-life.mjs';
 let browser;
@@ -13,7 +13,7 @@ after(async () => { await browser?.close(); });
 async function fixture(t, mode = 'quiet', videoPath) {
   const directory = await mkdtemp(join(tmpdir(), 'dsh-npc-drag-'));
   const server = previewServer({ dataDir: directory }); server.listen(0, '127.0.0.1'); await once(server, 'listening');
-  const page = await browser.newPage({ viewport: { width: 1000, height: 750 }, ...(videoPath ? { recordVideo: { dir: 'artifacts/home-marker-video', size: { width: 1000, height: 750 } } } : {}) }); page.setDefaultTimeout(5000);
+  const page = await browser.newPage({ viewport: { width: 1000, height: 750 }, ...(videoPath ? { recordVideo: { dir: `${artifactRoot}/home-marker-video`, size: { width: 1000, height: 750 } } } : {}) }); page.setDefaultTimeout(5000);
   t.after(async () => { await page.close(); if (videoPath) await page.video().saveAs(videoPath); await new Promise(r => server.close(r)); await rm(directory, { recursive: true, force: true }); });
   const errors = []; page.on('pageerror', e => errors.push(e.message)); t.after(() => assert.deepEqual(errors, []));
   await controlNpc(page);
@@ -39,8 +39,8 @@ async function drag(page, target) {
   await page.mouse.up(); await page.mouse.move(0, 0);
 }
 async function record(name, page, frame) {
-  await mkdir('artifacts', { recursive: true });
-  await writeFile('artifacts/' + name + '.json', JSON.stringify({ state: await page.evaluate(() => window.npcState), trace: await page.evaluate(() => window.npcTrace), layout: await layout(page), orders: await frame.evaluate(() => window.orders) }, null, 2) + '\n');
+  await mkdir(artifactRoot, { recursive: true });
+  await writeFile(`${artifactRoot}/` + name + '.json', JSON.stringify({ state: await page.evaluate(() => window.npcState), trace: await page.evaluate(() => window.npcTrace), layout: await layout(page), orders: await frame.evaluate(() => window.orders) }, null, 2) + '\n');
 }
 
 test('selection, typing and dragging always retain the configured size', async t => {
@@ -118,8 +118,8 @@ test('home marker remains fixed throughout a held drag and release', async t => 
   await page.mouse.up(); await page.mouse.move(0, 0);
   await page.waitForTimeout(700);
   points.push({ phase: 'released', home: await home(), layout: await layout(page) });
-  await mkdir('artifacts', { recursive: true });
-  await writeFile(process.env.DSH_HOME_MARKER_TRACE ?? 'artifacts/home-marker-drag.json', JSON.stringify(points, null, 2) + '\n');
+  await mkdir(artifactRoot, { recursive: true });
+  await writeFile(process.env.DSH_HOME_MARKER_TRACE ?? `${artifactRoot}/home-marker-drag.json`, JSON.stringify(points, null, 2) + '\n');
   console.log('Home marker drag positions:', JSON.stringify(points.map(p => [p.phase, p.home])));
   assert.ok(points.every(p => Math.abs(p.home - initial) < 1), 'home must stay anchored while held, not just restore after release');
 });

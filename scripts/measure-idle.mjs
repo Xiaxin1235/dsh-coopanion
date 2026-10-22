@@ -8,7 +8,7 @@ import { createServer } from 'node:net';
 import { cpus, platform, arch, release, tmpdir } from 'node:os';
 import { resolve, join } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { chromium } from 'playwright-core';
+import { chromium } from './lib/playwright.mjs';
 
 const args = process.argv.slice(2), arg = (key, fallback) => args.includes(key) ? args[args.indexOf(key) + 1] : fallback;
 const root = resolve(arg('--checkout', '.')), output = resolve(arg('--output', 'artifacts/idle-resource.json'));

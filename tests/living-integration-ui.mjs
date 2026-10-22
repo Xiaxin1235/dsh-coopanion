@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import {before,after,test} from 'node:test';
 import {mkdtemp,rm,mkdir,writeFile} from 'node:fs/promises';import {tmpdir} from 'node:os';import {join} from 'node:path';import {once} from 'node:events';
-import {chromium} from 'playwright-core';import {previewServer} from '../scripts/preview.mjs';
-let browser;const output=process.env.LIVING_EVIDENCE_DIR??'artifacts/living-integration';
+import { chromium, artifactRoot } from '../scripts/lib/playwright.mjs';import {previewServer} from '../scripts/preview.mjs';
+let browser;const output=process.env.LIVING_EVIDENCE_DIR??`${artifactRoot}/living-integration`;
 before(async()=>{await mkdir(output,{recursive:true});browser=await chromium.launch({headless:true,args:['--no-sandbox','--enable-unsafe-swiftshader']});});after(async()=>{await browser?.close();});
 const idle={mood:'idle',active:false,sessionId:null,sessions:[],results:[]};
 const fact=(revision,extra={})=>({sessionId:'live-work',epoch:1,revision,driver:'running',running:true,activity:'tools',category:'working',requests:[],needsAttention:false,tools:{pending:1,entered:1},resultId:null,cue:null,...extra});

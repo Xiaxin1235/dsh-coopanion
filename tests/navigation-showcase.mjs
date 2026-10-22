@@ -1,6 +1,6 @@
 // Page-only real-time recording. All actions use visible controls and pointer
 // coordinates; snapshots inspect the same body, never replace its movement.
-import {chromium} from 'playwright-core';
+import {chromium} from '../scripts/lib/playwright.mjs';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 const output=resolve(process.env.SPACE_EVIDENCE_DIR??'artifacts/stage-2-showcase');await mkdir(output,{recursive:true});

@@ -8,9 +8,11 @@
 
 ```sh
 npm run build
-npx playwright-core install chromium
+npm run setup:browser
 # 使用现有 Chromium 时可设置 CHROMIUM_PATH 为可执行文件的绝对路径。
 node scripts/capture-showcase.mjs
 ```
+
+浏览器默认复用项目 `.cache/playwright`；不要为重拍另建浏览器下载目录。运行时与临时数据管理见[缓存管理](../cache-management.md)。
 
 拍摄脚本会覆盖 `showcase/` 中的展示素材，并检查 Renderer 是否有未捕获错误；完成后关闭浏览器及本地服务，清理临时数据。macOS 若沙箱禁止 Chromium 的系统进程注册，应在允许启动浏览器的环境中运行。

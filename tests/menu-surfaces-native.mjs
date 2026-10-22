@@ -3,7 +3,7 @@ import { createRequire } from 'node:module';
 import { mkdtemp, rm, mkdir, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
-import { _electron } from 'playwright-core';
+import { _electron } from '../scripts/lib/playwright.mjs';
 import { checkMenuSurface, menuSnapshot } from './helpers/menu-surfaces.mjs';
 const require=createRequire(import.meta.url),{CompanionStore}=require('../dist/companion-store.cjs');
 const directory=await mkdtemp(join(tmpdir(),'dsh-menu-native-')),store=new CompanionStore(join(directory,'companionship-v1'));

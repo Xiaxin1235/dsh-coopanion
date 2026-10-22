@@ -8,7 +8,7 @@ import { build } from 'esbuild';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { once } from 'node:events';
-import { chromium } from 'playwright-core';
+import { chromium } from '../scripts/lib/playwright.mjs';
 import { ElectronBridge } from '../dist/bridge.js';
 import { importCharacter } from './helpers/characters.mjs';
 import { petClick } from './helpers/native-pointer.mjs';

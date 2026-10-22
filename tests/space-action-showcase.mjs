@@ -1,6 +1,6 @@
 // One real-time page-only story. Inputs change intent; the body plans and commits.
 import assert from 'node:assert/strict';
-import {chromium} from 'playwright-core';
+import {chromium} from '../scripts/lib/playwright.mjs';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import {spaceSourceIdentity} from './space-source-identity.mjs';

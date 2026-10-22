@@ -5,7 +5,7 @@ import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { after, before, test } from 'node:test';
-import { chromium } from 'playwright-core';
+import { chromium, artifactRoot } from '../scripts/lib/playwright.mjs';
 import { previewServer } from '../scripts/preview.mjs';
 import { controlNpc, npcTick, npcUntil } from './helpers/npc-life.mjs';
 import { recordBodyOrders } from './helpers/body-orders.mjs';
@@ -17,7 +17,7 @@ before(async () => {
   directory = await mkdtemp(join(tmpdir(), 'dsh-npc-controls-ui-'));
   server = previewServer({ dataDir: directory }); server.listen(0, '127.0.0.1'); await once(server, 'listening');
   browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH ?? (existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : chromium.executablePath()), headless: true, args: ['--no-sandbox', '--enable-unsafe-swiftshader'] });
-  await mkdir('artifacts', { recursive: true });
+  await mkdir(artifactRoot, { recursive: true });
 });
 after(async () => { await browser?.close(); if (server) await new Promise(r => server.close(r)); if (directory) await rm(directory, { recursive: true, force: true }); });
 async function fixture(t, mode = 'quiet') {

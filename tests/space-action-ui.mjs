@@ -1,7 +1,7 @@
 // Stage 3: drive the public editor/transport, observe real navigation and rig.
 import {spaceSourceIdentity} from './space-source-identity.mjs';
 import assert from 'node:assert/strict';
-import {chromium, _electron} from 'playwright-core';
+import {chromium, _electron} from '../scripts/lib/playwright.mjs';
 import {mkdir,writeFile,mkdtemp,rm} from 'node:fs/promises';
 import {resolve,join} from 'node:path';
 import {tmpdir} from 'node:os';

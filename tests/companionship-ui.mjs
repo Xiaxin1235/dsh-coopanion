@@ -6,7 +6,7 @@ import { join, resolve } from 'node:path';
 import { zipSync, strToU8 } from 'fflate';
 import { createRequire } from 'node:module';
 import { before, after, test } from 'node:test';
-import { chromium } from 'playwright-core';
+import { chromium, artifactRoot } from '../scripts/lib/playwright.mjs';
 import { controlCompanionClock, advanceCompanion } from './helpers/companionship.mjs';
 import { controlNpc, npcTick, npcUntil } from './helpers/npc-life.mjs';
 import { recordBodyOrders } from './helpers/body-orders.mjs';
@@ -14,7 +14,7 @@ import { controlResponseClock, responseTick } from './helpers/response-rhythm.mj
 const require = createRequire(import.meta.url);
 const { CharacterStore } = require('../dist/character-store.cjs'), { CompanionStore } = require('../dist/companion-store.cjs'), { createPetServer } = require('../dist/figure-server.cjs');
 let browser;
-before(async () => { await mkdir('artifacts', { recursive: true }); browser = await chromium.launch({ headless: true, args: ['--no-sandbox', '--enable-unsafe-swiftshader'] }); });
+before(async () => { await mkdir(artifactRoot, { recursive: true }); browser = await chromium.launch({ headless: true, args: ['--no-sandbox', '--enable-unsafe-swiftshader'] }); });
 after(async () => { await browser?.close(); });
 const session = { id: 'companion-focus', label: 'Companion focus', mood: 'idle', active: false, chatAvailable: true };
 const snapshot = patch => ({ mood: 'idle', active: false, sessionId: session.id, sessions: [session], results: [], ...patch });
@@ -82,7 +82,7 @@ test('NPC follows real arrival, pauses typing, resumes retained intent and retur
   await page.waitForSelector('#pet[data-mode=walk]');
   await page.waitForFunction(() => window.npcState.phase === 'observe', null, { timeout: 20000 });
   assert.ok(await page.evaluate(() => window.npcState.recent.length > 0));
-  await page.screenshot({ path: 'artifacts/npc-life-observe.png' });
+  await page.screenshot({ path: `${artifactRoot}/npc-life-observe.png` });
   await npcUntil(page, 'return');
   await page.waitForFunction(() => window.npcState.phase === 'home', null, { timeout: 20000 });
   await page.waitForSelector('#pet[data-mode=sit]');
@@ -102,7 +102,7 @@ test('NPC follows real arrival, pauses typing, resumes retained intent and retur
 test('invitation reserves once, ignores naturally, persists quiet and cannot send model/task messages', async t => {
   const { page, read, configure } = await fixture(t, 'interactive', ['neutral', 'stand', 'wave', 'love', 'happy', 'nod']);
   await page.evaluate(() => { window.companionRandom = .999; });
-  await advanceCompanion(page, 1800000); await page.locator('#companion-invitation').waitFor(); await page.screenshot({ path: 'artifacts/companionship-invitation.png' }); assert.equal((await read()).invitation.remaining, 1);
+  await advanceCompanion(page, 1800000); await page.locator('#companion-invitation').waitFor(); await page.screenshot({ path: `${artifactRoot}/companionship-invitation.png` }); assert.equal((await read()).invitation.remaining, 1);
   const focus = await page.evaluate(() => document.activeElement.tagName);
   await advanceCompanion(page, 1810000); await page.locator('#companion-invitation').waitFor({ state: 'hidden' }); assert.equal(await page.evaluate(() => document.activeElement.tagName), focus);
   await advanceCompanion(page, await page.evaluate(() => window.companionState.inviteAt)); await page.locator('#companion-invitation').waitFor();
@@ -226,7 +226,7 @@ test('reduced motion cancels an in-progress activity and a small large-text menu
   assert.equal((await read()).relation.total, 0);
   await page.setViewportSize({ width: 480, height: 400 }); await configure({ textScale: 1.5 });
   await menu(page);
-  await page.screenshot({ path: 'artifacts/companionship-small-menu.png' });
+  await page.screenshot({ path: `${artifactRoot}/companionship-small-menu.png` });
   const bounds = await page.locator('#menu').boundingBox(); assert.ok(bounds.y >= 0 && bounds.y + bounds.height <= 400, JSON.stringify(bounds));
   await page.locator('#hide').scrollIntoViewIfNeeded(); assert.equal(await page.locator('#hide').isVisible(), true);
 });

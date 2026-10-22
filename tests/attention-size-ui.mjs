@@ -4,7 +4,7 @@ import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { before, after, test } from 'node:test';
-import { chromium } from 'playwright-core';
+import { chromium, artifactRoot } from '../scripts/lib/playwright.mjs';
 import { previewServer } from '../scripts/preview.mjs';
 import { controlNpc, npcTick } from './helpers/npc-life.mjs';
 import { recordBodyOrders } from './helpers/body-orders.mjs';

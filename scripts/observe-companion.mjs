@@ -9,8 +9,9 @@ import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { homedir } from 'node:os';
 import { parseArgs } from 'node:util';
-import { chromium } from 'playwright-core';
+import { chromium } from './lib/playwright.mjs';
 import { listDiagnostics, readDiagnostics } from './diagnostics-client.mjs';
+import { temporary } from './lib/local-cache.mjs';
 
 const { values: args } = parseArgs({ options: Object.fromEntries(
   ['runtime', 'package', 'output', 'source-commit', 'version', 'seconds', 'interval', 'window', 'warmup'].map(key => [key, { type: 'string' }])
@@ -25,7 +26,8 @@ assert.ok(['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-rc.1', '0.2.1-rc.2'].includes(v
 const seconds = Number(args.seconds ?? 7200), interval = Number(args.interval ?? 5), windowSeconds = Number(args.window ?? 1800), warmup = Number(args.warmup ?? 20);
 assert.ok([seconds, interval, windowSeconds, warmup].every(Number.isFinite) && seconds >= windowSeconds * 2 && windowSeconds >= 10 && interval >= 1 && interval <= 10 && warmup >= 20);
 await mkdir(dirname(output), { recursive: true }); await mkdir(output);
-const work = join(output, 'work'); await mkdir(work);
+const run = await temporary('observation');
+const work = run.path;
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const archiveSha256 = hash(await readFile(archivePath));
 await copyFile(archivePath, join(output, 'candidate.tgz'));
@@ -162,5 +164,6 @@ try {
 } finally {
   if (sampler?.exitCode === null && sampler.signalCode === null) sampler.kill('SIGTERM');
   await browser?.close().catch(() => {}); await stopHost(); await logFile?.close();
+  await run.dispose();
   process.off('SIGTERM', signal); process.off('SIGINT', signal);
 }

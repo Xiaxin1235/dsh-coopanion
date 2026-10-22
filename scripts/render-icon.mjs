@@ -1,6 +1,6 @@
 import { once } from 'node:events';
 import { existsSync } from 'node:fs';
-import { chromium } from 'playwright-core';
+import { chromium } from './lib/playwright.mjs';
 import { previewServer } from './preview.mjs';
 const server = previewServer(); server.listen(0, '127.0.0.1'); await once(server, 'listening');
 const executablePath = process.env.CHROMIUM_PATH ?? (existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : chromium.executablePath());

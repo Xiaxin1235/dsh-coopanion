@@ -5,7 +5,7 @@ import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { createRequire } from 'node:module';
-import { _electron } from 'playwright-core';
+import { _electron } from '../scripts/lib/playwright.mjs';
 import { petClick } from './helpers/native-pointer.mjs';
 import { listDiagnostics, readDiagnostics } from '../scripts/diagnostics-client.mjs';
 const require = createRequire(import.meta.url), root = await mkdtemp(join(tmpdir(), 'dsh-diag-native-'));

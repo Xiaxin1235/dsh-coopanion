@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {chromium,_electron} from 'playwright-core';
+import {chromium,_electron} from '../scripts/lib/playwright.mjs';
 import {mkdir,writeFile,mkdtemp,rm} from 'node:fs/promises';
 import {execFileSync} from 'node:child_process';
 import {createRequire} from 'node:module';

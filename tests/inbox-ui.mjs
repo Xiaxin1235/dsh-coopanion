@@ -4,7 +4,7 @@ import { mkdir, mkdtemp, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { chromium } from 'playwright-core';
+import { chromium, artifactRoot } from '../scripts/lib/playwright.mjs';
 import { previewServer } from '../scripts/preview.mjs';
 
 const directory = await mkdtemp(join(tmpdir(), 'dsh-inbox-ui-'));
@@ -99,7 +99,7 @@ try {
   await page.waitForFunction(() => { const r = document.getElementById('requests').getBoundingClientRect(); return r.left >= 0 && r.right <= innerWidth && r.top >= 0 && r.bottom <= innerHeight; });
   assert.equal(await page.locator('#requests').evaluate(el => el.scrollWidth <= el.clientWidth), true, 'the inbox fits a small viewport');
   await page.locator('#inbox-list').evaluate(el => { el.scrollTop = 0; });
-  await mkdir('artifacts', { recursive: true }); await page.screenshot({ path: 'artifacts/inbox-narrow.png' });
+  await mkdir(artifactRoot, { recursive: true }); await page.screenshot({ path: `${artifactRoot}/inbox-narrow.png` });
   await page.setViewportSize({ width: 1200, height: 800 });
   await receive({ type: 'configure', options: { locale: 'zh-CN' } });
   await page.waitForFunction(() => {
@@ -115,7 +115,7 @@ try {
     const x = Math.max(0, Math.floor(Math.min(panel.left, pet.left) - 18)), y = Math.max(0, Math.floor(Math.min(panel.top, pet.top) - 18));
     return { x, y, width: Math.min(innerWidth - x, Math.ceil(Math.max(panel.right, pet.right) - x + 18)), height: Math.min(innerHeight - y, Math.ceil(Math.max(panel.bottom, pet.bottom) - y + 18)) };
   });
-  await page.screenshot({ path: 'artifacts/session-inbox.png', clip });
+  await page.screenshot({ path: `${artifactRoot}/session-inbox.png`, clip });
   assert.deepEqual(errors, []);
   console.log('Inbox UI passed: one-click full reply, direct source actions, mixed pending items, stable chat focus and reading order, Unicode/text safety, bilingual copy and narrow layout.');
 } finally { await browser?.close(); await new Promise(resolve => server.close(resolve)); await rm(directory, { recursive: true, force: true }); }

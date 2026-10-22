@@ -5,7 +5,7 @@ import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { after, before, test } from 'node:test';
-import { chromium } from 'playwright-core';
+import { chromium, artifactRoot } from '../scripts/lib/playwright.mjs';
 import { previewServer } from '../scripts/preview.mjs';
 import { observeBodyReady } from './helpers/body-startup.mjs';
 
@@ -14,7 +14,7 @@ before(async () => {
   directory = await mkdtemp(join(tmpdir(), 'dsh-text-scale-'));
   server = previewServer({ dataDir: directory }); server.listen(0, '127.0.0.1'); await once(server, 'listening');
   browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH ?? (existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : chromium.executablePath()), headless: true, args: ['--no-sandbox', '--enable-unsafe-swiftshader'] });
-  await mkdir('artifacts', { recursive: true });
+  await mkdir(artifactRoot, { recursive: true });
 });
 after(async () => { await browser?.close(); if (server) await new Promise(resolve => server.close(resolve)); if (directory) await rm(directory, { recursive: true, force: true }); });
 const longText = '## 阅读中的捕获正文 · Captured reply\n\n' + '放大后继续阅读，草稿与会话保持。 Read without changing the target.\n\n'.repeat(24) + '```js\n' + 'const longCode = "' + 'a'.repeat(200) + '";\n```\n\n| ' + Array.from({ length: 8 }, (_, i) => 'Column ' + i).join(' | ') + ' |\n| ' + '--- | '.repeat(8) + '\n| ' + 'LongTableCell | '.repeat(8) + '\n';
@@ -66,7 +66,7 @@ for (const locale of ['zh-CN', 'en-US']) test(`${locale}: all text scales × cha
     assert.equal(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--size')), `${size}px`);
     assert.equal(await page.locator('#reader-text pre').evaluate(n => n.scrollWidth > n.clientWidth), true, 'long code keeps horizontal scroll');
     assert.equal(await page.locator('#reader-text table').evaluate(n => n.scrollWidth > n.clientWidth), true, 'wide table keeps horizontal scroll');
-    await page.screenshot({ path: `artifacts/text-scale-${locale}-${size}-${textScale}.png` });
+    await page.screenshot({ path: `${artifactRoot}/text-scale-${locale}-${size}-${textScale}.png` });
     samples.push({ locale, size, textScale, font, readerContained: true, scrollTop: 140 });
   }
   assert.deepEqual(await page.evaluate(() => window.scaleActions), actions, 'scaling and incoming results do not select, acknowledge, or submit');
@@ -75,7 +75,7 @@ for (const locale of ['zh-CN', 'en-US']) test(`${locale}: all text scales × cha
     await configure({ size, textScale }); await contained(page, '#requests');
     assert.equal(await page.locator('.inbox-card').first().evaluate(n => parseFloat(getComputedStyle(n).fontSize)), 13 * textScale);
   }
-  await page.screenshot({ path: `artifacts/text-scale-inbox-${locale}.png` });
+  await page.screenshot({ path: `${artifactRoot}/text-scale-inbox-${locale}.png` });
   await page.locator('#inbox-replies [data-action=read]').first().focus();
   await page.keyboard.press('Enter');
   await page.locator('#reader').waitFor({ state: 'visible' });
@@ -88,7 +88,7 @@ for (const locale of ['zh-CN', 'en-US']) test(`${locale}: all text scales × cha
   assert.equal(await page.locator('#message').inputValue(), '未发送的草稿 · unsent draft');
   assert.deepEqual(await page.locator('#message').evaluate(n => [n.selectionStart, n.selectionEnd]), selection);
   assert.equal(await page.locator('#message').evaluate(n => n === document.activeElement), true);
-  await page.screenshot({ path: `artifacts/text-scale-chat-${locale}.png` });
+  await page.screenshot({ path: `${artifactRoot}/text-scale-chat-${locale}.png` });
   // Keyboard submission retains its exact in-flight identity across resizing.
   await page.locator('#message').press('Control+Enter');
   const sent = await page.evaluate(() => window.scaleActions.filter(a => a.type === 'chat'));
@@ -98,7 +98,7 @@ for (const locale of ['zh-CN', 'en-US']) test(`${locale}: all text scales × cha
   assert.deepEqual(await page.evaluate(() => window.scaleActions.filter(a => a.type === 'chat')), sent);
   await receive({ type: 'chat-result', sessionId: sent[0].sessionId, requestId: sent[0].requestId, status: 'accepted' });
   assert.equal(await page.locator('#message').inputValue(), '');
-  await writeFile(`artifacts/text-scale-${locale}.json`, JSON.stringify(samples, null, 2) + '\n');
+  await writeFile(`${artifactRoot}/text-scale-${locale}.json`, JSON.stringify(samples, null, 2) + '\n');
 });
 
 test('text scaling keeps final bubble font and original dismissal clock', async t => {

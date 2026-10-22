@@ -3,17 +3,18 @@ import { spawn, execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { once } from 'node:events';
 import { existsSync, realpathSync } from 'node:fs';
-import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:net';
-import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { pathToFileURL, fileURLToPath } from 'node:url';
-import { chromium } from 'playwright-core';
+import { chromium } from '../scripts/lib/playwright.mjs';
 import { importCharacter } from './helpers/characters.mjs';
 import { petClick } from './helpers/native-pointer.mjs';
 import { listDiagnostics, readDiagnostics } from '../scripts/diagnostics-client.mjs';
 import { sampleNativeDisplay } from './helpers/multi-display-native.mjs';
 import { npmTarballName } from '../scripts/release-support.mjs';
+import { hostRuntime } from '../scripts/lib/host-runtime.mjs';
+import { temporary } from '../scripts/lib/local-cache.mjs';
 import { unzipSync } from 'fflate';
 import { prepareNotifications, verifyInstalledNotifications } from './helpers/installed-notifications.mjs';
 import { crashNative, connectRecovered, waitRecovery } from './helpers/desktop-recovery.mjs';
@@ -29,8 +30,10 @@ const archive = resolve(process.env.DSH_TEST_PACKAGE ?? (process.env.DSH_TEST_PA
 assert.ok(existsSync(archive), 'run npm pack before the installation test');
 // Windows TEMP can be an 8.3 alias (RUNNER~1). Use one physical path for the
 // CLI and profile loaders so stateful host modules share the same ESM identity.
-const root = realpathSync.native(await mkdtemp(join(process.env.RUNNER_TEMP ?? tmpdir(), 'dsh-coopanion-install-')));
-const runtime = process.env.DSH_TEST_RUNTIME ? resolve(process.env.DSH_TEST_RUNTIME) : join(root, 'runtime');
+const sharedRuntime = process.env.DSH_TEST_RUNTIME ? null : await hostRuntime(version, { lockFile: process.env.DSH_TEST_RUNTIME_LOCK });
+const runtime = process.env.DSH_TEST_RUNTIME ? resolve(process.env.DSH_TEST_RUNTIME) : sharedRuntime.path;
+const temporaryRun = await temporary('install', sharedRuntime ? [runtime] : []);
+const root = realpathSync.native(temporaryRun.path);
 const home = join(root, 'home');
 const profileName = 'coopanion-install';
 const profile = join(home, 'profiles', profileName);
@@ -116,17 +119,6 @@ async function stop(child) {
 }
 
 try {
-  if (!process.env.DSH_TEST_RUNTIME) {
-    console.log(`Preparing published DSH ${version} in an isolated test directory…`);
-    await mkdir(runtime, { recursive: true });
-    const logs = join(project, 'artifacts', `npm-runtime-${version}`);
-    await mkdir(logs, { recursive: true });
-    assert.ok(process.env.npm_execpath, 'run this test through npm run test:install');
-    // Invoke npm's JavaScript entry directly: Windows cannot exec a .cmd without a shell.
-    const preparing = Date.now();
-    await run(process.execPath, [process.env.npm_execpath, 'install', '--prefix', runtime, '--no-audit', '--no-fund', '--loglevel=info', '--timing', '--logs-dir', logs, `@deepseek-ai/dsh@${version}`], project, process.platform === 'win32' ? 600000 : 240000);
-    console.log(`Published DSH ${version} prepared in ${Math.round((Date.now() - preparing) / 1000)}s.`);
-  }
   const cliDir = join(runtime, 'node_modules', '@deepseek-ai', 'dsh');
   assert.equal(JSON.parse(await readFile(join(cliDir, 'package.json'), 'utf8')).version, version);
   const cli = join(cliDir, 'lib', 'bin.js');
@@ -627,5 +619,5 @@ try {
   if (browser) await browser.close();
   if (settingsBrowser) await settingsBrowser.close();
   await stop(display);
-  await rm(root, { recursive: true, force: true });
+  try { await temporaryRun.dispose(); } finally { await sharedRuntime?.dispose(); }
 }

@@ -4,7 +4,7 @@ import { mkdir, mkdtemp, rm, readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { chromium } from 'playwright-core';
+import { chromium } from '../scripts/lib/playwright.mjs';
 import { zipSync, strToU8 } from 'fflate';
 import { previewServer } from '../scripts/preview.mjs';
 import { importCharacter } from './helpers/characters.mjs';

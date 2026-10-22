@@ -5,14 +5,14 @@ import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { after, before, test } from 'node:test';
-import { chromium } from 'playwright-core';
+import { chromium, artifactRoot } from '../scripts/lib/playwright.mjs';
 import { previewServer } from '../scripts/preview.mjs';
 let directory, server, browser;
 before(async () => {
   directory = await mkdtemp(join(tmpdir(),'dsh-display-ui-'));
   server = previewServer({dataDir:directory}); server.listen(0,'127.0.0.1'); await once(server,'listening');
   browser = await chromium.launch({executablePath:process.env.CHROMIUM_PATH ?? (existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : chromium.executablePath()),headless:true,args:['--no-sandbox','--enable-unsafe-swiftshader']});
-  await mkdir('artifacts',{recursive:true});
+  await mkdir(artifactRoot,{recursive:true});
 });
 after(async () => { await browser?.close(); if(server) await new Promise(r=>server.close(r)); if(directory) await rm(directory,{recursive:true,force:true}); });
 const cases = [
@@ -64,7 +64,7 @@ test('controlled irregular layout and mixed DPR preserve reading, draft, in-flig
     samples.push({...c,revision,dpr:await page.evaluate(()=>devicePixelRatio),reader:await page.locator('#reader').boundingBox(),pet});
   }
   assert.deepEqual(await page.evaluate(()=>window.displayActions),actions,'geometry does not read/select/chat');
-  await page.screenshot({path:'artifacts/multi-display-reader.png'});
+  await page.screenshot({path:`${artifactRoot}/multi-display-reader.png`});
   await page.keyboard.press('Escape'); await receive({type:'ui-control',command:'chat'});
   assert.equal(await page.locator('#message').inputValue(),'M5 retained draft');
   await page.locator('#message').evaluate(n=>n.setSelectionRange(3,9));
@@ -91,5 +91,5 @@ test('controlled irregular layout and mixed DPR preserve reading, draft, in-flig
   await page.waitForFunction(()=>window.m5DropEvents.includes('drop'));
   assert.equal(await page.evaluate(()=>window.m5DropEvents.includes('throw')),false,'layout recovery drops without generating a throw');
   await page.waitForFunction(()=>!['air','drag'].includes(document.querySelector('#pet').dataset.mode));
-  await writeFile('artifacts/multi-display-ui.json',JSON.stringify({controlled:true,physicalMultiDisplay:false,samples,readerDom:true,scrollRetained:true,draftRetained:true,inflightRetained:true,staleGeometryRejected:true,verticalDrag:true,unplugDuringDrag:true},null,2)+'\n');
+  await writeFile(`${artifactRoot}/multi-display-ui.json`,JSON.stringify({controlled:true,physicalMultiDisplay:false,samples,readerDom:true,scrollRetained:true,draftRetained:true,inflightRetained:true,staleGeometryRejected:true,verticalDrag:true,unplugDuringDrag:true},null,2)+'\n');
 });

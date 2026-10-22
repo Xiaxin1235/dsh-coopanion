@@ -5,7 +5,7 @@ import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { after, before, test } from 'node:test';
-import { chromium } from 'playwright-core';
+import { chromium, artifactRoot } from '../scripts/lib/playwright.mjs';
 import { previewServer } from '../scripts/preview.mjs';
 import { observeBodyReady } from './helpers/body-startup.mjs';
 
@@ -91,12 +91,12 @@ test('full replies render Markdown headings, emphasis, tables and fenced code', 
   assert.equal(await page.locator('#reader-text pre code').textContent(), 'echo "🐳"\n');
   assert.equal(await page.locator('#reader-text li').count(), 2);
   assert.equal(await page.locator('#reader-text a').getAttribute('href'), 'https://example.com/docs');
-  await mkdir('artifacts', { recursive: true });
-  await page.locator('#reader').screenshot({ path: 'artifacts/reply-markdown.png' });
+  await mkdir(artifactRoot, { recursive: true });
+  await page.locator('#reader').screenshot({ path: `${artifactRoot}/reply-markdown.png` });
   await page.setViewportSize({ width: 320, height: 640 });
   await page.waitForFunction(() => { const r = document.getElementById('reader').getBoundingClientRect(); return r.left >= 0 && r.right <= innerWidth && r.top >= 0 && r.bottom <= innerHeight; });
   assert.equal(await page.locator('#reader').evaluate(node => node.scrollWidth <= node.clientWidth), true, 'Markdown fits a narrow reader');
-  await page.screenshot({ path: 'artifacts/reply-markdown-narrow.png' });
+  await page.screenshot({ path: `${artifactRoot}/reply-markdown-narrow.png` });
 });
 
 test('multiple turns of a single session still open directly with one click', async t => {

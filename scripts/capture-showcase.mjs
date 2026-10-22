@@ -2,14 +2,15 @@
 import assert from 'node:assert/strict';
 import { once } from 'node:events';
 import { execFileSync } from 'node:child_process';
-import { mkdir, mkdtemp, rm } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
+import { mkdir } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
-import { chromium } from 'playwright-core';
+import { chromium } from './lib/playwright.mjs';
 import { previewServer } from './preview.mjs';
+import { temporary as temporaryRun } from './lib/local-cache.mjs';
 
 const output = resolve('docs/assets/showcase');
-const temporary = await mkdtemp(join(tmpdir(), 'coopanion-showcase-'));
+const run = await temporaryRun('showcase');
+const temporary = run.path;
 const server = previewServer({ dataDir: join(temporary, 'figures') });
 let browser;
 try {
@@ -77,5 +78,5 @@ try {
 } finally {
   await browser?.close();
   await new Promise(resolve => server.close(resolve));
-  await rm(temporary, { recursive: true, force: true });
+  await run.dispose();
 }
