@@ -1,0 +1,237 @@
+{
+  "schema": 1,
+  "id": "d1-direction-authoring-v1",
+  "date": "2026-10-22",
+  "base": "e1393180767f000e2abc44b58cf17d849562b356",
+  "scope": "front/back/back-right empty-handed main-colour authoring samples, not a product direction capability",
+  "method": "Live2D-style separation and hidden-surface completion, bound to existing project WebGL meshes; no Cubism binary produced",
+  "rights": {
+    "originalCharacter": "溟月（上善无形）",
+    "maidReinterpretation": "ZipZipPipe",
+    "originalGeneratedSplitArtwork": "Pal-AI-Lab using OpenAI image model",
+    "newDirectionGeneration": "OpenAI built-in image_gen in this project",
+    "notice": "THIRD_PARTY_NOTICES.md and web/upstream/THIRD_PARTY_NOTICES.md; no new ownership or AGPL relicense claim for artwork"
+  },
+  "reference": {
+    "file": "reference.png",
+    "sha256": "9614b9ac3516b1061f43fa0ebb5985e0de4849fd19e0bb3017634e9b930435d7",
+    "method": "createWhaleFigure.snapshot(FACES.neutral.f(0), neutral pose, resolution 4, frames 1)",
+    "pose": {
+      "look": [
+        0,
+        0
+      ],
+      "legs": [
+        [
+          108,
+          217,
+          108,
+          256
+        ],
+        [
+          148,
+          217,
+          148,
+          256
+        ]
+      ],
+      "low": 0,
+      "t": 0,
+      "blink": 0,
+      "eyeClose": 0,
+      "swing": 0,
+      "face": "neutral",
+      "mode": "idle",
+      "modeT": 0,
+      "talk": 0,
+      "drowse": 0,
+      "sit": 0,
+      "facing": 1,
+      "tilt": 0,
+      "lean": 0
+    },
+    "sourceFiles": {
+      "web/upstream/whale/model.json": "3c3e2138572da144bac96e62573d420f45da181bf29aacfbc8246e974e655890",
+      "web/upstream/whale/figure.js": "29451142e78758a571e9051d82b9d6e227287bf1fd4072ec60913b1455994f3c",
+      "web/upstream/kit/rig.js": "a23b1869d1439d8bb234678e71ed61ade882d786653f20ac406559e5724fc0ba",
+      "web/upstream/kit/body.js": "5be757d0f310bc67dea7fcfc57e7031615bb85cb606d34bc452bd87ed3c2d62b",
+      "web/upstream/THIRD_PARTY_NOTICES.md": "d58332b6c38ad3b3aec4b49fc3e30e796c2e1f5f10ecc7e152ae51c3d01ebf3a"
+    }
+  },
+  "assets": [
+    {
+      "file": "front-master-v1.png",
+      "sha256": "489ff9bf992040047e9fd292da0d20b61118b726d91c50ffe4862972015935f6",
+      "bytes": 1645919,
+      "canvas": {
+        "width": 1024,
+        "height": 1536
+      },
+      "tool": "built-in image_gen",
+      "output": "exec-e25e464f-c5a6-49ec-8d19-b52e4df83428.png",
+      "transparentBackground": true,
+      "prompt": "prompt-front-master.txt",
+      "promptSha256": "1ef682abf2b7372b1a2ff24e2fe5ae62d56a6233e3474e7a0f5a016fa2a9676d",
+      "references": [
+        "reference.png"
+      ],
+      "status": "master-reference",
+      "productBound": false
+    },
+    {
+      "file": "back-master-v1.png",
+      "sha256": "071b9aa9a41834a808101f89c4df84e4ebce3a2b84085b3d196f46b000964016",
+      "bytes": 1557285,
+      "canvas": {
+        "width": 1024,
+        "height": 1536
+      },
+      "tool": "built-in image_gen",
+      "output": "exec-94b880fa-fbe3-4fa6-8f4e-981476abac67.png",
+      "transparentBackground": true,
+      "prompt": "prompt-back-master.txt",
+      "promptSha256": "ae20aa0d38258f9ec9fcefacc3d02c4fbe28d032a11ac56ef03d39bd63fb7f10",
+      "references": [
+        "reference.png",
+        "front-master-v1.png"
+      ],
+      "status": "master-reference",
+      "productBound": false
+    },
+    {
+      "file": "back-right-master-v1.png",
+      "sha256": "9853f97bda296948096597887267f43f45fc9223edc365e987df315779a61f57",
+      "bytes": 1558112,
+      "canvas": {
+        "width": 1024,
+        "height": 1536
+      },
+      "tool": "built-in image_gen",
+      "output": "exec-948071b9-4e50-41bb-8610-875fc45407a4.png",
+      "transparentBackground": true,
+      "prompt": "prompt-back-right-master.txt",
+      "promptSha256": "2f9eb1587604666a98f5faf99f11421f60f65a10ecc2fae7557e64b48012b7c2",
+      "references": [
+        "reference.png",
+        "front-master-v1.png",
+        "back-master-v1.png"
+      ],
+      "status": "master-reference",
+      "productBound": false
+    },
+    {
+      "file": "front-atlas-v1.png",
+      "sha256": "bafb26320a69f84a0ff6c17249ef79955de2af4a1a5874195798bcc80f92817f",
+      "bytes": 1243591,
+      "canvas": {
+        "width": 1254,
+        "height": 1254
+      },
+      "tool": "built-in image_gen",
+      "output": "exec-b83621ec-b442-4260-b7ae-2e7d5b2df0a6.png",
+      "transparentBackground": true,
+      "prompt": "prompt-front-atlas.txt",
+      "promptSha256": "28b16d909ee4b0a21810077ada6ddb00907201d21bebfc6c402772eff98b90b1",
+      "references": [
+        "front-master-v1.png"
+      ],
+      "status": "superseded-spacing-and-empty-space",
+      "productBound": false
+    },
+    {
+      "file": "front-atlas-v2.png",
+      "sha256": "1ab1b52d13d4a32c04106a9cd9296d9dbd3d96543c592582ff01b4b8712ef849",
+      "bytes": 1114529,
+      "canvas": {
+        "width": 1254,
+        "height": 1254
+      },
+      "tool": "built-in image_gen",
+      "output": "exec-b9f018ad-4a36-4404-8579-f5197812a5fa.png",
+      "transparentBackground": true,
+      "prompt": "prompt-front-atlas-v2.txt",
+      "promptSha256": "70a4ca815db03cd7d74c729f09bd5997d300773ddf5b44e2c6f9360d516dd7e2",
+      "references": [
+        "front-atlas-v1.png"
+      ],
+      "status": "selected-authoring-sample",
+      "productBound": false
+    },
+    {
+      "file": "back-atlas-v1.png",
+      "sha256": "5926de62a5798c4b6e3cdab8ef976bfe88841d0d884e6fbabaf8be003b9429b6",
+      "bytes": 969668,
+      "canvas": {
+        "width": 1254,
+        "height": 1254
+      },
+      "tool": "built-in image_gen",
+      "output": "exec-b546127d-1f26-4da7-82b4-c188e36389a3.png",
+      "transparentBackground": true,
+      "prompt": "prompt-back-atlas.txt",
+      "promptSha256": "a9398cc74df6ab4881178bd392dc7a93676ae9cb8e432b134821fd65be79236a",
+      "references": [
+        "back-master-v1.png"
+      ],
+      "status": "superseded-duplicate-sleeves",
+      "productBound": false
+    },
+    {
+      "file": "back-atlas-v2.png",
+      "sha256": "a201df9e3363f5645ea63c12f04b1275c745998873767b8c5c38d376354353d3",
+      "bytes": 968482,
+      "canvas": {
+        "width": 1254,
+        "height": 1254
+      },
+      "tool": "built-in image_gen",
+      "output": "exec-7e933fb6-79cf-4110-ab1b-aa777c63984c.png",
+      "transparentBackground": true,
+      "prompt": "prompt-back-atlas-v2.txt",
+      "promptSha256": "8a320891699803d54cbc5826272c798c3dc56d2231962138daed3c20403bef43",
+      "references": [
+        "back-atlas-v1.png"
+      ],
+      "status": "selected-authoring-sample",
+      "productBound": false
+    },
+    {
+      "file": "back-right-atlas-v1.png",
+      "sha256": "7b2722825fb396200457486caec5f47207bcd22661dbbb0e2ba849ecaef639cb",
+      "bytes": 1008868,
+      "canvas": {
+        "width": 1254,
+        "height": 1254
+      },
+      "tool": "built-in image_gen",
+      "output": "exec-d5e380fc-dca3-43e3-96f6-311d7742ac6b.png",
+      "transparentBackground": true,
+      "prompt": "prompt-back-right-atlas.txt",
+      "promptSha256": "49116e740990bd0c23ee4368a7c95603f6f921ef484c5f7e0170c94d351d2c8e",
+      "references": [
+        "back-right-master-v1.png"
+      ],
+      "status": "superseded-tail-bow-UV-contamination",
+      "productBound": false
+    },
+    {
+      "file": "back-right-atlas-v2.png",
+      "sha256": "7ba3e17d2d35f78475e79b4416214a855fb766db14fd6b9317e903f209404ed4",
+      "bytes": 1063165,
+      "canvas": {
+        "width": 1254,
+        "height": 1254
+      },
+      "tool": "built-in image_gen",
+      "output": "exec-0dbf44a2-81e6-47cf-8747-a6dfe3bbe646.png",
+      "transparentBackground": true,
+      "prompt": "prompt-back-right-atlas-v2.txt",
+      "promptSha256": "7253480d2cd90693586f4637549844799f10e9fc08413bf7842e5de2499b2998",
+      "references": [
+        "back-right-atlas-v1.png"
+      ],
+      "status": "selected-authoring-sample",
+      "productBound": false
+    }
+  ]
+}
