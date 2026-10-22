@@ -3,7 +3,7 @@
 开始仓库工作时先读 [docs/README.md](docs/README.md)，按任务读取对应契约。版本、依赖和命令以 `package.json`、`npm-shrinkwrap.json` 及 `.github/workflows/` 为准，当前执行范围来自用户。
 
 - 产品行为变更同步实现、测试和使用说明；完成语义由 `src/completion.ts` 共享判断，会话接受回执与任务完成分别结算。
-- 浏览器回复、收件箱、字号、多屏或 NPC 日常的变更包含 `test:inbox-ui`。原生窗口和安装使用隔离 profile，系统桌面操作串行执行。自动化矩阵与物理实机验收分别报告。
+- 浏览器回复、收件箱、字号、多屏或 NPC 日常的变更包含 `test:inbox-ui`。原生窗口和安装使用隔离 profile，系统桌面操作串行执行；macOS 原生回归先读[隔离测试机](docs/macos-vm-testing.md)，核对来宾源码后在 VM 中执行。自动化矩阵与物理实机验收分别报告。
 - 诊断和资源观察按 [诊断契约](docs/diagnostics-contract.md) 解释有效时间、缺口和报告状态；进程存活本身不证明自主活动可用。
 - 发布前读 [发布流程](docs/releasing.md)，保持同一分发包贯穿安装、npm 和 Release；本地构建或安装成功分别记录，不能代替发布成功。
 - 生活感功能接手、继续实施或调整范围，先读 [当前开发状态](docs/aliveness-development.md)，核对本期授权、交付状态与验收边界，按该页进入当前阶段契约，历史“下一步”不作为任务；后续在 `codex/aliveness-foundation` 开发，阶段实施、推送、合并和发布按用户实际授权执行。

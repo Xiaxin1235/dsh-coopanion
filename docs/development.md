@@ -4,6 +4,8 @@
 
 ## 准备与验证入口
 
+以下命令在被测系统内执行。macOS 原生窗口、键鼠、桌面探针及安装回归默认使用[隔离测试机](macos-vm-testing.md)，执行前核对来宾提交／补丁与本轮源码身份；物理实机验收单独安排。
+
 ```bash
 npm ci --ignore-scripts
 npm run verify:metadata
@@ -23,7 +25,7 @@ node scripts/check-package.mjs
 npm run test:install
 ```
 
-缓存复用、独立证据目录、临时 profile 回收及保留策略见[缓存管理](cache-management.md)。
+缓存复用、独立证据目录、临时 profile 回收及保留策略见[缓存管理](cache-management.md)。macOS 原生操作可在[隔离测试机](macos-vm-testing.md)中执行，须先确认来宾图形会话、输入与渲染能力。
 
 按改动选择检查；完整发布门槛见[发布流程](releasing.md)。Linux 原生窗口需要 X11／Xvfb 和窗口管理器，测试光标还需要 Python 3 与 libX11；浏览器及网格动画需要 Chromium WebGL。CI 的 Linux 显示准备由 `.github/actions/setup-linux-display` 完成。
 

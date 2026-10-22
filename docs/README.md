@@ -18,6 +18,7 @@
 | 第 3 期连续动作与物件预览 | [连续动作契约](design/continuous-action-contract.md) |
 | 开发、构建、测试与录制回归 | [开发指南](development.md) |
 | 项目缓存、隔离环境与预览回收 | [缓存管理](cache-management.md) |
+| macOS 虚拟桌面、SSH 与原生测试隔离 | [macOS 测试机](macos-vm-testing.md) |
 | 完成判断、通知身份与请求结算 | [提醒契约](notification-contract.md) |
 | 会话续接、接受回执、草稿与去重 | [会话契约](session-chat-contract.md) |
 | 进程退出、有限恢复与临时状态 | [恢复契约](desktop-recovery-contract.md) |
