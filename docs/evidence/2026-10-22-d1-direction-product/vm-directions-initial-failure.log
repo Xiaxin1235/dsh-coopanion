@@ -1,0 +1,21 @@
+shipped product factory, meshes and assets load without authoring resources
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
++ actual - expected
+
++ 'front'
+- 'backRight'
+
+    at file:///Users/admin/dsh-testing/dsh-coopanion/tests/direction-product-ui.mjs:32:76 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'front',
+  expected: 'backRight',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.21.0
