@@ -1,0 +1,25 @@
+ObjC.import('Cocoa');
+ObjC.import('CoreGraphics');
+
+function run(args) {
+  var pid = Number(args[0]);
+  if (!isFinite(pid) || pid <= 0 || Math.floor(pid) !== pid) throw new Error('Invalid pid');
+  // On-screen, excluding desktop elements. Never extract names or image data.
+  var reference = $.CGWindowListCopyWindowInfo(1 | 16, 0);
+  if (!reference) return JSON.stringify({ status: 'unavailable' });
+  var list = ObjC.castRefToObject(reference);
+  var count = Number(list.count);
+  if (!Number.isInteger(count) || count < 0 || count > 16384) throw new Error('Invalid CoreGraphics array bridge');
+  var windows = [], partial = false;
+  for (var i = 0; i < count; i++) {
+    var w = list.objectAtIndex(i);
+    if (Number(ObjC.unwrap(w.objectForKey('kCGWindowOwnerPID'))) !== pid) continue;
+    if (Number(ObjC.unwrap(w.objectForKey('kCGWindowLayer'))) !== 0) continue;
+    var b = w.objectForKey('kCGWindowBounds');
+    if (windows.length >= 64) { partial = true; break; }
+    windows.push({ id: String(ObjC.unwrap(w.objectForKey('kCGWindowNumber'))), pid: pid,
+      bounds: { x: Number(ObjC.unwrap(b.objectForKey('X'))), y: Number(ObjC.unwrap(b.objectForKey('Y'))),
+        width: Number(ObjC.unwrap(b.objectForKey('Width'))), height: Number(ObjC.unwrap(b.objectForKey('Height'))) } });
+  }
+  return JSON.stringify({ status: partial ? 'partial' : 'available', units: 'global-dip', windows: windows });
+}

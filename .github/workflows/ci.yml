@@ -76,6 +76,11 @@ jobs:
         env:
           DEBUG: pw:browser
         run: npm run test:desktop
+      - name: Probe native desktop window geometry (D0, test-owned windows)
+        timeout-minutes: 3
+        env:
+          DSH_DESKTOP_PROBE_NO_SANDBOX: ${{ runner.os == 'Linux' && '1' || '' }}
+        run: npm run probe:desktop-environment
       - name: Check distributable and create canonical Linux package
         if: runner.os == 'Linux'
         run: |
@@ -103,6 +108,7 @@ jobs:
           path: |
             artifacts/*.png
             artifacts/desktop-recovery.json
+            artifacts/desktop-environment-*/**
             artifacts/browser-startup-*.json
             artifacts/text-scale-*.json
             artifacts/multi-display-*.json

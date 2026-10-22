@@ -77,6 +77,16 @@ node --test --test-name-pattern="home marker" tests/npc-drag-ui.mjs
 
 默认不录视频。断言同时检查按住、拖动及松手后的锚点，并覆盖大尺寸及两端小窝设置。
 
+## D0 真实桌面窗口探针
+
+`npm run probe:desktop-environment` 在新临时 profile 启动两个无边框测试窗口，检查 OS 枚举、平面定位、移动／缩放时身份保持、重叠顺序、隐藏／恢复、关闭及成功空快照。输出为新的 `artifacts/desktop-environment-<时间>/report.json`；可用 `-- --output <尚不存在的目录>` 指定位置。探针不连接正式 Host、不接入产品身体、不操作其他应用窗口，不申请新权限或写入日用配置。
+
+各辅助进程只输出目标测试进程的临时窗口 ID、几何与前后关系，不输出窗口标题、应用名称或内容。Windows 使用系统 PowerShell／DWM，macOS 使用系统 JXA／CoreGraphics，X11 使用 Python 3／libX11／EWMH。结果绑定源码摘要、提交、Electron、平台会话、显示布局及普通／测试 sandbox 状态。单次辅助采集限 5 秒、64 KiB、64 个测试窗口；完整探针限 90 秒，每项最多 3 次同步采样。这是测试工具上限，尚未确定生产采样频率或资源预算。
+
+`available` 且通过全部几何断言才报告 `passed`；partial、unsupported、空图形会话和进程失败均以非零退出并保存结果。原生 Wayland／Xwayland 明确返回 unsupported，本工具不以 X11 子集替代全桌面；其覆盖层定位／穿透仍待单独探针。三平台 CI 在原生测试后串行运行本探针；Linux 仅在 CI 中允许显式 `DSH_DESKTOP_PROBE_NO_SANDBOX=1`，其结果不证明普通 sandbox 安装可用。
+
+该切片只验证主显示器上的测试无边框窗口。装饰边框、跨应用、透明覆盖层、穿透、全屏／工作区、物理输入、多屏混合 DPI、权限撤销、生命周期恢复与资源仍分别待验。键盘枚举与系统初始锁屏状态记录在独立字段，其观测可用不等于物理输入验收。协议、失败、容量和坐标回归为 `tests/desktop-environment-probe.test.js`，纳入 `npm test`；专项状态看[开发入口](aliveness-development.md)。
+
 ## 键盘与生命周期
 
 `test:keyboard-native` 启动当前系统的真实辅助进程，检查固定枚举、停用和清理，报告写入 `artifacts/keyboard-activity-native.json`。macOS 与可用 X11 需取得 active／idle；不支持的会话保守 unknown。Linux CI 在隔离 Xvfb 中设置 `DSH_KEYBOARD_TEST_X11_INPUT=1`，用 XTest 验证键盘触发、仅鼠标不触发和恢复 idle；日常会话不使用这个注入开关。

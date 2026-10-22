@@ -82,6 +82,7 @@
     "test:ui": "node tests/ui.mjs && node tests/upstream-motion-ui.mjs && node --test tests/locale-ui.mjs",
     "test:desktop": "node tests/desktop.mjs",
     "test:keyboard-native": "node tests/keyboard-activity-native.mjs",
+    "probe:desktop-environment": "node scripts/probe-desktop-environment.mjs",
     "test:install": "node tests/install.mjs",
     "test:n0": "vitest run tests/notification-contract.test.ts && node scripts/prepare-notification-probe.mjs",
     "test:n0:host": "node tests/notification-host-contract.mjs",

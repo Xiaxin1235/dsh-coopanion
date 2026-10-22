@@ -1,0 +1,545 @@
+{
+  "schema": 1,
+  "platform": "darwin",
+  "arch": "arm64",
+  "electron": "44.7.0",
+  "session": "macos",
+  "scope": "test-owned-frameless-windows-on-primary-display",
+  "productRuntimeConnected": false,
+  "checks": [
+    "enumerate-and-place",
+    "move-stable-identity",
+    "resize-stable-identity",
+    "overlap-b-in-front",
+    "overlap-a-in-front",
+    "hidden-window-excluded",
+    "show-preserves-identity",
+    "closed-window-excluded",
+    "successful-empty-snapshot"
+  ],
+  "samples": [
+    {
+      "label": "enumerate-and-place",
+      "schema": 1,
+      "backend": "macos",
+      "status": "available",
+      "reason": null,
+      "scope": "test-process",
+      "targetPid": 97057,
+      "order": "front-to-back",
+      "windows": [
+        {
+          "id": "72800",
+          "pid": 97057,
+          "bounds": {
+            "x": 320,
+            "y": 95,
+            "width": 220,
+            "height": 150
+          }
+        },
+        {
+          "id": "72799",
+          "pid": 97057,
+          "bounds": {
+            "x": 40,
+            "y": 75,
+            "width": 240,
+            "height": 160
+          }
+        }
+      ],
+      "durationMs": 104,
+      "units": "global-dip",
+      "fixtures": [
+        {
+          "index": 0,
+          "visible": true,
+          "bounds": {
+            "x": 40,
+            "y": 75,
+            "width": 240,
+            "height": 160
+          }
+        },
+        {
+          "index": 1,
+          "visible": true,
+          "bounds": {
+            "x": 320,
+            "y": 95,
+            "width": 220,
+            "height": 150
+          }
+        }
+      ]
+    },
+    {
+      "label": "move-stable-identity",
+      "schema": 1,
+      "backend": "macos",
+      "status": "available",
+      "reason": null,
+      "scope": "test-process",
+      "targetPid": 97057,
+      "order": "front-to-back",
+      "windows": [
+        {
+          "id": "72800",
+          "pid": 97057,
+          "bounds": {
+            "x": 320,
+            "y": 95,
+            "width": 220,
+            "height": 150
+          }
+        },
+        {
+          "id": "72799",
+          "pid": 97057,
+          "bounds": {
+            "x": 105,
+            "y": 120,
+            "width": 240,
+            "height": 160
+          }
+        }
+      ],
+      "durationMs": 108,
+      "units": "global-dip",
+      "fixtures": [
+        {
+          "index": 0,
+          "visible": true,
+          "bounds": {
+            "x": 105,
+            "y": 120,
+            "width": 240,
+            "height": 160
+          }
+        },
+        {
+          "index": 1,
+          "visible": true,
+          "bounds": {
+            "x": 320,
+            "y": 95,
+            "width": 220,
+            "height": 150
+          }
+        }
+      ]
+    },
+    {
+      "label": "resize-stable-identity",
+      "schema": 1,
+      "backend": "macos",
+      "status": "available",
+      "reason": null,
+      "scope": "test-process",
+      "targetPid": 97057,
+      "order": "front-to-back",
+      "windows": [
+        {
+          "id": "72800",
+          "pid": 97057,
+          "bounds": {
+            "x": 320,
+            "y": 95,
+            "width": 220,
+            "height": 150
+          }
+        },
+        {
+          "id": "72799",
+          "pid": 97057,
+          "bounds": {
+            "x": 105,
+            "y": 120,
+            "width": 280,
+            "height": 190
+          }
+        }
+      ],
+      "durationMs": 97,
+      "units": "global-dip",
+      "fixtures": [
+        {
+          "index": 0,
+          "visible": true,
+          "bounds": {
+            "x": 105,
+            "y": 120,
+            "width": 280,
+            "height": 190
+          }
+        },
+        {
+          "index": 1,
+          "visible": true,
+          "bounds": {
+            "x": 320,
+            "y": 95,
+            "width": 220,
+            "height": 150
+          }
+        }
+      ]
+    },
+    {
+      "label": "overlap-b-in-front",
+      "schema": 1,
+      "backend": "macos",
+      "status": "available",
+      "reason": null,
+      "scope": "test-process",
+      "targetPid": 97057,
+      "order": "front-to-back",
+      "windows": [
+        {
+          "id": "72800",
+          "pid": 97057,
+          "bounds": {
+            "x": 150,
+            "y": 150,
+            "width": 220,
+            "height": 150
+          }
+        },
+        {
+          "id": "72799",
+          "pid": 97057,
+          "bounds": {
+            "x": 105,
+            "y": 120,
+            "width": 280,
+            "height": 190
+          }
+        }
+      ],
+      "durationMs": 93,
+      "units": "global-dip",
+      "fixtures": [
+        {
+          "index": 0,
+          "visible": true,
+          "bounds": {
+            "x": 105,
+            "y": 120,
+            "width": 280,
+            "height": 190
+          }
+        },
+        {
+          "index": 1,
+          "visible": true,
+          "bounds": {
+            "x": 150,
+            "y": 150,
+            "width": 220,
+            "height": 150
+          }
+        }
+      ]
+    },
+    {
+      "label": "overlap-a-in-front",
+      "schema": 1,
+      "backend": "macos",
+      "status": "available",
+      "reason": null,
+      "scope": "test-process",
+      "targetPid": 97057,
+      "order": "front-to-back",
+      "windows": [
+        {
+          "id": "72799",
+          "pid": 97057,
+          "bounds": {
+            "x": 105,
+            "y": 120,
+            "width": 280,
+            "height": 190
+          }
+        },
+        {
+          "id": "72800",
+          "pid": 97057,
+          "bounds": {
+            "x": 150,
+            "y": 150,
+            "width": 220,
+            "height": 150
+          }
+        }
+      ],
+      "durationMs": 98,
+      "units": "global-dip",
+      "fixtures": [
+        {
+          "index": 0,
+          "visible": true,
+          "bounds": {
+            "x": 105,
+            "y": 120,
+            "width": 280,
+            "height": 190
+          }
+        },
+        {
+          "index": 1,
+          "visible": true,
+          "bounds": {
+            "x": 150,
+            "y": 150,
+            "width": 220,
+            "height": 150
+          }
+        }
+      ]
+    },
+    {
+      "label": "hidden-window-excluded",
+      "schema": 1,
+      "backend": "macos",
+      "status": "available",
+      "reason": null,
+      "scope": "test-process",
+      "targetPid": 97057,
+      "order": "front-to-back",
+      "windows": [
+        {
+          "id": "72799",
+          "pid": 97057,
+          "bounds": {
+            "x": 105,
+            "y": 120,
+            "width": 280,
+            "height": 190
+          }
+        }
+      ],
+      "durationMs": 121,
+      "units": "global-dip",
+      "fixtures": [
+        {
+          "index": 0,
+          "visible": true,
+          "bounds": {
+            "x": 105,
+            "y": 120,
+            "width": 280,
+            "height": 190
+          }
+        },
+        {
+          "index": 1,
+          "visible": false,
+          "bounds": {
+            "x": 150,
+            "y": 150,
+            "width": 220,
+            "height": 150
+          }
+        }
+      ]
+    },
+    {
+      "label": "show-preserves-identity",
+      "schema": 1,
+      "backend": "macos",
+      "status": "available",
+      "reason": null,
+      "scope": "test-process",
+      "targetPid": 97057,
+      "order": "front-to-back",
+      "windows": [
+        {
+          "id": "72800",
+          "pid": 97057,
+          "bounds": {
+            "x": 150,
+            "y": 150,
+            "width": 220,
+            "height": 150
+          }
+        },
+        {
+          "id": "72799",
+          "pid": 97057,
+          "bounds": {
+            "x": 105,
+            "y": 120,
+            "width": 280,
+            "height": 190
+          }
+        }
+      ],
+      "durationMs": 119,
+      "units": "global-dip",
+      "fixtures": [
+        {
+          "index": 0,
+          "visible": true,
+          "bounds": {
+            "x": 105,
+            "y": 120,
+            "width": 280,
+            "height": 190
+          }
+        },
+        {
+          "index": 1,
+          "visible": true,
+          "bounds": {
+            "x": 150,
+            "y": 150,
+            "width": 220,
+            "height": 150
+          }
+        }
+      ]
+    },
+    {
+      "label": "closed-window-excluded",
+      "schema": 1,
+      "backend": "macos",
+      "status": "available",
+      "reason": null,
+      "scope": "test-process",
+      "targetPid": 97057,
+      "order": "front-to-back",
+      "windows": [
+        {
+          "id": "72799",
+          "pid": 97057,
+          "bounds": {
+            "x": 105,
+            "y": 120,
+            "width": 280,
+            "height": 190
+          }
+        }
+      ],
+      "durationMs": 110,
+      "units": "global-dip",
+      "fixtures": [
+        {
+          "index": 0,
+          "visible": true,
+          "bounds": {
+            "x": 105,
+            "y": 120,
+            "width": 280,
+            "height": 190
+          }
+        },
+        {
+          "index": 1,
+          "destroyed": true
+        }
+      ]
+    },
+    {
+      "label": "successful-empty-snapshot",
+      "schema": 1,
+      "backend": "macos",
+      "status": "available",
+      "reason": null,
+      "scope": "test-process",
+      "targetPid": 97057,
+      "order": "front-to-back",
+      "windows": [],
+      "durationMs": 109,
+      "units": "global-dip",
+      "fixtures": [
+        {
+          "index": 0,
+          "destroyed": true
+        },
+        {
+          "index": 1,
+          "destroyed": true
+        }
+      ]
+    }
+  ],
+  "unverified": [
+    "other-applications",
+    "decorated-windows",
+    "transparent-overlays",
+    "click-through",
+    "fullscreen",
+    "workspace-switch",
+    "physical-input",
+    "lock-and-resume",
+    "multi-display-mixed-dpi",
+    "resource-budget",
+    "product-interaction"
+  ],
+  "displays": [
+    {
+      "id": 3,
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 2048,
+        "height": 1152
+      },
+      "workArea": {
+        "x": 0,
+        "y": 25,
+        "width": 2048,
+        "height": 1127
+      },
+      "scaleFactor": 2
+    }
+  ],
+  "lifecycle": {
+    "initial": "unlocked",
+    "controlled": false
+  },
+  "cursor": {
+    "x": 684,
+    "y": 690
+  },
+  "status": "passed",
+  "keyboard": {
+    "value": "idle",
+    "backend": "macos",
+    "status": "available",
+    "physicalInputValidated": false
+  },
+  "cleanup": {
+    "windowsDestroyed": true,
+    "keyboardStatus": "disabled"
+  },
+  "exit": {
+    "code": 0,
+    "signal": null
+  },
+  "identity": {
+    "at": "2026-10-22T05:10:31.193Z",
+    "node": "v24.21.0",
+    "commit": "f12d8554c8443ecfd92386b24ab97bfcd3f2134e",
+    "dirty": true,
+    "sourceHashes": {
+      "scripts/probe-desktop-environment.mjs": "ac2ca33755bd1f649bef6d2efe0480f87e9fb23bdc51121c221d4bc62995bee8",
+      "package.json": "ee1e04608256e4044c0e4d3e854ebadb688ab26eb7b1da67803a8bde8108295e",
+      "npm-shrinkwrap.json": "e07a7fbcb45dbec5dff78a37a42d293f7ee99fb95001b1f2991ce8b5b3c13d78",
+      "desktop/keyboard-activity.cjs": "1c45bb20e86a595a8ed9d9ae4da936a7b2808a078bc62b26ae44babc317ad9de",
+      "desktop/keyboard-activity.jxa": "ab6a4a1a93faff8d5aaf6f5c014e987708f84cfcfaeea4e2a11a36d06a765b16",
+      "desktop/keyboard-activity-win.cs": "c023c0c83b5f93f3ca1f81dace50bd2c8739a0bebc6517013070c15fc3dcbba1",
+      "desktop/keyboard-activity-x11.py": "0d29add1a903a03907cee5ef8817c04162363a9d6d770412a92d06b392b02f4b",
+      "desktop/lifecycle-state.cjs": "a99555f591a467a5aefaa8757a9b40cbda95a09c5c4de912e733dfd8efe2d90f",
+      "desktop/lifecycle-state-macos.jxa": "5e4b7a5e4bf53612f6bcdbcc76e15ca9cb8d099fd8203cba4f36bf5180da3a94",
+      "scripts/desktop-environment/collect.cjs": "c9d717430c3ea97870f346c1a63d3f2621c757edf80f2e11813a80919f2c4d4b",
+      "scripts/desktop-environment/probe.cjs": "1d611e9d0a3ebe29e5112d910af29746c17f2917cca628321dbb85663c6e578e",
+      "scripts/desktop-environment/windows-macos.jxa": "59c8830f5bcc6e95e4cba62704de6ce364964dbafb6eaa2207c2f80067822d35",
+      "scripts/desktop-environment/windows-win.cs": "345f617ddc80899591c40959169dbf80e4b901a1f9c4f8a253e75f336bca364b",
+      "scripts/desktop-environment/windows-x11.py": "2b7ef1600fe19863d3fece3780361a7272f3743eabbd10a3a1ce8acf53bce1a8"
+    }
+  },
+  "normalSandbox": true,
+  "profileRemoved": true
+}
