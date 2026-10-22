@@ -30,3 +30,5 @@
 `o03-shell-hands-v1/` 的根目录报告／录像记录修正前的三图切换版本；其中“39 项通过”没有覆盖用户发现的视觉闪烁。原 O03 子故事当时的最终结果是 `continuity-fix/browser-qa-final.json` 的 44 项及 `after-pixels.json`，不代表后续源码复测；第 1 期新空间及长暂停修正后的结果从[当前状态](../../aliveness-development.md)追溯。同目录的 `before-*`、`browser-qa.json` 和 `qa-slow-timeout.json` 分别是缺陷复现、中间成功结果和慢放等待边界失败，均按原字节保留，不能作为当前失败或当前验收状态。
 
 整理前的原始报告多数绑定基础提交 `7d55786d096552dea62ef974237d942ab03c3b2f` 和具体脏工作区文件摘要；其来源字段不改写为后来的提交。分支接手以当前状态入口、Git 历史和实际源码为准。
+
+[D1 方向制作交付快照](direction-authoring/README.md)保留产品接入前的入口和资源范围，不构成当前任务。

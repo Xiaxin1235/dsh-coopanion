@@ -8,7 +8,7 @@
 |---|---|
 | 安装、配置、操作与升级 | [使用指南](usage.md) |
 | 生活感分支接手、当前阶段与验收边界 | [当前开发状态](aliveness-development.md) |
-| 默认产品空间／身体缺口、下一步建议与可见验收 | [空间与身体复核](design/space-body-review.md) |
+| 原反馈基线、D1 目标与可见验收 | [空间与身体复核](design/space-body-review.md) |
 | 真实桌面互动规划、平台 Adapter 与三平台／Wayland 验收 | [跨平台桌面互动方案](design/desktop-environment-plan.md)：现有路线专项，实施进度看开发状态 |
 | 默认产品自主生活、阶段装配与回退 | [生活装配契约](design/living-integration-contract.md) |
 | 第 5C 期回应合批与安静节奏 | [回应契约](design/response-rhythm-contract.md) |

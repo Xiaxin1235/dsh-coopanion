@@ -130,4 +130,4 @@ VM 需图形依赖、Xvfb、Openbox、Python 3、procps 及固定工具链。观
 
 默认产品生活装配使用 `web/upstream/kit/living-body.js` 共享身体与 `living-routine.js` 有限目标策略；原工作台重导出同一工厂。`test:inbox-ui` 包含 `tests/living-integration-ui.mjs` 的真实导航／接触、工作／互动交接、输入／热切／草稿、90–240px 与持物拖放回归；`test:desktop` 串行包含 `living-integration-native.mjs`。浏览器用受控输入和元数据，原生用真实 IPC／系统输入枚举、隔离存档；真实日用 Host／物理键盘／多屏和用户观感分别验收。旧简单日常用显式 `livingSpace:false` 回归。
 
-`tests/living-feedback.test.js` 与 `tests/desktop-life.test.js` 覆盖动作显示节奏、空手站立、访问 token／几何、环境交接／输入冷却和有界系统恢复。原生装配记录显示／身体帧比例；受控工作恢复显式覆盖输入枚举，另存真实键盘适配器观察。`tests/living-integration-ui.mjs` 另覆盖三种尺寸的平面拖放、取消、跳跃中缩放、阴影、二维返回及显示器事件顺序；`tests/living-integration-native.mjs` 在 VM 验证默认产品放置、跳跃中改尺寸和返回。多方向身体仍未实现。文档整理检查链接、检索与身份；脚本或运行时入口变更执行对应回归，固定结果从[报告索引](reports/README.md)追溯。
+`tests/living-feedback.test.js` 与 `tests/desktop-life.test.js` 覆盖动作显示节奏、空手站立、访问 token／几何、环境交接／输入冷却和有界系统恢复。原生装配记录显示／身体帧比例；受控工作恢复显式覆盖输入枚举，另存真实键盘适配器观察。`tests/living-integration-ui.mjs` 另覆盖三种尺寸的平面拖放、取消、跳跃中缩放、阴影、二维返回及显示器事件顺序；`tests/living-integration-native.mjs` 在 VM 验证默认产品放置、跳跃中改尺寸和返回。方向身体的交付与验收统一看开发入口。文档整理检查链接、检索与身份；脚本或运行时入口变更执行对应回归，固定结果从[报告索引](reports/README.md)追溯。
