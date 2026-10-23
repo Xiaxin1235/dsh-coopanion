@@ -101,7 +101,7 @@ try {
   const questionRuntime={phase:'running',visible:true,generation:lifecycles.at(-1).generation,visibilityRevision:lifecycles.at(-1).visibilityRevision,suspended:false};
   const inlineRequest={id:JSON.stringify(['native-test','question','native-inline']),sessionId:'native-test',nativeId:'native-inline',kind:'question',turn:1,seq:2,createdAt:Date.now(),preview:'原生信封中选择下一步',state:'open',dueAt:null,automaticReminders:0,questions:[{id:'native-q',question:'下一步怎么办？',detail:'只验证真实 IPC，不触发模型。',options:[{label:'再试一次',description:'保留现有权限。'},{label:'暂停',description:'不继续执行。'}]}]};
   bridge.notificationState({protocol:1,runtime:questionRuntime,interactions:[inlineRequest]});
-  await page.locator('#attention').click();await page.locator('.inline-question summary').click();
+  await page.locator('#attention').click();await page.locator('.inline-question').evaluate(n => { if (!n.open) n.querySelector('summary').click(); });
   await page.locator('.inline-question input[type=radio]').first().check();await page.locator('.inline-question button[type=submit]').click();
   for(let n=0;n<30&&!actions.some(a=>a.type==='question-answer');n++)await pause(50);
   const nativeAnswer=actions.find(a=>a.type==='question-answer');assert.ok(nativeAnswer);

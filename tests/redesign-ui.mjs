@@ -27,6 +27,15 @@ try {
   await receive({ type: 'init', baseline: true, options: { locale: 'zh', roam: false }, snapshot });
   await receive({ type: 'notification-state', snapshot: { protocol: 1, runtime: { phase: 'running', visible: true, generation: 1, visibilityRevision: 1, suspended: false }, interactions: [item] } });
   await page.evaluate(async () => { for (const weight of [400, 600, 700, 800]) { const loaded = await document.fonts.load(`${weight} 16px Nunito`); if (!loaded.length) throw new Error('Bundled Nunito failed to load'); } });
+  const capture = async filename => {
+    const clip = await page.evaluate(() => {
+      const panels = ['chat', 'menu', 'requests'].map(id => document.getElementById(id)).filter(n => !n.hidden);
+      const rects = [...panels, document.getElementById('pet')].map(n => n.getBoundingClientRect());
+      const x = Math.max(0, Math.floor(Math.min(...rects.map(r => r.left)) - 26)), y = Math.max(0, Math.floor(Math.min(...rects.map(r => r.top)) - 26));
+      return { x, y, width: Math.min(innerWidth - x, Math.ceil(Math.max(...rects.map(r => r.right)) - x + 26)), height: Math.min(innerHeight - y, Math.ceil(Math.max(...rects.map(r => r.bottom)) - y + 26)) };
+    });
+    await page.screenshot({ path: join(evidence, filename), clip });
+  };
   const openChat = async () => { await page.keyboard.press('Escape'); await page.locator('#pet').dblclick(); await page.locator('#chat:not([hidden])').waitFor(); };
   const openMenu = async () => { await page.keyboard.press('Escape'); await page.locator('#pet').click({ button: 'right' }); await page.locator('#menu:not([hidden])').waitFor(); };
   const openInbox = async () => { await page.keyboard.press('Escape'); await page.locator('#attention').click(); await page.locator('#requests:not([hidden])').waitFor(); };
@@ -85,10 +94,10 @@ try {
       }
     }
     await page.evaluate(() => document.documentElement.style.setProperty('--text-scale', '1'));
-    await openChat(); await page.screenshot({ path: join(evidence, `chat-${filename}.png`) });
+    await openChat(); await capture(`chat-${filename}.png`);
     if (filename === 'blue') {
-      await openMenu(); await page.screenshot({ path: join(evidence, 'menu-blue.png') });
-      await openInbox(); await page.locator('.inline-question').evaluate(n => { if (!n.open) n.querySelector('summary').click(); }); await page.screenshot({ path: join(evidence, 'inbox-blue.png') });
+      await openMenu(); await capture('menu-blue.png');
+      await openInbox(); await page.locator('.inline-question').evaluate(n => { if (!n.open) n.querySelector('summary').click(); }); await capture('inbox-blue.png');
     }
   }
   await page.keyboard.press('Escape');
@@ -97,7 +106,7 @@ try {
   await page.locator('#pet').focus(); await page.keyboard.press('Enter');
   await page.waitForSelector('#chat[data-tail=top]:not([hidden])');
   assert.equal(await page.locator('#chat').evaluate(n => getComputedStyle(n, '::after').top), '-10px');
-  await page.screenshot({ path: join(evidence, 'chat-tail-top.png') });
+  await capture('chat-tail-top.png');
   await page.mouse.up();
   await page.waitForSelector('#chat[data-tail=bottom]:not([hidden])');
   await page.setViewportSize({ width: 320, height: 640 });

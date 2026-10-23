@@ -522,7 +522,14 @@ function renderRequests() {
     later.onclick = () => { snoozing.set(item.id, { dueAt: item.dueAt, expiresAt: performance.now() + 10000 }); $('request-feedback').textContent = ''; send({ type: 'notification-snooze', interactionId: item.id, generation: notificationState.runtime.generation }); renderRequests(); };
     actions.append(open, later); card.append(label, preview, meta);
     const form = item.kind === 'question' && options.inlineQuestions !== false ? questionForms.render(item, notificationState.runtime.generation, copy, options.interfaceStyle !== 'classic') : undefined;
-    if (form) card.append(form); card.append(actions); return card;
+    if (form) {
+      if (options.interfaceStyle !== 'classic') {
+        const submit = form.querySelector('button[type=submit]'), footer = document.createElement('div');
+        footer.className = 'inline-question-actions'; submit.replaceWith(footer); footer.append(open, submit);
+      }
+      card.append(form);
+    }
+    card.append(actions); return card;
   }));
   replaceInboxList($('inbox-issues'), JSON.stringify([...keys, issues.map(session => [session.id, session.mood, session.text])]), () => issues.map(session => {
     const card = document.createElement('article'); card.className = 'inbox-card inbox-issue';

@@ -29,7 +29,7 @@ export function createQuestionForms({ send, changed }) {
         drafts.set(item.id, draft);
       }
       const details = document.createElement('details'), summary = document.createElement('summary'), form = document.createElement('form');
-      details.className = 'inline-question'; details.open = draft.expanded;
+      details.className = 'inline-question'; details.open = expanded || draft.expanded;
       details.ontoggle = () => { draft.expanded = details.open; changed(); };
       summary.textContent = copy.answerQuestion; summary.dataset.inboxKey = item.id; summary.dataset.action = 'answer-expand';
       const submit = document.createElement('button'), feedback = document.createElement('p');
