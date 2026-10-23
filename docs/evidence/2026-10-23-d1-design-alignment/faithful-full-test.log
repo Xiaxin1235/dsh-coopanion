@@ -1,0 +1,98 @@
+
+> @takboo/dsh-coopanion@0.4.13 test
+> vitest run && node --test tests/release-checks.mjs tests/client-build.mjs && node --test tests/locale-client.mjs && node --test tests/local-cache.mjs
+
+
+ RUN  v3.2.7 /Users/jam/Documents/codespace/personal-projects/dsh-coopanion
+
+ ✓ tests/diagnostics-discovery.test.js (6 tests) 370ms
+ ✓ tests/direction-art-feedback.test.js (2 tests) 552ms
+   ✓ rear-quarter head covers the cheek; the rejected source demonstrably fails this check  328ms
+ ✓ tests/plugin.test.ts (11 tests) 272ms
+ ✓ tests/companion-store.test.ts (8 tests) 581ms
+ ✓ tests/work-facts.test.ts (27 tests) 561ms
+   ✓ generated browser adapter agrees with the host tracker including strict invalid replay  549ms
+ ✓ tests/hand-art.test.js (9 tests) 785ms
+   ✓ hand art and contact ownership > checks the actual three PNG files, wrist pixels, empty grip pocket and opaque front fingertips  438ms
+ ✓ tests/notification-integration.test.ts (8 tests) 469ms
+   ✓ keeps the original question answerer usable when reminder tracking reaches capacity  307ms
+ ✓ tests/companion-memory.test.ts (8 tests) 828ms
+   ✓ corrects with source identity retained, deletes without reversing growth, and revokes late events beyond the recent ledger  501ms
+ ✓ tests/companionship.test.js (11 tests) 247ms
+ ✓ tests/chat.test.ts (7 tests) 54ms
+ ✓ tests/companion-http.test.ts (1 test) 51ms
+ ✓ tests/locale-sync.test.ts (4 tests) 165ms
+ ✓ tests/upstream-motion.test.js (19 tests) 149ms
+ ✓ tests/notification-client.test.ts (15 tests) 35ms
+ ✓ tests/controls.test.ts (15 tests) 26ms
+ ✓ tests/session-recovery.test.ts (6 tests) 32ms
+ ✓ tests/navigation.test.js (12 tests) 22ms
+ ✓ tests/personality-feedback.test.js (9 tests) 39ms
+ ✓ tests/space-action.test.js (25 tests) 9ms
+ ✓ tests/personality.test.js (27 tests) 10ms
+ ✓ tests/notification-broker.test.ts (18 tests) 18ms
+ ✓ tests/living-routine.test.js (19 tests) 7ms
+ ✓ tests/keyboard-activity.test.js (8 tests) 16ms
+ ✓ tests/model.test.ts (18 tests) 7ms
+ ✓ tests/completion.test.ts (17 tests) 10ms
+ ✓ tests/life-work.test.js (20 tests) 7ms
+ ✓ tests/desktop-environment-probe.test.js (7 tests) 7ms
+ ✓ tests/resource-observation.test.js (7 tests) 11ms
+ ✓ tests/lifecycle-state.test.js (5 tests) 7ms
+ ✓ tests/direction.test.js (6 tests) 8ms
+ ✓ tests/npc-life.test.js (10 tests) 14ms
+ ✓ tests/notification-contract.test.ts (5 tests) 12ms
+ ✓ tests/prop-motion.test.js (9 tests) 4ms
+ ✓ tests/presentation.test.js (14 tests) 8ms
+ ✓ tests/work-performance.test.js (38 tests) 11ms
+ ✓ tests/space-geometry.test.js (9 tests) 6ms
+ ✓ tests/desktop-life.test.js (7 tests) 7ms
+ ✓ tests/response-rhythm.test.js (16 tests) 3ms
+ ✓ tests/prop-interaction.test.js (8 tests) 5ms
+ ✓ tests/personality-controls.test.js (1 test) 2ms
+ ✓ tests/space-feedback.test.js (4 tests) 2ms
+ ✓ tests/display-geometry.test.js (6 tests) 7ms
+ ✓ tests/companion-client.test.js (4 tests) 5ms
+ ✓ tests/companion-touch.test.js (2 tests) 3ms
+ ✓ tests/living-feedback.test.js (14 tests) 64ms
+ ✓ tests/live-mouth.test.js (4 tests) 2ms
+ ✓ tests/render-cadence.test.js (2 tests) 3ms
+ ✓ tests/text-scale.test.ts (1 test) 2ms
+ ✓ tests/bridge.test.ts (8 tests | 1 skipped) 2166ms
+   ✓ releases a process that exits by signal before the ready handshake  780ms
+   ✓ rehydrates full Host snapshots silently, initializes hidden, and isolates old process messages  336ms
+   ✓ forwards exact chat receipts across the child-process bridge  522ms
+ ✓ tests/diagnostics.test.js (8 tests) 4253ms
+   ✓ honors a wall deadline even while the diagnostic endpoint is unavailable  1541ms
+   ✓ a calendar deadline never grants continuous-resource acceptance  2514ms
+ ❯ tests/figures.test.ts (6 tests | 1 failed) 5777ms
+   ✓ upstream API 2 packs > loads the native whale, its eight dress presets and full motion vocabulary 10ms
+   ✓ upstream API 2 packs > imports wrapped folders, retains executable modules without executing them, and saves outfits across restarts 218ms
+   ✓ upstream API 2 packs > rejects legacy packs, traversal, reserved ids, unsupported APIs and oversized entries before installing 27ms
+   ✓ upstream API 2 packs > keeps an installed revision when an update has a missing model or entry 18ms
+   × serves the frame with an opaque-origin CSP, rejects cross-origin mutations and offers matching source 5498ms
+     → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+   ✓ bounds untrusted hit areas and only accepts touch events following real input 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/figures.test.ts > serves the frame with an opaque-origin CSP, rejects cross-origin mutations and offers matching source
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/figures.test.ts:70:1
+     68| });
+     69| 
+     70| it('serves the frame with an opaque-origin CSP, rejects cross-origin m…
+       | ^
+     71|   await store.import(archive());
+     72|   const server = createPetServer({ webRoot: resolve('web'), store, pre…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 50 passed (51)
+      Tests  1 failed | 529 passed | 1 skipped (531)
+   Start at  11:03:23
+   Duration  6.38s (transform 1.69s, setup 0ms, collect 4.36s, tests 17.71s, environment 4ms, prepare 2.39s)
+

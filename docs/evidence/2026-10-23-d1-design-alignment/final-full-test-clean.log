@@ -1,0 +1,113 @@
+
+> @takboo/dsh-coopanion@0.4.13 test
+> vitest run && node --test tests/release-checks.mjs tests/client-build.mjs && node --test tests/locale-client.mjs && node --test tests/local-cache.mjs
+
+
+ RUN  v3.2.7 /Users/jam/Documents/codespace/personal-projects/dsh-coopanion
+
+ ✓ tests/companionship.test.js (11 tests) 223ms
+ ✓ tests/diagnostics-discovery.test.js (6 tests) 256ms
+ ✓ tests/direction-art-feedback.test.js (2 tests) 297ms
+ ✓ tests/companion-store.test.ts (8 tests) 265ms
+ ✓ tests/work-facts.test.ts (27 tests) 296ms
+ ✓ tests/hand-art.test.js (9 tests) 443ms
+ ✓ tests/notification-integration.test.ts (8 tests) 308ms
+ ✓ tests/companion-memory.test.ts (8 tests) 437ms
+ ✓ tests/locale-sync.test.ts (4 tests) 159ms
+ ✓ tests/personality-feedback.test.js (9 tests) 18ms
+ ✓ tests/companion-http.test.ts (1 test) 47ms
+ ✓ tests/chat.test.ts (7 tests) 71ms
+ ✓ tests/upstream-motion.test.js (19 tests) 106ms
+ ✓ tests/plugin.test.ts (11 tests) 216ms
+ ✓ tests/navigation.test.js (12 tests) 24ms
+ ✓ tests/notification-broker.test.ts (18 tests) 15ms
+ ✓ tests/controls.test.ts (15 tests) 30ms
+ ✓ tests/living-routine.test.js (19 tests) 7ms
+ ✓ tests/notification-client.test.ts (15 tests) 35ms
+ ✓ tests/personality.test.js (27 tests) 12ms
+ ✓ tests/space-action.test.js (25 tests) 10ms
+ ✓ tests/space-geometry.test.js (9 tests) 6ms
+ ✓ tests/resource-observation.test.js (7 tests) 7ms
+ ✓ tests/session-recovery.test.ts (6 tests) 39ms
+ ✓ tests/work-performance.test.js (38 tests) 4ms
+ ✓ tests/life-work.test.js (20 tests) 7ms
+ ✓ tests/model.test.ts (18 tests) 13ms
+ ✓ tests/direction.test.js (6 tests) 6ms
+ ✓ tests/desktop-environment-probe.test.js (7 tests) 6ms
+ ✓ tests/keyboard-activity.test.js (8 tests) 9ms
+ ✓ tests/completion.test.ts (17 tests) 11ms
+ ✓ tests/npc-life.test.js (10 tests) 10ms
+ ✓ tests/response-rhythm.test.js (16 tests) 3ms
+ ✓ tests/lifecycle-state.test.js (5 tests) 3ms
+ ✓ tests/desktop-life.test.js (7 tests) 4ms
+ ✓ tests/display-geometry.test.js (6 tests) 3ms
+ ✓ tests/notification-contract.test.ts (5 tests) 6ms
+ ✓ tests/presentation.test.js (14 tests) 6ms
+ ✓ tests/prop-motion.test.js (9 tests) 4ms
+ ✓ tests/companion-client.test.js (4 tests) 4ms
+ ✓ tests/companion-touch.test.js (2 tests) 4ms
+ ✓ tests/space-feedback.test.js (4 tests) 2ms
+ ✓ tests/prop-interaction.test.js (8 tests) 3ms
+ ✓ tests/live-mouth.test.js (4 tests) 2ms
+ ✓ tests/living-feedback.test.js (14 tests) 3ms
+ ✓ tests/personality-controls.test.js (1 test) 2ms
+ ✓ tests/render-cadence.test.js (2 tests) 1ms
+ ✓ tests/text-scale.test.ts (1 test) 1ms
+ ✓ tests/bridge.test.ts (8 tests | 1 skipped) 2078ms
+   ✓ releases a process that exits by signal before the ready handshake  781ms
+   ✓ rehydrates full Host snapshots silently, initializes hidden, and isolates old process messages  342ms
+   ✓ forwards exact chat receipts across the child-process bridge  424ms
+ ✓ tests/figures.test.ts (6 tests) 3927ms
+   ✓ serves the frame with an opaque-origin CSP, rejects cross-origin mutations and offers matching source  3844ms
+ ✓ tests/diagnostics.test.js (8 tests) 4069ms
+   ✓ honors a wall deadline even while the diagnostic endpoint is unavailable  1509ms
+   ✓ a calendar deadline never grants continuous-resource acceptance  2508ms
+
+ Test Files  51 passed (51)
+      Tests  530 passed | 1 skipped (531)
+   Start at  11:09:48
+   Duration  4.48s (transform 1.30s, setup 0ms, collect 3.26s, tests 13.52s, environment 4ms, prepare 2.10s)
+
+✔ activates the built Client factory using only DSH public peers and React seeds (142.81725ms)
+✔ verifies a real stable tag and exports its immutable commit (188.360291ms)
+✔ rejects a prerelease tag instead of publishing it to latest (111.750875ms)
+✔ rejects a tag whose package version differs (157.294875ms)
+✔ rejects a release outside main ancestry (170.758542ms)
+✔ rejects a tag moved after candidate verification (122.096375ms)
+✔ rejects shrinkwrap metadata and missing release notes (294.138167ms)
+✔ release notes contain only the target version and reject duplicates (0.663917ms)
+✔ npm preflight distinguishes unused, identical, conflicting and unavailable versions (9.891125ms)
+✔ post-publish verification waits for the registry to expose identical bytes (3.694791ms)
+✔ post-publish verification has a deadline and fails immediately on conflicts or registry errors (0.447958ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1092.878667
+✔ the real Client factory synchronizes resolved Harness locale without workspace or notifications (126.144083ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 160.868375
+✔ managed profiles are isolated and disposal is idempotent (6.0635ms)
+✔ cleanup protects live owners, orphan users, recent runs, pins and unknown files (70.280083ms)
+✔ an active working directory protects a stale-owner lease, including partial lsof matches (423.98625ms)
+✔ refuses root, parent traversal and symlink ancestors; nested links cannot delete targets (4.350083ms)
+✔ runtime retention honors leases, selected runtime references and 30 day boundary (4.175125ms)
+✔ preview is read only and newly added pins change eligibility before apply (23.237667ms)
+✔ runtime keys change for all actual build inputs, independent of stage or profile (0.401333ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 570.01475

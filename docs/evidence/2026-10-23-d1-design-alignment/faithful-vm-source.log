@@ -1,0 +1,72 @@
+The bundle contains this ref:
+50bcfec1a6bdadeff46ce20ebf68bebd8eb9ef68 HEAD
+The bundle requires this ref:
+9200efa5c9e40b6f573c41111fc6fbb2811513b6 
+The bundle uses this hash algorithm: sha1
+/tmp/dsh-faithful-50bcfec.bundle is okay
+From /tmp/dsh-faithful-50bcfec.bundle
+ * branch            HEAD       -> FETCH_HEAD
+Updating 9200efa..50bcfec
+Fast-forward
+ .../design/art-workflow/d1-directions-v1/README.md |   6 +-
+ .../art-workflow/d1-directions-v1/model.json       | 256 ++++++++++--------
+ .../d1-directions-v1/prepare-model.mjs             |  16 +-
+ .../d1-directions-v1/source/atlas-regions.json     | 296 ++++++++++-----------
+ .../source/back-right-faithful-v4.png              | Bin 0 -> 1083008 bytes
+ .../source/back-right-faithful-v5.png              | Bin 0 -> 1038504 bytes
+ .../source/back-right-faithful-v6.png              | Bin 0 -> 657581 bytes
+ .../source/design-registration-v1.json             |  56 +++-
+ .../source/faithful-revision-v1.json               |  91 +++++++
+ .../d1-directions-v1/source/front-faithful-v4.png  | Bin 0 -> 1156929 bytes
+ .../d1-directions-v1/source/front-faithful-v5.png  | Bin 0 -> 1104484 bytes
+ .../d1-directions-v1/source/front-faithful-v6.png  | Bin 0 -> 1062242 bytes
+ .../source/prompt-back-right-faithful-v4.txt       |  11 +
+ .../source/prompt-back-right-faithful-v5.txt       |  11 +
+ .../source/prompt-back-right-faithful-v6.txt       |   1 +
+ .../source/prompt-front-faithful-v4.txt            |  12 +
+ .../source/prompt-front-faithful-v5.txt            |  13 +
+ .../source/prompt-front-faithful-v6.txt            |   1 +
+ docs/design/d1-direction-assets.md                 |  11 +-
+ scripts/check-package.mjs                          |   2 +-
+ scripts/export-direction-art.mjs                   |   2 +-
+ tests/direction-art-feedback.test.js               |  13 +-
+ tests/direction-art-ui.mjs                         |   3 +
+ tests/direction-product-ui.mjs                     |   2 +-
+ tests/direction.test.js                            |   2 +-
+ .../whale/directions/back-right-atlas-v2.png       | Bin 1063165 -> 0 bytes
+ .../whale/directions/back-right-faithful-v6.png    | Bin 0 -> 657581 bytes
+ .../whale/directions/back-right-repair-v3.png      | Bin 1012203 -> 0 bytes
+ web/upstream/whale/directions/front-atlas-v2.png   | Bin 1114529 -> 0 bytes
+ .../whale/directions/front-faithful-v6.png         | Bin 0 -> 1062242 bytes
+ web/upstream/whale/directions/model.js             | 256 ++++++++++--------
+ web/upstream/whale/directions/model.json           | 256 ++++++++++--------
+ web/upstream/whale/directions/provenance.json      | 156 +++++++++--
+ 33 files changed, 928 insertions(+), 545 deletions(-)
+ create mode 100644 docs/design/art-workflow/d1-directions-v1/source/back-right-faithful-v4.png
+ create mode 100644 docs/design/art-workflow/d1-directions-v1/source/back-right-faithful-v5.png
+ create mode 100644 docs/design/art-workflow/d1-directions-v1/source/back-right-faithful-v6.png
+ create mode 100644 docs/design/art-workflow/d1-directions-v1/source/faithful-revision-v1.json
+ create mode 100644 docs/design/art-workflow/d1-directions-v1/source/front-faithful-v4.png
+ create mode 100644 docs/design/art-workflow/d1-directions-v1/source/front-faithful-v5.png
+ create mode 100644 docs/design/art-workflow/d1-directions-v1/source/front-faithful-v6.png
+ create mode 100644 docs/design/art-workflow/d1-directions-v1/source/prompt-back-right-faithful-v4.txt
+ create mode 100644 docs/design/art-workflow/d1-directions-v1/source/prompt-back-right-faithful-v5.txt
+ create mode 100644 docs/design/art-workflow/d1-directions-v1/source/prompt-back-right-faithful-v6.txt
+ create mode 100644 docs/design/art-workflow/d1-directions-v1/source/prompt-front-faithful-v4.txt
+ create mode 100644 docs/design/art-workflow/d1-directions-v1/source/prompt-front-faithful-v5.txt
+ create mode 100644 docs/design/art-workflow/d1-directions-v1/source/prompt-front-faithful-v6.txt
+ delete mode 100644 web/upstream/whale/directions/back-right-atlas-v2.png
+ create mode 100644 web/upstream/whale/directions/back-right-faithful-v6.png
+ delete mode 100644 web/upstream/whale/directions/back-right-repair-v3.png
+ delete mode 100644 web/upstream/whale/directions/front-atlas-v2.png
+ create mode 100644 web/upstream/whale/directions/front-faithful-v6.png
+50bcfec1a6bdadeff46ce20ebf68bebd8eb9ef68
+ProductName:		macOS
+ProductVersion:		15.7.7
+BuildVersion:		24G720
+v24.21.0
+11.19.1
+
+> @takboo/dsh-coopanion@0.4.13 build
+> node scripts/build.mjs
+

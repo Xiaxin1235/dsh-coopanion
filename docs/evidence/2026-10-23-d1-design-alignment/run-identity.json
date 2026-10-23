@@ -1,0 +1,21 @@
+{
+  "implementationCommit": "a76f53b6b36e1b62e7d14d9e3a0595fdd6ab585d",
+  "artCommit": "50bcfec1a6bdadeff46ce20ebf68bebd8eb9ef68",
+  "geometryCommit": "9200efa5c9e40b6f573c41111fc6fbb2811513b6",
+  "artToFinalChanges": [
+    "src/figure-server.ts",
+    "tests/figures.test.ts"
+  ],
+  "sourceArchiveFixTestedWith": "npm test; unchanged 5000ms test timeout; 530 passed and 1 skipped, 19 Node checks",
+  "sourceArchiveVm": "6 tests passed on a76f53b",
+  "originalPromptManifest": "../../design/art-workflow/d1-directions-v1/source/faithful-revision-v1.json",
+  "packageSha256": "39a7bb79c0666db68e3ea28cd1438ee94859618d07d50416605f8e8d94416c4c",
+  "limitations": [
+    "No release or daily-profile installation",
+    "No new Windows/Linux native or physical multi-display test",
+    "Artwork and design are not pixel-identical; source repaint and original expressions differ",
+    "UI and visual/native regression is bound to 50bcfec; later delta only changes source archive storage and its byte equality test"
+  ],
+  "browserUi": "Inbox UI main runner plus 68 Node UI tests passed; exit 0; run started from clean 50bcfec before sourceArchive-only change",
+  "vmFinalState": "a76f53b clean; source route 6 tests passed; normal guest shutdown; base/test stopped"
+}
