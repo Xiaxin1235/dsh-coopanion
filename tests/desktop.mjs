@@ -195,7 +195,7 @@ try {
   assert.deepEqual(actions.slice(actionStart).filter(action => ['select', 'read', 'open-session'].includes(action.type)), [{ type: 'read', resultId: olderBackgroundReply.id }, { type: 'read', resultId: backgroundReply.id }, { type: 'select', sessionId: backgroundReply.sessionId }, { type: 'open-session', sessionId: backgroundReply.sessionId }], 'native inbox acknowledges every captured turn and carries the exact source identity');
   bridge.configure({ locale: 'en', size: 150, roam: false, notifications: true, bubbleDurationMs: 12000 });
   await page.waitForFunction(() => document.documentElement.lang === 'en');
-  assert.equal(await page.locator('#chat-title').textContent(), 'I’m here. Take your time.');
+  assert.equal(await page.locator('#chat-title').textContent(), 'I’m here. Take your time!');
   await waitTray(state => state?.tooltip.includes('Focused:'));
   const automatic = await page.evaluate(() => {
     const language = navigator.languages.find(language => /^(zh|en)(-|$)/i.test(language)) ?? 'en';
