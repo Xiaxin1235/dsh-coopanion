@@ -36,16 +36,16 @@ export async function createDirectionSample(canvas,definition,base){
  }
  let latest=null;
  return{
-  draw({t=0,walk=0,phase=t*10,blink=0,look=[0,0],stress=0}={}){
-   if(front)face(blink,look);
+  draw({t=0,walk=0,phase=t*10,blink=0,look=[0,0],stress=0,rest=false}={}){
+   if(front)face(rest?0:blink,rest?[0,0]:look);
    const stride=Math.sin(phase)*walk,other=-stride;
-   const st={alpha:{},body:{sy:1-.004*Math.sin(t*2.4)},upper:{a:Math.sin(t*.8)*.6},
+   const st=rest?{}:{alpha:{},body:{sy:1-.004*Math.sin(t*2.4)},upper:{a:Math.sin(t*.8)*.6},
     legL:{a:stride*4,ty:-Math.max(0,stride)*4},legR:{a:other*4,ty:-Math.max(0,other)*4},
     armL:{a:-stride*10-stress*18},armR:{a:-other*10+stress*18},tail:{a:Math.sin(t*2.2)*5},bow:{a:Math.sin(t*2)*1.5},
     dress:{fn:(u,v)=>[Math.sin(t*2+u)*v*1.1,Math.abs(stride)*v*.6]},
     head:{fn:(u,v)=>[Math.sin(t*1.8+v*2)*Math.max(0,(v-.45))*1.8,0],a:look[0]*.3},
     hairBack:{fn:(u,v)=>[Math.sin(t*1.8+v*2)*v*v*1.6,0]},hairFront:{fn:(u,v)=>[Math.sin(t*1.8+v*2)*v*v*.8,0]}};
-   applyDirectionRestShape(st,definition);
+   if(!rest)applyDirectionRestShape(st,definition);
    const feet=definition.anchors.feet??[[116,256],[149,256]];
    active.render(st);latest={feet:feet.map((p,i)=>active.point(i?'legR':'legL',st,...p)),root:active.point('body',st,128,256),states:st};return latest;
   },get state(){return latest;},dispose(){active.dispose();}

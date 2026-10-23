@@ -1,0 +1,233 @@
+{
+  "schema": 1,
+  "id": "d1-r01-turnaround-20261023",
+  "base": "5967b8b",
+  "status": "candidate-review-not-approved",
+  "reviewCandidate": "turnaround-v3.png",
+  "productExportAllowed": false,
+  "referencePriority": [
+    {
+      "file": "../../d1-directions-v1/source/design-front-20261023.png",
+      "sha256": "c4db56dca23ec3ae9520fe8317af6961361e02126aaa81017bbb7223784450f3"
+    },
+    {
+      "file": "../../d1-directions-v1/source/reference.png",
+      "sha256": "9614b9ac3516b1061f43fa0ebb5985e0de4849fd19e0bb3017634e9b930435d7"
+    },
+    {
+      "file": "../../d1-directions-v1/source/design-back-right-20261023.png",
+      "sha256": "7b93c3f1d90cccde62cab5bf8fcf9d69d9c848cdc7691e01d4038b438ef6c3a0"
+    }
+  ],
+  "candidates": [
+    {
+      "file": "turnaround-v1.png",
+      "label": "v1 · 失败候选",
+      "status": "rejected",
+      "productBound": false,
+      "sha256": "292a8c4e353abd55fc31f15b3add972959032c09aeea0f65abc13de2917b5dd5",
+      "bytes": 1631871,
+      "canvas": [
+        2172,
+        724
+      ],
+      "tool": "built-in image_gen",
+      "output": "exec-61e3bb47-e51e-4f95-b7bd-2a5a9146fb18.png",
+      "prompt": "prompt-turnaround-v1.txt",
+      "promptSha256": "045c6811d63633a4f5862fc318579bddb55a2c99c51263d62bde3ab90429bf5f",
+      "references": [
+        {
+          "file": "../../d1-directions-v1/source/design-front-20261023.png",
+          "sha256": "c4db56dca23ec3ae9520fe8317af6961361e02126aaa81017bbb7223784450f3"
+        },
+        {
+          "file": "../../d1-directions-v1/source/reference.png",
+          "sha256": "9614b9ac3516b1061f43fa0ebb5985e0de4849fd19e0bb3017634e9b930435d7"
+        },
+        {
+          "file": "../../d1-directions-v1/source/design-back-right-20261023.png",
+          "sha256": "7b93c3f1d90cccde62cab5bf8fcf9d69d9c848cdc7691e01d4038b438ef6c3a0"
+        }
+      ],
+      "review": "未通过：斜后尾根仍有额外青色垂卷。",
+      "inspection": {
+        "method": "read-only RGBA alpha > 128 bounds; not identity acceptance",
+        "transparentPixels": 728772,
+        "opaquePixels": 807287,
+        "solidCanvasEdgePixels": 0,
+        "viewBounds": [
+          {
+            "view": "front",
+            "bounds": [
+              36,
+              13,
+              540,
+              710
+            ],
+            "solidPixels": 208409
+          },
+          {
+            "view": "frontRight",
+            "bounds": [
+              563,
+              12,
+              1068,
+              713
+            ],
+            "solidPixels": 198049
+          },
+          {
+            "view": "backRight",
+            "bounds": [
+              1104,
+              12,
+              1565,
+              713
+            ],
+            "solidPixels": 193090
+          },
+          {
+            "view": "back",
+            "bounds": [
+              1635,
+              12,
+              2138,
+              708
+            ],
+            "solidPixels": 207739
+          }
+        ]
+      }
+    },
+    {
+      "file": "turnaround-v2.png",
+      "label": "v2 · 失败候选",
+      "status": "rejected",
+      "productBound": false,
+      "sha256": "49d3486cd177499dcc71d663d28ade6f3b1bbe422e745e71eb7c12dd159b4ebb",
+      "bytes": 1641054,
+      "canvas": [
+        2172,
+        724
+      ],
+      "tool": "built-in image_gen",
+      "output": "exec-bcbacd66-4d68-4f44-8bd7-c389ef4109f3.png",
+      "prompt": "prompt-turnaround-v2.txt",
+      "promptSha256": "1b580037cd3c2b2bd18074fea1229442a1e96fe0482ccfb81dadf7f5f1a08339",
+      "references": [
+        {
+          "file": "turnaround-v1.png",
+          "sha256": "292a8c4e353abd55fc31f15b3add972959032c09aeea0f65abc13de2917b5dd5"
+        }
+      ],
+      "review": "未通过：局部编辑未去除斜后尾根的青色卷钩；其他区域也有重绘变化。",
+      "inspection": {
+        "method": "read-only RGBA alpha > 128 bounds; not identity acceptance",
+        "transparentPixels": 746750,
+        "opaquePixels": 794333,
+        "solidCanvasEdgePixels": 0,
+        "viewBounds": [
+          {
+            "view": "front",
+            "bounds": [
+              36,
+              12,
+              537,
+              703
+            ],
+            "solidPixels": 205192
+          },
+          {
+            "view": "frontRight",
+            "bounds": [
+              559,
+              11,
+              1060,
+              706
+            ],
+            "solidPixels": 194792
+          },
+          {
+            "view": "backRight",
+            "bounds": [
+              1095,
+              11,
+              1628,
+              705
+            ],
+            "solidPixels": 190059
+          },
+          {
+            "view": "back",
+            "bounds": [
+              1629,
+              11,
+              2117,
+              701
+            ],
+            "solidPixels": 204290
+          }
+        ]
+      }
+    },
+    {
+      "file": "turnaround-v3.png",
+      "label": "v3 · 待复核",
+      "status": "awaiting-visual-review",
+      "productBound": false,
+      "sha256": "707deef9be40c73046c5f17bc5741c8cbc8952e3caf3add66c1bdf580dc56c43",
+      "bytes": 1640426,
+      "canvas": [
+        2172,
+        724
+      ],
+      "tool": "built-in image_gen",
+      "output": "exec-2f5bf822-48cd-46d5-8714-364663785164.png",
+      "prompt": "prompt-turnaround-v3.txt",
+      "promptSha256": "af91bc6ff0e70f5399dd6e1fc9fd94c175cc770c68bed8d3224341120d30a34a",
+      "references": [
+        {
+          "file": "turnaround-v2.png",
+          "sha256": "49d3486cd177499dcc71d663d28ade6f3b1bbe422e745e71eb7c12dd159b4ebb"
+        }
+      ],
+      "review": "已观察到：斜后尾根的额外青色卷钩已去除，斜后／正背无脸颊和五官。仍需复核：四方向是否保持同一角色、正面与原设计的脸型／比例；局部编辑同时改变了斜后白缎带边形与正背局部轮廓，不能声称其他区域逐像素不变。",
+      "inspection": {
+        "method": "read-only whole-canvas alpha; not identity acceptance",
+        "transparentPixels": 740289,
+        "solidCanvasEdgePixels": 0
+      }
+    }
+  ],
+  "guides": [
+    {
+      "y": 0.14,
+      "label": "头发顶部参考"
+    },
+    {
+      "y": 0.52,
+      "label": "前视下颌参考"
+    },
+    {
+      "y": 0.65,
+      "label": "腰线参考"
+    },
+    {
+      "y": 0.82,
+      "label": "裙摆参考"
+    },
+    {
+      "y": 0.972,
+      "label": "脚底参考"
+    }
+  ],
+  "rearTailReviewBox": [
+    0.57,
+    0.64,
+    0.09,
+    0.2
+  ],
+  "annotationMethod": "manual review zones in normalized image coordinates, not rig joints",
+  "rights": "Original character 溟月（上善无形）, maid reinterpretation ZipZipPipe, source artwork Pal-AI-Lab; see repository THIRD_PARTY_NOTICES.md; no new ownership claim.",
+  "lockedMaster": null
+}

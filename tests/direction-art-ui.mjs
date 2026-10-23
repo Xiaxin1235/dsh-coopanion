@@ -38,6 +38,19 @@ try{
  }else{browser=await chromium.launch({headless:true,args:['--no-sandbox','--enable-unsafe-swiftshader']});context=await browser.newContext({viewport:{width:1360,height:900},recordVideo:{dir:join(output,'video'),size:{width:1360,height:900}}});page=await context.newPage();await page.goto(url);video=page.video();versions={chromium:browser.version()};}
  page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(20000);await page.waitForFunction(()=>window.directionPreview?.state.frames>0);check('three independent directional rigs load and draw with the shared WebGL renderer');
  const render=pose=>page.evaluate(p=>{directionPreview.pose(p);return Object.fromEntries(['front','back','backRight'].map(id=>[id,document.getElementById(id).toDataURL()]));},pose);
+ // Rest assembly must ignore time, motion, gaze and blinking, including rest-shape compensation.
+ const restProbe=await page.evaluate(()=>{
+  directionPreview.pose({t:0});const animated=Object.fromEntries(Object.keys(directionPreview.samples).map(id=>[id,document.getElementById(id).toDataURL()]));
+  const draw=p=>Object.fromEntries(Object.entries(directionPreview.samples).map(([id,sample])=>{sample.draw({...p,rest:true});return[id,document.getElementById(id).toDataURL()];}));
+  return{animated,a:draw({t:0}),b:draw({t:2.13,walk:1,blink:1,look:[2,-2],stress:1})};
+ });
+ assert.ok(Object.keys(restProbe.a).every(id=>restProbe.a[id]===restProbe.b[id]),'raw rest assembly must ignore every animation input');
+ for(const id of ['front','backRight'])assert.notEqual(restProbe.a[id],restProbe.animated[id],'raw rest assembly must also remove static and t=0 warp offsets');
+ await page.selectOption('#render-mode','rest');assert.equal(await page.locator('#step').isDisabled(),true);assert.equal(await page.locator('#blink').isDisabled(),true);
+ const held=await render({t:7,motion:'walk',blink:true});assert.ok(Object.keys(held).every(id=>held[id]===restProbe.a[id]));assert.equal(await page.evaluate(()=>directionPreview.state.t),0);
+ await page.screenshot({path:join(output,'raw-rest-assembly.png')});
+ await page.selectOption('#render-mode','animated');assert.equal(await page.locator('#step').isDisabled(),false);assert.equal(await page.locator('#blink').isDisabled(),false);
+ check('raw rest assembly removes animation and static compensation; controls distinguish it from time zero');
  // Compare the actual neutral meshes against the independently supplied design.
  const neutral=await render({t:0});
  const designMetrics=await page.evaluate(()=>{
@@ -56,7 +69,7 @@ try{
  });
  for(const [id,m]of Object.entries(designMetrics))assert.ok(m.silhouetteIoU>=.89,`${id} silhouette must follow design: ${m.silhouetteIoU}`);
  for(let i=0;i<2;i++){const a=designMetrics.front.eyes.actual[i],b=designMetrics.front.eyes.design[i];assert.ok(a.count>350);assert.ok(Math.hypot(a.x-b.x,a.y-b.y)<1.2,'visible iris must stay on its design landmark');}
- check('neutral silhouettes and visible eye landmarks agree with the supplied designs in a common foot frame');
+ check('legacy silhouette and iris landmark thresholds retained as numeric regression, not character identity acceptance');
  await writeFile(join(output,'design-comparison.json'),JSON.stringify(designMetrics,null,2)+'\n');
  await page.selectOption('#reference-view','overlay');assert.equal(await page.evaluate(()=>directionPreview.state.t),0);await page.screenshot({path:join(output,'design-overlay.png')});await page.selectOption('#reference-view','design');await page.screenshot({path:join(output,'design-reference.png')});await page.selectOption('#reference-view','actual');
  for(const id of ['front','backRight'])await writeFile(join(output,id+'.png'),Buffer.from(neutral[id].split(',')[1],'base64'));
