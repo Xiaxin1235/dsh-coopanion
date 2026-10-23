@@ -26,3 +26,8 @@ Host 快照或语言、提醒偏好的正常变化仍走原有 render；字号�
 - `tests/install.mjs`：同一包经支持版本的官方 loader 安装，旧配置默认、正式设置页六种组合持久化及即时同步、原生重启、完整 Host 重启、中英文标签，并保留 完成、会话和恢复回归。
 
 `npm run test:inbox-ui` 包含文字检查；三平台测试和宿主安装矩阵复用这些入口，执行范围以对应 CI 结果为准。
+
+
+## 回复开场白预览
+
+持久设置 `preferOpeningParagraph` 默认 true，沿现有 ConfigForm → Host → DesktopOptions → Renderer 配置链同步。仅回复气泡调用 `replyPreview(text, 180, preferOpeningParagraph)`；聊天和收件箱摘要显式使用原有模式。第一段由首个空行界定，支持 CRLF；普通文本首段最多 120 个 Unicode 字符且还有正文时完整显示，`long=true` 保留全文入口。Markdown 代码、表格、列表、标题、过长首段和只有一段均回退原算法；关闭设置无条件使用原算法。不改变全文、已读、模型调用或气泡驻留规则。

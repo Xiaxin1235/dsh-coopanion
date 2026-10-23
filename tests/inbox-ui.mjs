@@ -116,6 +116,23 @@ try {
     return { x, y, width: Math.min(innerWidth - x, Math.ceil(Math.max(panel.right, pet.right) - x + 18)), height: Math.min(innerHeight - y, Math.ceil(Math.max(panel.bottom, pet.bottom) - y + 18)) };
   });
   await page.screenshot({ path: 'artifacts/session-inbox.png', clip });
+  await page.keyboard.press('Escape');
+  await receive({ type: 'notification-state', snapshot: state });
+  const opening='我把三项测试修好啦，详细证据在下面。', full=opening+'\n\n'+'这里是完整的检查说明。'.repeat(60);
+  const bubbleFrame=id=>({...frame([],[]), sessions:[{...focus,unread:1}], results:[reply(id,focus,20,full)]});
+  await receive({type:'configure',options:{preferOpeningParagraph:true}});
+  await receive({type:'snapshot',snapshot:bubbleFrame('opening-enabled')});
+  await page.locator('#bubble:not([hidden])').waitFor();
+  assert.equal(await page.locator('#bubble-text').innerText(),opening);
+  assert.equal(await page.locator('#bubble-expand').isVisible(),true);
+  await page.locator('#bubble-expand').click();
+  assert.equal(await page.locator('#reader-text').innerText(),full);
+  await page.keyboard.press('Escape');
+  await receive({type:'configure',options:{preferOpeningParagraph:false}});
+  await receive({type:'snapshot',snapshot:bubbleFrame('opening-disabled')});
+  await page.locator('#bubble:not([hidden])').waitFor();
+  assert.ok((await page.locator('#bubble-text').innerText()).length>opening.length);
+  assert.ok((await page.locator('#bubble-text').innerText()).endsWith('…'));
   assert.deepEqual(errors, []);
   console.log('Inbox UI passed: one-click full reply, direct source actions, mixed pending items, stable chat focus and reading order, Unicode/text safety, bilingual copy and narrow layout.');
 } finally { await browser?.close(); await new Promise(resolve => server.close(resolve)); await rm(directory, { recursive: true, force: true }); }

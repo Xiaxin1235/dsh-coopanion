@@ -153,3 +153,15 @@ it('discarding a viewed queued notice preserves deduplication and the order of o
   const next = taskNotice('new-error', 'error', 'initial', []);
   expect(queue.push(next)).toBe(true); expect(queue.next(false).id).toBe(next.id);
 });
+
+it('prefers a bounded plain opening and preserves the original preview when disabled', () => {
+ const opening='我把测试修好啦，三个失败已经归零。'; const full=opening+'\n\n'+'完整证据。'.repeat(80);
+ expect(replyPreview(full)).toEqual({text:opening,long:true});
+ expect(replyPreview(full,180,false).text).not.toBe(opening);
+ for(const text of ['简短回答。','只有一段。'.repeat(60)]) expect(replyPreview(text)).toEqual(replyPreview(text,180,false));
+ for(const first of ['```js\ncode\n```','- 第一项','1. 第一项','# 标题','| 名称 | 结果 |','名称 | 结果\n--- | ---','标题\n===','长'.repeat(121)]) expect(replyPreview(first+'\n\n正文内容')).toEqual(replyPreview(first+'\n\n正文内容',180,false));
+ expect(replyPreview(opening+'\r\n\r\n后续内容')).toEqual({text:opening,long:true});
+ expect(replyPreview('🐳中'.repeat(60)+'\n\n正文')).toEqual({text:'🐳中'.repeat(60),long:true});
+ const tooLong='🐳中'.repeat(60)+'鲸'; expect(replyPreview(tooLong+'\n\n正文')).toEqual(replyPreview(tooLong+'\n\n正文',180,false));
+ expect(replyPreview('开场白\n\n短正文').long).toBe(true);
+});

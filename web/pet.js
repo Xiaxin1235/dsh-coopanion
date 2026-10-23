@@ -40,7 +40,7 @@ let npc = initialNpc(1), npcGeneration = 1, npcEvent, npcRelocated = false, keyb
 const homeMarker = document.createElement('div'); homeMarker.id = 'npc-home'; homeMarker.hidden = true; homeMarker.setAttribute('aria-hidden', 'true'); document.body.appendChild(homeMarker);
 let body, previewBody, previewCharacter, activeView, activeScheme, activeName = 'DeepSeek 大肥鱼', libraryState, libraryBusy = false;
 let appliedMood, appliedControls, speech, speechExpires = Infinity, pressing = false, dragStart, dragPoint, dragging = false, previewScheme = "", reducedNeedsStep = true;
-let options = { textScale: 1, size: 180, roam: true, companionship: 'off', notifications: true, bubbleDurationMs: 12000 };
+let options = { preferOpeningParagraph: true, textScale: 1, size: 180, roam: true, companionship: 'off', notifications: true, bubbleDurationMs: 12000 };
 let snapshot = { mood: 'idle', text: '你好。点点我，或双击和我说话。', sessionId: null, sessions: [] };
 let x = innerWidth * .68, y = innerHeight - 155, hovered = false, asleep = false, toastTimer, noticeSession;
 let cursorPoint, lastHit;
@@ -160,7 +160,7 @@ function position() {
 }
 function speak(result) {
   const source = snapshot.sessions.find(session => session.id === result.sessionId);
-  const preview = replyPreview(result.text);
+  const preview = replyPreview(result.text, 180, options.preferOpeningParagraph !== false);
   $('bubble-status').textContent = source?.label ?? '';
   bubble.setAttribute('aria-label', uiCopy().finalReply(source?.label ?? activeName));
   bubbleSession = result.sessionId; bubbleResult = result;
@@ -418,7 +418,7 @@ function render() {
   $('chat-session-state').textContent = sessionStateLabel(selected, notificationLocale());
   $('chat-session-detail').textContent = selected ? `${selected.cwd || selected.project || ''} · #${shortIds.get(selected.id)}` : '';
   const latestReply = snapshot.results?.find(r => r.id === selected?.replyId)?.text || selected?.reply || '';
-  $('chat-reply').textContent = latestReply ? replyPreview(latestReply).text : ''; $('chat-reply').hidden = !latestReply;
+  $('chat-reply').textContent = latestReply ? replyPreview(latestReply, 180, false).text : ''; $('chat-reply').hidden = !latestReply;
   $('chat-read').hidden = !latestReply;
   const enabled = !!snapshot.sessionId && selected?.chatAvailable !== false;
   const draft = composer.state(snapshot.sessionId);
@@ -506,7 +506,7 @@ function renderRequests() {
     content.onclick = () => openReader(result, inboxContents(attentionSnapshot, pendingRequests(), acknowledgedResults).replies.map(item => ({ ...item })));
     meta.textContent = `${copy.newReply} · ${sessionTime({ updatedAt: result.time }, notificationLocale())}`;
     label.textContent = sources.get(result.sessionId)?.label ?? result.sessionId;
-    preview.className = 'inbox-preview'; preview.textContent = replyPreview(result.text).text;
+    preview.className = 'inbox-preview'; preview.textContent = replyPreview(result.text, 180, false).text;
     detail.textContent = `${sourceDetail(result.sessionId)} · ${copy.readReply}`;
     content.append(meta, label, preview, detail);
     open.textContent = copy.continue; open.dataset.resultId = result.id; open.dataset.inboxKey = result.id; open.dataset.action = 'open'; open.onclick = () => { acknowledge(result); continueSession(result.sessionId); };

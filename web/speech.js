@@ -2,8 +2,19 @@
 // Unicode-safe plain text, punctuation pauses, and the original character/sound pulses.
 const PAUSE = /[,，。!?！？…、.;；:：]/;
 const SILENT = /[\s,，。!?！？…、.;；:：「」“”()（）]/;
-export function replyPreview(text, limit = 180) {
-  const chars = Array.from(text.trim());
+export function replyPreview(text, limit = 180, preferOpeningParagraph = true) {
+  const trimmed = text.trim();
+  if (preferOpeningParagraph) {
+    const separator = /\r?\n[ \t]*\r?\n/.exec(trimmed);
+    if (separator) {
+      const opening = trimmed.slice(0, separator.index).trim();
+      const body = trimmed.slice(separator.index + separator[0].length).trim();
+      const block = /^(?: {0,3}(?:`{3,}|~{3,}|#{1,6}(?:\s|$)|(?:[-+*]|\d+[.)])\s|[>|])|\t| {4})/m;
+      const tableOrHeading = /^(?:[^\n]*\|[^\n]*\r?\n[ \t]*\|?[ \t]*:?-{3,}|[^\n]+\r?\n[=-]{3,}[ \t]*$)/m;
+      if (body && opening && Array.from(opening).length <= 120 && !block.test(opening) && !tableOrHeading.test(opening)) return { text: opening, long: true };
+    }
+  }
+  const chars = Array.from(trimmed);
   if (chars.length <= limit) return { text: chars.join(''), long: false };
   let end = limit;
   for (let i = limit - 1; i >= limit * .55; i--) if (/[。！？.!?\n]/.test(chars[i])) { end = i + 1; break; }

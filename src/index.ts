@@ -23,13 +23,14 @@ import { COMPANIONSHIP_MODES, type CompanionshipMode } from '../web/companionshi
 export const name = 'dsh-coopanion';
 export const inject = ['agents'];
 export interface Config {
-  size: Volatile<number>; npcHome: Volatile<number>; npcRange: Volatile<number>; textScale: Volatile<TextScale>; roam: Volatile<boolean>; diagnostics: Volatile<boolean>; companionship: Volatile<CompanionshipMode>; notifications: Volatile<boolean>;
+  size: Volatile<number>; npcHome: Volatile<number>; npcRange: Volatile<number>; textScale: Volatile<TextScale>; preferOpeningParagraph: Volatile<boolean>; roam: Volatile<boolean>; diagnostics: Volatile<boolean>; companionship: Volatile<CompanionshipMode>; notifications: Volatile<boolean>;
   systemNotifications: Volatile<boolean>; reminders: Volatile<boolean>; reminderDelayMs: Volatile<number>;
   bubbleDurationMs: Volatile<number>; autoStart: Volatile<boolean>; electronPath?: string;
 }
 export const Config = z.object({
   size: z.number().min(90).max(240).default(180).volatile(),
   textScale: z.union(TEXT_SCALES.map(value => z.const(value))).default(DEFAULT_TEXT_SCALE).volatile(),
+  preferOpeningParagraph: z.boolean().default(true).volatile(),
   roam: z.boolean().default(true).volatile(),
   diagnostics: z.boolean().default(false).volatile(),
   npcHome: z.number().min(.05).max(.95).step(.01).default(.85).volatile(),
@@ -59,7 +60,7 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
   const preferences: Partial<Pick<DesktopOptions, 'roam' | 'notifications' | 'companionship'>> = {};
   let savePreference: ((field: 'roam' | 'notifications' | 'companionship', value: boolean | CompanionshipMode) => Promise<void>) | undefined;
   ctx.inject(['settings'], child => { savePreference = (field, value) => child.settings.mutate('dsh-coopanion', [{ op: 'set', path: [field], value }]); });
-  const currentOptions = (): DesktopOptions => ({ size: options.size.get(), npcHome: options.npcHome.get(), npcRange: options.npcRange.get(), textScale: options.textScale.get(), roam: options.roam.get(), diagnostics: options.diagnostics.get(), companionship: options.companionship.get(), notifications: options.notifications.get(), bubbleDurationMs: options.bubbleDurationMs.get(), systemNotifications: options.systemNotifications.get(), reminders: options.reminders.get(), reminderDelayMs: options.reminderDelayMs.get(), electronPath: options.electronPath, locale, ...preferences });
+  const currentOptions = (): DesktopOptions => ({ size: options.size.get(), npcHome: options.npcHome.get(), npcRange: options.npcRange.get(), textScale: options.textScale.get(), preferOpeningParagraph: options.preferOpeningParagraph.get(), roam: options.roam.get(), diagnostics: options.diagnostics.get(), companionship: options.companionship.get(), notifications: options.notifications.get(), bubbleDurationMs: options.bubbleDurationMs.get(), systemNotifications: options.systemNotifications.get(), reminders: options.reminders.get(), reminderDelayMs: options.reminderDelayMs.get(), electronPath: options.electronPath, locale, ...preferences });
   const controls = new PetControls(bridge, currentOptions);
   let locale: string | undefined;
   let clientLocale: string | undefined;
