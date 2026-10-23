@@ -67,3 +67,9 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+
+## Nunito
+
+Copyright 2014 The Nunito Project Authors (https://github.com/googlefonts/nunito).
+Bundled Latin variable WOFF2 (weights 400–800) in `web/fonts/nunito-latin.woff2`, obtained from Google Fonts. Licensed under SIL Open Font License 1.1; full unmodified license: `web/fonts/OFL.txt`; download provenance: `web/fonts/SOURCE.txt`. Nunito is loaded locally without external font requests.
