@@ -2,8 +2,8 @@
   "schema": 2,
   "id": "d1-r01-turnaround-20261023",
   "base": "5967b8b",
-  "status": "reference-selected-master-pending",
-  "reviewCandidate": "reference-turnaround-v11.png",
+  "status": "tail-attachment-structure-review-not-approved",
+  "reviewCandidate": "tail-oblique-structure-v16.png",
   "productExportAllowed": false,
   "referencePriority": [
     {
@@ -669,8 +669,8 @@
     },
     {
       "file": "reference-turnaround-v11.png",
-      "label": "v11 · 最新参考候选，待审",
-      "status": "candidate-not-approved",
+      "label": "v11 · 尾根连接位置未通过",
+      "status": "rejected",
       "productBound": false,
       "designRevision": "single-reference-20261023",
       "sha256": "625374e593964f277142e76510588958d48586630fffc9798e47d25ff85fa524",
@@ -717,34 +717,460 @@
         }
       ],
       "rearTailReviewBox": [
+        0.24,
+        0.825,
         0.1,
-        0.78,
-        0.16,
-        0.12
+        0.075
       ],
-      "review": "依据最新单人参考制作；背面尾巴已换到对应一侧，保留裙后上弯的体量与遮脸。仍是待审候选：侧后细节由单图推演，各方向的尾鳍投影、身体／发束一致性和连接位置需可见复核。局部生成不保证尾巴以外逐像素不变；尚未锁定、拆层或导出。",
+      "review": "用户指出尾巴逻辑位置错误。只把尾巴换到背视另一侧，仍像贴在裙侧；缺少后骨盆中线到后裙摆中部的连续尾柄，近端未形成背视遮住上腿的关系。斜后与正背近似复用平面轮廓，不能作为完成的转面。",
       "inspection": {
         "method": "read-only RGBA alpha histogram; not identity or anatomy acceptance",
         "transparentPixels": 1024269,
         "partialAlphaPixels": 548083,
         "opaquePixels": 0,
         "maxAlpha": 254
-      }
+      },
+      "previousReview": "依据最新单人参考制作；背面尾巴已换到对应一侧，保留裙后上弯的体量与遮脸。仍是待审候选：侧后细节由单图推演，各方向的尾鳍投影、身体／发束一致性和连接位置需可见复核。局部生成不保证尾巴以外逐像素不变；尚未锁定、拆层或导出。",
+      "backTailReviewBox": [
+        0.68,
+        0.835,
+        0.09,
+        0.075
+      ],
+      "attachmentGuides": [
+        {
+          "view": "斜后",
+          "hiddenPath": [
+            [
+              0.29,
+              0.716
+            ],
+            [
+              0.286,
+              0.79
+            ],
+            [
+              0.283,
+              0.851
+            ]
+          ],
+          "exit": [
+            0.283,
+            0.851
+          ]
+        },
+        {
+          "view": "正背",
+          "hiddenPath": [
+            [
+              0.716,
+              0.716
+            ],
+            [
+              0.716,
+              0.79
+            ],
+            [
+              0.719,
+              0.857
+            ]
+          ],
+          "exit": [
+            0.719,
+            0.857
+          ]
+        }
+      ]
+    },
+    {
+      "file": "tail-attachment-v12.png",
+      "label": "v12 · 抬裙／近端尖片，未通过",
+      "status": "rejected",
+      "productBound": false,
+      "designRevision": "single-reference-central-attachment-20261023",
+      "sha256": "535141d3b97187704765564d8a4b32582f8044de76e4211ca5514a8ff338021b",
+      "bytes": 2084211,
+      "canvas": [
+        1184,
+        1328
+      ],
+      "tool": "built-in image_gen",
+      "useCase": "precise-object-edit",
+      "output": "exec-c5b74b0a-813a-4ec9-8efc-ae38ad928552.png",
+      "prompt": "prompt-tail-attachment-v12.txt",
+      "promptSha256": "bdf77cd28c16e3afe47441ccf0d1f5618a2bae881d4ca13116a96af43f9d6283",
+      "references": [
+        {
+          "file": "reference-turnaround-v11.png",
+          "sha256": "625374e593964f277142e76510588958d48586630fffc9798e47d25ff85fa524"
+        },
+        {
+          "file": "reference-character-final-20261023.png",
+          "sha256": "c36e5e04676f5135fe72390809af96a6f0d3d675ce764fbefd1567197cf8ffa6"
+        },
+        {
+          "file": "feedback-tail-attachment-20261023.png",
+          "sha256": "69c774f91b84da75340bcea80a32dc2b9b4db373ffd59c43d1d7beb8df2160f1"
+        }
+      ],
+      "layout": {
+        "columns": 2,
+        "rows": 2
+      },
+      "views": [
+        "正面",
+        "侧面 · 朝左",
+        "斜后 · 朝左",
+        "正背面"
+      ],
+      "guides": [
+        {
+          "y": 0.495,
+          "label": "第一行脚底参考"
+        },
+        {
+          "y": 0.985,
+          "label": "第二行脚底参考"
+        }
+      ],
+      "rearTailReviewBox": [
+        0.24,
+        0.8,
+        0.11,
+        0.1
+      ],
+      "backTailReviewBox": [
+        0.68,
+        0.8,
+        0.1,
+        0.11
+      ],
+      "review": "未通过：近端移到中间，但生成器抬高后裙摆，增加露腿；正背近端出现分叉般的尖片，不能把增加蓝色像素等同于尾根逻辑修复。"
+    },
+    {
+      "file": "tail-attachment-v13.png",
+      "label": "v13 · 正背近端仍缺失，未通过",
+      "status": "rejected",
+      "productBound": false,
+      "designRevision": "single-reference-central-attachment-20261023",
+      "sha256": "eab77bc5a5490f439f73919968230780c8a494ccd67516708753c888da8e8acf",
+      "bytes": 2033733,
+      "canvas": [
+        1184,
+        1328
+      ],
+      "tool": "built-in image_gen",
+      "useCase": "precise-object-edit",
+      "output": "exec-f99ed460-1801-4831-a21d-4cd5467281e6.png",
+      "prompt": "prompt-tail-attachment-v13.txt",
+      "promptSha256": "664ce52f74b6ac22be49481cfd3616e1705acaa841b69cfc5b43afb9f84065d1",
+      "references": [
+        {
+          "file": "reference-turnaround-v11.png",
+          "sha256": "625374e593964f277142e76510588958d48586630fffc9798e47d25ff85fa524"
+        }
+      ],
+      "layout": {
+        "columns": 2,
+        "rows": 2
+      },
+      "views": [
+        "正面",
+        "侧面 · 朝左",
+        "斜后 · 朝左",
+        "正背面"
+      ],
+      "guides": [
+        {
+          "y": 0.495,
+          "label": "第一行脚底参考"
+        },
+        {
+          "y": 0.985,
+          "label": "第二行脚底参考"
+        }
+      ],
+      "rearTailReviewBox": [
+        0.24,
+        0.825,
+        0.1,
+        0.075
+      ],
+      "backTailReviewBox": [
+        0.68,
+        0.835,
+        0.09,
+        0.075
+      ],
+      "attachmentGuides": [
+        {
+          "view": "斜后",
+          "hiddenPath": [
+            [
+              0.29,
+              0.716
+            ],
+            [
+              0.286,
+              0.79
+            ],
+            [
+              0.283,
+              0.851
+            ]
+          ],
+          "exit": [
+            0.283,
+            0.851
+          ]
+        },
+        {
+          "view": "正背",
+          "hiddenPath": [
+            [
+              0.716,
+              0.716
+            ],
+            [
+              0.716,
+              0.79
+            ],
+            [
+              0.719,
+              0.857
+            ]
+          ],
+          "exit": [
+            0.719,
+            0.857
+          ]
+        }
+      ],
+      "review": "未通过：斜后尾柄有所延长，但裙摆仍被改动；正背仍缺少中部连续露出的近端，不能因单个视角有变化就宣布连接修复。"
+    },
+    {
+      "file": "tail-back-structure-v14.png",
+      "label": "v14 · 独立正背，裙摆抬高未通过",
+      "status": "rejected",
+      "scope": "single-back-structure-study-not-master",
+      "productBound": false,
+      "designRevision": "single-reference-central-attachment-20261023",
+      "sha256": "6672e48cb67f14a1f6eab18f22b2c61fbfa5dfec413c69b857675f9f5fc16bfa",
+      "bytes": 1718786,
+      "canvas": [
+        1184,
+        1328
+      ],
+      "tool": "built-in image_gen",
+      "useCase": "precise-object-edit",
+      "output": "exec-3302ea69-ec42-415e-89ba-c49b1bacdd32.png",
+      "prompt": "prompt-tail-back-structure-v14.txt",
+      "promptSha256": "9acc6d929e456f7ad2715de2702728bc368ae9dd5e5810c2959c03e644ecab15",
+      "references": [
+        {
+          "file": "reference-turnaround-v11.png",
+          "sha256": "625374e593964f277142e76510588958d48586630fffc9798e47d25ff85fa524"
+        }
+      ],
+      "views": [
+        "正背面 · 独立尾根结构验证"
+      ],
+      "guides": [
+        {
+          "y": 0.61,
+          "label": "该稿中央裙摆（被抬高）"
+        },
+        {
+          "y": 0.978,
+          "label": "脚底参考"
+        }
+      ],
+      "primaryTailReviewBox": [
+        0.43,
+        0.58,
+        0.15,
+        0.17
+      ],
+      "primaryTailReviewLabel": "放大正背尾根",
+      "attachmentGuides": [
+        {
+          "view": "正背",
+          "hiddenPath": [
+            [
+              0.512,
+              0.4
+            ],
+            [
+              0.512,
+              0.53
+            ],
+            [
+              0.512,
+              0.66
+            ]
+          ],
+          "exit": [
+            0.512,
+            0.66
+          ]
+        }
+      ],
+      "review": "独立正背结构实验，非四向母版。中部连续尾柄与遮腿关系已经可见，但中央裙摆被抬高成拱口，未通过；正背外观也属于重绘，不宣称原像素保留。"
+    },
+    {
+      "file": "tail-back-structure-v15.png",
+      "label": "v15 · 正背连接结构，待审",
+      "status": "candidate-not-approved",
+      "scope": "single-back-structure-study-not-master",
+      "productBound": false,
+      "designRevision": "single-reference-central-attachment-20261023",
+      "sha256": "00fe3ebd59268ed51c2614389efee073da154e50bf52773e9850ee14c615f27c",
+      "bytes": 1701064,
+      "canvas": [
+        1184,
+        1328
+      ],
+      "tool": "built-in image_gen",
+      "useCase": "precise-object-edit",
+      "output": "exec-da7c18d4-953c-4a21-a74b-903e0e0f2720.png",
+      "prompt": "prompt-tail-back-structure-v15.txt",
+      "promptSha256": "0315c1fa3bcebf22ed6da60479ed0b1467e6ddd7e71fcdfcdc6d0cc41b804f18",
+      "references": [
+        {
+          "file": "tail-back-structure-v14.png",
+          "sha256": "6672e48cb67f14a1f6eab18f22b2c61fbfa5dfec413c69b857675f9f5fc16bfa"
+        }
+      ],
+      "views": [
+        "正背面 · 独立尾根结构验证"
+      ],
+      "guides": [
+        {
+          "y": 0.65,
+          "label": "中央裙摆／出尾区参考"
+        },
+        {
+          "y": 0.978,
+          "label": "脚底参考"
+        }
+      ],
+      "primaryTailReviewBox": [
+        0.43,
+        0.61,
+        0.17,
+        0.17
+      ],
+      "primaryTailReviewLabel": "放大正背尾根",
+      "attachmentGuides": [
+        {
+          "view": "正背",
+          "hiddenPath": [
+            [
+              0.512,
+              0.4
+            ],
+            [
+              0.512,
+              0.53
+            ],
+            [
+              0.512,
+              0.645
+            ]
+          ],
+          "exit": [
+            0.512,
+            0.645
+          ]
+        }
+      ],
+      "review": "独立正背结构候选，非四向母版。裙摆中央拱口已收回，连续尾柄从中部下缘露出、遮住上腿后侧弯。只解决后视连接的可读性；外观与尾巴体量仍需对照主参考，不能宣称与旧稿逐像素一致或四向投影已完成。"
+    },
+    {
+      "file": "tail-oblique-structure-v16.png",
+      "label": "v16 · 斜后连接结构，待审",
+      "status": "candidate-not-approved",
+      "scope": "single-oblique-structure-study-not-master",
+      "productBound": false,
+      "designRevision": "single-reference-central-attachment-20261023",
+      "sha256": "c25a8e2179a5b397a9596dcb9e358ee21c683799a8eea0c39a47f62682564e91",
+      "bytes": 1752643,
+      "canvas": [
+        1184,
+        1328
+      ],
+      "tool": "built-in image_gen",
+      "useCase": "precise-object-edit",
+      "output": "exec-3d7c31eb-d57d-4489-a736-36f4bfe5f81b.png",
+      "prompt": "prompt-tail-oblique-structure-v16.txt",
+      "promptSha256": "ceadfd1ea56b6b209645e1ebf1d9003608c2e881f152e377e797f9dcb896c112",
+      "references": [
+        {
+          "file": "tail-back-structure-v15.png",
+          "sha256": "00fe3ebd59268ed51c2614389efee073da154e50bf52773e9850ee14c615f27c"
+        }
+      ],
+      "views": [
+        "斜后 · 独立尾根结构验证"
+      ],
+      "guides": [
+        {
+          "y": 0.65,
+          "label": "后裙摆／出尾区参考"
+        },
+        {
+          "y": 0.985,
+          "label": "脚底参考"
+        }
+      ],
+      "primaryTailReviewBox": [
+        0.45,
+        0.61,
+        0.17,
+        0.17
+      ],
+      "primaryTailReviewLabel": "放大斜后尾根",
+      "attachmentGuides": [
+        {
+          "view": "斜后",
+          "hiddenPath": [
+            [
+              0.56,
+              0.4
+            ],
+            [
+              0.55,
+              0.54
+            ],
+            [
+              0.529,
+              0.65
+            ]
+          ],
+          "exit": [
+            0.529,
+            0.65
+          ]
+        }
+      ],
+      "review": "由 v15 正背结构推演的独立斜后候选，非四向母版。尾柄从后裙摆中部延续，近端遮住上腿后侧弯，保留完整裙摆和遮脸。当前可见接点有改善，但不是同一三维模型的自动投影；尾鳍透视、发束、服装细节与原参考的一致性仍需审阅。"
     }
   ],
-  "annotationMethod": "manual review zones in normalized image coordinates, not rig joints",
+  "annotationMethod": "manually estimated review regions and proposed pelvic/exit projections, not measured rig joints or anatomical acceptance",
   "rights": "Original character 溟月（上善无形）, maid reinterpretation ZipZipPipe, source artwork Pal-AI-Lab; see repository THIRD_PARTY_NOTICES.md; no new ownership claim.",
   "lockedMaster": null,
   "designRevision": "single-reference-20261023",
   "revisionBase": "905aa34",
   "tailContract": {
     "root": "rear pelvis midline, hidden inside dress",
-    "visibleExit": "below rear hem, then curve toward side and upward behind the skirt",
+    "visibleExit": "continuous proximal shaft below the CENTRAL REAR HEM, registered to posterior pelvic midline, before lateral curvature",
     "flukes": "two lateral whale flukes rotate with the curved tail; natural overlap in profile",
     "pose": "one body-local curved-up pose across all views, based on current single reference",
     "size": "Match selected reference relative to body; old 0.64 S and 1.1 S / 1.32 S recipes are superseded",
     "supersedes": "legacy tail-over-skirt, z=8 probe, straight rearward giant-tail pose and both numerical geometry studies are not current design requirements",
-    "unseenSurfaces": "Side/back shapes inferred from single reference are unapproved design, not measured source facts"
+    "unseenSurfaces": "Side/back shapes inferred from single reference are unapproved design, not measured source facts",
+    "occlusion": "rear camera: skirt hides root above hem; proximal visible shaft occludes appropriate upper thighs below hem. Front camera: dress and legs hide root. Oblique view reprojects the same attachment and curve.",
+    "projectionWarning": "screen-side swapping alone does not establish anatomical location; rear-quarter and straight-back cannot reuse an unchanged planar tail silhouette"
   },
   "newReferenceOrigin": "User-provided attachments on 2026-10-23; reference role and file digests recorded; no new ownership claim.",
   "constructionHistory": [
@@ -793,5 +1219,23 @@
       "promptSha256": "3e2deb293e9d967e780655bc66f7a56d0e02d2b165b3f7600d45a907e2150e47",
       "reason": "User selected a new single reference while moderate-tail revision was running; cancelled old direction, no output adopted."
     }
+  ],
+  "feedback": [
+    {
+      "file": "feedback-tail-attachment-20261023.png",
+      "sha256": "69c774f91b84da75340bcea80a32dc2b9b4db373ffd59c43d1d7beb8df2160f1",
+      "role": "user defect evidence, v11 tail attachment rejected, not a design input"
+    }
+  ],
+  "observations": [
+    {
+      "file": "tail-attachment-observation-20261023.json",
+      "sha256": "bdaaefb64e9cba8d30f71fa9690176079a1926c13975f7828a7dad8623f91618",
+      "role": "read-only fixed ROI observation; does not certify anatomy"
+    }
+  ],
+  "structureComparison": [
+    "tail-back-structure-v15.png",
+    "tail-oblique-structure-v16.png"
   ]
 }

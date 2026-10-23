@@ -1,0 +1,85 @@
+{
+  "scope": "fixed ROI colour/alpha observation only, NOT anatomical pass/fail",
+  "regions": {
+    "rearQuarter": [
+      330,
+      1136,
+      349,
+      1153
+    ],
+    "back": [
+      840,
+      1144,
+      864,
+      1164
+    ]
+  },
+  "method": "Read original PNG bytes; alpha > 128; blue > red * 1.08 and blue > green * 1.04 and red < 220; fixed 1184x1328 canvas only",
+  "limitations": [
+    "manually chosen small regions do not establish tail continuity or 3D pose",
+    "v12 has blue pixels but lifts the skirt and adds a proximal pointed shape; rejected",
+    "visible review overrides colour counts; v13 still lacks a clear central back shaft"
+  ],
+  "results": [
+    {
+      "file": "reference-turnaround-v11.png",
+      "sha256": "625374e593964f277142e76510588958d48586630fffc9798e47d25ff85fa524",
+      "canvas": [
+        1184,
+        1328
+      ],
+      "regions": {
+        "rearQuarter": {
+          "solidPixels": 25,
+          "bluePixels": 0,
+          "total": 323
+        },
+        "back": {
+          "solidPixels": 190,
+          "bluePixels": 0,
+          "total": 480
+        }
+      }
+    },
+    {
+      "file": "tail-attachment-v12.png",
+      "sha256": "535141d3b97187704765564d8a4b32582f8044de76e4211ca5514a8ff338021b",
+      "canvas": [
+        1184,
+        1328
+      ],
+      "regions": {
+        "rearQuarter": {
+          "solidPixels": 100,
+          "bluePixels": 61,
+          "total": 323
+        },
+        "back": {
+          "solidPixels": 239,
+          "bluePixels": 5,
+          "total": 480
+        }
+      }
+    },
+    {
+      "file": "tail-attachment-v13.png",
+      "sha256": "eab77bc5a5490f439f73919968230780c8a494ccd67516708753c888da8e8acf",
+      "canvas": [
+        1184,
+        1328
+      ],
+      "regions": {
+        "rearQuarter": {
+          "solidPixels": 72,
+          "bluePixels": 1,
+          "total": 323
+        },
+        "back": {
+          "solidPixels": 233,
+          "bluePixels": 0,
+          "total": 480
+        }
+      }
+    }
+  ]
+}

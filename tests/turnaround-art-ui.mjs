@@ -20,7 +20,7 @@ for(const candidate of manifest.candidates){
  assert.equal(await digest(join(source,candidate.prompt)),candidate.promptSha256,candidate.prompt);
  for(const ref of candidate.references)assert.equal(await digest(join(source,ref.file)),ref.sha256,ref.file);
 }
-for(const ref of [...manifest.referencePriority,...manifest.referenceHistory])assert.equal(await digest(join(source,ref.file)),ref.sha256,ref.file);
+for(const ref of [...manifest.referencePriority,...manifest.referenceHistory,...(manifest.feedback??[])])assert.equal(await digest(join(source,ref.file)),ref.sha256,ref.file);
 for(const study of manifest.constructionHistory){
  assert.equal(study.status,'superseded-study-not-current-design');
  assert.equal(await digest(join(source,study.file)),study.sha256);
@@ -31,6 +31,7 @@ assert.equal(manifest.constructionReference,undefined,'superseded geometry must 
 const historicalConstruction=manifest.constructionHistory.at(-1);
 check('all original candidates, exact prompts and reference bytes match provenance hashes');
 
+for(const observation of manifest.observations??[])assert.equal(await digest(join(source,observation.file)),observation.sha256);
 const geometry=JSON.parse(await readFile(join(source,historicalConstruction.geometry))),mesh=tailMesh(geometry);
 for(const {points}of mesh)for(const [x,y,z]of points){
  if(y<geometry.hemHeight)continue;
@@ -61,6 +62,9 @@ try{
  assert.equal(await page.evaluate(()=>turnaroundReview.current),manifest.reviewCandidate);
  assert.equal(await page.locator('#selected-reference img').getAttribute('src'),'source/'+manifest.referencePriority[0].file);
  assert.equal(manifest.referencePriority.length,1,'one current primary reference');
+ assert.deepEqual(await page.locator('#connection-comparison img').evaluateAll(images=>images.map(img=>img.getAttribute('src'))),manifest.structureComparison.map(file=>'source/'+file));
+ await page.locator('#connection-comparison img').evaluateAll(images=>Promise.all(images.map(img=>img.decode())));
+ await page.locator('#connection-comparison').screenshot({path:join(output,'connection-comparison.png')});
  assert.equal(await page.locator('details.history').getAttribute('open'),null,'obsolete references must be collapsed');
  await page.locator('#guides').check();await page.locator('#structure').check();
  for(const candidate of manifest.candidates){
@@ -72,25 +76,40 @@ try{
   const h=1000*candidate.canvas[1]/candidate.canvas[0];
   const ys=await page.locator('#annotations line').evaluateAll(lines=>lines.map(line=>Number(line.getAttribute('y1'))));
   assert.deepEqual(ys,candidate.guides.map(guide=>guide.y*h));
-  assert.equal(Number(await page.locator('#annotations rect').getAttribute('x')),candidate.rearTailReviewBox[0]*1000);
+  assert.equal(Number(await page.locator('#annotations rect').getAttribute('x')),(candidate.primaryTailReviewBox??candidate.rearTailReviewBox)[0]*1000);
   assert.equal(await page.locator('#candidate-notes').textContent(),candidate.review);
+  assert.equal(await page.locator('#focus-back-tail').isEnabled(),Boolean(candidate.backTailReviewBox));
+  assert.equal(await page.locator('#annotations .attachment-guide').count(),candidate.attachmentGuides?.length??0);
+  if(candidate.backTailReviewBox){
+   await page.locator('#focus-back-tail').click();
+   assert.equal(Number(await page.locator('#annotations rect').getAttribute('x')),candidate.backTailReviewBox[0]*1000);
+   await page.locator('#focus-tail').click();
+  }
  }
  check('every candidate decodes with its own view labels, proportion guides and review notes');
  // Rapid selection must leave the final candidate and its annotations together.
  await page.evaluate(files=>{const selector=document.getElementById('candidate');for(const file of files){selector.value=file;selector.dispatchEvent(new Event('change'));}},[manifest.candidates[0].file,manifest.reviewCandidate]);
  await page.waitForFunction(file=>turnaroundReview.current===file,manifest.reviewCandidate);
- await page.locator('#guides').uncheck();await page.locator('#structure').uncheck();
+ await page.locator('#guides').uncheck();await page.locator('#structure').uncheck();await page.selectOption('#zoom','1');
  await page.screenshot({path:join(output,'overview.png'),fullPage:true});
  await page.locator('#focus-tail').click();
  assert.equal(await page.locator('#zoom').inputValue(),'2');
  assert.equal(await page.locator('#annotations rect').count(),1);
- const tailFocus=await page.evaluate(()=>{const current=turnaroundReview.manifest.candidates.find(c=>c.file===turnaroundReview.current),zone=current.rearTailReviewBox,v=document.getElementById('viewport'),s=document.getElementById('sheet');return{actual:v.scrollLeft,expected:Math.max(0,Math.min(s.scrollWidth-v.clientWidth,s.scrollWidth*(zone[0]+zone[2]/2)-v.clientWidth/2))};});
+ const tailFocus=await page.evaluate(()=>{const current=turnaroundReview.manifest.candidates.find(c=>c.file===turnaroundReview.current),zone=current.primaryTailReviewBox??current.rearTailReviewBox,v=document.getElementById('viewport'),s=document.getElementById('sheet');return{actual:v.scrollLeft,expected:Math.max(0,Math.min(s.scrollWidth-v.clientWidth,s.scrollWidth*(zone[0]+zone[2]/2)-v.clientWidth/2))};});
  assert.ok(Math.abs(tailFocus.actual-tailFocus.expected)<2,'tail inspection must reach the active candidate region, including lower-left grid cells');
- assert.ok(await page.evaluate(()=>{const c=turnaroundReview.manifest.candidates.find(c=>c.file===turnaroundReview.current),r=document.getElementById('turnaround').getBoundingClientRect(),center=r.top+r.height*(c.rearTailReviewBox[1]+c.rearTailReviewBox[3]/2);return center>0&&center<innerHeight;}),'tail inspection must scroll to the lower row vertically');
+ assert.ok(await page.evaluate(()=>{const c=turnaroundReview.manifest.candidates.find(c=>c.file===turnaroundReview.current),r=document.getElementById('turnaround').getBoundingClientRect(),z=c.primaryTailReviewBox??c.rearTailReviewBox,center=r.top+r.height*(z[1]+z[3]/2);return center>0&&center<innerHeight;}),'tail inspection must scroll to the lower row vertically');
  const widths=await page.evaluate(()=>['turnaround','view-labels'].map(id=>document.getElementById(id).getBoundingClientRect().width));
  assert.ok(Math.abs(widths[0]-widths[1])<1,'labels must stay aligned with zoomed source sheet');
  await page.screenshot({path:join(output,'tail-review.png')});
  check('rapid switching, 200 percent tail inspection and zoomed labels remain consistent');
+ const active=manifest.candidates.find(c=>c.file===manifest.reviewCandidate);
+ if(active.backTailReviewBox){
+  await page.locator('#focus-back-tail').click();
+  assert.equal(Number(await page.locator('#annotations rect').getAttribute('x')),active.backTailReviewBox[0]*1000);
+  assert.ok(await page.evaluate(()=>{const c=turnaroundReview.manifest.candidates.find(c=>c.file===turnaroundReview.current),r=document.getElementById('turnaround').getBoundingClientRect(),z=c.backTailReviewBox,x=r.left+r.width*(z[0]+z[2]/2),y=r.top+r.height*(z[1]+z[3]/2);return x>0&&x<innerWidth&&y>0&&y<innerHeight;}),'straight-back attachment must be visible after focus');
+  await page.screenshot({path:join(output,'back-tail-review.png')});
+  check('rear-quarter and straight-back attachment regions have independent reachable review targets');
+ }
  await page.locator('.reference img').evaluateAll(images=>Promise.all(images.map(image=>image.decode())));
  for(const href of await page.locator('a').evaluateAll(links=>links.map(link=>link.href)))assert.equal((await page.request.get(href)).status(),200,href);
  assert.deepEqual(errors,[]);
