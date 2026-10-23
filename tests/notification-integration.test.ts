@@ -21,7 +21,7 @@ function setup() {
     start: async (_options, life) => { generation = life!.generation; revision = 0; lifecycle?.({ running: true, visible: life!.visible !== false, generation, visibilityRevision: ++revision }); },
     control: command => lifecycle?.({ running: true, visible: command !== 'hide', generation, visibilityRevision: ++revision }),
     onLifecycle: fn => { lifecycle = fn; }, removeLifecycle: () => { lifecycle = undefined; },
-    onAction: vi.fn(), removeAction: vi.fn(), update: vi.fn(), notify: vi.fn(), notificationState: vi.fn(), presentRole: role, dispose: vi.fn(async () => {}),
+    onAction: vi.fn(), removeAction: vi.fn(), update: vi.fn(), notify: vi.fn(), notificationState: vi.fn(), questionResult: vi.fn(), presentRole: role, dispose: vi.fn(async () => {}),
   };
   const invoke = async (endpoint: string, payload: unknown = {}) => {
     const response = await routes.get(`/api/coopanion/${endpoint}`)!.fetch(new Request(`http://localhost/api/coopanion/${endpoint}`, { method: 'POST', body: JSON.stringify({ type: 'client-request', rpcId: 'integration', method: `coopanion/${endpoint}`, payload }) }));
@@ -204,7 +204,7 @@ it('restores dormant continued questions when optional projection services becom
   session.append('tool/call', { turn: 1, step: 1, callId, name: 'ask_user_question', arguments: JSON.stringify({ questions: [{ id: 'q', question: 'Still waiting?' }] }) } as never);
   session.append('tool/result', { turn: 1, step: 1, message: { role: 'tool', id: 'dormant-pending', toolCallId: callId, content: [{ type: 'text', text: '{"pending":true}' }] } } as never, { surfaceOp: 'append' });
   session.append('turn/end', { turn: 1, reason: { kind: 'completed' } });
-  ctx.provide('agents', { list: () => [] });
+  ctx.provide('agents', { list: () => [], get: () => undefined, roots: () => [] });
   const bridge: PetBridge = { start: vi.fn(async () => {}), dispose: vi.fn(async () => {}), onAction: vi.fn(), removeAction: vi.fn(), update: vi.fn(), notify: vi.fn(), notificationState: vi.fn() };
   const scope = ctx.plugin(child => mountPet(child, Config({ autoStart: false }), bridge));
   try {
@@ -213,4 +213,94 @@ it('restores dormant continued questions when optional projection services becom
     new SessionProjectionRegistry(ctx); new UserQuestionService(ctx);
     await vi.waitFor(() => expect(bridge.notificationState).toHaveBeenLastCalledWith(expect.objectContaining({ interactions: [expect.objectContaining({ sessionId: session.id, nativeId: callId, state: 'continued' })] })));
   } finally { await scope.dispose(); await ctx.fiber.dispose(); }
+});
+
+async function inlineFixture(inlineQuestions = true, questions?: Parameters<UserQuestionService['ask']>[0]['questions']) {
+ const f=setup(); const scope=f.ctx.plugin(child=>mountPet(child,Config({inlineQuestions}),f.bridge)); await scope.await();
+ await vi.waitFor(()=>expect(f.ctx.coopanion.status().phase).toBe('running'));
+ let browserResolve!: (answer: {answers:{id:string;selected:string[]}[]})=>void, downstreamSignal: AbortSignal | undefined;
+ f.ctx.on('user-questions/request', request => new Promise((resolve,reject)=> {
+  browserResolve=resolve;downstreamSignal=request.signal;
+  request.signal?.addEventListener('abort',()=>reject(Object.assign(new Error('aborted'),{code:'ASK_ABORTED'})),{once:true});
+ }));
+ const caller=new AbortController();
+ const input={agent:f.agent,signal:caller.signal,questions:questions ?? [{id:'q-exact',question:'Which next step?',detail:'No extra authority.',options:[{label:'Retry',description:'Within existing permission.'},{label:'Pause',description:'Stop here.'}]}]};
+ const pending=f.ctx.userQuestions.ask(input); pending.catch(()=>{});
+ await vi.waitFor(()=>expect(browserResolve).toBeTypeOf('function'));
+ const item=(await f.invoke('notification-state')).value.interactions[0];
+ const action=vi.mocked(f.bridge.onAction).mock.calls[0]![0];
+ const submit=(patch:Record<string,unknown>={})=>action({type:'question-answer',interactionId:item.id,requestId:'native-answer-1',generation:f.ctx.coopanion.status().generation,answers:[{id:'q-exact',selected:['Retry']}],...patch});
+ return {...f,scope,caller,input,pending,item,submit,browserAnswer:(selected='Pause')=>browserResolve({answers:[{id:'q-exact',selected:[selected]}]}),downstream:()=>downstreamSignal};
+}
+it('native answers the original idle ask, preserves caller cancellation, cancels the browser and rejects repeat effects', async()=>{
+ const f=await inlineFixture();try{
+ expect(f.item.questions[0]).toMatchObject({id:'q-exact',detail:'No extra authority.'});
+ f.submit(); await expect(f.pending).resolves.toEqual({answers:[{id:'q-exact',selected:['Retry']}]});
+ expect(f.input.signal).toBe(f.caller.signal);expect(f.caller.signal.aborted).toBe(false);expect(f.downstream()?.aborted).toBe(true);
+ expect(f.bridge.questionResult).toHaveBeenLastCalledWith(expect.objectContaining({status:'accepted'}));
+ expect((await f.invoke('notification-state')).value.interactions).toEqual([]);
+ f.submit({requestId:'second-native'});expect(f.bridge.questionResult).toHaveBeenLastCalledWith(expect.objectContaining({status:'failed',code:'question/stale'}));
+ }finally{await f.scope.dispose();await f.ctx.fiber.dispose();}
+});
+it('a Harness answer wins the same request and the stale native form cannot answer again',async()=>{
+ const f=await inlineFixture();try{
+ f.browserAnswer();await expect(f.pending).resolves.toEqual({answers:[{id:'q-exact',selected:['Pause']}]});
+ f.submit();expect(f.bridge.questionResult).toHaveBeenLastCalledWith(expect.objectContaining({status:'failed',code:'question/stale'}));
+ }finally{await f.scope.dispose();await f.ctx.fiber.dispose();}
+});
+it('native and Harness racing can settle only one full batch',async()=>{
+ const f=await inlineFixture();try{
+ f.submit();f.browserAnswer();
+ expect((await f.pending).answers).toEqual([{id:'q-exact',selected:['Retry']}]);
+ expect(vi.mocked(f.bridge.questionResult!).mock.calls.filter(([r])=>r.status==='accepted')).toHaveLength(1);
+ expect((await f.invoke('notification-state')).value.interactions).toHaveLength(0);
+ }finally{await f.scope.dispose();await f.ctx.fiber.dispose();}
+});
+it('rejects forged labels, missing question identities and stale generations before any settlement',async()=>{
+ const f=await inlineFixture();try{
+ for(const patch of [{answers:[{id:'q-exact',selected:['Delete everything']}]},{answers:[{id:'other-q',selected:['Retry']}]},{generation:999}]){
+  f.submit(patch);expect(f.bridge.questionResult).toHaveBeenLastCalledWith(expect.objectContaining({status:'failed'}));
+  expect((await f.invoke('notification-state')).value.interactions).toHaveLength(1);
+ }
+ f.submit({answers:[{id:'q-exact',selected:[],custom:'先别改 utils.ts'}]});
+ await expect(f.pending).resolves.toEqual({answers:[{id:'q-exact',selected:[],custom:'先别改 utils.ts'}]});
+ }finally{await f.scope.dispose();await f.ctx.fiber.dispose();}
+});
+it('caller abort expires the native form without creating an answer',async()=>{
+ const f=await inlineFixture();try{
+ f.caller.abort();await expect(f.pending).rejects.toMatchObject({code:'ASK_ABORTED'});
+ f.submit();expect(f.bridge.questionResult).toHaveBeenLastCalledWith(expect.objectContaining({status:'failed',code:'question/stale'}));
+ }finally{await f.scope.dispose();await f.ctx.fiber.dispose();}
+});
+it('disabling inline answers keeps the 0.4.13 Harness path and does not change its signal',async()=>{
+ const f=await inlineFixture(false);try{
+ expect(f.item.questions).toBeUndefined();expect(f.downstream()).toBe(f.caller.signal);
+ f.submit();expect(f.bridge.questionResult).toHaveBeenLastCalledWith(expect.objectContaining({status:'failed',code:'question/disabled'}));
+ f.browserAnswer();await expect(f.pending).resolves.toEqual({answers:[{id:'q-exact',selected:['Pause']}]});
+ }finally{await f.scope.dispose();await f.ctx.fiber.dispose();}
+});
+it('continued questions use the public answer API, deduplicate pending replies, then settle from the real projection',async()=>{
+ const f=setup();const queue:unknown[]=[];
+ Object.assign(f.agent,{inbox:{nextTurn:[],nextStep:queue},steer:(message:unknown)=>queue.push(message)});
+ const scope=f.ctx.plugin(child=>mountPet(child,Config(),f.bridge));
+ try{
+ await scope.await();await vi.waitFor(()=>expect(f.ctx.coopanion.status().phase).toBe('running'));
+ const callId='continued-inline-exact';
+ f.session.append('turn/start',{turn:1});
+ f.session.append('request/header',{reason:'initial',header:{tools:[{name:'ask_user_question',parameters:{type:'object',properties:{timeout:{type:'integer'}}}}]}} as never);
+ f.session.append('tool/call',{turn:1,step:1,callId,name:'ask_user_question',arguments:JSON.stringify({questions:[{id:'q',question:'Continue?',options:[{label:'Yes'}]}]})} as never);
+ f.session.append('tool/result',{turn:1,step:1,message:{role:'tool',id:'pending-inline-result',toolCallId:callId,content:[{type:'text',text:'{"pending":true}'}]}} as never,{surfaceOp:'append'});
+ const item=(await f.invoke('notification-state')).value.interactions[0];expect(item.state).toBe('continued');expect(item.questions[0].id).toBe('q');
+ const action=vi.mocked(f.bridge.onAction).mock.calls[0]![0], request={type:'question-answer',interactionId:item.id,requestId:'continued-answer',generation:f.ctx.coopanion.status().generation,answers:[{id:'q',selected:['Yes']}]};
+ action(request);expect(queue).toHaveLength(1);expect(f.bridge.questionResult).toHaveBeenLastCalledWith(expect.objectContaining({status:'accepted'}));
+ action({...request,requestId:'continued-repeat'});expect(queue).toHaveLength(1);expect(f.bridge.questionResult).toHaveBeenLastCalledWith(expect.objectContaining({status:'failed',code:'question/already-answered'}));
+ f.session.append('user/message',queue[0] as never,{surfaceOp:'append'});
+ expect((await f.invoke('notification-state')).value.interactions).toHaveLength(0);
+ }finally{await scope.dispose();await f.ctx.fiber.dispose();}
+});
+
+it.each([{multiSelect:true},{intent:{kind:'plan-review',approve:'Retry'}}])('unsupported %j questions keep the original Harness answerer',async(extra)=>{
+ const f=await inlineFixture(true,[{id:'q-exact',question:'Review?',detail:'Plan details',options:[{label:'Retry'},{label:'Pause'}],...extra}] as Parameters<UserQuestionService['ask']>[0]['questions']);
+ try{expect(f.item.questions).toBeUndefined();f.submit();expect(f.bridge.questionResult).toHaveBeenLastCalledWith(expect.objectContaining({status:'failed'}));f.browserAnswer();await expect(f.pending).resolves.toEqual({answers:[{id:'q-exact',selected:['Pause']}]});}
+ finally{await f.scope.dispose();await f.ctx.fiber.dispose();}
 });

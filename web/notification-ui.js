@@ -2,6 +2,7 @@ import { petLanguage, appStatusBody } from './locale.js';
 /** Pure presentation policy; request truth and delivery selection remain owned by Host. */
 const messages = {
   zh: {
+    answerQuestion: '在这里回答', answerSubmit: '提交', answerSending: '正在提交…', answerOther: '其他（可选，填写后替代所选选项）', answerAccepted: '已提交，等待会话更新', answerFailed: '未确认提交成功，请去 Harness 核对后再试。', answerStale: '这个提问已处理或已过期，请去 Harness 查看。', handleHarness: '去 Harness 处理 ↗',
     reply: '本轮回复已生成。', 'goal-progress': '本轮回复已生成，目标仍在进行中。', completed: '目标完成啦，要看看结果吗？', approval: '下一步需要你确认。', question: '有个问题想问你。',
     error: '遇到一点问题，陪你回去看看。', stopped: '先停在这里，随时继续。', interrupted: '这段任务中断了，陪你回去看看。',
     blocked: '任务暂时停下了，看看下一步怎么继续。', 'max-tokens': '这次回复到达上限了，看看下一步怎么继续。',
@@ -12,6 +13,7 @@ const messages = {
     inboxSummary: (replies, pending) => `${pending} 件待处理 · ${replies} 份未读回复`, focus: label => `正在聊：${label}`, inboxEmpty: '都看过啦，安心做手边的事。',
   },
   en: {
+    answerQuestion: 'Answer here', answerSubmit: 'Submit', answerSending: 'Submitting…', answerOther: 'Other (optional; replaces the selected option)', answerAccepted: 'Submitted; waiting for the session update', answerFailed: 'Submission was not confirmed. Check in Harness before trying again.', answerStale: 'This question was handled or expired. Check in Harness.', handleHarness: 'Handle in Harness ↗',
     reply: 'This turn’s reply is ready.', 'goal-progress': 'This turn’s reply is ready. The goal is still in progress.', completed: 'Goal completed. Shall we look at the result?', approval: 'The next step needs your approval.', question: 'There is a question for you.',
     error: 'Something went wrong. Let’s look together.', stopped: 'Paused here. Continue whenever you are ready.', interrupted: 'This task was interrupted. Let’s look together.',
     blocked: 'The task paused. Let’s check the next step.', 'max-tokens': 'This reply reached its limit. Let’s check the next step.',

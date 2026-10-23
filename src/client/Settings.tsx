@@ -7,7 +7,7 @@ import type { PetCommand, PetStatus } from '../controls.ts';
 import type { NotificationSettings, NotificationClientStatus } from './notification-client.ts';
 import { TEXT_SCALES, textScale, type TextScale } from '../../web/text-scale.js';
 
-export interface Preferences { size: number; npcHome: number; npcRange: number; textScale: TextScale; preferOpeningParagraph: boolean; roam: boolean; diagnostics: boolean; companionship: CompanionshipMode; notifications: boolean; systemNotifications: boolean; reminders: boolean; reminderDelayMs: number; bubbleDurationMs: number; autoStart: boolean; }
+export interface Preferences { size: number; npcHome: number; npcRange: number; textScale: TextScale; preferOpeningParagraph: boolean; inlineQuestions: boolean; roam: boolean; diagnostics: boolean; companionship: CompanionshipMode; notifications: boolean; systemNotifications: boolean; reminders: boolean; reminderDelayMs: number; bubbleDurationMs: number; autoStart: boolean; }
 export interface SettingsFace { form: ConfigForm<Preferences>; call: (command?: PetCommand, signal?: AbortSignal) => Promise<PetStatus>; local: boolean; notifier?: NotificationSettings; }
 export type SettingsProps = SettingsFace & PropsLocale<'coopanion'>;
 
@@ -108,9 +108,9 @@ export function Settings({ form, call, local, notifier, t }: SettingsProps) {
     <section className="pet-card" aria-label={t('preferences')}>
       <h3>{t('preferences')}</h3>
       {!accepted.writable || !local ? <p>{t('unavailable')}</p> : null}
-      {(['autoStart', 'roam', 'notifications', 'diagnostics', 'preferOpeningParagraph'] as const).map(field => <div className="pet-row" key={field}>
+      {(['autoStart', 'roam', 'notifications', 'diagnostics', 'preferOpeningParagraph', 'inlineQuestions'] as const).map(field => <div className="pet-row" key={field}>
         <div className="pet-label"><strong>{t(field)}</strong><p>{t(`${field}Hint`)}</p></div>
-        <Switch checked={prefs?.[field] ?? (field === 'preferOpeningParagraph')} disabled={!ready || !local} label={t(field)} onChange={value => void save(field, value)} />
+        <Switch checked={prefs?.[field] ?? (field === 'preferOpeningParagraph' || field === 'inlineQuestions')} disabled={!ready || !local} label={t(field)} onChange={value => void save(field, value)} />
       </div>)}
       {prefs ? <>
         <div className="pet-row"><div className="pet-label"><label htmlFor="coopanion-companionship">{t('companionship')}</label><p id="coopanion-companionship-hint">{t('companionshipHint')}</p></div>

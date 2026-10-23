@@ -1,3 +1,4 @@
+const { questionAnswer } = require('../web/question-contract.js');
 const { app, BrowserWindow, ipcMain, powerMonitor, screen, Menu, Tray, nativeImage, shell } = require('electron');
 const { join } = require('node:path');
 const { homedir } = require('node:os');
@@ -142,11 +143,11 @@ process.on('message', message => {
     if (message.command === 'show' || message.command === 'characters') show();
     if (message.command === 'characters') forward({ type: 'characters' });
     // Fixed public Desktop protocol; no renderer-supplied URL or private shell IPC.
-    if (message.command === 'focus-harness' && process.env.DSH_PET_TEST_NO_SANDBOX !== '1') void shell.openExternal('dsh://open').catch(() => {});
+    if (message.command === 'focus-harness' && !process.env.DSH_PET_TEST_DATA_DIR && process.env.DSH_PET_TEST_NO_SANDBOX !== '1') void shell.openExternal('dsh://open').catch(() => {});
   }
   if (message.type === 'snapshot') { lastFrame = { type: 'init', baseline: true, options, snapshot: { ...message.snapshot, results: message.snapshot.results ?? lastFrame?.snapshot?.results ?? [] } }; forward(message); syncTray(); }
   if (message.type === 'chat-result') forward(message);
-  if (message.type === 'notification-state' || message.type === 'notification-snooze-result') forward(message);
+  if (message.type === 'notification-state' || message.type === 'notification-snooze-result' || message.type === 'question-answer-result') forward(message);
   if (message.type === 'notice') {
     if (message.generation !== undefined && (message.generation !== generation || message.visibilityRevision !== visibilityRevision || !win?.isVisible() || suspended)) return;
     forward(message);
@@ -244,6 +245,7 @@ app.whenReady().then(async () => {
       presentation = { characterId: action.characterId, scheme: action.scheme, name: action.name, locale: typeof action.locale === 'string' ? petLanguage(action.locale) : undefined, sleeping: action.sleeping, sound: action.sound, ready: action.ready === true }; syncTray(); return;
     }
     if (action.type === 'notification-snooze') { if (typeof action.interactionId === 'string' && action.interactionId.length <= 2048 && Number.isSafeInteger(action.generation)) act(action); return; }
+    if (action.type === 'question-answer') { const request = questionAnswer(action); if (request) process.send?.({ type: 'question-answer', request }); return; }
     if (action.type === 'chat') { const request = chatRequest(action); if (request) act(request); return; }
     if (action.type !== 'select' && action.type !== 'open-session' && action.type !== 'preference' && action.type !== 'read') return;
     process.send?.({ type: 'action', action });

@@ -28,7 +28,7 @@ Host 的共享 `CompletionTracker` 使用支持版本的 `@deepseek-ai/dsh-goal`
 
 类别和可选 goal 字段是 protocol 1 的同包扩展，Host / Client / Electron 必须一起更新；不在持久配置中保存提醒，所以旧配置沿用默认值，旧通知不会迁移为新通知。历史恢复折叠目标及回复作为已读基线，不重放提醒。审批与 continued 提问仍独立结算，阅读和打开会话不代表审批或答复。角色、系统通知和托盘通过共享类别呈现，正文保持原文。
 
-发送接受回执独立于提醒与任务结果，详见[会话续接契约](session-chat-contract.md)。阅读结果不改变关注会话；显式点击“继续对话”才选择来源会话并打开输入框。审批与提问仍只由 Harness 的实际处理结算。
+发送接受回执独立于提醒与任务结果，详见[会话续接契约](session-chat-contract.md)。阅读结果不改变关注会话；显式点击“继续对话”才选择来源会话并打开输入框。审批继续由 Harness 的实际处理结算；提问也可通过原请求的信封答复结算。
 
 ## 运行与领取
 
@@ -62,7 +62,7 @@ Host 按运行状态、显示状态及用户设置选择通道。系统投递需
 
 通知配置包括 `notifications=true`、`systemNotifications=false`、`reminders=true`、`reminderDelayMs=600000`。提醒延迟允许 1 分钟至 24 小时。关闭提醒取消主动投递与计时，状态和结果继续随会话更新。
 
-打开会话、确认回复已读和稍后提醒分别操作对应会话、结果和请求。查看动作保留请求的待答／待审批状态；实际结算来自 Harness 的处理结果。
+打开会话、确认回复已读和稍后提醒分别操作对应会话、结果和请求。查看动作保留请求的待答／待审批状态；实际结算来自原审批／提问的处理结果。
 
 通用异常的查看回执：点击异常／暂停条目的“去处理／Take a look”打开源会话后，当前 Renderer 按完整会话 id、状态修订、神态、文案及完成类别记住这一轮已查看。相同快照重发不恢复该条信封与持续悲伤／等待神态；查看前已经排队的同源无请求异常提示同步撤下，旧 id 仍保留投递去重，后续新提示不被屏蔽；新的修订、重新工作、会话移除或新审批／提问使旧回执失效。其他未读回复与待处理项继续保留。这个回执只影响桌宠的注意力呈现，原始任务状态、聊天来源、未读回复和 Host 托盘事实不改写；不能将异常标为任务成功。存在真实未结审批／提问或仍在工作的会话不接受通用异常回执。回执仅在当前 Renderer 内保留，窗口重载／进程恢复后按 Host 的当前事实重新呈现。
 
@@ -75,3 +75,18 @@ Host 按运行状态、显示状态及用户设置选择通道。系统投递需
 独立 `textScale` 是呈现偏好，不改变类别、提醒身份、已读/结算或驻留时间；详见[文字契约](text-readability-contract.md)。
 
 [陪伴邀请](companionship-contract.md)是独立本地互动，不进入本 protocol 的提醒类别、领取、收件箱、已读或审批结算；任务及阅读占用出现时立即撤去邀请。今天安静只影响陪伴，不更改本契约的任务通知偏好。
+
+## 信封内作答（C01，本地扩展）
+
+`inlineQuestions=true` 默认开启。Host 在 protocol 1 的 question interaction 上可附加 `questions`，包含完整 id/question/detail/header/options，供同包 Renderer 展示。审批不附加表单；multiSelect、任何 intent（含 plan-review）、未知字段、重复问题 id／选项 label、超限内容及无法确认原 live root 的请求均保留 Harness 路径。关闭设置返回旧快照和旧 waterfall 行为。
+
+| 通道 | 消息与规则 |
+| --- | --- |
+| Renderer → `pet:action` → Electron main → Host | `question-answer`：interactionId、requestId、generation、answers；main 仅接受可信主 frame，三层共享严格解析器 |
+| Host → main → Renderer | `question-answer-result`：相同关联字段、accepted／failed、有界分类 code；旧请求回执不改变新表单 |
+| 原 live request | `user-questions/request` 的回答与下游 Harness 回答竞争同一次结算；独立下游 AbortSignal 关闭另一界面，不取消调用方 signal、Agent 或回合 |
+| continued request | public `userQuestions.answer(agent,callId,answer)`；REPLY_QUEUED 拒绝重复，false 为过期；不创建会话、不 prompt 或伪造工具结果 |
+
+Host 重新检查当前 running 代次、待答 id、原 live root 及 source signal、整批问题 id 和选项 label 完全相同。最多 16 题、每题 32 个选项；问题 id 2048、问题 8192、detail 65536、选项 label 4096、说明 8192、header 256 字符，总展示 JSON 131072 字符；超限不截断身份。requestId 最多 128 个限定字符，其他文字最多 2000 字符，单选 custom 覆盖 selected。通用 DSH 问题没有 allowOther 字段，custom 是原 API 的答案数据；不解释成动作、命令或权限。
+
+表单按问题和运行代次保留草稿，原状态结算后撤下；选择／其他互斥，提交后禁止重复。十秒未收到回执只报未确认，不自动重发。公开接口接纳答复和任务完成分别判断。取消、别处已答、过期代次、伪造标签和批次缺题不得产生第二次答复；使用 `tests/notification-integration.test.ts`、`tests/question-contract.test.js`、收件箱浏览器与原生 IPC 测试验证。公开 DSH 0.2.1-rc.2 的出处见 WhaleDot `docs/dsh-api-notes.md` 第 20 节。

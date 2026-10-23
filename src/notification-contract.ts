@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import { inlineQuestionItems } from '../web/question-contract.js';
+import type { InlineQuestion } from '../web/question-contract.js';
 
 /** Shared N0 contract. Host owns request truth and delivery claims; views render it. */
 export const NOTIFICATION_PROTOCOL = 1 as const;
@@ -36,6 +38,7 @@ export const interactionSchema = z.object({
   id, sessionId: id, nativeId: id, kind: z.enum(['approval', 'question']),
   turn: counter, seq: counter, createdAt: counter, preview: z.string().max(2048),
   state: z.enum(['open', 'continued', 'settled']), source: z.enum(['event', 'runtime']).optional(),
+  questions: z.custom<InlineQuestion[]>(value => inlineQuestionItems(value) !== undefined).optional(),
   dueAt: counter.nullable(), automaticReminders: z.number().int().min(0).max(1),
 }).strict();
 export type PendingInteraction = z.infer<typeof interactionSchema>;

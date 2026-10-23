@@ -235,3 +235,14 @@ h1 { font-size: clamp(32px, 4vw, 54px); font-weight: 500; line-height: 1.4; lett
 .companion-invitation, .companion-feedback { font-size: calc(13px * var(--text-scale)); }
 
 #npc-home { position: fixed; bottom: 14px; height: 5px; transform: translateX(-50%); border-radius: 50%; background: #91b2be55; border-bottom: 1px solid #7095a877; pointer-events: none; z-index: 0; }
+
+.inline-question { min-width:0; width:100%; }
+.inline-question summary { cursor:pointer; color:var(--accent); }
+.inline-question fieldset { min-width:0; margin:8px 0; padding:8px; border:1px solid var(--line); border-radius:8px; }
+.inline-question legend { white-space:pre-wrap; overflow-wrap:anywhere; max-width:100%; }
+.inline-question label { display:flex; align-items:flex-start; gap:8px; margin:8px 0; overflow-wrap:anywhere; }
+.inline-question label:has(textarea) { flex-direction:column; }
+.inline-question input[type=radio] { flex:none; margin-top:5px; }
+.inline-question small { display:block; }
+.inline-question textarea { box-sizing:border-box; width:100%; min-height:58px; resize:vertical; font:inherit; color:inherit; background:var(--surface); border:1px solid var(--line); }
+.inline-question pre { white-space:pre-wrap; overflow-wrap:anywhere; max-height:200px; overflow:auto; font:inherit; }

@@ -9,7 +9,8 @@ import type {} from '@deepseek-ai/dsh-api-session-controller';
 import type {} from '@deepseek-ai/dsh-session-projection';
 import { SessionId, type Session } from '@deepseek-ai/dsh-session';
 import { NotificationBroker, type NotificationEvent } from './notification-broker.ts';
-import { notificationPreferencesSchema, notificationEndpoints, notificationRequests, noticeId } from './notification-contract.ts';
+import { notificationPreferencesSchema, notificationEndpoints, notificationRequests, noticeId, interactionId } from './notification-contract.ts';
+import { InboxQuestions } from './inbox-questions.ts';
 import { ChatSubmission } from './chat.ts';
 import z from '@deepseek-ai/schemastery';
 import { ElectronBridge, isRecord, type PetBridge, type DesktopOptions } from './bridge.ts';
@@ -23,7 +24,7 @@ import { COMPANIONSHIP_MODES, type CompanionshipMode } from '../web/companionshi
 export const name = 'dsh-coopanion';
 export const inject = ['agents'];
 export interface Config {
-  size: Volatile<number>; npcHome: Volatile<number>; npcRange: Volatile<number>; textScale: Volatile<TextScale>; preferOpeningParagraph: Volatile<boolean>; roam: Volatile<boolean>; diagnostics: Volatile<boolean>; companionship: Volatile<CompanionshipMode>; notifications: Volatile<boolean>;
+  size: Volatile<number>; npcHome: Volatile<number>; npcRange: Volatile<number>; textScale: Volatile<TextScale>; preferOpeningParagraph: Volatile<boolean>; inlineQuestions: Volatile<boolean>; roam: Volatile<boolean>; diagnostics: Volatile<boolean>; companionship: Volatile<CompanionshipMode>; notifications: Volatile<boolean>;
   systemNotifications: Volatile<boolean>; reminders: Volatile<boolean>; reminderDelayMs: Volatile<number>;
   bubbleDurationMs: Volatile<number>; autoStart: Volatile<boolean>; electronPath?: string;
 }
@@ -31,6 +32,7 @@ export const Config = z.object({
   size: z.number().min(90).max(240).default(180).volatile(),
   textScale: z.union(TEXT_SCALES.map(value => z.const(value))).default(DEFAULT_TEXT_SCALE).volatile(),
   preferOpeningParagraph: z.boolean().default(true).volatile(),
+  inlineQuestions: z.boolean().default(true).volatile(),
   roam: z.boolean().default(true).volatile(),
   diagnostics: z.boolean().default(false).volatile(),
   npcHome: z.number().min(.05).max(.95).step(.01).default(.85).volatile(),
@@ -60,7 +62,7 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
   const preferences: Partial<Pick<DesktopOptions, 'roam' | 'notifications' | 'companionship'>> = {};
   let savePreference: ((field: 'roam' | 'notifications' | 'companionship', value: boolean | CompanionshipMode) => Promise<void>) | undefined;
   ctx.inject(['settings'], child => { savePreference = (field, value) => child.settings.mutate('dsh-coopanion', [{ op: 'set', path: [field], value }]); });
-  const currentOptions = (): DesktopOptions => ({ size: options.size.get(), npcHome: options.npcHome.get(), npcRange: options.npcRange.get(), textScale: options.textScale.get(), preferOpeningParagraph: options.preferOpeningParagraph.get(), roam: options.roam.get(), diagnostics: options.diagnostics.get(), companionship: options.companionship.get(), notifications: options.notifications.get(), bubbleDurationMs: options.bubbleDurationMs.get(), systemNotifications: options.systemNotifications.get(), reminders: options.reminders.get(), reminderDelayMs: options.reminderDelayMs.get(), electronPath: options.electronPath, locale, ...preferences });
+  const currentOptions = (): DesktopOptions => ({ size: options.size.get(), npcHome: options.npcHome.get(), npcRange: options.npcRange.get(), textScale: options.textScale.get(), preferOpeningParagraph: options.preferOpeningParagraph.get(), inlineQuestions: options.inlineQuestions.get(), roam: options.roam.get(), diagnostics: options.diagnostics.get(), companionship: options.companionship.get(), notifications: options.notifications.get(), bubbleDurationMs: options.bubbleDurationMs.get(), systemNotifications: options.systemNotifications.get(), reminders: options.reminders.get(), reminderDelayMs: options.reminderDelayMs.get(), electronPath: options.electronPath, locale, ...preferences });
   const controls = new PetControls(bridge, currentOptions);
   let locale: string | undefined;
   let clientLocale: string | undefined;
@@ -98,9 +100,11 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
   const notificationPrefs = () => notificationPreferencesSchema.parse({ notifications: currentOptions().notifications, systemNotifications: options.systemNotifications.get(), reminders: options.reminders.get(), reminderDelayMs: options.reminderDelayMs.get() });
   const syncNotifications = () => {
     if (!mounted) return;
-    const snapshot = broker.snapshot(); model.interactions(snapshot.interactions); bridge.notificationState?.(snapshot); update();
+    const snapshot = inboxAnswers.snapshot(broker.snapshot()); model.interactions(snapshot.interactions); bridge.notificationState?.(snapshot); update();
   };
   const broker = new NotificationBroker({ changed: syncNotifications, presentRole: (value, runtime) => bridge.presentRole?.(value, runtime) ?? false });
+  const inboxAnswers = new InboxQuestions(ctx, () => options.inlineQuestions.get(), () => broker.snapshot(), syncNotifications);
+  ctx.effect(() => () => inboxAnswers.dispose());
   broker.preferences(notificationPrefs());
   ctx.effect(() => () => broker.dispose());
   ctx.effect(() => controls.onState(state => broker.runtime(state)));
@@ -136,7 +140,7 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
     const timer = setInterval(() => { if (model.settle()) update(); }, 250);
     timer.unref(); return () => clearInterval(timer);
   });
-  ctx.on('settings/document-updated', ns => { if (ns === 'dsh-coopanion') { broker.preferences(notificationPrefs()); controls.configure(); } else if (ns === 'locale') syncLocale(); });
+  ctx.on('settings/document-updated', ns => { if (ns === 'dsh-coopanion') { broker.preferences(notificationPrefs()); controls.configure(); syncNotifications(); } else if (ns === 'locale') syncLocale(); });
   ctx.inject(['connection'], child => {
     const dispatch = async (endpoint: string, payload: unknown, signal: AbortSignal) => {
       try {
@@ -156,7 +160,7 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
           navigation = undefined;
           return { ok: true, value };
         }
-        if (endpoint === 'notification-state') { const input = notificationRequests.state.parse(payload); if (input.locale && !dedicatedLocale) adoptClientLocale(input.locale); return { ok: true, value: broker.snapshot() }; }
+        if (endpoint === 'notification-state') { const input = notificationRequests.state.parse(payload); if (input.locale && !dedicatedLocale) adoptClientLocale(input.locale); return { ok: true, value: inboxAnswers.snapshot(broker.snapshot()) }; }
         if (endpoint === 'notification-claim') { const input = notificationRequests.claim.parse(payload); return { ok: true, value: broker.claim(input.clientId, input.generation) }; }
         if (endpoint === 'notification-receipt') { return { ok: true, value: { accepted: broker.receipt(notificationRequests.receipt.parse(payload)) } }; }
         if (endpoint === 'notification-snooze') { const input = notificationRequests.snooze.parse(payload); if (!broker.snooze(input.interactionId, input.generation)) throw new Error('待处理请求已变化或提醒暂不可用'); return { ok: true, value: { accepted: true } }; }
@@ -240,14 +244,20 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
       const origin = callId ? events.findLast(event => (event.type === 'tool/call' && event.data.callId === callId) || (event.type === 'tool/ptc-dispatch' && event.data.subCallId === callId)) : undefined;
       const anchor = origin ?? events.at(-1);
       const turnEvent = events.findLast(event => event.type === 'turn/start');
-      const finish = broker.question(session, { nativeId: origin && callId ? callId : randomUUID(), turn: turnEvent?.type === 'turn/start' ? turnEvent.data.turn : 0, seq: anchor?.seq ?? 0, preview: request.questions.map(q => q.question).join('\n'), signal: request.signal, source: origin ? 'event' : 'runtime' });
+      const nativeId = origin && callId ? callId : randomUUID();
+      const finish = broker.question(session, { nativeId, turn: turnEvent?.type === 'turn/start' ? turnEvent.data.turn : 0, seq: anchor?.seq ?? 0, preview: request.questions.map(q => q.question).join('\n'), signal: request.signal, source: origin ? 'event' : 'runtime' });
       questions?.(session); syncNotifications();
-      try { return await next(); }
+      try { return await inboxAnswers.track(interactionId(session.id, 'question', nativeId), request, next); }
       finally { questions?.(session); finish(); syncNotifications(); }
     }, { prepend: true });
   });
   const onAction = (action: unknown) => {
     if (!isRecord(action)) return;
+    if (action.type === 'question-answer') {
+      const receipt = inboxAnswers.submit(action);
+      if (receipt) bridge.questionResult?.(receipt);
+      syncNotifications(); return;
+    }
     if (action.type === 'notification-snooze') {
       const input = notificationRequests.snooze.safeParse({ interactionId: action.interactionId, generation: action.generation });
       const ok = input.success && broker.snooze(input.data.interactionId, input.data.generation);

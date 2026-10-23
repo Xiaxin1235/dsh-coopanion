@@ -2,6 +2,8 @@ import { spawn, type ChildProcess } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { EventEmitter } from 'node:events';
+import { questionAnswer } from '../web/question-contract.js';
+import type { QuestionAnswerReceipt } from '../web/question-contract.js';
 import type { ChatReceipt } from '../web/chat-contract.js';
 import type { PetSnapshot, PetNotice } from './model.ts';
 import type { NotificationRuntime, NotificationSnapshot, TaskNotice } from './notification-contract.ts';
@@ -11,11 +13,12 @@ export { NativeStartError, type StartLifetime, type NativeLifecycle } from './de
 import type { CompanionshipMode } from '../web/companionship.js';
 import type { TextScale } from '../web/text-scale.js';
 
-export interface DesktopOptions { size: number; npcHome?: number; npcRange?: number; textScale?: TextScale; preferOpeningParagraph?: boolean; roam: boolean; diagnostics?: boolean; companionship?: CompanionshipMode; notifications: boolean; bubbleDurationMs: number; electronPath?: string; locale?: string; systemNotifications?: boolean; reminders?: boolean; reminderDelayMs?: number; }
+export interface DesktopOptions { size: number; npcHome?: number; npcRange?: number; textScale?: TextScale; preferOpeningParagraph?: boolean; inlineQuestions?: boolean; roam: boolean; diagnostics?: boolean; companionship?: CompanionshipMode; notifications: boolean; bubbleDurationMs: number; electronPath?: string; locale?: string; systemNotifications?: boolean; reminders?: boolean; reminderDelayMs?: number; }
 export interface PetBridge {
   start(options: DesktopOptions, lifetime?: StartLifetime): Promise<void>;
   update(snapshot: PetSnapshot): void;
   chatResult?(receipt: ChatReceipt): void;
+  questionResult?(receipt: QuestionAnswerReceipt): void;
   notify(notice: PetNotice | TaskNotice): void;
   notificationState?(snapshot: NotificationSnapshot): void;
   snoozeResult?(interactionId: string, ok: boolean, error?: string): void;
@@ -69,6 +72,7 @@ export class ElectronBridge extends EventEmitter implements PetBridge {
       if (this.child !== child || this.closing || lifetime?.signal.aborted || !isRecord(message)) return;
       if (message.type === 'closed') userClosed = true;
       if (message.type === 'action') this.emit('action', message.action);
+      if (message.type === 'question-answer') { const request = questionAnswer(message.request); if (request) this.emit('action', request); }
       if (message.type === 'tray-state') this.emit('tray-state', message.state);
       if (message.type === 'tray-icon') this.emit('tray-icon', message);
       if (message.type === 'visibility' && message.generation === generation && typeof message.visible === 'boolean' && Number.isSafeInteger(message.visibilityRevision) && (message.visibilityRevision as number) > this.visibilityRevision) {
@@ -130,6 +134,7 @@ export class ElectronBridge extends EventEmitter implements PetBridge {
     this.send({ type: 'notice', notice, generation: runtime.generation, visibilityRevision: runtime.visibilityRevision }); return true;
   }
   chatResult(receipt: ChatReceipt): void { this.send(receipt); }
+  questionResult(receipt: QuestionAnswerReceipt): void { this.send(receipt); }
   onAction(listener: (action: unknown) => void): void { this.on('action', listener); }
   removeAction(listener: (action: unknown) => void): void { this.off('action', listener); }
   // JSON IPC omits undefined. An explicit null lets a cleared Harness
