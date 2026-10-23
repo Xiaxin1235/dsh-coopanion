@@ -1,7 +1,7 @@
 import { createServer, type IncomingMessage } from 'node:http';
 import { readFile, readdir } from 'node:fs/promises';
 import { extname, join } from 'node:path';
-import { zipSync } from 'fflate';
+import { zipSync, type Zippable } from 'fflate';
 import { CompanionStore, companionRequest } from './companion-store.ts';
 import { CharacterStore, PACK_LIMIT, safePath } from './character-store.ts';
 
@@ -18,12 +18,16 @@ async function requestBytes(req: IncomingMessage, limit = PACK_LIMIT): Promise<B
 
 /** Corresponding source, including the vendored runtime, original assets, build scripts and lockfile. */
 async function sourceArchive(project: string): Promise<Uint8Array> {
-  const files: Record<string, Uint8Array> = {};
+  const files: Zippable = {};
   async function add(relative: string) {
     for (const entry of await readdir(join(project, relative), { withFileTypes: true })) {
       const next = `${relative}/${entry.name}`;
       if (entry.isDirectory()) await add(next);
-      else if (entry.isFile()) files[next] = await readFile(join(project, next));
+      else if (entry.isFile()) {
+        const bytes = await readFile(join(project, next));
+        // Already-compressed media stays byte-identical without blocking the host on recompression.
+        files[next] = /\.(?:png|jpe?g|webp|gif|ogg|mp3|mp4|webm|zip|gz|tgz)$/i.test(next) ? [bytes, { level: 0 }] : bytes;
+      }
     }
   }
   for (const dir of ['src', 'scripts', 'web', 'desktop', 'examples', 'docs', 'tests']) await add(dir);

@@ -89,6 +89,10 @@ it('serves the frame with an opaque-origin CSP, rejects cross-origin mutations a
     expect(strFromU8(source['src/figure-server.ts']!)).toContain('sourceArchive');
     expect(strFromU8(source['LICENSE']!)).toContain('AFFERO');
     expect(source['web/upstream/whale/model.json']).toBeDefined();
+    for (const name of ['front-faithful-v6.png', 'back-right-faithful-v6.png']) {
+      const path = 'web/upstream/whale/directions/' + name;
+      expect(Buffer.from(source[path]!)).toEqual(await readFile(path));
+    }
     expect(source['scripts/build.mjs']).toBeDefined(); expect(source['npm-shrinkwrap.json']).toBeDefined();
     expect(Object.keys(source).some(p => /node_modules|figures-v2|\.aws/.test(p))).toBe(false);
   } finally { await new Promise<void>(resolve => server.close(() => resolve())); }
