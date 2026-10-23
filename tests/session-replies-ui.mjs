@@ -50,7 +50,7 @@ test('unread replies coalesce by session and reading does not expose old turns a
   const { page, receive } = await fixture(t, [old, latest, separate]);
   await page.locator('#attention').click();
   assert.equal(await page.locator('#inbox-replies .inbox-reply').count(), 2, 'one card per session');
-  assert.equal(await page.locator('#inbox-count').innerText(), '0 件待处理 · 2 份未读回复');
+  assert.equal(await page.locator('#inbox-count').innerText(), '0 件等你\n2 条新回复');
   assert.equal(await page.locator('#attention-count').innerText(), '2');
   assert.equal(await page.locator(`[data-result-id="${old.id}"]`).count(), 0);
   await page.locator(`[data-result-id="${latest.id}"][data-action=read]`).click();

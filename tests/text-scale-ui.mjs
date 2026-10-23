@@ -84,7 +84,7 @@ for (const locale of ['zh-CN', 'en-US']) test(`${locale}: all text scales × cha
   assert.equal(await page.locator('#message').inputValue(), '未发送的草稿 · unsent draft');
   const selection = await page.locator('#message').evaluate(n => [n.selectionStart, n.selectionEnd]);
   for (const size of [90, 240]) for (const textScale of [1, 1.5, 1.25, 1, 1.5]) { await configure({ size, textScale }); await contained(page, '#chat');
-    assert.equal(await page.locator('#message').evaluate(n => parseFloat(getComputedStyle(n).fontSize)), 13 * textScale); }
+    assert.equal(await page.locator('#message').evaluate(n => parseFloat(getComputedStyle(n).fontSize)), 14 * textScale); }
   assert.equal(await page.locator('#message').inputValue(), '未发送的草稿 · unsent draft');
   assert.deepEqual(await page.locator('#message').evaluate(n => [n.selectionStart, n.selectionEnd]), selection);
   assert.equal(await page.locator('#message').evaluate(n => n === document.activeElement), true);

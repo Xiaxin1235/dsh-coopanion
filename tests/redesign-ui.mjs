@@ -26,6 +26,7 @@ try {
   const item = { id: 'c06-question', nativeId: 'question', sessionId: focus.id, kind: 'question', state: 'open', turn: 1, seq: 1, preview: '接下来要怎么做？', questions: [{ id: 'q', question: '接下来要怎么做？', options: [{ label: '继续检查', description: '在已有授权内核对结果。' }, { label: '先停一下', description: '保持当前状态。' }] }] };
   await receive({ type: 'init', baseline: true, options: { locale: 'zh', roam: false }, snapshot });
   await receive({ type: 'notification-state', snapshot: { protocol: 1, runtime: { phase: 'running', visible: true, generation: 1, visibilityRevision: 1, suspended: false }, interactions: [item] } });
+  await page.evaluate(async () => { for (const weight of [400, 600, 700, 800]) { const loaded = await document.fonts.load(`${weight} 16px Nunito`); if (!loaded.length) throw new Error('Bundled Nunito failed to load'); } });
   const openChat = async () => { await page.keyboard.press('Escape'); await page.locator('#pet').dblclick(); await page.locator('#chat:not([hidden])').waitFor(); };
   const openMenu = async () => { await page.keyboard.press('Escape'); await page.locator('#pet').click({ button: 'right' }); await page.locator('#menu:not([hidden])').waitFor(); };
   const openInbox = async () => { await page.keyboard.press('Escape'); await page.locator('#attention').click(); await page.locator('#requests:not([hidden])').waitFor(); };
@@ -90,6 +91,15 @@ try {
       await openInbox(); await page.locator('.inline-question').evaluate(n => { if (!n.open) n.querySelector('summary').click(); }); await page.screenshot({ path: join(evidence, 'inbox-blue.png') });
     }
   }
+  await page.keyboard.press('Escape');
+  await page.locator('#pet').hover(); await page.mouse.down(); await page.mouse.move(600, 50, { steps: 12 });
+  await page.waitForSelector('#pet[data-mode=drag]');
+  await page.locator('#pet').focus(); await page.keyboard.press('Enter');
+  await page.waitForSelector('#chat[data-tail=top]:not([hidden])');
+  assert.equal(await page.locator('#chat').evaluate(n => getComputedStyle(n, '::after').top), '-10px');
+  await page.screenshot({ path: join(evidence, 'chat-tail-top.png') });
+  await page.mouse.up();
+  await page.waitForSelector('#chat[data-tail=bottom]:not([hidden])');
   await page.setViewportSize({ width: 320, height: 640 });
   for (const open of [openChat, openMenu, openInbox]) { await open(); assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false); }
   assert.deepEqual(errors, []);
