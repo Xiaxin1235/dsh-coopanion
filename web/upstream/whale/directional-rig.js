@@ -7,15 +7,16 @@ export async function directionalRig(asset,load) {
  for(const [name,def]of Object.entries(model.directions)){
   const prefix=`dir_${name}_`,key=`dir_${name}`;
   textures[key]=await load(asset('directions/'+def.atlas));
-  if(def.headAtlas)textures[key+'_head']=await load(asset('directions/'+def.headAtlas));
+  for(const p of def.parts)if(p.atlas)textures[key+'_'+p.id]=await load(asset('directions/'+p.atlas));
   for(const [id,d]of Object.entries(def.deformers))deformers[prefix+id]={...d,parent:d.parent?prefix+d.parent:undefined};
   ids[name]=[];
-  for(const p of def.parts){const id=prefix+p.id;ids[name].push(id);parts.push({...p,id,tex:def.headAtlas&&p.id==='head'?key+'_head':key,parent:prefix+p.parent});}
+  for(const p of def.parts){const id=prefix+p.id;ids[name].push(id);parts.push({...p,id,tex:p.atlas?key+'_'+p.id:key,parent:prefix+p.parent});}
  }
  parts.push({id:'dir_front_features',tex:'dir_features',box:[-12,-8,280,280],parent:'dir_front_head',z:8,grid:[8,8]});ids.front.push('dir_front_features');
  // Independent asymmetric decoration on the character's right side, never baked into a mirror.
- deformers.dir_bow={kind:'rot',pivot:[128,256],parent:'dir_backRight_upper'};
- parts.push({id:'dir_headBow',tex:'bow',box:[165,93,24,22],parent:'dir_bow',z:11,grid:[3,3]});ids.backRight.push('dir_headBow');
+ const headBow=model.directions.backRight.headBow;
+ deformers.dir_bow={kind:'rot',pivot:headBow.pivot,parent:'dir_backRight_'+headBow.parent};
+ parts.push({id:'dir_headBow',tex:'bow',box:headBow.box,parent:'dir_bow',z:headBow.z,grid:[3,3]});ids.backRight.push('dir_headBow');
  let state=initialDirection(),last=null,legacy=true,manual=null;
  return {
   parts,deformers,textures,

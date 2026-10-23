@@ -16,7 +16,7 @@ DSH_MACOS_VM_TEST=1 node tests/direction-art-ui.mjs --native
 
 测试默认每轮创建独立目录，也可用 `DIRECTION_EVIDENCE_DIR` 指定**尚不存在**的路径。主机浏览器与 VM 原生分别运行。测试需要已准备的项目 Node、Playwright 和 Electron，不另安装新引擎。制作台不连接真实 Host，也不控制系统鼠标。
 
-制作台提供 90／180／240px、透明格／白／深色背景、站立、空手步态、肩部重叠检查、正常／0.25 倍、暂停、逐帧和重放。左栏是现有身体的固定真实渲染参考，其余三栏是实际 `web/upstream/kit/rig.js` 网格；不会播放整张故事图片。前视眼、眉、嘴复用原分层纹理，眨眼／视线独立于身体；本轮未补齐原模型全部表情。
+制作台提供 90／180／240px、透明格／白／深色背景、站立、空手步态、肩部重叠检查、正常／0.25 倍、暂停、逐帧和重放。左栏是现有身体的固定真实渲染参考，其余三栏是实际 `web/upstream/kit/rig.js` 网格；不会播放整张故事图片。前视眼、眉、嘴复用原分层纹理，眨眼／视线独立于身体；通过 `web/upstream/whale/front-face.js` 与产品共用眼、眉、嘴校准；制作台只演示中性表情和眨眼。
 
 ## 文件与来源
 
@@ -38,4 +38,4 @@ DSH_MACOS_VM_TEST=1 node tests/direction-art-ui.mjs --native
 
 ## 产品导出与补件
 
-`source/back-head-no-bow-v1.png` 是 D1-C04 头部结饰修订，完整提示词及 `product-export.json` 保留来源链。只使用它的头部 UV，其他拆件仍取原 v2；独立蓝金结饰复用原 `tex/bow.png`。`node scripts/export-direction-art.mjs --check` 校验分发 PNG、静态模型和来源摘要。生产六方向、表情及兼容检查用 `node tests/direction-product-ui.mjs`；`--native` 仅在 VM 中运行。每轮指定新的 `DIRECTION_EVIDENCE_DIR`，默认产品完整循环另由 living-integration 回归覆盖。
+`source/back-head-no-bow-v1.png` 与 `product-export.json` 保留 D1-C04 原始来源链。当前由 `visual-revision-v3.json` 明确选择 C05 的 `back-right-repair-v3.png`，仅取头部与尾部 UV；其余拆件仍取原 v2。右斜后侧发遮住脸颊，尾根没有额外回钩。裁切收紧时保留源像素比例和原连接框，不把尾部拉伸回旧高度。制作台和产品共用这套选择及独立蓝金结饰绑定；结饰复用原 `tex/bow.png`。`node scripts/export-direction-art.mjs --check` 校验分发 PNG、静态模型和来源摘要。生产六方向、表情及兼容检查用 `node tests/direction-product-ui.mjs`；`--native` 仅在 VM 中运行。每轮指定新的 `DIRECTION_EVIDENCE_DIR`，默认产品完整循环另由 living-integration 回归覆盖。

@@ -48,11 +48,11 @@ try{
  check('other colours, gestures, sitting and jumping use calibrated compatible poses');
  for(const size of [90,180,240]){await page.evaluate(size=>{directionActor.do('stand');testBounds.S=size/256;directionActor.resize();directionActor.place2d({x:550,y:500});advance(100);},size);await page.screenshot({path:join(out,`front-${size}.png`)});}
  // Head edit is used only by its registered UV crop. It must preserve alpha margins.
- const m=JSON.parse(await readFile('web/upstream/whale/directions/model.json'));const def=m.directions.backRight,p=def.parts.find(p=>p.id==='head');const png=readRgbaPng(await readFile('web/upstream/whale/directions/'+def.headAtlas));let edge=0,clear=0;
+ const m=JSON.parse(await readFile('web/upstream/whale/directions/model.json'));const def=m.directions.backRight,p=def.parts.find(p=>p.id==='head');const png=readRgbaPng(await readFile('web/upstream/whale/directions/'+p.atlas));let edge=0,clear=0;
  const [x0,y0,x1,y1]=p.uvBox.map((v,i)=>Math.round(v*(i%2?png.height:png.width)));
  for(let y=y0;y<y1;y++)for(let x=x0;x<x1;x++){const a=png.pixels[(y*png.width+x)*4+3];if(a===0)clear++;if((x===x0||x===x1-1||y===y0||y===y1-1)&&a>=16)edge++;}assert.equal(edge,0);assert.ok(clear>1000);
  check('three product sizes and repaired head alpha verified');
  assert.deepEqual(errors,[]);
- const source={};for(const p of ['web/upstream/whale/figure.js','web/upstream/whale/direction.js','web/upstream/whale/directional-rig.js','web/upstream/whale/directions/model.js','web/upstream/kit/body.js','web/upstream/kit/living-body.js','tests/direction-product-ui.mjs'])source[p]=createHash('sha256').update(await readFile(p)).digest('hex');
+ const source={};for(const p of ['web/upstream/whale/figure.js','web/upstream/whale/front-face.js','web/upstream/whale/direction.js','web/upstream/whale/directional-rig.js','web/upstream/whale/directions/model.js','web/upstream/whale/directions/provenance.json','web/upstream/kit/body.js','web/upstream/kit/living-body.js','tests/direction-product-ui.mjs'])source[p]=createHash('sha256').update(await readFile(p)).digest('hex');
  await writeFile(join(out,'verification.json'),JSON.stringify({head:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),dirty:execFileSync('git',['status','--porcelain'],{encoding:'utf8'}),platform:process.platform,engine:native?await app.evaluate(()=>process.versions):browser.version(),mode:native?'native-product-factory-controlled':'browser-product-factory-controlled',checks,source},null,2)+'\n');
 }finally{await app?.close();await context?.close();if(video)await video.saveAs(join(out,'directions.webm'));await browser?.close();await new Promise(r=>server.close(r));await rm(profile,{recursive:true,force:true});}

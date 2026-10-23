@@ -35,6 +35,15 @@ try{
  }else{browser=await chromium.launch({headless:true,args:['--no-sandbox','--enable-unsafe-swiftshader']});context=await browser.newContext({viewport:{width:1360,height:900},recordVideo:{dir:join(output,'video'),size:{width:1360,height:900}}});page=await context.newPage();await page.goto(url);video=page.video();versions={chromium:browser.version()};}
  page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(20000);await page.waitForFunction(()=>window.directionPreview?.state.frames>0);check('three independent directional rigs load and draw with the shared WebGL renderer');
  const render=pose=>page.evaluate(p=>{directionPreview.pose(p);return Object.fromEntries(['front','back','backRight'].map(id=>[id,document.getElementById(id).toDataURL()]));},pose);
+ // Visible iris footprint catches the old unequal/oversized frontal placement.
+ const neutral=await render({t:0}),png=readRgbaPng(Buffer.from(neutral.front.split(',')[1],'base64')),eyes=[];
+ for(const [x0,x1] of [[100,123],[143,166]]){let count=0,top=Infinity,bottom=-Infinity,sum=0;
+  for(let y=384;y<468;y++)for(let x=(x0+12)*3;x<(x1+12)*3;x++){const k=(y*png.width+x)*4,[r,g,b,a]=png.pixels.subarray(k,k+4);if(a>200&&g>120&&g>r*1.5&&b>g*.9){count++;top=Math.min(top,y);bottom=Math.max(bottom,y);sum+=x/3-12;}}
+  eyes.push({count,height:(bottom-top)/3,cx:sum/count});
+ }
+ assert.ok(eyes.every(e=>e.count>400&&e.height>=7&&e.height<=8.5));assert.ok(eyes[0].count/eyes[1].count>.9&&eyes[0].count/eyes[1].count<1.1);
+ assert.ok(Math.abs(eyes[0].cx-112)<.5&&Math.abs(eyes[1].cx-154)<.5);check('visible frontal irises have balanced area, calibrated centres and reduced height');
+ for(const id of ['front','backRight'])await writeFile(join(output,id+'.png'),Buffer.from(neutral[id].split(',')[1],'base64'));
  const idle=await render({t:1});const blink=await render({t:1,blink:true});assert.notEqual(idle.front,blink.front);assert.equal(idle.back,blink.back);assert.equal(idle.backRight,blink.backRight);
  // Blink must only change the front eye area, leaving cloth, hair and skin outside it identical.
  const a=readRgbaPng(Buffer.from(idle.front.split(',')[1],'base64')),b=readRgbaPng(Buffer.from(blink.front.split(',')[1],'base64'));let changes=0,outside=0;

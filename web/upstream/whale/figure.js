@@ -16,6 +16,7 @@
  */
 import { createRig } from '../kit/rig.js';
 import { directionalRig } from './directional-rig.js';
+import { composeFrontFace, FRONT_FACE } from './front-face.js';
 import { pngFrameBlob } from '../kit/raster.js';
 import { handSurfaceModel, handSurfaceState, splitHandRgba } from './hand-art.js';
 
@@ -374,17 +375,10 @@ export async function createWhaleFigure(base = new URL('./', import.meta.url), o
   // Repaint the existing expression vocabulary onto two frontal eyes. Both eyes
   // use the near-eye anatomy, with independent wink/closure and world-space gaze.
   function paintFront(fc, face, o, t) {
-    const g=frontCv.getContext('2d');g.setTransform(3,0,0,3,36,24);g.clearRect(-12,-8,280,280);
-    for(let i=0;i<2;i++){
-      const eye=fc.eyes[i];
-      paintFace({...fc,eyes:[eye,eye]},face,{...o,look:[o.look[0]*(i?-1:1),o.look[1]]},t);
-      g.save();g.translate(i?155:111,133);if(i)g.scale(-1,1);
-      g.drawImage(faceCv,15,0,185,200,-19,-18,37,40);g.restore();
-    }
-    paintFace(fc,face,o,t);
-    g.drawImage(faceCv,194,160,100,80,118,142,20,16);
     const [lift,inner]=BROW[face]||[0,0];
-    for(let i=0;i<2;i++){g.save();g.translate(i?155:111,116-lift*.3);if(i)g.scale(-1,1);g.rotate(-inner*.025);g.drawImage(tex.brows,0,0,70,tex.brows.height,-15,0,27,6);g.restore();}
+    composeFrontFace(frontCv.getContext('2d'),{brows:tex.brows,lift,inner,
+      eye(i){const eye=fc.eyes[i];paintFace({...fc,eyes:[eye,eye]},face,{...o,look:[o.look[0]*(i?-1:1),o.look[1]]},t);return faceCv;},
+      mouth(){paintFace(fc,face,o,t);return faceCv;}});
     rig.upload('dir_features',frontCv);
   }
 
@@ -769,7 +763,7 @@ export async function createWhaleFigure(base = new URL('./', import.meta.url), o
       const project=(x,y,parent)=>{const p=rig.point(prefix+parent,st,x,y);return{x:matrix.a*p[0]+matrix.c*p[1]+matrix.e,y:matrix.b*p[0]+matrix.d*p[1]+matrix.f};};
       const hand=project(162,204,'armR');
       gripFrame={...gripFrame,contactEligible:false,hand,propGrip:hand,visible:false,sit:0,pose:null,
-        gazeOrigin:project(133,135,'head'),feet:[project(116,256,'legL'),project(149,256,'legR')],
+        gazeOrigin:project(133,directional.group==='front'?FRONT_FACE.y:135,'head'),feet:[project(116,256,'legL'),project(149,256,'legR')],
         handArt:{enabled:false},angles:{armNear:st[prefix+'armL'].a,armFar:st[prefix+'armR'].a,waist:0}};
     }else if(directional && !directional.legacy && gripFrame){
       const m=petG.getCTM();
@@ -895,7 +889,7 @@ export async function createWhaleFigure(base = new URL('./', import.meta.url), o
     get colors() { return { z: accent() }; },
     schemes: SCHEMES,
     // points the kit uses: eye tracking, a tear and one under each eye (where the streams run), sleep z's, hearts [x from, x to, y], bubble
-    get anchors() { return directions && !directions.state.legacy && directions.state.current==='front' ? {gaze:[133,135],tear:[111,146],tears:[[111,146],[155,146]],z:[196,44],hearts:[96,176,62],bubble:[128,18]} : {
+    get anchors() { return directions && !directions.state.legacy && directions.state.current==='front' ? {gaze:[133,FRONT_FACE.y],tear:[FRONT_FACE.centres[0],143],tears:FRONT_FACE.centres.map(x=>[x,143]),z:[196,44],hearts:[96,176,62],bubble:[128,18]} : {
       gaze: [U(745), V(690)], tear: [U(640), V(752)], tears: [[U(654), V(752)], [U(852), V(750)]], z: [196, 44],
       hearts: [96, 176, 62], bubble: [128, 18],
     }; },

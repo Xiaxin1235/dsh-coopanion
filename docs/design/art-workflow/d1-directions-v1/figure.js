@@ -1,34 +1,36 @@
 import {createRig} from '/web/upstream/kit/rig.js';
+import {composeFrontFace} from '/web/upstream/whale/front-face.js';
 const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 const image=url=>new Promise((ok,bad)=>{const im=new Image();im.onload=()=>ok(im);im.onerror=()=>bad(new Error('Cannot decode '+url));im.src=url;});
 /** Production renderer reused for authoring; no autonomous policy or product capability. */
 export async function createDirectionSample(canvas,definition,base){
  const atlas=await image(new URL(definition.atlas,base));
  const front=definition.parts.some(p=>p.id==='face');
- let faceCanvas,faceCtx,faceParts;
+ let faceCanvas,faceCtx,faceParts,eyeCanvas,eyeCtx;
  if(front){
   faceCanvas=document.createElement('canvas');faceCanvas.width=280*3;faceCanvas.height=280*3;faceCtx=faceCanvas.getContext('2d');
   const names=['eyeL_ball','eyeL_iris','eyeL_lash','neutral_mouth'];
   faceParts=Object.fromEntries(await Promise.all(names.map(async n=>[n,await image('/web/upstream/whale/feat/'+n+'.png')])));
   faceParts.brows=await image('/web/upstream/whale/tex/brows.png');
+  eyeCanvas=document.createElement('canvas');eyeCanvas.width=390;eyeCanvas.height=252;eyeCtx=eyeCanvas.getContext('2d');
   // A separate skin-aligned face surface, with hair drawn in front of it.
  }
  // Same rig, extra dynamic face layer only in the frontal sample.
- const active=createRig(canvas,{view:[-12,-8,268,272],parts:[...definition.parts,...(front?[{id:'features',tex:'features',box:[-12,-8,280,280],parent:'head',z:8,grid:[8,8]}]:[])],deformers:definition.deformers});
+ const parts=definition.parts.map(p=>({...p,tex:p.atlas?p.id+'Atlas':p.tex})),deformers={...definition.deformers};
+ if(definition.headBow){const b=definition.headBow;parts.push({id:'headBow',tex:'headBow',box:b.box,parent:'headBow',z:b.z,grid:[3,3]});deformers.headBow={kind:'rot',pivot:b.pivot,parent:b.parent};}
+ const active=createRig(canvas,{view:[-12,-8,268,272],parts:[...parts,...(front?[{id:'features',tex:'features',box:[-12,-8,280,280],parent:'head',z:8,grid:[8,8]}]:[])],deformers});
  active.upload('atlas',atlas);
+ for(const p of definition.parts)if(p.atlas)active.upload(p.id+'Atlas',await image(new URL(p.atlas,base)));
+ if(definition.headBow)active.upload('headBow',await image('/web/upstream/whale/tex/bow.png'));
  function face(blink,look){
-  const g=faceCtx;g.setTransform(3,0,0,3,36,24);g.clearRect(-12,-8,280,280);
-  for(const [i,cx]of [111,155].entries()){
-   g.save();g.translate(cx,133);if(i)g.scale(-1,1);
-   const closed=clamp(blink,0,1),open=1-closed;
-   g.save();g.beginPath();g.rect(-16,-13+24*closed,32,29);g.clip();
-   g.drawImage(faceParts.eyeL_ball,-12,-12,25,24);
-   g.drawImage(faceParts.eyeL_iris,-7+clamp(look[0],-2,2)*(i?-1:1),-12+clamp(look[1],-2,2),19,24);g.restore();
-   g.drawImage(faceParts.eyeL_lash,-19,-17+closed*23,33,21*(.35+.65*open));g.restore();
-  }
-  // Reuse the near eyebrow for both sides; retain the source as an independent surface.
-  for(const [i,cx] of [111,155].entries()){g.save();g.translate(cx,116);if(i)g.scale(-1,1);g.drawImage(faceParts.brows,0,0,70,faceParts.brows.height,-15,0,27,6);g.restore();}
-  g.drawImage(faceParts.neutral_mouth,131,144,3,2.2);
+  const closed=clamp(blink,0,1),g=eyeCtx;
+  composeFrontFace(faceCtx,{brows:faceParts.brows,
+   eye(i){
+    g.clearRect(0,0,390,252);g.save();g.beginPath();g.rect(45,48+118*closed,165,125);g.clip();
+    g.drawImage(faceParts.eyeL_ball,65,52,125,118);g.globalCompositeOperation='source-atop';
+    g.drawImage(faceParts.eyeL_iris,91+clamp(look[0],-2,2)*5*(i?-1:1),51+clamp(look[1],-2,2)*5,96,119);g.restore();
+    g.drawImage(faceParts.eyeL_lash,29,31+closed*115,165,106*(.35+.65*(1-closed)));return eyeCanvas;
+   },mouth(){g.clearRect(0,0,390,252);g.drawImage(faceParts.neutral_mouth,238,186,15,11);return eyeCanvas;}});
   active.upload('features',faceCanvas);
  }
  let latest=null;

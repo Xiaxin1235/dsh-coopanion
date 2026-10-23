@@ -1,4 +1,6 @@
 import {readFile,writeFile} from 'node:fs/promises';
+import {FRONT_FACE} from '../../../../web/upstream/whale/front-face.js';
+import {readRgbaPng} from '../../../../scripts/lib/rgba-png.mjs';
 const root=new URL('./',import.meta.url), regions=JSON.parse(await readFile(new URL('source/atlas-regions.json',root)));
 // Explicit authoring calibration in the same (128,256) foot-origin rig space.
 const boxes={
@@ -14,7 +16,20 @@ for(const[id,s]of Object.entries(regions)){
  const deformers={body:{kind:'rot',pivot:pivots.body},upper:{kind:'rot',pivot:pivots.upper,parent:'body'}};
  for(const name of Object.keys(s.parts)){if(name==='face')continue;const box=boxes[id][name],hair=['hairBack','hairFront','head','dress'].includes(name);deformers[name]=hair?{kind:'warp',rect:[box[0],box[1],box[0]+box[2],box[1]+box[3]],parent:name==='dress'?'body':'upper'}:{kind:'rot',pivot:pivots[name],parent:name.startsWith('arm')?'upper':'body'};}
  if(id==='front')deformers.head={kind:'rot',pivot:pivots.head,parent:'upper'};
- models.directions[id]={atlas:'source/'+s.file,parts,deformers,pivots,anchors:{ground:[128,256],gaze:id==='front'?[133,135]:[143,121],bubble:[128,18]},bounds:[20,19,215,258]};
+ models.directions[id]={atlas:'source/'+s.file,parts,deformers,pivots,anchors:{ground:[128,256],gaze:id==='front'?[133,FRONT_FACE.y]:[143,121],bubble:[128,18]},bounds:[20,19,215,258]};
 }
+// Versioned selected repairs keep their original pixel scale and attachment frame.
+const revision=JSON.parse(await readFile(new URL('source/visual-revision-v3.json',root)));
+const {pixels,width,height}=readRgbaPng(await readFile(new URL('source/'+revision.asset.file,root)));
+for(const [id,names] of Object.entries(revision.parts))for(const name of names){
+ const p=models.directions[id].parts.find(p=>p.id===name),original=regions[id].parts[name];
+ const [x,y,w,h]=original.region;let a=width,b=height,c=-1,d=-1;
+ for(let j=y;j<y+h;j++)for(let i=x;i<x+w;i++)if(pixels[(j*width+i)*4+3]>=16){a=Math.min(a,i);b=Math.min(b,j);c=Math.max(c,i);d=Math.max(d,j);}
+ if(c<0)throw Error('Empty repaired part '+id+'/'+name);
+ const crop=[a-2,b-2,c-a+5,d-b+5],[ox,oy,ow,oh]=original.crop,[bx,by,bw,bh]=p.box;
+ p.box=[bx+(crop[0]-ox)*bw/ow,by+(crop[1]-oy)*bh/oh,crop[2]*bw/ow,crop[3]*bh/oh];
+ p.uvBox=[crop[0]/width,crop[1]/height,(crop[0]+crop[2])/width,(crop[1]+crop[3])/height];p.atlas='source/'+revision.asset.file;
+}
+models.directions.backRight.headBow={box:[165,93,24,22],pivot:[128,256],parent:'upper',z:11};
 const text=JSON.stringify(models,null,2)+'\n',path=new URL('model.json',root);
 if(process.argv.includes('--check')){if(await readFile(path,'utf8')!==text)throw new Error('Authoring model is stale');}else await writeFile(path,text);
