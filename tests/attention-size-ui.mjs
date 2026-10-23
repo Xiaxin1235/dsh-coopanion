@@ -28,7 +28,7 @@ async function fixture(t, mode = 'off', source = session) {
   return { page, receive, body: await recordBodyOrders(page) };
 }
 
-test('Take a look acknowledges this generic error, clearing envelope and sad expression', async t => {
+test('Take a look acknowledges this generic error, clearing envelope and worried expression', async t => {
   const source = { ...session, mood: 'error', text: 'The task needs attention.' };
   const { page, receive } = await fixture(t, 'off', source);
   await page.waitForSelector('#pet[data-mood=error]');
@@ -37,12 +37,37 @@ test('Take a look acknowledges this generic error, clearing envelope and sad exp
   await page.locator('#inbox-issues button').click();
   assert.deepEqual(await page.evaluate(() => window.actions.filter(a => a.type === 'open-session')), [{ type: 'open-session', sessionId: source.id }]);
   assert.equal(await page.locator('#attention').isVisible(), false, 'viewed error must leave the envelope');
-  assert.equal(await page.locator('#pet').getAttribute('data-mood'), 'idle', 'viewed error must stop the persistent sad expression');
+  assert.equal(await page.locator('#pet').getAttribute('data-mood'), 'idle', 'viewed error must stop the worried expression');
   await receive({ type: 'snapshot', snapshot: snapshot(source) });
   assert.equal(await page.locator('#attention').isVisible(), false, 'unchanged snapshot cannot resurrect the viewed error');
   await receive({ type: 'snapshot', snapshot: snapshot({ ...source, revision: 2 }) });
   assert.equal(await page.locator('#attention').isVisible(), true, 'a new error revision must ask for attention again');
   assert.equal(await page.locator('#pet').getAttribute('data-mood'), 'error');
+});
+
+test('error looks worried once, never emits tear faces, and manual previews still offer sad/cry', async t => {
+  const { page, receive, body } = await fixture(t);
+  const error = { ...session, mood: 'error', text: 'Fictional error', revision: 2, attentionId: JSON.stringify([session.id, 'issue', 'error', 1, 7]) };
+  await receive({ type: 'snapshot', snapshot: snapshot(error) });
+  await body.waitForFunction(() => window.bodyOrders.some(e => e.t === 'do' && e.word === 'worried'));
+  await receive({ type: 'notice', notice: { id: 'c05-error-once', category: 'error', stage: 'initial', turn: 1, seq: 7, sessionId: error.id, requestIds: [], title: 'Error', body: error.text } });
+  for (let n = 0; n < 3; n++) await receive({ type: 'snapshot', snapshot: snapshot(error) });
+  await page.waitForTimeout(1000);
+  let orders = await body.evaluate(() => window.bodyOrders);
+  assert.equal(orders.filter(e => e.t === 'do' && e.word === 'worried').length, 1, 'unchanged error snapshots do not replay the entry expression');
+  assert.ok(orders.some(e => e.t === 'set' && e.state.expression === 'worried'));
+  assert.ok(orders.every(e => !['sad', 'cry'].includes(e.word ?? e.state?.expression)));
+  await page.locator('#attention').click(); await page.locator('#inbox-issues button').click();
+  await body.waitForFunction(() => window.bodyOrders.some(e => e.t === 'do' && e.word === 'neutral'));
+  assert.equal(await page.locator('#pet').getAttribute('data-mood'), 'idle');
+  await page.locator('#pet').dispatchEvent('contextmenu', { button: 2 }); await page.locator('#open-characters').click();
+  await page.waitForFunction(() => document.querySelector('#character-action option[value=cry]') && !document.querySelector('#character-test').disabled);
+  const preview = page.frames().find(frame => frame !== body && frame.url().includes('figure-frame.html'));
+  assert.ok(preview, 'manual preview uses its own character frame');
+  await preview.evaluate(() => { window.previewOrders = []; addEventListener('message', e => { if (e.data?.t === 'do') window.previewOrders.push(e.data.word); }); });
+  for (const word of ['sad', 'cry']) { await page.locator('#character-action').selectOption(word); await page.locator('#character-test').click(); await preview.waitForFunction(word => window.previewOrders.includes(word), word); }
+  orders = await body.evaluate(() => window.bodyOrders);
+  assert.ok(orders.every(e => !['sad', 'cry'].includes(e.word ?? e.state?.expression)), 'manual preview never changes the main pet to a tear face');
 });
 
 test('typing, hovering and reading retain the configured body scale', async t => {

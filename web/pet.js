@@ -1,4 +1,5 @@
 import { InboxReceipts, continuedInboxKey } from './inbox-receipts.js';
+import { automaticExpression, taskExpression } from './task-expression.js';
 import { createQuestionForms } from './inline-questions.js';
 import { advanceRenderCadence } from './render-cadence.js';
 import { createDiagnosticCounters } from './diagnostics.js';
@@ -225,7 +226,8 @@ function updateReaderNavigation() {
   }
 }
 function react(mood) { reactionMood = mood; reactionUntil = performance.now() + 700; }
-function act(actor, pack, word) {
+function act(actor, pack, word, manualPreview = false) {
+  if (!manualPreview) word = automaticExpression(word);
   if (pack?.vocab.some(w => w.id === word) && (!actor.words || actor.words.includes(word))) actor.do(word);
 }
 function refreshCompanionCopy() {
@@ -352,12 +354,12 @@ function updateMood() {
   if (mood !== appliedMood && !npc.walkId && !companion.active && !body.layout?.busy && (!actionRestorePending || !pressing && !dragging)) {
     reducedNeedsStep = true;
     if (mood !== 'sleeping' && (appliedMood === 'sleeping' || ['sleep', 'sit'].includes(body.layout?.mode))) act(body, activeView, 'stand');
-    const word = { idle: 'neutral', thinking: 'thinking', talking: 'neutral', working: 'determined', waiting: 'worried', happy: 'happy', error: 'sad', sleeping: 'sleep' }[mood];
+    const { word } = taskExpression(mood);
     if (word) act(body, activeView, word);
     appliedMood = mood;
     actionRestorePending = false;
   }
-  const controls = { roam: 'off', dialogOpen: dialogOpen || !interaction.hidden, thinking: mood === 'thinking', thoughtShown: false, expression: { thinking: 'thinking', talking: 'determined', working: 'determined', waiting: 'worried', error: 'sad' }[mood] ?? (npc.reason === 'none' && !userInputOccupied() && activityWords.includes(npc.emotion) ? npc.emotion : null), listening: !chat.hidden && !active };
+  const controls = { roam: 'off', dialogOpen: dialogOpen || !interaction.hidden, thinking: mood === 'thinking', thoughtShown: false, expression: automaticExpression(taskExpression(mood).expression ?? (npc.reason === 'none' && !userInputOccupied() && activityWords.includes(npc.emotion) ? npc.emotion : null)), listening: !chat.hidden && !active };
   const key = JSON.stringify(controls);
   if (key !== appliedControls) { body.set(controls); appliedControls = key; }
   $('toggle-roam').setAttribute('aria-checked', String(options.roam));
@@ -466,7 +468,7 @@ function presentNextNotice() {
   interactionExpires = performance.now() + options.bubbleDurationMs;
   reactionMood = presentation.mood; reactionUntil = performance.now() + 2500; asleep = false;
   updateMood();
-  if (!reduced && presentation.word) { act(body, activeView, presentation.word); reducedNeedsStep = true; }
+  if (!reduced && presentation.word && !(presentation.mood === 'error' && appliedMood === 'error' && presentation.word === taskExpression('error').word)) { act(body, activeView, presentation.word); reducedNeedsStep = true; }
   position();
 }
 function renderRequests() {
@@ -1052,7 +1054,7 @@ $('character-axes').onchange = () => void characterOperation(async () => {
   await previewBody?.setScheme(previewScheme, { fade: reduced ? 0 : .25 });
   setCopyNode('character-use', 'useOutfit');
 });
-$('character-test').onclick = () => { if (previewBody && previewCharacter) act(previewBody, previewCharacter, $('character-action').value); };
+$('character-test').onclick = () => { if (previewBody && previewCharacter) act(previewBody, previewCharacter, $('character-action').value, true); };
 $('character-import').onclick = () => $('character-file').click();
 $('character-file').onchange = () => void characterOperation(async () => {
   const file = $('character-file').files[0]; if (!file) return;

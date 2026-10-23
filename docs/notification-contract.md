@@ -8,6 +8,8 @@
 
 类别为 `reply`、`goal-progress`、`completed`、`approval`、`question`、`error`、`stopped`、`interrupted`、`blocked`、`max-tokens`。每条提醒带标题、预览、源时间和对应请求 id 列表；合并互动通过请求列表关联各自的结算状态。
 
+error 的进入动作与持有表情统一使用不流泪的 `worried`；同一状态不重复播放，通知到达不重复播放已经应用的担心动作。自动动作（含陪伴/NPC）不调用 `sad`／`cry`，仅角色面板的手动预览保留它们。查看异常后沿 C04 本机回执立即释放担心状态；提醒类别、错误事实和未读语义不变。
+
 审批从 `approval/asked` 与 `approval/decided` 的原生 id 配对。提问从公开 `user-questions/request` 获取运行中的提示，从 `ctx.sessionProjections.snapshot(session, ['userQuestions'])` 获取持久限时提问的 `open`、`continued` 和 `settled` 状态。具体请求由完整 `callId` 定位。
 
 限时提问返回 pending 后，回合结束仍保持 `continued`。接收 `user-question-reply` 的 user message 后结算对应问题；补提醒按投影中的有效请求安排。阻塞请求在其答复／取消信号结算时结束等待。Host 对恢复状态进行折叠，实时事件产生新的提醒。
@@ -64,7 +66,7 @@ Host 按运行状态、显示状态及用户设置选择通道。系统投递需
 
 打开会话、确认回复已读和稍后提醒分别操作对应会话、结果和请求。查看动作保留请求的待答／待审批状态；实际结算来自原审批／提问的处理结果。
 
-通用异常／暂停的查看回执：点击“去处理／Take a look”打开源会话，或关闭与当前事件身份完全相同的异常提示后，Renderer 清除该轮信封和持续悲伤／等待神态，已排队同源无请求异常提示同步撤下。Host 提供由完整 sessionId、结束类别、turn、持久事件 seq 组成的 attentionId；本机回执按该身份保存，跨重载和 Harness 重启有效，不依赖渲染修订或显示文字。同一会话的新异常有新事件身份，仍正常提醒。无稳定事件身份的旧同包快照只保留当前窗口内查看回执。
+通用异常／暂停的查看回执：点击“去处理／Take a look”打开源会话，或关闭与当前事件身份完全相同的异常提示后，Renderer 清除该轮信封和持续担心／等待神态，已排队同源无请求异常提示同步撤下。Host 提供由完整 sessionId、结束类别、turn、持久事件 seq 组成的 attentionId；本机回执按该身份保存，跨重载和 Harness 重启有效，不依赖渲染修订或显示文字。同一会话的新异常有新事件身份，仍正常提醒。无稳定事件身份的旧同包快照只保留当前窗口内查看回执。
 
 continued 提问按完整 sessionId、continued 类型与 native callId 保存查看记录；打开其源会话或关闭含该请求的提示后，信封及同一请求的提示撤下。Host/Broker 的 pending 状态与公开投影不被改写，原会话仍可回答。open 提问和审批不接受这种回执，查看后及重启后仍保留入口；“稍后”只走现有 snooze，不写入查看记录。其他未读回复不受影响，回复仍由历史恢复建立已读基线。
 

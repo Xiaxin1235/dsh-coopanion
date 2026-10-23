@@ -32,7 +32,7 @@ export function notificationPresentation(notice, locale, words = []) {
   const mood = { reply: 'idle', 'goal-progress': 'idle', completed: 'happy', approval: 'waiting', question: 'waiting', error: 'error', stopped: 'idle', interrupted: 'waiting', blocked: 'waiting', 'max-tokens': 'waiting' }[notice.category] ?? 'idle';
   const candidates = notice.stage === 'reminder' ? ['wave', 'worried', 'neutral'] : {
     completed: ['happy', 'wave', 'neutral'], approval: ['worried', 'thinking', 'neutral'], question: ['curious', 'thinking', 'worried', 'neutral'],
-    error: ['sad', 'worried', 'neutral'], stopped: ['nod', 'neutral'], interrupted: ['confused', 'worried', 'neutral'], blocked: ['worried', 'thinking', 'neutral'], 'max-tokens': ['worried', 'thinking', 'neutral'],
+    error: ['worried', 'confused', 'neutral'], stopped: ['nod', 'neutral'], interrupted: ['confused', 'worried', 'neutral'], blocked: ['worried', 'thinking', 'neutral'], 'max-tokens': ['worried', 'thinking', 'neutral'],
   }[notice.category] ?? ['neutral'];
   return { title, body: appStatusBody(notice, locale), mood, word: candidates.find(word => words.includes(word)) };
 }

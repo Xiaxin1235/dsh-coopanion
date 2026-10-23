@@ -32,6 +32,8 @@ npm run character:pack -- examples/star paper-star.zip
 
 `vocab` 声明角色理解的表情和动作，每项有 `id`、`kind`（expression / motion）、`names`、`about`、`seconds`，可选 `lasting`。面板按词表提供动作预览；宿主只调用清单和角色实际声明支持的词。
 
+自动任务与通知的 error 表情统一为 `worried`，状态刷新不重复播放进入动作；自动动作和 NPC 表情入口将 `sad`／`cry` 转为 `worried`，避免未处理异常持续发出眼泪。角色面板的独立手动预览保留 `sad`／`cry`，不影响主桌宠。上游角色、粒子和动画实现保持原样；任务状态与查看回执规则见提醒契约。
+
 `axes` 定义换装维度及选项，`presets` 定义各轴的组合。预设使用自身 id；自定义组合使用各轴选项 id，按 axes 顺序以 `-` 连接。选项 id 本身不能包含连字符。面板支持预设及多轴独立选择，搭配随角色选择保存。
 
 `sounds` 将音效名映射到 `{ file, kind, volume }`，文件为 OGG / MP3 / WAV，kind 为 move / touch / face / snore。宿主加载并播放，遵循统一音效开关。`can.walk` 声明是否支持移动。
