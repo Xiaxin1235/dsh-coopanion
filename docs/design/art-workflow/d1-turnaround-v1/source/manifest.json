@@ -1,22 +1,25 @@
 {
-  "schema": 1,
+  "schema": 2,
   "id": "d1-r01-turnaround-20261023",
   "base": "5967b8b",
   "status": "candidate-review-not-approved",
-  "reviewCandidate": "turnaround-v3.png",
+  "reviewCandidate": "blue-whale-v5.png",
   "productExportAllowed": false,
   "referencePriority": [
     {
-      "file": "../../d1-directions-v1/source/design-front-20261023.png",
-      "sha256": "c4db56dca23ec3ae9520fe8317af6961361e02126aaa81017bbb7223784450f3"
+      "file": "reference-blue-whale-turnaround-20261023.png",
+      "role": "primary-identity-palette-face-proportions; tail origin corrected",
+      "sha256": "5681bc24639acae4f29c637cad43bd59aa3f67c5b8aea369bbb71df8bfbd0353"
     },
     {
-      "file": "../../d1-directions-v1/source/reference.png",
-      "sha256": "9614b9ac3516b1061f43fa0ebb5985e0de4849fd19e0bb3017634e9b930435d7"
+      "file": "reference-blue-whale-expression-20261023.png",
+      "role": "supporting-expression-only",
+      "sha256": "9f456c64982302607e0d48f2fa0ed57dfe9e164571f7926202e8be0087248a82"
     },
     {
-      "file": "../../d1-directions-v1/source/design-back-right-20261023.png",
-      "sha256": "7b93c3f1d90cccde62cab5bf8fcf9d69d9c848cdc7691e01d4038b438ef6c3a0"
+      "file": "feedback-tail-origin-20261023.png",
+      "role": "defect-evidence-not-design-source",
+      "sha256": "fc0909b77b72968020fb30cd1c1fff49dbf3c3acafebc86dd1bfc49ea6306700"
     }
   ],
   "candidates": [
@@ -97,7 +100,42 @@
             "solidPixels": 207739
           }
         ]
-      }
+      },
+      "views": [
+        "正面 · 0°",
+        "右斜前 · 45°",
+        "右斜后 · 135°",
+        "正背面 · 180°"
+      ],
+      "guides": [
+        {
+          "y": 0.14,
+          "label": "头发顶部参考"
+        },
+        {
+          "y": 0.52,
+          "label": "前视下颌参考"
+        },
+        {
+          "y": 0.65,
+          "label": "腰线参考"
+        },
+        {
+          "y": 0.82,
+          "label": "裙摆参考"
+        },
+        {
+          "y": 0.972,
+          "label": "脚底参考"
+        }
+      ],
+      "rearTailReviewBox": [
+        0.57,
+        0.64,
+        0.09,
+        0.2
+      ],
+      "designRevision": "legacy-chibi"
     },
     {
       "file": "turnaround-v2.png",
@@ -168,12 +206,47 @@
             "solidPixels": 204290
           }
         ]
-      }
+      },
+      "views": [
+        "正面 · 0°",
+        "右斜前 · 45°",
+        "右斜后 · 135°",
+        "正背面 · 180°"
+      ],
+      "guides": [
+        {
+          "y": 0.14,
+          "label": "头发顶部参考"
+        },
+        {
+          "y": 0.52,
+          "label": "前视下颌参考"
+        },
+        {
+          "y": 0.65,
+          "label": "腰线参考"
+        },
+        {
+          "y": 0.82,
+          "label": "裙摆参考"
+        },
+        {
+          "y": 0.972,
+          "label": "脚底参考"
+        }
+      ],
+      "rearTailReviewBox": [
+        0.57,
+        0.64,
+        0.09,
+        0.2
+      ],
+      "designRevision": "legacy-chibi"
     },
     {
       "file": "turnaround-v3.png",
-      "label": "v3 · 待复核",
-      "status": "awaiting-visual-review",
+      "label": "v3 · 旧要求候选",
+      "status": "superseded",
       "productBound": false,
       "sha256": "707deef9be40c73046c5f17bc5741c8cbc8952e3caf3add66c1bdf580dc56c43",
       "bytes": 1640426,
@@ -191,43 +264,189 @@
           "sha256": "49d3486cd177499dcc71d663d28ade6f3b1bbe422e745e71eb7c12dd159b4ebb"
         }
       ],
-      "review": "已观察到：斜后尾根的额外青色卷钩已去除，斜后／正背无脸颊和五官。仍需复核：四方向是否保持同一角色、正面与原设计的脸型／比例；局部编辑同时改变了斜后白缎带边形与正背局部轮廓，不能声称其他区域逐像素不变。",
+      "review": "已被最新蓝鲸参考替代，未验收：用户要求修订尾巴类型、跨视角尾根及配色／脸形／角色形象。旧稿只作追溯，不能用于拆件。",
       "inspection": {
         "method": "read-only whole-canvas alpha; not identity acceptance",
         "transparentPixels": 740289,
         "solidCanvasEdgePixels": 0
+      },
+      "views": [
+        "正面 · 0°",
+        "右斜前 · 45°",
+        "右斜后 · 135°",
+        "正背面 · 180°"
+      ],
+      "guides": [
+        {
+          "y": 0.14,
+          "label": "头发顶部参考"
+        },
+        {
+          "y": 0.52,
+          "label": "前视下颌参考"
+        },
+        {
+          "y": 0.65,
+          "label": "腰线参考"
+        },
+        {
+          "y": 0.82,
+          "label": "裙摆参考"
+        },
+        {
+          "y": 0.972,
+          "label": "脚底参考"
+        }
+      ],
+      "rearTailReviewBox": [
+        0.57,
+        0.64,
+        0.09,
+        0.2
+      ],
+      "designRevision": "legacy-chibi",
+      "previousReview": "已观察到：斜后尾根的额外青色卷钩已去除，斜后／正背无脸颊和五官。仍需复核：四方向是否保持同一角色、正面与原设计的脸型／比例；局部编辑同时改变了斜后白缎带边形与正背局部轮廓，不能声称其他区域逐像素不变。"
+    },
+    {
+      "file": "blue-whale-v4.png",
+      "label": "v4 · 蓝鲸尾鳍投影未通过",
+      "status": "rejected",
+      "productBound": false,
+      "designRevision": "blue-whale-20261023",
+      "sha256": "f4d13404db3fabae679ec8a3a95541a31ba63e828ed8b6f5ad38898b706393c7",
+      "bytes": 1472101,
+      "canvas": [
+        1774,
+        887
+      ],
+      "tool": "built-in image_gen",
+      "useCase": "stylized-concept",
+      "output": "exec-cf8b94b7-001d-4038-8a9d-8721e9705590.png",
+      "prompt": "prompt-blue-whale-v4.txt",
+      "promptSha256": "8e5dd5b156118d643545362c550d24241923cc9fea8b6201b8276547d686b289",
+      "references": [
+        {
+          "file": "reference-blue-whale-turnaround-20261023.png",
+          "sha256": "5681bc24639acae4f29c637cad43bd59aa3f67c5b8aea369bbb71df8bfbd0353"
+        }
+      ],
+      "views": [
+        "正面 · 0°",
+        "侧面 · 朝左",
+        "右斜后 · 135°",
+        "正背面 · 180°"
+      ],
+      "guides": [
+        {
+          "y": 0.12,
+          "label": "头发顶部参考"
+        },
+        {
+          "y": 0.33,
+          "label": "前视下颌参考"
+        },
+        {
+          "y": 0.48,
+          "label": "腰线参考"
+        },
+        {
+          "y": 0.72,
+          "label": "裙摆参考"
+        },
+        {
+          "y": 0.94,
+          "label": "脚底参考"
+        }
+      ],
+      "rearTailReviewBox": [
+        0.51,
+        0.65,
+        0.26,
+        0.26
+      ],
+      "review": "外观与配色已转向最新参考，四视图尾柄都在裙下。未通过：正面尾巴向画面右侧摆、斜后尾巴同样向右伸出，不能由同一姿态投影解释；侧面仍有上下叶片式尾鳍。第二列实际朝左，按原图标注，未声称朝右。",
+      "inspection": {
+        "method": "read-only whole-canvas alpha; not anatomy or identity acceptance",
+        "transparentPixels": 845543,
+        "solidCanvasEdgePixels": 0
+      }
+    },
+    {
+      "file": "blue-whale-v5.png",
+      "label": "v5 · 蓝鲸新版待复核",
+      "status": "awaiting-visual-review",
+      "productBound": false,
+      "designRevision": "blue-whale-20261023",
+      "sha256": "d6c01b4f9c32136c5a75f00f87ca63bc2f08a9b68d4d7405b4b59d9668b47eac",
+      "bytes": 1453877,
+      "canvas": [
+        1774,
+        887
+      ],
+      "tool": "built-in image_gen",
+      "useCase": "precise-object-edit",
+      "output": "exec-92a7d910-bf3b-4d73-adbf-495e61dbdefb.png",
+      "prompt": "prompt-blue-whale-v5.txt",
+      "promptSha256": "aafd437870567e4196b8b36996653e6c534de5f3fe07f14e62c5bbfad8adbab5",
+      "references": [
+        {
+          "file": "blue-whale-v4.png",
+          "sha256": "f4d13404db3fabae679ec8a3a95541a31ba63e828ed8b6f5ad38898b706393c7"
+        }
+      ],
+      "views": [
+        "正面 · 0°",
+        "侧面 · 朝左",
+        "右斜后 · 135°",
+        "正背面 · 180°"
+      ],
+      "guides": [
+        {
+          "y": 0.12,
+          "label": "头发顶部参考"
+        },
+        {
+          "y": 0.33,
+          "label": "前视下颌参考"
+        },
+        {
+          "y": 0.48,
+          "label": "腰线参考"
+        },
+        {
+          "y": 0.72,
+          "label": "裙摆参考"
+        },
+        {
+          "y": 0.94,
+          "label": "脚底参考"
+        }
+      ],
+      "rearTailReviewBox": [
+        0.49,
+        0.67,
+        0.23,
+        0.2
+      ],
+      "review": "新版静态候选：按第二张参考调整配色、比例与脸形；四方向尾柄均在裙下，正面尾巴回到腿后，侧面尾鳍呈侧视轮廓，斜后尾巴向身体后方延伸。尚未锁定：各方向尾柄长度／尾鳍尺度仍需精确注册；局部生成改变了侧面发尾及背部缎带，透明轮廓仍有杂边。不是逐像素保真的拆件，不可据此直接替换产品。",
+      "inspection": {
+        "method": "read-only whole-canvas alpha plus visual review; no identity or geometric equivalence acceptance",
+        "transparentPixels": 847438,
+        "solidCanvasEdgePixels": 0
       }
     }
   ],
-  "guides": [
-    {
-      "y": 0.14,
-      "label": "头发顶部参考"
-    },
-    {
-      "y": 0.52,
-      "label": "前视下颌参考"
-    },
-    {
-      "y": 0.65,
-      "label": "腰线参考"
-    },
-    {
-      "y": 0.82,
-      "label": "裙摆参考"
-    },
-    {
-      "y": 0.972,
-      "label": "脚底参考"
-    }
-  ],
-  "rearTailReviewBox": [
-    0.57,
-    0.64,
-    0.09,
-    0.2
-  ],
   "annotationMethod": "manual review zones in normalized image coordinates, not rig joints",
   "rights": "Original character 溟月（上善无形）, maid reinterpretation ZipZipPipe, source artwork Pal-AI-Lab; see repository THIRD_PARTY_NOTICES.md; no new ownership claim.",
-  "lockedMaster": null
+  "lockedMaster": null,
+  "designRevision": "blue-whale-20261023",
+  "revisionBase": "905aa34",
+  "tailContract": {
+    "root": "rear pelvis midline, hidden inside skirt",
+    "visibleExit": "below rear hem in every view",
+    "flukes": "two lateral whale flukes in horizontal plane",
+    "pose": "same body-local tail pose across all views",
+    "supersedes": "legacy tail-over-skirt and z=8 probe are not current design requirements"
+  },
+  "newReferenceOrigin": "User-provided attachments on 2026-10-23; reference role and file digests recorded; no new ownership claim."
 }
