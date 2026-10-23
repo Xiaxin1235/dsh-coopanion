@@ -95,6 +95,10 @@ header button:hover { color: var(--text); background: var(--tint); }
 .conversation-card>b { width: 20px; height: 20px; border: 1.5px solid var(--line); border-radius: 50%; color: transparent; font-size: calc(12px * var(--text-scale)); text-align: center; line-height: 17px; }
 .conversation-card[aria-selected=true]>b { color: var(--surface); background: var(--accent); border-color: var(--accent); }
 .conversation-card[data-mood=waiting] .session-meta em, .conversation-card[data-mood=error] .session-meta em { color: #ad623c; }
+.conversation-card.companion-card { grid-template-columns: auto minmax(0, 1fr) 22px; }
+.companion-card-portrait { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--line); display: grid; place-items: center; overflow: hidden; background: var(--tint); flex: 0 0 auto; }
+.companion-card-portrait img { width: 100%; height: 100%; object-fit: cover; }
+.companion-card-portrait svg { width: 24px; height: 24px; color: var(--accent); }
 .conversation-empty { margin: 8px 0; padding: 15px; color: var(--muted); font-size: calc(11px * var(--text-scale)); line-height: 1.6; text-align: center; }
 .conversation-footer { display: flex; align-items: center; justify-content: space-between; margin: 9px 17px 0; border-top: 1px dashed var(--line); padding-top: 9px; }
 #conversation-count { font-size: calc(10px * var(--text-scale)); color: var(--muted); }
@@ -106,6 +110,8 @@ header button:hover { color: var(--text); background: var(--tint); }
 .chat-current strong { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: calc(12px * var(--text-scale)); line-height: 1.5; }
 .chat-current #chat-session-detail { color: var(--muted); margin-top: 5px; margin-bottom: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .chat-current b { flex: 0 0 auto; color: var(--accent); font-size: calc(10px * var(--text-scale)); font-weight: 600; }
+.chat-to-companion { display: inline-block; align-self: flex-start; margin-top: 6px; padding: 2px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--tint); color: var(--accent); font-size: calc(10px * var(--text-scale)); cursor: pointer; text-decoration: none; }
+.chat-to-companion:hover { border-color: var(--accent); }
 .chat-reply { margin: 12px 0; padding-left: 10px; border-left: 2px solid var(--line); color: #717780; font-size: calc(11px * var(--text-scale)); line-height: 1.65; white-space: pre-wrap; max-height: 74px; overflow-y: auto; }
 .pet-greetings { display: flex; gap: 6px; align-items: center; margin: 12px 0; }
 .pet-greetings button { color: var(--accent); background: var(--tint); font-size: calc(10px * var(--text-scale)); padding: 6px 9px; border-radius: 20px; }

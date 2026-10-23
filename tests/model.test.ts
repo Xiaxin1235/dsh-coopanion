@@ -256,3 +256,34 @@ it('restores exact native approval pairs and keeps public continued entrances wh
   m.restore({ ...s, snapshotEvents: () => [begin, ask, wrong, end] }); expect(m.snapshot()).toMatchObject({ mood: 'waiting', active: true });
   m.interactions([{ ...pending, state: 'settled' }]); expect(m.snapshot().mood).toBe('thinking');
 });
+
+
+it('identifies the whaledot-companion session by agentPreset, picks the newest, and falls back on removal', () => {
+  const m = new PetModel();
+  const work = session('work-session');
+  m.observe(work);
+  expect(m.snapshot().companionSessionId).toBeNull();
+  expect(m.snapshot().sessions[0].companion).toBe(false);
+
+  const c1 = { ...session('companion-1'), header: { ...session('companion-1').header, createdAt: 1000, agentPreset: 'whaledot-companion' } };
+  m.observe(c1);
+  expect(m.snapshot().companionSessionId).toBe(c1.id);
+  expect(m.snapshot().sessions.find(s => s.id === c1.id)?.companion).toBe(true);
+  expect(m.snapshot().sessions.find(s => s.id === work.id)?.companion).toBe(false);
+
+  // Newer companion session wins
+  const c2 = { ...session('companion-2'), header: { ...session('companion-2').header, createdAt: 2000, agentPreset: 'whaledot-companion' } };
+  m.observe(c2);
+  expect(m.snapshot().companionSessionId).toBe(c2.id);
+  expect(m.snapshot().sessions.find(s => s.id === c2.id)?.companion).toBe(true);
+  expect(m.snapshot().sessions.find(s => s.id === c1.id)?.companion).toBe(false);
+
+  // Removing c2 falls back to c1
+  m.remove(c2.id);
+  expect(m.snapshot().companionSessionId).toBe(c1.id);
+  expect(m.snapshot().sessions.find(s => s.id === c1.id)?.companion).toBe(true);
+
+  // Removing c1 falls back to null
+  m.remove(c1.id);
+  expect(m.snapshot().companionSessionId).toBeNull();
+});

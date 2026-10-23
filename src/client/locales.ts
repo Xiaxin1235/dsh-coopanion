@@ -23,6 +23,7 @@ export const zh = {
   deliveryrequested: '已向系统请求；等待显示回执。', deliveryshown: '已收到显示回执；请在通知中心核对并点击返回会话。', deliveryclicked: '收到点击回执，已请求打开源会话。', deliveryfailed: '本次通知失败，请检查权限及连接。', deliveryunknown: '送达结果待确认，请检查通知中心。',
   textScale: '文字大小', textScaleHint: '100%、125% 或 150%，独立于角色尺寸；立即生效并保留当前阅读与草稿。',
   size: '角色尺寸', sizeHint: '90–240 像素，修改后立即生效。', duration: '气泡显示时长', durationHint: '2–60 秒；停留或聚焦时暂停收起，待处理请求保留在列表。',
+  defaultChatTarget: '双击时默认', defaultChatTargetHint: '双击桌宠打开聊天时，默认选中的对话对象。', chatTargetCompanion: '和大肥鱼聊天', chatTargetLast: '上次的会话',
   characters: '角色与动画', charactersHint: '导入、预览、换装或删除 Coopanion API 2 ZIP 角色包；角色和配色会在重启后保留。', manage: '管理角色',
   saved: '已保存', saving: '正在保存…', refused: '配置已发生变化或无法保存，请根据当前值重新修改。', invalid: '请输入范围内的数字。', unavailable: '当前连接无法修改宿主配置。请在本机 Harness 中打开此页面。',
 };
@@ -52,6 +53,7 @@ export const en: Record<LocaleKey, string> = {
   deliveryrequested: 'Requested from the OS; awaiting a show receipt.', deliveryshown: 'Show receipt received. Check Notification Center and click to return to the session.', deliveryclicked: 'Click receipt received; opening the source session was requested.', deliveryfailed: 'Notification failed. Check permissions and connection.', deliveryunknown: 'Delivery awaits verification. Check Notification Center.',
   textScale: 'Text size', textScaleHint: '100%, 125% or 150%, independently of character size. Applies immediately and keeps your reading and draft.',
   size: 'Character size', sizeHint: '90–240 pixels. Changes apply immediately.', duration: 'Bubble duration', durationHint: '2–60 seconds. Hover or focus pauses dismissal; pending requests stay in the list.',
+  defaultChatTarget: 'Double-click default', defaultChatTargetHint: 'Default conversation target when double-clicking the pet to chat.', chatTargetCompanion: 'Chat with Dafeiyu', chatTargetLast: 'Last conversation',
   characters: 'Characters and animation', charactersHint: 'Import, preview, dress or remove Coopanion API 2 ZIP packs. Your character and colours survive restarts.', manage: 'Manage characters',
   saved: 'Saved', saving: 'Saving…', refused: 'The configuration changed or could not be saved. Review the current values and try again.', invalid: 'Enter a number within the allowed range.', unavailable: 'This connection cannot change Host preferences. Open this page in your local Harness.',
 };

@@ -18,6 +18,7 @@ import { petLanguage, petCopy, localizedText, appNoticeCopy, automaticPetLanguag
 import { textScale } from './text-scale.js';
 import { viewportPoint, panelPosition } from './display-geometry.js';
 const PACK_LIMIT = 128 * 1024 * 1024;
+const isCompanionSession = s => !!(s && (s.companion || (snapshot.companionSessionId && s.id === snapshot.companionSessionId) || s.agentPreset === 'whaledot-companion'));
 import { browserCharacters } from './character-library.js';
 const BUILTIN_ID = 'whale';
 const $ = id => document.getElementById(id);
@@ -174,8 +175,9 @@ function position() {
 function speak(result) {
   const source = snapshot.sessions.find(session => session.id === result.sessionId);
   const preview = replyPreview(result.text, 180, options.preferOpeningParagraph !== false);
-  $('bubble-status').textContent = source?.label ?? '';
-  bubble.setAttribute('aria-label', uiCopy().finalReply(source?.label ?? activeName));
+  const sourceName = isCompanionSession(source) ? uiCopy().companionName : (source?.label ?? '');
+  $('bubble-status').textContent = sourceName;
+  bubble.setAttribute('aria-label', uiCopy().finalReply(sourceName || activeName));
   bubbleSession = result.sessionId; bubbleResult = result;
   $('bubble-session').hidden = !bubbleSession;
   $('bubble-expand').hidden = !preview.long;
@@ -214,8 +216,9 @@ function openReader(result, queue) {
   panels.forEach(p => { p.hidden = true; }); bubble.hidden = true; reader.hidden = false;
   readerResult = result; readerQueue = queue;
   const source = snapshot.sessions.find(s => s.id === result.sessionId);
-  $('reader-title').textContent = source?.label ?? uiCopy().sessionReply;
-  $('reader-detail').textContent = `${source?.project ?? ''} · ${sessionTime({ updatedAt: result.time }, notificationLocale())}`;
+  const isComp = isCompanionSession(source);
+  $('reader-title').textContent = isComp ? uiCopy().companionName : (source?.label ?? uiCopy().sessionReply);
+  $('reader-detail').textContent = isComp ? sessionTime({ updatedAt: result.time }, notificationLocale()) : `${source?.project ?? ''} · ${sessionTime({ updatedAt: result.time }, notificationLocale())}`;
   renderReplyMarkdown($('reader-text'), result.text); $('reader-text').scrollTop = 0;
   updateReaderNavigation(); acknowledge(result); updateMood(); position(); $('reader-text').focus();
 }
@@ -229,7 +232,8 @@ function updateReaderNavigation() {
   $('reader-prev').disabled = index <= 0; $('reader-next').disabled = index < 0 || index >= history.length - 1;
   if (readerResult) {
     const source = snapshot.sessions.find(session => session.id === readerResult.sessionId);
-    $('reader-detail').textContent = `${source?.project ?? ''} · ${sessionTime({ updatedAt: readerResult.time }, notificationLocale())}`;
+    const isComp = isCompanionSession(source);
+    $('reader-detail').textContent = isComp ? sessionTime({ updatedAt: readerResult.time }, notificationLocale()) : `${source?.project ?? ''} · ${sessionTime({ updatedAt: readerResult.time }, notificationLocale())}`;
   }
 }
 function react(mood) { reactionMood = mood; reactionUntil = performance.now() + 700; }
@@ -349,6 +353,10 @@ $('interface-style').onchange = event => {
   const value = event.target.value === 'classic' ? 'classic' : 'new';
   if (native) send({ type: 'preference', field: 'interfaceStyle', value }); else { applyOptions({ interfaceStyle: value }); render(); }
 };
+$('default-chat-target').onchange = event => {
+  const value = event.target.value === 'last' ? 'last' : 'companion';
+  if (native) send({ type: 'preference', field: 'defaultChatTarget', value }); else { applyOptions({ defaultChatTarget: value }); render(); }
+};
 const segments = [...document.querySelectorAll('#companion-segments [data-companionship]')];
 for (const button of segments) {
   button.onclick = () => { $('companion-mode').value = button.dataset.companionship; $('companion-mode').dispatchEvent(new Event('change')); };
@@ -403,29 +411,42 @@ function render() {
   const attentionSources = new Set(attentionSnapshot.sessions.filter(s => ['waiting', 'error'].includes(s.mood)).map(s => s.id));
   const requestSources = new Set(pendingRequests().map(item => item.sessionId));
   const needsYou = s => attentionSources.has(s.id) || requestSources.has(s.id);
-  const matches = snapshot.sessions.filter(session => (!pendingOnly || hasUnread(session) || needsYou(session)) && [session.label, session.project, session.cwd, session.prompt, session.id].join(' ').toLocaleLowerCase().includes(query));
-  matches.sort((a, b) => Number(needsYou(b)) - Number(needsYou(a)) || Number(hasUnread(b)) - Number(hasUnread(a)) || Number(b.id === snapshot.sessionId) - Number(a.id === snapshot.sessionId) || (b.updatedAt ?? 0) - (a.updatedAt ?? 0));
-  const listKey = JSON.stringify([notificationLocale(), query, pendingOnly, matches.map(session => [session.id, session.label, session.prompt, session.cwd, session.updatedAt, session.mood, hasUnread(session), session.chatAvailable, session.id === snapshot.sessionId])]);
+  const matches = snapshot.sessions.filter(session => (!pendingOnly || hasUnread(session) || needsYou(session)) && [session.label, session.project, session.cwd, session.prompt, session.id, isCompanionSession(session) ? uiCopy().companionName : ''].join(' ').toLocaleLowerCase().includes(query));
+  matches.sort((a, b) => Number(isCompanionSession(b)) - Number(isCompanionSession(a)) || Number(needsYou(b)) - Number(needsYou(a)) || Number(hasUnread(b)) - Number(hasUnread(a)) || Number(b.id === snapshot.sessionId) - Number(a.id === snapshot.sessionId) || (b.updatedAt ?? 0) - (a.updatedAt ?? 0));
+  const listKey = JSON.stringify([notificationLocale(), query, pendingOnly, matches.map(session => [session.id, isCompanionSession(session), session.label, session.prompt, session.cwd, session.updatedAt, session.mood, hasUnread(session), session.chatAvailable, session.id === snapshot.sessionId])]);
   if (list.dataset.key !== listKey) {
     const activeId = document.activeElement?.dataset?.sessionId;
     const entries = matches.map(session => {
-      const card = document.createElement('button'); card.type = 'button'; card.className = 'conversation-card';
+      const isComp = isCompanionSession(session);
+      const card = document.createElement('button'); card.type = 'button'; card.className = isComp ? 'conversation-card companion-card' : 'conversation-card';
       card.dataset.sessionId = session.id; card.dataset.mood = session.mood; card.setAttribute('role', 'option'); card.setAttribute('aria-selected', String(session.id === snapshot.sessionId));
       card.dataset.unread = String(hasUnread(session));
       card.tabIndex = session.id === snapshot.sessionId ? 0 : -1;
-      card.title = `${session.label}\n${session.prompt ?? ''}\n${session.cwd ?? session.project ?? ''}\n${session.id}`;
+      const cardTitleName = isComp ? uiCopy().companionName : session.label;
+      card.title = isComp ? `${cardTitleName}\n${session.prompt ?? ''}\n${session.id}` : `${session.label}\n${session.prompt ?? ''}\n${session.cwd ?? session.project ?? ''}\n${session.id}`;
       const copy = document.createElement('span'), meta = document.createElement('small'), status = document.createElement('em'), time = document.createElement('span'), name = document.createElement('strong'), detail = document.createElement('small'), prompt = document.createElement('small'), mark = document.createElement('b');
       meta.className = 'session-meta'; status.textContent = `${session.id === snapshot.sessionId ? uiCopy().focused + ' · ' : ''}${sessionStateLabel(session, notificationLocale())}${hasUnread(session) ? ' · ' + uiCopy().unread : ''}${session.chatAvailable === false ? ' · ' + uiCopy().notOpen : ''}`;
       time.textContent = sessionTime(session, notificationLocale()); meta.append(status, time);
-      name.textContent = session.label; detail.className = 'session-detail'; detail.textContent = `${session.cwd || session.project || uiCopy().session} · #${shortIds.get(session.id)}`;
+      name.textContent = isComp ? uiCopy().companionName : session.label;
+      detail.className = 'session-detail'; detail.textContent = isComp ? '' : `${session.cwd || session.project || uiCopy().session} · #${shortIds.get(session.id)}`;
       prompt.className = 'session-prompt'; prompt.textContent = session.prompt && session.prompt !== session.label ? uiCopy().recent(session.prompt) : ''; prompt.hidden = !prompt.textContent;
       mark.textContent = '✓'; mark.setAttribute('aria-hidden', 'true');
-      copy.append(meta, name, prompt, detail); card.append(copy, mark); return card;
+      copy.append(meta, name, prompt, detail);
+      if (isComp) {
+        const portrait = document.createElement('span'); portrait.className = 'companion-card-portrait';
+        const img = document.createElement('img'); img.className = 'panel-portrait'; img.alt = '';
+        const fallback = $('menu-emblem').cloneNode(true); fallback.removeAttribute('id'); fallback.classList.add('panel-emblem');
+        portrait.append(img, fallback);
+        card.append(portrait, copy, mark);
+      } else {
+        card.append(copy, mark);
+      }
+      return card;
     });
     if (!entries.length) {
       const empty = document.createElement('p'); empty.className = 'conversation-empty'; empty.textContent = query ? uiCopy().emptySearch : pendingOnly ? uiCopy().emptyPending : uiCopy().emptySessions; entries.push(empty);
     }
-    list.replaceChildren(...entries); list.dataset.key = listKey;
+    list.replaceChildren(...entries); list.dataset.key = listKey; panelStyle.portraits();
     if (activeId) list.querySelector(`[data-session-id="${CSS.escape(activeId)}"]`)?.focus();
   }
   const activity = sessionActivity(attentionSnapshot);
@@ -437,10 +458,13 @@ function render() {
   $('attention-count').textContent = String(inboxState.total);
   $('attention').dataset.urgent = String(!!pendingCount);
   $('attention').title = $('attention').ariaLabel = noticeCopy().inboxSummary(inboxState.replies.length, pendingCount);
-  $('chat-current').disabled = !snapshot.sessions.length; $('chat-session-name').textContent = selected?.label ?? uiCopy().noSession;
-  $('chat-current').setAttribute('aria-label', selected ? uiCopy().chatTarget(selected.label) : uiCopy().emptySessions);
+  const isSelectedCompanion = isCompanionSession(selected);
+  $('chat-current').disabled = !snapshot.sessions.length;
+  $('chat-session-name').textContent = isSelectedCompanion ? uiCopy().chatWithMe : (selected?.label ?? uiCopy().noSession);
+  $('chat-current').setAttribute('aria-label', selected ? (isSelectedCompanion ? uiCopy().chatTarget(uiCopy().chatWithMe) : uiCopy().chatTarget(selected.label)) : uiCopy().emptySessions);
   $('chat-session-state').textContent = sessionStateLabel(selected, notificationLocale());
-  $('chat-session-detail').textContent = selected ? `${selected.cwd || selected.project || ''} · #${shortIds.get(selected.id)}` : '';
+  $('chat-session-detail').textContent = selected && !isSelectedCompanion ? `${selected.cwd || selected.project || ''} · #${shortIds.get(selected.id)}` : '';
+  $('chat-to-companion').hidden = isSelectedCompanion || !snapshot.companionSessionId;
   const latestReply = snapshot.results?.find(r => r.id === selected?.replyId)?.text || selected?.reply || '';
   $('chat-reply').textContent = latestReply ? replyPreview(latestReply, 180, false).text : ''; $('chat-reply').hidden = !latestReply;
   $('chat-read').hidden = !latestReply;
@@ -453,7 +477,7 @@ function render() {
   $('chat-send-state').textContent = draft.phase === 'failed' ? uiCopy().sendFailure(draft.code) : uiCopy()[{ sending: 'sending', accepted: 'sendAccepted' }[draft.phase]] ?? '';
   $('chat-send-state').dataset.state = draft.phase; chat.dataset.sendState = draft.phase; $('send').ariaLabel = $('send').textContent; resizeComposer();
   $('conversation-open').disabled = !snapshot.sessionId; $('chat-session').disabled = !snapshot.sessionId;
-  $('chat-help').textContent = enabled ? uiCopy().chatHelp(selected.label) : snapshot.sessionId ? uiCopy().unavailableChat : uiCopy().noChat;
+  $('chat-help').textContent = enabled ? (isSelectedCompanion ? uiCopy().chatHelp(uiCopy().companionName) : uiCopy().chatHelp(selected.label)) : snapshot.sessionId ? uiCopy().unavailableChat : uiCopy().noChat;
   if (previous !== snapshot.sessionId) {
     bubble.hidden = true;
     clearTimeout(touchTimer); reactionUntil = 0;
@@ -494,7 +518,7 @@ function renderRequests() {
   inboxState = inboxContents(attentionSnapshot, pendingRequests(), acknowledgedResults);
   const { requests: items, issues, replies } = inboxState;
   const sources = new Map(snapshot.sessions.map(session => [session.id, session])), shortIds = shortSessionIds(snapshot.sessions);
-  const sourceDetail = id => { const session = sources.get(id); return [session?.project || session?.cwd, `#${shortIds.get(id) ?? id}`].filter(Boolean).join(' · '); };
+  const sourceDetail = id => { const session = sources.get(id); if (isCompanionSession(session)) return ''; return [session?.project || session?.cwd, `#${shortIds.get(id) ?? id}`].filter(Boolean).join(' · '); };
   $('requests-title').textContent = copy.inboxTitle; $('inbox-caption').textContent = copy.inboxCaption; $('requests-close').ariaLabel = copy.close;
   $('inbox-count').textContent = copy.inboxSummary(replies.length, items.length + issues.length);
   if (options.interfaceStyle !== 'classic') {
@@ -504,7 +528,7 @@ function renderRequests() {
     $('inbox-count').replaceChildren(waiting, fresh);
     if (!inboxState.total) $('requests-title').textContent = copy.inboxCaughtUp;
   }
-  $('inbox-focus').textContent = copy.focus(sources.get(snapshot.sessionId)?.label ?? '—');
+  const curFocus = sources.get(snapshot.sessionId); $('inbox-focus').textContent = copy.focus(isCompanionSession(curFocus) ? (copy.companionName || uiCopy().companionName) : (curFocus?.label ?? '—'));
   $('inbox-empty').textContent = copy.inboxEmpty; $('inbox-empty').hidden = !!inboxState.total;
   const keys = [notificationLocale(), options.interfaceStyle, snapshot.sessions.map(session => [session.id, session.label, session.project, session.cwd])];
   replaceInboxList($('request-list'), JSON.stringify([...keys, items, [...snoozing.keys()], options.reminders, options.notifications, options.inlineQuestions, questionForms.revision]), () => items.map(item => {
@@ -549,9 +573,12 @@ function renderRequests() {
     // Capture the queue at the explicit read action so incoming replies cannot reorder it.
     content.onclick = () => openReader(result, inboxContents(attentionSnapshot, pendingRequests(), acknowledgedResults).replies.map(item => ({ ...item })));
     meta.textContent = `${copy.newReply} · ${sessionTime({ updatedAt: result.time }, notificationLocale())}`;
-    label.textContent = sources.get(result.sessionId)?.label ?? result.sessionId;
+    const replySession = sources.get(result.sessionId);
+    const isCompReply = isCompanionSession(replySession);
+    label.textContent = isCompReply ? (copy.companionName || uiCopy().companionName) : (replySession?.label ?? result.sessionId);
     preview.className = 'inbox-preview'; preview.textContent = replyPreview(result.text, 180, false).text;
-    detail.textContent = `${sourceDetail(result.sessionId)} · ${copy.readReply}`;
+    const detailPart = sourceDetail(result.sessionId);
+    detail.textContent = detailPart ? `${detailPart} · ${copy.readReply}` : copy.readReply;
     content.append(meta, label, preview, detail);
     open.textContent = copy.continue; open.dataset.resultId = result.id; open.dataset.inboxKey = result.id; open.dataset.action = 'open'; open.onclick = () => { acknowledge(result); continueSession(result.sessionId); };
     const read = document.createElement('button'); read.className = 'inbox-read'; read.textContent = copy.readReply; read.onclick = content.onclick;
@@ -586,6 +613,7 @@ function applyOptions(value) {
   const previousSize = options.size, previousCompanionship = options.companionship;
   options = { ...options, ...value, companionship: Object.hasOwn(value ?? {}, 'companionship') ? companionshipMode(value.companionship) : options.companionship, textScale: Object.hasOwn(value ?? {}, 'textScale') ? textScale(value.textScale) : options.textScale };
   panelStyle.set(options.interfaceStyle); panelStyle.portraits(); $('interface-style').value = options.interfaceStyle === 'classic' ? 'classic' : 'new';
+  $('default-chat-target').value = options.defaultChatTarget === 'last' ? 'last' : 'companion';
   diagnosticCounters.configure(options.diagnostics === true);
   document.documentElement.style.setProperty('--size', `${options.size}px`);
   document.documentElement.style.setProperty('--text-scale', String(options.textScale));
@@ -722,7 +750,16 @@ function hit(px, py) {
   if (!!active !== lastHit) { lastHit = !!active; native?.hit(lastHit); }
 }
 
-function openChat() { interaction.hidden = true; clearTimeout(touchTimer); touchBlockedUntil = performance.now() + 1000; panels.forEach(p => { p.hidden = true; }); bubble.hidden = true; chat.hidden = false; updateMood(); position(); if (!$('message').disabled) $('message').focus(); }
+function openChat(forceDefault = true) {
+  if (forceDefault && options.defaultChatTarget !== 'last' && snapshot.companionSessionId) {
+    if (snapshot.sessionId !== snapshot.companionSessionId) {
+      snapshot = { ...snapshot, sessionId: snapshot.companionSessionId };
+      send({ type: 'select', sessionId: snapshot.companionSessionId });
+      render();
+    }
+  }
+  interaction.hidden = true; clearTimeout(touchTimer); touchBlockedUntil = performance.now() + 1000; panels.forEach(p => { p.hidden = true; }); bubble.hidden = true; chat.hidden = false; updateMood(); position(); if (!$('message').disabled) $('message').focus();
+}
 function openConversations(pending = false) {
   if (!snapshot.sessions.length) return;
   interaction.hidden = true;
@@ -777,6 +814,13 @@ pet.addEventListener('keydown', event => { if (event.target === pet && ['Enter',
 pet.addEventListener('contextmenu', event => { event.preventDefault(); clearTimeout(touchTimer); const open = menu.hidden; panels.forEach(p => { p.hidden = true; }); bubble.hidden = true; menu.hidden = !open; interaction.hidden = true; updateMood(); position(); if (!menu.hidden) $('open-characters').focus(); });
 pet.addEventListener('pointerenter', () => { hovered = true; }); pet.addEventListener('pointerleave', () => { hovered = false; });
 $('chat-current').onclick = openConversations;
+$('chat-to-companion').onclick = () => {
+  if (!snapshot.companionSessionId) return;
+  snapshot = { ...snapshot, sessionId: snapshot.companionSessionId };
+  send({ type: 'select', sessionId: snapshot.companionSessionId });
+  render();
+  openChat(false);
+};
 $('menu-chat').onclick = openChat;
 $('menu-close').onclick = closePanels;
 $('conversation-search').oninput = render;
@@ -810,11 +854,11 @@ $('conversation-list').onclick = event => {
   conversations.hidden = true;
   if (session.id !== snapshot.sessionId) send({ type: 'select', sessionId: session.id });
   const result = unreadReplies(snapshot, acknowledgedResults).find(r => r.sessionId === session.id);
-  if (result) openReader(result); else render();
+  if (result) openReader(result); else if (snapshot.companionSessionId) { render(); openChat(false); } else render();
 };
 function continueSession(id) {
   if (!id || !snapshot.sessions.some(session => session.id === id)) return;
-  send({ type: 'select', sessionId: id }); snapshot = { ...snapshot, sessionId: id }; render(); openChat();
+  send({ type: 'select', sessionId: id }); snapshot = { ...snapshot, sessionId: id }; render(); openChat(false);
 }
 function acknowledgeIssue(id) {
   if (sessionAttention.acknowledge(snapshot, allRequests(), id)) {

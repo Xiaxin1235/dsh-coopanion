@@ -65,6 +65,7 @@
     <section id="chat" class="panel interactive" hidden>
       <header><span class="conversation-heading"><small id="chat-character">DeepSeek 大肥鱼</small><strong id="chat-title" data-i18n="chatTitle">我在，慢慢说。</strong></span><button id="chat-close" aria-label="关闭聊天" data-i18n-aria-label="chatClose">×</button></header>
       <button id="chat-current" class="chat-current" type="button"><span><small id="chat-session-state">正在陪你聊</small><strong id="chat-session-name">还没有对话</strong><small id="chat-session-detail"></small></span><b data-i18n="changeConversation">换一段 ›</b></button>
+      <button id="chat-to-companion" class="chat-to-companion session-link" type="button" hidden data-i18n="backToCompanion">回到和我聊天</button>
       <p id="chat-reply" class="chat-reply" hidden></p>
       <button id="chat-read" class="session-link" hidden data-i18n="readFull">读完整回复 ↗</button>
       <div class="pet-greetings" aria-label="和角色互动" data-i18n-aria-label="interact"><button data-gesture="wave" data-i18n="wave">打个招呼</button><button data-gesture="cheer" data-i18n="cheer">给我打气</button><button id="chat-session" class="session-link" data-i18n="back">回到会话 ↗</button></div>
@@ -90,6 +91,7 @@
     <section id="characters" class="panel characters interactive" hidden>
       <header><strong data-i18n="characters">角色与动画</strong><button id="characters-close" aria-label="关闭角色面板" data-i18n-aria-label="charactersClose">×</button></header>
       <label for="interface-style" data-i18n="interfaceStyle">界面风格</label><select id="interface-style"><option value="new" data-i18n="styleNew">新版</option><option value="classic" data-i18n="styleClassic">经典</option></select>
+      <label for="default-chat-target" data-i18n="defaultChatTarget">双击时默认</label><select id="default-chat-target"><option value="companion" data-i18n="chatTargetCompanion">和大肥鱼聊天</option><option value="last" data-i18n="chatTargetLast">上次的会话</option></select>
       <label for="character-select" data-i18n="selectCharacter">选择角色</label>
       <select id="character-select" aria-label="角色" data-i18n-aria-label="character"></select>
       <label for="character-scheme" data-i18n="outfit">配色 / 换装</label><select id="character-scheme" aria-label="角色配色" data-i18n-aria-label="characterScheme"></select>

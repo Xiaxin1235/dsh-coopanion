@@ -7,8 +7,8 @@ import { type PendingInteraction, type TaskNotice } from './notification-contrac
 
 export type Mood = 'idle' | 'thinking' | 'talking' | 'working' | 'waiting' | 'happy' | 'error' | 'sleeping';
 export interface PetResult { id: string; sessionId: string; text: string; time: number; read: boolean; }
-export interface PetSession { id: string; label: string; project: string; cwd: string; prompt: string; createdAt: number; updatedAt: number; mood: Mood; text: string; reply: string; replyId: string; unread: number; revision: number; active: boolean; streaming: boolean; speechId: string; chatAvailable?: boolean; attentionId?: string; completion?: TaskNotice['category']; }
-export interface PetSnapshot { mood: Mood; text: string; sessionId: string | null; revision: number; active: boolean; streaming: boolean; speechId: string; results: PetResult[]; sessions: PetSession[]; }
+export interface PetSession { id: string; label: string; project: string; cwd: string; prompt: string; createdAt: number; updatedAt: number; mood: Mood; text: string; reply: string; replyId: string; unread: number; revision: number; active: boolean; streaming: boolean; speechId: string; chatAvailable?: boolean; attentionId?: string; completion?: TaskNotice['category']; agentPreset?: string; companion?: boolean; }
+export interface PetSnapshot { mood: Mood; text: string; sessionId: string | null; companionSessionId: string | null; revision: number; active: boolean; streaming: boolean; speechId: string; results: PetResult[]; sessions: PetSession[]; }
 export interface PetNotice extends Partial<Omit<TaskNotice, 'title' | 'body' | 'sessionId'>> { title: string; body: string; sessionId: string; kind?: 'task' | 'message'; }
 interface TaskState { completion: CompletionTracker; ended: number; seq: number; turn: number; active: boolean; finalText?: string; tools: Map<string, string>; approvals: Set<symbol | string>; questions: Set<string>; requests: Set<string>; celebrateUntil: number; stream?: { id: string; revision: number; index: number; text: string; blocks: Map<number, string> }; }
 type ObservedSession = Pick<Session, 'id' | 'header'> & Partial<Pick<Session, 'snapshotEvents'>>;
@@ -18,6 +18,7 @@ const ready = '准备好了，随时叫我。';
 export class PetModel {
   private sessions = new Map<string, PetSession>();
   private selected: string | null = null;
+  private companionSessionId: string | null = null;
   private tasks = new Map<string, TaskState>();
   private results = new Map<string, PetResult>();
   constructor(private readonly now: () => number = Date.now) {}
@@ -28,17 +29,20 @@ export class PetModel {
     if (!item) {
       // Bound retained presentation state; live Harness sessions remain owned by the host.
       if (this.sessions.size >= 100) {
-        const old = [...this.sessions.keys()].find(id => id !== this.selected);
+        const old = [...this.sessions.keys()].find(id => id !== this.selected && id !== this.companionSessionId);
         if (old) this.remove(old);
       }
       const project = session.header.cwd ? basename(session.header.cwd) : '未指定项目';
-      item = { id: session.id, label: project, project, cwd: session.header.cwd ?? '', prompt: '', createdAt: session.header.createdAt, updatedAt: session.header.createdAt, mood: 'idle', text: ready, reply: '', replyId: '', unread: 0, revision: 0, active: false, streaming: false, speechId: '' };
+      item = { id: session.id, label: project, project, cwd: session.header.cwd ?? '', prompt: '', createdAt: session.header.createdAt, updatedAt: session.header.createdAt, mood: 'idle', text: ready, reply: '', replyId: '', unread: 0, revision: 0, active: false, streaming: false, speechId: '', agentPreset: session.header.agentPreset, companion: false };
       this.sessions.set(session.id, item);
       this.tasks.set(session.id, { completion: new CompletionTracker(), ended: -1, seq: -1, turn: 0, active: false, tools: new Map(), approvals: new Set(), questions: new Set(), requests: new Set(), celebrateUntil: 0 });
       this.selected ??= session.id;
       // Restore identity from public history, without replaying stale task states or notices.
       for (const event of session.snapshotEvents?.() ?? []) this.describe(item, event);
+    } else if (session.header.agentPreset && item.agentPreset !== session.header.agentPreset) {
+      item.agentPreset = session.header.agentPreset;
     }
+    this.refreshCompanion();
     return item;
   }
 
@@ -299,13 +303,24 @@ export class PetModel {
     this.sessions.delete(id);
     this.tasks.delete(id);
     for (const [key, result] of this.results) if (result.sessionId === id) this.results.delete(key);
-    if (this.selected === id) this.selected = this.sessions.keys().next().value ?? null;
+    this.refreshCompanion();
+    if (this.selected === id) this.selected = this.companionSessionId ?? this.sessions.keys().next().value ?? null;
+  }
+
+  private refreshCompanion(): void {
+    const companions = [...this.sessions.values()]
+      .filter(s => s.agentPreset === 'whaledot-companion')
+      .sort((a, b) => b.createdAt - a.createdAt);
+    this.companionSessionId = companions[0]?.id ?? null;
+    for (const s of this.sessions.values()) {
+      s.companion = s.id === this.companionSessionId;
+    }
   }
 
   snapshot(): PetSnapshot {
     const item = this.selected ? this.sessions.get(this.selected) : undefined;
     this.settle();
-    return { mood: item?.mood ?? 'idle', text: item?.text ?? ready, sessionId: item?.id ?? null, revision: item?.revision ?? 0, active: item?.active ?? false, streaming: item?.streaming ?? false, speechId: item?.speechId ?? '', results: [...this.results.values()].map(r => ({ ...r })), sessions: [...this.sessions.values()].map(s => ({ ...s })) };
+    return { mood: item?.mood ?? 'idle', text: item?.text ?? ready, sessionId: item?.id ?? null, companionSessionId: this.companionSessionId, revision: item?.revision ?? 0, active: item?.active ?? false, streaming: item?.streaming ?? false, speechId: item?.speechId ?? '', results: [...this.results.values()].map(r => ({ ...r })), sessions: [...this.sessions.values()].map(s => ({ ...s })) };
   }
 }
 

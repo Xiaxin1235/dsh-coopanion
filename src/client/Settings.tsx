@@ -7,7 +7,7 @@ import type { PetCommand, PetStatus } from '../controls.ts';
 import type { NotificationSettings, NotificationClientStatus } from './notification-client.ts';
 import { TEXT_SCALES, textScale, type TextScale } from '../../web/text-scale.js';
 
-export interface Preferences { size: number; npcHome: number; npcRange: number; textScale: TextScale; aboveFullscreen: boolean; preferOpeningParagraph: boolean; inlineQuestions: boolean; roam: boolean; diagnostics: boolean; companionship: CompanionshipMode; notifications: boolean; systemNotifications: boolean; reminders: boolean; reminderDelayMs: number; bubbleDurationMs: number; autoStart: boolean; }
+export interface Preferences { size: number; npcHome: number; npcRange: number; textScale: TextScale; aboveFullscreen: boolean; preferOpeningParagraph: boolean; inlineQuestions: boolean; roam: boolean; diagnostics: boolean; companionship: CompanionshipMode; notifications: boolean; systemNotifications: boolean; reminders: boolean; reminderDelayMs: number; bubbleDurationMs: number; autoStart: boolean; defaultChatTarget?: 'companion' | 'last'; }
 export interface SettingsFace { form: ConfigForm<Preferences>; call: (command?: PetCommand, signal?: AbortSignal) => Promise<PetStatus>; local: boolean; notifier?: NotificationSettings; }
 export type SettingsProps = SettingsFace & PropsLocale<'coopanion'>;
 
@@ -61,7 +61,7 @@ export function Settings({ form, call, local, notifier, t }: SettingsProps) {
     catch (error) { setFailure(String(error instanceof Error ? error.message : error)); }
     finally { setBusy(false); }
   };
-  const save = async (field: keyof Preferences, value: number | boolean | CompanionshipMode) => {
+  const save = async (field: keyof Preferences, value: number | boolean | CompanionshipMode | 'companion' | 'last') => {
     setSaving(true); setFeedback(undefined); setSaveFailure('');
     try { setFeedback(await form.set(field, value) ? 'saved' : 'refused'); }
     catch (error) { setSaveFailure(String(error instanceof Error ? error.message : error)); }
@@ -124,6 +124,14 @@ export function Settings({ form, call, local, notifier, t }: SettingsProps) {
           <select className="pet-number" id="coopanion-text-scale" aria-describedby="coopanion-text-scale-hint" value={textScale(prefs.textScale)} disabled={!ready || !local}
             onChange={event => void save('textScale', textScale(Number(event.target.value)))}>
             {TEXT_SCALES.map(value => <option key={value} value={value}>{value * 100}%</option>)}
+          </select>
+        </div>
+        <div className="pet-row">
+          <div className="pet-label"><label htmlFor="coopanion-default-chat-target">{t('defaultChatTarget')}</label><p id="coopanion-default-chat-target-hint">{t('defaultChatTargetHint')}</p></div>
+          <select className="pet-number" id="coopanion-default-chat-target" aria-describedby="coopanion-default-chat-target-hint" value={prefs.defaultChatTarget ?? 'companion'} disabled={!ready || !local}
+            onChange={event => void save('defaultChatTarget', event.target.value as 'companion' | 'last')}>
+            <option value="companion">{t('chatTargetCompanion')}</option>
+            <option value="last">{t('chatTargetLast')}</option>
           </select>
         </div>
         <NumberPreference id="coopanion-duration" label={t('duration')} hint={t('durationHint')} invalidHint={t('invalid')} value={prefs.bubbleDurationMs / 1000} min={2} max={60} disabled={!ready || !local} save={value => void save('bubbleDurationMs', value * 1000)} />

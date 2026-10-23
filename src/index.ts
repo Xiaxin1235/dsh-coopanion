@@ -26,11 +26,12 @@ export const inject = ['agents'];
 export interface Config {
   size: Volatile<number>; npcHome: Volatile<number>; npcRange: Volatile<number>; interfaceStyle: Volatile<'new' | 'classic'>; textScale: Volatile<TextScale>; aboveFullscreen: Volatile<boolean>; preferOpeningParagraph: Volatile<boolean>; inlineQuestions: Volatile<boolean>; roam: Volatile<boolean>; diagnostics: Volatile<boolean>; companionship: Volatile<CompanionshipMode>; notifications: Volatile<boolean>;
   systemNotifications: Volatile<boolean>; reminders: Volatile<boolean>; reminderDelayMs: Volatile<number>;
-  bubbleDurationMs: Volatile<number>; autoStart: Volatile<boolean>; electronPath?: string;
+  bubbleDurationMs: Volatile<number>; autoStart: Volatile<boolean>; electronPath?: string; defaultChatTarget: Volatile<'companion' | 'last'>;
 }
 export const Config = z.object({
   size: z.number().min(90).max(240).default(180).volatile(),
   interfaceStyle: z.union([z.const('new'), z.const('classic')]).default('new').volatile(),
+  defaultChatTarget: z.union([z.const('companion'), z.const('last')]).default('companion').volatile(),
   textScale: z.union(TEXT_SCALES.map(value => z.const(value))).default(DEFAULT_TEXT_SCALE).volatile(),
   aboveFullscreen: z.boolean().default(true).volatile(),
   preferOpeningParagraph: z.boolean().default(true).volatile(),
@@ -61,10 +62,10 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
   const chat = new ChatSubmission(ctx);
   const chatLifetime = new AbortController();
   ctx.effect(() => () => chatLifetime.abort());
-  const preferences: Partial<Pick<DesktopOptions, 'roam' | 'notifications' | 'companionship' | 'interfaceStyle'>> = {};
-  let savePreference: ((field: 'roam' | 'notifications' | 'companionship' | 'interfaceStyle', value: boolean | CompanionshipMode | 'new' | 'classic') => Promise<void>) | undefined;
+  const preferences: Partial<Pick<DesktopOptions, 'roam' | 'notifications' | 'companionship' | 'interfaceStyle' | 'defaultChatTarget'>> = {};
+  let savePreference: ((field: 'roam' | 'notifications' | 'companionship' | 'interfaceStyle' | 'defaultChatTarget', value: boolean | CompanionshipMode | 'new' | 'classic' | 'companion' | 'last') => Promise<void>) | undefined;
   ctx.inject(['settings'], child => { savePreference = (field, value) => child.settings.mutate('dsh-coopanion', [{ op: 'set', path: [field], value }]); });
-  const currentOptions = (): DesktopOptions => ({ interfaceStyle: options.interfaceStyle.get(), size: options.size.get(), npcHome: options.npcHome.get(), npcRange: options.npcRange.get(), textScale: options.textScale.get(), aboveFullscreen: options.aboveFullscreen.get(), preferOpeningParagraph: options.preferOpeningParagraph.get(), inlineQuestions: options.inlineQuestions.get(), roam: options.roam.get(), diagnostics: options.diagnostics.get(), companionship: options.companionship.get(), notifications: options.notifications.get(), bubbleDurationMs: options.bubbleDurationMs.get(), systemNotifications: options.systemNotifications.get(), reminders: options.reminders.get(), reminderDelayMs: options.reminderDelayMs.get(), electronPath: options.electronPath, locale, ...preferences });
+  const currentOptions = (): DesktopOptions => ({ interfaceStyle: options.interfaceStyle.get(), defaultChatTarget: options.defaultChatTarget.get(), size: options.size.get(), npcHome: options.npcHome.get(), npcRange: options.npcRange.get(), textScale: options.textScale.get(), aboveFullscreen: options.aboveFullscreen.get(), preferOpeningParagraph: options.preferOpeningParagraph.get(), inlineQuestions: options.inlineQuestions.get(), roam: options.roam.get(), diagnostics: options.diagnostics.get(), companionship: options.companionship.get(), notifications: options.notifications.get(), bubbleDurationMs: options.bubbleDurationMs.get(), systemNotifications: options.systemNotifications.get(), reminders: options.reminders.get(), reminderDelayMs: options.reminderDelayMs.get(), electronPath: options.electronPath, locale, ...preferences });
   const controls = new PetControls(bridge, currentOptions);
   let locale: string | undefined;
   let clientLocale: string | undefined;
@@ -266,8 +267,8 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
       if (typeof action.interactionId === 'string') bridge.snoozeResult?.(action.interactionId, ok, ok ? undefined : '待处理请求已变化或提醒暂不可用');
       syncNotifications(); return;
     }
-    if (action.type === 'preference' && ((action.field === 'roam' || action.field === 'notifications') && typeof action.value === 'boolean' || action.field === 'companionship' && COMPANIONSHIP_MODES.includes(action.value as CompanionshipMode) || action.field === 'interfaceStyle' && ['new', 'classic'].includes(action.value as string))) {
-      const field = action.field as 'roam' | 'notifications' | 'companionship' | 'interfaceStyle', value = action.value as boolean | CompanionshipMode | 'new' | 'classic';
+    if (action.type === 'preference' && ((action.field === 'roam' || action.field === 'notifications') && typeof action.value === 'boolean' || action.field === 'companionship' && COMPANIONSHIP_MODES.includes(action.value as CompanionshipMode) || action.field === 'interfaceStyle' && ['new', 'classic'].includes(action.value as string) || action.field === 'defaultChatTarget' && ['companion', 'last'].includes(action.value as string))) {
+      const field = action.field as 'roam' | 'notifications' | 'companionship' | 'interfaceStyle' | 'defaultChatTarget', value = action.value as boolean | CompanionshipMode | 'new' | 'classic' | 'companion' | 'last';
       void (async () => {
         try {
           if (savePreference) await savePreference(field, value); else Object.assign(preferences, { [field]: value });

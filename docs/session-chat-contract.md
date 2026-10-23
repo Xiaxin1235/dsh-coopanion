@@ -42,3 +42,29 @@ Host 返回同一完整 `sessionId` 和 `requestId`：
 恢复只重建原生视图，Host 重新发送当前快照，不重新执行上述历史查询或聊天提交。崩溃前已接受消息仍在 Harness 队列，未收到接受回执的 renderer 草稿会随窗口丢失；恢复不会推断成功或自动重放输入，用户可回到源会话核对。跨进程草稿持久化仍在范围外，详见[恢复契约](desktop-recovery-contract.md)。
 
 [文字缩放](text-readability-contract.md)只改变当前 Renderer 的样式与面板测量，保留草稿、在途请求及捕获正文；不产生新的发送、关注切换或已读确认。
+
+## 专属陪伴会话与默认选中契约
+
+### 专属会话识别与快照
+
+Host 端在恢复或列出会话时，通过检查公开的会话 header：
+- 若 `session.header.agentPreset === 'whaledot-companion'`，标记该会话为专属伴侣会话（`companion: true`）。
+- 若存在多个符合条件的专属会话，取最近创建（`createdAt` 最大）且未删除的一个作为主伴侣会话。
+- Host 快照（`PetSnapshot`）下发 `companionSessionId: string | null` 字段。
+- 当专属会话被删除或注销时，回退到次新的专属会话，或置为 `null`。
+
+### 默认聊天对象选择契约
+
+配置项 `defaultChatTarget`（可选值 `'companion' | 'last'`，默认 `'companion'`）：
+1. **双击打开聊天**：
+   - 当 `defaultChatTarget !== 'last'` 且 `snapshot.companionSessionId` 存在时，双击桌宠默认选中 `companionSessionId` 打开聊天。
+   - 当 `defaultChatTarget === 'last'` 或不存在 `companionSessionId` 时，保留当前活跃的 `sessionId`。
+2. **会话列表排序与呈现**：
+   - 专属会话在会话列表中固定置顶排序于第 0 位；
+   - 专属会话卡片携带 `.companion-card` 类，前置角色头像（`.companion-card-portrait`），名称展示为「大肥鱼」（英文「Dafeiyu」），隐藏 `cwd` 工作目录；
+   - 选中专属会话时，聊天顶部胶囊展示「和我聊天」，清空细节信息，隐藏「回到和我聊天」；
+   - 选中其他工作会话时，聊天顶部胶囊展示工作会话名称与工作目录，并显示「回到和我聊天」按钮（`#chat-to-companion`），点击后无缝切换回伴侣会话。
+3. **气泡、阅读器与信封来源**：
+   - 专属会话产生的回复，气泡状态文本展示「大肥鱼」；
+   - 阅读器标题展示「大肥鱼」，副标题隐藏工作目录只保留时间；
+   - 信封列表中，回复卡片来源名称展示为「大肥鱼」，卡片细节仅展示「阅读回复」而隐去工作目录。

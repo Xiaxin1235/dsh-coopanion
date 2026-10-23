@@ -57,6 +57,7 @@ export function createPanelStyle(document) {
         const rings = element('span', 'apron-rings', header); rings.setAttribute('aria-hidden', 'true');
         if (id === 'chat') {
           move($('chat-current'), header.querySelector('.conversation-heading'));
+          move($('chat-to-companion'), header.querySelector('.conversation-heading'));
           const chevron = document.createElementNS('http://www.w3.org/2000/svg', 'svg'), path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
           chevron.classList.add('chat-chevron'); chevron.setAttribute('viewBox', '0 0 24 24'); chevron.setAttribute('aria-hidden', 'true'); chevron.setAttribute('stroke', 'currentColor');
           path.setAttribute('d', 'M6 9l6 6 6-6'); chevron.append(path); $('chat-current').append(chevron); extras.push(chevron);
@@ -92,7 +93,7 @@ export function createPanelStyle(document) {
     const original = $('menu-portrait');
     for (const img of document.querySelectorAll('.panel-portrait')) {
       img.hidden = original.hidden;
-      img.nextElementSibling.hidden = !original.hidden;
+      if (img.nextElementSibling) img.nextElementSibling.hidden = !original.hidden;
       if (!original.hidden) { img.src = original.src; img.onerror = () => { img.hidden = true; img.nextElementSibling.hidden = false; }; }
     }
   }
