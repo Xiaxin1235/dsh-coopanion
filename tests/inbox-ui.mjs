@@ -96,8 +96,8 @@ try {
   assert.deepEqual((await actions()).at(-1), { type: 'notification-snooze', interactionId: request.id, generation: 8 });
   await receive({ type: 'notification-snooze-result', interactionId: request.id, ok: true });
   await receive({ type: 'configure', options: { locale: 'en-US' } });
-  assert.equal(await page.locator('#requests-title').innerText(), 'Brought back for you');
-  assert.equal(await page.locator('#inbox-replies [data-action=open]').innerText(), 'Continue conversation ↗');
+  assert.equal(await page.locator('#requests-title').innerText(), 'I brought your messages!');
+  assert.equal(await page.locator('#inbox-replies [data-action=open]').innerText(), 'Keep chatting');
   await page.setViewportSize({ width: 320, height: 640 });
   await page.waitForFunction(() => { const r = document.getElementById('requests').getBoundingClientRect(); return r.left >= 0 && r.right <= innerWidth && r.top >= 0 && r.bottom <= innerHeight; });
   assert.equal(await page.locator('#requests').evaluate(el => el.scrollWidth <= el.clientWidth), true, 'the inbox fits a small viewport');
@@ -125,7 +125,7 @@ try {
   await receive({type:'snapshot',snapshot:frame([waitingA],[])});
   await receive({type:'notification-state',snapshot:{...state,interactions:[inline]}});
   await resetActions();await page.locator('#attention').click();
-  await page.locator('.inline-question summary').click();
+  await page.locator('.inline-question').evaluate(node => { if (!node.open) node.querySelector('summary').click(); });
   assert.match(await page.locator('.inline-question').innerText(),/在现有授权内重试/);
   assert.equal(await page.locator('.inline-question img').count(),0);
   assert.equal(await page.locator('.inline-question button[type=submit]').isDisabled(),true);
@@ -139,7 +139,7 @@ try {
   await receive({type:'notification-state',snapshot:state});assert.equal(await page.locator('.request-card').count(),0);
   const customInline={...inline,id:JSON.stringify([a.id,'question','custom-inline']),nativeId:'custom-inline'};
   await receive({type:'notification-state',snapshot:{...state,interactions:[customInline]}});
-  await resetActions();await page.locator('.inline-question summary').click();
+  await resetActions();await page.locator('.inline-question').evaluate(node => { if (!node.open) node.querySelector('summary').click(); });
   await page.locator('.inline-question input[type=radio]').first().check();
   await page.locator('.inline-question textarea').fill('先别改 utils.ts');
   assert.equal(await page.locator('.inline-question input:checked').count(),0);
@@ -148,7 +148,7 @@ try {
   assert.deepEqual(customSubmitted.answers,[{id:'inline-q',selected:[],custom:'先别改 utils.ts'}]);
   await receive({...customSubmitted,type:'question-answer-result',status:'failed',code:'question/stale'});
   assert.match(await page.locator('.inline-question').innerText(),/已处理或已过期/);
-  assert.equal(await page.locator('[data-request-id][data-action=open]').innerText(),'去 Harness 处理 ↗');
+  assert.equal(await page.locator('[data-request-id][data-action=open]').innerText(),'去 Harness 处理');
   await page.setViewportSize({width:320,height:640});
   await page.waitForFunction(()=>{const r=document.getElementById('requests').getBoundingClientRect();return r.left>=0&&r.right<=innerWidth&&r.top>=0&&r.bottom<=innerHeight;});
   assert.equal(await page.locator('#requests').evaluate(n=>n.scrollWidth<=n.clientWidth),true);

@@ -109,8 +109,11 @@ it('acknowledges desktop preference changes through the shared host configuratio
   await vi.waitFor(() => expect(bridge.configure).toHaveBeenLastCalledWith(expect.objectContaining({ roam: false, notifications: true })));
   action?.({ type: 'preference', field: 'notifications', value: false });
   await vi.waitFor(() => expect(bridge.configure).toHaveBeenLastCalledWith(expect.objectContaining({ roam: false, notifications: false })));
+  action?.({ type: 'preference', field: 'interfaceStyle', value: 'classic' });
+  await vi.waitFor(() => expect(bridge.configure).toHaveBeenLastCalledWith(expect.objectContaining({ interfaceStyle: 'classic' })));
+  action?.({ type: 'preference', field: 'interfaceStyle', value: 'dark' });
   action?.({ type: 'preference', field: 'electronPath', value: true });
-  expect(bridge.configure).toHaveBeenCalledTimes(2);
+  expect(bridge.configure).toHaveBeenCalledTimes(3);
   await fiber.dispose(); await ctx.fiber.dispose();
 });
 
@@ -219,5 +222,33 @@ it('persists relative NPC home/range and hot-syncs the complete options', async 
     home = .8; ctx.emit('settings/document-updated', 'dsh-coopanion' as SettingsNamespace, 1);
     expect(bridge.configure).toHaveBeenLastCalledWith(expect.objectContaining({ npcHome: .8, npcRange: .5, roam: true }));
     expect(bridge.start).toHaveBeenCalledOnce();
+  } finally { await fiber.dispose(); await ctx.fiber.dispose(); }
+});
+
+
+it('defaults to the new interface and hot-syncs the persisted style through existing settings', async () => {
+  expect(Config().interfaceStyle.get()).toBe('new');
+  for (const value of [true, 'dark', 0]) expect(() => Config({ interfaceStyle: value as never })).toThrow();
+  const ctx = new Context(), config = Config({ autoStart: true }); ctx.provide('agents', { list: () => [] });
+  let style: 'new' | 'classic' = 'new'; config.interfaceStyle = { get: () => style };
+  const bridge = { ...nativeBridge(), configure: vi.fn() };
+  const fiber = ctx.plugin(scope => mountPet(scope, config, bridge));
+  try {
+    await fiber.await(); await vi.waitFor(() => expect(bridge.start).toHaveBeenCalledWith(expect.objectContaining({ interfaceStyle: 'new' }), expect.anything()));
+    for (const next of ['classic', 'new'] as const) { style = next; ctx.emit('settings/document-updated', 'dsh-coopanion' as SettingsNamespace, 1); expect(bridge.configure).toHaveBeenLastCalledWith(expect.objectContaining({ interfaceStyle: next })); }
+  } finally { await fiber.dispose(); await ctx.fiber.dispose(); }
+});
+
+
+it('writes the interface style preference to the existing durable settings service', async () => {
+  const ctx = new Context(); ctx.provide('agents', { list: () => [] });
+  const mutate = vi.fn(async () => {}); ctx.provide('settings', { describe: () => [], mutate });
+  let action: ((value: unknown) => void) | undefined;
+  const bridge = { ...nativeBridge(), onAction: (fn: (value: unknown) => void) => { action = fn; } };
+  const fiber = ctx.plugin(scope => mountPet(scope, Config({ autoStart: false }), bridge));
+  try {
+    await fiber.await(); action?.({ type: 'preference', field: 'interfaceStyle', value: 'classic' });
+    await vi.waitFor(() => expect(mutate).toHaveBeenCalledWith('dsh-coopanion', [{ op: 'set', path: ['interfaceStyle'], value: 'classic' }]));
+    action?.({ type: 'preference', field: 'interfaceStyle', value: 'dark' }); expect(mutate).toHaveBeenCalledTimes(1);
   } finally { await fiber.dispose(); await ctx.fiber.dispose(); }
 });

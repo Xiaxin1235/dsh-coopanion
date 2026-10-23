@@ -30,7 +30,7 @@ async function fixture(t, locale = 'en') {
 test('Harness English overrides the desktop browser language across the whole interface', async t => {
   const { page } = await fixture(t);
   assert.equal(await page.locator('html').getAttribute('lang'), 'en');
-  assert.equal(await page.locator('#chat-title').innerText(), 'I’m here. Take your time.');
+  assert.equal(await page.locator('#chat-title').innerText(), 'I’m here. Take your time!');
   assert.equal(await page.locator('#message').getAttribute('placeholder'), 'Continue this conversation…');
   assert.equal(await page.locator('#characters header strong').innerText(), 'Characters and animation');
   assert.equal(await page.locator('#chat-session-name').innerText(), '用户的中文会话');
@@ -46,7 +46,7 @@ test('live language changes refresh open readers and character metadata without 
   const reply = await page.locator('#reader-text').innerText();
   await receive({type:'configure',options:{locale:'zh'}});
   assert.equal(await page.locator('#reader-close').getAttribute('aria-label'), '收起完整回复');
-  assert.equal(await page.locator('#chat-title').innerText(), '我在，慢慢说。');
+  assert.equal(await page.locator('#chat-title').innerText(), '我在呢～慢慢说！');
   assert.equal(await page.locator('#reader-text').innerText(), reply);
   await receive({type:'configure',options:{locale:'en-US'}});
   assert.equal(await page.locator('#reader-close').getAttribute('aria-label'), 'Close full reply');

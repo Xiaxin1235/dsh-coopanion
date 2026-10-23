@@ -31,3 +31,10 @@ Host 快照或语言、提醒偏好的正常变化仍走原有 render；字号�
 ## 回复开场白预览
 
 持久设置 `preferOpeningParagraph` 默认 true，沿现有 ConfigForm → Host → DesktopOptions → Renderer 配置链同步。仅回复气泡调用 `replyPreview(text, 180, preferOpeningParagraph)`；聊天和收件箱摘要显式使用原有模式。第一段由首个空行界定，支持 CRLF；普通文本首段最多 120 个 Unicode 字符且还有正文时完整显示，`long=true` 保留全文入口。Markdown 代码、表格、列表、标题、过长首段和只有一段均回退原算法；关闭设置无条件使用原算法。不改变全文、已读、模型调用或气泡驻留规则。
+
+
+## 界面风格
+
+`interfaceStyle` 为 `new | classic`，默认 `new`。角色面板选择框通过 preference → Host 白名单 → `settings.mutate('dsh-coopanion', [{op: 'set', path: ['interfaceStyle'], value}])` 保存；完整 configure 及原生重建均携带该值。仅三种面板使用新版布局，经典恢复原 DOM 位置与 C05 样式。切换不重建角色、草稿、捕获正文或在途身份，不自动发送或确认。
+
+新版面板上方空间不足且下方可容纳时放到角色下方，尾巴随之朝上；其他情况优先在上方并夹入工作区。尾巴水平位置夹在圆角内。内层内容滚动，横幅与尾巴保留。所有文字沿用 `--text-scale`；0.85 / 1 / 1.3 是布局压力验证值，不新增持久字号档位。主题底色由原 `--accent` 派生，文字与实心按钮使用同色系加深值，确保白字和说明文字对比度至少 4.5:1。Nunito 字体本地加载，中文回退系统字体。

@@ -188,3 +188,12 @@ node "$env:USERPROFILE/.dsh/profiles/desktop/node_modules/@takboo/dsh-coopanion/
 ```
 
 输出文件须尚不存在。导出为现有 schema 1 诊断快照：最近最多 24 条窗口事件、显示意图、可见／最小化／置顶状态、窗口和工作区 DIP 矩形、缩放比例及有采集时间的角色本地矩形。不读取其他应用的标题或进程名，不含聊天或凭证。关闭诊断清除事件并撤下接口。
+
+
+### 界面风格
+
+默认使用新版聊天、伙伴菜单和小信封：围裙花边横幅、当前角色头像与配色、指向角色的尾巴。右键桌宠 → 换装扮 → **界面风格** 可切换「新版 / 经典」，沿现有 Harness 设置保存，重启后保留；经典沿用原布局。新版「自主陪伴」用关闭 / 安静 / 互动三段按钮，方向键切换，仍默认关闭；四个开关和一起活动沿用原功能。
+
+双击聊天，输入框支持最多约五行，Enter 换行、Ctrl / ⌘ + Enter 发送；发送失败保留草稿。信封提问默认展开，选择选项或填写「其他」后点击「就这样」才提交；审批仍需回 Harness 处理。新版文字随「文字大小」缩放，配色随角色变化，源码 · AGPL 入口保留。
+
+Interface style: right-click the pet → Dress up → Interface style. New is the default; Classic restores the original layout. The choice is saved through Harness settings and survives restart. Chat drafts, shortcuts, inline question submission and companionship controls retain their existing behavior.
