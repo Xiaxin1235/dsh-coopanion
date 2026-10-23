@@ -133,7 +133,7 @@ export async function nativeClick(page, selector) {
   // two layout samples; locator trial above waits for actionability/stability.
   const { x, y } = measurement.css;
   const beforeCdp = await nativeMeasurement(page, selector);
-  assert.ok(Math.abs(beforeCdp.cursor.x-measurement.dip.x)<=2 && Math.abs(beforeCdp.cursor.y-measurement.dip.y)<=2, 'OS cursor conversion is correct before CDP input');
+  assert.ok(Math.abs(beforeCdp.cursor.x-measurement.dip.x)<=2 && Math.abs(beforeCdp.cursor.y-measurement.dip.y)<=2, `OS cursor conversion is correct before CDP input: ${JSON.stringify({ expected: measurement.dip, observed: beforeCdp.cursor, physical: p })}`);
   await page.mouse.move(x, y);
   await page.waitForSelector('#pet[data-native-hit=true]');
   await page.mouse.click(x, y);

@@ -290,6 +290,7 @@ try {
   await import('./companionship-native.mjs');
   await import('./npc-life-native.mjs');
   await import('./diagnostics-native.mjs');
+  await import('./inbox-restart-native.mjs');
   await import('./lifecycle-startup-native.mjs');
   console.log('Native recovery passed: hidden and visible crashes, full Host state, no replay, stop and unload during backoff.');
   console.log('Native smoke passed: Electron ready handshake, isolated renderer, two-way chat IPC, host reply, notification, and clean shutdown.');

@@ -1,3 +1,4 @@
+import { InboxReceipts, continuedInboxKey } from './inbox-receipts.js';
 import { createQuestionForms } from './inline-questions.js';
 import { advanceRenderCadence } from './render-cadence.js';
 import { createDiagnosticCounters } from './diagnostics.js';
@@ -30,7 +31,8 @@ const snoozing = new Map();
 const questionForms = createQuestionForms({ send, changed: () => { renderRequests(); position(); } });
 const notificationLocale = () => options.locale ? petLanguage(options.locale) : automaticPetLanguage(navigator.languages ?? [navigator.language]);
 const uiCopy = () => petCopy(notificationLocale());
-const pendingRequests = () => pendingInteractions(notificationState);
+const allRequests = () => pendingInteractions(notificationState);
+const pendingRequests = () => allRequests().filter(item => !inboxReceipts.hides(item));
 const userInputOccupied = () => pressing || dragging || panels.some(p => !p.hidden) || !bubble.hidden;
 const userOccupied = () => userInputOccupied() || body?.layout?.busy;
 const panelAnchors = new WeakMap();
@@ -52,7 +54,8 @@ let readerQueue, inboxState = { requests: [], issues: [], replies: [], total: 0 
 let resizeLayout, displayGeometry, pendingDisplayPlacement, resizeOrigin;
 let stageWidth = innerWidth, pressedPointerId;
 const composer = new ChatComposer();
-const sessionAttention = new SessionAttention();
+const inboxReceipts = new InboxReceipts(key => { void native?.inboxReceipt?.(key).then(ok => { if (!ok) console.warn('Inbox viewing receipt could not be saved'); }).catch(() => console.warn('Inbox viewing receipt could not be saved')); });
+const sessionAttention = new SessionAttention(inboxReceipts);
 let attentionSnapshot = snapshot;
 const chatTimers = new Map();
 let draftSessionId;
@@ -369,7 +372,7 @@ function updateMood() {
 }
 
 function render() {
-  attentionSnapshot = sessionAttention.project(snapshot, pendingRequests());
+  attentionSnapshot = sessionAttention.project(snapshot, allRequests());
   applyLocale(); const labels = uiCopy().labels;
   const previous = renderedSessionId;
   const selected = snapshot.sessions.find(session => session.id === snapshot.sessionId);
@@ -485,7 +488,11 @@ function renderRequests() {
     preview.textContent = item.preview;
     const session = snapshot.sessions.find(session => session.id === item.sessionId);
     meta.textContent = `${session?.label ?? item.sessionId}${item.state === 'continued' ? ' · ' + copy.continued : ''}${item.dueAt ? ' · ' + copy.delay + ': ' + new Intl.DateTimeFormat(notificationLocale(), { hour: '2-digit', minute: '2-digit' }).format(item.dueAt) : ''}`;
-    const open = document.createElement('button'); open.textContent = item.kind === 'question' ? copy.handleHarness : copy.handle; open.dataset.requestId = item.id; open.dataset.inboxKey = item.id; open.dataset.action = 'open'; open.onclick = () => openSession(item.sessionId);
+    const open = document.createElement('button'); open.textContent = item.kind === 'question' ? copy.handleHarness : copy.handle; open.dataset.requestId = item.id; open.dataset.inboxKey = item.id; open.dataset.action = 'open'; open.onclick = () => {
+      inboxReceipts.remember(continuedInboxKey(item));
+      noticeQueue.discard(notice => notice.requestIds?.length && notice.requestIds.every(id => allRequests().some(request => request.id === id && inboxReceipts.hides(request))));
+      openSession(item.sessionId);
+    };
     const later = document.createElement('button'); later.textContent = snoozing.has(item.id) ? copy.snoozing : copy.snooze; later.dataset.requestId = item.id; later.dataset.inboxKey = item.id; later.dataset.action = 'snooze'; later.disabled = snoozing.has(item.id) || !options.notifications || options.reminders === false;
     later.onclick = () => { snoozing.set(item.id, { dueAt: item.dueAt, expiresAt: performance.now() + 10000 }); $('request-feedback').textContent = ''; send({ type: 'notification-snooze', interactionId: item.id, generation: notificationState.runtime.generation }); renderRequests(); };
     actions.append(open, later); card.append(label, preview, meta);
@@ -531,7 +538,13 @@ function openRequests(autoRead = true) {
   renderRequests(); updateMood(); position(); $('requests-close').focus();
 }
 $('requests-close').onclick = closePanels;
-$('interaction-close').onclick = () => { interaction.hidden = true; currentNotice = undefined; presentNextNotice(); showNextReply(); };
+$('interaction-close').onclick = () => {
+  const notice = currentNotice;
+  const source = snapshot.sessions.find(s => s.id === notice?.sessionId);
+  if (notice && source?.attentionId === JSON.stringify([notice.sessionId, 'issue', notice.category, notice.turn, notice.seq])) acknowledgeIssue(source.id);
+  for (const item of allRequests()) if (notice?.requestIds?.includes(item.id)) inboxReceipts.remember(continuedInboxKey(item));
+  interaction.hidden = true; currentNotice = undefined; render(); presentNextNotice(); showNextReply();
+};
 $('interaction-open').onclick = () => openSession(currentNotice?.sessionId);
 $('interaction-pending').onclick = () => openRequests(false);
 
@@ -554,6 +567,7 @@ function receive(message) {
   if (!message || typeof message !== 'object') return;
   switch (message.type) {
     case 'init':
+      inboxReceipts.load(message.dismissedInbox);
       applyOptions(message.options);
       if (message.snapshot) snapshot = message.snapshot;
       // Recovery restores unread results as an inbox baseline, without speaking them again.
@@ -622,6 +636,7 @@ function receive(message) {
     case 'notice': {
       attentionToWork();
       if (!options.notifications) break;
+      if (message.notice.requestIds?.length && message.notice.requestIds.every(id => allRequests().some(item => item.id === id && inboxReceipts.hides(item)))) break;
       if (message.notice.category && message.notice.id) {
         if (notificationState && (notificationState.runtime.phase !== 'running' || !notificationState.runtime.visible || notificationState.runtime.suspended)) break;
         noticeQueue.push(message.notice); presentNextNotice(); break;
@@ -766,12 +781,17 @@ function continueSession(id) {
   if (!id || !snapshot.sessions.some(session => session.id === id)) return;
   send({ type: 'select', sessionId: id }); snapshot = { ...snapshot, sessionId: id }; render(); openChat();
 }
-function openSession(id) {
-  if (!id) return;
-  if (sessionAttention.acknowledge(snapshot, pendingRequests(), id)) {
+function acknowledgeIssue(id) {
+  if (sessionAttention.acknowledge(snapshot, allRequests(), id)) {
     reactionUntil = 0; appliedMood = undefined;
     noticeQueue.discard(notice => notice.sessionId === id && !notice.requestIds.length && ['error', 'blocked', 'interrupted', 'max-tokens'].includes(notice.category));
   }
+}
+function openSession(id) {
+  if (!id) return;
+  acknowledgeIssue(id);
+  for (const item of allRequests()) if (item.sessionId === id) inboxReceipts.remember(continuedInboxKey(item));
+  noticeQueue.discard(notice => notice.requestIds?.length && notice.requestIds.every(id => allRequests().some(item => item.id === id && inboxReceipts.hides(item))));
   send({ type: 'open-session', sessionId: id }); bubble.hidden = true; closePanels();
 }
 $('conversation-open').onclick = () => openSession(snapshot.sessionId);

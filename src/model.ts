@@ -7,7 +7,7 @@ import { type PendingInteraction, type TaskNotice } from './notification-contrac
 
 export type Mood = 'idle' | 'thinking' | 'talking' | 'working' | 'waiting' | 'happy' | 'error' | 'sleeping';
 export interface PetResult { id: string; sessionId: string; text: string; time: number; read: boolean; }
-export interface PetSession { id: string; label: string; project: string; cwd: string; prompt: string; createdAt: number; updatedAt: number; mood: Mood; text: string; reply: string; replyId: string; unread: number; revision: number; active: boolean; streaming: boolean; speechId: string; chatAvailable?: boolean; completion?: TaskNotice['category']; }
+export interface PetSession { id: string; label: string; project: string; cwd: string; prompt: string; createdAt: number; updatedAt: number; mood: Mood; text: string; reply: string; replyId: string; unread: number; revision: number; active: boolean; streaming: boolean; speechId: string; chatAvailable?: boolean; attentionId?: string; completion?: TaskNotice['category']; }
 export interface PetSnapshot { mood: Mood; text: string; sessionId: string | null; revision: number; active: boolean; streaming: boolean; speechId: string; results: PetResult[]; sessions: PetSession[]; }
 export interface PetNotice extends Partial<Omit<TaskNotice, 'title' | 'body' | 'sessionId'>> { title: string; body: string; sessionId: string; kind?: 'task' | 'message'; }
 interface TaskState { completion: CompletionTracker; ended: number; seq: number; turn: number; active: boolean; finalText?: string; tools: Map<string, string>; approvals: Set<symbol | string>; questions: Set<string>; requests: Set<string>; celebrateUntil: number; stream?: { id: string; revision: number; index: number; text: string; blocks: Map<number, string> }; }
@@ -150,7 +150,10 @@ export class PetModel {
     this.describe(item, event);
     const completion = task.completion.consume(event);
     if (event.type === 'goal/change' && completion && live) {
-      if (!completion.silent || !task.active) this.present(item, completion.mood, completion.text);
+      if (!completion.silent || !task.active) {
+        if (['error', 'waiting'].includes(completion.mood)) item.attentionId = JSON.stringify([item.id, 'issue', completion.category, task.turn, event.seq]);
+        this.present(item, completion.mood, completion.text);
+      }
       if (completion.clear) delete item.completion; else item.completion = completion.category;
       task.celebrateUntil = completion.mood === 'happy' ? this.now() + 2500 : 0;
       return completion.silent ? undefined : { title: `${item.label} · ${completion.text}`, body: completion.text, sessionId: item.id, kind: 'task', category: completion.category, goal: completion.goal };
@@ -160,6 +163,7 @@ export class PetModel {
     switch (event.type) {
       case 'turn/start':
         if (event.data.turn <= task.ended) return;
+        delete item.attentionId;
         delete item.completion;
         task.turn = event.data.turn; task.active = true; task.tools.clear(); task.approvals.clear(); task.celebrateUntil = 0;
         task.stream = undefined; task.finalText = undefined; item.streaming = false; item.speechId = ''; item.updatedAt = event.time;
@@ -199,6 +203,7 @@ export class PetModel {
         task.ended = event.data.turn;
         task.turn = event.data.turn; task.active = false; task.tools.clear(); task.approvals.clear(); task.celebrateUntil = 0;
         task.stream = undefined; item.streaming = false;
+        if (['error', 'blocked', 'max-tokens', 'interrupted'].includes(event.data.reason.kind)) item.attentionId = JSON.stringify([item.id, 'issue', event.data.reason.kind, event.data.turn, event.seq]);
         switch (event.data.reason.kind) {
           case 'completed': {
             const text = task.finalText?.trim() ? task.finalText : '';

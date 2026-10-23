@@ -6,6 +6,7 @@ async function characterCall(channel, value) {
 }
 contextBridge.exposeInMainWorld('dshPetBridge', {
   nativeGeometry: true,
+  inboxReceipt: key => ipcRenderer.invoke('pet:inbox-receipt', key),
   ...(process.argv.includes('--dsh-pet-window-test') ? { testWindow: value => ipcRenderer.invoke('pet:test-window', value) } : {}),
   ...(process.argv.includes('--dsh-pet-display-test') ? { testScreenPoint: value => ipcRenderer.invoke('pet:test-screen-point', value) } : {}),
   subscribe(callback) {

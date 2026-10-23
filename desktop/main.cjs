@@ -1,3 +1,5 @@
+const { InboxStore } = require('./inbox-store.cjs');
+const { validInboxKey, continuedInboxKey } = require('../web/inbox-receipts.js');
 const { questionAnswer } = require('../web/question-contract.js');
 const { createVisibilityGuard, topLevel } = require('./window-visibility.cjs');
 const { createWindowTrace, petGeometry } = require('./window-diagnostics.cjs');
@@ -38,6 +40,7 @@ const windowTest = !!process.env.DSH_PET_TEST_DATA_DIR && process.env.DSH_PET_TE
 const displayTest = process.env.DSH_PET_TEST_NO_SANDBOX === '1' && !!process.env.DSH_PET_TEST_DEBUG_PORT;
 const keyboardActivity = require('./keyboard-activity.cjs').createKeyboardActivity();
 const { initialLockState } = require('./lifecycle-state.cjs');
+let inboxReceipts, inboxInteractions = [];
 let windowGuard, guardPoll, nativeReady = false, shuttingDown = false, rendererGeometry;
 const windowTrace = createWindowTrace({ enabled: () => options?.diagnostics === true, snapshot: () => {
   if (!win || win.isDestroyed()) return null;
@@ -70,7 +73,11 @@ let lockStateKnown = false;
 let suspended = true;
 let desiredVisible = process.env.DSH_PET_VISIBLE !== '0', userClosed = false;
 function visibility() { if (win && !win.isDestroyed()) { process.send?.({ type: 'visibility', generation, visibilityRevision: ++visibilityRevision, visible: win.isVisible(), desiredVisible, suspended, screenLocked, systemAsleep, lockStateKnown }); syncTray(); } }
-function forward(message) { if (win && !win.isDestroyed()) win.webContents.send('pet:update', message); }
+function forward(message) {
+  if (message.type === 'notification-state') inboxInteractions = message.snapshot.interactions;
+  if (message.type === 'init') message = { ...message, dismissedInbox: inboxReceipts?.keys() ?? [] };
+  if (win && !win.isDestroyed()) win.webContents.send('pet:update', message);
+}
 function hit(active) {
   if (!win || win.isDestroyed()) return;
   if (active !== interactive) {
@@ -180,6 +187,7 @@ app.whenReady().then(async () => {
   const webRoot = join(__dirname, '../web');
   characters = new CharacterStore(join(app.getPath('userData'), 'figures-v2'), join(webRoot, 'upstream/whale'));
   const prefix = `/${randomBytes(24).toString('hex')}/`;
+  inboxReceipts = new InboxStore(app.getPath('userData')); await inboxReceipts.load();
   companions = new CompanionStore(join(app.getPath('userData'), 'companionship-v1'));
   const manifest = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf8'));
   const build = JSON.parse(readFileSync(join(__dirname, '../dist/build-info.json'), 'utf8'));
@@ -246,6 +254,13 @@ app.whenReady().then(async () => {
   if (displayTest && windowTest) require('./test-window-probe.cjs').installWindowProbe({ ipcMain, BrowserWindow, screen, win, show, hide, hit, powerMonitor });
   for (const event of ['resize', 'move']) win.on(event, () => setImmediate(() => { if (!win.isDestroyed()) displays.refresh(); }));
   win.webContents.on('did-finish-load', () => { if (lastFrame) forward(lastFrame); displays.publish(); });
+  ipcMain.handle('pet:inbox-receipt', async (event, key) => {
+    if (event.sender !== win.webContents || event.senderFrame !== win.webContents.mainFrame || !validInboxKey(key)) return false;
+    const part = JSON.parse(key), session = lastFrame?.snapshot?.sessions?.find(s => s.id === part[0]);
+    const pending = inboxInteractions.filter(item => item.sessionId === part[0] && item.state !== 'settled');
+    const allowed = part[1] === 'continued' ? pending.some(item => continuedInboxKey(item) === key) : session?.attentionId === key && !session.active && ['error', 'waiting'].includes(session.mood) && !pending.length;
+    return allowed ? inboxReceipts.remember(key) : false;
+  });
   ipcMain.on('pet:geometry', (event, value) => {
     if (event.sender === win.webContents && event.senderFrame === win.webContents.mainFrame && options?.diagnostics === true) { const clean = petGeometry(value); if (clean) rendererGeometry = clean; }
   });
@@ -297,5 +312,5 @@ app.whenReady().then(async () => {
   if (process.connected) process.send(failure, () => app.exit(1)); else app.exit(1);
 });
 
-app.on('before-quit', () => { shuttingDown = true; clearInterval(guardPoll); if (userClosed) process.send?.({ type: 'closed' }); clearInterval(poll); keyboardActivity.configure(false); if (diagnosticRead) { clearTimeout(diagnosticRead.timer); diagnosticRead.resolve(null); diagnosticRead = undefined; } diagnostics?.release(); void diagnostics?.close(); assetServer?.close(); tray?.destroy(); });
+app.on('before-quit', event => { shuttingDown = true; if (inboxReceipts?.pending) { event.preventDefault(); void inboxReceipts.flush().then(() => app.quit()); return; } clearInterval(guardPoll); if (userClosed) process.send?.({ type: 'closed' }); clearInterval(poll); keyboardActivity.configure(false); if (diagnosticRead) { clearTimeout(diagnosticRead.timer); diagnosticRead.resolve(null); diagnosticRead = undefined; } diagnostics?.release(); void diagnostics?.close(); assetServer?.close(); tray?.destroy(); });
 app.on('window-all-closed', () => { userClosed = true; app.quit(); });

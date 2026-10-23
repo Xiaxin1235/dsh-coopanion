@@ -44,7 +44,7 @@ try {
 
   const second = reply('multi-a-full', a, 2, '<img src=x onerror="throw 1"> 已修复状态。\n全文内容。');
   const third = reply('multi-b-full', b, 3, '菜单已经完成。');
-  const request = { id: JSON.stringify([a.id, 'question', 'question-call-full']), nativeId: 'question-call-full', sessionId: a.id, kind: 'question', turn: 1, seq: 2, createdAt: 1, preview: '这一步选择哪个方案？', state: 'continued', dueAt: null, automaticReminders: 0 };
+  let request = { id: JSON.stringify([a.id, 'question', 'question-call-full']), nativeId: 'question-call-full', sessionId: a.id, kind: 'question', turn: 1, seq: 2, createdAt: 1, preview: '这一步选择哪个方案？', state: 'continued', dueAt: null, automaticReminders: 0 };
   const issue = { id: 'error-source-full', label: '构建检查', mood: 'error', text: '构建失败，请检查。', unread: 0 };
   const waitingA = { ...a, mood: 'waiting' };
   await receive({ type: 'snapshot', snapshot: frame([waitingA, b, issue], [{ ...first, read: true }, second, third]) });
@@ -85,7 +85,10 @@ try {
   await page.locator('[data-request-id][data-action=open]').click();
   assert.deepEqual(await actions(), [{ type: 'open-session', sessionId: a.id }], 'opening a question never reads replies or settles the request');
   await page.locator('#attention').click();
-  assert.equal(await page.locator('.request-card').count(), 1);
+  assert.equal(await page.locator('.request-card').count(), 0, 'viewed continued question leaves the inbox without being answered');
+  request = { ...request, id: JSON.stringify([a.id, 'question', 'new-question-call']), nativeId: 'new-question-call' };
+  await receive({ type: 'notification-state', snapshot: { ...state, interactions: [request] } });
+  assert.equal(await page.locator('.request-card').count(), 1, 'a new call in the same session remains visible');
   await page.locator('[data-request-id][data-action=snooze]').focus();
   await receive({ type: 'notification-state', snapshot: { ...state, interactions: [{ ...request, dueAt: Date.now() + 600000 }] } });
   assert.equal(await page.evaluate(() => document.activeElement.dataset.requestId), request.id, 'request updates preserve keyboard focus on the same action');
