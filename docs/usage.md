@@ -197,3 +197,6 @@ node "$env:USERPROFILE/.dsh/profiles/desktop/node_modules/@takboo/dsh-coopanion/
 双击聊天，输入框支持最多约五行，Enter 换行、Ctrl / ⌘ + Enter 发送；发送失败保留草稿。信封提问默认展开，选择选项或填写「其他」后点击「就这样」才提交；审批仍需回 Harness 处理。新版文字随「文字大小」缩放，配色随角色变化，源码 · AGPL 入口保留。
 
 Interface style: right-click the pet → Dress up → Interface style. New is the default; Classic restores the original layout. The choice is saved through Harness settings and survives restart. Chat drafts, shortcuts, inline question submission and companionship controls retain their existing behavior.
+
+
+新版细节：关闭的开关使用浅灰轨道与清晰的圆钮边框；上一句话和「看全文」并排，长摘要仍可滚动；会话胶囊使用 SVG 下拉箭头。信封选项整张卡片都可点击，选中后显示主题边框和浅底色，也可用 Tab 聚焦、方向键切换，再点击「就这样」提交；提交中或已处理时选项不可改动。经典模式保持原样。

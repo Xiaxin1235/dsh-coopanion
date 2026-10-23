@@ -55,7 +55,12 @@ export function createPanelStyle(document) {
           extras.push(fallback);
         }
         const rings = element('span', 'apron-rings', header); rings.setAttribute('aria-hidden', 'true');
-        if (id === 'chat') move($('chat-current'), header.querySelector('.conversation-heading'));
+        if (id === 'chat') {
+          move($('chat-current'), header.querySelector('.conversation-heading'));
+          const chevron = document.createElementNS('http://www.w3.org/2000/svg', 'svg'), path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          chevron.classList.add('chat-chevron'); chevron.setAttribute('viewBox', '0 0 24 24'); chevron.setAttribute('aria-hidden', 'true'); chevron.setAttribute('stroke', 'currentColor');
+          path.setAttribute('d', 'M6 9l6 6 6-6'); chevron.append(path); $('chat-current').append(chevron); extras.push(chevron);
+        }
         if (id === 'requests') move($('inbox-count'), header.querySelector('.conversation-heading'));
         if (id === 'menu') {
           const title = element('strong', 'menu-question', $('menu-name').parentElement);
