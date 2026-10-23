@@ -9,6 +9,12 @@ export function contrast(a, b = '#ffffff') {
   return (x + .05) / (y + .05);
 }
 export function actionInk(accent) {
+  // Imported characters may use any CSS color, including short hex or named colors.
+  if (!/^#[0-9a-f]{6}$/i.test(accent)) {
+    const paint = globalThis.document?.createElement('canvas').getContext('2d');
+    if (paint) { paint.fillStyle = accent; accent = paint.fillStyle; }
+    if (!/^#[0-9a-f]{6}$/i.test(accent)) accent = '#344bbb';
+  }
   const rgb = accent.slice(1).match(/../g).map(v => parseInt(v, 16));
   let color = accent;
   while (contrast(color) < 5.5) {
