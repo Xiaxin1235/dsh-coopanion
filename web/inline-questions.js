@@ -44,7 +44,8 @@ export function createQuestionForms({ send, changed }) {
         let value = draft.values.get(q.id);
         if (!value) { value = { selected: '', custom: '' }; draft.values.set(q.id, value); }
         const field = document.createElement('fieldset'), legend = document.createElement('legend');
-        legend.textContent = q.header ?? q.question; field.dataset.questionId = q.id;
+        legend.textContent = q.header ?? q.question;
+        if (!q.header && questions.length === 1 && q.question === item.preview) legend.className = 'repeat-prompt'; field.dataset.questionId = q.id;
         field.append(legend);
         if (q.header) { const prompt = document.createElement('p'); prompt.textContent = q.question; field.append(prompt); }
         if (q.detail) { const detail = document.createElement('pre'); detail.textContent = q.detail; field.append(detail); }

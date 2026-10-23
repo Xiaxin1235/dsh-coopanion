@@ -154,8 +154,9 @@ function position() {
     if (panel.hidden) { panelAnchors.delete(panel); continue; }
     if (!panelAnchors.has(panel)) panelAnchors.set(panel, { ...anchor, petX: box ? box.x + box.w / 2 : anchor.x, petTop: box?.y ?? anchor.y, petBottom: box ? box.y + box.h : anchor.y });
     const panelAnchor = panelAnchors.get(panel);
-    const pw = panel.offsetWidth, ph = panel.offsetHeight;
     const apron = options.interfaceStyle !== 'classic' && [chat, menu, requests].includes(panel);
+    if (apron) panel.style.setProperty('--panel-room', `${Math.max(160, panelAnchor.petTop - 26, innerHeight - panelAnchor.petBottom - 30)}px`);
+    const pw = panel.offsetWidth, ph = panel.offsetHeight;
     const placement = apron ? apronPosition({ x: panelAnchor.petX, y: panelAnchor.petTop }, { width: pw, height: ph }, { width: innerWidth, height: innerHeight }, panelAnchor.petBottom) : panelPosition(panelAnchor, { width: pw, height: ph }, { width: innerWidth, height: innerHeight });
     const { x: px, y: py } = placement;
     if (apron) { panel.dataset.tail = box && py >= box.y + box.h / 2 ? 'top' : 'bottom'; placement.offset = Math.max(28, Math.min(pw - 28, (box ? box.x + box.w / 2 : panelAnchor.x) - px)); }
