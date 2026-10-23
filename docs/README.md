@@ -2,14 +2,16 @@
 
 本目录维护现行产品契约与分支开发入口。安装入口见 [项目首页](../README.md)，各版本改动见 [版本记录](release-notes.md)。实际版本、依赖、命令和支持的宿主列表以 `package.json`、`npm-shrinkwrap.json` 与 `.github/workflows/` 为准。
 
+**2026-10-23：生活感原路线暂停，当前先整理与本地提交，再讨论新的思路。** 不按旧 D1／阶段“下一步”继续实施。唯一状态见[开发入口](aliveness-development.md)，讨论输入见[本周成果与复用边界](design/reuse-inventory.md)。
+
 ## 按任务阅读
 
 | 任务 | 资料 |
 |---|---|
 | 安装、配置、操作与升级 | [使用指南](usage.md) |
 | 生活感分支接手、当前阶段与验收边界 | [当前开发状态](aliveness-development.md) |
-| 原反馈基线、D1 目标与可见验收 | [空间与身体复核](design/space-body-review.md) |
-| 真实桌面互动规划、平台 Adapter 与三平台／Wayland 验收 | [跨平台桌面互动方案](design/desktop-environment-plan.md)：现有路线专项，实施进度看开发状态 |
+| 历史空间／身体反馈及旧验收目标（暂停） | [空间与身体复核](design/space-body-review.md) |
+| 真实桌面互动规划、平台 Adapter 与三平台／Wayland 验收 | [跨平台桌面互动方案](design/desktop-environment-plan.md)：暂停前方案与探针保留入口，未选择继续实施 |
 | 默认产品自主生活、阶段装配与回退 | [生活装配契约](design/living-integration-contract.md) |
 | 第 5C 期回应合批与安静节奏 | [回应契约](design/response-rhythm-contract.md) |
 | 第 5B 期相处记忆、查看／纠正／删除 | [有限记忆契约](design/companion-memory-contract.md) |
@@ -37,11 +39,11 @@
 | 需要查阅的内容 | 入口与适用范围 |
 |---|---|
 | 生活感规划与制作 | [设计与制作索引](design/README.md)：现行空间／动作／双线／人格／记忆／视觉契约及空间身体复核；阶段状态和授权只看开发入口 |
-| 上游借鉴与已选补丁 | [蓝图第 7 节](design/aliveness-implementation-plan.md#7-上游借鉴人格记忆与互动节奏)维护后续取舍；[固定调研与回归归档](archive/2026-10-aliveness/upstream-motion/README.md)区分当时建议、已移植两项和原生超时修正 |
+| 上游借鉴与已选补丁 | [成果盘点](design/reuse-inventory.md)区分可复用模块、模型依赖与未选路线；[固定调研与回归归档](archive/2026-10-aliveness/upstream-motion/README.md)区分当时建议、已移植两项和原生超时修正 |
 | 固定源码验证与资源／生命周期结果 | [固定报告](reports/README.md)：按固定源码区分 5A／5B 首版与反馈修正；旧报告不是当前执行指令 |
 | 早期发散、候选诊断与发布过程 | [历史说明](archive/README.md)：其中的计划、问题和进度只属于当时快照 |
 
-前期阶段与默认装配的旧范围、提案、失败模型、反馈修正与固定验证从[阶段历史](archive/2026-10-aliveness/README.md)追溯。默认产品平面与方向身体的现行行为见生活装配契约；基线问题及完整体验目标见[空间与身体复核](design/space-body-review.md)，后续路线与平台能力门槛见[跨平台桌面互动方案](design/desktop-environment-plan.md)。当前交付与用户验收看[开发状态](aliveness-development.md)，执行范围来自用户最新指令；原始报告中的待验收、旧下一步和推送限制均属于当时快照。
+前期阶段与默认装配的旧范围、提案、失败模型、反馈修正与固定验证从[阶段历史](archive/2026-10-aliveness/README.md)追溯。默认产品平面与方向身体的源码行为见生活装配契约；[空间与身体复核](design/space-body-review.md)和[跨平台方案](design/desktop-environment-plan.md)均已转为暂停前历史入口。新的方向、动作与平台工作范围待讨论，不从旧目标恢复任务。当前交付与用户验收看[开发状态](aliveness-development.md)，执行范围来自用户最新指令；原始报告中的待验收、旧下一步和推送限制均属于当时快照。
 
 普通搜索覆盖现行契约、分支交付状态、规划范围和运行源码；归档、历史版本说明、旧场景夹具、原始报告／画面／提示词及本地产物由 `.ignore` 屏蔽。历史追溯使用 `rg --no-ignore docs/archive`，核对原始工作台证据使用 `rg --no-ignore docs/design/art-workflow`，观察结果使用 `rg --no-ignore docs/reports`，发布历史使用 `rg --no-ignore docs/release-notes.md`。设计、归档及报告目录不随安装包分发。
 

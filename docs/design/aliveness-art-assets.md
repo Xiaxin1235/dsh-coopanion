@@ -1,24 +1,17 @@
-# 生活感素材入口
+# 素材入口与保留边界
 
-本页索引可复用素材与按需补图规则，不是待办清单。完整旧需求池（B0–B2、角色／物件编号、数量与原稿章节）保存在[5B 阶段快照](../archive/2026-10-aliveness/stage-5b/README.md)，不能把其中未选用的草案当成当前缺件。
+当前路线暂停，先盘点复用再讨论新方案；本页不是补图待办。决定见[开发状态](../aliveness-development.md)，代码与表现依赖见[复用盘点](reuse-inventory.md)。
 
-## 复用入口
-
-| 内容 | 来源与使用边界 |
+| 素材 | 当前用途与边界 |
 |---|---|
-| 默认角色与既有动作 | `web/upstream/whale/figure.json`、[上游记录](../../web/upstream/UPSTREAM.md)及第三方声明；动作只用 manifest 与身体词表交集，当前方向与兼容状态见开发入口 |
-| O03 连续手部与贝壳 | [工作台](art-workflow/o03-shell-hands-v1/README.md)、[素材 manifest](../../web/props/shell/hands/asset.json)；指定 180px 主配色／40px 贝壳的验收不外推到任意角色或高度 |
-| 二维场景与分层 SVG | [空间工作台](art-workflow/space-v1/README.md)；地面占用、立面、交互包络与遮挡分开建模 |
-| 气泡、设置和近身提示 | [视觉体系](message-visual-system.md)与 `web/message-surfaces.css`；优先用代码原生布局和图标保持角色纸面语言，不为文字输出生成图片 |
+| [上游鲸鱼角色](../../web/upstream/whale/figure.json) | 原分层模型、动作与多配色保留，来源和权利见[上游记录](../../web/upstream/UPSTREAM.md)及[声明](../../THIRD_PARTY_NOTICES.md)；没有自动切回原角色 |
+| [D1 生产方向资源](../../web/upstream/whale/directions/provenance.json) | 仍被默认产品加载，保留以免破坏运行；角色一致性未通过 |
+| [D1 方向工作台](art-workflow/d1-directions-v1/README.md) | 输入、原图坐标、校准及导出复现，暂停新增生产 |
+| [D1 转面探索](art-workflow/d1-turnaround-v1/README.md) | 原参考、失败稿、完整提示词与几何研究；没有锁定母版，默认搜索屏蔽 |
+| [O03 手部与贝壳](art-workflow/o03-shell-hands-v1/README.md) | 连续手部及接触实验；指定 180px 角色／40px 贝壳的验收不外推到任意模型 |
+| [空间 SVG](art-workflow/space-v1/README.md) | 简单分层道具与编辑场景可复用；不要求重新将家具摆进默认产品 |
+| [消息视觉体系](message-visual-system.md) | 气泡、设置与近身提示继续使用代码布局，无需新增图片 |
 
-## 按缺口补图
+原始素材、提示词、反馈、来源清单与许可保留原字节；历史重复截图只有确认存在相同摘要的保留副本后才回收，映射见[整理归档](../archive/2026-10-aliveness/route-review-20261023/README.md)。未导入 dsh-pet 视频或其他新素材，也未建立三维制作源。
 
-先用现有资源做真实运动与互动，定位可见缺口，再通过[制作工作流](art-workflow/README.md)补最小资源组。记录参考、用途、许可、锚点、尺寸与替换边界，保留原图／提示词／摘要；实际帧与交互通过后才绑定进产品。
-
-D1 方向需求、坐标、兼容与产品接入门槛集中在[资源表](d1-direction-assets.md)。制作样片和分发资源分别记录；当前状态只看开发入口。
-
-5C 回应节奏复用已有动作与便笺。出门、留言、归来与完整关节等仍为后续候选；素材工作按专项 D1 的实际缺口与最小资源组推进。当前交付、验收和授权见[开发状态](../aliveness-development.md)。
-
-## D1 最小方向样片准备
-
-方向、锚点、转身及产品验证使用[统一资源规格](d1-direction-assets.md)，制作操作使用[方向制作台](art-workflow/d1-directions-v1/README.md)。
+任何新制作需求都应在新的路线讨论后明确。旧编号、数量、候选选择、先后顺序和“下一步”不延续为当前任务。

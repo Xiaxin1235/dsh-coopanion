@@ -82,6 +82,7 @@ export async function cacheCandidates(root = cacheRoot, now = Date.now(), used =
   if (await exists(tmp)) for (const name of await readdir(tmp)) {
     const path = await safePath(root, join(tmp, name));
     try {
+      if (!(await lstat(path)).isDirectory()) continue;
       const lease = await json(join(path, 'lease.json'));
       if (lease.schema !== 1 || lease.kind !== 'temporary' || !Number.isFinite(lease.created) || !Array.isArray(lease.references)) continue;
       // Even a dead run holds its references until its private directory is reclaimed.
@@ -96,6 +97,7 @@ export async function cacheCandidates(root = cacheRoot, now = Date.now(), used =
       const path = await safePath(root, join(runtimes, name));
       if (pinned(path)) continue;
       try {
+        if (!(await lstat(path)).isDirectory()) continue;
         const state = await json(join(path, 'ready.json'));
         if (state.schema !== 1 || state.kind !== 'host-runtime' || !Number.isFinite(state.lastUsed)) continue;
         if (now - state.lastUsed > 30 * 86400000 && !used(path)) result.push({ path, kind: 'host-runtime', lastUsed: state.lastUsed });

@@ -26,7 +26,7 @@ async function select(){
   labels.replaceChildren(...item.views.map((view,i)=>{const span=document.createElement('span');span.textContent=view;if(rows>1)Object.assign(span.style,{left:((i%columns)*100/columns+1)+'%',top:(Math.floor(i/columns)*100/rows+.6)+'%'});return span;}));
   labels.style.gridTemplateColumns=`repeat(${columns},1fr)`;
   image.alt=item.views.join('、')+'静态候选';annotations();
-  $('candidate-status').textContent=item.label+' · 未锁定';$('candidate-notes').textContent=item.review;
+  $('candidate-status').textContent='已暂停 · '+item.label+' · 历史未锁定';$('candidate-notes').textContent=item.review;
   window.turnaroundReview={manifest,current:item.file,width:image.naturalWidth,height:image.naturalHeight};
  }
  catch{if(request!==selection)return;$('load-error').textContent='候选图未能加载；请检查本地制作资源。';$('load-error').hidden=false;}

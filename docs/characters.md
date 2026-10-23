@@ -92,7 +92,7 @@ body.place2d({x, y});
 
 `model` 包含 `revision,width,height,body:{left,right,top,bottom},margin,obstacles:[{id,x,y,w,h,kind}]`，可选 `groundBody:{left,right,top,bottom}`。仅显式标定为 `kind:ground-solid` 的实体采用有限地面占用；其余实体、禁区和世界边界保持完整 `body`。缺少 `groundBody` 时保持原全身模型。`layout` 增加实际根 `y` 和有界 `navigation` 状态，原 box／hit／bubble 同源。事件为 `navigation-arrived`／`navigation-interrupted`，包含 `{id,generation,revision,x,y,by}`；与旧水平 `{walkId,x}` 的 arrived 分开。调用方必须核对三元身份，不能由路程计时合成到达。
 
-旧角色没有 capability 时 `navigate` 返回 false，调用方保留水平回退。二维角色的旧 `walk(x,run,id)` 仍可用，并中断当前二维路线；显式动作、指针和几何调整也中断导航。标定、规划精度和限制见[空间契约](design/living-space-contract.md)。二维能力由显式启用的空间工厂使用；当前分支的内置鲸鱼默认生活装配也复用该工厂，已发布版本保持其原行为。`navigation-2d-v1` 不包含平面拖放或多方向身体承诺，内置默认生活空间已单独接入平面放置，旧角色仍保留原拖放语义；身体方向素材仍待补齐，见[空间与身体复核](design/space-body-review.md)。
+旧角色没有 capability 时 `navigate` 返回 false，调用方保留水平回退。二维角色的旧 `walk(x,run,id)` 仍可用，并中断当前二维路线；显式动作、指针和几何调整也中断导航。标定、规划精度和限制见[空间契约](design/living-space-contract.md)。二维能力由显式启用的空间工厂使用；当前分支的内置鲸鱼默认生活装配也复用该工厂，已发布版本保持其原行为。`navigation-2d-v1` 不包含平面拖放或多方向身体承诺，内置默认生活空间已单独接入平面放置，旧角色仍保留原拖放语义；主配色六方向已接入但美术一致性未通过，原路线已暂停；当前状态见[开发入口](aliveness-development.md)，不把旧补图目标当作待办。
 
 ## Harness 状态映射
 
@@ -149,10 +149,10 @@ NPC 日常复用水平定点 `walk`、按身份 `stopWalk`、姿态、表情与�
 
 内置鲸鱼的 figure 工厂可由显式 body factory 提供 `gripProp`（纹理、UV、局部矩形、手部／抓握／落地锚点）及 `gripPose()`。物件在同一 armFar 变形链中绘制，前袖口层覆盖其前景；`figure.gripFrame` 只读返回实际变形后的手部、物件抓握点、地面锚点及三角矩形坐标。未提供选项时不加载物件，也不更改默认角色行为。
 
-这是固定鲸鱼渲染器的可选制作接口，不是 API 2 的通用持物或二维移动声明。[当前 O03 工作台](design/art-workflow/o03-shell-hands-v1/README.md)负责动作准入、拥有权和接触检查；主产品的日常、关系与任务结算没有启用此物件。物件 PNG 与使用规格位于 `web/props/shell/`，素材来源及未覆盖的验收范围由该场景记录。
+这是固定鲸鱼渲染器的可选制作接口，不是 API 2 的通用持物或二维移动声明。[当前 O03 工作台](design/art-workflow/o03-shell-hands-v1/README.md)负责动作准入、拥有权和接触检查；内置鲸鱼的默认生活工厂已经使用此物件进行一次整理；关系与任务结算仍由各自可信所有者负责，普通 API 2 角色没有通用持物承诺。物件 PNG 与使用规格位于 `web/props/shell/`，素材来源及未覆盖的验收范围由该场景记录。
 
 固定鲸鱼还可由显式制作工厂提供 `motionPose()`：腰角、下沉量、两臂角度、视线、脚底固定权重与物件倾角。它在现有网格上连续调姿，物件通过手部子变形链补偿倾角，抓握点仍与实际手部绑定；`gripFrame` 额外报告姿势、实际朝向和脚底投影。普通 API 2 工厂未启用这些字段，内置鲸鱼的默认生活工厂显式使用连续姿态；角色包协议没有扩充。[当前动作工作台](design/art-workflow/o03-shell-hands-v1/README.md)保存配置、慢放／逐帧入口及美术限制。
 
-显式 `handArt` 提供手部原图和源像素腕点／接触点。当前使用握持原图的单一连续网格；`motionPose().hands` 是姿势权重，驱动手指开合，保持袖口和表面透明度固定。掌部与前景指尖的纹理像素互补，避免重复轮廓。`gripFrame.handArt` 报告姿势权重、实际闭合量、表面 alpha、腕部／接触误差与层级。制作时可选 `handDetail` 重用同一实际绘制帧；隔离工作台同时传入 `externalProp`、`raster` 和 `handDetail` 时，返回同帧的身体与前景指尖图像及其矩阵，由宿主将两者与物件一次性合成，地面／持物保持同一遮挡次序。这些选项未用于默认产品工厂，不进入产品诊断。资源与验证见[手型工作记录](design/art-workflow/o03-shell-hands-v1/README.md)。
+显式 `handArt` 提供手部原图和源像素腕点／接触点。当前使用握持原图的单一连续网格；`motionPose().hands` 是姿势权重，驱动手指开合，保持袖口和表面透明度固定。掌部与前景指尖的纹理像素互补，避免重复轮廓。`gripFrame.handArt` 报告姿势权重、实际闭合量、表面 alpha、腕部／接触误差与层级。制作时可选 `handDetail` 重用同一实际绘制帧；隔离工作台同时传入 `externalProp`、`raster` 和 `handDetail` 时，返回同帧的身体与前景指尖图像及其矩阵，由宿主将两者与物件一次性合成，地面／持物保持同一遮挡次序。`handArt` 已被内置默认生活工厂使用；`handDetail`／`externalProp` 的分层导出组合仍用于独立制作预览，不进入产品诊断。资源与验证见[手型工作记录](design/art-workflow/o03-shell-hands-v1/README.md)。
 
 制作工厂的 kit 内部适配：`body.set({clearGesture:true})` 仅清除当前可选短手势，不取消导航或接触，也不改变物件拥有权。生活／工作抢占用它避免点头等表现延续到接触通道。`standUp` 是连续动作执行器内部的真实站起阶段，不新增 API 2 动作词或导航能力。制作预览可输出实际 rig 表情、手势、眼部锚点与姿态作验证，这些字段不进入产品诊断或读取其他应用。

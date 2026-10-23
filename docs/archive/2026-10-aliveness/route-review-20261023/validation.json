@@ -1,0 +1,119 @@
+{
+  "status": "completed",
+  "sourceCommit": "b2793fee8dd04483a30bcc19c36bc12575ac7995",
+  "checks": {
+    "snapshotFiles": 22,
+    "preservedAssetFiles": 94,
+    "protectedFilesChecked": 2138,
+    "onlyChangedProtectedPaths": [
+      "docs/design/art-workflow/README.md",
+      "docs/design/art-workflow/d1-directions-v1/README.md",
+      "docs/design/art-workflow/d1-directions-v1/index.html",
+      "docs/design/art-workflow/d1-turnaround-v1/README.md",
+      "docs/design/art-workflow/d1-turnaround-v1/index.html",
+      "docs/design/art-workflow/d1-turnaround-v1/review.js",
+      "docs/reports/README.md"
+    ],
+    "duplicateCopiesRemoved": 117,
+    "duplicateBytesRemoved": 73351005,
+    "searchableMarkdownFiles": 44,
+    "pausedSourcesExcludedFromDefaultSearch": true,
+    "localMarkdownLinks": {
+      "files": 48,
+      "links": 455,
+      "missing": []
+    },
+    "cacheTests": {
+      "command": "node --test tests/local-cache.mjs",
+      "passed": 8,
+      "failed": 0
+    },
+    "cachePreview": {
+      "command": "node scripts/clean-cache.mjs",
+      "candidates": 0,
+      "bulkApply": false
+    },
+    "sourceChecks": [
+      {
+        "command": "node scripts/export-direction-art.mjs --check",
+        "status": "passed",
+        "files": 6
+      },
+      {
+        "command": "node docs/design/art-workflow/d1-directions-v1/inspect-atlases.mjs --check",
+        "status": "passed"
+      },
+      {
+        "command": "node docs/design/art-workflow/d1-directions-v1/prepare-model.mjs --check",
+        "status": "passed"
+      },
+      {
+        "command": "git diff --check",
+        "status": "passed"
+      }
+    ],
+    "browserReports": [
+      {
+        "path": "validation/turnaround-browser.json",
+        "sha256": "571c256733413d621cefce704220d8116a7a38dcb4c27b6b8f7e9ecfb26b09ca",
+        "checkGroups": 6,
+        "status": "passed"
+      },
+      {
+        "path": "validation/directions-browser.json",
+        "sha256": "4da26f4156c49e86660df8ab39cbac56564cf18d8bdaa730fdc563bd0d9d69d9",
+        "checkGroups": 11,
+        "status": "passed"
+      }
+    ],
+    "visualInspection": {
+      "directionsOverview": "pause banner and historical navigation visible",
+      "turnaroundOverview": "pause banner, historical unaccepted candidates and reference status visible"
+    }
+  },
+  "recordedAt": "2026-10-23T08:59:53.964505+00:00",
+  "testedState": "Source baseline plus the recorded working-tree changes; browser evidence includes exact source hashes. This is not a clean-baseline test claim.",
+  "environment": {
+    "node": "v24.21.0",
+    "browser": "Chromium 156.0.8078.4",
+    "host": "darwin 24.6.0",
+    "initialBrowserAttempt": "Sandbox blocked Chromium MachPort launch before page tests; rerun outside sandbox with approved isolated headless profiles passed."
+  },
+  "changedSourceHashes": {
+    ".ignore": "859f9bd7c13223d2a814181c345c1108fd1a88fb6d61be032cb362ba2badb087",
+    "README.md": "d3604b3818f08e3ec081de22412d4fc59d1eccf0dae7a9b25940e775d10b3108",
+    "docs/README.md": "c4d8b2b8c08a7ef9b77f42f6361a058cd966035a4eb1d70a314aaa121390136f",
+    "docs/aliveness-development.md": "80ecf8440c199f69b1070d8f58b72a6277821160ce3062f907598646a0ba26ff",
+    "docs/archive/2026-10-aliveness/README.md": "513af8f59f2f31e6fd0309d1ffc217dbc21d33d181d86476e5fc11a3f7e7dfb3",
+    "docs/archive/README.md": "00cc31de3d17af698ba6820e25980aca7161838b0515d3d49937a7db01333f28",
+    "docs/cache-management.md": "d4a42161896ae6ccd5da4e72c07a9f356f63a10e803ad3455ea6050e293559aa",
+    "docs/characters.md": "24c7e82e077dc9137c1624facea2d7bb6c934862c91fb6cf6386b8df2a4fbcdb",
+    "docs/design/README.md": "7e170570573b0a6501ca1524cd4e7801ab3fd580f9fbe0d48ec30e5143caee0a",
+    "docs/design/aliveness-art-assets.md": "709b01ab00d3f77701d12f76bbdb9c373aadcd3648c27d6846c34c6adfe84c1c",
+    "docs/design/aliveness-implementation-plan.md": "f926e4dbc9b8c2b6d140926d665ec153445146a96c81bf8cfe42f8f9481f953f",
+    "docs/design/art-workflow/README.md": "db445dd09250728c1274583b6bb5805ed0f841dc7ad93ca75f5b5d11f5ed7bdb",
+    "docs/design/art-workflow/d1-directions-v1/README.md": "8025899892efb9b53aeb10c473f9d9b9c3680878cb60ab4f4ade662061e6ced6",
+    "docs/design/art-workflow/d1-directions-v1/index.html": "690b84a70aa47cb699ea72e4184b16922f3239a0cd6a0502c2ca82d954c667fc",
+    "docs/design/art-workflow/d1-turnaround-v1/README.md": "66610b1fd6c52c9fac25b299acd28942b01e5a53297d33a1a80332de33f587ae",
+    "docs/design/art-workflow/d1-turnaround-v1/index.html": "dbad388d1caadaf55295229e1df164038bb5319da9556420e42022edf6f4c1a5",
+    "docs/design/art-workflow/d1-turnaround-v1/review.js": "3d21842d3d302c2dd9bf207324c66164a489650cda116553cadab4266ab72e6e",
+    "docs/design/d1-direction-assets.md": "de5713aaa3767b2cdb74c34dc362cb39c5818897a97af21c42b43ca5306ced24",
+    "docs/design/d1-workflow-review.md": "f974d1ef676f897f611e468727042f040b2eeac2b2929fa534ed6960c1d858a5",
+    "docs/design/desktop-environment-plan.md": "053d030d36ea77838ae4d971004ce60ebad1754f16ca1e7eb056d1252995bd0e",
+    "docs/design/living-integration-contract.md": "56c688616f360435bfe5de9188f258ed1b9933be9424aacd33da4a8451f2289e",
+    "docs/design/space-body-review.md": "b376e66d459c916c401cecc93d387af36692d836d8214aa1eb0338d7d138abfc",
+    "docs/development.md": "0853c6805fbe1d98eaa9b501ff79b0c5b9a8d1b6e644b264f7b63a28ef20e4c2",
+    "docs/reports/README.md": "6fa461fb6af19624f03d970752f10ad0478d242c2c0dd6f280b2fe6bae19c80d",
+    "docs/usage.md": "d0aa113e75a0424788e0d0ee7c29ce0c7bbb600ab583daae334667f640d31c00",
+    "scripts/lib/local-cache.mjs": "3b0a3196b3a58ab7c05a7f1518496a1a60c22287736443faa00c983676ffea57",
+    "tests/local-cache.mjs": "2661d8f67b4227cda17ab4ea682ecbad519c796fd195dc14e6ffb9eeb34758b0",
+    "docs/design/reuse-inventory.md": "2d11f4732bb376e54dca70e84a1e784be6696707617f3f3f6087d60d3913c7a5"
+  },
+  "limitations": [
+    "No product behavior or production asset changes.",
+    "No native VM, physical desktop, Windows, X11 or Wayland validation in this cleanup.",
+    "No character identity, anatomy, LIVE experience or replacement-route acceptance.",
+    "Deleted-byte total is logical file size, not measured host filesystem space.",
+    "No push, merge or release."
+  ]
+}

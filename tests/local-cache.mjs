@@ -87,6 +87,15 @@ test('preview is read only and newly added pins change eligibility before apply'
   await writeFile(join(root, 'keep.json'), '["tmp/dead"]');
   assert.equal((await cacheCandidates(root, Date.now(), unused)).length, 0);
 });
+test('ordinary files in managed directory lists survive preview without blocking eligible directories', async t => {
+  const { root } = await fixture(t), dead = await stale(root, 'dead');
+  const runtime = join(root, 'runtimes', 'old'); await mkdir(runtime, { recursive: true });
+  await writeFile(join(runtime, 'ready.json'), JSON.stringify({ schema: 1, kind: 'host-runtime', lastUsed: Date.now() - 31 * day }));
+  const files = [join(root, 'tmp', 'unknown.txt'), join(root, 'runtimes', '.DS_Store')];
+  for (const file of files) await writeFile(file, 'retain unknown bytes');
+  assert.deepEqual((await cacheCandidates(root, Date.now(), unused)).map(c => c.path), [dead, runtime]);
+  for (const file of files) assert.equal(await readFile(file, 'utf8'), 'retain unknown bytes');
+});
 test('runtime keys change for all actual build inputs, independent of stage or profile', () => {
   const options = { version: '0.2.1-rc.2', node: 'v24.21.0', abi: '137', platform: 'darwin', arch: 'arm64', npm: '11.19.1' };
   const key = runtimeKey(Buffer.from('lock'), options);

@@ -31,7 +31,7 @@ npm run test:install
 
 `npm run dev` 打开浏览器演示（默认 `http://127.0.0.1:4173`），`npm run demo` 启动桌面演示，二者的任务事件均为模拟。首页素材的重拍见[素材说明](assets/README.md)。
 
-生活感分支的当前范围、下一项和交付身份从[开发状态](aliveness-development.md)进入；调整空间、拖放或朝向前先读[空间与身体复核](design/space-body-review.md)。D1 首个平面切片已进入默认产品，行为与回退见生活装配契约；工作台结果不能代替默认产品及多方向身体的体验验收。[空间样板](design/art-workflow/space-v1/README.md)与[O03 工作台](design/art-workflow/o03-shell-hands-v1/README.md)维护操作和定向回归入口，[制作工作流](design/art-workflow/README.md)维护素材／连续动作验证方法。复用已有预览服务，每轮输出写新目录；原始证据保持原字节。已验收第 1–3 期的固定范围和实际结果见[阶段历史](archive/2026-10-aliveness/README.md)，当前模型与后续授权只看开发状态。`node scripts/space-desktop.mjs` 打开临时 profile 的单屏同地图预览；`tests/navigation-ui.mjs`、`tests/space-native.mjs` 与 `tests/navigation-showcase.mjs` 分别执行真实指针、受控原生与页面实录。
+生活感原路线已暂停，新路线尚未选定；现有工具用于复现与维护。本周可复用代码见[成果盘点](design/reuse-inventory.md)。当前范围和交付身份从[开发状态](aliveness-development.md)进入；调整空间、拖放或朝向前先读[空间与身体复核](design/space-body-review.md)。D1 首个平面切片已进入默认产品，行为与回退见生活装配契约；工作台结果不能代替默认产品及多方向身体的体验验收。[空间样板](design/art-workflow/space-v1/README.md)与[O03 工作台](design/art-workflow/o03-shell-hands-v1/README.md)维护操作和定向回归入口，[制作工作流](design/art-workflow/README.md)维护素材／连续动作验证方法。复用已有预览服务，每轮输出写新目录；原始证据保持原字节。已验收第 1–3 期的固定范围和实际结果见[阶段历史](archive/2026-10-aliveness/README.md)，当前模型与后续授权只看开发状态。`node scripts/space-desktop.mjs` 打开临时 profile 的单屏同地图预览；`tests/navigation-ui.mjs`、`tests/space-native.mjs` 与 `tests/navigation-showcase.mjs` 分别执行真实指针、受控原生与页面实录。
 
 浏览器检查真实 API 2 动画、聊天、完整阅读、角色导入及脚本隔离；桌面检查真实 Electron 窗口、IPC、托盘和恢复；安装检查使用官方 DSH loader 安装实际 `.tgz`。用 `DSH_TEST_VERSION=<支持版本>` 选择宿主，用 `DSH_TEST_PACKAGE_DIR=<规范包目录>` 消费已有规范包及校验文件。完整平台／宿主列表以 CI 矩阵为准。
 
@@ -133,5 +133,7 @@ VM 需图形依赖、Xvfb、Openbox、Python 3、procps 及固定工具链。观
 `tests/living-feedback.test.js` 与 `tests/desktop-life.test.js` 覆盖动作显示节奏、空手站立、访问 token／几何、环境交接／输入冷却和有界系统恢复。原生装配记录显示／身体帧比例；受控工作恢复显式覆盖输入枚举，另存真实键盘适配器观察。`tests/living-integration-ui.mjs` 另覆盖三种尺寸的平面拖放、取消、跳跃中缩放、阴影、二维返回及显示器事件顺序；`tests/living-integration-native.mjs` 在 VM 验证默认产品放置、跳跃中改尺寸和返回。方向身体的交付与验收统一看开发入口。文档整理检查链接、检索与身份；脚本或运行时入口变更执行对应回归，固定结果从[报告索引](reports/README.md)追溯。
 
 ## D1 方向产品回归
+
+该路线已暂停；以下命令保留作固定实现的回归入口，不表示继续出图、绑定或产品导出。
 
 `node scripts/export-direction-art.mjs --check` 检查分发资产与校准源；`node node_modules/vitest/vitest.mjs run tests/direction.test.js` 检查方向滞后、转身、兼容与摘要。`node tests/direction-product-ui.mjs` 用生产工厂和受控帧时钟验证六方向、表情、讲话、兼容动作和 90／180／240px；输出写新的 `DIRECTION_EVIDENCE_DIR`。macOS 的 `DSH_MACOS_VM_TEST=1 node tests/direction-product-ui.mjs --native` 只在隔离 VM 执行。这些受控工厂检查与 `test:inbox-ui`、默认主页面的 `living-integration-native.mjs` 分别记录，不能互相替代。包检查同时核对运行 PNG 和模型摘要。
