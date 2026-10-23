@@ -1,5 +1,4 @@
 import {readFile,writeFile} from 'node:fs/promises';
-import {readRgbaPng} from '../../../../scripts/lib/rgba-png.mjs';
 const root=new URL('./',import.meta.url), regions=JSON.parse(await readFile(new URL('source/atlas-regions.json',root)));
 const registration=JSON.parse(await readFile(new URL('source/design-registration-v1.json',root)));
 const project=(id,[x,y])=>[128+(x-registration.references[id].feet[0])*registration.scale,256+(y-registration.references[id].feet[1])*registration.scale];
@@ -22,18 +21,9 @@ for(const[id,s]of Object.entries(regions)){
  if(id==='front')deformers.head={kind:'rot',pivot:pivots.head,parent:'upper'};
  models.directions[id]={atlas:'source/'+s.file,parts,deformers,pivots,anchors:{ground:[128,256],gaze:[143,121],bubble:[128,18]},bounds:[20,19,215,258]};
 }
-// Versioned selected repairs keep their original pixel scale and attachment frame.
-const revision=JSON.parse(await readFile(new URL('source/visual-revision-v3.json',root)));
-const {pixels,width,height}=readRgbaPng(await readFile(new URL('source/'+revision.asset.file,root)));
-for(const [id,names] of Object.entries(revision.parts))for(const name of names){
- const p=models.directions[id].parts.find(p=>p.id===name),original=regions[id].parts[name];
- const [x,y,w,h]=original.region;let a=width,b=height,c=-1,d=-1;
- for(let j=y;j<y+h;j++)for(let i=x;i<x+w;i++)if(pixels[(j*width+i)*4+3]>=16){a=Math.min(a,i);b=Math.min(b,j);c=Math.max(c,i);d=Math.max(d,j);}
- if(c<0)throw Error('Empty repaired part '+id+'/'+name);
- const crop=[a-2,b-2,c-a+5,d-b+5],[ox,oy,ow,oh]=original.crop,[bx,by,bw,bh]=p.box;
- p.box=[bx+(crop[0]-ox)*bw/ow,by+(crop[1]-oy)*bh/oh,crop[2]*bw/ow,crop[3]*bh/oh];
- p.uvBox=[crop[0]/width,crop[1]/height,(crop[0]+crop[2])/width,(crop[1]+crop[3])/height];p.atlas='source/'+revision.asset.file;
-}
+// Selected C07 atlases already contain the cheek/tail correction; C05 stays historical.
+const revision=JSON.parse(await readFile(new URL('source/faithful-revision-v1.json',root)));
+for(const [id,file]of Object.entries(revision.selected))if(regions[id].file!==file)throw Error('Unselected atlas: '+id);
 const rear=registration.references.backRight;
 models.directions.backRight.headBow={box:projectBox('backRight',rear.headBow),farBox:projectBox('backRight',rear.farHeadBow),pivot:[128,256],parent:'upper',z:11};
 for(const [id,ref]of Object.entries(registration.references)){models.directions[id].anchors.feet=ref.solePoints.map(p=>project(id,p));if(ref.restWarps)models.directions[id].restWarps=ref.restWarps;}

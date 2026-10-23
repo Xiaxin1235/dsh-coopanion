@@ -17,6 +17,9 @@ execFileSync(process.execPath,[base+'/prepare-model.mjs','--check']);
 const checks=[];const check=s=>{checks.push(s);console.log(s);};
 const manifest=JSON.parse(await readFile(base+'/source/manifest.json'));for(const a of manifest.assets){assert.equal(createHash('sha256').update(await readFile(base+'/source/'+a.file)).digest('hex'),a.sha256);assert.equal(createHash('sha256').update(await readFile(base+'/source/'+a.prompt)).digest('hex'),a.promptSha256);}assert.equal(manifest.assets.length,9);check('nine generated originals and all full prompts match their provenance digests');
 const regions=JSON.parse(await readFile(base+'/source/atlas-regions.json'));let total=0;
+const faithful=JSON.parse(await readFile(base+'/source/faithful-revision-v1.json'));
+for(const a of faithful.assets){for(const [name,sha]of [[a.file,a.sha256],[a.prompt,a.promptSha256],...Object.entries(a.references)])assert.equal(createHash('sha256').update(await readFile(base+'/source/'+name)).digest('hex'),sha);}
+for(const [id,file]of Object.entries(faithful.selected))assert.equal(regions[id].file,file);
 for(const[id,group]of Object.entries(regions)){
  const {width,height,pixels}=readRgbaPng(await readFile(base+'/source/'+group.file));
  assert.equal(width,group.width);assert.equal(height,group.height);

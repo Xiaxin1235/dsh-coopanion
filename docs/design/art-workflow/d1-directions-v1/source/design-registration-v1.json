@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "method": "User supplied design, uniform master-to-rig scale; feet midpoint at (128,256). Master rectangles measured from design, not separately fitted to the stage.",
+  "method": "User supplied design, uniform master-to-rig scale; feet midpoint at (128,256). Visible landmarks and hidden overlap extensions registered in master coordinates; native rest warps compensate atlas drawing differences.",
   "scale": 0.17490774907749077,
   "references": {
     "front": {
@@ -14,19 +14,19 @@
           44,
           100,
           936,
-          945
+          845
         ],
         "hairBack": [
           80,
-          260,
+          280,
           865,
-          790
+          825
         ],
         "face": [
-          350,
-          450,
-          405,
-          459
+          305,
+          510,
+          490,
+          390
         ],
         "dress": [
           265,
@@ -117,12 +117,16 @@
               0
             ],
             [
-              0.25,
-              -8
+              0.22,
+              0
             ],
             [
-              0.7,
-              -8
+              0.5,
+              9
+            ],
+            [
+              0.73,
+              8
             ],
             [
               1,
@@ -267,7 +271,33 @@
         90,
         100
       ],
-      "sha256": "7b93c3f1d90cccde62cab5bf8fcf9d69d9c848cdc7691e01d4038b438ef6c3a0"
+      "sha256": "7b93c3f1d90cccde62cab5bf8fcf9d69d9c848cdc7691e01d4038b438ef6c3a0",
+      "restWarps": {
+        "head": {
+          "y": [
+            [
+              0,
+              0
+            ],
+            [
+              0.2,
+              0
+            ],
+            [
+              0.55,
+              6
+            ],
+            [
+              0.8,
+              3
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        }
+      }
     }
   },
   "intentionalDifferences": [

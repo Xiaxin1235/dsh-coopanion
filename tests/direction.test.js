@@ -7,7 +7,7 @@ import {applyDirectionRestShape,decorationFarPose} from '../web/upstream/whale/d
 describe('directional body',()=>{
  it('keeps authored rest alignment under breathing and does not move unrelated meshes',()=>{
   const state={hairFront:{fn:()=>[2,1],a:3},dress:{a:4}};applyDirectionRestShape(state,definition.directions.front);
-  expect(state.hairFront.fn(.5,.5)).toEqual([2,-7]);expect(state.hairFront.fn(.5,0)).toEqual([2,1]);expect(state.hairFront.a).toBe(3);expect(state.dress).toEqual({a:4});
+  expect(state.hairFront.fn(.5,.5)).toEqual([2,10]);expect(state.hairFront.fn(.5,0)).toEqual([2,1]);expect(state.hairFront.a).toBe(3);expect(state.dress).toEqual({a:4});
  });
  it('places the asymmetric far-side decoration in its authored rectangle',()=>{
   const d=definition.directions.backRight.headBow,p=decorationFarPose(d),[x,y,w,h]=d.box,[px,py]=d.pivot;

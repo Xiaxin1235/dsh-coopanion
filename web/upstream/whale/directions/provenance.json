@@ -36,9 +36,100 @@
     },
     "use": "Only head and tail UV regions; other layers retain v2 bytes. Preserve source-pixel scale when tightening crops. Original C04 and nine-image manifest unchanged."
   },
+  "faithfulRevision": {
+    "schema": 1,
+    "request": "2026-10-23 supplied front and rear-quarter designs do not match the actual rig",
+    "assets": [
+      {
+        "file": "front-faithful-v4.png",
+        "sha256": "fbaa26bf3ed52c9b9f2836952164c1a280e3e9c24ee17ce797866f3c8ce2ef4e",
+        "prompt": "prompt-front-faithful-v4.txt",
+        "promptSha256": "6a075f7daed46493de7c7be7fd201d115df4cfacc0aab2420b84dfb4af29ef70",
+        "references": {
+          "design-front-20261023.png": "c4db56dca23ec3ae9520fe8317af6961361e02126aaa81017bbb7223784450f3",
+          "front-atlas-v2.png": "1ab1b52d13d4a32c04106a9cd9296d9dbd3d96543c592582ff01b4b8712ef849"
+        },
+        "tool": "built-in image_gen",
+        "output": "exec-b3e66837-8ef1-44bb-b7e8-1c41186a9b7c.png",
+        "transparentBackground": true,
+        "status": "rejected: old shape drift or insufficient rectangular crop separation"
+      },
+      {
+        "file": "back-right-faithful-v4.png",
+        "sha256": "9009356adda71d4c0a1dc3b3be0e06f9740a63778c16f6d4fd2bc8806979961a",
+        "prompt": "prompt-back-right-faithful-v4.txt",
+        "promptSha256": "045ccb6d43f75e979e05e47955efde0344420508091b2ee3d193965e9f33527c",
+        "references": {
+          "design-back-right-20261023.png": "7b93c3f1d90cccde62cab5bf8fcf9d69d9c848cdc7691e01d4038b438ef6c3a0",
+          "back-right-repair-v3.png": "abb63829f4e3f235a9c18c8f7403a75fe0126a0596957d0c043d88eb611c28f8"
+        },
+        "tool": "built-in image_gen",
+        "output": "exec-ccf26ce0-bf28-44c1-9a7b-2e7970a31c8d.png",
+        "transparentBackground": true,
+        "status": "rejected: old shape drift or insufficient rectangular crop separation"
+      },
+      {
+        "file": "front-faithful-v5.png",
+        "sha256": "d0cf5f9a347d3ac7c63804ab3dfe8a0d98a6e3dc24af89dd85881dda117f8be7",
+        "prompt": "prompt-front-faithful-v5.txt",
+        "promptSha256": "e07e36004395a24f835fef01c0409ff9244fc95bb60c1a284d355ae731f32d72",
+        "references": {
+          "design-front-20261023.png": "c4db56dca23ec3ae9520fe8317af6961361e02126aaa81017bbb7223784450f3"
+        },
+        "tool": "built-in image_gen",
+        "output": "exec-0f07ec8e-5306-4fba-b26c-5833354fc930.png",
+        "transparentBackground": true,
+        "status": "rejected: old shape drift or insufficient rectangular crop separation"
+      },
+      {
+        "file": "back-right-faithful-v5.png",
+        "sha256": "f5acb5c130834bc65d210ff7c844cec91d348fb8486b8831c1404a7c6b83a5c3",
+        "prompt": "prompt-back-right-faithful-v5.txt",
+        "promptSha256": "ab2d998a87db6c4d81cc9e847a7f59728ac891dad8c5bf8c1e84a004f26d9671",
+        "references": {
+          "design-back-right-20261023.png": "7b93c3f1d90cccde62cab5bf8fcf9d69d9c848cdc7691e01d4038b438ef6c3a0"
+        },
+        "tool": "built-in image_gen",
+        "output": "exec-b30120ad-bc98-40fd-9492-bfa43c13e985.png",
+        "transparentBackground": true,
+        "status": "rejected: old shape drift or insufficient rectangular crop separation"
+      },
+      {
+        "file": "front-faithful-v6.png",
+        "sha256": "11c05c844f56b35d979559887efb8e8f654b8f47aaff32141ca147b6dac2762f",
+        "prompt": "prompt-front-faithful-v6.txt",
+        "promptSha256": "572e5ed9d75d23825d41e1e96c68bb05805371a9f0460ee2036824a4166e3d04",
+        "references": {
+          "front-faithful-v5.png": "d0cf5f9a347d3ac7c63804ab3dfe8a0d98a6e3dc24af89dd85881dda117f8be7"
+        },
+        "tool": "built-in image_gen",
+        "output": "exec-c7cc818a-d794-424e-9ace-e1f004eb679c.png",
+        "transparentBackground": true,
+        "status": "selected"
+      },
+      {
+        "file": "back-right-faithful-v6.png",
+        "sha256": "7a8cb2e656e679bdcf1cfc5f319143ebd712340cf03f140125e848b51d873287",
+        "prompt": "prompt-back-right-faithful-v6.txt",
+        "promptSha256": "d946230db42d3505586cc8435eff591dfa5201a7bf4bcc8cdff968e1b4ddb3b9",
+        "references": {
+          "back-right-faithful-v5.png": "f5acb5c130834bc65d210ff7c844cec91d348fb8486b8831c1404a7c6b83a5c3"
+        },
+        "tool": "built-in image_gen",
+        "output": "exec-d10d77e3-cadb-44f0-968b-499e14ad733e.png",
+        "transparentBackground": true,
+        "status": "selected"
+      }
+    ],
+    "selected": {
+      "front": "front-faithful-v6.png",
+      "backRight": "back-right-faithful-v6.png"
+    },
+    "selectionNotes": "v6 restores longer rear locks, front sleeve visibility, whale apron and asymmetric rear bow; registration supplies common design frame. Original face expression textures retained; no pixel-perfect or user acceptance claim. C05 source is retained as historical correction, not active export."
+  },
   "designRegistration": {
     "schema": 1,
-    "method": "User supplied design, uniform master-to-rig scale; feet midpoint at (128,256). Master rectangles measured from design, not separately fitted to the stage.",
+    "method": "User supplied design, uniform master-to-rig scale; feet midpoint at (128,256). Visible landmarks and hidden overlap extensions registered in master coordinates; native rest warps compensate atlas drawing differences.",
     "scale": 0.17490774907749077,
     "references": {
       "front": {
@@ -52,19 +143,19 @@
             44,
             100,
             936,
-            945
+            845
           ],
           "hairBack": [
             80,
-            260,
+            280,
             865,
-            790
+            825
           ],
           "face": [
-            350,
-            450,
-            405,
-            459
+            305,
+            510,
+            490,
+            390
           ],
           "dress": [
             265,
@@ -155,12 +246,16 @@
                 0
               ],
               [
-                0.25,
-                -8
+                0.22,
+                0
               ],
               [
-                0.7,
-                -8
+                0.5,
+                9
+              ],
+              [
+                0.73,
+                8
               ],
               [
                 1,
@@ -305,7 +400,33 @@
           90,
           100
         ],
-        "sha256": "7b93c3f1d90cccde62cab5bf8fcf9d69d9c848cdc7691e01d4038b438ef6c3a0"
+        "sha256": "7b93c3f1d90cccde62cab5bf8fcf9d69d9c848cdc7691e01d4038b438ef6c3a0",
+        "restWarps": {
+          "head": {
+            "y": [
+              [
+                0,
+                0
+              ],
+              [
+                0.2,
+                0
+              ],
+              [
+                0.55,
+                6
+              ],
+              [
+                0.8,
+                3
+              ],
+              [
+                1,
+                0
+              ]
+            ]
+          }
+        }
       }
     },
     "intentionalDifferences": [
@@ -314,11 +435,10 @@
     ]
   },
   "files": {
-    "front-atlas-v2.png": "1ab1b52d13d4a32c04106a9cd9296d9dbd3d96543c592582ff01b4b8712ef849",
+    "front-faithful-v6.png": "11c05c844f56b35d979559887efb8e8f654b8f47aaff32141ca147b6dac2762f",
     "back-atlas-v2.png": "a201df9e3363f5645ea63c12f04b1275c745998873767b8c5c38d376354353d3",
-    "back-right-atlas-v2.png": "7ba3e17d2d35f78475e79b4416214a855fb766db14fd6b9317e903f209404ed4",
-    "back-right-repair-v3.png": "abb63829f4e3f235a9c18c8f7403a75fe0126a0596957d0c043d88eb611c28f8",
-    "model.json": "35ae036e275034752cd9fa9ed6d20f7080f34ad11bf7c4dd52c1923caf5a2b8a",
-    "model.js": "3f61ac538d5d5ad30cedba9207a57bfc7a4944fd54acbe9abc358caa4a1804c6"
+    "back-right-faithful-v6.png": "7a8cb2e656e679bdcf1cfc5f319143ebd712340cf03f140125e848b51d873287",
+    "model.json": "47f7592d66444322f20f133682c99417e01641db12708244ef33ed01437247c1",
+    "model.js": "ef5f2e5820bfcf1f69c5cd5fabcf0571093370a227b2c6bd1bc8011b10c59476"
   }
 }

@@ -61,7 +61,7 @@ try{
  check('other colours, gestures, sitting and jumping use calibrated compatible poses');
  for(const size of [90,180,240]){await page.evaluate(size=>{directionActor.do('stand');testBounds.S=size/256;directionActor.resize();directionActor.place2d({x:550,y:500});advance(100);},size);await page.screenshot({path:join(out,`front-${size}.png`)});}
  // Head edit is used only by its registered UV crop. It must preserve alpha margins.
- const m=JSON.parse(await readFile('web/upstream/whale/directions/model.json'));const def=m.directions.backRight,p=def.parts.find(p=>p.id==='head');const png=readRgbaPng(await readFile('web/upstream/whale/directions/'+p.atlas));let edge=0,clear=0;
+ const m=JSON.parse(await readFile('web/upstream/whale/directions/model.json'));const def=m.directions.backRight,p=def.parts.find(p=>p.id==='head');const png=readRgbaPng(await readFile('web/upstream/whale/directions/'+(p.atlas??def.atlas)));let edge=0,clear=0;
  const [x0,y0,x1,y1]=p.uvBox.map((v,i)=>Math.round(v*(i%2?png.height:png.width)));
  for(let y=y0;y<y1;y++)for(let x=x0;x<x1;x++){const a=png.pixels[(y*png.width+x)*4+3];if(a===0)clear++;if((x===x0||x===x1-1||y===y0||y===y1-1)&&a>=16)edge++;}assert.equal(edge,0);assert.ok(clear>1000);
  check('three product sizes and repaired head alpha verified');

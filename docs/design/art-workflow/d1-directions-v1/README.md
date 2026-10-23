@@ -24,7 +24,7 @@ DSH_MACOS_VM_TEST=1 node tests/direction-art-ui.mjs --native
 
 - `source/reference.png`：从当前原模型中性姿态直接渲染的参考，不是新增角色设计；原文件摘要在 `source/manifest.json`。
 - `source/*-master-v1.png`：内置 image_gen 生成的三个母版；原字节保留。
-- `source/*-atlas-v*.png`：内置 image_gen 拆件与修订；每个版本保留。选用前／后／右斜后 v2，其余 v1 为被替代候选，不能按文件名顺序自动绑定。
+- `source/*-atlas-v*.png`：初版内置 image_gen 拆件，每个版本保留；当前正背面仍用 back v2。正面与右斜后选用 `*-faithful-v6.png`，由 `faithful-revision-v1.json` 明确选择。旧 v1／v2、C05、faithful v4／v5 均是历史候选，不能按文件名顺序自动绑定。
 - `source/prompt-*.txt`：逐次完整提示词；`source/manifest.json` 记录生成输出 ID、参考链、摘要和候选状态。
 - `source/atlas-regions.json`：人工划定部件区域、只读测量得到的可见边界与 UV 裁切区；`inspect-atlases.mjs` 可重新测量或检查。**不改写图像像素**。
 - `source/design-registration-v1.json`：本次用户设计原图摘要、脚底中点、统一比例、母版坐标部件框／关节、五官落点及静态网格补偿。正面／右斜后的绑定以此为来源；原源图字节不变。不能靠分别填满矩形来决定头身比例。
@@ -41,4 +41,6 @@ DSH_MACOS_VM_TEST=1 node tests/direction-art-ui.mjs --native
 
 ## 产品导出与补件
 
-`source/back-head-no-bow-v1.png` 与 `product-export.json` 保留 D1-C04 原始来源链。当前由 `visual-revision-v3.json` 明确选择 C05 的 `back-right-repair-v3.png`，仅取头部与尾部 UV；其余拆件仍取原 v2。右斜后侧发遮住脸颊，尾根没有额外回钩。裁切收紧时保留源像素比例和原连接框，不把尾部拉伸回旧高度。制作台和产品共用这套选择及独立蓝金结饰绑定；结饰复用原 `tex/bow.png`。`node scripts/export-direction-art.mjs --check` 校验分发 PNG、静态模型和来源摘要。生产六方向、表情及兼容检查用 `node tests/direction-product-ui.mjs`；`--native` 仅在 VM 中运行。每轮指定新的 `DIRECTION_EVIDENCE_DIR`，默认产品完整循环另由 living-integration 回归覆盖。
+`source/back-head-no-bow-v1.png`、`product-export.json`、`visual-revision-v3.json` 保留 C04／C05 原始来源链。当前 C07 重新按用户设计拆分正面与右斜后：长后发、短前发、宽脸型、长袖、围裙和非对称腰结；仍遮住斜后脸颊，尾根没有额外回钩。v4／v5 未满足造型或矩形裁切间隔，候选保留但不导出；v6 及完整提示词／参考摘要由 `faithful-revision-v1.json` 记录。`atlas-regions.json` 对选中图只读测量，PNG 原字节复制到产品。制作台和产品共用模型及独立蓝金结饰，结饰复用原 `tex/bow.png`。
+
+`node scripts/export-direction-art.mjs --check` 校验分发 PNG、静态模型和来源摘要。生产六方向、表情及兼容检查用 `node tests/direction-product-ui.mjs`；`--native` 仅在 VM 中运行。每轮指定新的 `DIRECTION_EVIDENCE_DIR`，默认产品完整循环另由 living-integration 回归覆盖。叠加图和轮廓数值只是复核工具：分层补画、沿用的五官和蓝金结仍非设计图逐像素复制，主观一致性不能由自动化通过代签。
