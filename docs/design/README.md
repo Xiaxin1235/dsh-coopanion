@@ -16,6 +16,7 @@
 | [生活空间契约](living-space-contract.md) | 修改制作工作台坐标、地面／立面、禁区、规划、拖动或遮挡；产品差异见装配契约 |
 | [空间预览](art-workflow/space-v1/README.md) | 操作同地图、复现花箱反馈或运行定向回归 |
 | [O03 工作台](art-workflow/o03-shell-hands-v1/README.md) | 调整连续手部、接触或同帧物件合成 |
+| [方向制作工作流复核](d1-workflow-review.md) | 用户再次指出身份漂移／斜后尾巴错位后，接手 D1 美术与绑定前先读；包含失败复现、流程纠正与验收顺序 |
 | [D1 方向资源表](d1-direction-assets.md)与[制作样片](art-workflow/d1-directions-v1/README.md) | 资源规格、生产接入门槛与独立制作操作；状态见开发入口 |
 | [制作工作流](art-workflow/README.md) | 已有运行画面证明需要补素材或动作 |
 | [后续蓝图](aliveness-implementation-plan.md) | 规划或选择下一阶段；第 7 节维护上游人格／记忆／互动节奏的复用与自研边界 |
