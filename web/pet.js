@@ -152,13 +152,13 @@ function position() {
   const anchor = layout?.bubble ?? { x: x + options.size / 2, y };
   for (const panel of [bubble, interaction, companionInvitation, companionFeedback, ...panels]) {
     if (panel.hidden) { panelAnchors.delete(panel); continue; }
-    if (!panelAnchors.has(panel)) panelAnchors.set(panel, { ...anchor });
+    if (!panelAnchors.has(panel)) panelAnchors.set(panel, { ...anchor, petX: box ? box.x + box.w / 2 : anchor.x, petTop: box?.y ?? anchor.y, petBottom: box ? box.y + box.h : anchor.y });
     const panelAnchor = panelAnchors.get(panel);
     const pw = panel.offsetWidth, ph = panel.offsetHeight;
     const apron = options.interfaceStyle !== 'classic' && [chat, menu, requests].includes(panel);
-    const placement = apron ? apronPosition({ x: box ? box.x + box.w / 2 : panelAnchor.x, y: box?.y ?? panelAnchor.y }, { width: pw, height: ph }, { width: innerWidth, height: innerHeight }, box ? box.y + box.h : panelAnchor.y) : panelPosition(panelAnchor, { width: pw, height: ph }, { width: innerWidth, height: innerHeight });
+    const placement = apron ? apronPosition({ x: panelAnchor.petX, y: panelAnchor.petTop }, { width: pw, height: ph }, { width: innerWidth, height: innerHeight }, panelAnchor.petBottom) : panelPosition(panelAnchor, { width: pw, height: ph }, { width: innerWidth, height: innerHeight });
     const { x: px, y: py } = placement;
-    if (apron) panel.dataset.tail = placement.tail;
+    if (apron) { panel.dataset.tail = box && py >= box.y + box.h / 2 ? 'top' : 'bottom'; placement.offset = Math.max(28, Math.min(pw - 28, (box ? box.x + box.w / 2 : panelAnchor.x) - px)); }
     panel.style.left = `${px}px`; panel.style.top = `${py}px`;
     panel.style.setProperty('--tail', `${apron ? placement.offset : Math.max(22, Math.min(pw - 22, panelAnchor.x - px))}px`);
   }
