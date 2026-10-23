@@ -3,7 +3,16 @@ import {headingForVelocity,initialDirection,stepDirection,directionPose,DIRECTIO
 import definition from '../web/upstream/whale/directions/model.js';
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
+import {applyDirectionRestShape,decorationFarPose} from '../web/upstream/whale/direction-shape.js';
 describe('directional body',()=>{
+ it('keeps authored rest alignment under breathing and does not move unrelated meshes',()=>{
+  const state={hairFront:{fn:()=>[2,1],a:3},dress:{a:4}};applyDirectionRestShape(state,definition.directions.front);
+  expect(state.hairFront.fn(.5,.5)).toEqual([2,-7]);expect(state.hairFront.fn(.5,0)).toEqual([2,1]);expect(state.hairFront.a).toBe(3);expect(state.dress).toEqual({a:4});
+ });
+ it('places the asymmetric far-side decoration in its authored rectangle',()=>{
+  const d=definition.directions.backRight.headBow,p=decorationFarPose(d),[x,y,w,h]=d.box,[px,py]=d.pivot;
+  expect(px+p.sx*(x-px)+p.tx).toBeCloseTo(d.farBox[0]);expect(py+p.sy*(y-py)+p.ty).toBeCloseTo(d.farBox[1]);expect(w*p.sx).toBeCloseTo(d.farBox[2]);expect(h*p.sy).toBeCloseTo(d.farBox[3]);
+ });
  it('maps actual planar velocity to all six views and ignores gaze/noise',()=>{
   for(const [x,y,want]of [[0,60,'front'],[60,40,'frontRight'],[60,-40,'backRight'],[0,-60,'back'],[-60,-40,'backLeft'],[-60,40,'frontLeft']])expect(headingForVelocity(x,y)).toBe(want);
   expect(headingForVelocity(1,-1,'back')).toBe('back');expect(headingForVelocity(60,-1,'frontRight')).toBe('frontRight');

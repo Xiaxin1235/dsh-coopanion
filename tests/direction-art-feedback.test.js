@@ -19,5 +19,6 @@ it('rear-quarter tail has no dangling root hook; the rejected source fails',()=>
  // Tightening the crop must not stretch the corrected tail back to the old height.
  const regions=JSON.parse(readFileSync(source+'atlas-regions.json'));
  const p=part('tail'),png=selected('tail'),cropHeight=(p.uvBox[3]-p.uvBox[1])*png.height;
- expect(p.box[3]/cropHeight).toBeCloseTo(56/regions.backRight.parts.tail.crop[3],10);
+ const registration=JSON.parse(readFileSync(source+'design-registration-v1.json'));
+ expect(p.box[3]/cropHeight).toBeCloseTo(registration.references.backRight.parts.tail[3]*registration.scale/regions.backRight.parts.tail.crop[3],10);
 });

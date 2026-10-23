@@ -35,19 +35,32 @@ try{
  }else{browser=await chromium.launch({headless:true,args:['--no-sandbox','--enable-unsafe-swiftshader']});context=await browser.newContext({viewport:{width:1360,height:900},recordVideo:{dir:join(output,'video'),size:{width:1360,height:900}}});page=await context.newPage();await page.goto(url);video=page.video();versions={chromium:browser.version()};}
  page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(20000);await page.waitForFunction(()=>window.directionPreview?.state.frames>0);check('three independent directional rigs load and draw with the shared WebGL renderer');
  const render=pose=>page.evaluate(p=>{directionPreview.pose(p);return Object.fromEntries(['front','back','backRight'].map(id=>[id,document.getElementById(id).toDataURL()]));},pose);
- // Visible iris footprint catches the old unequal/oversized frontal placement.
- const neutral=await render({t:0}),png=readRgbaPng(Buffer.from(neutral.front.split(',')[1],'base64')),eyes=[];
- for(const [x0,x1] of [[100,123],[143,166]]){let count=0,top=Infinity,bottom=-Infinity,sum=0;
-  for(let y=384;y<468;y++)for(let x=(x0+12)*3;x<(x1+12)*3;x++){const k=(y*png.width+x)*4,[r,g,b,a]=png.pixels.subarray(k,k+4);if(a>200&&g>120&&g>r*1.5&&b>g*.9){count++;top=Math.min(top,y);bottom=Math.max(bottom,y);sum+=x/3-12;}}
-  eyes.push({count,height:(bottom-top)/3,cx:sum/count});
- }
- assert.ok(eyes.every(e=>e.count>400&&e.height>=7&&e.height<=8.5));assert.ok(eyes[0].count/eyes[1].count>.9&&eyes[0].count/eyes[1].count<1.1);
- assert.ok(Math.abs(eyes[0].cx-112)<.5&&Math.abs(eyes[1].cx-154)<.5);check('visible frontal irises have balanced area, calibrated centres and reduced height');
+ // Compare the actual neutral meshes against the independently supplied design.
+ const neutral=await render({t:0});
+ const designMetrics=await page.evaluate(()=>{
+  const pixels=canvas=>{const c=document.createElement('canvas');c.width=c.height=840;const g=c.getContext('2d');g.drawImage(canvas,0,0);return g.getImageData(0,0,840,840).data;};
+  const result={};
+  for(const [id,reference]of Object.entries(directionPreview.references)){
+   const a=pixels(document.getElementById(id)),b=pixels(reference);let intersection=0,union=0;
+   for(let i=3;i<a.length;i+=4){const aa=a[i]>128,bb=b[i]>128;if(aa||bb)union++;if(aa&&bb)intersection++;}
+   result[id]={silhouetteIoU:intersection/union};
+   if(id==='front'){
+    const eyeStats=data=>[[98,124],[137,162]].map(([x0,x1])=>{let n=0,xs=0,ys=0;for(let y=354;y<438;y++)for(let x=(x0+12)*3;x<(x1+12)*3;x++){const k=(y*840+x)*4,[r,g,b,a]=data.slice(k,k+4);if(a>200&&g>120&&g>r*1.5&&b>g*.9){n++;xs+=x/3-12;ys+=y/3-8;}}return{count:n,x:xs/n,y:ys/n};});
+    result[id].eyes={actual:eyeStats(a),design:eyeStats(b)};
+   }
+  }
+  return result;
+ });
+ for(const [id,m]of Object.entries(designMetrics))assert.ok(m.silhouetteIoU>=.89,`${id} silhouette must follow design: ${m.silhouetteIoU}`);
+ for(let i=0;i<2;i++){const a=designMetrics.front.eyes.actual[i],b=designMetrics.front.eyes.design[i];assert.ok(a.count>350);assert.ok(Math.hypot(a.x-b.x,a.y-b.y)<1.2,'visible iris must stay on its design landmark');}
+ check('neutral silhouettes and visible eye landmarks agree with the supplied designs in a common foot frame');
+ await writeFile(join(output,'design-comparison.json'),JSON.stringify(designMetrics,null,2)+'\n');
+ await page.selectOption('#reference-view','overlay');assert.equal(await page.evaluate(()=>directionPreview.state.t),0);await page.screenshot({path:join(output,'design-overlay.png')});await page.selectOption('#reference-view','design');await page.screenshot({path:join(output,'design-reference.png')});await page.selectOption('#reference-view','actual');
  for(const id of ['front','backRight'])await writeFile(join(output,id+'.png'),Buffer.from(neutral[id].split(',')[1],'base64'));
  const idle=await render({t:1});const blink=await render({t:1,blink:true});assert.notEqual(idle.front,blink.front);assert.equal(idle.back,blink.back);assert.equal(idle.backRight,blink.backRight);
  // Blink must only change the front eye area, leaving cloth, hair and skin outside it identical.
  const a=readRgbaPng(Buffer.from(idle.front.split(',')[1],'base64')),b=readRgbaPng(Buffer.from(blink.front.split(',')[1],'base64'));let changes=0,outside=0;
- for(let y=0;y<a.height;y++)for(let x=0;x<a.width;x++){const i=(y*a.width+x)*4;if(!a.pixels.subarray(i,i+4).equals(b.pixels.subarray(i,i+4))){changes++;const rx=x/3-12,ry=y/3-8;if(rx<88||rx>179||ry<111||ry>151)outside++;}}
+ for(let y=0;y<a.height;y++)for(let x=0;x<a.width;x++){const i=(y*a.width+x)*4;if(!a.pixels.subarray(i,i+4).equals(b.pixels.subarray(i,i+4))){changes++;const rx=x/3-12,ry=y/3-8;if(rx<88||rx>179||ry<108||ry>140)outside++;}}
  assert.ok(changes>100);assert.equal(outside,0);check('blink changes the independent front eyes only; back views never gain a face');
  const walk=await render({t:1.15,motion:'walk'});for(const id of Object.keys(walk))assert.notEqual(walk[id],idle[id]);
  const motion=await page.evaluate(()=>{const result=[];for(let i=0;i<120;i++){directionPreview.pose({t:i/60,motion:'walk'});result.push(Object.fromEntries(Object.entries(directionPreview.state.states).map(([id,s])=>[id,{root:s.root,feet:s.feet}])));}return result;});
@@ -55,12 +68,12 @@ try{
  check('120 actual gait frames articulate separate legs while foot-origin remains fixed');
  await page.evaluate(()=>directionPreview.pose({t:1,motion:'walk'}));await page.waitForTimeout(250);assert.equal(await page.evaluate(()=>directionPreview.state.t),1);await page.click('#step');assert.ok(Math.abs(await page.evaluate(()=>directionPreview.state.t)-(1+1/60))<1e-9);check('pause holds the pose; single-step advances exactly one authored frame');
  // Shared painted overlap at thigh/skirt and shoulder attachments under both arm extremes.
- const probe=await page.evaluate(()=>{const bad=[];for(const t of [.785,2.356]){directionPreview.pose({t,motion:'stress'});for(const id of ['front','back','backRight']){const cv=document.getElementById(id),c=document.createElement('canvas');c.width=cv.width;c.height=cv.height;const g=c.getContext('2d');g.drawImage(cv,0,0);for(const [x,y]of [[116,218],[149,218],[128,174]]){const a=g.getImageData(Math.round((x+12)*3),Math.round((y+8)*3),1,1).data[3];if(a<220)bad.push({id,t,x,y,a});}}}return bad;});assert.deepEqual(probe,[]);check('painted thigh/skirt and torso overlaps remain opaque at both arm stress extremes');
+ const probe=await page.evaluate(()=>{const bad=[];for(const t of [.785,2.356]){directionPreview.pose({t,motion:'stress'});for(const id of ['front','back','backRight']){const cv=document.getElementById(id),c=document.createElement('canvas');c.width=cv.width;c.height=cv.height;const g=c.getContext('2d');g.drawImage(cv,0,0);for(const [x,y]of (id==='backRight'?[[114,211],[141,214],[133,165]]:id==='front'?[[114,216],[141,216],[128,170]]:[[116,218],[149,218],[128,174]])){const a=g.getImageData(Math.round((x+12)*3),Math.round((y+8)*3),1,1).data[3];if(a<220)bad.push({id,t,x,y,a});}}}return bad;});assert.deepEqual(probe,[]);check('painted thigh/skirt and torso overlaps remain opaque at both arm stress extremes');
  for(const size of ['90','180','240'])for(const bg of ['white','dark']){await page.selectOption('#size',size);await page.selectOption('#bg',bg);await render({t:1.15,motion:'walk'});await page.screenshot({path:join(output,`${size}-${bg}.png`)});}
  check('90/180/240px on white/dark backgrounds captured for visual review');
  await page.selectOption('#size','180');await page.selectOption('#bg','checker');await page.selectOption('#motion','walk');await page.click('#pause');await page.waitForTimeout(1800);await page.selectOption('#speed','0.25');await page.waitForTimeout(1500);await page.click('#pause');
  assert.deepEqual(errors,[]);check('normal and slow gait run without page errors');
  await render({t:1});await page.screenshot({path:join(output,'overview.png')});
- const source={};async function hashTree(dir){for(const e of await readdir(dir,{withFileTypes:true})){const p=join(dir,e.name);if(e.isDirectory())await hashTree(p);else source[relative(root,p)]=createHash('sha256').update(await readFile(p)).digest('hex');}}await hashTree(resolve(base));for(const p of ['web/upstream/kit/rig.js','web/upstream/whale/feat/eyeL_ball.png','web/upstream/whale/feat/eyeL_iris.png','web/upstream/whale/feat/eyeL_lash.png','web/upstream/whale/feat/neutral_mouth.png','web/upstream/whale/tex/brows.png','tests/direction-art-ui.mjs'])source[p]=createHash('sha256').update(await readFile(p)).digest('hex');
+ const source={};async function hashTree(dir){for(const e of await readdir(dir,{withFileTypes:true})){const p=join(dir,e.name);if(e.isDirectory())await hashTree(p);else source[relative(root,p)]=createHash('sha256').update(await readFile(p)).digest('hex');}}await hashTree(resolve(base));for(const p of ['web/upstream/kit/rig.js','web/upstream/whale/front-face.js','web/upstream/whale/direction-shape.js','web/upstream/whale/feat/eyeL_ball.png','web/upstream/whale/feat/eyeL_iris.png','web/upstream/whale/feat/eyeL_lash.png','web/upstream/whale/feat/neutral_mouth.png','web/upstream/whale/tex/brows.png','tests/direction-art-ui.mjs'])source[p]=createHash('sha256').update(await readFile(p)).digest('hex');
  await writeFile(join(output,'verification.json'),JSON.stringify({schema:1,time:new Date().toISOString(),mode:native?'isolated-native-authoring':'headless-browser-authoring',head:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),dirty:execFileSync('git',['status','--porcelain'],{encoding:'utf8'}),host:{hostname:hostname(),platform:platform(),release:release()},versions,checks,source,limitations:['Authoring sample only, not the default product.','No six-direction turn acceptance, multi-direction grip, physical-device or user LIVE acceptance.']},null,2)+'\n');
 }finally{if(app)await app.close();if(context)await context.close();if(video)await video.saveAs(join(output,'authoring-loop.webm'));if(browser)await browser.close();await new Promise(r=>server.close(r));if(profile)await rm(profile,{recursive:true,force:true});}

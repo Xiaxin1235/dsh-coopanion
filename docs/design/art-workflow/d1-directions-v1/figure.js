@@ -1,5 +1,6 @@
 import {createRig} from '/web/upstream/kit/rig.js';
 import {composeFrontFace} from '/web/upstream/whale/front-face.js';
+import {applyDirectionRestShape} from '/web/upstream/whale/direction-shape.js';
 const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 const image=url=>new Promise((ok,bad)=>{const im=new Image();im.onload=()=>ok(im);im.onerror=()=>bad(new Error('Cannot decode '+url));im.src=url;});
 /** Production renderer reused for authoring; no autonomous policy or product capability. */
@@ -24,7 +25,7 @@ export async function createDirectionSample(canvas,definition,base){
  if(definition.headBow)active.upload('headBow',await image('/web/upstream/whale/tex/bow.png'));
  function face(blink,look){
   const closed=clamp(blink,0,1),g=eyeCtx;
-  composeFrontFace(faceCtx,{brows:faceParts.brows,
+  composeFrontFace(faceCtx,{brows:faceParts.brows,calibration:definition.faceCalibration,
    eye(i){
     g.clearRect(0,0,390,252);g.save();g.beginPath();g.rect(45,48+118*closed,165,125);g.clip();
     g.drawImage(faceParts.eyeL_ball,65,52,125,118);g.globalCompositeOperation='source-atop';
@@ -44,7 +45,9 @@ export async function createDirectionSample(canvas,definition,base){
     dress:{fn:(u,v)=>[Math.sin(t*2+u)*v*1.1,Math.abs(stride)*v*.6]},
     head:{fn:(u,v)=>[Math.sin(t*1.8+v*2)*Math.max(0,(v-.45))*1.8,0],a:look[0]*.3},
     hairBack:{fn:(u,v)=>[Math.sin(t*1.8+v*2)*v*v*1.6,0]},hairFront:{fn:(u,v)=>[Math.sin(t*1.8+v*2)*v*v*.8,0]}};
-   active.render(st);latest={feet:[active.point('legL',st,116,256),active.point('legR',st,149,256)],root:active.point('body',st,128,256),states:st};return latest;
+   applyDirectionRestShape(st,definition);
+   const feet=definition.anchors.feet??[[116,256],[149,256]];
+   active.render(st);latest={feet:feet.map((p,i)=>active.point(i?'legR':'legL',st,...p)),root:active.point('body',st,128,256),states:st};return latest;
   },get state(){return latest;},dispose(){active.dispose();}
  };
 }

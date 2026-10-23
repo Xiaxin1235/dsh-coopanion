@@ -1,8 +1,9 @@
 // One frontal calibration for authoring and the production expression painter.
 // Master coordinates match the existing face sprites, independently of expression.
-export const FRONT_FACE = Object.freeze({centres:[112,154],y:132,scale:.18,iris:[139,110.5],mouth:[132.5,146],browY:116});
-export function composeFrontFace(g,{eye,mouth,brows,lift=0,inner=0}) {
- const f=FRONT_FACE;
+import model from './directions/model.js';
+export const FRONT_FACE=Object.freeze(model.directions.front.faceCalibration);
+export function composeFrontFace(g,{eye,mouth,brows,lift=0,inner=0,calibration=FRONT_FACE}) {
+ const f=calibration;
  g.setTransform(3,0,0,3,36,24);g.clearRect(-12,-8,280,280);
  for(const [i,cx] of f.centres.entries()) {
   const surface=eye(i);g.save();g.translate(cx,f.y);if(i)g.scale(-1,1);

@@ -763,7 +763,7 @@ export async function createWhaleFigure(base = new URL('./', import.meta.url), o
       const project=(x,y,parent)=>{const p=rig.point(prefix+parent,st,x,y);return{x:matrix.a*p[0]+matrix.c*p[1]+matrix.e,y:matrix.b*p[0]+matrix.d*p[1]+matrix.f};};
       const hand=project(162,204,'armR');
       gripFrame={...gripFrame,contactEligible:false,hand,propGrip:hand,visible:false,sit:0,pose:null,
-        gazeOrigin:project(133,directional.group==='front'?FRONT_FACE.y:135,'head'),feet:[project(116,256,'legL'),project(149,256,'legR')],
+        gazeOrigin:project(...directional.anchors.gaze,'head'),feet:(directional.anchors.feet??[[116,256],[149,256]]).map((p,i)=>project(...p,i?'legR':'legL')),
         handArt:{enabled:false},angles:{armNear:st[prefix+'armL'].a,armFar:st[prefix+'armR'].a,waist:0}};
     }else if(directional && !directional.legacy && gripFrame){
       const m=petG.getCTM();
@@ -889,7 +889,7 @@ export async function createWhaleFigure(base = new URL('./', import.meta.url), o
     get colors() { return { z: accent() }; },
     schemes: SCHEMES,
     // points the kit uses: eye tracking, a tear and one under each eye (where the streams run), sleep z's, hearts [x from, x to, y], bubble
-    get anchors() { return directions && !directions.state.legacy && directions.state.current==='front' ? {gaze:[133,FRONT_FACE.y],tear:[FRONT_FACE.centres[0],143],tears:FRONT_FACE.centres.map(x=>[x,143]),z:[196,44],hearts:[96,176,62],bubble:[128,18]} : {
+    get anchors() { return directions && !directions.state.legacy && directions.state.current==='front' ? {gaze:[(FRONT_FACE.centres[0]+FRONT_FACE.centres[1])/2,FRONT_FACE.y],tear:[FRONT_FACE.centres[0],FRONT_FACE.y+59.5*FRONT_FACE.scale],tears:FRONT_FACE.centres.map(x=>[x,FRONT_FACE.y+59.5*FRONT_FACE.scale]),z:[196,44],hearts:[96,176,62],bubble:[128,18]} : {
       gaze: [U(745), V(690)], tear: [U(640), V(752)], tears: [[U(654), V(752)], [U(852), V(750)]], z: [196, 44],
       hearts: [96, 176, 62], bubble: [128, 18],
     }; },

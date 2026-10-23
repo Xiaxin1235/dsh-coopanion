@@ -28,11 +28,24 @@ try{
   advance(100);
  });
  check('shipped product factory, meshes and assets load without authoring resources');
+ const registration=JSON.parse(await readFile('docs/design/art-workflow/d1-directions-v1/source/design-registration-v1.json')),designMetrics={};
+ const checkDesign=async id=>{
+  const data=await page.locator('#direction-product canvas').evaluate(c=>c.toDataURL()),bytes=Buffer.from(data.split(',')[1],'base64'),actual=readRgbaPng(bytes),ref=registration.references[id];
+  const reference=readRgbaPng(await readFile('docs/design/art-workflow/d1-directions-v1/source/'+ref.file)),view=JSON.parse(await readFile('web/upstream/whale/model.json')).view;let intersection=0,union=0;
+  for(let y=0;y<actual.height;y++)for(let x=0;x<actual.width;x++){
+   const rx=view[0]+x/actual.width*(view[2]-view[0]),ry=view[1]+y/actual.height*(view[3]-view[1]),mx=Math.round(ref.feet[0]+(rx-128)/registration.scale),my=Math.round(ref.feet[1]+(ry-256)/registration.scale);
+   const a=actual.pixels[(y*actual.width+x)*4+3]>128,b=mx>=0&&my>=0&&mx<reference.width&&my<reference.height&&reference.pixels[(my*reference.width+mx)*4+3]>128;if(a||b)union++;if(a&&b)intersection++;
+  }
+  designMetrics[id]=intersection/union;assert.ok(designMetrics[id]>=.88,`production ${id} silhouette differs from design: ${designMetrics[id]}`);await writeFile(join(out,'design-'+id+'.png'),bytes);
+ };
+ await checkDesign('front');
  for(const [i,[name,x,y]]of [['front',0,180],['frontRight',200,150],['backRight',200,-150],['back',0,-200],['backLeft',-200,-150],['frontLeft',-200,150]].entries()){
   const l=await page.evaluate(([x,y,id])=>travel(x,y,id),[x,y,i+1]);assert.equal(l.direction.current,name);assert.equal(l.direction.legacy,false);assert.ok(l.navigation.speed>0||l.navigation.phase==='settling');
   assert.ok(l.box.w>100);await page.screenshot({path:join(out,name+'.png')});
+  if(name==='backRight'){await page.evaluate(()=>{directionActor.cancelNavigation('design-pose');advance(12);});await checkDesign(name);}
  }
  check('actual 2D navigation selects all six directions with positive body width');
+ await writeFile(join(out,'design-comparison.json'),JSON.stringify(designMetrics,null,2)+'\n');check('production neutral front and rear-quarter silhouettes match the registered designs');
  const frames=await page.evaluate(()=>{directionActor.cancelNavigation('test');const r=[];for(let i=0;i<100;i++)r.push(advance());return r;});
  assert.equal(frames.at(-1).direction.current,'front');for(const l of frames)assert.ok(l.direction.width>=.9);check('stopping returns to the user through bounded adjacent turns');
  const pause=await page.evaluate(()=>({before:directionActor.layout(),after:advance(0)}));assert.deepEqual(pause.before,pause.after);
@@ -53,6 +66,6 @@ try{
  for(let y=y0;y<y1;y++)for(let x=x0;x<x1;x++){const a=png.pixels[(y*png.width+x)*4+3];if(a===0)clear++;if((x===x0||x===x1-1||y===y0||y===y1-1)&&a>=16)edge++;}assert.equal(edge,0);assert.ok(clear>1000);
  check('three product sizes and repaired head alpha verified');
  assert.deepEqual(errors,[]);
- const source={};for(const p of ['web/upstream/whale/figure.js','web/upstream/whale/front-face.js','web/upstream/whale/direction.js','web/upstream/whale/directional-rig.js','web/upstream/whale/directions/model.js','web/upstream/whale/directions/provenance.json','web/upstream/kit/body.js','web/upstream/kit/living-body.js','tests/direction-product-ui.mjs'])source[p]=createHash('sha256').update(await readFile(p)).digest('hex');
+ const source={};for(const p of ['web/upstream/whale/figure.js','web/upstream/whale/front-face.js','web/upstream/whale/direction-shape.js','web/upstream/whale/direction.js','web/upstream/whale/directional-rig.js','web/upstream/whale/directions/model.js','web/upstream/whale/directions/provenance.json','web/upstream/kit/body.js','web/upstream/kit/living-body.js','tests/direction-product-ui.mjs'])source[p]=createHash('sha256').update(await readFile(p)).digest('hex');
  await writeFile(join(out,'verification.json'),JSON.stringify({head:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),dirty:execFileSync('git',['status','--porcelain'],{encoding:'utf8'}),platform:process.platform,engine:native?await app.evaluate(()=>process.versions):browser.version(),mode:native?'native-product-factory-controlled':'browser-product-factory-controlled',checks,source},null,2)+'\n');
 }finally{await app?.close();await context?.close();if(video)await video.saveAs(join(out,'directions.webm'));await browser?.close();await new Promise(r=>server.close(r));await rm(profile,{recursive:true,force:true});}

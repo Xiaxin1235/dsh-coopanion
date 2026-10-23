@@ -1,5 +1,6 @@
 import model from './directions/model.js';
 import {initialDirection,stepDirection,directionPose} from './direction.js';
+import {applyDirectionRestShape,decorationFarPose} from './direction-shape.js';
 const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 /** Adds direction meshes to the existing rig; no extra actor, GL context or clock. */
 export async function directionalRig(asset,load) {
@@ -50,10 +51,11 @@ export async function directionalRig(asset,load) {
      head:{a:o.look[0]*.3,fn:(u,v)=>[Math.sin(o.t*1.8+v*2)*Math.max(0,v-.45)*1.8,0]},
      hairBack:{fn:(u,v)=>[Math.sin(o.t*1.8+v*2)*v*v*1.6,0]},hairFront:{fn:(u,v)=>[Math.sin(o.t*1.8+v*2)*v*v*.8,0]}};
     for(const [id,value]of Object.entries(values))st[prefix+id]=value;
+    applyDirectionRestShape(st,model.directions[group],prefix);
     // Front-facing right-side bow is viewer-left; rear right-side is viewer-right.
-    st.dir_bow=mirror<0?{tx:-112,ty:3,sx:1.1}:{};
+    st.dir_bow=mirror<0?decorationFarPose(headBow):{};
    }
-   return {hidden,group,legacy,mirror,pose:p};
+   return {hidden,group,legacy,mirror,pose:p,anchors:group?model.directions[group].anchors:null};
   },
   turn(facing,t){manual={heading:facing<0?'frontLeft':'frontRight',until:t+1.5};},
   get state(){return {...state,turn:state.turn?{...state.turn}:null,...directionPose(state)};},
