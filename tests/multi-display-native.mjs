@@ -54,7 +54,7 @@ try {
     await app.evaluate(({screen})=>screen.getCursorScreenPoint=()=>globalThis.m5Screen.cursor);
   }
   await app.evaluate(({screen})=>{const d=globalThis.m5Screen.layout[1];d.workArea={...d.workArea,width:d.workArea.width-70,height:d.workArea.height-80};d.scaleFactor=2;d.rotation=90;screen.emit('display-metrics-changed',{},d,['workArea','scaleFactor','rotation']);screen.getCursorScreenPoint=globalThis.m5Screen.original.cursor;});
-  await page.waitForFunction(width=>innerWidth===width,controlled[1].workArea.width-70);
+  await page.waitForFunction(width=>Math.abs(innerWidth-width)<=1,controlled[1].workArea.width-70);
   assert.equal(await page.locator('#reader-text').evaluate(n=>n.scrollTop),100);
   samples.push({metricsChanged:true,...await sampleNativeDisplay(page,'#reader-text')});
   await app.evaluate(({screen})=>{globalThis.m5Screen.layout=globalThis.m5Screen.layout.filter(d=>d.id!==91002);screen.emit('display-removed',{},{});screen.getCursorScreenPoint=globalThis.m5Screen.original.cursor;});

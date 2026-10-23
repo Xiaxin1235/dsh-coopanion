@@ -846,6 +846,7 @@ addEventListener('resize', resizeStage);
 $('toggle-sound').onclick = () => { sfx.set(!sfx.isOn()); updateMood(); };
 
 
+let geometryReportedAt = -Infinity;
 let last = performance.now(), companionCadence = { at: -Infinity, elapsed: 0 };
 function animate(now) {
   const dt = Math.min((now - last) / 1000, .05); last = now;
@@ -875,6 +876,10 @@ function animate(now) {
     if (now >= speechExpires) { bubble.hidden = true; showNextReply(); }
   }
   position();
+  if (options.diagnostics === true && now - geometryReportedAt >= 500) {
+    geometryReportedAt = now; const r = pet.getBoundingClientRect();
+    native?.geometry?.({ at: Date.now(), pet: { x: r.x, y: r.y, width: r.width, height: r.height }, viewport: { x: 0, y: 0, width: innerWidth, height: innerHeight } });
+  }
   // The character can walk beneath a stationary cursor, or away from it.
   if (cursorPoint) hit(cursorPoint.x, cursorPoint.y);
   requestAnimationFrame(animate);

@@ -13,6 +13,7 @@ import { ElectronBridge } from '../dist/bridge.js';
 import { importCharacter } from './helpers/characters.mjs';
 import { petClick } from './helpers/native-pointer.mjs';
 import { unzipSync } from 'fflate';
+import { verifyNativeVisibility } from './helpers/window-visibility-native.mjs';
 import { verifyNativeTextScale } from './helpers/text-scale-native.mjs';
 import { crashNative, connectRecovered, waitRecovery } from './helpers/desktop-recovery.mjs';
 
@@ -22,6 +23,8 @@ let recoveryControls;
 const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
 const dataDir = await mkdtemp(join(tmpdir(), 'dsh-pet-test-'));
 process.env.DSH_PET_TEST_DATA_DIR = dataDir;
+process.env.DSH_PET_TEST_WINDOW_CONTROL = '1';
+process.env.DSH_PET_TEST_DIAGNOSTICS_DIR = join(dataDir, 'diagnostics');
 process.env.XDG_CONFIG_HOME = dataDir;
 process.env.XDG_CACHE_HOME = dataDir;
 try {
@@ -111,6 +114,7 @@ try {
   await page.waitForFunction(()=>document.querySelector('.inline-question').textContent.includes('已提交'));
   bridge.notificationState({protocol:1,runtime:questionRuntime,interactions:[]});
   await page.waitForFunction(()=>document.querySelectorAll('.request-card').length===0);await page.keyboard.press('Escape');
+  await verifyNativeVisibility({ page, bridge, registry: process.env.DSH_PET_TEST_DIAGNOSTICS_DIR });
   await verifyNativeTextScale({ page, bridge, snapshot: finalFrame });
   const idleFrame = { ...snapshot, mood: 'idle', active: false, revision: 2, sessions: [{ ...snapshot.sessions[0], mood: 'idle', active: false }] };
   bridge.update({ ...idleFrame, sessions: [...idleFrame.sessions, { id: 'second-test', label: '另一会话', mood: 'working', active: true, text: '正在运行命令', reply: '', revision: 1 }] });

@@ -1,4 +1,6 @@
 const { questionAnswer } = require('../web/question-contract.js');
+const { createVisibilityGuard, topLevel } = require('./window-visibility.cjs');
+const { createWindowTrace, petGeometry } = require('./window-diagnostics.cjs');
 const { app, BrowserWindow, ipcMain, powerMonitor, screen, Menu, Tray, nativeImage, shell } = require('electron');
 const { join } = require('node:path');
 const { homedir } = require('node:os');
@@ -32,14 +34,22 @@ if (process.env.DSH_PET_TEST_DEBUG_PORT) {
   app.commandLine.appendSwitch('remote-debugging-address', '127.0.0.1');
   app.commandLine.appendSwitch('remote-debugging-port', process.env.DSH_PET_TEST_DEBUG_PORT);
 }
+const windowTest = !!process.env.DSH_PET_TEST_DATA_DIR && process.env.DSH_PET_TEST_WINDOW_CONTROL === '1';
 const displayTest = process.env.DSH_PET_TEST_NO_SANDBOX === '1' && !!process.env.DSH_PET_TEST_DEBUG_PORT;
 const keyboardActivity = require('./keyboard-activity.cjs').createKeyboardActivity();
 const { initialLockState } = require('./lifecycle-state.cjs');
+let windowGuard, guardPoll, nativeReady = false, shuttingDown = false, rendererGeometry;
+const windowTrace = createWindowTrace({ enabled: () => options?.diagnostics === true, snapshot: () => {
+  if (!win || win.isDestroyed()) return null;
+  const bounds = win.getBounds(), display = screen.getDisplayMatching(bounds);
+  return { visible: win.isVisible(), minimized: win.isMinimized(), alwaysOnTop: win.isAlwaysOnTop(), desiredVisible, bounds, workArea: display.workArea, scaleFactor: display.scaleFactor, pet: rendererGeometry ?? null };
+} });
 let win, tray, options, lastFrame, poll, assetServer, characters, companions, displays, diagnostics, diagnosticRead;
 let lifecycle = { locks: 0, unlocks: 0, suspends: 0, resumes: 0 };
 const configureDiagnostics = () => {
   if (options?.diagnostics !== true) {
     lifecycle = { locks: 0, unlocks: 0, suspends: 0, resumes: 0 };
+    windowTrace.clear(); rendererGeometry = undefined;
     if (diagnosticRead) { clearTimeout(diagnosticRead.timer); diagnosticRead.resolve(null); diagnosticRead = undefined; }
   }
   void diagnostics?.configure(options?.diagnostics === true).catch(() => console.error('Local diagnostics unavailable'));
@@ -69,7 +79,7 @@ function hit(active) {
   }
   forward({ type: 'hit-state', active, focused: win.isFocused(), visible: win.isVisible() });
 }
-function show() { desiredVisible = true; win?.showInactive(); visibility(); }
+function show() { desiredVisible = true; windowGuard?.('show'); win?.showInactive(); visibility(); }
 function hide() { desiredVisible = false; win?.hide(); visibility(); }
 function act(action) { process.send?.({ type: 'action', action }); }
 function syncTray() {
@@ -137,7 +147,7 @@ process.on('message', message => {
   if (!message || typeof message !== 'object') return;
   if (message.type === 'quit') { app.quit(); return; }
   if (message.type === 'init') { options = message.options; configureDiagnostics(); lastFrame = message; forward(message); syncTray(); }
-  if (message.type === 'configure') { options = message.options; configureDiagnostics(); if (lastFrame) lastFrame.options = options; forward(message); syncTray(); }
+  if (message.type === 'configure') { options = message.options; configureDiagnostics(); windowGuard?.('configure'); if (lastFrame) lastFrame.options = options; forward(message); syncTray(); }
   if (message.type === 'control') {
     if (message.command === 'hide') hide();
     if (message.command === 'show' || message.command === 'characters') show();
@@ -157,11 +167,11 @@ process.on('disconnect', () => app.quit());
 process.on('SIGTERM', () => app.quit());
 
 app.whenReady().then(async () => {
-  const suspendState = key => { if (options?.diagnostics === true) lifecycle[key] = Math.min(Number.MAX_SAFE_INTEGER, lifecycle[key] + 1); suspended = screenLocked || systemAsleep || !lockStateKnown; visibility(); };
-  powerMonitor.on('suspend', () => { systemAsleep = true; suspendState('suspends'); });
-  powerMonitor.on('resume', () => { systemAsleep = false; suspendState('resumes'); });
-  powerMonitor.on('lock-screen', () => { screenLocked = true; lockStateKnown = true; suspendState('locks'); });
-  powerMonitor.on('unlock-screen', () => { screenLocked = false; lockStateKnown = true; suspendState('unlocks'); });
+  const suspendState = key => { if (options?.diagnostics === true) lifecycle[key] = Math.min(Number.MAX_SAFE_INTEGER, lifecycle[key] + 1); suspended = screenLocked || systemAsleep || !lockStateKnown; visibility(); windowGuard?.('lifecycle'); };
+  powerMonitor.on('suspend', () => { systemAsleep = true; suspendState('suspends'); windowTrace.record('suspend'); });
+  powerMonitor.on('resume', () => { systemAsleep = false; suspendState('resumes'); windowTrace.record('resume'); });
+  powerMonitor.on('lock-screen', () => { screenLocked = true; lockStateKnown = true; suspendState('locks'); windowTrace.record('lock-screen'); });
+  powerMonitor.on('unlock-screen', () => { screenLocked = false; lockStateKnown = true; suspendState('unlocks'); windowTrace.record('unlock-screen'); });
   const initialState = initialLockState({ monitor: powerMonitor });
   lockStateKnown = initialState !== 'unknown';
   screenLocked ||= initialState === 'locked';
@@ -176,7 +186,7 @@ app.whenReady().then(async () => {
   diagnostics = new Diagnostics({ registry: process.env.DSH_PET_TEST_DIAGNOSTICS_DIR ?? join(homedir(), '.dsh-coopanion', 'diagnostics'),
     profile: app.getPath('userData'), version: manifest.version, build,
     read: async () => ({ runtime: { generation, visible: !!win && !win.isDestroyed() && win.isVisible(), suspended, screenLocked, systemAsleep, lockStateKnown, lifecycle: { ...lifecycle } },
-      store: companions.inspect(), renderer: await readRendererDiagnostics() }),
+      store: companions.inspect(), renderer: await readRendererDiagnostics(), window: windowTrace.read() }),
   });
   configureDiagnostics();
   process.once('exit', () => { companions.release(); diagnostics.release(); });
@@ -216,9 +226,14 @@ app.whenReady().then(async () => {
     if (!(value instanceof ArrayBuffer)) throw new Error('请选择 API 2 ZIP 角色包');
     return characters.import(new Uint8Array(value));
   });
-  win = new BrowserWindow({ ...screen.getPrimaryDisplay().workArea, transparent: true, frame: false, resizable: false, skipTaskbar: true, hasShadow: false, show: false, alwaysOnTop: true, backgroundColor: '#00000000', webPreferences: { additionalArguments: displayTest ? ['--dsh-pet-display-test'] : [], preload: join(__dirname, 'preload.cjs'), sandbox: true, contextIsolation: true, nodeIntegration: false } });
-  win.setAlwaysOnTop(true, 'floating');
-  win.on('show', visibility); win.on('hide', visibility);
+  win = new BrowserWindow({ ...screen.getPrimaryDisplay().workArea, transparent: true, frame: false, resizable: false, skipTaskbar: true, hasShadow: false, show: false, alwaysOnTop: true, backgroundColor: '#00000000', webPreferences: { additionalArguments: displayTest ? ['--dsh-pet-display-test', ...(windowTest ? ['--dsh-pet-window-test'] : [])] : [], preload: join(__dirname, 'preload.cjs'), sandbox: true, contextIsolation: true, nodeIntegration: false } });
+  win.setAlwaysOnTop(true, topLevel(options?.aboveFullscreen));
+  windowGuard = createVisibilityGuard({ win, state: () => ({ ready: nativeReady, closing: shuttingDown, desiredVisible, suspended, aboveFullscreen: options?.aboveFullscreen !== false }), record: event => windowTrace.record(event) });
+  for (const event of ['minimize', 'restore', 'hide', 'show', 'blur', 'focus', 'always-on-top-changed']) win.on(event, () => {
+    windowTrace.record(event);
+    if (['minimize', 'restore', 'hide', 'show'].includes(event)) visibility();
+    if (['minimize', 'hide', 'blur', 'always-on-top-changed'].includes(event)) setImmediate(() => windowGuard(event));
+  });
   win.webContents.on('render-process-gone', () => app.exit(1));
   win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
   if (process.platform === 'darwin') app.dock?.hide();
@@ -228,8 +243,12 @@ app.whenReady().then(async () => {
   displays = createDisplayController({ screen, win, send: forward, changed: syncTray });
   displays.refresh();
   if (displayTest) require('./test-display-probe.cjs').installDisplayProbe({ ipcMain, screen, win, displays });
+  if (displayTest && windowTest) require('./test-window-probe.cjs').installWindowProbe({ ipcMain, BrowserWindow, screen, win, show, hide, hit, powerMonitor });
   for (const event of ['resize', 'move']) win.on(event, () => setImmediate(() => { if (!win.isDestroyed()) displays.refresh(); }));
   win.webContents.on('did-finish-load', () => { if (lastFrame) forward(lastFrame); displays.publish(); });
+  ipcMain.on('pet:geometry', (event, value) => {
+    if (event.sender === win.webContents && event.senderFrame === win.webContents.mainFrame && options?.diagnostics === true) { const clean = petGeometry(value); if (clean) rendererGeometry = clean; }
+  });
   ipcMain.on('pet:diagnostics-response', (event, message) => {
     if (event.sender !== win.webContents || event.senderFrame !== win.webContents.mainFrame || options?.diagnostics !== true || !diagnosticRead || message?.requestId !== diagnosticRead.requestId) return;
     const value = diagnosticRenderer.safeParse(message.value);
@@ -252,7 +271,9 @@ app.whenReady().then(async () => {
   });
   hit(false);
   await win.loadURL(`http://127.0.0.1:${assetServer.address().port}${prefix}`);
+  nativeReady = true;
   if (desiredVisible) show(); else visibility();
+  guardPoll = setInterval(() => windowGuard('patrol'), 2000);
   // Restore input when a click-through window misses movement, without repeatedly
   // overriding the renderer's newer pointer event with a stationary OS cursor.
   let lastCursor, keyboardSentAt = -Infinity;
@@ -268,7 +289,7 @@ app.whenReady().then(async () => {
   const icon = nativeImage.createFromPath(join(__dirname, 'icon.png')).resize({ height: 24 });
   tray = new Tray(icon); syncTray();
   tray.on('click', show);
-  for (const event of ['display-added', 'display-removed', 'display-metrics-changed']) screen.on(event, () => { displays.refresh(); lastTrayKey = undefined; syncTray(); });
+  for (const event of ['display-added', 'display-removed', 'display-metrics-changed']) screen.on(event, () => { displays.refresh(); windowTrace.record(event); windowGuard('display-change'); lastTrayKey = undefined; syncTray(); });
   process.send?.({ type: 'ready' });
 }).catch(error => {
   console.error(error);
@@ -276,5 +297,5 @@ app.whenReady().then(async () => {
   if (process.connected) process.send(failure, () => app.exit(1)); else app.exit(1);
 });
 
-app.on('before-quit', () => { if (userClosed) process.send?.({ type: 'closed' }); clearInterval(poll); keyboardActivity.configure(false); if (diagnosticRead) { clearTimeout(diagnosticRead.timer); diagnosticRead.resolve(null); diagnosticRead = undefined; } diagnostics?.release(); void diagnostics?.close(); assetServer?.close(); tray?.destroy(); });
+app.on('before-quit', () => { shuttingDown = true; clearInterval(guardPoll); if (userClosed) process.send?.({ type: 'closed' }); clearInterval(poll); keyboardActivity.configure(false); if (diagnosticRead) { clearTimeout(diagnosticRead.timer); diagnosticRead.resolve(null); diagnosticRead = undefined; } diagnostics?.release(); void diagnostics?.close(); assetServer?.close(); tray?.destroy(); });
 app.on('window-all-closed', () => { userClosed = true; app.quit(); });

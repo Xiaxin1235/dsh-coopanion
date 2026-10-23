@@ -25,3 +25,7 @@ Main → Renderer 使用同包消息 `display-changed { revision, displayId, wor
 纯几何及原生控制器的注入布局测试由 `npm test` 执行；浏览器覆盖不规则布局、混合 DPR、状态保持与命中；原生／安装检查核对实际 screen、窗口、viewport、文字放大后点击及布局更新。三平台与宿主安装矩阵以工作流结果为准。
 
 物理多屏、混合 DPI 与真实跨屏点击需要独立设备验证。Electron 坐标定义参见[官方 screen 文档](https://www.electronjs.org/docs/latest/api/screen)。
+
+C03 在 Windows 125% 实机排查中确认产品几何保持 DIP／CSS 单位；旧 nativeClick 辅助进程却以 DPI unaware 线程提交物理点，造成二次虚拟化。测试辅助进程先使用公开 [SetThreadDpiAwarenessContext](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setthreaddpiawarenesscontext) 选择 Per-Monitor-V2，再将 Electron dipToScreenPoint 的物理点交给 SetCursorPos；不改系统缩放或生产光标路径。测试另保留移动前、OS 移动后和 CDP 点击后的读数。窗口被移到工作区外仍由现有 display controller 归回实际 workArea，100%／125%／150% 与负屏幕原点由单元和原生用例分别核对。
+
+受控原生子工作区允许每个边界最多 1 DIP 的 Win32 取整差（例如 125% 下请求宽 550，实际宽 551）；实际 contentBounds 与 viewport 仍严格一致。光标转换在 CDP 输入前后都检查，每轴最多 2 DIP 的整数往返差；原先 25% 的缩放误差仍会明确失败。未把屏幕比例乘回产品坐标。

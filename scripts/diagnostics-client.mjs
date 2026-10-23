@@ -2,6 +2,7 @@ import { readdir, readFile, stat } from 'node:fs/promises';
 import { request } from 'node:http';
 import { join } from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
+import windowDiagnostics from '../desktop/window-diagnostics.cjs';
 
 export async function listDiagnostics(registry) {
   let names;
@@ -73,6 +74,7 @@ export function sanitizeSnapshot(raw, endpoint) {
   return { schema: 1, instance: raw.instance, session: raw.session, pid: raw.pid, startedAt: raw.startedAt, measuredAt: raw.measuredAt, version: raw.version,
     build: { schema: 1, commit: raw.build.commit, dirty: raw.build.dirty, productDigest },
     value: { runtime,
+      ...(data.window === undefined ? {} : { window: { current: data.window.current === null ? null : windowDiagnostics.windowState(data.window.current), events: windowDiagnostics.windowTrace(data.window.events) } }),
       store: { initialized: data.store.initialized === true, writable: data.store.writable === true, failed: data.store.failed === true,
         ...pickCounts(data.store, ['bytes', 'revision', 'recentCount', 'characterCount', 'invitations', 'pending']) }, renderer: cleanRenderer },
   };

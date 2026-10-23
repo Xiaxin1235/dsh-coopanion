@@ -1,4 +1,5 @@
 export const zh = {
+  aboveFullscreen: '在全屏应用上方显示', aboveFullscreenHint: '默认开启。窗口被系统隐藏或最小化时自动恢复；主动隐藏后保持隐藏，不抢前台焦点。',
   inlineQuestions: '在小信封里直接回答提问', inlineQuestionsHint: '普通单选提问可在信封中回答；审批、多选和计划审阅仍在 Harness 处理。',
   preferOpeningParagraph: '回复气泡：优先显示开头一段', preferOpeningParagraphHint: '优先显示简短纯文本开场白，仍可展开全文；关闭后恢复原有 180 字预览。',
   nav: '桌宠', title: '桌宠', intro: '让大肥鱼陪你工作，并在任务完成或需要确认时提醒你。',
@@ -27,6 +28,7 @@ export const zh = {
 };
 export type LocaleKey = keyof typeof zh;
 export const en: Record<LocaleKey, string> = {
+  aboveFullscreen: 'Show above fullscreen apps', aboveFullscreenHint: 'On by default. Recover system-hidden or minimized windows without taking focus. Explicitly hidden pets stay hidden.',
   inlineQuestions: 'Answer questions directly in the inbox', inlineQuestionsHint: 'Answer ordinary single-select questions in the inbox. Approvals, multiple selections and plan reviews stay in Harness.',
   preferOpeningParagraph: 'Reply bubbles: prefer the opening paragraph', preferOpeningParagraphHint: 'Show a short plain opening paragraph and keep the full reply available. Turn off for the original 180-character preview.',
   nav: 'Desktop pet', title: 'Desktop pet', intro: 'Keep DeepSeek Whale by your side and get a reminder when a task finishes or needs your attention.',

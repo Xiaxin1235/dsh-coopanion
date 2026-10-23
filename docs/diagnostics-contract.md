@@ -6,9 +6,9 @@
 
 `diagnostics: boolean` 默认 `false`，沿 Host schema、设置表单、完整 DesktopOptions 与 ready／configure 热同步。热切不重建角色、阅读或输入 DOM，不重置草稿、选区、请求身份或气泡时钟。诊断与陪伴模式、通知及音效独立。
 
-关闭时不提供诊断接口，不保存活动历史。开启时仅维护固定大小的活动／邀请计数，由外部请求拉取当前摘要；不新增周期采样定时器。关闭立即停止受理读请求，撤下发现文件和本地 socket，清空诊断活动计数；关系存档不受影响。
+关闭时不提供诊断接口，不保存活动历史；C03 开启期间额外保留最多 24 条窗口生命周期事件。开启时仅维护固定大小的活动／邀请计数，由外部请求拉取当前摘要；不新增周期采样定时器。关闭立即停止受理读请求，撤下发现文件和本地 socket，清空诊断活动计数；关系存档不受影响。
 
-摘要包含可选 `npc` 固定字段：phase=home／prepare／outbound／observe／return／yield／resume；reason=none／disabled／input／unknown／pointer／work／user／lifecycle／geometry／capability；keyboard=active／idle／unknown；targetValid 与 compact 为布尔值。当前固定尺寸策略保持 compact=false；字段保留用于读取既有诊断格式，旧记录的 true 仍按旧包行为解释。不输出具体坐标、目标身份、按键内容或输入历史。另有可选 keyboardBackend=macos／windows／x11／none 和 keyboardStatus=disabled／starting／available／unsupported-platform／unsupported-session／missing-dependency／failed／stale／unavailable／protocol-error；仅说明适配器状态，不代表物理输入验收或已获某项权限。旧采样结果没有这些字段，不能据此推断 NPC 行为。
+摘要包含可选 `npc` 固定字段：phase=home／prepare／outbound／observe／return／yield／resume；reason=none／disabled／input／unknown／pointer／work／user／lifecycle／geometry／capability；keyboard=active／idle／unknown；targetValid 与 compact 为布尔值。当前固定尺寸策略保持 compact=false；字段保留用于读取既有诊断格式，旧记录的 true 仍按旧包行为解释。NPC 摘要不输出目标坐标、目标身份、按键内容或输入历史；窗口诊断的矩形范围见下文。另有可选 keyboardBackend=macos／windows／x11／none 和 keyboardStatus=disabled／starting／available／unsupported-platform／unsupported-session／missing-dependency／failed／stale／unavailable／protocol-error；仅说明适配器状态，不代表物理输入验收或已获某项权限。旧采样结果没有这些字段，不能据此推断 NPC 行为。
 
 运行状态保留 screenLocked／systemAsleep 和可选 lockStateKnown 布尔值；启动前已经锁屏时先校验系统状态，不能只等待后续锁屏事件。macOS 只读取 CoreGraphics 当前会话的三个固定状态标记，Windows／Linux 使用原生系统空闲状态 API；初始状态未知时保持挂起，收到明确的锁屏／解锁事件后更新已知状态。隔离原生测试显式控制初态，正常安装不采纳测试覆盖值。启用诊断后用固定 locks／unlocks／suspends／resumes 计数记录系统事件，关闭诊断清零，进程重启另段结算。计数能反映两次读取之间的锁屏／休眠／唤醒，但不提供事件精确发生时间；休眠期间未采到的时间仍记为缺口。旧包缺少这些字段时不推断状态。
 
@@ -45,3 +45,11 @@ macOS 的字典键按 SDK `CGSession.h` 取值：`kCGSessionOnConsoleKey` 宏对
 `dist/build-info.json` 记录源码提交、是否有未提交变更和产品输入摘要；无 Git 的对应源码导出仍可重建，提交状态记为未知。实际 `.tgz` SHA-256 与采样器脚本摘要另行记录；不能用构建摘要代替完整包身份。
 
 新诊断包重新运行受控观察；旧包只为其原始范围提供证据。日常体验通过实际使用和自然反馈判断，采样器的默认时长不构成体验验收要求。系统通知、多屏、锁屏／休眠及其他平台分别验收。诊断原始记录保持本地，不新增遥测或上传。
+
+## 窗口生命周期诊断（C03）
+
+现有 schema 1 快照的 value 可附加 `window: { current, events }`。events 为最多 24 条的内存环，不写后台日志；关闭诊断清空、进程重启另段。事件限定 minimize／restore／hide／show／blur／focus／always-on-top-changed、三个 display 事件、四个 power 事件和 recovery。每条包含 at、visible、minimized、alwaysOnTop、desiredVisible、bounds、workArea、scaleFactor、pet；当前状态也包含这些状态和几何字段。主进程只接受可信主 frame 的有限几何消息。
+
+pet 为 null 或 `{ at, pet, viewport }`：Renderer 开启诊断时至多每 500ms 报告角色本地矩形和 viewport，at 是采集时间，事件携带最近一次报告，不能将旧报告当作事件时精确位置。bounds/workArea 是全局 DIP，角色与 viewport 是本地 CSS 像素；负坐标允许。没有其他应用标题／进程名、前台身份、聊天或路径。白名单采样器保留这些字段，未知内容丢弃，总响应继续受 32 KiB 限制。
+
+`scripts/export-diagnostics.mjs` 在 Windows 也可用，只导出现有清洗后的快照，不启动 OS 资源采样、不截图、不改变窗口。多个实例须显式选择 --instance，输出须不存在。该快照及事件能帮助区分主动隐藏、系统最小化、置顶丢失、窗口越界及角色越界，不能仅凭 isVisible=true 宣称用户看得到。

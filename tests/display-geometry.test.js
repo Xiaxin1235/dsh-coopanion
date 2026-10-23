@@ -53,3 +53,14 @@ it('native controller replays switching, taskbars, unplugging and DPI/rotation c
   expect(messages.every(m => m.type === 'display-changed')).toBe(true);
   expect(moves.length).toBe(3);
 });
+
+it('repairs a window moved outside its work area at 100/125/150 percent and negative monitor origins', () => {
+ for (const scaleFactor of [1,1.25,1.5]) for (const x of [0,-1920]) {
+  const d=display(1,x,0,1536,816,scaleFactor);let bounds={x:-100000,y:-100000,width:100,height:100};
+  const screen={getPrimaryDisplay:()=>d,getAllDisplays:()=>[d],getCursorScreenPoint:()=>({x:x+100,y:100})};
+  const win={getBounds:()=>bounds,getContentBounds:()=>bounds,setBounds:b=>{bounds={...b};}};
+  const controller=createDisplayController({screen,win,send:()=>{}});controller.refresh();
+  expect(bounds).toEqual(d.workArea);
+  expect(viewportPoint({x:100,y:100},bounds,{width:bounds.width,height:bounds.height})).toEqual({x:100,y:100});
+ }
+});

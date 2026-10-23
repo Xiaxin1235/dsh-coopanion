@@ -3,6 +3,15 @@ import assert from 'node:assert/strict';
 import { promisify } from 'node:util';
 
 const run = promisify(execFile);
+// Win32 cursor inputs below are physical points. Make the short-lived helper
+// Per-Monitor-V2 aware so Windows cannot virtualize them a second time.
+async function warpWindowsCursor(point) {
+  const awareness = point.logical ? '' : "if ([PetTestCursor]::SetThreadDpiAwarenessContext([IntPtr]::new(-4)) -eq [IntPtr]::Zero) { throw 'Cannot set test DPI awareness' };";
+  return run('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command',
+    `Add-Type -TypeDefinition 'using System; using System.Runtime.InteropServices; public class PetTestCursor { [DllImport("user32.dll")] public static extern IntPtr SetThreadDpiAwarenessContext(IntPtr v); [DllImport("user32.dll")] public static extern bool SetCursorPos(int x,int y); }'; ${awareness} if (-not [PetTestCursor]::SetCursorPos(${point.x},${point.y})) { throw 'Cannot move native test cursor' }`,
+  ], { windowsHide: true });
+}
+
 const warpMacCursor = `
 import ctypes, sys
 class Point(ctypes.Structure):
@@ -77,9 +86,7 @@ export async function petClick(page, options = {}, twice = false) {
   }
   if (process.platform === 'win32') {
     const { point } = await nativeMeasurement(page, '#pet');
-    await run('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command',
-      `Add-Type -TypeDefinition 'using System; using System.Runtime.InteropServices; public class PetCursor { [DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y); }'; if (-not [PetCursor]::SetCursorPos(${point.x}, ${point.y})) { throw 'Cannot move the native test cursor' }`,
-    ]);
+    await warpWindowsCursor(point);
   }
   await pet.hover();
   await page.waitForSelector('#pet[data-native-hit=true]');
@@ -120,27 +127,31 @@ export async function nativeClick(page, selector) {
   const measurement = await nativeMeasurement(page, selector), p = measurement.point;
   if (process.platform === 'darwin') await run('python3', ['-c', warpMacCursor, String(p.x), String(p.y)]);
   else if (process.platform === 'linux') await run('python3', ['-c', warpCursor, String(p.x), String(p.y)]);
-  else await run('powershell.exe', ['-NoProfile','-NonInteractive','-Command',
-    `Add-Type -TypeDefinition 'using System; using System.Runtime.InteropServices; public class PetPanelCursor { [DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y); }'; if (-not [PetPanelCursor]::SetCursorPos(${p.x}, ${p.y})) { throw 'Cannot move the native test cursor' }`]);
+  else await warpWindowsCursor(p);
   // A font/size update can reflow the panel while the OS helper starts. Keep
   // CDP and the physical cursor on the same measured point rather than mixing
   // two layout samples; locator trial above waits for actionability/stability.
   const { x, y } = measurement.css;
+  const beforeCdp = await nativeMeasurement(page, selector);
+  assert.ok(Math.abs(beforeCdp.cursor.x-measurement.dip.x)<=2 && Math.abs(beforeCdp.cursor.y-measurement.dip.y)<=2, 'OS cursor conversion is correct before CDP input');
   await page.mouse.move(x, y);
   await page.waitForSelector('#pet[data-native-hit=true]');
   await page.mouse.click(x, y);
   const observed = await nativeMeasurement(page, selector);
-  assert.ok(Math.hypot(observed.cursor.x - measurement.dip.x, observed.cursor.y - measurement.dip.y) <= 2,
+  if (process.env.DSH_PET_INPUT_TRACE === '1') console.log('Pointer conversion stages:', JSON.stringify({ measurement, beforeCdp, observed }));
+  // DIP -> integer physical -> DIP rounding is independent on each axis.
+  assert.ok(Math.abs(observed.cursor.x - measurement.dip.x) <= 2 && Math.abs(observed.cursor.y - measurement.dip.y) <= 2,
     `OS cursor reaches the measured DIP point: ${JSON.stringify({ measurement, observed })}`);
   return { ...measurement, cursorAfterClick: observed.cursor };
 }
 
 /** Keep the OS cursor and CDP pointer away from an autonomous walking path. */
 export async function parkNativePointer(page) {
-  const origin = await page.evaluate(() => ({ x: screenX + 2, y: screenY + 2 }));
+  const origin = await page.evaluate(() => window.dshPetBridge.testScreenPoint
+    ? window.dshPetBridge.testScreenPoint({ x: 2, y: 2, width: innerWidth, height: innerHeight }).then(v => v.point)
+    : { x: screenX + 2, y: screenY + 2, logical: true });
   if (process.platform === 'darwin') await run('python3', ['-c', warpMacCursor, String(origin.x), String(origin.y)]);
   else if (process.platform === 'linux' && process.env.DISPLAY) await run('python3', ['-c', warpCursor, String(origin.x), String(origin.y)]);
-  else if (process.platform === 'win32') await run('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command',
-    `Add-Type -TypeDefinition 'using System; using System.Runtime.InteropServices; public class PetParkCursor { [DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y); }'; if (-not [PetParkCursor]::SetCursorPos(${Math.round(origin.x)}, ${Math.round(origin.y)})) { throw 'Cannot park native cursor' }`]);
+  else if (process.platform === 'win32') await warpWindowsCursor(origin);
   await page.mouse.move(2, 2);
 }

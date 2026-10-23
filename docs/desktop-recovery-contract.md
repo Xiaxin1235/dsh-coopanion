@@ -21,3 +21,13 @@ Host 的 `PetControls` 独占恢复调度。意外退出（包括没有主动关
 熟悉度、邀请预算与安静偏好由独立的[陪伴存档](companionship-contract.md)保存，原生恢复只读取摘要，不重放活动／邀请。它不扩展草稿或在途聊天的持久化范围；损坏关系档只停用持久成长与邀请，原任务恢复和阅读仍可使用。
 
 冷启动先校验当前锁屏状态：macOS 只读取 CoreGraphics 的锁屏／控制台／登录完成三个布尔标记，Windows／Linux 使用 Electron 原生空闲状态 API。恢复时已有的锁屏状态继续保守保留；状态未知时挂起自主活动和主动投递，等明确的锁屏／解锁事件或在有效会话重新启动。生命周期监听先于初始化检查建立，避免校验期间漏掉新事件；此检查不读取用户名、输入或会话内容。
+
+## 窗口可见性恢复（C03）
+
+原生进程内的可见性恢复与 Host 的崩溃重启分开：不重建进程或 Renderer、不重放输入／提醒，保留原 generation。仅 ready、未关闭、desiredVisible=true 且系统未挂起时生效。用户隐藏先记录意图再 hide；系统 hide/minimize、失去置顶、blur 和显示器变化触发合并后的检查；两秒巡检在健康状态下只读，不制造显示／置顶循环。退出先关闭守护，锁屏／休眠／未知锁状态不自动恢复。
+
+Windows 使用 `showInactive()` 恢复最小化及隐藏状态，随后必要时 setAlwaysOnTop/moveTop；不调用 focus/show。Electron 44 的 restore() 即使临时设置 focusable=false 仍可能影响前台，因此本平台不采用它。其他平台保留受限 restore 后 inactive show，跨平台原生行为另行验收。
+
+`aboveFullscreen=true` 默认选 Windows/macOS `pop-up-menu`（最低的任务栏／Dock 之上级别），false 使用旧 floating；Linux 使用 floating。设置不改变主动隐藏语义。Windows 44.7.0 的 floating 实现会使用 behind_task_bar_，pop-up-menu 与 screen-saver 不使用；选择依据见 [Electron v44.7.0 源码](https://github.com/electron/electron/blob/v44.7.0/shell/browser/native_window_views.cc) 及 [BaseWindow API](https://www.electronjs.org/docs/latest/api/base-window#winsetalwaysontopflag-level-relativelevel)。本行为不保证绕过独占全屏或系统受保护桌面。
+
+隔离原生测试使用自己的全屏前台窗口，比较三个置顶级别，测试系统最小化、hide、失去置顶、主动隐藏跨巡检及模拟锁屏／休眠，断言前台仍聚焦、桌宠不聚焦。测试专用变更 IPC 仅在独立数据目录、显式测试控制标志、测试沙箱和调试端口同时具备时加载；普通安装不开放。

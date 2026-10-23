@@ -6,6 +6,7 @@ async function characterCall(channel, value) {
 }
 contextBridge.exposeInMainWorld('dshPetBridge', {
   nativeGeometry: true,
+  ...(process.argv.includes('--dsh-pet-window-test') ? { testWindow: value => ipcRenderer.invoke('pet:test-window', value) } : {}),
   ...(process.argv.includes('--dsh-pet-display-test') ? { testScreenPoint: value => ipcRenderer.invoke('pet:test-screen-point', value) } : {}),
   subscribe(callback) {
     const listener = (_event, message) => callback(message);
@@ -15,6 +16,7 @@ contextBridge.exposeInMainWorld('dshPetBridge', {
   // Chat carries its immutable target and client request identity unchanged.
   action(value) { ipcRenderer.send('pet:action', value); },
   hit(active) { ipcRenderer.send('pet:hit', active); },
+  geometry(value) { ipcRenderer.send('pet:geometry', value); },
   diagnosticsRespond: value => ipcRenderer.send('pet:diagnostics-response', value),
   companionship: value => characterCall('pet:companionship', value),
   characters: {

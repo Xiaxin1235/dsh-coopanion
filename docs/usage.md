@@ -171,3 +171,18 @@ npm run character:pack -- examples/star paper-star.zip
 审批、多选、计划评审、不支持或过大的问题只提供 **去 Harness 处理**；普通单选也保留此入口。提交失败保留简短提示和入口；十秒未确认不会自动重发，请先检查 Harness。限时问题不会因为展开表单而暂停倒计时；标记“仍可回答”时仍可提交，需该会话的原 Agent 可用。关闭设置恢复 0.4.13 的 Harness 处理路径。
 
 本地隔离测试的 Harness 跳转只走连接的 Web 客户端，不启动日常桌面应用；测试鲸鱼和日常鲸鱼使用不同的数据目录。
+
+## 在游戏中使用
+
+“设置 → 桌宠 → 在全屏应用上方显示”默认开启，Windows／macOS 使用 `pop-up-menu` 层级；关闭后回到原 `floating` 层级。游戏及全屏应用前台运行时，桌宠尽量保持在上方；系统导致的最小化、隐藏或失去置顶会自动恢复，恢复不激活窗口。用户主动隐藏、锁屏／休眠和退出时不会自动弹回。默认不按游戏自动隐藏；本版没有跨应用全屏检测开关。独占全屏、受保护桌面和特定游戏的实际显示仍需实机验证。
+
+如挡住游戏操作，可拖到角落、缩小，或手动隐藏；点击桌宠自身的聊天和菜单仍是正常交互，本项不增加游戏鼠标穿透。窗口状态每两秒轻量核对，正常状态不反复调用显示或置顶。游戏退出后无需重启桌宠。
+
+若再次消失，打开“设置 → 桌宠 → 本地诊断”，复现一次后尽快导出。Windows 的默认安装目录示例（无需开发环境、调试端口或管理员）：
+
+```powershell
+node "$env:USERPROFILE/.dsh/profiles/desktop/node_modules/@takboo/dsh-coopanion/scripts/sample-companion.mjs" --list
+node "$env:USERPROFILE/.dsh/profiles/desktop/node_modules/@takboo/dsh-coopanion/scripts/export-diagnostics.mjs" --instance <上一步的实例值> --output "$env:USERPROFILE/Desktop/whale-window-diagnostic.json"
+```
+
+输出文件须尚不存在。导出为现有 schema 1 诊断快照：最近最多 24 条窗口事件、显示意图、可见／最小化／置顶状态、窗口和工作区 DIP 矩形、缩放比例及有采集时间的角色本地矩形。不读取其他应用的标题或进程名，不含聊天或凭证。关闭诊断清除事件并撤下接口。

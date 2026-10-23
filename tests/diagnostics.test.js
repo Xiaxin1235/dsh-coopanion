@@ -131,3 +131,20 @@ it.skipIf(process.platform === 'win32')('a calendar deadline never grants contin
   expect(summary).toMatchObject({ reason: 'deadline', status: 'recorded', fullTwoHourObservation: false });
   expect(summary.samples).toBeGreaterThan(0);
 }), 15000);
+
+it('exports only declared window geometry and bounded lifecycle events in the existing snapshot', async () => fixture(async f => {
+ await f.api.configure(true); const [endpoint]=await listDiagnostics(f.registry);const snapshot=await readDiagnostics(endpoint);
+ const rect={x:-1536,y:0,width:1536,height:816};const current={visible:true,minimized:false,alwaysOnTop:true,desiredVisible:true,bounds:rect,workArea:rect,scaleFactor:1.25,pet:{at:1,pet:{x:30,y:600,width:120,height:150},viewport:{x:0,y:0,width:1536,height:816}},applicationTitle:'private app'};
+ snapshot.value.window={current,events:[{...current,at:1,event:'hide'}],foregroundProcess:'private app'};
+ const clean=sanitizeSnapshot(snapshot,endpoint);expect(clean.value.window.current.bounds.x).toBe(-1536);expect(clean.value.window.events[0].event).toBe('hide');expect(JSON.stringify(clean)).not.toContain('private app');
+ expect(Buffer.byteLength(JSON.stringify({...clean,value:{...clean.value,window:{current:clean.value.window.current,events:Array(24).fill(clean.value.window.events[0])}}}))).toBeLessThan(32768);
+ snapshot.value.window.events=Array(25).fill(snapshot.value.window.events[0]);expect(()=>sanitizeSnapshot(snapshot,endpoint)).toThrow('trace');
+}));
+
+it('exports the sanitized existing snapshot on demand without overwriting an earlier export', async () => fixture(async f => {
+ await f.api.configure(true);const output=join(f.root,'window-snapshot.json');
+ await promisify(execFile)(process.execPath,['scripts/export-diagnostics.mjs','--registry',f.registry,'--output',output]);
+ const exported=await readFile(output,'utf8');expect(JSON.parse(exported).schema).toBe(1);expect(exported).not.toContain('socketPath');expect(exported).not.toContain('token');
+ await expect(promisify(execFile)(process.execPath,['scripts/export-diagnostics.mjs','--registry',f.registry,'--output',output])).rejects.toThrow();
+ expect(await readFile(output,'utf8')).toBe(exported);
+}));
