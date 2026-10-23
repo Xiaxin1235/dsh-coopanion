@@ -1,3 +1,4 @@
+import { createPanelStyle, apronPosition, actionInk } from './panel-style.js';
 import { InboxReceipts, continuedInboxKey } from './inbox-receipts.js';
 import { automaticExpression, taskExpression } from './task-expression.js';
 import { createQuestionForms } from './inline-questions.js';
@@ -31,7 +32,9 @@ let toastNotice;
 const snoozing = new Map();
 const questionForms = createQuestionForms({ send, changed: () => { renderRequests(); position(); } });
 const notificationLocale = () => options.locale ? petLanguage(options.locale) : automaticPetLanguage(navigator.languages ?? [navigator.language]);
-const uiCopy = () => petCopy(notificationLocale());
+const uiCopy = () => petCopy(notificationLocale(), options.interfaceStyle !== 'classic');
+const noticeCopy = () => notificationCopy(notificationLocale(), options.interfaceStyle !== 'classic');
+const panelStyle = createPanelStyle(document);
 const allRequests = () => pendingInteractions(notificationState);
 const pendingRequests = () => allRequests().filter(item => !inboxReceipts.hides(item));
 const userInputOccupied = () => pressing || dragging || panels.some(p => !p.hidden) || !bubble.hidden;
@@ -45,7 +48,7 @@ let npc = initialNpc(1), npcGeneration = 1, npcEvent, npcRelocated = false, keyb
 const homeMarker = document.createElement('div'); homeMarker.id = 'npc-home'; homeMarker.hidden = true; homeMarker.setAttribute('aria-hidden', 'true'); document.body.appendChild(homeMarker);
 let body, previewBody, previewCharacter, activeView, activeScheme, activeName = 'DeepSeek 大肥鱼', libraryState, libraryBusy = false;
 let appliedMood, appliedControls, speech, speechExpires = Infinity, pressing = false, dragStart, dragPoint, dragging = false, previewScheme = "", reducedNeedsStep = true;
-let options = { inlineQuestions: true, preferOpeningParagraph: true, textScale: 1, size: 180, roam: true, companionship: 'off', notifications: true, bubbleDurationMs: 12000 };
+let options = { interfaceStyle: 'new', inlineQuestions: true, preferOpeningParagraph: true, textScale: 1, size: 180, roam: true, companionship: 'off', notifications: true, bubbleDurationMs: 12000 };
 let snapshot = { mood: 'idle', text: '你好。点点我，或双击和我说话。', sessionId: null, sessions: [] };
 let x = innerWidth * .68, y = innerHeight - 155, hovered = false, asleep = false, toastTimer, noticeSession;
 let cursorPoint, lastHit;
@@ -99,9 +102,9 @@ function refreshPreviewCopy() {
   $('character-credit').textContent = uiCopy().authorCredit(view.author ?? uiCopy().unknownAuthor, view.credits?.map(c => c.name).join('、') ?? '', view.builtin ? uiCopy().builtinLicense : view.license ?? uiCopy().authorLicense);
 }
 function applyLocale() {
-  const locale = notificationLocale(); if (renderedLocale === locale) return;
-  renderedLocale = locale;
-  const text = uiCopy(), notice = notificationCopy(locale);
+  const locale = notificationLocale(), key = locale + options.interfaceStyle; if (renderedLocale === key) return;
+  renderedLocale = key;
+  const text = uiCopy(), notice = noticeCopy();
   document.documentElement.lang = locale === 'zh' ? 'zh-CN' : 'en'; document.title = text.title;
   const lookup = key => key.startsWith('notice:') ? notice[key.slice(7)] : key.startsWith('demo:') ? text.demoButtons[key.slice(5)] : text[key];
   for (const [attribute, target] of [['data-i18n', null], ['data-i18n-aria-label', 'aria-label'], ['data-i18n-placeholder', 'placeholder'], ['data-i18n-title', 'title']]) {
@@ -152,9 +155,12 @@ function position() {
     if (!panelAnchors.has(panel)) panelAnchors.set(panel, { ...anchor });
     const panelAnchor = panelAnchors.get(panel);
     const pw = panel.offsetWidth, ph = panel.offsetHeight;
-    const { x: px, y: py } = panelPosition(panelAnchor, { width: pw, height: ph }, { width: innerWidth, height: innerHeight });
+    const apron = options.interfaceStyle !== 'classic' && [chat, menu, requests].includes(panel);
+    const placement = apron ? apronPosition({ x: box ? box.x + box.w / 2 : panelAnchor.x, y: box?.y ?? panelAnchor.y }, { width: pw, height: ph }, { width: innerWidth, height: innerHeight }, box ? box.y + box.h : panelAnchor.y) : panelPosition(panelAnchor, { width: pw, height: ph }, { width: innerWidth, height: innerHeight });
+    const { x: px, y: py } = placement;
+    if (apron) panel.dataset.tail = placement.tail;
     panel.style.left = `${px}px`; panel.style.top = `${py}px`;
-    panel.style.setProperty('--tail', `${Math.max(22, Math.min(pw - 22, panelAnchor.x - px))}px`);
+    panel.style.setProperty('--tail', `${apron ? placement.offset : Math.max(22, Math.min(pw - 22, panelAnchor.x - px))}px`);
   }
   const attention = $('attention');
   attention.hidden = !inboxState.total || panels.some(p => !p.hidden);
@@ -213,7 +219,7 @@ function openReader(result, queue) {
   updateReaderNavigation(); acknowledge(result); updateMood(); position(); $('reader-text').focus();
 }
 function updateReaderNavigation() {
-  const copy = notificationCopy(notificationLocale());
+  const copy = noticeCopy();
   $('reader-caption').textContent = copy.replyCaption; $('reader-inbox').textContent = copy.inbox; $('reader-inbox').hidden = !readerQueue;
   $('reader-session').textContent = copy.continue; $('reader-prev').ariaLabel = copy.previous; $('reader-next').ariaLabel = copy.next;
   const history = readerQueue ?? (snapshot.results ?? []).filter(r => r.sessionId === readerResult?.sessionId);
@@ -235,6 +241,7 @@ function refreshCompanionCopy() {
   const text = options.companionship === 'off' ? copy.companionDisabled : companionClient.error ? copy.companionUnavailable : summary?.relation.unlocked ? copy.companionFamiliar : summary?.relation.total ? copy.companionProgress(summary.relation.total) : copy.companionNew;
   if ($('companion-status').textContent !== text) $('companion-status').textContent = text;
   if ($('companion-mode').value !== options.companionship) $('companion-mode').value = options.companionship;
+  for (const button of document.querySelectorAll('#companion-segments [data-companionship]')) { const checked = button.dataset.companionship === options.companionship; button.setAttribute('aria-checked', String(checked)); button.tabIndex = checked ? 0 : -1; }
   const disabled = options.companionship === 'off' || !!companion.active?.manual;
   if ($('companion-play').disabled !== disabled) $('companion-play').disabled = disabled;
   const hidden = !summary?.invitation.quiet && !(summary?.invitation.laterUntil > Date.now());
@@ -337,6 +344,15 @@ $('companion-mode').onchange = event => {
   const value = companionshipMode(event.target.value);
   if (native) send({ type: 'preference', field: 'companionship', value }); else { applyOptions({ companionship: value }); updateMood(); }
 };
+$('interface-style').onchange = event => {
+  const value = event.target.value === 'classic' ? 'classic' : 'new';
+  if (native) send({ type: 'preference', field: 'interfaceStyle', value }); else { applyOptions({ interfaceStyle: value }); render(); }
+};
+const segments = [...document.querySelectorAll('#companion-segments [data-companionship]')];
+for (const button of segments) {
+  button.onclick = () => { $('companion-mode').value = button.dataset.companionship; $('companion-mode').dispatchEvent(new Event('change')); };
+  button.onkeydown = event => { const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[event.key]; if (!step && !['Home', 'End'].includes(event.key)) return; event.preventDefault(); const next = segments[event.key === 'Home' ? 0 : event.key === 'End' ? segments.length - 1 : (segments.indexOf(button) + step + segments.length) % segments.length]; next.focus(); next.click(); };
+}
 function updateMood() {
   // Event callbacks and animation frames must share one live monotonic clock.
   // A requestAnimationFrame timestamp can predate an already processed click.
@@ -419,7 +435,7 @@ function render() {
   $('attention').hidden = !inboxState.total || panels.some(p => !p.hidden);
   $('attention-count').textContent = String(inboxState.total);
   $('attention').dataset.urgent = String(!!pendingCount);
-  $('attention').title = $('attention').ariaLabel = notificationCopy(notificationLocale()).inboxSummary(inboxState.replies.length, pendingCount);
+  $('attention').title = $('attention').ariaLabel = noticeCopy().inboxSummary(inboxState.replies.length, pendingCount);
   $('chat-current').disabled = !snapshot.sessions.length; $('chat-session-name').textContent = selected?.label ?? uiCopy().noSession;
   $('chat-current').setAttribute('aria-label', selected ? uiCopy().chatTarget(selected.label) : uiCopy().emptySessions);
   $('chat-session-state').textContent = sessionStateLabel(selected, notificationLocale());
@@ -434,7 +450,7 @@ function render() {
   $('message').disabled = !enabled || draft.phase === 'sending'; $('send').disabled = !enabled || draft.phase === 'sending';
   $('send').textContent = draft.phase === 'failed' ? uiCopy().retrySend : uiCopy().send;
   $('chat-send-state').textContent = draft.phase === 'failed' ? uiCopy().sendFailure(draft.code) : uiCopy()[{ sending: 'sending', accepted: 'sendAccepted' }[draft.phase]] ?? '';
-  $('chat-send-state').dataset.state = draft.phase;
+  $('chat-send-state').dataset.state = draft.phase; chat.dataset.sendState = draft.phase; $('send').ariaLabel = $('send').textContent; resizeComposer();
   $('conversation-open').disabled = !snapshot.sessionId; $('chat-session').disabled = !snapshot.sessionId;
   $('chat-help').textContent = enabled ? uiCopy().chatHelp(selected.label) : snapshot.sessionId ? uiCopy().unavailableChat : uiCopy().noChat;
   if (previous !== snapshot.sessionId) {
@@ -461,7 +477,7 @@ function presentNextNotice() {
   currentNotice = current;
   $('interaction-title').textContent = presentation.title;
   $('interaction-preview').textContent = presentation.body;
-  const copy = notificationCopy(notificationLocale());
+  const copy = noticeCopy();
   $('interaction-open').textContent = copy.open; $('interaction-close').ariaLabel = copy.close;
   $('interaction-pending').textContent = copy.pending; $('interaction-pending').hidden = !notice.requestIds.length;
   interaction.hidden = false; panelAnchors.delete(interaction);
@@ -473,16 +489,23 @@ function presentNextNotice() {
 }
 function renderRequests() {
   if (requests.hidden) return;
-  const copy = notificationCopy(notificationLocale());
+  const copy = noticeCopy();
   inboxState = inboxContents(attentionSnapshot, pendingRequests(), acknowledgedResults);
   const { requests: items, issues, replies } = inboxState;
   const sources = new Map(snapshot.sessions.map(session => [session.id, session])), shortIds = shortSessionIds(snapshot.sessions);
   const sourceDetail = id => { const session = sources.get(id); return [session?.project || session?.cwd, `#${shortIds.get(id) ?? id}`].filter(Boolean).join(' · '); };
   $('requests-title').textContent = copy.inboxTitle; $('inbox-caption').textContent = copy.inboxCaption; $('requests-close').ariaLabel = copy.close;
   $('inbox-count').textContent = copy.inboxSummary(replies.length, items.length + issues.length);
+  if (options.interfaceStyle !== 'classic') {
+    const waiting = document.createElement('span'), fresh = document.createElement('span');
+    waiting.textContent = copy.inboxWaiting(items.length + issues.length);
+    fresh.textContent = copy.inboxFresh(replies.length);
+    $('inbox-count').replaceChildren(waiting, fresh);
+    if (!inboxState.total) $('requests-title').textContent = copy.inboxCaughtUp;
+  }
   $('inbox-focus').textContent = copy.focus(sources.get(snapshot.sessionId)?.label ?? '—');
   $('inbox-empty').textContent = copy.inboxEmpty; $('inbox-empty').hidden = !!inboxState.total;
-  const keys = [notificationLocale(), snapshot.sessions.map(session => [session.id, session.label, session.project, session.cwd])];
+  const keys = [notificationLocale(), options.interfaceStyle, snapshot.sessions.map(session => [session.id, session.label, session.project, session.cwd])];
   replaceInboxList($('request-list'), JSON.stringify([...keys, items, [...snoozing.keys()], options.reminders, options.notifications, options.inlineQuestions, questionForms.revision]), () => items.map(item => {
     const card = document.createElement('article'); card.className = 'request-card';
     const label = document.createElement('strong'), preview = document.createElement('p'), meta = document.createElement('small'), actions = document.createElement('div');
@@ -498,7 +521,7 @@ function renderRequests() {
     const later = document.createElement('button'); later.textContent = snoozing.has(item.id) ? copy.snoozing : copy.snooze; later.dataset.requestId = item.id; later.dataset.inboxKey = item.id; later.dataset.action = 'snooze'; later.disabled = snoozing.has(item.id) || !options.notifications || options.reminders === false;
     later.onclick = () => { snoozing.set(item.id, { dueAt: item.dueAt, expiresAt: performance.now() + 10000 }); $('request-feedback').textContent = ''; send({ type: 'notification-snooze', interactionId: item.id, generation: notificationState.runtime.generation }); renderRequests(); };
     actions.append(open, later); card.append(label, preview, meta);
-    const form = item.kind === 'question' && options.inlineQuestions !== false ? questionForms.render(item, notificationState.runtime.generation, copy) : undefined;
+    const form = item.kind === 'question' && options.inlineQuestions !== false ? questionForms.render(item, notificationState.runtime.generation, copy, options.interfaceStyle !== 'classic') : undefined;
     if (form) card.append(form); card.append(actions); return card;
   }));
   replaceInboxList($('inbox-issues'), JSON.stringify([...keys, issues.map(session => [session.id, session.mood, session.text])]), () => issues.map(session => {
@@ -523,7 +546,8 @@ function renderRequests() {
     detail.textContent = `${sourceDetail(result.sessionId)} · ${copy.readReply}`;
     content.append(meta, label, preview, detail);
     open.textContent = copy.continue; open.dataset.resultId = result.id; open.dataset.inboxKey = result.id; open.dataset.action = 'open'; open.onclick = () => { acknowledge(result); continueSession(result.sessionId); };
-    actions.append(open); card.append(content, actions); return card;
+    const read = document.createElement('button'); read.className = 'inbox-read'; read.textContent = copy.readReply; read.onclick = content.onclick;
+    actions.append(open, read); card.append(content, actions); return card;
   }));
 }
 function replaceInboxList(list, key, build) {
@@ -553,6 +577,7 @@ $('interaction-pending').onclick = () => openRequests(false);
 function applyOptions(value) {
   const previousSize = options.size, previousCompanionship = options.companionship;
   options = { ...options, ...value, companionship: Object.hasOwn(value ?? {}, 'companionship') ? companionshipMode(value.companionship) : options.companionship, textScale: Object.hasOwn(value ?? {}, 'textScale') ? textScale(value.textScale) : options.textScale };
+  panelStyle.set(options.interfaceStyle); panelStyle.portraits(); $('interface-style').value = options.interfaceStyle === 'classic' ? 'classic' : 'new';
   diagnosticCounters.configure(options.diagnostics === true);
   document.documentElement.style.setProperty('--size', `${options.size}px`);
   document.documentElement.style.setProperty('--text-scale', String(options.textScale));
@@ -632,7 +657,7 @@ function receive(message) {
     case 'question-answer-result': { questionForms.receipt(message); break; }
     case 'notification-snooze-result': {
       snoozing.delete(message.interactionId);
-      if (!message.ok) $('request-feedback').textContent = notificationCopy(notificationLocale()).unavailable;
+      if (!message.ok) $('request-feedback').textContent = noticeCopy().unavailable;
       renderRequests(); break;
     }
     case 'notice': {
@@ -799,7 +824,14 @@ function openSession(id) {
 $('conversation-open').onclick = () => openSession(snapshot.sessionId);
 $('chat-session').onclick = () => openSession(snapshot.sessionId);
 $('bubble-session').onclick = () => { acknowledge(bubbleResult); openSession(bubbleSession); };
-$('message').oninput = () => { composer.edit(draftSessionId, $('message').value); };
+function resizeComposer() {
+  const node = $('message'); if (options.interfaceStyle === 'classic') return;
+  node.style.height = 'auto';
+  const line = parseFloat(getComputedStyle(node).lineHeight) || 22;
+  node.style.height = `${Math.min(line * 5 + 12, Math.max(line + 12, node.scrollHeight))}px`;
+}
+$('message').oninput = () => { composer.edit(draftSessionId, $('message').value); resizeComposer(); };
+$('message').addEventListener('focus', resizeComposer);
 $('chat-form').onsubmit = event => {
   event.preventDefault();
   const sessionId = snapshot.sessionId;
@@ -872,7 +904,7 @@ let geometryReportedAt = -Infinity;
 let last = performance.now(), companionCadence = { at: -Infinity, elapsed: 0 };
 function animate(now) {
   const dt = Math.min((now - last) / 1000, .05); last = now;
-  for (const [id, pending] of snoozing) if (now >= pending.expiresAt) { snoozing.delete(id); $('request-feedback').textContent = notificationCopy(notificationLocale()).unavailable; renderRequests(); }
+  for (const [id, pending] of snoozing) if (now >= pending.expiresAt) { snoozing.delete(id); $('request-feedback').textContent = noticeCopy().unavailable; renderRequests(); }
   if (!options.notifications) { noticeQueue.clear(); interaction.hidden = true; }
   if (!interaction.hidden) {
     if (interaction.matches(':hover') || interaction.contains(document.activeElement)) interactionExpires = now + options.bubbleDurationMs;
@@ -973,11 +1005,13 @@ function applyAppearance() {
   const accent = preset?.accent ?? activeView.axes[0]?.options.find(o => o.id === activeScheme)?.accent ?? '#4d6bfe';
   document.documentElement.style.setProperty('--skin-eye', accent);
   document.documentElement.style.setProperty('--accent', preset?.console?.light.a ?? accent);
+  document.documentElement.style.setProperty('--action', actionInk(preset?.console?.light.a ?? accent));
   document.documentElement.style.setProperty('--accent2', preset?.console?.light.a2 ?? accent);
   $('chat-character').textContent = activeName; $('menu-name').textContent = activeName;
   const thumb = preset?.thumb ?? activeView.thumb;
   $('menu-portrait').hidden = !thumb; $('menu-emblem').hidden = !!thumb;
-  if (thumb) { $('menu-portrait').src = new URL(activeView.base + thumb, location.href).href; $('menu-portrait').onerror = () => { $('menu-portrait').hidden = true; $('menu-emblem').hidden = false; }; }
+  if (thumb) { $('menu-portrait').src = new URL(activeView.base + thumb, location.href).href; $('menu-portrait').onerror = () => { $('menu-portrait').hidden = true; $('menu-emblem').hidden = false; panelStyle.portraits(); }; }
+  panelStyle.portraits();
   trayKey = undefined; updateMood();
 }
 async function restoreBuiltin() {
@@ -1081,6 +1115,7 @@ $('character-remove').onclick = () => void characterOperation(async () => {
   previewBody?.dispose(); previewBody = undefined;
   await library.remove(id); await refreshCharacters(); characterStatus('removed');
 });
+applyOptions({});
 void (async () => {
   setBusy(true);
   try {

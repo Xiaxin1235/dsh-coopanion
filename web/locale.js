@@ -59,7 +59,15 @@ const en = {
   trayDisplay:'Move to display', display:'Display', trayOpen:'Open current conversation', traySwitch:'Choose companion conversation', trayChat:'Say something', trayCharacters:'Characters and colours', trayRoam:'Roam freely', traySleep:'Rest (new work wakes the pet)', trayNotices:'Task reminders', traySound:'Action and reply sounds', trayShow:'Show companion', trayQuit:'Close desktop pet', trayNeeds:' · Needs attention',
   trayUnread:n=>` · ${n} unread`, trayPending:(unread,pending)=>`Inbox · ${unread} replies · ${pending} need attention`, trayTooltip:(name,mood,label,busy,pending,unread)=>`${name} · ${mood}\nFocused: ${label}\n${busy} active · ${pending} need attention · ${unread} unread replies`,
 };
-export function petCopy(locale) { return petLanguage(locale) === 'zh' ? zh : en; }
+const panelLabels = {
+  zh: { interfaceStyle: '界面风格', styleNew: '新版', styleClassic: '经典', menuQuestion: '要我做点什么？', segmentOff: '关闭', segmentQuiet: '安静', segmentInteractive: '互动' },
+  en: { interfaceStyle: 'Interface style', styleNew: 'New', styleClassic: 'Classic', menuQuestion: 'What shall we do?', segmentOff: 'Off', segmentQuiet: 'Quiet', segmentInteractive: 'Interactive' },
+};
+export function petCopy(locale, redesigned = false) {
+  const language = petLanguage(locale), base = language === 'zh' ? zh : en;
+  const labels = language === 'zh' ? { chatTitle: '我在呢～慢慢说！', readFull: '看全文', back: '回到会话', send: '发送', changeConversation: '⌄', appearance: '换装扮', source: '源码 · AGPL', expand: '展开完整回复', openCurrent: '打开当前会话', sendHint: 'Enter 换行 · Ctrl / ⌘ + Enter 发送' } : { chatTitle: "I’m here. Take your time!", readFull: 'Read full reply', back: 'Back to chat', send: 'Send', changeConversation: '⌄', appearance: 'Dress up', source: 'Source · AGPL', expand: 'Read full reply', openCurrent: 'Open current chat', sendHint: 'Enter for a new line · Ctrl / ⌘ + Enter to send' };
+  return { ...base, ...panelLabels[language], ...(redesigned ? labels : {}) };
+}
 
 /** Only application diagnostics are translated; conversation content stays verbatim. */
 export function appNoticeCopy(notice, locale) {

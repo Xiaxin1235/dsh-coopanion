@@ -20,12 +20,12 @@ export function createQuestionForms({ send, changed }) {
       clearTimeout(draft.timer); draft.status = value.status; draft.code = value.code;
       revision++; changed();
     },
-    render(item, generation, copy) {
+    render(item, generation, copy, expanded = false) {
       const questions = inlineQuestionItems(item.questions);
       if (!questions) return;
       let draft = drafts.get(item.id);
       if (!draft || draft.generation !== generation || draft.signature !== JSON.stringify(item.questions)) {
-        remove(item.id); draft = { generation, signature: JSON.stringify(item.questions), values: new Map(), status: '', expanded: false };
+        remove(item.id); draft = { generation, signature: JSON.stringify(item.questions), values: new Map(), status: '', expanded };
         drafts.set(item.id, draft);
       }
       const details = document.createElement('details'), summary = document.createElement('summary'), form = document.createElement('form');

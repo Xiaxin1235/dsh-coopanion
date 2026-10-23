@@ -24,7 +24,11 @@ const messages = {
     inboxSummary: (replies, pending) => `${pending} to handle · ${replies} unread replies`, focus: label => `Chatting with: ${label}`, inboxEmpty: 'All read. Carry on with your work.',
   },
 };
-export function notificationCopy(locale = 'zh') { return messages[petLanguage(locale)]; }
+export function notificationCopy(locale = 'zh', redesigned = false) {
+  const language = petLanguage(locale), base = messages[language];
+  if (!redesigned) return base;
+  return { ...base, ...(language === 'zh' ? { inboxWaiting: n => `${n} 件等你`, inboxFresh: n => `${n} 条新回复`, inboxCaughtUp: '都处理完啦～', inboxCaption: '小信封', inboxTitle: '我把消息叼回来啦！', continue: '继续聊', readReply: '看全文', answerSubmit: '就这样', handleHarness: '去 Harness 处理', handle: '去处理', open: '回到源会话' } : { inboxWaiting: n => `${n} waiting`, inboxFresh: n => `${n} new replies`, inboxCaughtUp: 'All caught up!', inboxCaption: 'Little inbox', inboxTitle: 'I brought your messages!', continue: 'Keep chatting', readReply: 'Read full reply', answerSubmit: 'Go with this', handleHarness: 'Handle in Harness', handle: 'Take a look', open: 'Back to source chat' }) };
+}
 export function pendingInteractions(snapshot) { return (snapshot?.interactions ?? []).filter(item => item.state !== 'settled'); }
 export function notificationPresentation(notice, locale, words = []) {
   const copy = notificationCopy(locale);

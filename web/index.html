@@ -7,6 +7,7 @@
   <link rel="icon" href="data:,">
   <title>DeepSeek 大肥鱼 · Harness</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="redesign.css">
 </head>
 <body>
   <aside id="demo" hidden>
@@ -75,6 +76,7 @@
       <div class="menu-primary"><button id="open-characters"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 3-5 3 3 5 2-1v11h8V10l2 1 3-5-5-3c-1 4-7 4-8 0Z"/></svg><span><span data-i18n="appearance">换个模样</span><small data-i18n="appearanceHint">角色 · 配色 · 动作</small></span><b>›</b></button><button id="menu-chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-7l-5 4v-4H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/><path d="M7 9h10M7 13h6"/></svg><span><span data-i18n="say">说句话</span><small data-i18n="sayHint">接着你的会话聊</small></span><b>›</b></button></div>
       <div class="companion-controls">
         <label for="companion-mode" data-i18n="companionMode">自主陪伴</label><select id="companion-mode"><option value="off" data-i18n="companionOff">关闭（停止自主活动）</option><option value="quiet" data-i18n="companionQuiet">安静陪伴</option><option value="interactive" data-i18n="companionInteractive">互动陪伴</option></select>
+        <div id="companion-segments" role="radiogroup" data-i18n-aria-label="companionMode"><button type="button" role="radio" data-companionship="off" data-i18n="segmentOff">关闭</button><button type="button" role="radio" data-companionship="quiet" data-i18n="segmentQuiet">安静</button><button type="button" role="radio" data-companionship="interactive" data-i18n="segmentInteractive">互动</button></div>
         <p id="companion-status" role="status"></p><button id="companion-play" data-i18n="companionTogether">一起活动</button><button id="companion-resume" data-i18n="companionResume">恢复邀请</button>
       </div>
       <div class="menu-switches">
@@ -87,6 +89,7 @@
     </section>
     <section id="characters" class="panel characters interactive" hidden>
       <header><strong data-i18n="characters">角色与动画</strong><button id="characters-close" aria-label="关闭角色面板" data-i18n-aria-label="charactersClose">×</button></header>
+      <label for="interface-style" data-i18n="interfaceStyle">界面风格</label><select id="interface-style"><option value="new" data-i18n="styleNew">新版</option><option value="classic" data-i18n="styleClassic">经典</option></select>
       <label for="character-select" data-i18n="selectCharacter">选择角色</label>
       <select id="character-select" aria-label="角色" data-i18n-aria-label="character"></select>
       <label for="character-scheme" data-i18n="outfit">配色 / 换装</label><select id="character-scheme" aria-label="角色配色" data-i18n-aria-label="characterScheme"></select>
