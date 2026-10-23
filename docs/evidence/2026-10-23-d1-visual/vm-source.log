@@ -1,0 +1,46 @@
+The bundle contains this ref:
+87ca3e7c3d981c4b0f421c4763c51aa23d9f6b70 HEAD
+The bundle requires this ref:
+3e71c3569ca492949c483955d1643385e216a453 
+The bundle uses this hash algorithm: sha1
+/Users/admin/dsh-testing/incoming/d1-visual-20261023/source.bundle is okay
+From /Users/admin/dsh-testing/incoming/d1-visual-20261023/source.bundle
+ * branch            HEAD       -> FETCH_HEAD
+Updating 3e71c35..87ca3e7
+Fast-forward
+ docs/aliveness-development.md                      |   2 +-
+ .../design/art-workflow/d1-directions-v1/README.md |   4 +-
+ .../design/art-workflow/d1-directions-v1/figure.js |  30 +++++------
+ .../art-workflow/d1-directions-v1/model.json       |  56 +++++++++++++--------
+ .../d1-directions-v1/prepare-model.mjs             |  17 ++++++-
+ .../source/back-right-repair-v3.png                | Bin 0 -> 1012203 bytes
+ .../source/prompt-back-right-repair-v3.txt         |   7 +++
+ .../source/visual-revision-v3.json                 |  22 ++++++++
+ docs/design/d1-direction-assets.md                 |   2 +
+ docs/usage.md                                      |   2 +-
+ scripts/check-package.mjs                          |   2 +-
+ scripts/export-direction-art.mjs                   |  16 +++---
+ tests/direction-art-feedback.test.js               |  23 +++++++++
+ tests/direction-art-ui.mjs                         |   9 ++++
+ tests/direction-product-ui.mjs                     |   4 +-
+ web/upstream/whale/directional-rig.js              |   9 ++--
+ .../whale/directions/back-head-no-bow-v1.png       | Bin 1023145 -> 0 bytes
+ .../whale/directions/back-right-repair-v3.png      | Bin 0 -> 1012203 bytes
+ web/upstream/whale/directions/model.js             |  49 +++++++++++-------
+ web/upstream/whale/directions/model.json           |  49 +++++++++++-------
+ web/upstream/whale/directions/provenance.json      |  30 +++++++++--
+ web/upstream/whale/figure.js                       |  18 +++----
+ web/upstream/whale/front-face.js                   |  14 ++++++
+ 23 files changed, 259 insertions(+), 106 deletions(-)
+ create mode 100644 docs/design/art-workflow/d1-directions-v1/source/back-right-repair-v3.png
+ create mode 100644 docs/design/art-workflow/d1-directions-v1/source/prompt-back-right-repair-v3.txt
+ create mode 100644 docs/design/art-workflow/d1-directions-v1/source/visual-revision-v3.json
+ create mode 100644 tests/direction-art-feedback.test.js
+ delete mode 100644 web/upstream/whale/directions/back-head-no-bow-v1.png
+ create mode 100644 web/upstream/whale/directions/back-right-repair-v3.png
+ create mode 100644 web/upstream/whale/front-face.js
+87ca3e7c3d981c4b0f421c4763c51aa23d9f6b70
+
+> @takboo/dsh-coopanion@0.4.13 build
+> node scripts/build.mjs
+

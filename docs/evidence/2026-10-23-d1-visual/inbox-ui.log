@@ -1,0 +1,114 @@
+
+> @takboo/dsh-coopanion@0.4.13 test:inbox-ui
+> node tests/inbox-ui.mjs && node --test --test-concurrency=1 tests/session-replies-ui.mjs tests/text-scale-ui.mjs && node --test tests/multi-display-ui.mjs && node --test tests/npc-controls-ui.mjs tests/attention-size-ui.mjs tests/npc-drag-ui.mjs && node --test tests/companionship-ui.mjs && node --test tests/living-integration-ui.mjs
+
+Inbox UI passed: one-click full reply, direct source actions, mixed pending items, stable chat focus and reading order, Unicode/text safety, bilingual copy and narrow layout.
+✔ unread replies coalesce by session and reading does not expose old turns again (897.424416ms)
+✔ native recovery baseline preserves unread results without speaking or acknowledging them again (712.812625ms)
+✔ full replies render Markdown headings, emphasis, tables and fenced code (640.956417ms)
+✔ multiple turns of a single session still open directly with one click (509.421708ms)
+✔ reply markup cannot inject HTML, active URLs or external images (494.906792ms)
+✔ chat freezes the target, keeps per-session drafts and retries a lost receipt with the same request ID (568.253125ms)
+✔ full-result continue opens the exact source composer without replacing the reading snapshot (580.13925ms)
+✔ composer timeout preserves identity and acceptance remains monotonic (1.589375ms)
+✔ zh-CN: all text scales × character extremes keep reader, inbox and draft usable (1802.014792ms)
+✔ en-US: all text scales × character extremes keep reader, inbox and draft usable (1415.968584ms)
+✔ text scaling keeps final bubble font and original dismissal clock (2462.642ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10564.477458
+✔ controlled irregular layout and mixed DPR preserve reading, draft, in-flight identity and hit areas (1470.917542ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1721.0895
+✔ Take a look acknowledges this generic error, clearing envelope and sad expression (1761.586167ms)
+✔ typing, hovering and reading retain the configured body scale (3108.172708ms)
+✔ Take a look never dismisses a real approval or question (729.84525ms)
+✔ off and automatic permission never fall back to random roaming; quiet and interactive use NPC (2730.374292ms)
+✔ hot preference keeps reader DOM/scroll, draft/focus/selection, request identity and bubble expiry (3515.100084ms)
+✔ selection, typing and dragging always retain the configured size (1903.05925ms)
+✔ a fast placement at the edge drops without an automatic reverse throw (off, 10) (1910.604792ms)
+✔ a fast placement at the edge drops without an automatic reverse throw (off, 990) (1929.944042ms)
+✔ a fast placement at the edge drops without an automatic reverse throw (quiet, 10) (1912.269417ms)
+✔ a fast placement at the edge drops without an automatic reverse throw (quiet, 990) (1913.216583ms)
+✔ manual relocation before the first NPC departure cannot be overwritten by home placement (1262.045708ms)
+✔ dragging an outbound pet releases its old walk target (1070.939167ms)
+✔ cancelling a drag drops at the last valid pointer without retaining a held body (882.042458ms)
+Home marker drag positions: [["before",850],["held-990",850],["held-15",850],["held-850",850],["released",850]]
+✔ home marker remains fixed throughout a held drag and release (3986.314708ms)
+✔ home marker follows explicit settings but stays fixed while dragging a large pet at either edge (2970.060666ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 19965.616417
+✔ NPC follows real arrival, pauses typing, resumes retained intent and returns home (9781.149542ms)
+✔ invitation reserves once, ignores naturally, persists quiet and cannot send model/task messages (48972.570333ms)
+✔ manual play grows only after completion, aborted play does not, archive survives renderer reload (6083.102791ms)
+✔ hot companionship modes preserve captured reader, draft selection, and in-flight identities (653.339375ms)
+✔ real strokes count once, forged sandbox touches do not, missing words remain safe (5422.79125ms)
+✔ twenty manual activities react within 500ms and interrupted trials never grow (1226.091875ms)
+✔ twenty real strokes keep visible feedback while hovering and share the growth cooldown (61285.615167ms)
+✔ six stored moments across three dates unlock the real familiar greeting after rehydration (14127.58125ms)
+✔ reduced motion cancels an in-progress activity and a small large-text menu remains reachable (648.034417ms)
+✔ idle rendering is bounded while real elapsed time, work and input keep their cadence (8567.954667ms)
+✔ unknown input, mouse proximity, lifecycle and limited star keep control and vocabulary safe (2969.868708ms)
+✔ native NPC waits for acknowledged workArea before establishing home (2001.147291ms)
+✔ manual interaction survives a frame timestamp preceding the click event clock (5925.559708ms)
+✔ manual interaction follows a real poke reaction while actual work still preempts it (jump=false) (1626.112084ms)
+✔ manual interaction follows a real poke reaction while actual work still preempts it (jump=true) (1680.507166ms)
+✔ shared memory can be inspected, corrected and deleted after real play and reload, including while off (6177.32475ms)
+✔ opening memory controls interrupts real play and a cleared memory stays empty (630.089541ms)
+✔ shared play waits for a real response, confirms saved memory and recalls it next time (5855.257542ms)
+✔ waiting expires without growth and an in-flight save cannot promise success or revive after work (10680.197666ms)
+✔ remembered play changes the next permitted greeting without another interaction or model call (16574.13725ms)
+✔ continuous strokes keep immediate feedback, merge into one saved response and never replay reflexes (3996.38775ms)
+✔ work, input active or unknown, reading and drafts gate the same candidate until expiry (1028.546417ms)
+✔ a still valid response regains permission, then input interruption cannot replay it (928.573334ms)
+✔ a delayed or failed stroke receipt cannot promise success or revive revoked candidates (3760.98625ms)
+✔ memory correction/deletion, manual play, reduced motion and hidden lifecycle revoke the queue (5462.322125ms)
+✔ merged response fits Chinese/English large type in a small window without changing the bubble clock (1806.425083ms)
+✔ pending stroke gates only new invitation admission and preserves its scheduled time (13559.442ms)
+✔ captured reading defers a stroke response and renderer reload never restores its queue (1348.990959ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 242993.995083
+✔ default product independently observes, navigates and arranges once with real contact, without storing fictional shared memories (28345.576375ms)
+✔ carried shell yields through real parking, retains an unresolved question, and resumes the original goal after work (40135.179ms)
+✔ manual shared activity safely preempts a carried prop, requires a response and preserves its original arrangement (35499.672542ms)
+✔ current input, hot scene/personality changes, captured reading and a small viewport preserve the same body and draft (599.585959ms)
+✔ real contact remains proportional at 90px and viewport contraction keeps the body visible (21215.682834ms)
+✔ real contact remains proportional at 240px and viewport contraction keeps the body visible (20208.315417ms)
+✔ dragging and switching the living scene off while carrying preserve the body and safely park before simple wandering (30538.763666ms)
+✔ desktop life forms an observed outward-return-rest cycle without permanent furniture or fictional memories (66888.68225ms)
+✔ typing and mouse proximity produce one safe wait and a retained goal, without empty grabbing on recovery (31286.371125ms)
+✔ planar placement at 90px keeps support, shadow, resize and cancelled drag local (5656.3915ms)
+✔ planar placement at 180px keeps support, shadow, resize and cancelled drag local (5673.181708ms)
+✔ planar placement at 240px keeps support, shadow, resize and cancelled drag local (5682.90525ms)
+✔ planar placement survives both viewport and display-event orders without returning to the floor (1955.962458ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 293897.37225
