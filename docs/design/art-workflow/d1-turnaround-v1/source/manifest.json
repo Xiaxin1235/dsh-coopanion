@@ -2,24 +2,16 @@
   "schema": 2,
   "id": "d1-r01-turnaround-20261023",
   "base": "5967b8b",
-  "status": "candidate-review-not-approved",
-  "reviewCandidate": "blue-whale-v5.png",
+  "status": "reference-selected-master-pending",
+  "reviewCandidate": "reference-turnaround-v11.png",
   "productExportAllowed": false,
   "referencePriority": [
     {
-      "file": "reference-blue-whale-turnaround-20261023.png",
-      "role": "primary-identity-palette-face-proportions; tail origin corrected",
-      "sha256": "5681bc24639acae4f29c637cad43bd59aa3f67c5b8aea369bbb71df8bfbd0353"
-    },
-    {
-      "file": "reference-blue-whale-expression-20261023.png",
-      "role": "supporting-expression-only",
-      "sha256": "9f456c64982302607e0d48f2fa0ed57dfe9e164571f7926202e8be0087248a82"
-    },
-    {
-      "file": "feedback-tail-origin-20261023.png",
-      "role": "defect-evidence-not-design-source",
-      "sha256": "fc0909b77b72968020fb30cd1c1fff49dbf3c3acafebc86dd1bfc49ea6306700"
+      "file": "reference-character-final-20261023.png",
+      "role": "sole-current-primary-identity-palette-face-proportions-clothing-and-tail-silhouette",
+      "sha256": "c36e5e04676f5135fe72390809af96a6f0d3d675ce764fbefd1567197cf8ffa6",
+      "selection": "User: 我觉的以这个为参考图就行",
+      "status": "user-selected-reference-not-approved-generated-master"
     }
   ],
   "candidates": [
@@ -373,8 +365,8 @@
     },
     {
       "file": "blue-whale-v5.png",
-      "label": "v5 · 蓝鲸新版待复核",
-      "status": "awaiting-visual-review",
+      "label": "v5 · 尾部比例／透视未通过",
+      "status": "rejected",
       "productBound": false,
       "designRevision": "blue-whale-20261023",
       "sha256": "d6c01b4f9c32136c5a75f00f87ca63bc2f08a9b68d4d7405b4b59d9668b47eac",
@@ -428,25 +420,378 @@
         0.23,
         0.2
       ],
-      "review": "新版静态候选：按第二张参考调整配色、比例与脸形；四方向尾柄均在裙下，正面尾巴回到腿后，侧面尾鳍呈侧视轮廓，斜后尾巴向身体后方延伸。尚未锁定：各方向尾柄长度／尾鳍尺度仍需精确注册；局部生成改变了侧面发尾及背部缎带，透明轮廓仍有杂边。不是逐像素保真的拆件，不可据此直接替换产品。",
+      "review": "用户复核未通过：尾部比例失衡，跨视角忽大忽小、透视不一致。裙下出尾规则保留，但不能据此声称尾巴几何已统一。",
       "inspection": {
         "method": "read-only whole-canvas alpha plus visual review; no identity or geometric equivalence acceptance",
         "transparentPixels": 847438,
         "solidCanvasEdgePixels": 0
+      },
+      "previousReview": "新版静态候选：按第二张参考调整配色、比例与脸形；四方向尾柄均在裙下，正面尾巴回到腿后，侧面尾鳍呈侧视轮廓，斜后尾巴向身体后方延伸。尚未锁定：各方向尾柄长度／尾鳍尺度仍需精确注册；局部生成改变了侧面发尾及背部缎带，透明轮廓仍有杂边。不是逐像素保真的拆件，不可据此直接替换产品。"
+    },
+    {
+      "file": "blue-whale-v6.png",
+      "label": "v6 · 尾鳍仍偏大",
+      "status": "rejected",
+      "productBound": false,
+      "designRevision": "blue-whale-20261023",
+      "sha256": "880fb198d491f8066961b7d95fb0eaa3dbe972ea369385ac1e65ef46a5b8c9cb",
+      "bytes": 1475881,
+      "canvas": [
+        1774,
+        887
+      ],
+      "tool": "built-in image_gen",
+      "useCase": "precise-object-edit",
+      "output": "exec-7b1fa904-3962-4249-8b88-2f9ab10c0fe7.png",
+      "prompt": "prompt-blue-whale-v6.txt",
+      "promptSha256": "23364b36a8e21f2284b3c1f1888d76b30774e7a8fd107fa02718f1a7b125a748",
+      "references": [
+        {
+          "file": "blue-whale-v5.png",
+          "sha256": "d6c01b4f9c32136c5a75f00f87ca63bc2f08a9b68d4d7405b4b59d9668b47eac"
+        },
+        {
+          "file": "tail-proportion-v1.png",
+          "sha256": "8e9b76a9fa6989c40950c67a7de08f5839adcb9dd349e4582b33e3559bd3bb0c"
+        }
+      ],
+      "views": [
+        "正面 · 0°",
+        "侧面 · 朝左",
+        "右斜后 · 135°",
+        "正背面 · 180°"
+      ],
+      "guides": [
+        {
+          "y": 0.12,
+          "label": "头发顶部参考"
+        },
+        {
+          "y": 0.33,
+          "label": "前视下颌参考"
+        },
+        {
+          "y": 0.48,
+          "label": "腰线参考"
+        },
+        {
+          "y": 0.72,
+          "label": "裙摆参考"
+        },
+        {
+          "y": 0.94,
+          "label": "脚底参考"
+        }
+      ],
+      "rearTailReviewBox": [
+        0.49,
+        0.67,
+        0.23,
+        0.2
+      ],
+      "review": "未通过：正／背尾鳍绘制宽度约为各自裙摆的 84%／80%，仍大于约 64% 的设计目标；斜后近侧尾鳍过度下垂。生成器没有严格执行几何参考，不能以引用了参考图作为通过证明。"
+    },
+    {
+      "file": "blue-whale-v7.png",
+      "label": "v7 · 缩小方向被用户否决",
+      "status": "rejected",
+      "productBound": false,
+      "designRevision": "blue-whale-20261023",
+      "sha256": "cf2e9e94af8933658e8e1599199e0c872639d42ff474876f0eb1c76e406525d4",
+      "bytes": 1469624,
+      "canvas": [
+        1774,
+        887
+      ],
+      "tool": "built-in image_gen",
+      "useCase": "precise-object-edit",
+      "output": "exec-ae25f567-cbdd-4e0b-b943-682067dacf7e.png",
+      "prompt": "prompt-blue-whale-v7.txt",
+      "promptSha256": "6d5f5ed0d3110eddb81a7660f72074e02ea57e814f5e5a630fc2ee9ed84baa9f",
+      "references": [
+        {
+          "file": "blue-whale-v6.png",
+          "sha256": "880fb198d491f8066961b7d95fb0eaa3dbe972ea369385ac1e65ef46a5b8c9cb"
+        },
+        {
+          "file": "tail-proportion-v1.png",
+          "sha256": "8e9b76a9fa6989c40950c67a7de08f5839adcb9dd349e4582b33e3559bd3bb0c"
+        }
+      ],
+      "views": [
+        "正面 · 0°",
+        "侧面 · 朝左",
+        "右斜后 · 135°",
+        "正背面 · 180°"
+      ],
+      "guides": [
+        {
+          "y": 0.12,
+          "label": "头发顶部参考"
+        },
+        {
+          "y": 0.33,
+          "label": "前视下颌参考"
+        },
+        {
+          "y": 0.48,
+          "label": "腰线参考"
+        },
+        {
+          "y": 0.72,
+          "label": "裙摆参考"
+        },
+        {
+          "y": 0.94,
+          "label": "脚底参考"
+        }
+      ],
+      "rearTailReviewBox": [
+        0.49,
+        0.67,
+        0.23,
+        0.2
+      ],
+      "review": "用户明确否决缩小方向：尾巴太小，不像蓝鲸，应大而长。该稿正／背绘制展宽约为裙摆 68%／61%，仅用于追溯错误取舍，不继续按 64% 目标微调。"
+    },
+    {
+      "file": "blue-whale-v8.png",
+      "label": "v8 · 用户否决过大尾巴",
+      "status": "rejected",
+      "productBound": false,
+      "designRevision": "superseded-large-tail-study",
+      "sha256": "6ecae2280c2786be87352624290326d39377f5f714671dedb504de2b11a671bd",
+      "bytes": 1089336,
+      "canvas": [
+        1358,
+        1159
+      ],
+      "tool": "built-in image_gen",
+      "useCase": "precise-object-edit",
+      "output": "exec-76db055f-9feb-491c-bbee-047a203709f7.png",
+      "prompt": "prompt-blue-whale-v8.txt",
+      "promptSha256": "75030c61efb3f3a91134eb50df10bb179f1059b4cbf2b40ab7d39f3191303d0c",
+      "references": [
+        {
+          "file": "blue-whale-v5.png",
+          "sha256": "d6c01b4f9c32136c5a75f00f87ca63bc2f08a9b68d4d7405b4b59d9668b47eac"
+        },
+        {
+          "file": "tail-proportion-v2.png",
+          "sha256": "50539232094313e13002e2c164709d0b31e9350f877835a62ec2d1f27f5c95c6"
+        }
+      ],
+      "layout": {
+        "columns": 2,
+        "rows": 2
+      },
+      "views": [
+        "正面 · 0°",
+        "侧面 · 朝左",
+        "右斜后 · 135°",
+        "正背面 · 180°"
+      ],
+      "guides": [
+        {
+          "y": 0.475,
+          "label": "第一行脚底参考"
+        },
+        {
+          "y": 0.985,
+          "label": "第二行脚底参考"
+        }
+      ],
+      "rearTailReviewBox": [
+        0.1,
+        0.73,
+        0.26,
+        0.2
+      ],
+      "review": "用户否决：尾巴过大。长尾与尾鳍压过角色主体，右斜后重新露出脸颊；不作为现行参考，也不进入拆层。"
+    },
+    {
+      "file": "reference-turnaround-v10.png",
+      "label": "v10 · 新参考首稿，背面尾向错误",
+      "status": "rejected",
+      "productBound": false,
+      "designRevision": "single-reference-20261023",
+      "sha256": "1edc74f44ccc9f1d73cb467c73f12f1b4d00f28c6a2eefb8844b42e5aeb2d43f",
+      "bytes": 2090200,
+      "canvas": [
+        1184,
+        1328
+      ],
+      "tool": "built-in image_gen",
+      "useCase": "stylized-concept",
+      "output": "exec-48863a56-ccac-4de0-bb41-c658b5032b39.png",
+      "prompt": "prompt-reference-turnaround-v10.txt",
+      "promptSha256": "48dd8388815cfd71bc5dc3e1a1fdf2e1dc936c11c9cd6cd500c669a0221b67e2",
+      "references": [
+        {
+          "file": "reference-character-final-20261023.png",
+          "sha256": "c36e5e04676f5135fe72390809af96a6f0d3d675ce764fbefd1567197cf8ffa6"
+        }
+      ],
+      "layout": {
+        "columns": 2,
+        "rows": 2
+      },
+      "views": [
+        "正面",
+        "侧面 · 朝左",
+        "斜后 · 朝左",
+        "正背面"
+      ],
+      "guides": [
+        {
+          "y": 0.495,
+          "label": "第一行脚底参考"
+        },
+        {
+          "y": 0.985,
+          "label": "第二行脚底参考"
+        }
+      ],
+      "rearTailReviewBox": [
+        0.3,
+        0.77,
+        0.19,
+        0.12
+      ],
+      "review": "外观沿用用户最新单人参考；未通过：背面仍向画面右侧弯尾，没有随身体转身换到对应一侧。侧后细节属于推演。保留原图，未拆层。",
+      "inspection": {
+        "method": "read-only RGBA alpha histogram; not identity or anatomy acceptance",
+        "transparentPixels": 920393,
+        "partialAlphaPixels": 651959,
+        "opaquePixels": 0,
+        "maxAlpha": 254
+      }
+    },
+    {
+      "file": "reference-turnaround-v11.png",
+      "label": "v11 · 最新参考候选，待审",
+      "status": "candidate-not-approved",
+      "productBound": false,
+      "designRevision": "single-reference-20261023",
+      "sha256": "625374e593964f277142e76510588958d48586630fffc9798e47d25ff85fa524",
+      "bytes": 2033320,
+      "canvas": [
+        1184,
+        1328
+      ],
+      "tool": "built-in image_gen",
+      "useCase": "precise-object-edit",
+      "output": "exec-6d5c6050-39b5-4b38-bfc2-7c7217ef1640.png",
+      "prompt": "prompt-reference-turnaround-v11.txt",
+      "promptSha256": "c4ef10e6c6f9bc177c70f124392a9fa6bdb56f44cd89d21dcac2ebb2601e31e7",
+      "references": [
+        {
+          "file": "reference-turnaround-v10.png",
+          "sha256": "1edc74f44ccc9f1d73cb467c73f12f1b4d00f28c6a2eefb8844b42e5aeb2d43f",
+          "role": "edit-target"
+        },
+        {
+          "file": "reference-character-final-20261023.png",
+          "sha256": "c36e5e04676f5135fe72390809af96a6f0d3d675ce764fbefd1567197cf8ffa6",
+          "role": "sole-current-character-reference"
+        }
+      ],
+      "layout": {
+        "columns": 2,
+        "rows": 2
+      },
+      "views": [
+        "正面",
+        "侧面 · 朝左",
+        "斜后 · 朝左",
+        "正背面"
+      ],
+      "guides": [
+        {
+          "y": 0.495,
+          "label": "第一行脚底参考"
+        },
+        {
+          "y": 0.985,
+          "label": "第二行脚底参考"
+        }
+      ],
+      "rearTailReviewBox": [
+        0.1,
+        0.78,
+        0.16,
+        0.12
+      ],
+      "review": "依据最新单人参考制作；背面尾巴已换到对应一侧，保留裙后上弯的体量与遮脸。仍是待审候选：侧后细节由单图推演，各方向的尾鳍投影、身体／发束一致性和连接位置需可见复核。局部生成不保证尾巴以外逐像素不变；尚未锁定、拆层或导出。",
+      "inspection": {
+        "method": "read-only RGBA alpha histogram; not identity or anatomy acceptance",
+        "transparentPixels": 1024269,
+        "partialAlphaPixels": 548083,
+        "opaquePixels": 0,
+        "maxAlpha": 254
       }
     }
   ],
   "annotationMethod": "manual review zones in normalized image coordinates, not rig joints",
   "rights": "Original character 溟月（上善无形）, maid reinterpretation ZipZipPipe, source artwork Pal-AI-Lab; see repository THIRD_PARTY_NOTICES.md; no new ownership claim.",
   "lockedMaster": null,
-  "designRevision": "blue-whale-20261023",
+  "designRevision": "single-reference-20261023",
   "revisionBase": "905aa34",
   "tailContract": {
-    "root": "rear pelvis midline, hidden inside skirt",
-    "visibleExit": "below rear hem in every view",
-    "flukes": "two lateral whale flukes in horizontal plane",
-    "pose": "same body-local tail pose across all views",
-    "supersedes": "legacy tail-over-skirt and z=8 probe are not current design requirements"
+    "root": "rear pelvis midline, hidden inside dress",
+    "visibleExit": "below rear hem, then curve toward side and upward behind the skirt",
+    "flukes": "two lateral whale flukes rotate with the curved tail; natural overlap in profile",
+    "pose": "one body-local curved-up pose across all views, based on current single reference",
+    "size": "Match selected reference relative to body; old 0.64 S and 1.1 S / 1.32 S recipes are superseded",
+    "supersedes": "legacy tail-over-skirt, z=8 probe, straight rearward giant-tail pose and both numerical geometry studies are not current design requirements",
+    "unseenSurfaces": "Side/back shapes inferred from single reference are unapproved design, not measured source facts"
   },
-  "newReferenceOrigin": "User-provided attachments on 2026-10-23; reference role and file digests recorded; no new ownership claim."
+  "newReferenceOrigin": "User-provided attachments on 2026-10-23; reference role and file digests recorded; no new ownership claim.",
+  "constructionHistory": [
+    {
+      "file": "tail-proportion-v1.png",
+      "sha256": "8e9b76a9fa6989c40950c67a7de08f5839adcb9dd349e4582b33e3559bd3bb0c",
+      "geometry": "tail-proportion-v1.json",
+      "geometrySha256": "305eb2bdb43bde0c131a32e5c47b1c3e0b22ddfd535095cd208a731a3979265a",
+      "purpose": "Historical 0.64 S reduction; user rejected small tail.",
+      "status": "superseded-study-not-current-design"
+    },
+    {
+      "file": "tail-proportion-v2.png",
+      "sha256": "50539232094313e13002e2c164709d0b31e9350f877835a62ec2d1f27f5c95c6",
+      "geometry": "tail-proportion-v2.json",
+      "geometrySha256": "d9ac2cb70a82fed2088b7448bafa7b6fddfa28aaaaf21f74d87124a4200397d3",
+      "purpose": "Historical 1.1 S fluke span / 1.32 S rear extent; user rejected oversized result. Latest single reference supersedes numeric recipe.",
+      "status": "superseded-study-not-current-design"
+    }
+  ],
+  "referenceHistory": [
+    {
+      "file": "reference-blue-whale-turnaround-20261023.png",
+      "role": "primary-identity-palette-face-proportions; tail origin corrected",
+      "sha256": "5681bc24639acae4f29c637cad43bd59aa3f67c5b8aea369bbb71df8bfbd0353",
+      "status": "superseded-by-user-selected-single-reference"
+    },
+    {
+      "file": "reference-blue-whale-expression-20261023.png",
+      "role": "supporting-expression-only",
+      "sha256": "9f456c64982302607e0d48f2fa0ed57dfe9e164571f7926202e8be0087248a82",
+      "status": "superseded-by-user-selected-single-reference"
+    },
+    {
+      "file": "feedback-tail-origin-20261023.png",
+      "role": "defect-evidence-not-design-source",
+      "sha256": "fc0909b77b72968020fb30cd1c1fff49dbf3c3acafebc86dd1bfc49ea6306700",
+      "status": "superseded-by-user-selected-single-reference"
+    }
+  ],
+  "interruptedAttempts": [
+    {
+      "id": "v9",
+      "status": "interrupted-no-adopted-output",
+      "prompt": "prompt-blue-whale-v9.txt",
+      "promptSha256": "3e2deb293e9d967e780655bc66f7a56d0e02d2b165b3f7600d45a907e2150e47",
+      "reason": "User selected a new single reference while moderate-tail revision was running; cancelled old direction, no output adopted."
+    }
+  ]
 }

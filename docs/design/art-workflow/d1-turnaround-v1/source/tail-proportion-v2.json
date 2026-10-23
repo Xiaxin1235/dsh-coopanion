@@ -1,0 +1,183 @@
+{
+  "schema": 1,
+  "units": "S = maximum skirt hem width; user requested large long blue-whale tail; proposed geometry, not measured artwork",
+  "projection": {
+    "type": "orthographic",
+    "elevationDegrees": 3,
+    "sameScaleAllViews": true
+  },
+  "views": [
+    {
+      "label": "FRONT",
+      "yaw": 0
+    },
+    {
+      "label": "LEFT SIDE",
+      "yaw": -90,
+      "offsetX": -0.32
+    },
+    {
+      "label": "REAR 3/4",
+      "yaw": 135,
+      "offsetX": 0.3
+    },
+    {
+      "label": "BACK",
+      "yaw": 180
+    }
+  ],
+  "flukeSpan": 1.1,
+  "flukePitchDegrees": 0,
+  "flukeThickness": 0.055,
+  "hemHeight": 0.58,
+  "skirt": {
+    "waistHeight": 1.2,
+    "waistRadii": [
+      0.23,
+      0.16
+    ],
+    "hemRadii": [
+      0.5,
+      0.32
+    ]
+  },
+  "peduncle": [
+    {
+      "center": [
+        0,
+        1.04,
+        -0.1
+      ],
+      "radii": [
+        0.135,
+        0.095
+      ]
+    },
+    {
+      "center": [
+        0,
+        0.78,
+        -0.15
+      ],
+      "radii": [
+        0.13,
+        0.085
+      ]
+    },
+    {
+      "center": [
+        0,
+        0.47,
+        -0.2
+      ],
+      "radii": [
+        0.12,
+        0.08
+      ]
+    },
+    {
+      "center": [
+        0,
+        0.29,
+        -0.65
+      ],
+      "radii": [
+        0.115,
+        0.08
+      ]
+    },
+    {
+      "center": [
+        0,
+        0.34,
+        -1
+      ],
+      "radii": [
+        0.1,
+        0.065
+      ]
+    },
+    {
+      "center": [
+        0,
+        0.38,
+        -1.32
+      ],
+      "radii": [
+        0.075,
+        0.045
+      ]
+    }
+  ],
+  "flukePlanXZ": [
+    [
+      0,
+      -1.288
+    ],
+    [
+      0.1719,
+      -1.256
+    ],
+    [
+      0.3438,
+      -1.32
+    ],
+    [
+      0.55,
+      -1.432
+    ],
+    [
+      0.4125,
+      -1.592
+    ],
+    [
+      0.2062,
+      -1.624
+    ],
+    [
+      0.0602,
+      -1.528
+    ],
+    [
+      0,
+      -1.464
+    ],
+    [
+      -0.0602,
+      -1.528
+    ],
+    [
+      -0.2062,
+      -1.624
+    ],
+    [
+      -0.4125,
+      -1.592
+    ],
+    [
+      -0.55,
+      -1.432
+    ],
+    [
+      -0.3438,
+      -1.32
+    ],
+    [
+      -0.1719,
+      -1.256
+    ]
+  ],
+  "constraints": [
+    "single root inside skirt",
+    "visible tail below rear hem only",
+    "horizontal lateral flukes",
+    "no independent scaling or pose for each view",
+    "large long tail; v1 0.64 S reduction rejected by user"
+  ],
+  "status": "current-large-long-construction-reference-not-art-approval",
+  "flukeDroop": 0.1,
+  "layout": {
+    "columns": 2,
+    "rows": 2
+  }
+}

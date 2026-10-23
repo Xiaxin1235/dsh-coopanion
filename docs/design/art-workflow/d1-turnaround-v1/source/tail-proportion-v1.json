@@ -1,0 +1,165 @@
+{
+  "schema": 1,
+  "units": "S = maximum skirt hem width; proposed design geometry, not measured artwork",
+  "projection": {
+    "type": "orthographic",
+    "elevationDegrees": 8,
+    "sameScaleAllViews": true
+  },
+  "views": [
+    {
+      "label": "FRONT",
+      "yaw": 0
+    },
+    {
+      "label": "LEFT SIDE",
+      "yaw": -90
+    },
+    {
+      "label": "REAR 3/4",
+      "yaw": 135
+    },
+    {
+      "label": "BACK",
+      "yaw": 180
+    }
+  ],
+  "flukeSpan": 0.64,
+  "flukePitchDegrees": 0,
+  "flukeThickness": 0.032,
+  "hemHeight": 0.58,
+  "skirt": {
+    "waistHeight": 1.2,
+    "waistRadii": [
+      0.23,
+      0.16
+    ],
+    "hemRadii": [
+      0.5,
+      0.32
+    ]
+  },
+  "peduncle": [
+    {
+      "center": [
+        0,
+        1.04,
+        -0.1
+      ],
+      "radii": [
+        0.11,
+        0.08
+      ]
+    },
+    {
+      "center": [
+        0,
+        0.78,
+        -0.16
+      ],
+      "radii": [
+        0.105,
+        0.07
+      ]
+    },
+    {
+      "center": [
+        0,
+        0.5,
+        -0.2
+      ],
+      "radii": [
+        0.09,
+        0.065
+      ]
+    },
+    {
+      "center": [
+        0,
+        0.34,
+        -0.43
+      ],
+      "radii": [
+        0.07,
+        0.045
+      ]
+    },
+    {
+      "center": [
+        0,
+        0.29,
+        -0.62
+      ],
+      "radii": [
+        0.055,
+        0.025
+      ]
+    }
+  ],
+  "flukePlanXZ": [
+    [
+      0,
+      -0.6
+    ],
+    [
+      0.1,
+      -0.58
+    ],
+    [
+      0.2,
+      -0.62
+    ],
+    [
+      0.32,
+      -0.69
+    ],
+    [
+      0.24,
+      -0.79
+    ],
+    [
+      0.12,
+      -0.81
+    ],
+    [
+      0.035,
+      -0.75
+    ],
+    [
+      0,
+      -0.71
+    ],
+    [
+      -0.035,
+      -0.75
+    ],
+    [
+      -0.12,
+      -0.81
+    ],
+    [
+      -0.24,
+      -0.79
+    ],
+    [
+      -0.32,
+      -0.69
+    ],
+    [
+      -0.2,
+      -0.62
+    ],
+    [
+      -0.1,
+      -0.58
+    ]
+  ],
+  "constraints": [
+    "single root inside skirt",
+    "visible tail below rear hem only",
+    "horizontal lateral flukes",
+    "no independent scaling or pose for each view"
+  ],
+  "status": "proposed-construction-reference-not-art-approval",
+  "flukeDroop": 0.08
+}

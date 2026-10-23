@@ -18,8 +18,10 @@ async function select(){
  $('load-error').hidden=true;image.src='./source/'+item.file;
  try{
   await image.decode();if(request!==selection)return;selected=item;
-  $('view-labels').replaceChildren(...item.views.map(view=>{const span=document.createElement('span');span.textContent=view;return span;}));
-  $('view-labels').style.gridTemplateColumns=`repeat(${item.views.length},1fr)`;
+  const columns=item.layout?.columns??item.views.length,rows=item.layout?.rows??1,labels=$('view-labels');
+  labels.classList.toggle('grid-labels',rows>1);(rows>1?image.parentElement:$('sheet')).append(labels);
+  labels.replaceChildren(...item.views.map((view,i)=>{const span=document.createElement('span');span.textContent=view;if(rows>1)Object.assign(span.style,{left:((i%columns)*100/columns+1)+'%',top:(Math.floor(i/columns)*100/rows+.6)+'%'});return span;}));
+  labels.style.gridTemplateColumns=`repeat(${columns},1fr)`;
   image.alt=item.views.join('、')+'静态候选';annotations();
   $('candidate-status').textContent=item.label+' · 未锁定';$('candidate-notes').textContent=item.review;
   window.turnaroundReview={manifest,current:item.file,width:image.naturalWidth,height:image.naturalHeight};
@@ -30,5 +32,5 @@ $('candidate').onchange=select;
 $('zoom').onchange=()=>{$('sheet').style.width=(Number($('zoom').value)*100)+'%';};
 $('background').onchange=()=>{document.body.className=$('background').value;};
 $('guides').onchange=annotations;$('structure').onchange=annotations;
-$('focus-tail').onclick=()=>{if(!selected)return;$('zoom').value='2';$('zoom').onchange();$('structure').checked=true;annotations();const zone=selected.rearTailReviewBox,v=$('viewport');v.scrollLeft=$('sheet').scrollWidth*(zone[0]+zone[2]/2)-v.clientWidth/2;};
+$('focus-tail').onclick=()=>{if(!selected)return;$('zoom').value='2';$('zoom').onchange();$('structure').checked=true;annotations();const zone=selected.rearTailReviewBox,v=$('viewport');v.scrollLeft=$('sheet').scrollWidth*(zone[0]+zone[2]/2)-v.clientWidth/2;const box=image.getBoundingClientRect();window.scrollBy(0,box.top+box.height*(zone[1]+zone[3]/2)-window.innerHeight/2);};
 await select();
