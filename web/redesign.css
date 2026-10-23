@@ -13,8 +13,8 @@
 .redesigned .apron .portrait svg { color: var(--action); }
 .redesigned .apron .conversation-heading, .redesigned .companion-heading>span:nth-of-type(2) { display: flex; flex-direction: column; flex: 1; min-width: 0; gap: 3px; }
 .redesigned .apron :is(#chat-character,#inbox-caption,#menu-name) { display: block; font-size: calc(12px * var(--text-scale)); font-weight: 800; color: var(--action); letter-spacing: 0; white-space: normal; }
-.redesigned .apron :is(#chat-character,#inbox-caption,#menu-name)::before { content: '♧'; margin-right: 5px; }
-.redesigned .apron #inbox-caption::before { content: '✉'; }
+.redesigned .apron-identity { display: flex; align-items: center; gap: 5px; color: var(--action); }
+.redesigned .apron-identity svg { width: 14px; height: 14px; stroke-width: 2.2; }
 .redesigned .apron :is(#chat-title,#requests-title,.menu-question) { color: var(--text); font-size: calc(19px * var(--text-scale)); font-weight: 800; line-height: 1.4; overflow-wrap: anywhere; }
 .redesigned .apron>button { align-self: flex-start; width: 32px; height: 32px; background: #fff; color: var(--muted); box-shadow: 0 1px 3px rgba(30,45,80,.12); font-size: calc(21px * var(--text-scale)); z-index: 1; }
 .redesigned .apron-rings { position: absolute; right: 56px; top: 14px; width: 8px; height: 8px; border: 2px solid var(--accent); border-radius: 50%; opacity: .4; pointer-events: none; }

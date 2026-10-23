@@ -26,6 +26,7 @@ try {
   const item = { id: 'c06-question', nativeId: 'question', sessionId: focus.id, kind: 'question', state: 'open', turn: 1, seq: 1, preview: '接下来要怎么做？', questions: [{ id: 'q', question: '接下来要怎么做？', options: [{ label: '继续检查', description: '在已有授权内核对结果。' }, { label: '先停一下', description: '保持当前状态。' }] }] };
   await receive({ type: 'init', baseline: true, options: { locale: 'zh', roam: false }, snapshot });
   await receive({ type: 'notification-state', snapshot: { protocol: 1, runtime: { phase: 'running', visible: true, generation: 1, visibilityRevision: 1, suspended: false }, interactions: [item] } });
+  assert.equal(await page.locator('.apron-identity svg[aria-hidden=true]').count(), 3);
   await page.evaluate(async () => { for (const weight of [400, 600, 700, 800]) { const loaded = await document.fonts.load(`${weight} 16px Nunito`); if (!loaded.length) throw new Error('Bundled Nunito failed to load'); } });
   const capture = async filename => {
     const clip = await page.evaluate(() => {

@@ -61,6 +61,13 @@ export function createPanelStyle(document) {
           const title = element('strong', 'menu-question', $('menu-name').parentElement);
           title.dataset.i18n = 'menuQuestion'; $('menu-name').after(title);
         }
+        const label = $(id === 'chat' ? 'chat-character' : id === 'menu' ? 'menu-name' : 'inbox-caption');
+        const identity = element('span', 'apron-identity', label.parentElement); label.before(identity);
+        const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        icon.setAttribute('viewBox', '0 0 24 24'); icon.setAttribute('aria-hidden', 'true');
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', id === 'requests' ? 'M3 5h18v14H3ZM3 5l9 8 9-8' : 'M12 14V6M12 6c-1.5-2-4-2.5-5-1M12 6c1.5-2 4-2.5 5-1M7 18c2 2 8 2 10 0');
+        icon.append(path); identity.append(icon); extras.push(icon); move(label, identity);
         if (id !== 'requests') {
           const content = element('div', 'panel-content', panel);
           for (const node of [...panel.children]) if (node !== header && node !== content) move(node, content);

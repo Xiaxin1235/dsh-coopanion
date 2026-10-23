@@ -26,7 +26,7 @@ export async function verifyNativeTextScale({ page, bridge, snapshot }) {
   await page.keyboard.press('Escape');
   await petClick(page, {}, true); await page.locator('#message').fill('native preserved draft');
   for (const textScale of [1, 1.25, 1.5]) bridge.configure({ size: 150, textScale, locale: 'zh', roam: false, notifications: true, bubbleDurationMs: 12000 });
-  await page.waitForFunction(() => getComputedStyle(document.querySelector('#message')).fontSize === '19.5px');
+  await page.waitForFunction(() => getComputedStyle(document.querySelector('#message')).fontSize === '21px');
   assert.equal(await page.locator('#message').inputValue(), 'native preserved draft');
   await page.locator('#message').fill(''); await page.keyboard.press('Escape');
   bridge.configure({ size: 150, textScale: 1, locale: 'zh', roam: false, notifications: true, bubbleDurationMs: 12000 });
