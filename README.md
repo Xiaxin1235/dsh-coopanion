@@ -51,14 +51,14 @@
 
 ## 开始一起工作
 
-需要 **DeepSeek Harness Desktop 0.2.0-rc.2、0.2.1-alpha.1、0.2.1-rc.1 或 0.2.1-rc.2**。这是 Harness 插件，聊天使用你在 Harness 中配置的模型，无需另填 API Key。
+需要 **DeepSeek Harness Desktop 0.2.0-rc.2、0.2.1-alpha.1、0.2.1-rc.1、0.2.1-rc.2 或 0.2.1-rc.3**。这是 Harness 插件，聊天使用你在 Harness 中配置的模型，无需另填 API Key。
 
 ### 在 Harness 中从 npm 安装（推荐）
 
 打开侧边栏 **插件 → 添加插件**，在「包名或地址」中填入：
 
 ```text
-@takboo/dsh-coopanion@0.4.13
+@takboo/dsh-coopanion@0.4.14
 ```
 
 点击安装，完成后启用 `dsh-coopanion`，再完全退出并重新打开 Harness。
@@ -70,7 +70,7 @@
 使用 **Desktop 自带的 `dsh` 命令**。先启动 Desktop 一次完成初始化，完全退出应用后执行：
 
 ```bash
-dsh plugin --profile desktop add @takboo/dsh-coopanion@0.4.13
+dsh plugin --profile desktop add @takboo/dsh-coopanion@0.4.14
 ```
 
 完成后重新打开 Desktop。其他 profile 的安装方法见[使用指南](docs/usage.md#通过-dsh-命令行安装)。

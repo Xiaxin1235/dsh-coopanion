@@ -21,7 +21,7 @@ assert.match(args['source-commit'], /^[a-f0-9]{40}$/);
 assert.ok(process.env.DISPLAY);
 const runtime = resolve(args.runtime), archivePath = resolve(args.package), output = resolve(args.output);
 const version = args.version ?? '0.2.0-rc.2';
-assert.ok(['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-rc.1', '0.2.1-rc.2'].includes(version));
+assert.ok(['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-rc.1', '0.2.1-rc.2', '0.2.1-rc.3'].includes(version));
 const seconds = Number(args.seconds ?? 7200), interval = Number(args.interval ?? 5), windowSeconds = Number(args.window ?? 1800), warmup = Number(args.warmup ?? 20);
 assert.ok([seconds, interval, windowSeconds, warmup].every(Number.isFinite) && seconds >= windowSeconds * 2 && windowSeconds >= 10 && interval >= 1 && interval <= 10 && warmup >= 20);
 await mkdir(dirname(output), { recursive: true }); await mkdir(output);

@@ -18,11 +18,11 @@ git push origin v<实际版本>
 
 ## 自动检查与同包分发
 
-CI 在 Linux、macOS、Windows 上运行元数据、类型、单元、浏览器、键盘辅助进程及真实 Electron 窗口检查；宿主安装矩阵使用 `package.json` 声明支持的四版 DSH，三平台共十二组。实际配置以 `.github/workflows/ci.yml` 为准。Linux 窗口检查由 Xvfb + Openbox 提供隔离显示，原生桌面步骤保留进程日志并设置六分钟上限。
+CI 在 Linux、macOS、Windows 上运行元数据、类型、单元、浏览器、键盘辅助进程及真实 Electron 窗口检查；宿主安装矩阵使用 `package.json` 声明支持的五版 DSH，三平台共十五组。实际配置以 `.github/workflows/ci.yml` 为准。Linux 窗口检查由 Xvfb + Openbox 提供隔离显示，原生桌面步骤保留进程日志并设置六分钟上限。
 
 发布验证标签是 `origin/main` 的祖先、包与 shrinkwrap 版本一致且当前发布说明存在，然后检出不可变提交并重新执行完整 CI。PR 或 main 的先前测试结果不能代替标签上的发布检查。
 
-Linux 构建并打包一次，成为规范产物。`npm pack` 产生的 `takboo-dsh-coopanion-<版本>.tgz` 只重命名为 `dsh-coopanion-<版本>.tgz`；固定别名通过复制获得。十二组安装、npm 和 Release 都消费这份压缩包，发布使用 `--ignore-scripts`，不会再次构建。
+Linux 构建并打包一次，成为规范产物。`npm pack` 产生的 `takboo-dsh-coopanion-<版本>.tgz` 只重命名为 `dsh-coopanion-<版本>.tgz`；固定别名通过复制获得。十五组安装、npm 和 Release 都消费这份压缩包，发布使用 `--ignore-scripts`，不会再次构建。
 
 `verification.json` 绑定完整源码提交、版本、SHA-256 与 npm SHA-512 integrity；`dist/build-info.json` 记录产品输入摘要。生成正式报告要求干净、已提交的 checkout。构建摘要不代替完整 `.tgz` 的身份。
 

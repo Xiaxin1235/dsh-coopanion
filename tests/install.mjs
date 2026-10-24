@@ -20,7 +20,7 @@ import { crashNative, connectRecovered, waitRecovery } from './helpers/desktop-r
 
 const sourceCommit = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
 const version = process.env.DSH_TEST_VERSION ?? '0.2.0-rc.2';
-assert.ok(['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-rc.1', '0.2.1-rc.2'].includes(version), 'test only advertised DSH versions');
+assert.ok(['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-rc.1', '0.2.1-rc.2', '0.2.1-rc.3'].includes(version), 'test only advertised DSH versions');
 const project = fileURLToPath(new URL('../', import.meta.url));
 const manifest = JSON.parse(await readFile(join(project, 'package.json'), 'utf8'));
 const archive = resolve(process.env.DSH_TEST_PACKAGE ?? (process.env.DSH_TEST_PACKAGE_DIR
@@ -133,6 +133,15 @@ try {
   const bootFile = join(runtime, 'node_modules', '@deepseek-ai', 'dsh-app-boot', 'lib', 'index.js');
   const { evaluatePluginCompatibility } = await import(pathToFileURL(bootFile).href);
   assert.equal(evaluatePluginCompatibility(manifest, {}, version), undefined);
+  for (const supported of manifest.engines.dsh.split(' || ')) {
+    assert.equal(evaluatePluginCompatibility(manifest, {}, supported), undefined, `advertised host ${supported} is accepted`);
+  }
+  const previousHostRange = structuredClone(manifest);
+  previousHostRange.engines.dsh = previousHostRange.engines.dsh.replace(' || 0.2.1-rc.3', '');
+  for (const peer of Object.keys(previousHostRange.peerDependencies)) {
+    if (peer.startsWith('@deepseek-ai/dsh-')) previousHostRange.peerDependencies[peer] = previousHostRange.peerDependencies[peer].replace(' || 0.2.1-rc.3', '');
+  }
+  assert.ok(evaluatePluginCompatibility(previousHostRange, {}, '0.2.1-rc.3'), 'the previous host declarations reject rc.3');
   const previous = structuredClone(manifest);
   previous.version = '0.1.0';
   for (const peer of Object.keys(previous.peerDependencies)) {
@@ -140,7 +149,7 @@ try {
   }
   if (version === '0.2.0-rc.2') assert.equal(evaluatePluginCompatibility(previous, {}, version)?.exempted, false, 'reproduce the previous release rejection');
   assert.ok(evaluatePluginCompatibility(manifest, {}, '0.2.0-rc.1'), 'unverified versions remain incompatible');
-  assert.ok(evaluatePluginCompatibility(manifest, {}, '0.2.1-rc.3'), 'later prereleases require explicit verification');
+  assert.ok(evaluatePluginCompatibility(manifest, {}, '0.2.1-rc.4'), 'later prereleases require explicit verification');
   if (version.startsWith('0.2.1-rc.')) {
     const restricted = structuredClone(manifest);
     restricted.engines.dsh = '0.2.0-rc.2';
