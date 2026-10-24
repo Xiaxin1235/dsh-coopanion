@@ -107,9 +107,10 @@ async function run(command, args, cwd = project, timeoutMs = 240000) {
 async function stop(child) {
   if (!child || child.exitCode !== null || child.signalCode !== null) return;
   const finished = once(child, 'exit');
-  // Windows cannot deliver a catchable SIGTERM. The fixture uses the real
-  // launcher's bounded appExit hook, preserving the clean-exit assertion.
-  if (child === host && child.connected) child.send({ type: 'shutdown-host' });
+  // POSIX uses the launcher's signal shutdown, which exits after disposal.
+  // appExit instead waits for natural event-loop quiescence and old hosts can
+  // retain handles after disposing. Windows needs the catchable IPC exit hook.
+  if (process.platform === 'win32' && child === host && child.connected) child.send({ type: 'shutdown-host' });
   else child.kill('SIGTERM');
   const deadline = setTimeout(() => child.kill('SIGKILL'), 10000);
   try { await finished; } finally { clearTimeout(deadline); }
