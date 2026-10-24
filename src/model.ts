@@ -7,7 +7,7 @@ import { type PendingInteraction, type TaskNotice } from './notification-contrac
 
 export type Mood = 'idle' | 'thinking' | 'talking' | 'working' | 'waiting' | 'happy' | 'error' | 'sleeping';
 export interface PetResult { id: string; sessionId: string; text: string; time: number; read: boolean; }
-export interface PetSession { id: string; label: string; project: string; cwd: string; prompt: string; createdAt: number; updatedAt: number; mood: Mood; text: string; reply: string; replyId: string; unread: number; revision: number; active: boolean; streaming: boolean; speechId: string; chatAvailable?: boolean; attentionId?: string; completion?: TaskNotice['category']; agentPreset?: string; companion?: boolean; }
+export interface PetSession { id: string; label: string; project: string; cwd: string; prompt: string; createdAt: number; updatedAt: number; mood: Mood; text: string; reply: string; replyId: string; unread: number; revision: number; active: boolean; streaming: boolean; speechId: string; chatAvailable?: boolean; attentionId?: string; completion?: TaskNotice['category']; agentPreset?: string; companion?: boolean; companionRole?: 'current' | 'earlier'; }
 export interface PetSnapshot { mood: Mood; text: string; sessionId: string | null; companionSessionId: string | null; revision: number; active: boolean; streaming: boolean; speechId: string; results: PetResult[]; sessions: PetSession[]; }
 export interface PetNotice extends Partial<Omit<TaskNotice, 'title' | 'body' | 'sessionId'>> { title: string; body: string; sessionId: string; kind?: 'task' | 'message'; }
 interface TaskState { completion: CompletionTracker; ended: number; seq: number; turn: number; active: boolean; finalText?: string; tools: Map<string, string>; approvals: Set<symbol | string>; questions: Set<string>; requests: Set<string>; celebrateUntil: number; stream?: { id: string; revision: number; index: number; text: string; blocks: Map<number, string> }; }
@@ -304,7 +304,7 @@ export class PetModel {
     this.tasks.delete(id);
     for (const [key, result] of this.results) if (result.sessionId === id) this.results.delete(key);
     this.refreshCompanion();
-    if (this.selected === id) this.selected = this.companionSessionId ?? this.sessions.keys().next().value ?? null;
+    if (this.selected === id) this.selected = this.sessions.keys().next().value ?? null;
   }
 
   private refreshCompanion(): void {
@@ -314,6 +314,7 @@ export class PetModel {
     this.companionSessionId = companions[0]?.id ?? null;
     for (const s of this.sessions.values()) {
       s.companion = s.id === this.companionSessionId;
+      s.companionRole = s.companion ? 'current' : s.agentPreset === 'whaledot-companion' ? 'earlier' : undefined;
     }
   }
 

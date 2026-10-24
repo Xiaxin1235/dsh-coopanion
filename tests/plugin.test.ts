@@ -197,6 +197,18 @@ it('ignores removed rhythm preferences without enabling autonomous activity or i
   }
 });
 
+it('chat target validates and hot-syncs through the existing settings mechanism', async () => {
+  expect(Config().defaultChatTarget.get()).toBe('companion');
+  for (const value of [true, 1, 'other', {}]) expect(() => Config({ defaultChatTarget: value as never })).toThrow();
+  const ctx = new Context(), config = Config({ autoStart: true }); ctx.provide('agents', { list: () => [] });
+  let target: 'companion' | 'last' = 'companion'; config.defaultChatTarget = { get: () => target };
+  const bridge = { ...nativeBridge(), configure: vi.fn() }, fiber = ctx.plugin(scope => mountPet(scope, config, bridge));
+  try {
+    await fiber.await(); await vi.waitFor(() => expect(bridge.start).toHaveBeenCalledWith(expect.objectContaining({ defaultChatTarget: 'companion' }), expect.anything()));
+    for (const value of ['last', 'companion'] as const) { target = value; ctx.emit('settings/document-updated', 'dsh-coopanion' as SettingsNamespace, 1); expect(bridge.configure).toHaveBeenLastCalledWith(expect.objectContaining({ defaultChatTarget: value })); }
+  } finally { await fiber.dispose(); await ctx.fiber.dispose(); }
+});
+
 it('companionship defaults off, validates its enum, and joins complete hot Host configuration', async () => {
   expect(Config().companionship.get()).toBe('off');
   for (const value of [true, 1, 'loud', {}]) expect(() => Config({ companionship: value as never })).toThrow();

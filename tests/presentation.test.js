@@ -2,6 +2,25 @@ import { it, expect } from 'vitest';
 import { createSpeech, replyPreview } from '../web/speech.js';
 import { shortSessionIds, sessionActivity, inboxContents, SessionAttention } from '../web/session-ui.js';
 import tray from '../desktop/tray-state.cjs';
+import { companionRole, companionLabel } from '../web/companion-session.js';
+import { petCopy } from '../web/locale.js';
+
+it('shares authoritative companion identity with the tray and keeps earlier chats ordinary', () => {
+  const sessions = [
+    { id: 'old', label: 'internal', companionRole: 'earlier', companion: true, project: 'internal-path', updatedAt: 1 },
+    { id: 'work', label: 'work', updatedAt: 20 },
+    { id: 'current', label: 'internal', project: 'internal-path', updatedAt: 0 },
+    { id: 'stale', label: 'ordinary', companion: true, companionRole: 'current', agentPreset: 'whaledot-companion', updatedAt: 10 },
+  ];
+  const snapshot = { companionSessionId: 'current', sessionId: 'work', sessions };
+  expect(sessions.map(s => companionRole(snapshot, s))).toEqual(['earlier', undefined, 'current', undefined]);
+  for (const locale of ['zh', 'en']) {
+    const state = tray.trayState(snapshot, {}, { locale });
+    expect(state.sessions.map(s => s.id)).toEqual(['current', 'work', 'stale', 'old']);
+    for (const s of state.sessions) expect(s.label).toBe(companionLabel(snapshot, sessions.find(v => v.id === s.id), petCopy(locale)));
+    expect(state.sessions.find(s => s.id === 'old')).toMatchObject({ project: '', label: petCopy(locale).earlierCompanion });
+  }
+});
 
 it('resolves native language before the first Host configuration arrives', () => {
   expect(tray.trayLocale(undefined, {}, ['zh-CN'])).toBe('zh');

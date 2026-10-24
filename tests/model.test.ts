@@ -277,11 +277,18 @@ it('identifies the whaledot-companion session by agentPreset, picks the newest, 
   expect(m.snapshot().companionSessionId).toBe(c2.id);
   expect(m.snapshot().sessions.find(s => s.id === c2.id)?.companion).toBe(true);
   expect(m.snapshot().sessions.find(s => s.id === c1.id)?.companion).toBe(false);
+  expect(m.snapshot().sessions.map(s => [s.id, s.companionRole])).toEqual([
+    [work.id, undefined], [c1.id, 'earlier'], [c2.id, 'current'],
+  ]);
+  const selectedWork = session('selected-work'); m.observe(selectedWork); m.select(selectedWork.id);
+  m.remove(selectedWork.id);
+  expect(m.snapshot().sessionId).toBe(work.id);
 
   // Removing c2 falls back to c1
   m.remove(c2.id);
   expect(m.snapshot().companionSessionId).toBe(c1.id);
   expect(m.snapshot().sessions.find(s => s.id === c1.id)?.companion).toBe(true);
+  expect(m.snapshot().sessions.find(s => s.id === c1.id)?.companionRole).toBe('current');
 
   // Removing c1 falls back to null
   m.remove(c1.id);

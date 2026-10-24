@@ -48,10 +48,11 @@ Host 返回同一完整 `sessionId` 和 `requestId`：
 ### 专属会话识别与快照
 
 Host 端在恢复或列出会话时，通过检查公开的会话 header：
-- 若 `session.header.agentPreset === 'whaledot-companion'`，标记该会话为专属伴侣会话（`companion: true`）。
+- 若 `session.header.agentPreset === 'whaledot-companion'`，列入伴侣会话历史。
 - 若存在多个符合条件的专属会话，取最近创建（`createdAt` 最大）且未删除的一个作为主伴侣会话。
 - Host 快照（`PetSnapshot`）下发 `companionSessionId: string | null` 字段。
-- 当专属会话被删除或注销时，回退到次新的专属会话，或置为 `null`。
+- Host 为当前会话下发 `companionRole: 'current'`，旧伴侣下发 `'earlier'`，普通会话不设此字段。Renderer 与托盘共享身份判断，只有 `companionSessionId` 指向的会话是当前伴侣。
+- 当专属会话实际被删除时，次新的升为当前伴侣，或置为 `null`。Agent 分离不等于会话删除。删除所选会话仍按 C07 选择第一个剩余会话，不偏向伴侣。
 
 ### 默认聊天对象选择契约
 
@@ -60,10 +61,12 @@ Host 端在恢复或列出会话时，通过检查公开的会话 header：
    - 当 `defaultChatTarget !== 'last'` 且 `snapshot.companionSessionId` 存在时，双击桌宠默认选中 `companionSessionId` 打开聊天。
    - 当 `defaultChatTarget === 'last'` 或不存在 `companionSessionId` 时，保留当前活跃的 `sessionId`。
 2. **会话列表排序与呈现**：
-   - 专属会话在会话列表中固定置顶排序于第 0 位；
+   - 只有当前专属会话在会话列表中固定置顶排序于第 0 位；旧伴侣按普通会话排序，显示「大肥鱼（旧对话）」/「Dafeiyu (earlier chat)」，卡片与来源均隐藏内部工作目录；
    - 专属会话卡片携带 `.companion-card` 类，前置角色头像（`.companion-card-portrait`），名称展示为「大肥鱼」（英文「Dafeiyu」），隐藏 `cwd` 工作目录；
    - 选中专属会话时，聊天顶部胶囊展示「和我聊天」，清空细节信息，隐藏「回到和我聊天」；
    - 选中其他工作会话时，聊天顶部胶囊展示工作会话名称与工作目录，并显示「回到和我聊天」按钮（`#chat-to-companion`），点击后无缝切换回伴侣会话。
+   - 有伴侣时，列表选中工作会话后直接打开其输入框。默认对象为大肥鱼时，下一次双击会回到大肥鱼，因此必须在点选后立即允许用户与工作会话聊天；没有伴侣时保留 C07 的只关闭列表行为。
+   - 当前伴侣的提示为「直接和我说就好，我会在这里回你。」（英文「Just talk to me — I’ll reply right here.」），发送按钮为「发送」/「Send」；工作会话保留转交文案。
 3. **气泡、阅读器与信封来源**：
    - 专属会话产生的回复，气泡状态文本展示「大肥鱼」；
    - 阅读器标题展示「大肥鱼」，副标题隐藏工作目录只保留时间；

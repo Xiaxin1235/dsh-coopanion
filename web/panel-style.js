@@ -56,8 +56,8 @@ export function createPanelStyle(document) {
         }
         const rings = element('span', 'apron-rings', header); rings.setAttribute('aria-hidden', 'true');
         if (id === 'chat') {
-          move($('chat-current'), header.querySelector('.conversation-heading'));
-          move($('chat-to-companion'), header.querySelector('.conversation-heading'));
+          const targets = element('div', 'chat-targets', header.querySelector('.conversation-heading'));
+          move($('chat-current'), targets); move($('chat-to-companion'), targets);
           const chevron = document.createElementNS('http://www.w3.org/2000/svg', 'svg'), path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
           chevron.classList.add('chat-chevron'); chevron.setAttribute('viewBox', '0 0 24 24'); chevron.setAttribute('aria-hidden', 'true'); chevron.setAttribute('stroke', 'currentColor');
           path.setAttribute('d', 'M6 9l6 6 6-6'); chevron.append(path); $('chat-current').append(chevron); extras.push(chevron);

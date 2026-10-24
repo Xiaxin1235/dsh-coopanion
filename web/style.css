@@ -110,7 +110,7 @@ header button:hover { color: var(--text); background: var(--tint); }
 .chat-current strong { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: calc(12px * var(--text-scale)); line-height: 1.5; }
 .chat-current #chat-session-detail { color: var(--muted); margin-top: 5px; margin-bottom: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .chat-current b { flex: 0 0 auto; color: var(--accent); font-size: calc(10px * var(--text-scale)); font-weight: 600; }
-.chat-to-companion { display: inline-block; align-self: flex-start; margin-top: 6px; padding: 2px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--tint); color: var(--accent); font-size: calc(10px * var(--text-scale)); cursor: pointer; text-decoration: none; }
+.chat-to-companion { flex: 0 0 auto; width: fit-content; max-width: 100%; min-height: 32px; white-space: nowrap; line-height: 1.55; display: inline-block; align-self: flex-start; margin-top: 6px; padding: 2px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--tint); color: var(--accent); font-size: calc(14px * var(--text-scale)); cursor: pointer; text-decoration: none; }
 .chat-to-companion:hover { border-color: var(--accent); }
 .chat-reply { margin: 12px 0; padding-left: 10px; border-left: 2px solid var(--line); color: #717780; font-size: calc(11px * var(--text-scale)); line-height: 1.65; white-space: pre-wrap; max-height: 74px; overflow-y: auto; }
 .pet-greetings { display: flex; gap: 6px; align-items: center; margin: 12px 0; }
