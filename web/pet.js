@@ -414,7 +414,8 @@ function render() {
   const attentionSources = new Set(attentionSnapshot.sessions.filter(s => ['waiting', 'error'].includes(s.mood)).map(s => s.id));
   const requestSources = new Set(pendingRequests().map(item => item.sessionId));
   const needsYou = s => attentionSources.has(s.id) || requestSources.has(s.id);
-  const matches = snapshot.sessions.filter(session => (!pendingOnly || hasUnread(session) || needsYou(session)) && [session.label, session.project, session.cwd, session.prompt, session.id, isCompanionHistory(session) ? sessionName(session) : ''].join(' ').toLocaleLowerCase().includes(query));
+  // Harness keeps a blank draft per Workspace; it is not a conversation until something is said in it.
+  const matches = snapshot.sessions.filter(session => (!session.blank || session.id === snapshot.sessionId) && (!pendingOnly || hasUnread(session) || needsYou(session)) && [session.label, session.project, session.cwd, session.prompt, session.id, isCompanionHistory(session) ? sessionName(session) : ''].join(' ').toLocaleLowerCase().includes(query));
   matches.sort((a, b) => Number(isCompanionSession(b)) - Number(isCompanionSession(a)) || Number(needsYou(b)) - Number(needsYou(a)) || Number(hasUnread(b)) - Number(hasUnread(a)) || Number(b.id === snapshot.sessionId) - Number(a.id === snapshot.sessionId) || (b.updatedAt ?? 0) - (a.updatedAt ?? 0));
   const listKey = JSON.stringify([notificationLocale(), query, pendingOnly, matches.map(session => [session.id, companionRole(snapshot, session), session.label, session.prompt, session.cwd, session.updatedAt, session.mood, hasUnread(session), session.chatAvailable, session.id === snapshot.sessionId])]);
   if (list.dataset.key !== listKey) {

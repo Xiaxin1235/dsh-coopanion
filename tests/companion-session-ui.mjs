@@ -30,7 +30,9 @@ try {
     const current = { ...work, id: 'current', label: 'internal-current', cwd: '/private/companion', project: 'private', companionRole: 'current', updatedAt: 0 };
     const old = { ...current, id: 'old', label: 'internal-old', companionRole: 'earlier', agentPreset: 'whaledot-companion', companion: true, updatedAt: 1 };
     const extra = { ...work, id: 'extra', label: 'First remaining work' };
-    const snapshot = { mood: 'idle', active: false, streaming: false, text: '', sessionId: 'current', companionSessionId: 'current', sessions: [extra, old, work, current], results: [] };
+    // Harness's unused draft slot in the companion Workspace.
+    const draft = { ...work, id: 'draft', label: 'companion', cwd: '/private/companion', blank: true, updatedAt: 20 };
+    const snapshot = { mood: 'idle', active: false, streaming: false, text: '', sessionId: 'current', companionSessionId: 'current', sessions: [extra, old, work, current, draft], results: [] };
     await receive({ type: 'init', baseline: true, options: { locale, interfaceStyle, textScale, roam: false, defaultChatTarget: 'companion' }, snapshot });
     const copy = petCopy(locale);
     await page.locator('#pet').dblclick();
@@ -41,6 +43,7 @@ try {
     const cards = page.locator('#conversation-list .conversation-card');
     assert.equal(await cards.first().getAttribute('data-session-id'), 'current');
     assert.equal(await page.locator('#conversation-list .companion-card').count(), 1);
+    assert.equal(await page.locator('#conversation-list [data-session-id=draft]').count(), 0);
     const oldCard = page.locator('[data-session-id=old]');
     assert.equal(await oldCard.locator('strong').textContent(), copy.earlierCompanion);
     assert.equal(await oldCard.locator('.session-detail').textContent(), '');

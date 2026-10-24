@@ -294,3 +294,24 @@ it('identifies the whaledot-companion session by agentPreset, picks the newest, 
   m.remove(c1.id);
   expect(m.snapshot().companionSessionId).toBeNull();
 });
+
+it('marks Harness blank drafts until a turn or human message starts them, but never the companion', () => {
+  const m = new PetModel();
+  const draft = session('draft'), used = session('used');
+  const fresh = { ...session('fresh-companion'), header: { ...session('fresh-companion').header, agentPreset: 'whaledot-companion' } };
+  m.observe(used); m.consume(used, event('turn/start', { turn: 1 }));
+  m.observe(draft); m.observe(fresh);
+  const blank = () => Object.fromEntries(m.snapshot().sessions.map(s => [s.id, s.blank]));
+  expect(blank()).toEqual({ used: false, draft: true, 'fresh-companion': false });
+
+  // A restored history with a prompt is a conversation from the start.
+  const restored = session('restored');
+  m.restore({ ...restored, snapshotEvents: () => [event('user/message', createUserMessage({ content: [{ type: 'text', text: 'hi' }], source: { kind: 'user' } }))] });
+  expect(blank().restored).toBe(false);
+
+  // Saying something in the draft makes it a conversation.
+  m.consume(draft, event('user/message', createUserMessage({ content: [{ type: 'text', text: '开始' }], source: { kind: 'user' } })));
+  expect(blank().draft).toBe(false);
+  // Hiding never moves the user's focus.
+  expect(m.snapshot().sessionId).toBe('used');
+});

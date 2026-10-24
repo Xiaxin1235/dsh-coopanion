@@ -7,10 +7,10 @@ import { type PendingInteraction, type TaskNotice } from './notification-contrac
 
 export type Mood = 'idle' | 'thinking' | 'talking' | 'working' | 'waiting' | 'happy' | 'error' | 'sleeping';
 export interface PetResult { id: string; sessionId: string; text: string; time: number; read: boolean; }
-export interface PetSession { id: string; label: string; project: string; cwd: string; prompt: string; createdAt: number; updatedAt: number; mood: Mood; text: string; reply: string; replyId: string; unread: number; revision: number; active: boolean; streaming: boolean; speechId: string; chatAvailable?: boolean; attentionId?: string; completion?: TaskNotice['category']; agentPreset?: string; companion?: boolean; companionRole?: 'current' | 'earlier'; }
+export interface PetSession { id: string; label: string; project: string; cwd: string; prompt: string; createdAt: number; updatedAt: number; mood: Mood; text: string; reply: string; replyId: string; unread: number; revision: number; active: boolean; streaming: boolean; speechId: string; chatAvailable?: boolean; attentionId?: string; completion?: TaskNotice['category']; agentPreset?: string; companion?: boolean; companionRole?: 'current' | 'earlier'; blank?: boolean; }
 export interface PetSnapshot { mood: Mood; text: string; sessionId: string | null; companionSessionId: string | null; revision: number; active: boolean; streaming: boolean; speechId: string; results: PetResult[]; sessions: PetSession[]; }
 export interface PetNotice extends Partial<Omit<TaskNotice, 'title' | 'body' | 'sessionId'>> { title: string; body: string; sessionId: string; kind?: 'task' | 'message'; }
-interface TaskState { completion: CompletionTracker; ended: number; seq: number; turn: number; active: boolean; finalText?: string; tools: Map<string, string>; approvals: Set<symbol | string>; questions: Set<string>; requests: Set<string>; celebrateUntil: number; stream?: { id: string; revision: number; index: number; text: string; blocks: Map<number, string> }; }
+interface TaskState { started: boolean; completion: CompletionTracker; ended: number; seq: number; turn: number; active: boolean; finalText?: string; tools: Map<string, string>; approvals: Set<symbol | string>; questions: Set<string>; requests: Set<string>; celebrateUntil: number; stream?: { id: string; revision: number; index: number; text: string; blocks: Map<number, string> }; }
 type ObservedSession = Pick<Session, 'id' | 'header'> & Partial<Pick<Session, 'snapshotEvents'>>;
 const ready = '准备好了，随时叫我。';
 
@@ -35,15 +35,28 @@ export class PetModel {
       const project = session.header.cwd ? basename(session.header.cwd) : '未指定项目';
       item = { id: session.id, label: project, project, cwd: session.header.cwd ?? '', prompt: '', createdAt: session.header.createdAt, updatedAt: session.header.createdAt, mood: 'idle', text: ready, reply: '', replyId: '', unread: 0, revision: 0, active: false, streaming: false, speechId: '', agentPreset: session.header.agentPreset, companion: false };
       this.sessions.set(session.id, item);
-      this.tasks.set(session.id, { completion: new CompletionTracker(), ended: -1, seq: -1, turn: 0, active: false, tools: new Map(), approvals: new Set(), questions: new Set(), requests: new Set(), celebrateUntil: 0 });
+      this.tasks.set(session.id, { started: false, completion: new CompletionTracker(), ended: -1, seq: -1, turn: 0, active: false, tools: new Map(), approvals: new Set(), questions: new Set(), requests: new Set(), celebrateUntil: 0 });
       this.selected ??= session.id;
       // Restore identity from public history, without replaying stale task states or notices.
-      for (const event of session.snapshotEvents?.() ?? []) this.describe(item, event);
+      for (const event of session.snapshotEvents?.() ?? []) { this.begin(item, event); this.describe(item, event); }
     } else if (session.header.agentPreset && item.agentPreset !== session.header.agentPreset) {
       item.agentPreset = session.header.agentPreset;
     }
     this.refreshCompanion();
     return item;
+  }
+
+  /** A conversation exists once a turn or a human message reached it; until then it is only Harness's draft slot. */
+  private begin(item: PetSession, event: SessionEvent): void {
+    const task = this.tasks.get(item.id)!;
+    if (task.started || !(event.type === 'turn/start' || event.type === 'user/message')) return;
+    task.started = true;
+  }
+
+  /** Blank drafts stay tracked but are not offered as conversations; the companion and pending requests are. */
+  private blank(item: PetSession): boolean {
+    const task = this.tasks.get(item.id);
+    return !!task && !task.started && !item.companionRole && !task.requests.size && !task.approvals.size && !task.questions.size;
   }
 
   /** Fold history as a read baseline; callers reconcile activity with the live Agent status. */
@@ -151,6 +164,7 @@ export class PetModel {
     const task = this.tasks.get(item.id)!;
     if (event.seq <= task.seq) return;
     task.seq = event.seq;
+    this.begin(item, event);
     this.describe(item, event);
     const completion = task.completion.consume(event);
     if (event.type === 'goal/change' && completion && live) {
@@ -321,7 +335,7 @@ export class PetModel {
   snapshot(): PetSnapshot {
     const item = this.selected ? this.sessions.get(this.selected) : undefined;
     this.settle();
-    return { mood: item?.mood ?? 'idle', text: item?.text ?? ready, sessionId: item?.id ?? null, companionSessionId: this.companionSessionId, revision: item?.revision ?? 0, active: item?.active ?? false, streaming: item?.streaming ?? false, speechId: item?.speechId ?? '', results: [...this.results.values()].map(r => ({ ...r })), sessions: [...this.sessions.values()].map(s => ({ ...s })) };
+    return { mood: item?.mood ?? 'idle', text: item?.text ?? ready, sessionId: item?.id ?? null, companionSessionId: this.companionSessionId, revision: item?.revision ?? 0, active: item?.active ?? false, streaming: item?.streaming ?? false, speechId: item?.speechId ?? '', results: [...this.results.values()].map(r => ({ ...r })), sessions: [...this.sessions.values()].map(s => ({ ...s, blank: this.blank(s) })) };
   }
 }
 

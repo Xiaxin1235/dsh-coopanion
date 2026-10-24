@@ -184,3 +184,13 @@ it('prefers a bounded plain opening and preserves the original preview when disa
  const tooLong='🐳中'.repeat(60)+'鲸'; expect(replyPreview(tooLong+'\n\n正文')).toEqual(replyPreview(tooLong+'\n\n正文',180,false));
  expect(replyPreview('开场白\n\n短正文').long).toBe(true);
 });
+
+it('leaves blank Harness drafts out of the tray list unless they hold focus', () => {
+  const sessions = [
+    { id: 'work', label: 'work', project: 'p', updatedAt: 2 },
+    { id: 'draft', label: 'companion', project: 'internal', blank: true, updatedAt: 3 },
+    { id: 'focused-draft', label: 'new', project: 'q', blank: true, updatedAt: 1 },
+  ];
+  const state = tray.trayState({ sessionId: 'focused-draft', sessions, results: [] }, {}, { locale: 'en' });
+  expect(state.sessions.map(s => s.id)).toEqual(['focused-draft', 'work']);
+});
