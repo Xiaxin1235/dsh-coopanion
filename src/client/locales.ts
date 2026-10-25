@@ -1,4 +1,5 @@
 export const zh = {
+  reactionSettings: '回复情绪表情', decisionsReactions: '判断回复情绪', decisionsReactionsHint: '默认关闭。开启后会把符合条件的最终回复开头约 200 字发送给所选服务；不附加用户输入、工具、文件或会话元数据。', decisionsProvider: '判断服务', reactionProviderOpenai: 'OpenAI 官方', reactionProviderOpenrouter: 'OpenRouter', reactionKeyHintOpenai: '只读取 OPENAI_API_KEY；回复片段发送给 OpenAI。', reactionKeyHintOpenrouter: '只读取 OPENROUTER_API_KEY；回复片段发送给 OpenRouter，再转交 OpenAI。', reactionKeyMissing: '未检测到密钥', reactionKeyPresent: '已检测到密钥（不显示内容）', reactionCalls: '本次运行已尝试',
   quietMode: '安静模式（新消息只亮信封）', quietModeHint: '只更新信封计数，不主动弹框或发送系统通知；稍后提醒仍可安排，关闭后不补弹积压内容。',
   aboveFullscreen: '在全屏应用上方显示', aboveFullscreenHint: '默认开启。窗口被系统隐藏或最小化时自动恢复；主动隐藏后保持隐藏，不抢前台焦点。',
   inlineQuestions: '在小信封里直接回答提问', inlineQuestionsHint: '普通单选提问可在信封中回答；审批、多选和计划审阅仍在 Harness 处理。',
@@ -30,6 +31,7 @@ export const zh = {
 };
 export type LocaleKey = keyof typeof zh;
 export const en: Record<LocaleKey, string> = {
+  reactionSettings: 'Reply emotion reactions', decisionsReactions: 'Choose reply emotions', decisionsReactionsHint: 'Off by default. Sends about 200 opening characters of eligible final replies to the selected service, without adding user input, tools, files or session metadata.', decisionsProvider: 'Decision service', reactionProviderOpenai: 'OpenAI direct', reactionProviderOpenrouter: 'OpenRouter', reactionKeyHintOpenai: 'Reads only OPENAI_API_KEY; reply excerpts go to OpenAI.', reactionKeyHintOpenrouter: 'Reads only OPENROUTER_API_KEY; reply excerpts go through OpenRouter to OpenAI.', reactionKeyMissing: 'API key not detected', reactionKeyPresent: 'API key detected (value hidden)', reactionCalls: 'Attempts this run',
   quietMode: 'Quiet mode (new messages in envelope only)', quietModeHint: 'Update the envelope without popups or system notifications. Remind me later remains available; turning this off does not replay earlier messages.',
   aboveFullscreen: 'Show above fullscreen apps', aboveFullscreenHint: 'On by default. Recover system-hidden or minimized windows without taking focus. Explicitly hidden pets stay hidden.',
   inlineQuestions: 'Answer questions directly in the inbox', inlineQuestionsHint: 'Answer ordinary single-select questions in the inbox. Approvals, multiple selections and plan reviews stay in Harness.',

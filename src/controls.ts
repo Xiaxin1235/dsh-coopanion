@@ -1,10 +1,11 @@
 import type { DesktopOptions, PetBridge } from './bridge.ts';
 import type { NotificationRuntime } from './notification-contract.ts';
+import type { ReactionStatus } from './reaction-decider.ts';
 import { NativeStartError, type NativeLifecycle } from './desktop-lifecycle.ts';
 export { NativeStartError, type NativeLifecycle, type StartLifetime } from './desktop-lifecycle.ts';
 
 export type PetCommand = 'start' | 'show' | 'hide' | 'restart' | 'stop' | 'characters';
-export type PetStatus = NotificationRuntime;
+export type PetStatus = NotificationRuntime & { reactionStatus?: ReactionStatus };
 export interface ControlLimits { startTimeoutMs?: number; cleanupTimeoutMs?: number; retryDelaysMs?: readonly [number, number, number]; stableMs?: number; }
 
 /** Commands own a cancellable native generation. Lifecycle acknowledgements alone establish visibility. */

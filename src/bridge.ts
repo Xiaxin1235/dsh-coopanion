@@ -6,6 +6,7 @@ import { questionAnswer } from '../web/question-contract.js';
 import type { QuestionAnswerReceipt } from '../web/question-contract.js';
 import type { ChatReceipt } from '../web/chat-contract.js';
 import type { PetSnapshot, PetNotice } from './model.ts';
+import type { ReplyReaction, ReactionStatus, DecisionsProvider } from './reaction-decider.ts';
 import type { NotificationRuntime, NotificationSnapshot, TaskNotice } from './notification-contract.ts';
 import { NativeStartError, type StartLifetime, type NativeLifecycle } from './desktop-lifecycle.ts';
 export { NativeStartError, type StartLifetime, type NativeLifecycle } from './desktop-lifecycle.ts';
@@ -13,8 +14,9 @@ export { NativeStartError, type StartLifetime, type NativeLifecycle } from './de
 import type { CompanionshipMode } from '../web/companionship.js';
 import type { TextScale } from '../web/text-scale.js';
 
-export interface DesktopOptions { interfaceStyle?: 'new' | 'classic'; defaultChatTarget?: 'companion' | 'last'; size: number; npcHome?: number; npcRange?: number; textScale?: TextScale; aboveFullscreen?: boolean; preferOpeningParagraph?: boolean; inlineQuestions?: boolean; roam: boolean; diagnostics?: boolean; companionship?: CompanionshipMode; notifications: boolean; quietMode?: boolean; bubbleDurationMs: number; electronPath?: string; locale?: string; systemNotifications?: boolean; reminders?: boolean; reminderDelayMs?: number; }
+export interface DesktopOptions { decisionsProvider?: DecisionsProvider; decisionsReactions?: boolean; reactionStatus?: ReactionStatus; interfaceStyle?: 'new' | 'classic'; defaultChatTarget?: 'companion' | 'last'; size: number; npcHome?: number; npcRange?: number; textScale?: TextScale; aboveFullscreen?: boolean; preferOpeningParagraph?: boolean; inlineQuestions?: boolean; roam: boolean; diagnostics?: boolean; companionship?: CompanionshipMode; notifications: boolean; quietMode?: boolean; bubbleDurationMs: number; electronPath?: string; locale?: string; systemNotifications?: boolean; reminders?: boolean; reminderDelayMs?: number; }
 export interface PetBridge {
+  reaction?(reaction: ReplyReaction): void;
   start(options: DesktopOptions, lifetime?: StartLifetime): Promise<void>;
   update(snapshot: PetSnapshot): void;
   chatResult?(receipt: ChatReceipt): void;
@@ -134,6 +136,7 @@ export class ElectronBridge extends EventEmitter implements PetBridge {
     this.send({ type: 'notice', notice, generation: runtime.generation, visibilityRevision: runtime.visibilityRevision }); return true;
   }
   chatResult(receipt: ChatReceipt): void { this.send(receipt); }
+  reaction(reaction: ReplyReaction): void { this.send(reaction); }
   questionResult(receipt: QuestionAnswerReceipt): void { this.send(receipt); }
   onAction(listener: (action: unknown) => void): void { this.on('action', listener); }
   removeAction(listener: (action: unknown) => void): void { this.off('action', listener); }

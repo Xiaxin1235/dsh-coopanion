@@ -2,6 +2,7 @@ import { companionRole, companionLabel } from './companion-session.js';
 import { createPanelStyle, apronPosition, actionInk } from './panel-style.js';
 import { InboxReceipts, continuedInboxKey } from './inbox-receipts.js';
 import { automaticExpression, taskExpression } from './task-expression.js';
+import { reactionFor } from './reaction.js';
 import { createQuestionForms } from './inline-questions.js';
 import { advanceRenderCadence } from './render-cadence.js';
 import { createDiagnosticCounters } from './diagnostics.js';
@@ -58,7 +59,7 @@ let options = { interfaceStyle: 'new', inlineQuestions: true, preferOpeningParag
 let snapshot = { mood: 'idle', text: '你好。点点我，或双击和我说话。', sessionId: null, sessions: [] };
 let x = innerWidth * .68, y = innerHeight - 155, hovered = false, asleep = false, toastTimer, noticeSession;
 let cursorPoint, lastHit;
-let renderedSessionId = null, reactionUntil = 0, reactionMood, bubbleSession, trayKey, touchTimer, touchBlockedUntil = 0;
+let renderedSessionId = null, reactionUntil = 0, reactionMood, reactionExpression, bubbleSession, trayKey, touchTimer, touchBlockedUntil = 0;
 let bubbleResult, readerResult, pendingOnly = false, talkAt = 0;
 let readerQueue, inboxState = { requests: [], issues: [], replies: [], total: 0 };
 let resizeLayout, displayGeometry, pendingDisplayPlacement, resizeOrigin;
@@ -247,9 +248,9 @@ function updateReaderNavigation() {
     $('reader-detail').textContent = isComp ? sessionTime({ updatedAt: readerResult.time }, notificationLocale()) : `${source?.project ?? ''} · ${sessionTime({ updatedAt: readerResult.time }, notificationLocale())}`;
   }
 }
-function react(mood) { reactionMood = mood; reactionUntil = performance.now() + 700; }
-function act(actor, pack, word, manualPreview = false) {
-  if (!manualPreview) word = automaticExpression(word);
+function react(mood) { reactionExpression = undefined; reactionMood = mood; reactionUntil = performance.now() + 700; }
+function act(actor, pack, word, exactExpression = false) {
+  if (!exactExpression) word = automaticExpression(word);
   if (pack?.vocab.some(w => w.id === word) && (!actor.words || actor.words.includes(word))) actor.do(word);
 }
 function refreshCompanionCopy() {
@@ -387,14 +388,20 @@ function updateMood() {
   const labels = uiCopy().labels;
   const activity = sessionActivity(attentionSnapshot), active = activity.active;
   if (active || activity.waiting || activity.errors) asleep = false;
-  const mood = now < reactionUntil && !userInputOccupied() ? reactionMood : active || activity.waiting || activity.errors ? activity.mood : pendingRequests().length ? 'waiting' : asleep ? 'sleeping' : activity.mood;
+  const baseMood = active || activity.waiting || activity.errors ? activity.mood : pendingRequests().length ? 'waiting' : asleep ? 'sleeping' : activity.mood;
+  const priority = ['working', 'waiting', 'error'].includes(baseMood);
+  if (reactionExpression && (now >= reactionUntil || priority || reduced || pressing || dragging || ['air', 'drag'].includes(body?.layout?.mode) || !body?.words?.includes(reactionExpression) || !options.decisionsReactions)) {
+    reactionExpression = undefined; reactionUntil = 0; appliedMood = undefined;
+  }
+  const holdingReaction = !!reactionExpression && now < reactionUntil;
+  const mood = priority || holdingReaction ? baseMood : now < reactionUntil && !userInputOccupied() ? reactionMood : baseMood;
+  pet.dataset.replyReaction = holdingReaction ? reactionExpression : '';
   pet.dataset.mood = mood;
   if (!body) return;
   const dialogOpen = panels.some(p => !p.hidden);
   const readingAttention = !$('attention').hidden && ($('attention').matches(':hover') || document.activeElement === $('attention'));
-  updateCompanion(now, mood, readingAttention, active);
-  updateNpc(now, active, readingAttention);
-  if (mood !== appliedMood && !npc.walkId && !companion.active && !body.layout?.busy && (!actionRestorePending || !pressing && !dragging)) {
+  if (!holdingReaction) { updateCompanion(now, mood, readingAttention, active); updateNpc(now, active, readingAttention); }
+  if (!holdingReaction && mood !== appliedMood && !npc.walkId && !companion.active && !body.layout?.busy && (!actionRestorePending || !pressing && !dragging)) {
     reducedNeedsStep = true;
     if (mood !== 'sleeping' && (appliedMood === 'sleeping' || ['sleep', 'sit'].includes(body.layout?.mode))) act(body, activeView, 'stand');
     const { word } = taskExpression(mood);
@@ -402,7 +409,7 @@ function updateMood() {
     appliedMood = mood;
     actionRestorePending = false;
   }
-  const controls = { roam: 'off', dialogOpen: dialogOpen || !interaction.hidden, thinking: mood === 'thinking', thoughtShown: false, expression: automaticExpression(taskExpression(mood).expression ?? (npc.reason === 'none' && !userInputOccupied() && activityWords.includes(npc.emotion) ? npc.emotion : null)), listening: !chat.hidden && !active };
+  const controls = { roam: 'off', dialogOpen: dialogOpen || !interaction.hidden, thinking: mood === 'thinking', thoughtShown: false, expression: holdingReaction ? reactionExpression : automaticExpression(taskExpression(mood).expression ?? (npc.reason === 'none' && !userInputOccupied() && activityWords.includes(npc.emotion) ? npc.emotion : null)), listening: !chat.hidden && !active };
   const key = JSON.stringify(controls);
   if (key !== appliedControls) { body.set(controls); appliedControls = key; }
   $('toggle-roam').setAttribute('aria-checked', String(options.roam));
@@ -410,6 +417,8 @@ function updateMood() {
   $('toggle-sleep').disabled = active; $('toggle-sleep').title = active ? uiCopy().sleepBusy : uiCopy().sleepWake;
   $('toggle-notices').setAttribute('aria-checked', String(options.notifications));
   $('toggle-quiet').setAttribute('aria-checked', String(options.quietMode));
+  $('toggle-reactions').setAttribute('aria-checked', String(options.decisionsReactions === true));
+  $('reaction-status').textContent = `${options.decisionsProvider === 'openrouter' ? uiCopy().reactionProviderOpenrouter : uiCopy().reactionProviderOpenai} · ${options.reactionStatus?.keyAvailable ? uiCopy().reactionKeyPresent : uiCopy().reactionKeyMissing} · ${uiCopy().reactionCalls}: ${options.reactionStatus?.calls ?? 0}`;
   $('toggle-sound').setAttribute('aria-checked', String(sfx.isOn()));
   $('menu-state').textContent = `${sessionStateLabel(snapshot.sessions?.find(s => s.id === snapshot.sessionId), notificationLocale(), mood)}${snapshot.sessionId ? ' · ' + uiCopy().connected : ''}`;
   const presentation = { type: 'presentation', locale: notificationLocale(), characterId: activeView.id, scheme: activeScheme, name: activeName, mood, sleeping: asleep, sound: sfx.isOn(), ready: !!body.layout };
@@ -527,7 +536,7 @@ function presentNextNotice() {
   $('interaction-pending').textContent = copy.pending; $('interaction-pending').hidden = !notice.requestIds.length;
   interaction.hidden = false; panelAnchors.delete(interaction);
   interactionExpires = performance.now() + options.bubbleDurationMs;
-  reactionMood = presentation.mood; reactionUntil = performance.now() + 2500; asleep = false;
+  reactionExpression = undefined; reactionMood = presentation.mood; reactionUntil = performance.now() + 2500; asleep = false;
   updateMood();
   if (!reduced && presentation.word && !(presentation.mood === 'error' && appliedMood === 'error' && presentation.word === taskExpression('error').word)) { act(body, activeView, presentation.word); reducedNeedsStep = true; }
   position();
@@ -704,6 +713,14 @@ for (const panel of [bubble, interaction, companionInvitation, companionFeedback
 function receive(message) {
   if (!message || typeof message !== 'object') return;
   switch (message.type) {
+    case 'reaction': {
+      const activity = sessionActivity(attentionSnapshot);
+      const expression = reactionFor(message, snapshot, { now: Date.now(), words: body?.words?.filter(w => activeView?.vocab.some(v => v.id === w)) ?? [], blocked: !options.decisionsReactions || reduced || pressing || dragging || ['air', 'drag'].includes(body?.layout?.mode) || ['working', 'waiting', 'error'].includes(activity.mood) || pendingRequests().length > 0 });
+      if (!expression) break;
+      reactionExpression = expression; reactionMood = activity.mood; reactionUntil = performance.now() + 2500;
+      // C02 is an explicit opt-in choice; C05's ordinary error/NPC mapping stays unchanged.
+      act(body, activeView, expression, true); reducedNeedsStep = true; updateMood(); break;
+    }
     case 'init':
       inboxReceipts.load(message.dismissedInbox);
       applyOptions(message.options);
@@ -988,6 +1005,7 @@ $('toggle-roam').onclick = () => preference('roam');
 $('toggle-sleep').onclick = () => { if ($('toggle-sleep').disabled) return; asleep = !asleep; if (!asleep) react('happy'); menu.hidden = true; bubble.hidden = true; updateMood(); };
 $('toggle-notices').onclick = () => preference('notifications');
 $('toggle-quiet').onclick = () => preference('quietMode');
+$('toggle-reactions').onclick = () => preference('decisionsReactions');
 $('hide').onclick = () => { if (native) send({ type: 'hide' }); else closePanels(); };
 $('toast').onclick = () => { $('toast').hidden = true; openSession(noticeSession); };
 document.addEventListener('keydown', event => { if (event.key === 'Escape') closePanels(); });

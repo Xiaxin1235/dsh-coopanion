@@ -165,6 +165,7 @@ process.on('message', message => {
   }
   if (message.type === 'snapshot') { lastFrame = { type: 'init', baseline: true, options, snapshot: { ...message.snapshot, results: message.snapshot.results ?? lastFrame?.snapshot?.results ?? [] } }; forward(message); syncTray(); }
   if (message.type === 'chat-result') forward(message);
+  if (message.type === 'reaction') forward(message);
   if (message.type === 'notification-state' || message.type === 'notification-snooze-result' || message.type === 'question-answer-result') forward(message);
   if (message.type === 'notice') {
     if (message.generation !== undefined && (message.generation !== generation || message.visibilityRevision !== visibilityRevision || !win?.isVisible() || suspended)) return;

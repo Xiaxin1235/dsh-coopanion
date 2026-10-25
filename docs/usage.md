@@ -231,3 +231,24 @@ Interface style: right-click the pet → Dress up → Interface style. New is th
 ### 已归档的会话
 
 在 Harness 里归档的会话（包括 WhaleDot 自动归档的以往大肥鱼对话）不再出现在桌宠会话列表和托盘里，约 2 秒内同步。正在聊的会话被归档时仍会显示并标注“已归档”，输入框不可用，并提示去 WhaleDot 面板或 Harness 恢复。恢复后会自动重新出现。已归档会话里没读的回复仍可在信封中阅读。
+
+### 可选的回复情绪表情
+
+在 Harness 的 **Settings → 桌宠 → 回复情绪表情** 中开启「判断回复情绪」，或使用桌宠菜单的同名开关。默认关闭。「判断服务」单独选择 **OpenAI 官方**（默认）或 **OpenRouter**，每次只请求所选服务，不自动切换。切换服务或关闭开关时，尚未返回的旧结果不再播放。不开启或没有对应密钥时，保持原有行为。两者都只调用 Decisions API。
+
+| 判断服务 | 环境变量 | 固定模型 | 接收回复片段的服务 |
+|---|---|---|---|
+| OpenAI 官方 | `OPENAI_API_KEY` | `gpt-6-luna` | OpenAI |
+| OpenRouter | `OPENROUTER_API_KEY` | `openai/gpt-6-luna-decisions` | OpenRouter，再转交 OpenAI |
+
+只发送最终回复的第一段：第一段不超过 120 个 Unicode 字符时只取该段，否则取回复前 200 个字符。不附加用户输入、工具调用及其结果、文件、会话标题或路径等字段；但回复本身可能复述文件、记忆或个人信息，这些内容若在片段中仍会发送，不做语义脱敏。大肥鱼专属对话同样适用。标题以 `[WhaleDot]` 开头、首条消息以 `WhaleDot: execute this single task` 开头或已归档的会话一律不发送；已有历史回复不会补发。
+
+密钥仅从宿主进程对应的环境变量读取，设置中没有密钥输入框，不写入插件设置、日志或状态接口。可在 Windows「编辑账户的环境变量」中新建上表对应的用户变量，填入自己的密钥；完全退出 Harness 后，从开始菜单重新启动以继承变量。临时测试则只在测试终端设置环境变量，并在同一终端启动隔离宿主，结束后关闭终端。两个服务的密钥不混用，也不会用另一把密钥兜底，不自动换模型或重试。
+
+设置旁只显示所选服务是否检测到对应密钥，以及本次宿主运行已尝试的次数（含失败，不等于成功或计费次数）。每个最终结果最多一次，两个服务合用每个滚动小时 30 次的额度，3 秒超时；失败、低于 0.5 的置信度或 neutral 均保持原表情。模型价格以 [OpenAI 定价](https://developers.openai.com/api/docs/pricing)与 [OpenRouter 模型页](https://openrouter.ai/openai/gpt-6-luna-decisions)为准；2026-10-25 查证为未缓存输入每百万 token 0.10 美元、输出免费，实际费用取决于片段和问题消耗的 token，缓存费用依服务定价。
+
+表情持续约 2.5 秒后恢复原映射；执行、等待、错误状态立即优先，拖拽和「减少动态效果」期间不播放。安静模式仍播放表情，但不会因此弹出气泡或卡片。原有任务错误仍使用「担心」；只有主动开启本功能后，普通回复明确表达悲伤时才可能由 Decisions 选择 `sad`。自定义角色不支持所选词时忽略。
+
+Reply emotion reactions are optional and off by default. In **Settings → Desktop pet → Reply emotion reactions**, choose **OpenAI direct** (default, `OPENAI_API_KEY`, `gpt-6-luna`) or **OpenRouter** (`OPENROUTER_API_KEY`, `openai/gpt-6-luna-decisions`). Only the selected Decisions endpoint is called, without provider fallback, credential sharing or model changes. Switching services discards pending reactions from the previous choice. Set the corresponding user environment variable and restart Harness from the Start menu; no key is stored or displayed by the plugin.
+
+Only an eligible final reply opening is sent (first paragraph up to 120 Unicode characters, otherwise the first 200 characters). Excerpts may repeat private information; no prompt, tool, file or session metadata is appended. WhaleDot automatic tasks and archived sessions are excluded; companion replies are eligible. Each result is attempted once, with a shared 30-per-rolling-hour limit, a three-second timeout and no retries. The attempt count includes failures. Quiet mode permits the expression without opening panels; task states and reduced motion take precedence. Disable the switch to stop new calls and discard pending reactions.

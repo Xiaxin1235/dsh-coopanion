@@ -7,7 +7,7 @@ import type { PetCommand, PetStatus } from '../controls.ts';
 import type { NotificationSettings, NotificationClientStatus } from './notification-client.ts';
 import { TEXT_SCALES, textScale, type TextScale } from '../../web/text-scale.js';
 
-export interface Preferences { size: number; npcHome: number; npcRange: number; textScale: TextScale; aboveFullscreen: boolean; preferOpeningParagraph: boolean; inlineQuestions: boolean; roam: boolean; diagnostics: boolean; companionship: CompanionshipMode; notifications: boolean; quietMode: boolean; systemNotifications: boolean; reminders: boolean; reminderDelayMs: number; bubbleDurationMs: number; autoStart: boolean; defaultChatTarget?: 'companion' | 'last'; }
+export interface Preferences { decisionsProvider?: 'openai' | 'openrouter'; decisionsReactions?: boolean; size: number; npcHome: number; npcRange: number; textScale: TextScale; aboveFullscreen: boolean; preferOpeningParagraph: boolean; inlineQuestions: boolean; roam: boolean; diagnostics: boolean; companionship: CompanionshipMode; notifications: boolean; quietMode: boolean; systemNotifications: boolean; reminders: boolean; reminderDelayMs: number; bubbleDurationMs: number; autoStart: boolean; defaultChatTarget?: 'companion' | 'last'; }
 export interface SettingsFace { form: ConfigForm<Preferences>; call: (command?: PetCommand, signal?: AbortSignal) => Promise<PetStatus>; local: boolean; notifier?: NotificationSettings; }
 export type SettingsProps = SettingsFace & PropsLocale<'coopanion'>;
 
@@ -61,7 +61,7 @@ export function Settings({ form, call, local, notifier, t }: SettingsProps) {
     catch (error) { setFailure(String(error instanceof Error ? error.message : error)); }
     finally { setBusy(false); }
   };
-  const save = async (field: keyof Preferences, value: number | boolean | CompanionshipMode | 'companion' | 'last') => {
+  const save = async (field: keyof Preferences, value: number | boolean | CompanionshipMode | 'companion' | 'last' | 'openai' | 'openrouter') => {
     setSaving(true); setFeedback(undefined); setSaveFailure('');
     try { setFeedback(await form.set(field, value) ? 'saved' : 'refused'); }
     catch (error) { setSaveFailure(String(error instanceof Error ? error.message : error)); }
@@ -88,6 +88,7 @@ export function Settings({ form, call, local, notifier, t }: SettingsProps) {
   };
   const ready = accepted.status === 'ready' && accepted.writable && !saving;
   const prefs = accepted.value;
+  const reactionProvider = prefs?.decisionsProvider ?? 'openai';
   const running = status?.phase === 'running';
   const disabled = !local || busy || status?.phase === 'starting' || status?.phase === 'stopping';
   const statusText = !status ? t('loading') : status.phase === 'running' ? t(status.visible ? 'running' : 'hidden') : t(status.phase);
@@ -104,6 +105,18 @@ export function Settings({ form, call, local, notifier, t }: SettingsProps) {
       </div>
       {status?.recoveryAttempt ? <p role="status">{t('recoveryHint')}: {status.recoveryAttempt} / 3</p> : null}
       {failure || status?.error ? <p className="pet-error" role="alert">{failure || status?.error}</p> : null}
+    </section>
+    <section className="pet-card" aria-label={t('reactionSettings')}>
+      <h3>{t('reactionSettings')}</h3>
+      <div className="pet-row"><div className="pet-label"><strong>{t('decisionsReactions')}</strong><p>{t('decisionsReactionsHint')}</p></div>
+        <Switch checked={prefs?.decisionsReactions ?? false} disabled={!ready || !local} label={t('decisionsReactions')} onChange={value => void save('decisionsReactions', value)} />
+      </div>
+      <div className="pet-row"><div className="pet-label"><label htmlFor="coopanion-decisions-provider">{t('decisionsProvider')}</label><p id="coopanion-decisions-provider-hint">{t(reactionProvider === 'openai' ? 'reactionKeyHintOpenai' : 'reactionKeyHintOpenrouter')}</p></div>
+        <select id="coopanion-decisions-provider" className="pet-number pet-provider" aria-describedby="coopanion-decisions-provider-hint" value={reactionProvider} disabled={!ready || !local} onChange={event => void save('decisionsProvider', event.target.value as 'openai' | 'openrouter')}>
+          <option value="openai">{t('reactionProviderOpenai')}</option><option value="openrouter">{t('reactionProviderOpenrouter')}</option>
+        </select>
+      </div>
+      <p role="status" data-testid="reaction-status">{status?.reactionStatus?.provider !== reactionProvider ? t('loading') : status.reactionStatus.keyAvailable ? t('reactionKeyPresent') : t('reactionKeyMissing')} · {t('reactionCalls')}: {status?.reactionStatus?.calls ?? 0}</p>
     </section>
     <section className="pet-card" aria-label={t('preferences')}>
       <h3>{t('preferences')}</h3>
