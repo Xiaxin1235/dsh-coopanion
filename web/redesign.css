@@ -42,6 +42,7 @@
 .redesigned .pet-greetings button { padding: 7px 12px; border: 1px solid var(--line); background: #fff; color: var(--text); font-size: calc(13px * var(--text-scale)); font-weight: 600; margin: 0; }
 .redesigned #chat-help { display: none; margin: 0; }
 .redesigned #chat:is([data-send-state=sending],[data-send-state=failed]) #chat-help { display: block; }
+.redesigned #chat[data-archived=true] #chat-help { display: block; }
 .redesigned #chat-send-state { margin: 0; font-size: calc(12px * var(--text-scale)); }
 .redesigned #chat-send-state:empty { display: none; }
 .redesigned #chat-form { gap: 8px; }

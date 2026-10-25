@@ -316,6 +316,23 @@ it('marks Harness blank drafts until a turn or human message starts them, but ne
   expect(m.snapshot().sessionId).toBe('used');
 });
 
+it('mirrors the Harness archive set without changing roles, focus or names', () => {
+  const m = new PetModel();
+  const work = session('work'), old = { ...session('old-companion'), header: { ...session('old-companion').header, agentPreset: 'whaledot-companion' } };
+  m.observe(work); m.observe(old);
+  const archived = () => Object.fromEntries(m.snapshot().sessions.map(s => [s.id, s.archived]));
+  expect(archived()).toEqual({ work: false, 'old-companion': false });
+  expect(m.archives(['work', 'unknown'])).toBe(true);
+  expect(archived()).toEqual({ work: true, 'old-companion': false });
+  // The same set is not a change, so the host does not push a redundant frame.
+  expect(m.archives(['unknown', 'work'])).toBe(false);
+  expect(m.snapshot().sessionId).toBe('work');
+  expect(m.snapshot().sessions.find(s => s.id === 'work')!.label).toBe(m.snapshot().sessions.find(s => s.id === 'work')!.project);
+  // Restoring in Harness clears the mark on the next poll.
+  expect(m.archives([])).toBe(true);
+  expect(archived()).toEqual({ work: false, 'old-companion': false });
+});
+
 
 describe('Harness session titles', () => {
   const human = (text: string) => event('user/message', createUserMessage({ content: [{ type: 'text', text }], source: { kind: 'user' } }));

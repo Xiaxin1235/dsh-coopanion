@@ -8,7 +8,7 @@ import { type PendingInteraction, type TaskNotice } from './notification-contrac
 
 export type Mood = 'idle' | 'thinking' | 'talking' | 'working' | 'waiting' | 'happy' | 'error' | 'sleeping';
 export interface PetResult { id: string; sessionId: string; text: string; time: number; read: boolean; }
-export interface PetSession { id: string; label: string; project: string; cwd: string; prompt: string; createdAt: number; updatedAt: number; mood: Mood; text: string; reply: string; replyId: string; unread: number; revision: number; active: boolean; streaming: boolean; speechId: string; chatAvailable?: boolean; attentionId?: string; completion?: TaskNotice['category']; agentPreset?: string; companion?: boolean; companionRole?: 'current' | 'earlier'; blank?: boolean; }
+export interface PetSession { id: string; label: string; project: string; cwd: string; prompt: string; createdAt: number; updatedAt: number; mood: Mood; text: string; reply: string; replyId: string; unread: number; revision: number; active: boolean; streaming: boolean; speechId: string; chatAvailable?: boolean; attentionId?: string; completion?: TaskNotice['category']; agentPreset?: string; companion?: boolean; companionRole?: 'current' | 'earlier'; blank?: boolean; archived?: boolean; }
 export interface PetSnapshot { mood: Mood; text: string; sessionId: string | null; companionSessionId: string | null; revision: number; active: boolean; streaming: boolean; speechId: string; results: PetResult[]; sessions: PetSession[]; }
 export interface PetNotice extends Partial<Omit<TaskNotice, 'title' | 'body' | 'sessionId'>> { title: string; body: string; sessionId: string; kind?: 'task' | 'message'; }
 interface TaskState { title?: string; titleSeq: number; promptLabel?: string; started: boolean; completion: CompletionTracker; ended: number; seq: number; turn: number; active: boolean; finalText?: string; tools: Map<string, string>; approvals: Set<symbol | string>; questions: Set<string>; requests: Set<string>; celebrateUntil: number; stream?: { id: string; revision: number; index: number; text: string; blocks: Map<number, string> }; }
@@ -22,7 +22,16 @@ export class PetModel {
   private companionSessionId: string | null = null;
   private tasks = new Map<string, TaskState>();
   private results = new Map<string, PetResult>();
+  private archived = new Set<string>();
   constructor(private readonly now: () => number = Date.now) {}
+
+  /** Mirror Harness's registry-global archive set; returns whether presentation changed. */
+  archives(ids: readonly string[]): boolean {
+    const next = new Set(ids);
+    if (next.size === this.archived.size && [...next].every(id => this.archived.has(id))) return false;
+    this.archived = next;
+    return true;
+  }
 
   observe(session: ObservedSession): PetSession | undefined {
     if (session.header.origin === 'subagent') return;
@@ -345,7 +354,7 @@ export class PetModel {
   snapshot(): PetSnapshot {
     const item = this.selected ? this.sessions.get(this.selected) : undefined;
     this.settle();
-    return { mood: item?.mood ?? 'idle', text: item?.text ?? ready, sessionId: item?.id ?? null, companionSessionId: this.companionSessionId, revision: item?.revision ?? 0, active: item?.active ?? false, streaming: item?.streaming ?? false, speechId: item?.speechId ?? '', results: [...this.results.values()].map(r => ({ ...r })), sessions: [...this.sessions.values()].map(s => ({ ...s, blank: this.blank(s) })) };
+    return { mood: item?.mood ?? 'idle', text: item?.text ?? ready, sessionId: item?.id ?? null, companionSessionId: this.companionSessionId, revision: item?.revision ?? 0, active: item?.active ?? false, streaming: item?.streaming ?? false, speechId: item?.speechId ?? '', results: [...this.results.values()].map(r => ({ ...r })), sessions: [...this.sessions.values()].map(s => ({ ...s, blank: this.blank(s), archived: this.archived.has(s.id) })) };
   }
 }
 

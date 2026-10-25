@@ -23,7 +23,8 @@ it('serializes atomic receipts, survives restart, bounds 1000 and expires after 
     expect(await restarted.remember(issue(2000))).toBe(true);
     expect(JSON.parse(await readFile(restarted.file, 'utf8')).entries).toHaveLength(1);
   } finally { await rm(dir, { recursive: true, force: true }); }
-});
+  // 1002 serialized atomic writes exceed the default 5s when the suite runs in parallel.
+}, 20000);
 it('drops malformed saves and keys, then writes a fresh archive', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'inbox-corrupt-'));
   try {

@@ -195,6 +195,16 @@ it('leaves blank Harness drafts out of the tray list unless they hold focus', ()
   expect(state.sessions.map(s => s.id)).toEqual(['focused-draft', 'work']);
 });
 
+it('leaves archived conversations out of the tray list unless they hold focus', () => {
+  const sessions = [
+    { id: 'work', label: 'work', project: 'p', updatedAt: 2 },
+    { id: 'old', label: 'old', project: 'p', archived: true, updatedAt: 3 },
+    { id: 'focused-old', label: 'focused', project: 'q', archived: true, updatedAt: 1 },
+  ];
+  const state = tray.trayState({ sessionId: 'focused-old', sessions, results: [] }, {}, { locale: 'en' });
+  expect(state.sessions.map(s => s.id)).toEqual(['focused-old', 'work']);
+});
+
 it('projects acknowledged quiet mode into the native tray without changing task facts', () => {
   const snapshot = { sessionId: 'work', sessions: [{ id: 'work', label: 'Work', mood: 'waiting', unread: 1 }] };
   expect(tray.trayState(snapshot).quietMode).toBe(false);

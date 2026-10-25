@@ -45,6 +45,11 @@ it('rejects absent service, cancelled work, subagents, mismatched target and una
     expect(await h.send(h.chat, request, cancel.signal)).toMatchObject({ status: 'failed', code: 'gateway/cancelled' });
     h.observe.mockResolvedValueOnce({ header: { ...h.session.header, origin: 'subagent' }, events: [], [Symbol.dispose]: vi.fn() } as never);
     expect(await h.send(h.chat)).toMatchObject({ code: 'session/subagent-owned' });
+    // An archived target would be accepted and then silently blocked by the host gate.
+    const registry = { archivedSessionIds: ['cold'] };
+    h.ctx.provide('workspaceRegistry', registry);
+    expect(await h.send(h.chat)).toMatchObject({ status: 'failed', code: 'session/archived' });
+    registry.archivedSessionIds = [];
     h.observe.mockResolvedValueOnce({ header: { ...h.session.header, id: 'other' }, events: [], [Symbol.dispose]: vi.fn() } as never);
     expect(await h.send(h.chat)).toMatchObject({ code: 'session/not-found' });
     h.catalog.mockResolvedValueOnce({ default: { provider: 'none', model: 'none' }, groups: [] });

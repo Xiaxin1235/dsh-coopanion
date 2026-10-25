@@ -236,6 +236,7 @@ function updateReaderNavigation() {
   const copy = noticeCopy();
   $('reader-caption').textContent = copy.replyCaption; $('reader-inbox').textContent = copy.inbox; $('reader-inbox').hidden = !readerQueue;
   $('reader-session').textContent = copy.continue; $('reader-prev').ariaLabel = copy.previous; $('reader-next').ariaLabel = copy.next;
+  $('reader-session').hidden = !!snapshot.sessions.find(session => session.id === readerResult?.sessionId)?.archived;
   const history = readerQueue ?? (snapshot.results ?? []).filter(r => r.sessionId === readerResult?.sessionId);
   const index = history.findIndex(r => r.id === readerResult?.id);
   $('reader-count').textContent = `${Math.max(1, index + 1)} / ${Math.max(1, history.length)}`;
@@ -430,9 +431,10 @@ function render() {
   const requestSources = new Set(pendingRequests().map(item => item.sessionId));
   const needsYou = s => attentionSources.has(s.id) || requestSources.has(s.id);
   // Harness keeps a blank draft per Workspace; it is not a conversation until something is said in it.
-  const matches = snapshot.sessions.filter(session => (!session.blank || session.id === snapshot.sessionId) && (!pendingOnly || hasUnread(session) || needsYou(session)) && [session.label, session.project, session.cwd, session.prompt, session.id, isCompanionHistory(session) ? sessionName(session) : ''].join(' ').toLocaleLowerCase().includes(query));
+  // Archived conversations are hidden like in Harness's sidebar, except the one still in focus.
+  const matches = snapshot.sessions.filter(session => (!session.blank || session.id === snapshot.sessionId) && (!session.archived || session.id === snapshot.sessionId) &&(!pendingOnly || hasUnread(session) || needsYou(session)) && [session.label, session.project, session.cwd, session.prompt, session.id, isCompanionHistory(session) ? sessionName(session) : ''].join(' ').toLocaleLowerCase().includes(query));
   matches.sort((a, b) => Number(isCompanionSession(b)) - Number(isCompanionSession(a)) || Number(needsYou(b)) - Number(needsYou(a)) || Number(hasUnread(b)) - Number(hasUnread(a)) || Number(b.id === snapshot.sessionId) - Number(a.id === snapshot.sessionId) || (b.updatedAt ?? 0) - (a.updatedAt ?? 0));
-  const listKey = JSON.stringify([notificationLocale(), query, pendingOnly, matches.map(session => [session.id, companionRole(snapshot, session), session.label, session.prompt, session.cwd, session.updatedAt, session.mood, hasUnread(session), session.chatAvailable, session.id === snapshot.sessionId])]);
+  const listKey = JSON.stringify([notificationLocale(), query, pendingOnly, matches.map(session => [session.id, companionRole(snapshot, session), session.label, session.prompt, session.cwd, session.updatedAt, session.mood, hasUnread(session), session.chatAvailable, session.archived, session.id === snapshot.sessionId])]);
   if (list.dataset.key !== listKey) {
     const activeId = document.activeElement?.dataset?.sessionId;
     const entries = matches.map(session => {
@@ -444,7 +446,7 @@ function render() {
       const cardTitleName = sessionName(session);
       card.title = isCompanionHistory(session) ? `${cardTitleName}\n${session.prompt ?? ''}\n${session.id}` : `${session.label}\n${session.prompt ?? ''}\n${session.cwd ?? session.project ?? ''}\n${session.id}`;
       const copy = document.createElement('span'), meta = document.createElement('small'), status = document.createElement('em'), time = document.createElement('span'), name = document.createElement('strong'), detail = document.createElement('small'), prompt = document.createElement('small'), mark = document.createElement('b');
-      meta.className = 'session-meta'; status.textContent = `${session.id === snapshot.sessionId ? uiCopy().focused + ' · ' : ''}${sessionStateLabel(session, notificationLocale())}${hasUnread(session) ? ' · ' + uiCopy().unread : ''}${session.chatAvailable === false ? ' · ' + uiCopy().notOpen : ''}`;
+      meta.className = 'session-meta'; status.textContent = `${session.id === snapshot.sessionId ? uiCopy().focused + ' · ' : ''}${sessionStateLabel(session, notificationLocale())}${hasUnread(session) ? ' · ' + uiCopy().unread : ''}${session.chatAvailable === false ? ' · ' + uiCopy().notOpen : ''}${session.archived ? ' · ' + uiCopy().archived : ''}`;
       time.textContent = sessionTime(session, notificationLocale()); meta.append(status, time);
       name.textContent = sessionName(session);
       detail.className = 'session-detail'; detail.textContent = isCompanionHistory(session) ? '' : `${session.cwd || session.project || uiCopy().session} · #${shortIds.get(session.id)}`;
@@ -476,13 +478,17 @@ function render() {
   $('chat-current').disabled = !snapshot.sessions.length;
   $('chat-session-name').textContent = isSelectedCompanion ? uiCopy().chatWithMe : (sessionName(selected) ?? uiCopy().noSession);
   $('chat-current').setAttribute('aria-label', selected ? (isSelectedCompanion ? uiCopy().chatTarget(uiCopy().chatWithMe) : uiCopy().chatTarget(sessionName(selected))) : uiCopy().emptySessions);
-  $('chat-session-state').textContent = sessionStateLabel(selected, notificationLocale());
+  $('chat-session-state').textContent = `${sessionStateLabel(selected, notificationLocale())}${selected?.archived ? ' · ' + uiCopy().archived : ''}`;
   $('chat-session-detail').textContent = selected && !isCompanionHistory(selected) ? `${selected.cwd || selected.project || ''} · #${shortIds.get(selected.id)}` : '';
   $('chat-to-companion').hidden = isSelectedCompanion || !snapshot.companionSessionId;
   const latestReply = snapshot.results?.find(r => r.id === selected?.replyId)?.text || selected?.reply || '';
   $('chat-reply').textContent = latestReply ? replyPreview(latestReply, 180, false).text : ''; $('chat-reply').hidden = !latestReply;
   $('chat-read').hidden = !latestReply;
-  const enabled = !!snapshot.sessionId && selected?.chatAvailable !== false;
+  const archivedTarget = !!selected?.archived;
+  const enabled = !!snapshot.sessionId && selected?.chatAvailable !== false && !archivedTarget;
+  // The redesigned panel hides the help line; surface the reason where the user looks to type.
+  chat.dataset.archived = String(archivedTarget);
+  $('message').placeholder = archivedTarget ? uiCopy().archivedChat : uiCopy().messagePlaceholder;
   const draft = composer.state(snapshot.sessionId);
   draftSessionId = snapshot.sessionId;
   if ($('message').value !== draft.text) $('message').value = draft.text;
@@ -491,7 +497,7 @@ function render() {
   $('chat-send-state').textContent = draft.phase === 'failed' ? uiCopy().sendFailure(draft.code) : uiCopy()[{ sending: 'sending', accepted: 'sendAccepted' }[draft.phase]] ?? '';
   $('chat-send-state').dataset.state = draft.phase; chat.dataset.sendState = draft.phase; $('send').ariaLabel = $('send').textContent; resizeComposer();
   $('conversation-open').disabled = !snapshot.sessionId; $('chat-session').disabled = !snapshot.sessionId;
-  $('chat-help').textContent = enabled ? (isSelectedCompanion ? uiCopy().companionChatHelp : uiCopy().chatHelp(sessionName(selected))) : snapshot.sessionId ? uiCopy().unavailableChat : uiCopy().noChat;
+  $('chat-help').textContent = enabled ? (isSelectedCompanion ? uiCopy().companionChatHelp : uiCopy().chatHelp(sessionName(selected))) : archivedTarget ? uiCopy().archivedChat : snapshot.sessionId ? uiCopy().unavailableChat : uiCopy().noChat;
   if (previous !== snapshot.sessionId) {
     bubble.hidden = true;
     clearTimeout(touchTimer); reactionUntil = 0;
@@ -622,7 +628,7 @@ function renderRequests() {
     actions.append(open); card.append(meta, label, preview, actions); return card;
   }));
   // Confirmed reply text is immutable for its result id; avoid rescanning long bodies on live frames.
-  replaceInboxList($('inbox-replies'), JSON.stringify([...keys, replies.map(result => [result.id, result.sessionId, result.time])]), () => replies.map(result => {
+  replaceInboxList($('inbox-replies'), JSON.stringify([...keys, replies.map(result => [result.id, result.sessionId, result.time, !!sources.get(result.sessionId)?.archived])]), () => replies.map(result => {
     const card = document.createElement('article'); card.className = 'inbox-card inbox-reply';
     const content = document.createElement('button'), meta = document.createElement('small'), label = document.createElement('strong'), preview = document.createElement('span'), detail = document.createElement('small'), actions = document.createElement('div'), open = document.createElement('button');
     content.className = 'inbox-content'; content.dataset.resultId = result.id; content.dataset.inboxKey = result.id; content.dataset.action = 'read';
@@ -637,6 +643,8 @@ function renderRequests() {
     detail.textContent = detailPart ? `${detailPart} · ${copy.readReply}` : copy.readReply;
     content.append(meta, label, preview, detail);
     open.textContent = copy.continue; open.dataset.resultId = result.id; open.dataset.inboxKey = result.id; open.dataset.action = 'open'; open.onclick = () => { acknowledge(result); continueSession(result.sessionId); };
+    // An archived source can still be read here, but must be restored before the conversation continues.
+    open.hidden = !!replySession?.archived;
     const read = document.createElement('button'); read.className = 'inbox-read'; read.textContent = copy.readReply; read.onclick = content.onclick;
     actions.append(open, read); card.append(content, actions); return card;
   }));

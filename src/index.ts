@@ -12,6 +12,7 @@ import { NotificationBroker, type NotificationEvent } from './notification-broke
 import { notificationPreferencesSchema, notificationEndpoints, notificationRequests, noticeId, interactionId } from './notification-contract.ts';
 import { InboxQuestions } from './inbox-questions.ts';
 import { ChatSubmission } from './chat.ts';
+import { archivedSessionIds } from './archive.ts';
 import z from '@deepseek-ai/schemastery';
 import { ElectronBridge, isRecord, type PetBridge, type DesktopOptions } from './bridge.ts';
 import { PetModel } from './model.ts';
@@ -148,6 +149,13 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
   ctx.effect(() => () => controls.dispose());
   ctx.effect(() => {
     const timer = setInterval(() => { if (model.settle()) update(); }, 250);
+    timer.unref(); return () => clearInterval(timer);
+  });
+  // The workspace registry exposes the archive set without a change event; poll the in-memory getter.
+  ctx.effect(() => {
+    const sync = () => { if (model.archives(archivedSessionIds(ctx))) update(); };
+    sync();
+    const timer = setInterval(sync, 2000);
     timer.unref(); return () => clearInterval(timer);
   });
   ctx.on('settings/document-updated', ns => { if (ns === 'dsh-coopanion') { controls.configure(); broker.preferences(notificationPrefs()); syncNotifications(); } else if (ns === 'locale') syncLocale(); });

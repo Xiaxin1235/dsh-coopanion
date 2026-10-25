@@ -4,6 +4,7 @@ import type {} from '@deepseek-ai/dsh-api-session-controller';
 import { SessionId } from '@deepseek-ai/dsh-session';
 import type { SessionPromptRequest } from '@deepseek-ai/dsh-api-session-controller';
 import { chatRequest, type ChatRequest, type ChatReceipt } from '../web/chat-contract.js';
+import { archivedSessionIds } from './archive.ts';
 
 /** Serialize admission per target: the supported controllers deduplicate history, but race across async admission. */
 export class ChatSubmission {
@@ -41,6 +42,8 @@ export class ChatSubmission {
     try {
       if (observed.header.id !== input.sessionId || !observed.header.cwd) reject('session/not-found');
       if (observed.header.origin === 'subagent') reject('session/subagent-owned');
+      // The host's archived-session gate would otherwise accept the prompt and silently block the model step.
+      if (archivedSessionIds(this.ctx).includes(input.sessionId)) reject('session/archived');
       const messages = observed.events.flatMap(event => event.type === 'user/message' ? [event.data] : event.type === 'agent/inbox/spliced' ? event.data.inserted : []);
       const matches = messages.filter(message => message.source.kind === 'user' && 'rpcId' in message.source && message.source.rpcId === input.requestId);
       if (matches.length) {

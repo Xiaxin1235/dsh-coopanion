@@ -32,7 +32,9 @@ try {
     const extra = { ...work, id: 'extra', label: 'First remaining work' };
     // Harness's unused draft slot in the companion Workspace.
     const draft = { ...work, id: 'draft', label: 'companion', cwd: '/private/companion', blank: true, updatedAt: 20 };
-    const snapshot = { mood: 'idle', active: false, streaming: false, text: '', sessionId: 'current', companionSessionId: 'current', sessions: [extra, old, work, current, draft], results: [] };
+    // An earlier companion conversation WhaleDot archived out of Harness's sidebar.
+    const archived = { ...old, id: 'archived-old', archived: true, updatedAt: 30 };
+    const snapshot = { mood: 'idle', active: false, streaming: false, text: '', sessionId: 'current', companionSessionId: 'current', sessions: [extra, old, work, current, draft, archived], results: [] };
     await receive({ type: 'init', baseline: true, options: { locale, interfaceStyle, textScale, roam: false, defaultChatTarget: 'companion' }, snapshot });
     const copy = petCopy(locale);
     await page.locator('#pet').dblclick();
@@ -44,6 +46,7 @@ try {
     assert.equal(await cards.first().getAttribute('data-session-id'), 'current');
     assert.equal(await page.locator('#conversation-list .companion-card').count(), 1);
     assert.equal(await page.locator('#conversation-list [data-session-id=draft]').count(), 0);
+    assert.equal(await page.locator('#conversation-list [data-session-id=archived-old]').count(), 0);
     const oldCard = page.locator('[data-session-id=old]');
     assert.equal(await oldCard.locator('strong').textContent(), copy.earlierCompanion);
     assert.equal(await oldCard.locator('.session-detail').textContent(), '');
@@ -73,6 +76,20 @@ try {
     await receive({ type: 'snapshot', snapshot: { ...snapshot, sessionId: 'extra', sessions: [extra, old, current] } });
     await page.locator('#pet').dblclick();
     assert.equal(await page.locator('#chat-session-name').textContent(), extra.label);
+    await page.keyboard.press('Escape');
+    // Archived while in focus: still listed and named, but the pet explains instead of sending.
+    await receive({ type: 'snapshot', snapshot: { ...snapshot, sessionId: 'extra', sessions: [{ ...extra, archived: true }, old, current] } });
+    await page.locator('#pet').dblclick();
+    assert.equal(await page.locator('#chat-session-name').textContent(), extra.label);
+    assert.equal(await page.locator('#message').isDisabled(), true);
+    assert.equal(await page.locator('#send').isDisabled(), true);
+    assert.equal(await page.locator('#chat-help').textContent(), copy.archivedChat);
+    // The reason must be visible in both styles, not only present in the DOM.
+    assert.equal(await page.locator('#chat-help').isVisible(), true);
+    assert.equal(await page.locator('#message').getAttribute('placeholder'), copy.archivedChat);
+    assert.ok((await page.locator('#chat-session-state').textContent()).includes(copy.archived));
+    await page.locator('#chat-current').click();
+    assert.equal(await page.locator('#conversation-list [data-session-id=extra]').count(), 1);
     await page.keyboard.press('Escape');
     await receive({ type: 'snapshot', snapshot: { ...snapshot, sessionId: 'work', companionSessionId: null, sessions: [work, extra] } });
     await page.locator('#pet').dblclick(); await page.locator('#chat-current').click();

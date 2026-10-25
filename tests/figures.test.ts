@@ -92,7 +92,8 @@ it('serves the frame with an opaque-origin CSP, rejects cross-origin mutations a
     expect(source['scripts/build.mjs']).toBeDefined(); expect(source['npm-shrinkwrap.json']).toBeDefined();
     expect(Object.keys(source).some(p => /node_modules|figures-v2|\.aws/.test(p))).toBe(false);
   } finally { await new Promise<void>(resolve => server.close(() => resolve())); }
-}));
+  // Building the full source archive exceeds the default 5s when the suite runs in parallel.
+}), 20000);
 
 it('bounds untrusted hit areas and only accepts touch events following real input', async () => {
   // @ts-expect-error The upstream browser module is JavaScript.
