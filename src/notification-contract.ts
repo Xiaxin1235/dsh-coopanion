@@ -8,6 +8,7 @@ const id = z.string().min(1).max(2048);
 const counter = z.number().int().nonnegative().safe();
 export const notificationPreferencesSchema = z.object({
   notifications: z.boolean().default(true),
+  quietMode: z.boolean().default(false),
   systemNotifications: z.boolean().default(false),
   reminders: z.boolean().default(true),
   reminderDelayMs: z.number().int().min(60_000).max(86_400_000).default(600_000),

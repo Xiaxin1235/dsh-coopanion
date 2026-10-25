@@ -177,6 +177,87 @@ try {
   await page.locator('#bubble:not([hidden])').waitFor();
   assert.ok((await page.locator('#bubble-text').innerText()).length>opening.length);
   assert.ok((await page.locator('#bubble-text').innerText()).endsWith('…'));
+  // C09: quiet is a presentation preference, never a read/answer operation.
+  await page.keyboard.press('Escape');
+  for (const interfaceStyle of ['new', 'classic']) for (const locale of ['zh', 'en']) {
+    const resultId = `quiet-${interfaceStyle}-${locale}`;
+    const quietResult = reply(resultId, focus, Date.now(), 'Quiet full reply.\n\n完整正文。');
+    const quietFrame = results => ({ ...frame([], results), sessions: [{ ...focus, replyId: results.at(-1)?.id, reply: results.at(-1)?.text ?? '' }] });
+    const question = { ...request, id: resultId + '-request', nativeId: resultId + '-call', sessionId: focus.id, state: 'open', dueAt: null,
+      questions: [{ id: resultId + '-q', question: 'Choose a plan', options: [{ label: 'A' }, { label: 'B' }] }] };
+    const notice = { id: resultId + '-notice', sessionId: focus.id, turn: 1, seq: 2, time: Date.now(), category: 'question', stage: 'initial', title: 'Question', body: 'Choose a plan', requestIds: [question.id] };
+    await receive({ type: 'init', baseline: true, options: { quietMode: true, companionship: 'off', locale, interfaceStyle, inlineQuestions: true }, snapshot: quietFrame([]) });
+    await receive({ type: 'notification-state', snapshot: state });
+    await resetActions();
+    await receive({ type: 'snapshot', snapshot: quietFrame([quietResult]) });
+    await receive({ type: 'notification-state', snapshot: { ...state, interactions: [question] } });
+    await receive({ type: 'notice', notice });
+    await receive({ type: 'notice', notice: { ...notice, id: notice.id + '-reminder', stage: 'reminder' } });
+    assert.equal(await page.locator('#attention-count').innerText(), '2');
+    for (const id of ['bubble', 'interaction', 'companion-invitation', 'companion-feedback', 'toast', 'requests', 'chat', 'reader']) assert.equal(await page.locator('#' + id).isVisible(), false, id + ' must stay closed');
+    assert.deepEqual(await actions(), [], 'quiet arrivals cannot acknowledge or answer');
+    assert.equal(await page.locator('#attention').evaluate(n => n.getAnimations().length), 0, 'reduced motion has no count pulse');
+    await receive({ type: 'configure', options: { quietMode: false } });
+    await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+    assert.equal(await page.locator('#bubble').isVisible(), false, 'turning off cannot replay a quiet reply');
+    assert.equal(await page.locator('#interaction').isVisible(), false, 'turning off cannot replay a notice');
+    await receive({ type: 'configure', options: { quietMode: true } });
+    await page.locator('#pet').dispatchEvent('contextmenu', { button: 2 });
+    const toggle = page.locator('#toggle-quiet');
+    assert.equal(await toggle.getAttribute('aria-checked'), 'true');
+    assert.match(await toggle.innerText(), locale === 'zh' ? /安静模式/ : /Quiet mode/);
+    await toggle.click();
+    assert.deepEqual(await page.evaluate(() => window.inboxActions.filter(a => a.type === 'preference').at(-1)), { type: 'preference', field: 'quietMode', value: false });
+    assert.equal(await toggle.getAttribute('aria-checked'), 'true', 'only the acknowledged configuration changes the switch');
+    await page.keyboard.press('Escape');
+    await page.locator('#attention').click();
+    assert.equal(await page.locator('#request-list .request-card').count(), 1);
+    assert.equal(await page.locator('#inbox-replies .inbox-reply').count(), 1);
+    assert.equal(await page.locator('[data-action=snooze]').isDisabled(), false, 'quiet leaves remind me later usable');
+    await page.locator('.inline-question').evaluate(node => { if (!node.open) node.querySelector('summary').click(); });
+    await page.locator('.inline-question input[type=radio]').first().check();
+    await page.locator('.inline-question button[type=submit]').click();
+    const submitted = (await actions()).find(a => a.type === 'question-answer');
+    assert.equal(submitted.interactionId, question.id);
+    assert.deepEqual(submitted.answers, [{ id: resultId + '-q', selected: ['A'] }]);
+    await receive({ ...submitted, type: 'question-answer-result', status: 'accepted' });
+    // The redesigned "read" button is hidden in classic style; the reply body opens the reader in both.
+    await page.locator('#inbox-replies .inbox-content').click();
+    assert.equal(await page.locator('#reader-text').innerText(), quietResult.text);
+    assert.ok((await actions()).some(a => a.type === 'read' && a.resultId === resultId));
+    await page.keyboard.press('Escape');
+    await receive({ type: 'notification-state', snapshot: state });
+    await receive({ type: 'snapshot', snapshot: quietFrame([{ ...quietResult, read: true }]) });
+    await page.locator('#pet').dblclick();
+    await page.locator('#message').fill('preserved draft');
+    const whileChat = reply(resultId + '-chat', focus, Date.now(), 'Reply in the open chat');
+    await receive({ type: 'snapshot', snapshot: quietFrame([whileChat]) });
+    assert.equal(await page.locator('#chat').isVisible(), true);
+    assert.equal(await page.locator('#chat-reply').innerText(), whileChat.text);
+    assert.equal(await page.locator('#message').inputValue(), 'preserved draft');
+    assert.equal(await page.locator('#bubble').isVisible(), false);
+    await page.locator('#message').fill('');
+    await page.keyboard.press('Escape');
+    // Local feedback is retained in the envelope, without a floating card.
+    await receive({ type: 'configure', options: { companionship: 'interactive' } });
+    await receive({ type: 'notification-state', snapshot: { ...state, interactions: [question] } });
+    await page.locator('#pet').dispatchEvent('contextmenu', { button: 2 });
+    await page.locator('#companion-play').click();
+    assert.equal(await page.locator('#companion-feedback').isVisible(), false);
+    await page.locator('#attention').click();
+    assert.equal(await page.locator('[data-local-kind=feedback]').count(), 1);
+    await page.locator('[data-local-kind=feedback] button').click();
+    await page.keyboard.press('Escape');
+    await receive({ type: 'notification-state', snapshot: state });
+    await receive({ type: 'configure', options: { companionship: 'off', quietMode: false } });
+    assert.equal(await page.locator('#bubble').isVisible(), false);
+    const fresh = reply(resultId + '-fresh', focus, Date.now(), 'A fresh reply after quiet');
+    await receive({ type: 'snapshot', snapshot: quietFrame([fresh]) });
+    await page.locator('#bubble:not([hidden])').waitFor();
+    assert.equal(await page.locator('#bubble-text').innerText(), fresh.text);
+    await receive({ type: 'configure', options: { quietMode: true } });
+    assert.equal(await page.locator('#bubble').isVisible(), false, 'enabling quiet withdraws the current bubble without reading it');
+  }
   assert.deepEqual(errors, []);
   console.log('Inbox UI passed: one-click full reply, direct source actions, mixed pending items, stable chat focus and reading order, Unicode/text safety, bilingual copy and narrow layout.');
 } finally { await browser?.close(); await new Promise(resolve => server.close(resolve)); await rm(directory, { recursive: true, force: true }); }

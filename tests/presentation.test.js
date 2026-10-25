@@ -194,3 +194,12 @@ it('leaves blank Harness drafts out of the tray list unless they hold focus', ()
   const state = tray.trayState({ sessionId: 'focused-draft', sessions, results: [] }, {}, { locale: 'en' });
   expect(state.sessions.map(s => s.id)).toEqual(['focused-draft', 'work']);
 });
+
+it('projects acknowledged quiet mode into the native tray without changing task facts', () => {
+  const snapshot = { sessionId: 'work', sessions: [{ id: 'work', label: 'Work', mood: 'waiting', unread: 1 }] };
+  expect(tray.trayState(snapshot).quietMode).toBe(false);
+  const ordinary = tray.trayState(snapshot, {}, { quietMode: false });
+  const quiet = tray.trayState(snapshot, {}, { quietMode: true });
+  expect(quiet).toEqual({ ...ordinary, quietMode: true });
+  for (const locale of ['zh', 'en']) for (const redesigned of [false, true]) expect(petCopy(locale, redesigned).quietMode).toBeTruthy();
+});

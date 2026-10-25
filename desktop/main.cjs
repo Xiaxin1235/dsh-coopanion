@@ -114,6 +114,7 @@ function syncTray() {
     { label: copy.trayRoam, type: 'checkbox', checked: state.roam, click: item => act({ type: 'preference', field: 'roam', value: item.checked }) },
     { label: copy.traySleep, type: 'checkbox', checked: state.sleeping, enabled: !state.active, click: () => forward({ type: 'ui-control', command: 'sleep' }) },
     { label: copy.trayNotices, type: 'checkbox', checked: state.notifications, click: item => act({ type: 'preference', field: 'notifications', value: item.checked }) },
+    { label: copy.quietMode, type: 'checkbox', checked: state.quietMode, click: item => act({ type: 'preference', field: 'quietMode', value: item.checked }) },
     { label: copy.traySound, type: 'checkbox', checked: state.sound, click: () => forward({ type: 'ui-control', command: 'sound' }) },
     { type: 'separator' },
     { label: state.visible ? copy.hide : copy.trayShow, click: () => state.visible ? hide() : show() },

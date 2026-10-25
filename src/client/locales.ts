@@ -1,4 +1,5 @@
 export const zh = {
+  quietMode: '安静模式（新消息只亮信封）', quietModeHint: '只更新信封计数，不主动弹框或发送系统通知；稍后提醒仍可安排，关闭后不补弹积压内容。',
   aboveFullscreen: '在全屏应用上方显示', aboveFullscreenHint: '默认开启。窗口被系统隐藏或最小化时自动恢复；主动隐藏后保持隐藏，不抢前台焦点。',
   inlineQuestions: '在小信封里直接回答提问', inlineQuestionsHint: '普通单选提问可在信封中回答；审批、多选和计划审阅仍在 Harness 处理。',
   preferOpeningParagraph: '回复气泡：优先显示开头一段', preferOpeningParagraphHint: '优先显示简短纯文本开场白，仍可展开全文；关闭后恢复原有 180 字预览。',
@@ -29,6 +30,7 @@ export const zh = {
 };
 export type LocaleKey = keyof typeof zh;
 export const en: Record<LocaleKey, string> = {
+  quietMode: 'Quiet mode (new messages in envelope only)', quietModeHint: 'Update the envelope without popups or system notifications. Remind me later remains available; turning this off does not replay earlier messages.',
   aboveFullscreen: 'Show above fullscreen apps', aboveFullscreenHint: 'On by default. Recover system-hidden or minimized windows without taking focus. Explicitly hidden pets stay hidden.',
   inlineQuestions: 'Answer questions directly in the inbox', inlineQuestionsHint: 'Answer ordinary single-select questions in the inbox. Approvals, multiple selections and plan reviews stay in Harness.',
   preferOpeningParagraph: 'Reply bubbles: prefer the opening paragraph', preferOpeningParagraphHint: 'Show a short plain opening paragraph and keep the full reply available. Turn off for the original 180-character preview.',

@@ -252,3 +252,12 @@ h1 { font-size: clamp(32px, 4vw, 54px); font-weight: 500; line-height: 1.4; lett
 .inline-question small { display:block; }
 .inline-question textarea { box-sizing:border-box; width:100%; min-height:58px; resize:vertical; font:inherit; color:inherit; background:var(--surface); border:1px solid var(--line); }
 .inline-question pre { white-space:pre-wrap; overflow-wrap:anywhere; max-height:200px; overflow:auto; font:inherit; }
+
+/* A single envelope hint; never a covering panel or sound. */
+@keyframes inbox-pulse { 50% { transform: translateY(-3px); } }
+#attention.inbox-pulse { animation: inbox-pulse .3s ease-out 1; }
+@media (prefers-reduced-motion: reduce) { #attention.inbox-pulse { animation: none; } }
+
+#toggle-quiet { grid-column: 1 / -1; padding-right: 44px; }
+.redesigned #toggle-quiet { padding-right: 0; }
+#toggle-quiet > span { min-width: 0; overflow-wrap: anywhere; }

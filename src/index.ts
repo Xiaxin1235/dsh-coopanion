@@ -25,7 +25,7 @@ export const name = 'dsh-coopanion';
 export const inject = ['agents'];
 export interface Config {
   size: Volatile<number>; npcHome: Volatile<number>; npcRange: Volatile<number>; interfaceStyle: Volatile<'new' | 'classic'>; textScale: Volatile<TextScale>; aboveFullscreen: Volatile<boolean>; preferOpeningParagraph: Volatile<boolean>; inlineQuestions: Volatile<boolean>; roam: Volatile<boolean>; diagnostics: Volatile<boolean>; companionship: Volatile<CompanionshipMode>; notifications: Volatile<boolean>;
-  systemNotifications: Volatile<boolean>; reminders: Volatile<boolean>; reminderDelayMs: Volatile<number>;
+  quietMode: Volatile<boolean>; systemNotifications: Volatile<boolean>; reminders: Volatile<boolean>; reminderDelayMs: Volatile<number>;
   bubbleDurationMs: Volatile<number>; autoStart: Volatile<boolean>; electronPath?: string; defaultChatTarget: Volatile<'companion' | 'last'>;
 }
 export const Config = z.object({
@@ -42,6 +42,7 @@ export const Config = z.object({
   npcRange: z.number().min(.1).max(.6).step(.01).default(.3).volatile(),
   companionship: z.union(COMPANIONSHIP_MODES.map(value => z.const(value))).default('off').volatile(),
   notifications: z.boolean().default(true).volatile(),
+  quietMode: z.boolean().default(false).volatile(),
   systemNotifications: z.boolean().default(false).volatile(),
   reminders: z.boolean().default(true).volatile(),
   reminderDelayMs: z.number().step(1).min(60000).max(86400000).default(600000).volatile(),
@@ -62,10 +63,10 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
   const chat = new ChatSubmission(ctx);
   const chatLifetime = new AbortController();
   ctx.effect(() => () => chatLifetime.abort());
-  const preferences: Partial<Pick<DesktopOptions, 'roam' | 'notifications' | 'companionship' | 'interfaceStyle' | 'defaultChatTarget'>> = {};
-  let savePreference: ((field: 'roam' | 'notifications' | 'companionship' | 'interfaceStyle' | 'defaultChatTarget', value: boolean | CompanionshipMode | 'new' | 'classic' | 'companion' | 'last') => Promise<void>) | undefined;
+  const preferences: Partial<Pick<DesktopOptions, 'roam' | 'notifications' | 'quietMode' | 'companionship' | 'interfaceStyle' | 'defaultChatTarget'>> = {};
+  let savePreference: ((field: 'roam' | 'notifications' | 'quietMode' | 'companionship' | 'interfaceStyle' | 'defaultChatTarget', value: boolean | CompanionshipMode | 'new' | 'classic' | 'companion' | 'last') => Promise<void>) | undefined;
   ctx.inject(['settings'], child => { savePreference = (field, value) => child.settings.mutate('dsh-coopanion', [{ op: 'set', path: [field], value }]); });
-  const currentOptions = (): DesktopOptions => ({ interfaceStyle: options.interfaceStyle.get(), defaultChatTarget: options.defaultChatTarget.get(), size: options.size.get(), npcHome: options.npcHome.get(), npcRange: options.npcRange.get(), textScale: options.textScale.get(), aboveFullscreen: options.aboveFullscreen.get(), preferOpeningParagraph: options.preferOpeningParagraph.get(), inlineQuestions: options.inlineQuestions.get(), roam: options.roam.get(), diagnostics: options.diagnostics.get(), companionship: options.companionship.get(), notifications: options.notifications.get(), bubbleDurationMs: options.bubbleDurationMs.get(), systemNotifications: options.systemNotifications.get(), reminders: options.reminders.get(), reminderDelayMs: options.reminderDelayMs.get(), electronPath: options.electronPath, locale, ...preferences });
+  const currentOptions = (): DesktopOptions => ({ interfaceStyle: options.interfaceStyle.get(), defaultChatTarget: options.defaultChatTarget.get(), size: options.size.get(), npcHome: options.npcHome.get(), npcRange: options.npcRange.get(), textScale: options.textScale.get(), aboveFullscreen: options.aboveFullscreen.get(), preferOpeningParagraph: options.preferOpeningParagraph.get(), inlineQuestions: options.inlineQuestions.get(), roam: options.roam.get(), diagnostics: options.diagnostics.get(), companionship: options.companionship.get(), notifications: options.notifications.get(), quietMode: options.quietMode.get(), bubbleDurationMs: options.bubbleDurationMs.get(), systemNotifications: options.systemNotifications.get(), reminders: options.reminders.get(), reminderDelayMs: options.reminderDelayMs.get(), electronPath: options.electronPath, locale, ...preferences });
   const controls = new PetControls(bridge, currentOptions);
   let locale: string | undefined;
   let clientLocale: string | undefined;
@@ -100,7 +101,7 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
     bridge.update({ ...snapshot, sessions: snapshot.sessions.map(session => ({ ...session, chatAvailable: available })) });
   };
   let mounted = false;
-  const notificationPrefs = () => notificationPreferencesSchema.parse({ notifications: currentOptions().notifications, systemNotifications: options.systemNotifications.get(), reminders: options.reminders.get(), reminderDelayMs: options.reminderDelayMs.get() });
+  const notificationPrefs = () => notificationPreferencesSchema.parse({ notifications: currentOptions().notifications, quietMode: currentOptions().quietMode, systemNotifications: options.systemNotifications.get(), reminders: options.reminders.get(), reminderDelayMs: options.reminderDelayMs.get() });
   const syncNotifications = () => {
     if (!mounted) return;
     const snapshot = inboxAnswers.snapshot(broker.snapshot()); model.interactions(snapshot.interactions); bridge.notificationState?.(snapshot); update();
@@ -143,7 +144,7 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
     const timer = setInterval(() => { if (model.settle()) update(); }, 250);
     timer.unref(); return () => clearInterval(timer);
   });
-  ctx.on('settings/document-updated', ns => { if (ns === 'dsh-coopanion') { broker.preferences(notificationPrefs()); controls.configure(); syncNotifications(); } else if (ns === 'locale') syncLocale(); });
+  ctx.on('settings/document-updated', ns => { if (ns === 'dsh-coopanion') { controls.configure(); broker.preferences(notificationPrefs()); syncNotifications(); } else if (ns === 'locale') syncLocale(); });
   ctx.inject(['connection'], child => {
     const dispatch = async (endpoint: string, payload: unknown, signal: AbortSignal) => {
       try {
@@ -169,11 +170,11 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
         if (endpoint === 'notification-snooze') { const input = notificationRequests.snooze.parse(payload); if (!broker.snooze(input.interactionId, input.generation)) throw new Error('待处理请求已变化或提醒暂不可用'); return { ok: true, value: { accepted: true } }; }
         if (endpoint === 'notification-test') {
           const input = notificationRequests.test.parse(payload), state = broker.snapshot().runtime, prefs = notificationPrefs();
-          if (!testSource || state.phase !== 'running' || state.visible || state.suspended || state.visibilityRevision === 0 || input.generation !== state.generation || !prefs.notifications || !prefs.systemNotifications) throw new Error('请启动并隐藏角色，开启系统通知后测试');
+          if (!testSource || state.phase !== 'running' || state.visible || state.suspended || state.visibilityRevision === 0 || input.generation !== state.generation || !prefs.notifications || prefs.quietMode || !prefs.systemNotifications) throw new Error('请启动并隐藏角色，开启系统通知后测试');
           const session = await testSource();
           if (signal.aborted) throw new Error('请求已取消');
           const latest = broker.snapshot().runtime;
-          if (latest.generation !== state.generation || latest.visibilityRevision !== state.visibilityRevision || latest.phase !== 'running' || latest.visible || latest.suspended) throw new Error('桌宠状态已变化');
+          if (latest.generation !== state.generation || latest.visibilityRevision !== state.visibilityRevision || latest.phase !== 'running' || latest.visible || latest.suspended || notificationPrefs().quietMode) throw new Error('桌宠状态已变化');
           const turn = (session.snapshotEvents().findLast(event => event.type === 'turn/start')?.data as { turn?: number } | undefined)?.turn ?? 0;
           session.append('turn/start', { turn: turn + 1 });
           session.append('turn/end', { turn: turn + 1, reason: { kind: 'completed' } });
@@ -267,12 +268,13 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
       if (typeof action.interactionId === 'string') bridge.snoozeResult?.(action.interactionId, ok, ok ? undefined : '待处理请求已变化或提醒暂不可用');
       syncNotifications(); return;
     }
-    if (action.type === 'preference' && ((action.field === 'roam' || action.field === 'notifications') && typeof action.value === 'boolean' || action.field === 'companionship' && COMPANIONSHIP_MODES.includes(action.value as CompanionshipMode) || action.field === 'interfaceStyle' && ['new', 'classic'].includes(action.value as string) || action.field === 'defaultChatTarget' && ['companion', 'last'].includes(action.value as string))) {
-      const field = action.field as 'roam' | 'notifications' | 'companionship' | 'interfaceStyle' | 'defaultChatTarget', value = action.value as boolean | CompanionshipMode | 'new' | 'classic' | 'companion' | 'last';
+    if (action.type === 'preference' && ((action.field === 'roam' || action.field === 'notifications' || action.field === 'quietMode') && typeof action.value === 'boolean' || action.field === 'companionship' && COMPANIONSHIP_MODES.includes(action.value as CompanionshipMode) || action.field === 'interfaceStyle' && ['new', 'classic'].includes(action.value as string) || action.field === 'defaultChatTarget' && ['companion', 'last'].includes(action.value as string))) {
+      const field = action.field as 'roam' | 'notifications' | 'quietMode' | 'companionship' | 'interfaceStyle' | 'defaultChatTarget', value = action.value as boolean | CompanionshipMode | 'new' | 'classic' | 'companion' | 'last';
       void (async () => {
         try {
           if (savePreference) await savePreference(field, value); else Object.assign(preferences, { [field]: value });
-          broker.preferences(notificationPrefs()); controls.configure();
+          // Apply presentation policy before a broker refresh sends any snapshot.
+          controls.configure(); broker.preferences(notificationPrefs());
         } catch { bridge.notify({ title: '设置未能保存', body: '请回到 Harness 检查插件设置。', sessionId: model.snapshot().sessionId ?? '' }); }
       })(); return;
     }

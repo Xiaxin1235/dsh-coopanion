@@ -13,7 +13,7 @@ export { NativeStartError, type StartLifetime, type NativeLifecycle } from './de
 import type { CompanionshipMode } from '../web/companionship.js';
 import type { TextScale } from '../web/text-scale.js';
 
-export interface DesktopOptions { interfaceStyle?: 'new' | 'classic'; defaultChatTarget?: 'companion' | 'last'; size: number; npcHome?: number; npcRange?: number; textScale?: TextScale; aboveFullscreen?: boolean; preferOpeningParagraph?: boolean; inlineQuestions?: boolean; roam: boolean; diagnostics?: boolean; companionship?: CompanionshipMode; notifications: boolean; bubbleDurationMs: number; electronPath?: string; locale?: string; systemNotifications?: boolean; reminders?: boolean; reminderDelayMs?: number; }
+export interface DesktopOptions { interfaceStyle?: 'new' | 'classic'; defaultChatTarget?: 'companion' | 'last'; size: number; npcHome?: number; npcRange?: number; textScale?: TextScale; aboveFullscreen?: boolean; preferOpeningParagraph?: boolean; inlineQuestions?: boolean; roam: boolean; diagnostics?: boolean; companionship?: CompanionshipMode; notifications: boolean; quietMode?: boolean; bubbleDurationMs: number; electronPath?: string; locale?: string; systemNotifications?: boolean; reminders?: boolean; reminderDelayMs?: number; }
 export interface PetBridge {
   start(options: DesktopOptions, lifetime?: StartLifetime): Promise<void>;
   update(snapshot: PetSnapshot): void;

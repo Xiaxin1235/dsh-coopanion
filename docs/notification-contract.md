@@ -96,3 +96,15 @@ Electron userData 的 inbox-receipts-v1.json 是 schema 1 本地呈现存档，�
 Host 重新检查当前 running 代次、待答 id、原 live root 及 source signal、整批问题 id 和选项 label 完全相同。最多 16 题、每题 32 个选项；问题 id 2048、问题 8192、detail 65536、选项 label 4096、说明 8192、header 256 字符，总展示 JSON 131072 字符；超限不截断身份。requestId 最多 128 个限定字符，其他文字最多 2000 字符，单选 custom 覆盖 selected。通用 DSH 问题没有 allowOther 字段，custom 是原 API 的答案数据；不解释成动作、命令或权限。
 
 表单按问题和运行代次保留草稿，原状态结算后撤下；选择／其他互斥，提交后禁止重复。十秒未收到回执只报未确认，不自动重发。公开接口接纳答复和任务完成分别判断。取消、别处已答、过期代次、伪造标签和批次缺题不得产生第二次答复；使用 `tests/notification-integration.test.ts`、`tests/question-contract.test.js`、收件箱浏览器与原生 IPC 测试验证。公开 DSH 0.2.1-rc.2 的出处见 WhaleDot `docs/dsh-api-notes.md` 第 20 节。
+
+## 安静模式（C09，本地扩展）
+
+`quietMode: Volatile<boolean>` 默认 false，经过现有 `preference` 布尔白名单、`settings.mutate('dsh-coopanion', ...)` 与 configure 同步；菜单和托盘显示已确认值，保存失败不提前翻转。设置页与 Client 领取偏好使用同一字段，旧配置默认 false。
+
+安静模式只取消主动呈现，不关闭 `notifications`：Host 保留回复、请求快照、原 live root 答题与 snooze，拒绝系统领取，不排入新的投递；Client 在领取后、构造系统通知前再次检查。已提交 OS 的通知不能撤回，迟到回执仅作为原领取的证据。进入安静模式时撤销待投递与旧自动提醒机会，安静期间的新请求不安排自动补提醒（`automaticReminders=1` 表示机会已消耗，不表示已送达）。显式 snooze 仍可安排新的到期时间；安静时到期消耗此次调度且不投递，关闭后不会补投。未到期的显式 snooze 仍按到期时的偏好处理。
+
+Renderer 在 `showNextReply`、`presentNextNotice` 和 `message.notice` 入口拦截自动卡片；撤下已显示气泡不产生已读。安静期间收到的完整 result id 仅记入呈现集合，通知展示队列清空，关闭后不重放；信封阅读、主动聊天、当前阅读快照和草稿保留。仅信封计数的一次轻跳作为可选提示，减少动态效果时停用。
+
+陪伴邀请、反馈及应用诊断 toast 使用最多三种本窗口本地卡片，独立于 protocol 1 请求、领取、已读与结算；同种内容合并。它们进入信封计数，用户打开信封后才显示操作。邀请的持久日预算仍由原 CompanionStore 处理；本地入口保留到用户选择或关闭陪伴，不因原浮动卡十秒到期而消失。窗口重启或换角色清空本地卡片，不推断任务或邀请已处理。
+
+检查包含 `npm test`、`test:inbox-ui` 内的中英文／新版经典场景、`tests/companionship-ui.mjs` 的邀请保留，以及 `test:desktop` 的原生托盘同步。浏览器替身和受控通知检查不代表真实宿主／OS 送达验收。

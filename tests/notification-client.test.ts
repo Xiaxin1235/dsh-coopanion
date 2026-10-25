@@ -16,7 +16,7 @@ function fixture() {
     constructor(public title: string, public options: unknown) { objects.push(this); }
   }
   let locale = 'en-US';
-  let current = structuredClone(state), next: DeliveryClaim | null = structuredClone(claim), prefs = { notifications: true, systemNotifications: true, reminders: true, reminderDelayMs: 600000 };
+  let current = structuredClone(state), next: DeliveryClaim | null = structuredClone(claim), prefs = { notifications: true, quietMode: false, systemNotifications: true, reminders: true, reminderDelayMs: 600000 };
   const transport = { state: vi.fn(async (_signal: AbortSignal) => current), claim: vi.fn(async (_value: { clientId: string; generation: number }, _signal: AbortSignal) => { const result = next; next = null; return result; }), receipt,
     snooze: vi.fn(async (_value: { interactionId: string; generation: number }, _signal: AbortSignal) => {}) };
   const service = new NotificationClient({ transport, preferences: () => prefs, api: Api, openSession: open, locale: () => locale, clientId: 'ui-one', now: () => 100, pollMs: 100, timeoutMs: 1000,
@@ -36,13 +36,14 @@ it('runs outside Settings and reports only requested until the browser supplies 
   f.service.dispose();
 });
 it('does not claim while visible, stopped, suspended, permission-denied or opted out', async () => {
-  for (const mode of ['visible', 'stopped', 'suspended', 'denied', 'opted-out', 'no-visibility-ack']) {
+  for (const mode of ['visible', 'stopped', 'suspended', 'denied', 'opted-out', 'quiet', 'no-visibility-ack']) {
     const f = fixture();
     if (mode === 'no-visibility-ack') f.current.runtime.visibilityRevision = 0;
     if (mode === 'visible') f.current.runtime.visible = true;
     if (mode === 'stopped') f.current.runtime.phase = 'stopped';
     if (mode === 'suspended') f.current.runtime.suspended = true;
     if (mode === 'denied') f.Api.permission = 'denied';
+    if (mode === 'quiet') f.prefs.quietMode = true;
     if (mode === 'opted-out') f.prefs.systemNotifications = false;
     f.service.start(); await tick(); expect(f.transport.claim).not.toHaveBeenCalled(); expect(f.objects).toHaveLength(0); f.service.dispose();
   }
@@ -166,4 +167,13 @@ it('localizes goal completion and round replies without losing exact goal proven
     const notice = { ...claim.notice, category, goal: { id: 'goal-complete-identity', revision: 17, round: 9 } };
     expect(systemNotificationCopy(notice, 'en')).toMatchObject({ title, goal: notice.goal, id: notice.id });
   }
+});
+
+it('rechecks quiet mode after a claim, before constructing a system notification', async () => {
+  const f = fixture();
+  f.transport.claim.mockImplementationOnce(async () => { f.prefs.quietMode = true; return structuredClone(claim); });
+  f.service.start(); await tick();
+  expect(f.objects).toHaveLength(0);
+  expect(f.transport.receipt).toHaveBeenCalledWith(expect.objectContaining({ state: 'failed', detail: 'delivery-state-changed' }), expect.any(AbortSignal));
+  f.service.dispose();
 });

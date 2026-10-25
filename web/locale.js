@@ -6,6 +6,7 @@ export function automaticPetLanguage(languages = []) {
 export function localizedText(names, locale) { return names?.[petLanguage(locale)] ?? names?.en ?? names?.zh ?? Object.values(names ?? {})[0] ?? ''; }
 
 const zh = {
+  quietMode: '安静模式（新消息只亮信封）', quietModeHint: '不弹框，随时点信封查看',
   companionPetThanks:'谢谢摸摸', companionNoActivity:'这个模样暂时没有一起活动的动作', companionInvite:'陪我活动一下？', companionTogether:'一起活动', companionLater:'稍后', companionQuietToday:'今天安静', companionMode:'自主陪伴', companionOff:'关闭（停止自主活动）', companionQuiet:'安静陪伴', companionInteractive:'互动陪伴', companionResume:'恢复邀请', companionNew:'慢慢熟悉你', companionFamiliar:'熟悉招呼已解锁', companionProgress:n=>`一起相处了 ${n} 次`, companionUnavailable:'相处进度暂时无法保存', companionDisabled:'开启陪伴，留下相处的记忆', companionBusy:'等忙完再一起玩', companionPlaying:'陪你活动一会儿', companionPlayed:'一起活动，真开心',
   companionName: '大肥鱼', earlierCompanion: '大肥鱼（旧对话）', companionChatHelp: '直接和我说就好，我会在这里回你。', companionSend: '发送', chatWithMe: '和我聊天', backToCompanion: '回到和我聊天', defaultChatTarget: '双击时默认', chatTargetCompanion: '和大肥鱼聊天', chatTargetLast: '上次的会话',
   defaultName: 'DeepSeek 大肥鱼', title: 'DeepSeek 大肥鱼 · Harness',
@@ -34,6 +35,7 @@ const zh = {
   trayUnread:n=>` · ${n} 份未读`, trayPending:(unread,pending)=>`待查看 · ${unread} 份回复 · ${pending} 段需要你`, trayTooltip:(name,mood,label,busy,pending,unread)=>`${name} · ${mood}\n关注：${label}\n${busy} 段进行中 · ${pending} 段需要你 · ${unread} 份未读回复`,
 };
 const en = {
+  quietMode: 'Quiet mode (new messages in envelope only)', quietModeHint: 'No popups. Open the envelope anytime.',
   companionPetThanks:'Thanks for the gentle stroke', companionNoActivity:'This character has no shared activity yet', companionInvite:'Shall we play for a moment?', companionTogether:'Play together', companionLater:'Later', companionQuietToday:'Quiet today', companionMode:'Companionship', companionOff:'Off (no autonomous activity)', companionQuiet:'Quiet', companionInteractive:'Interactive', companionResume:'Resume invitations', companionNew:'Getting to know you', companionFamiliar:'Familiar greeting unlocked', companionProgress:n=>`${n} shared moments`, companionUnavailable:'Shared moments cannot be saved right now', companionDisabled:'Enable companionship to remember shared moments', companionBusy:'Let’s play after work', companionPlaying:'Playing together', companionPlayed:'That was fun together',
   companionName: 'Dafeiyu', earlierCompanion: 'Dafeiyu (earlier chat)', companionChatHelp: 'Just talk to me — I’ll reply right here.', companionSend: 'Send', chatWithMe: 'Chat with me', backToCompanion: 'Back to chat with me', defaultChatTarget: 'Double-click default', chatTargetCompanion: 'Chat with Dafeiyu', chatTargetLast: 'Last conversation',
   defaultName: 'DeepSeek Whale', title: 'DeepSeek Whale · Harness',

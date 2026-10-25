@@ -330,3 +330,23 @@ for (const jump of [false, true]) test(`manual interaction follows a real poke r
   await page.waitForSelector('#pet[data-companion-activity=idle][data-mood=working]');
   assert.equal((await read()).relation.total, 0, 'Work interruption never grants growth');
 });
+
+test('quiet mode retains an invitation in the envelope after its floating lifetime and never replays it', async t => {
+  const { page, read, configure } = await fixture(t, 'interactive', ['neutral', 'stand', 'wave', 'love', 'happy', 'nod']);
+  await configure({ quietMode: true });
+  await page.evaluate(() => { window.companionRandom = .999; });
+  await advanceCompanion(page, 1800000);
+  await page.locator('#attention:not([hidden])').waitFor();
+  assert.equal(await page.locator('#attention-count').innerText(), '1');
+  assert.equal(await page.locator('#companion-invitation').isVisible(), false);
+  assert.equal((await read()).invitation.remaining, 1, 'the original owner still reserves the daily invitation budget');
+  await advanceCompanion(page, 1810000);
+  await configure({ quietMode: false });
+  assert.equal(await page.locator('#companion-invitation').isVisible(), false);
+  await page.locator('#attention').click();
+  assert.equal(await page.locator('[data-local-kind=invitation]').count(), 1);
+  await page.locator('[data-local-kind=invitation] [data-action=later]').click();
+  assert.equal(await page.locator('[data-local-kind=invitation]').count(), 0);
+  assert.equal(await page.locator('#attention-count').innerText(), '0');
+  assert.equal(await page.evaluate(() => window.actions.some(a => ['chat', 'open-session', 'read', 'question-answer'].includes(a.type))), false);
+});

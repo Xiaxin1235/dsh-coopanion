@@ -78,13 +78,15 @@ export class NotificationBroker {
     return [...this.deliveries.values()].map(d => ({ notice: structuredClone(d.notice), state: d.state, receipts: d.receipts.map(r => ({ ...r })) }));
   }
   preferences(value: Partial<NotificationPreferences>): void {
+    const enteringQuiet = value.quietMode === true && !this.prefs.quietMode;
     const delayChanged = value.reminderDelayMs !== undefined && value.reminderDelayMs !== this.prefs.reminderDelayMs;
     this.prefs = notificationPreferencesSchema.parse({ ...this.prefs, ...value });
     if (!this.prefs.reminders) for (const delivery of this.deliveries.values()) if (delivery.notice.stage === 'reminder') this.cancel(delivery);
-    if (!this.prefs.notifications) this.cancelDeliveries();
+    if (!this.prefs.notifications || this.prefs.quietMode) this.cancelDeliveries();
     for (const request of this.requests.values()) {
       if (request.state === 'settled') continue;
-      if (!this.prefs.notifications || !this.prefs.reminders) request.dueAt = null;
+      if (enteringQuiet) { request.dueAt = null; request.automaticReminders = 1; }
+      else if (!this.prefs.notifications || !this.prefs.reminders) request.dueAt = null;
       else if ((request.dueAt === null || delayChanged) && request.automaticReminders === 0) request.dueAt = this.clock.now() + this.prefs.reminderDelayMs;
     }
     this.refresh();
@@ -225,7 +227,7 @@ export class NotificationBroker {
       if (old) this.requests.delete(old.id); else return;
     }
     // Restored requests keep their entrance, with no repeat automatic reminder on reload.
-    const request: RequestState = { id, nativeId, sessionId, kind, turn, seq, createdAt: time, preview: preview.slice(0, 2048), state, dueAt: live && this.prefs.notifications && this.run.phase === 'running' && this.prefs.reminders ? this.clock.now() + this.prefs.reminderDelayMs : null, automaticReminders: live ? 0 : 1, projected, snoozes: 0, ...(sourceKind ? { source: sourceKind } : {}) };
+    const request: RequestState = { id, nativeId, sessionId, kind, turn, seq, createdAt: time, preview: preview.slice(0, 2048), state, dueAt: live && !this.prefs.quietMode && this.prefs.notifications && this.run.phase === 'running' && this.prefs.reminders ? this.clock.now() + this.prefs.reminderDelayMs : null, automaticReminders: live && !this.prefs.quietMode ? 0 : 1, projected, snoozes: 0, ...(sourceKind ? { source: sourceKind } : {}) };
     this.requests.set(id, request);
     if (live) {
       const notice = this.notice(sessionId, turn, seq, time, kind, request.preview, [id]) as SourcedNotice;
@@ -258,7 +260,7 @@ export class NotificationBroker {
     this.clients.set(clientId, this.clock.now());
     if (this.clients.size > 100) this.clients.delete(this.clients.keys().next().value!);
     this.tick();
-    if (!this.eligible() || this.run.visible || !this.prefs.systemNotifications) return null;
+    if (!this.eligible() || this.prefs.quietMode || this.run.visible || !this.prefs.systemNotifications) return null;
     if ([...this.deliveries.values()].some(d => d.claim?.clientId === clientId && ['claimed', 'requested'].includes(d.state))) return null;
     const delivery = [...this.deliveries.values()].find(d => d.state === 'pending' && this.valid(d.notice) && (noticeId === undefined || d.notice.id === noticeId));
     if (!delivery) return null;
@@ -295,7 +297,8 @@ export class NotificationBroker {
     return noticeId(notice.sessionId, notice.turn, notice.seq, notice.category, notice.stage, occurrence, runtimeId);
   }
   private enqueue(notice: TaskNotice): void {
-    if (!this.eligible() || this.deliveries.has(notice.id)) return;
+    // Quiet arrivals remain in model/request truth, never in the delivery backlog.
+    if (!this.eligible() || this.prefs.quietMode || this.deliveries.has(notice.id)) return;
     this.deliveries.set(notice.id, { notice, state: 'pending', requested: false, receipts: [] });
     if (this.deliveries.size > 300) {
       const old = [...this.deliveries.entries()].find(([, d]) => d.state !== 'claimed' && d.state !== 'requested');
@@ -334,7 +337,7 @@ export class NotificationBroker {
         this.enqueue(notice);
       }
     }
-    if (this.eligible() && this.run.visible) for (const delivery of this.deliveries.values()) {
+    if (this.eligible() && !this.prefs.quietMode && this.run.visible) for (const delivery of this.deliveries.values()) {
       if (delivery.state !== 'pending' || !this.valid(delivery.notice)) continue;
       const state = { ...this.run };
       try { if (this.options.presentRole?.(structuredClone(delivery.notice), state)) delivery.state = 'role'; } catch { delivery.state = 'failed'; }

@@ -84,7 +84,7 @@ export class NotificationClient implements NotificationSettings {
   }
   private eligible(state: NotificationSnapshot): boolean {
     const prefs = this.options.preferences(), runtime = state.runtime;
-    return prefs.notifications && prefs.systemNotifications && runtime.phase === 'running' && runtime.visibilityRevision > 0 && !runtime.visible && !runtime.suspended;
+    return prefs.notifications && !prefs.quietMode && prefs.systemNotifications && runtime.phase === 'running' && runtime.visibilityRevision > 0 && !runtime.visible && !runtime.suspended;
   }
   private async deliver(value: DeliveryClaim): Promise<void> {
     const claim = deliveryClaimSchema.parse(value);

@@ -207,6 +207,11 @@ try {
   await page.waitForFunction(expected => document.documentElement.lang === expected, automatic);
   for (let n = 0; n < 100 && !trayIcons.some(icon => icon.icon === 'talking'); n++) await pause(50);
   assert.ok(trayIcons.some(icon => icon.icon === 'talking' && icon.title === '' && icon.template === (process.platform === 'darwin')), 'native icon is rendered with the state glyph and macOS template appearance');
+  bridge.configure({ locale: 'zh', size: 150, roam: false, notifications: true, quietMode: true, bubbleDurationMs: 12000 });
+  await waitTray(state => state?.quietMode === true);
+  assert.equal(await page.locator('#toggle-quiet').getAttribute('aria-checked'), 'true');
+  bridge.configure({ locale: 'zh', size: 150, roam: false, notifications: true, quietMode: false, bubbleDurationMs: 12000 });
+  await waitTray(state => state?.quietMode === false);
   bridge.configure({ locale: 'zh', size: 150, roam: false, notifications: false, bubbleDurationMs: 12000 });
   await waitTray(state => state?.roam === false && state.notifications === false);
   bridge.control('hide'); await waitTray(state => state?.visible === false);

@@ -6,7 +6,7 @@ const claim: DeliveryClaim = { token: 'native-token', clientId: 'client-one', ge
   notice: { id: noticeId('session:full', 1, 8, 'question', 'initial'), sessionId: 'session:full', turn: 1, seq: 8, time: 0, category: 'question', stage: 'initial', title: 'N0', body: '需要你回答', requestIds: [interactionId('session:full', 'question', 'call-full')] } };
 
 it('preserves existing preferences and validates each RPC as an exact message', () => {
-  expect(notificationPreferencesSchema.parse({ notifications: false })).toEqual({ notifications: false, systemNotifications: false, reminders: true, reminderDelayMs: 600000 });
+  expect(notificationPreferencesSchema.parse({ notifications: false })).toEqual({ notifications: false, quietMode: false, systemNotifications: false, reminders: true, reminderDelayMs: 600000 });
   expect(() => notificationPreferencesSchema.parse({ reminderDelayMs: 1 })).toThrow();
   expect(() => notificationRequests.claim.parse({ clientId: 'a', generation: 2, visible: false })).toThrow();
   expect(interactionId('a:question', 'question', 'b')).not.toBe(interactionId('a', 'question', 'question:b'));

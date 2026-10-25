@@ -76,7 +76,7 @@ export function apply(ctx: Context): void {
         },
         preferences: () => {
           const value = face.form.getSnapshot().value;
-          return notificationPreferencesSchema.parse({ notifications: value?.notifications ?? false, systemNotifications: value?.systemNotifications ?? false, reminders: value?.reminders ?? true, reminderDelayMs: value?.reminderDelayMs ?? 600000 });
+          return notificationPreferencesSchema.parse({ notifications: value?.notifications ?? false, quietMode: value?.quietMode ?? false, systemNotifications: value?.systemNotifications ?? false, reminders: value?.reminders ?? true, reminderDelayMs: value?.reminderDelayMs ?? 600000 });
         },
         openSession: sessionId => { child.uiWorkspace.openSession(sessionId as SessionId); window.focus(); },
         testClaim: async (clientId, signal) => {

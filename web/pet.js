@@ -34,6 +34,8 @@ const noticeQueue = createNoticeQueue();
 let notificationState, currentNotice, interactionExpires = 0;
 let toastNotice;
 const snoozing = new Map();
+// At most one invitation, feedback and application notice, local to this window.
+const quietInbox = new Map();
 const questionForms = createQuestionForms({ send, changed: () => { renderRequests(); position(); } });
 const notificationLocale = () => options.locale ? petLanguage(options.locale) : automaticPetLanguage(navigator.languages ?? [navigator.language]);
 const uiCopy = () => petCopy(notificationLocale(), options.interfaceStyle !== 'classic');
@@ -52,7 +54,7 @@ let npc = initialNpc(1), npcGeneration = 1, npcEvent, npcRelocated = false, keyb
 const homeMarker = document.createElement('div'); homeMarker.id = 'npc-home'; homeMarker.hidden = true; homeMarker.setAttribute('aria-hidden', 'true'); document.body.appendChild(homeMarker);
 let body, previewBody, previewCharacter, activeView, activeScheme, activeName = 'DeepSeek 大肥鱼', libraryState, libraryBusy = false;
 let appliedMood, appliedControls, speech, speechExpires = Infinity, pressing = false, dragStart, dragPoint, dragging = false, previewScheme = "", reducedNeedsStep = true;
-let options = { interfaceStyle: 'new', inlineQuestions: true, preferOpeningParagraph: true, textScale: 1, size: 180, roam: true, companionship: 'off', notifications: true, bubbleDurationMs: 12000 };
+let options = { interfaceStyle: 'new', inlineQuestions: true, preferOpeningParagraph: true, textScale: 1, size: 180, roam: true, companionship: 'off', notifications: true, quietMode: false, bubbleDurationMs: 12000 };
 let snapshot = { mood: 'idle', text: '你好。点点我，或双击和我说话。', sessionId: null, sessions: [] };
 let x = innerWidth * .68, y = innerHeight - 155, hovered = false, asleep = false, toastTimer, noticeSession;
 let cursorPoint, lastHit;
@@ -77,7 +79,7 @@ let renderedLocale;
 let characterFeedback = { key: 'characterHint', args: [] };
 const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
 let reduced = motionPreference.matches;
-motionPreference.addEventListener('change', event => { reduced = event.matches; if (reduced && companion.active) companionAction = 'dismiss'; });
+motionPreference.addEventListener('change', event => { reduced = event.matches; if (reduced) $('attention').classList.remove('inbox-pulse'); if (reduced && companion.active) companionAction = 'dismiss'; });
 
 function send(action) {
   if (native) { native.action(action); return; }
@@ -195,6 +197,11 @@ function speak(result) {
   position();
 }
 function showNextReply() {
+  if (options.quietMode) {
+    // Suppress presentation only; opening the envelope is still the read action.
+    for (const result of snapshot.results ?? []) shownResults.add(result.id);
+    return;
+  }
   if (!bubble.hidden || !interaction.hidden || panels.some(p => !p.hidden) || pressing || dragging) return;
   const result = unreadReplies(snapshot, acknowledgedResults).find(r => r.sessionId === snapshot.sessionId && !shownResults.has(r.id));
   if (result) speak(result);
@@ -262,8 +269,10 @@ function companionBlocked(manual, mood, readingAttention, active) {
     !layout || ['air', 'drag', 'crouch'].includes(layout.mode) || layout.busy && !companion.active || hovered && !manual ||
     document.hidden || !!runtime && (runtime.phase !== 'running' || !runtime.visible || runtime.suspended);
 }
-function companionMessage(text, now = performance.now()) {
-  companionFeedback.textContent = text; companionFeedback.hidden = false; companionFeedbackUntil = now + 3000; panelAnchors.delete(companionFeedback);
+function companionMessage(key, now = performance.now()) {
+  if (options.quietMode) { keepQuietCard('feedback', key); return; }
+  companionFeedback.dataset.copy = key;
+  companionFeedback.textContent = uiCopy()[key]; companionFeedback.hidden = false; companionFeedbackUntil = now + 3000; panelAnchors.delete(companionFeedback);
 }
 function updateCompanion(now, mood, readingAttention, active) {
   const mode = options.companionship;
@@ -273,7 +282,7 @@ function updateCompanion(now, mood, readingAttention, active) {
   // A poke's short expression is presentation, not a busy Host session.
   const blocked = companionBlocked(manual, manual ? sessionActivity(attentionSnapshot).mood : mood, readingAttention, active);
   const summary = companionClient.summary;
-  const eligible = !!summary?.writable && !companionClient.error && summary.invitation.remaining > 0 && !summary.invitation.quiet && Date.now() >= summary.invitation.laterUntil;
+  const eligible = !quietInbox.has('invitation') && !!summary?.writable && !companionClient.error && summary.invitation.remaining > 0 && !summary.invitation.quiet && Date.now() >= summary.invitation.laterUntil;
   const inputQuiet = keyboardActivity !== 'idle' || performance.now() - keyboardAt > 2500;
   const result = stepCompanionship(companion, { mode, now, hour: localHour, words: activityWords, occupied: blocked, motionBusy: !!body?.layout?.moving, automatic: options.roam && !reduced && !inputQuiet && !['pointer', 'work'].includes(npc.reason), eligible: eligible && !npc.walkId, unlocked: summary?.relation.unlocked, action: companionAction });
   if (result.showInvitation) diagnosticCounters.event('invitationsShown');
@@ -288,14 +297,17 @@ function updateCompanion(now, mood, readingAttention, active) {
     appliedMood = undefined; actionRestorePending = true; reducedNeedsStep = true;
   }
   if (result.word && !reduced) { act(body, activeView, result.word); reducedNeedsStep = true; }
-  if (result.showInvitation) { companionInvitation.hidden = false; panelAnchors.delete(companionInvitation); }
+  if (result.showInvitation) {
+    if (options.quietMode) keepQuietCard('invitation', true);
+    else { companionInvitation.hidden = false; panelAnchors.delete(companionInvitation); }
+  }
   if (result.reserveInvitation) {
     const epoch = companionClient.epoch;
     void companionClient.request('invite').then(receipt => { if (epoch === companionClient.epoch && companion.invitation === 'pending') companionAction = receipt?.applied ? 'reserved' : 'failed'; });
   }
   if (result.completed && companionManualId) {
     const id = companionManualId; companionManualId = undefined;
-    companionMessage(uiCopy().companionPlayed, now); void companionClient.request('play', id);
+    companionMessage('companionPlayed', now); void companionClient.request('play', id);
   }
   // A stroke necessarily hovers the pet. Keep its feedback visible while still
   // yielding to work, reading, input and physical interaction.
@@ -335,16 +347,18 @@ function attentionToWork() { npcWorkUntil = performance.now() + 12000; }
 function startCompanionPlay() {
   closePanels();
   const activity = sessionActivity(attentionSnapshot);
-  if (options.companionship === 'off' || companionBlocked(true, activity.mood, false, activity.active)) { companionMessage(uiCopy().companionBusy); return; }
-  if (!companionInvitation.hidden) diagnosticCounters.event('invitationsAccepted');
+  if (options.companionship === 'off' || companionBlocked(true, activity.mood, false, activity.active)) { companionMessage('companionBusy'); return; }
+  if (!companionInvitation.hidden || quietInbox.has('invitation')) diagnosticCounters.event('invitationsAccepted');
+  quietInbox.delete('invitation'); refreshInbox();
   companionInvitation.hidden = true; companionAction = 'play'; companionManualId = crypto.randomUUID();
-  companionMessage(uiCopy().companionPlaying); updateMood();
-  if (!companion.active?.manual) { companionManualId = undefined; companionMessage(uiCopy().companionNoActivity); }
+  companionMessage('companionPlaying'); updateMood();
+  if (!companion.active?.manual) { companionManualId = undefined; companionMessage('companionNoActivity'); }
 }
 $('companion-play').onclick = startCompanionPlay;
 $('companion-accept').onclick = startCompanionPlay;
 for (const [id, type] of [['companion-later', 'later'], ['companion-quiet', 'quiet']]) $(id).onclick = () => {
   diagnosticCounters.event(type === 'later' ? 'invitationsLater' : 'invitationsQuiet');
+  quietInbox.delete('invitation'); refreshInbox(); renderRequests(); position();
   companionAction = type; companionInvitation.hidden = true; void companionClient.request(type); updateMood();
 };
 $('companion-resume').onclick = () => { void companionClient.request('resume'); };
@@ -394,6 +408,7 @@ function updateMood() {
   $('toggle-sleep').setAttribute('aria-checked', String(asleep));
   $('toggle-sleep').disabled = active; $('toggle-sleep').title = active ? uiCopy().sleepBusy : uiCopy().sleepWake;
   $('toggle-notices').setAttribute('aria-checked', String(options.notifications));
+  $('toggle-quiet').setAttribute('aria-checked', String(options.quietMode));
   $('toggle-sound').setAttribute('aria-checked', String(sfx.isOn()));
   $('menu-state').textContent = `${sessionStateLabel(snapshot.sessions?.find(s => s.id === snapshot.sessionId), notificationLocale(), mood)}${snapshot.sessionId ? ' · ' + uiCopy().connected : ''}`;
   const presentation = { type: 'presentation', locale: notificationLocale(), characterId: activeView.id, scheme: activeScheme, name: activeName, mood, sleeping: asleep, sound: sfx.isOn(), ready: !!body.layout };
@@ -456,12 +471,7 @@ function render() {
   const activity = sessionActivity(attentionSnapshot);
   $('conversation-count').textContent = uiCopy().activity(activity.busy, snapshot.results ? unreadSources.size : activity.unread);
   $('sessions-all').setAttribute('aria-pressed', String(!pendingOnly)); $('sessions-pending').setAttribute('aria-pressed', String(pendingOnly));
-  inboxState = inboxContents(attentionSnapshot, pendingRequests(), acknowledgedResults);
-  const pendingCount = inboxState.requests.length + inboxState.issues.length;
-  $('attention').hidden = !inboxState.total || panels.some(p => !p.hidden);
-  $('attention-count').textContent = String(inboxState.total);
-  $('attention').dataset.urgent = String(!!pendingCount);
-  $('attention').title = $('attention').ariaLabel = noticeCopy().inboxSummary(inboxState.replies.length, pendingCount);
+  refreshInbox();
   const isSelectedCompanion = isCompanionSession(selected);
   $('chat-current').disabled = !snapshot.sessions.length;
   $('chat-session-name').textContent = isSelectedCompanion ? uiCopy().chatWithMe : (sessionName(selected) ?? uiCopy().noSession);
@@ -495,7 +505,7 @@ function render() {
 }
 
 function presentNextNotice() {
-  if (!options.notifications || !interaction.hidden || userOccupied()) return;
+  if (options.quietMode || !options.notifications || !interaction.hidden || userOccupied()) return;
   if (notificationState && (notificationState.runtime.phase !== 'running' || !notificationState.runtime.visible || notificationState.runtime.suspended)) return;
   let notice = noticeQueue.next(false, notificationState?.interactions);
   while (notice && completionHasReply(notice)) notice = noticeQueue.next(false, notificationState?.interactions);
@@ -516,18 +526,60 @@ function presentNextNotice() {
   if (!reduced && presentation.word && !(presentation.mood === 'error' && appliedMood === 'error' && presentation.word === taskExpression('error').word)) { act(body, activeView, presentation.word); reducedNeedsStep = true; }
   position();
 }
+function currentInbox() {
+  const value = inboxContents(attentionSnapshot, pendingRequests(), acknowledgedResults);
+  return { ...value, total: value.total + quietInbox.size };
+}
+function refreshInbox() {
+  const previousCount = inboxState.total;
+  inboxState = currentInbox();
+  const attention = $('attention'), pendingCount = inboxState.requests.length + inboxState.issues.length + quietInbox.size;
+  attention.hidden = !inboxState.total || panels.some(p => !p.hidden);
+  $('attention-count').textContent = String(inboxState.total);
+  attention.dataset.urgent = String(!!pendingCount);
+  attention.title = attention.ariaLabel = noticeCopy().inboxSummary(inboxState.replies.length, pendingCount);
+  if (options.quietMode && inboxState.total > previousCount && !attention.hidden && !reduced) {
+    attention.classList.remove('inbox-pulse'); void attention.offsetWidth; attention.classList.add('inbox-pulse');
+  }
+}
+function keepQuietCard(key, value) {
+  if (JSON.stringify(quietInbox.get(key)) === JSON.stringify(value)) return;
+  quietInbox.set(key, value); refreshInbox(); renderRequests(); position();
+}
+function renderQuietCards() {
+  const copy = uiCopy();
+  replaceInboxList($('inbox-local'), JSON.stringify([notificationLocale(), options.interfaceStyle, [...quietInbox]]), () => [...quietInbox].map(([key, value]) => {
+    const card = document.createElement('article'), label = document.createElement('strong'), actions = document.createElement('div');
+    card.className = 'inbox-card inbox-local'; card.dataset.localKind = key;
+    const button = (text, action, run) => {
+      const node = document.createElement('button'); node.textContent = text; node.dataset.inboxKey = key; node.dataset.action = action;
+      node.onclick = run; actions.append(node);
+    };
+    if (key === 'invitation') {
+      label.textContent = copy.companionInvite;
+      button(copy.companionTogether, 'play', startCompanionPlay);
+      for (const [id, text] of [['later', copy.companionLater], ['quiet', copy.companionQuietToday]]) button(text, id, () => $('companion-' + id).click());
+    } else {
+      const notice = key === 'notice' ? appNoticeCopy(value, notificationLocale()) : null;
+      label.textContent = notice ? notice.title : copy[value];
+      if (notice) { const text = document.createElement('p'); text.textContent = notice.body; card.append(text); }
+      button(noticeCopy().close, 'dismiss', () => { quietInbox.delete(key); refreshInbox(); renderRequests(); position(); });
+    }
+    card.prepend(label); card.append(actions); return card;
+  }));
+}
 function renderRequests() {
   if (requests.hidden) return;
   const copy = noticeCopy();
-  inboxState = inboxContents(attentionSnapshot, pendingRequests(), acknowledgedResults);
+  inboxState = currentInbox();
   const { requests: items, issues, replies } = inboxState;
   const sources = new Map(snapshot.sessions.map(session => [session.id, session])), shortIds = shortSessionIds(snapshot.sessions);
   const sourceDetail = id => { const session = sources.get(id); if (isCompanionHistory(session)) return ''; return [session?.project || session?.cwd, `#${shortIds.get(id) ?? id}`].filter(Boolean).join(' · '); };
   $('requests-title').textContent = copy.inboxTitle; $('inbox-caption').textContent = copy.inboxCaption; $('requests-close').ariaLabel = copy.close;
-  $('inbox-count').textContent = copy.inboxSummary(replies.length, items.length + issues.length);
+  $('inbox-count').textContent = copy.inboxSummary(replies.length, items.length + issues.length + quietInbox.size);
   if (options.interfaceStyle !== 'classic') {
     const waiting = document.createElement('span'), fresh = document.createElement('span');
-    waiting.textContent = copy.inboxWaiting(items.length + issues.length);
+    waiting.textContent = copy.inboxWaiting(items.length + issues.length + quietInbox.size);
     fresh.textContent = copy.inboxFresh(replies.length);
     $('inbox-count').replaceChildren(waiting, fresh);
     if (!inboxState.total) $('requests-title').textContent = copy.inboxCaughtUp;
@@ -535,6 +587,7 @@ function renderRequests() {
   const curFocus = sources.get(snapshot.sessionId); $('inbox-focus').textContent = copy.focus(sessionName(curFocus) ?? '—');
   $('inbox-empty').textContent = copy.inboxEmpty; $('inbox-empty').hidden = !!inboxState.total;
   const keys = [notificationLocale(), options.interfaceStyle, snapshot.companionSessionId, snapshot.sessions.map(session => [session.id, session.companionRole, session.label, session.project, session.cwd])];
+  renderQuietCards();
   replaceInboxList($('request-list'), JSON.stringify([...keys, items, [...snoozing.keys()], options.reminders, options.notifications, options.inlineQuestions, questionForms.revision]), () => items.map(item => {
     const card = document.createElement('article'); card.className = 'request-card';
     const label = document.createElement('strong'), preview = document.createElement('p'), meta = document.createElement('small'), actions = document.createElement('div');
@@ -575,7 +628,7 @@ function renderRequests() {
     content.className = 'inbox-content'; content.dataset.resultId = result.id; content.dataset.inboxKey = result.id; content.dataset.action = 'read';
     content.ariaLabel = `${copy.readReply} · ${sources.get(result.sessionId)?.label ?? result.sessionId}`;
     // Capture the queue at the explicit read action so incoming replies cannot reorder it.
-    content.onclick = () => openReader(result, inboxContents(attentionSnapshot, pendingRequests(), acknowledgedResults).replies.map(item => ({ ...item })));
+    content.onclick = () => openReader(result, currentInbox().replies.map(item => ({ ...item })));
     meta.textContent = `${copy.newReply} · ${sessionTime({ updatedAt: result.time }, notificationLocale())}`;
     const replySession = sources.get(result.sessionId);
     label.textContent = sessionName(replySession) ?? result.sessionId;
@@ -596,7 +649,7 @@ function replaceInboxList(list, key, build) {
 }
 function openRequests(autoRead = true) {
   clearTimeout(touchTimer); interaction.hidden = true; bubble.hidden = true; $('request-feedback').textContent = '';
-  const contents = inboxContents(attentionSnapshot, pendingRequests(), acknowledgedResults);
+  const contents = currentInbox();
   if (autoRead !== false && contents.replies.length === 1 && contents.total === 1) { openReader(contents.replies[0], contents.replies.map(item => ({ ...item }))); return; }
   panels.forEach(panel => { panel.hidden = panel !== requests; });
   renderRequests(); updateMood(); position(); $('requests-close').focus();
@@ -615,6 +668,17 @@ $('interaction-pending').onclick = () => openRequests(false);
 function applyOptions(value) {
   const previousSize = options.size, previousCompanionship = options.companionship;
   options = { ...options, ...value, companionship: Object.hasOwn(value ?? {}, 'companionship') ? companionshipMode(value.companionship) : options.companionship, textScale: Object.hasOwn(value ?? {}, 'textScale') ? textScale(value.textScale) : options.textScale };
+  if (options.quietMode) {
+    noticeQueue.clear(); interaction.hidden = true; currentNotice = undefined;
+    bubble.hidden = true; speech = undefined;
+    if (!companionInvitation.hidden) quietInbox.set('invitation', true);
+    if (!companionFeedback.hidden && companionFeedback.dataset.copy) quietInbox.set('feedback', companionFeedback.dataset.copy);
+    if (!$('toast').hidden && toastNotice) quietInbox.set('notice', toastNotice);
+    companionInvitation.hidden = companionFeedback.hidden = $('toast').hidden = true;
+    clearTimeout(toastTimer);
+    for (const result of snapshot.results ?? []) shownResults.add(result.id);
+  }
+  if (options.companionship === 'off') quietInbox.delete('invitation');
   panelStyle.set(options.interfaceStyle); panelStyle.portraits(); $('interface-style').value = options.interfaceStyle === 'classic' ? 'classic' : 'new';
   $('default-chat-target').value = options.defaultChatTarget === 'last' ? 'last' : 'companion';
   diagnosticCounters.configure(options.diagnostics === true);
@@ -701,6 +765,10 @@ function receive(message) {
     }
     case 'notice': {
       attentionToWork();
+      if (options.quietMode) {
+        if (!message.notice.category && message.notice.kind !== 'task') keepQuietCard('notice', message.notice);
+        break;
+      }
       if (!options.notifications) break;
       if (message.notice.requestIds?.length && message.notice.requestIds.every(id => allRequests().some(item => item.id === id && inboxReceipts.hides(item)))) break;
       if (message.notice.category && message.notice.id) {
@@ -906,11 +974,12 @@ $('chat-form').onsubmit = event => {
 };
 function preference(field) {
   if (native) send({ type: 'preference', field, value: !options[field] });
-  else { options[field] = !options[field]; render(); }
+  else { applyOptions({ [field]: !options[field] }); render(); }
 }
 $('toggle-roam').onclick = () => preference('roam');
 $('toggle-sleep').onclick = () => { if ($('toggle-sleep').disabled) return; asleep = !asleep; if (!asleep) react('happy'); menu.hidden = true; bubble.hidden = true; updateMood(); };
 $('toggle-notices').onclick = () => preference('notifications');
+$('toggle-quiet').onclick = () => preference('quietMode');
 $('hide').onclick = () => { if (native) send({ type: 'hide' }); else closePanels(); };
 $('toast').onclick = () => { $('toast').hidden = true; openSession(noticeSession); };
 document.addEventListener('keydown', event => { if (event.key === 'Escape') closePanels(); });
@@ -928,7 +997,7 @@ document.addEventListener('pointermove', event => {
   }
   const activity = sessionActivity(attentionSnapshot);
   const canCare = options.companionship !== 'off' && !activity.active && activity.mood === 'idle' && !pendingRequests().length && !userInputOccupied() && !asleep && interaction.hidden && ['idle', 'look', 'sit'].includes(body?.layout?.mode);
-  if (companionStroke.move(point, { trusted: event.isTrusted, over: canCare && !!body?.hit(point), pressing, now: performance.now() })) { void companionClient.request('pet'); companionMessage(uiCopy().companionPetThanks); }
+  if (companionStroke.move(point, { trusted: event.isTrusted, over: canCare && !!body?.hit(point), pressing, now: performance.now() })) { void companionClient.request('pet'); companionMessage('companionPetThanks'); }
   body?.pointer('move', point); hit(point.x, point.y);
 });
 document.addEventListener('pointerleave', () => {
@@ -960,7 +1029,7 @@ let last = performance.now(), companionCadence = { at: -Infinity, elapsed: 0 };
 function animate(now) {
   const dt = Math.min((now - last) / 1000, .05); last = now;
   for (const [id, pending] of snoozing) if (now >= pending.expiresAt) { snoozing.delete(id); $('request-feedback').textContent = noticeCopy().unavailable; renderRequests(); }
-  if (!options.notifications) { noticeQueue.clear(); interaction.hidden = true; }
+  if (!options.notifications || options.quietMode) { noticeQueue.clear(); interaction.hidden = true; }
   if (!interaction.hidden) {
     if (interaction.matches(':hover') || interaction.contains(document.activeElement)) interactionExpires = now + options.bubbleDurationMs;
     if (now >= interactionExpires) { interaction.hidden = true; currentNotice = undefined; showNextReply(); }
@@ -1041,6 +1110,7 @@ async function setCharacter(view, scheme = '') {
   });
   if (npc.walkId) body?.stopWalk(npc.walkId);
   npc = initialNpc(++npcGeneration); npcEvent = undefined; npcRelocated = false; npcGeometry = undefined; npcGroundLayout = undefined; npcSeated = false;
+  quietInbox.clear(); refreshInbox();
   companionStroke.reset(); companion = initialCompanionship(); companionAction = companionManualId = undefined; companionInvitation.hidden = companionFeedback.hidden = true;
   body?.dispose(); body = next; body.set({ bounds: bounds() }); activeView = view; activeScheme = knownScheme(view, scheme); activeName = nameIn(view.name);
   actionRestorePending = false; activityWords = view.vocab.map(w => w.id).filter(w => next.words?.includes(w)); hourCheckedAt = -Infinity;

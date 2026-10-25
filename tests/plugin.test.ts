@@ -264,3 +264,37 @@ it('writes the interface style preference to the existing durable settings servi
     action?.({ type: 'preference', field: 'interfaceStyle', value: 'dark' }); expect(mutate).toHaveBeenCalledTimes(1);
   } finally { await fiber.dispose(); await ctx.fiber.dispose(); }
 });
+
+it('saves only boolean quiet preferences through settings and restores them on remount', async () => {
+  const stored: { quietMode?: boolean } = {};
+  const mount = async () => {
+    const ctx = new Context(); ctx.provide('agents', { list: () => [] });
+    const config = Config({ ...stored, autoStart: false });
+    const mutate = vi.fn(async (_ns: string, patches: { op: string; path: string[]; value: boolean }[]) => {
+      Object.assign(stored, { [patches[0].path[0]]: patches[0].value });
+      Object.assign(config, Config({ ...stored, autoStart: false }));
+      ctx.emit('settings/document-updated', 'dsh-coopanion' as SettingsNamespace, 1);
+    });
+    ctx.provide('settings', { describe: () => [], mutate });
+    let action: ((value: unknown) => void) | undefined;
+    const events: string[] = [];
+    const bridge = { ...nativeBridge(), configure: vi.fn(() => { events.push('configure'); }), notificationState: vi.fn(() => { events.push('state'); }), onAction: (fn: (value: unknown) => void) => { action = fn; } };
+    const fiber = ctx.plugin(scope => mountPet(scope, config, bridge)); await fiber.await();
+    return { ctx, bridge, mutate, fiber, events, action: (value: unknown) => action?.(value), close: async () => { await fiber.dispose(); await ctx.fiber.dispose(); } };
+  };
+  const first = await mount();
+  try {
+    first.action({ type: 'preference', field: 'quietMode', value: 'true' });
+    expect(first.mutate).not.toHaveBeenCalled();
+    first.events.length = 0;
+    first.action({ type: 'preference', field: 'quietMode', value: true });
+    await vi.waitFor(() => expect(first.bridge.configure).toHaveBeenLastCalledWith(expect.objectContaining({ quietMode: true, notifications: true, reminders: true })));
+    expect(first.events[0]).toBe('configure');
+    expect(first.mutate).toHaveBeenCalledExactlyOnceWith('dsh-coopanion', [{ op: 'set', path: ['quietMode'], value: true }]);
+  } finally { await first.close(); }
+  const restarted = await mount();
+  try {
+    await restarted.ctx.coopanion.command('start');
+    expect(restarted.bridge.start).toHaveBeenCalledWith(expect.objectContaining({ quietMode: true }), expect.anything());
+  } finally { await restarted.close(); }
+});

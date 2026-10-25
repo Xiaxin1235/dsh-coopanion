@@ -231,3 +231,38 @@ it('stopping immediately revokes a visible generation without fabricating a new 
   expect(time.timers.size).toBe(0); time.advance(600_000);
   expect(presentRole).toHaveBeenCalledOnce(); expect(broker.snooze(interactionId(s.id, 'approval', 'native-full'), 1)).toBe(false);
 });
+
+it('keeps quiet requests answerable and snoozable without presenting or replaying them', () => {
+  const { broker, s, time, presentRole } = fixture(true);
+  broker.preferences({ quietMode: true });
+  const id = asked(broker, s);
+  expect(broker.snapshot().interactions).toMatchObject([{ id, state: 'open', dueAt: null }]);
+  expect(presentRole).not.toHaveBeenCalled();
+  expect(broker.snooze(id, 1)).toBe(true);
+  expect(broker.snapshot().interactions[0].dueAt).not.toBeNull();
+  time.advance(600_000);
+  expect(broker.snapshot().interactions).toHaveLength(1);
+  expect(broker.snapshot().interactions[0].dueAt).toBeNull();
+  expect(presentRole).not.toHaveBeenCalled();
+  broker.preferences({ quietMode: false }); time.advance(600_000);
+  expect(presentRole).not.toHaveBeenCalled();
+  asked(broker, s, 'new-after-quiet', 3);
+  expect(presentRole).toHaveBeenCalledOnce();
+  broker.consume(s, event('approval/decided', 4, { id: ApprovalRequestId('native-full'), outcome: 'allowed-once' }));
+  expect(broker.snapshot().interactions.map(item => item.nativeId)).toEqual(['new-after-quiet']);
+  broker.dispose();
+});
+it('quiet mode revokes pending delivery and never grants hidden clients a backlog claim', () => {
+  const { broker, s, time } = fixture();
+  const old = asked(broker, s, 'before-quiet');
+  broker.preferences({ quietMode: true });
+  asked(broker, s, 'during-quiet', 2);
+  expect(broker.claim('hidden', 1)).toBeNull();
+  broker.preferences({ quietMode: false }); time.advance(600_000);
+  expect(broker.claim('hidden', 1)).toBeNull();
+  expect(broker.snapshot().interactions).toHaveLength(2);
+  // The explicit inbox action can arrange a new reminder after quiet mode ends.
+  expect(broker.snooze(old, 1)).toBe(true); time.advance(600_000);
+  expect(broker.claim('hidden', 1)?.notice.stage).toBe('reminder');
+  broker.dispose();
+});

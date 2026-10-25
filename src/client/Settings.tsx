@@ -7,7 +7,7 @@ import type { PetCommand, PetStatus } from '../controls.ts';
 import type { NotificationSettings, NotificationClientStatus } from './notification-client.ts';
 import { TEXT_SCALES, textScale, type TextScale } from '../../web/text-scale.js';
 
-export interface Preferences { size: number; npcHome: number; npcRange: number; textScale: TextScale; aboveFullscreen: boolean; preferOpeningParagraph: boolean; inlineQuestions: boolean; roam: boolean; diagnostics: boolean; companionship: CompanionshipMode; notifications: boolean; systemNotifications: boolean; reminders: boolean; reminderDelayMs: number; bubbleDurationMs: number; autoStart: boolean; defaultChatTarget?: 'companion' | 'last'; }
+export interface Preferences { size: number; npcHome: number; npcRange: number; textScale: TextScale; aboveFullscreen: boolean; preferOpeningParagraph: boolean; inlineQuestions: boolean; roam: boolean; diagnostics: boolean; companionship: CompanionshipMode; notifications: boolean; quietMode: boolean; systemNotifications: boolean; reminders: boolean; reminderDelayMs: number; bubbleDurationMs: number; autoStart: boolean; defaultChatTarget?: 'companion' | 'last'; }
 export interface SettingsFace { form: ConfigForm<Preferences>; call: (command?: PetCommand, signal?: AbortSignal) => Promise<PetStatus>; local: boolean; notifier?: NotificationSettings; }
 export type SettingsProps = SettingsFace & PropsLocale<'coopanion'>;
 
@@ -108,7 +108,7 @@ export function Settings({ form, call, local, notifier, t }: SettingsProps) {
     <section className="pet-card" aria-label={t('preferences')}>
       <h3>{t('preferences')}</h3>
       {!accepted.writable || !local ? <p>{t('unavailable')}</p> : null}
-      {(['autoStart', 'roam', 'notifications', 'diagnostics', 'aboveFullscreen', 'preferOpeningParagraph', 'inlineQuestions'] as const).map(field => <div className="pet-row" key={field}>
+      {(['autoStart', 'roam', 'notifications', 'quietMode', 'diagnostics', 'aboveFullscreen', 'preferOpeningParagraph', 'inlineQuestions'] as const).map(field => <div className="pet-row" key={field}>
         <div className="pet-label"><strong>{t(field)}</strong><p>{t(`${field}Hint`)}</p></div>
         <Switch checked={prefs?.[field] ?? (field === 'aboveFullscreen' || field === 'preferOpeningParagraph' || field === 'inlineQuestions')} disabled={!ready || !local} label={t(field)} onChange={value => void save(field, value)} />
       </div>)}
@@ -151,7 +151,7 @@ export function Settings({ form, call, local, notifier, t }: SettingsProps) {
       <p>{t('systemSettingsHint')}</p>
       <div className="pet-actions">
         <Button variant="outline" disabled={!local || !notifier || notificationBusy || !notification.web.supported} onClick={() => void permission()}>{t('requestPermission')}</Button>
-        <Button variant="outline" disabled={!local || !notifier || notificationBusy || !prefs?.notifications || !prefs?.systemNotifications || !running || status?.visible !== false || notification.web.permission !== 'granted'} onClick={() => void testNotification()}>{t('testNotification')}</Button>
+        <Button variant="outline" disabled={!local || !notifier || notificationBusy || !prefs?.notifications || prefs?.quietMode || !prefs?.systemNotifications || !running || status?.visible !== false || notification.web.permission !== 'granted'} onClick={() => void testNotification()}>{t('testNotification')}</Button>
       </div>
       <p className="pet-feedback" role="status">{notificationBusy ? t('notificationWorking') : notification.delivery ? t(`delivery${notification.delivery}`) : t('testNotificationHint')}</p>
       {notification.receiptAccepted === false ? <p className="pet-error" role="alert">{t('receiptRejected')}</p> : null}
