@@ -39,12 +39,12 @@ it('sends only the Unicode-bounded final opening, with the documented API shape 
   expect(JSON.stringify(s.log.mock.calls)).not.toContain(secret);expect(JSON.stringify(s.log.mock.calls)).not.toContain(reply);
   expect(s.decider.status()).toEqual({provider:'openrouter',keyAvailable:true,calls:1});s.decider.dispose();
 });
-it('does not send disabled, missing-key, historical, archived or WhaleDot replies, and never replays them',async()=>{
-  for(const mode of ['off','key','history','archive','label','prompt'] as const){
+it('does not send disabled, missing-key, historical, archived or WhaleMaid / WhaleDot replies, and never replays them',async()=>{
+  for(const mode of ['off','key','history','archive','label','legacy-label','prompt'] as const){
     const s=setup(),state=snapshot();
     if(mode==='off')s.setEnabled(false);if(mode==='key')s.setKey(undefined);
     if(mode==='history')state.results[0].read=true;if(mode==='archive')state.sessions[0].archived=true;
-    if(mode==='label')state.sessions[0].label='[WhaleDot] private task';
+    if(mode==='label')state.sessions[0].label='[WhaleMaid] private task';if(mode==='legacy-label')state.sessions[0].label='[WhaleDot] private task';
     if(mode==='prompt')state.sessions[0].prompt='WhaleDot: execute this single task\nPRIVATE';
     s.decider.observe(state);s.setEnabled(true);s.setKey(secret);state.results[0].read=false;state.sessions[0].archived=false;state.sessions[0].label='ordinary';state.sessions[0].prompt='ordinary';s.decider.observe(state);
     expect(s.fetcher).not.toHaveBeenCalled();expect(s.log).not.toHaveBeenCalled();s.decider.dispose();

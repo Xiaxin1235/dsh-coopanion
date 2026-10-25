@@ -179,7 +179,7 @@ npm run character:pack -- examples/star paper-star.zip
 
 ## 在小信封中回答提问
 
-默认开启 **Settings → 桌宠 → 在小信封里直接回答提问**。展开提问后可查看原问题、补充说明、选项及说明，选择一项后提交，也可在“其他”输入文字；输入其他文字会清除单选，文字只作为答案。整批问题需要逐题回答。提交中禁止再次提交；成功后由原提问结算，条目随实际状态撤下。Harness 与信封同时打开时先回答的一边生效，另一边撤下等待。接受答案不代表模型或 WhaleDot 任务完成。
+默认开启 **Settings → 桌宠 → 在小信封里直接回答提问**。展开提问后可查看原问题、补充说明、选项及说明，选择一项后提交，也可在“其他”输入文字；输入其他文字会清除单选，文字只作为答案。整批问题需要逐题回答。提交中禁止再次提交；成功后由原提问结算，条目随实际状态撤下。Harness 与信封同时打开时先回答的一边生效，另一边撤下等待。接受答案不代表模型或 WhaleMaid 任务完成。
 
 审批、多选、计划评审、不支持或过大的问题只提供 **去 Harness 处理**；普通单选也保留此入口。提交失败保留简短提示和入口；十秒未确认不会自动重发，请先检查 Harness。限时问题不会因为展开表单而暂停倒计时；标记“仍可回答”时仍可提交，需该会话的原 Agent 可用。关闭设置恢复 0.4.13 的 Harness 处理路径。
 
@@ -226,11 +226,11 @@ Interface style: right-click the pet → Dress up → Interface style. New is th
 
 ### 会话名称
 
-桌宠会话列表、聊天标题、信封、提醒和托盘会同步显示 Harness 的最新会话标题，包括手动改名和自动生成的标题，最多显示 64 个 Unicode 字符。WhaleDot 的自动任务会显示「[WhaleDot] 目标 · 任务」。没有有效标题时，仍先显示工作目录名，再使用首条用户消息的前 64 字；消息摘要保留原有行为。当前和以往的大肥鱼专属会话继续显示「大肥鱼」和「大肥鱼（旧对话）」。
+桌宠会话列表、聊天标题、信封、提醒和托盘会同步显示 Harness 的最新会话标题，包括手动改名和自动生成的标题，最多显示 64 个 Unicode 字符。WhaleMaid（原名 WhaleDot）的自动任务会显示「[WhaleMaid] 目标 · 任务」，改名前的旧任务仍是「[WhaleDot] …」。没有有效标题时，仍先显示工作目录名，再使用首条用户消息的前 64 字；消息摘要保留原有行为。当前和以往的大肥鱼专属会话继续显示「大肥鱼」和「大肥鱼（旧对话）」。
 
 ### 已归档的会话
 
-在 Harness 里归档的会话（包括 WhaleDot 自动归档的以往大肥鱼对话）不再出现在桌宠会话列表和托盘里，约 2 秒内同步。正在聊的会话被归档时仍会显示并标注“已归档”，输入框不可用，并提示去 WhaleDot 面板或 Harness 恢复。恢复后会自动重新出现。已归档会话里没读的回复仍可在信封中阅读。
+在 Harness 里归档的会话（包括 WhaleMaid 自动归档的以往大肥鱼对话）不再出现在桌宠会话列表和托盘里，约 2 秒内同步。正在聊的会话被归档时仍会显示并标注“已归档”，输入框不可用，并提示去 WhaleMaid 面板或 Harness 恢复。恢复后会自动重新出现。已归档会话里没读的回复仍可在信封中阅读。
 
 ### 可选的回复情绪表情
 
@@ -241,7 +241,7 @@ Interface style: right-click the pet → Dress up → Interface style. New is th
 | OpenAI 官方 | `OPENAI_API_KEY` | `gpt-6-luna` | OpenAI |
 | OpenRouter | `OPENROUTER_API_KEY` | `openai/gpt-6-luna-decisions` | OpenRouter，再转交 OpenAI |
 
-只发送最终回复的第一段：第一段不超过 120 个 Unicode 字符时只取该段，否则取回复前 200 个字符。不附加用户输入、工具调用及其结果、文件、会话标题或路径等字段；但回复本身可能复述文件、记忆或个人信息，这些内容若在片段中仍会发送，不做语义脱敏。大肥鱼专属对话同样适用。标题以 `[WhaleDot]` 开头、首条消息以 `WhaleDot: execute this single task` 开头或已归档的会话一律不发送；已有历史回复不会补发。
+只发送最终回复的第一段：第一段不超过 120 个 Unicode 字符时只取该段，否则取回复前 200 个字符。不附加用户输入、工具调用及其结果、文件、会话标题或路径等字段；但回复本身可能复述文件、记忆或个人信息，这些内容若在片段中仍会发送，不做语义脱敏。大肥鱼专属对话同样适用。标题以 `[WhaleMaid]` 或旧的 `[WhaleDot]` 开头、首条消息以 `WhaleDot: execute this single task` 开头或已归档的会话一律不发送；已有历史回复不会补发。
 
 推荐做法：在 Harness 的 **Settings → 桌宠 → 回复情绪表情** 中直接填写对应服务的 API Key 并点击「保存密钥」。密钥保存在本机 Harness 的凭据存储中，与模型的 API Key 同处，保存后立即生效，无需重启 Harness；插件设置、`cordis.yml`、浏览器存储或日志中绝不会记录密钥值。点击「清除密钥」可随时从凭据存储中移除。
 
@@ -253,4 +253,4 @@ Interface style: right-click the pet → Dress up → Interface style. New is th
 
 Reply emotion reactions are optional and off by default. In **Settings → Desktop pet → Reply emotion reactions**, choose **OpenAI direct** (default, `OPENAI_API_KEY`, `gpt-6-luna`) or **OpenRouter** (`OPENROUTER_API_KEY`, `openai/gpt-6-luna-decisions`). Recommended: enter and save the API key directly in the Harness settings card; keys are stored in the local Harness credential store and take effect immediately without restarting. System environment variables are also supported with higher precedence and set the page to read-only. Secret values are never stored in plugin configuration, `cordis.yml`, browser storage or logs. Only the selected Decisions endpoint is called, without provider fallback, credential sharing or model changes. Switching services discards pending reactions from the previous choice.
 
-Only an eligible final reply opening is sent (first paragraph up to 120 Unicode characters, otherwise the first 200 characters). Excerpts may repeat private information; no prompt, tool, file or session metadata is appended. WhaleDot automatic tasks and archived sessions are excluded; companion replies are eligible. Each result is attempted once, with a shared 30-per-rolling-hour limit, a three-second timeout and no retries. The attempt count includes failures. Quiet mode permits the expression without opening panels; task states and reduced motion take precedence. Disable the switch to stop new calls and discard pending reactions.
+Only an eligible final reply opening is sent (first paragraph up to 120 Unicode characters, otherwise the first 200 characters). Excerpts may repeat private information; no prompt, tool, file or session metadata is appended. WhaleMaid (formerly WhaleDot) automatic tasks and archived sessions are excluded; companion replies are eligible. Each result is attempted once, with a shared 30-per-rolling-hour limit, a three-second timeout and no retries. The attempt count includes failures. Quiet mode permits the expression without opening panels; task states and reduced motion take precedence. Disable the switch to stop new calls and discard pending reactions.

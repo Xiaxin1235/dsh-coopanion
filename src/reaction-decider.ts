@@ -224,7 +224,7 @@ export class ReactionDecider {
   }
 
   private eligible(session?: PetSession): boolean {
-    return !!session && !session.archived && !session.label.trimStart().startsWith('[WhaleDot]') && !session.prompt.trimStart().startsWith('WhaleDot: execute this single task');
+    return !!session && !session.archived && !/^\[(?:WhaleMaid|WhaleDot)\]/.test(session.label.trimStart()) && !session.prompt.trimStart().startsWith('WhaleDot: execute this single task');
   }
 
   observe(snapshot: PetSnapshot): void {

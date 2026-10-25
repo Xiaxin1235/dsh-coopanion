@@ -83,7 +83,7 @@ Harness 会为每个工作区保留一个尚未开始的“新会话”草稿（
 Harness 的工作区登记服务维护全局归档集合（`workspaceRegistry.archivedSessionIds`），Harness 侧栏默认不显示其中的会话；`sessionController.list` 不过滤它们。该服务没有变更事件，Host 每 2 秒读取一次内存中的集合（另在启动时读取），变化时下发带 `archived` 的快照。
 
 - 会话列表与托盘列表不显示已归档会话，除非它正是当前选中的会话；选中的已归档会话标注“已归档”。
-- 选中的会话已归档时，聊天输入与发送按钮禁用，说明行和输入框占位文字提示“可以在 WhaleDot 面板或 Harness 里恢复后再继续”；两种界面风格都可见。
+- 选中的会话已归档时，聊天输入与发送按钮禁用，说明行和输入框占位文字提示“可以在 WhaleMaid 面板或 Harness 里恢复后再继续”；两种界面风格都可见。
 - 宿主的已归档会话门禁会先接受消息、再在模型步骤前静默拦下；为避免“已发送却没有回复”，Host 准入时先检查归档集合，命中则以 `session/archived` 失败并保留草稿。
 - 已归档来源的未读回复仍可在信封和阅读器中阅读，但不提供“继续聊”。
 - 桌宠不提供归档或恢复操作，也不调用 `archiveSession` / `unarchiveSession`；恢复后在下一次读取时自动重新出现。
@@ -100,6 +100,6 @@ Harness 的工作区登记服务维护全局归档集合（`workspaceRegistry.ar
 
 ## 可选的回复情绪反应
 
-`decisionsReactions` 默认关闭。`decisionsProvider` 在设置中单独选择 OpenAI 官方（默认，`gpt-6-luna`）或 OpenRouter（`openai/gpt-6-luna-decisions`），只请求所选 Decisions 服务，分别只读取 `OPENAI_API_KEY` 或 `OPENROUTER_API_KEY`，不混用、不回退。切换服务后丢弃旧请求返回。仅在 `PetModel` 提交新的最终 `PetResult` 后触发；流式内容、恢复的历史、重复 result id、WhaleDot 标题或任务前缀、归档会话均跳过。大肥鱼回复不豁免片段截断。每个 result 最多一次；先预留共享的滚动小时配额，再异步请求，3 秒超时且不重试。请求仅含回复开头、固定问题和固定表情候选；不附加会话元数据。详细隐私边界见 [使用指南](usage.md)。
+`decisionsReactions` 默认关闭。`decisionsProvider` 在设置中单独选择 OpenAI 官方（默认，`gpt-6-luna`）或 OpenRouter（`openai/gpt-6-luna-decisions`），只请求所选 Decisions 服务，分别只读取 `OPENAI_API_KEY` 或 `OPENROUTER_API_KEY`，不混用、不回退。切换服务后丢弃旧请求返回。仅在 `PetModel` 提交新的最终 `PetResult` 后触发；流式内容、恢复的历史、重复 result id、WhaleMaid 自动任务（标题以 `[WhaleMaid]` 或旧的 `[WhaleDot]` 开头，或带任务前缀）、归档会话均跳过。大肥鱼回复不豁免片段截断。每个 result 最多一次；先预留共享的滚动小时配额，再异步请求，3 秒超时且不重试。请求仅含回复开头、固定问题和固定表情候选；不附加会话元数据。详细隐私边界见 [使用指南](usage.md)。
 
 成功选择经内部 bridge 发送 `{ type: 'reaction', resultId, sessionId, expression, at }`，不进入通知队列，不改变未读、任务完成、聊天接受或审批结算，也不提供外部表情接口。渲染页检查 15 秒有效期、会话最新结果、真实角色词表及交互状态；用现有短反应时钟保持 2.5 秒，暂停自主表情映射后恢复。工作、等待、错误立即接管；拖拽、被拎起、减少动态效果时不播放，后来的点击或通知反应取代它。安静模式允许表情，但不因此打开面板。恢复与重启不重播 reaction。`reactionStatus` 只携带密钥是否存在与本次运行尝试数，计数包含请求失败，不代表服务端成功或计费次数。
