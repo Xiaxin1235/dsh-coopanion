@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+import { reactionKeyView } from '../src/client/reaction-key-view.ts';
 import { expect, it, vi } from 'vitest';
 import { ReactionDecider, reactionExcerpt } from '../src/reaction-decider.ts';
 import type { DecisionsProvider } from '../src/reaction-decider.ts';
@@ -287,4 +288,13 @@ it('never leaks secret values in status, returns, logs, or error strings', async
   expect(logs).toContain('已清除 OpenAI 密钥');
 
   decider.dispose();
+});
+
+it('shows any non-writable configured key as read-only, naming .env files separately', () => {
+  expect(reactionKeyView(undefined)).toBe('loading');
+  expect(reactionKeyView({ configured: false, writable: true })).toBe('missing');
+  expect(reactionKeyView({ configured: true, source: 'file', writable: true })).toBe('harness');
+  expect(reactionKeyView({ configured: true, source: 'env', writable: false })).toBe('env');
+  expect(reactionKeyView({ configured: true, source: 'user-env', writable: false })).toBe('env-file');
+  expect(reactionKeyView({ configured: true, source: 'project-env', writable: false })).toBe('env-file');
 });

@@ -244,6 +244,7 @@ export class ReactionDecider {
     const rawKey = this.key(provider);
     const resolvedKey = typeof (rawKey as Promise<unknown>)?.then === 'function' ? await rawKey : rawKey;
     const key = typeof resolvedKey === 'string' ? resolvedKey.trim() : undefined;
+    if (this.lifetime.signal.aborted || !this.ports.enabled() || this.ports.provider() !== provider) return;
     const input = reactionExcerpt(result.text), started = this.now();
     if (!key || !input.trim()) return;
     this.attempts = this.attempts.filter(at => at > started - 3600000);

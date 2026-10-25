@@ -8,7 +8,8 @@ import type { NotificationSettings, NotificationClientStatus } from './notificat
 import { TEXT_SCALES, textScale, type TextScale } from '../../web/text-scale.js';
 
 export interface Preferences { decisionsProvider?: 'openai' | 'openrouter'; decisionsReactions?: boolean; size: number; npcHome: number; npcRange: number; textScale: TextScale; aboveFullscreen: boolean; preferOpeningParagraph: boolean; inlineQuestions: boolean; roam: boolean; diagnostics: boolean; companionship: CompanionshipMode; notifications: boolean; quietMode: boolean; systemNotifications: boolean; reminders: boolean; reminderDelayMs: number; bubbleDurationMs: number; autoStart: boolean; defaultChatTarget?: 'companion' | 'last'; }
-export interface ReactionKeyInfo { configured: boolean; source?: string; writable: boolean; }
+import { reactionKeyView, type ReactionKeyInfo } from './reaction-key-view.ts';
+export type { ReactionKeyInfo } from './reaction-key-view.ts';
 export type ReactionKeyStatus = Record<'openai' | 'openrouter', ReactionKeyInfo>;
 export interface SettingsFace {
   form: ConfigForm<Preferences>;
@@ -159,15 +160,10 @@ export function Settings({ form, call, local, notifier, getKeyStatus, setKey, cl
         }
       : undefined
   );
-  const isEnv = currentKeyInfo?.source === 'env';
+  const keyView = reactionKeyView(currentKeyInfo);
   const isConfigured = !!currentKeyInfo?.configured;
-  const keyStatusText = !currentKeyInfo
-    ? t('loading')
-    : !isConfigured
-    ? t('reactionKeyNotConfigured')
-    : isEnv
-    ? t('reactionKeyConfiguredEnv')
-    : t('reactionKeyConfiguredHarness');
+  const keyReadOnly = !currentKeyInfo?.writable;
+  const keyStatusText = t(({ loading: 'loading', missing: 'reactionKeyNotConfigured', harness: 'reactionKeyConfiguredHarness', env: 'reactionKeyConfiguredEnv', 'env-file': 'reactionKeyConfiguredEnvFile' } as const)[keyView]);
   return <div className="dsh-coopanion-settings" data-testid="coopanion-settings">
     <h2>{t('title')}</h2><p>{t('intro')} {t('languageHint')}</p>
     <section className="pet-card" aria-label={t('runtime')}>
@@ -197,7 +193,7 @@ export function Settings({ form, call, local, notifier, getKeyStatus, setKey, cl
           <strong>{t('reactionKeyStatusLabel')}</strong>
           <p>{t('reactionKeyStorageHint')}</p>
         </div>
-        <span className="pet-status" role="status" data-testid="reaction-key-status">
+        <span className="pet-status pet-key-status" role="status" data-testid="reaction-key-status">
           <StateDot state={isConfigured ? 'done' : 'idle'} />
           {keyStatusText}
         </span>
@@ -205,7 +201,7 @@ export function Settings({ form, call, local, notifier, getKeyStatus, setKey, cl
       <div className="pet-row">
         <div className="pet-label">
           <label htmlFor="coopanion-reaction-key">{t('reactionKeyInputLabel')}</label>
-          {isEnv ? <p className="pet-error">{t('reactionKeyEnvReadOnlyHint')}</p> : null}
+          {keyView === 'env' || keyView === 'env-file' ? <p className="pet-error">{t(keyView === 'env' ? 'reactionKeyEnvReadOnlyHint' : 'reactionKeyEnvFileReadOnlyHint')}</p> : null}
         </div>
         <Input
           id="coopanion-reaction-key"
@@ -214,14 +210,14 @@ export function Settings({ form, call, local, notifier, getKeyStatus, setKey, cl
           autoComplete="off"
           placeholder={t('reactionKeyPlaceholder')}
           value={keyDraft}
-          disabled={!ready || !local || isEnv || keyBusy}
+          disabled={!ready || !local || keyReadOnly || keyBusy}
           onChange={event => {
             setKeyDraft(event.target.value);
             setKeyError('');
             setKeyFeedback(undefined);
           }}
           onKeyDown={event => {
-            if (event.key === 'Enter' && keyDraft.trim() && !isEnv && !keyBusy) {
+            if (event.key === 'Enter' && keyDraft.trim() && !keyReadOnly && !keyBusy) {
               void handleSaveKey();
             }
           }}
@@ -230,14 +226,14 @@ export function Settings({ form, call, local, notifier, getKeyStatus, setKey, cl
       <div className="pet-actions">
         <Button
           variant="outline"
-          disabled={!ready || !local || isEnv || !keyDraft.trim() || keyBusy || !setKey}
+          disabled={!ready || !local || keyReadOnly || !keyDraft.trim() || keyBusy || !setKey}
           onClick={() => void handleSaveKey()}
         >
           {t('reactionKeySave')}
         </Button>
         <Button
           variant="outline"
-          disabled={!ready || !local || isEnv || !isConfigured || keyBusy || !clearKey}
+          disabled={!ready || !local || keyReadOnly || !isConfigured || keyBusy || !clearKey}
           onClick={() => void handleClearKey()}
         >
           {t('reactionKeyClear')}
@@ -245,7 +241,7 @@ export function Settings({ form, call, local, notifier, getKeyStatus, setKey, cl
       </div>
       {keyFeedback ? <p className="pet-feedback" role="status">{t(keyFeedback === 'saved' ? 'reactionKeySaved' : 'reactionKeyCleared')}</p> : null}
       {keyError ? <p className="pet-error" role="alert">{keyError}</p> : null}
-      <p role="status" data-testid="reaction-status">{keyStatusText} · {t('reactionCalls')}: {status?.reactionStatus?.calls ?? 0}</p>
+      <p role="status" data-testid="reaction-status">{t('reactionCalls')}: {status?.reactionStatus?.calls ?? 0}</p>
     </section>
     <section className="pet-card" aria-label={t('preferences')}>
       <h3>{t('preferences')}</h3>
