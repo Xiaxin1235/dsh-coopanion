@@ -6,7 +6,7 @@ import type {} from '@deepseek-ai/dsh-client-locale/client';
 import type {} from '@deepseek-ai/dsh-client-ui-workspace/client';
 import type { SessionId } from '@deepseek-ai/dsh-session/types';
 import type { PetStatus } from '../controls.ts';
-import { Settings, type SettingsFace, type Preferences } from './Settings.tsx';
+import { Settings, type SettingsFace, type Preferences, type ReactionKeyStatus } from './Settings.tsx';
 import { en, zh, type LocaleKey } from './locales.ts';
 import css from './settings.css';
 import type { BrowserNotificationApi } from './system-notifications.ts';
@@ -51,6 +51,21 @@ export function apply(ctx: Context): void {
       const value = reply.value as PetStatus;
       if (!value || !['stopped', 'starting', 'running', 'stopping', 'error'].includes(value.phase) || typeof value.visible !== 'boolean') throw new Error('Invalid desktop pet status');
       return value;
+    },
+    getKeyStatus: async signal => {
+      const reply = await ctx.connection.rpc.call('/api', 'coopanion/reaction-key-status', {}, signal);
+      if (!reply.ok) throw new Error(reply.error.message);
+      return reply.value as ReactionKeyStatus;
+    },
+    setKey: async (provider, value, signal) => {
+      const reply = await ctx.connection.rpc.call('/api', 'coopanion/reaction-key-set', { provider, value }, signal);
+      if (!reply.ok) throw new Error(reply.error.message);
+      return reply.value as ReactionKeyStatus;
+    },
+    clearKey: async (provider, signal) => {
+      const reply = await ctx.connection.rpc.call('/api', 'coopanion/reaction-key-clear', { provider }, signal);
+      if (!reply.ok) throw new Error(reply.error.message);
+      return reply.value as ReactionKeyStatus;
     },
   };
   ctx.slots.inject('settings.section', () => ctx.slots.register({

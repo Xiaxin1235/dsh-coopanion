@@ -126,7 +126,7 @@ it('registers and disposes exact authenticated Connection routes without taking 
   let action: ((value: unknown) => void) | undefined;
   const bridge: PetBridge = { ...nativeBridge(), onAction: listener => { action = listener; }, focusHarness: vi.fn() };
   const fiber = ctx.plugin(async scope => mountPet(scope, Config({ autoStart: false }), bridge)); await fiber.await();
-  expect([...routes.keys()]).toEqual(['status', 'control', 'navigation', 'locale', 'notification-state', 'notification-claim', 'notification-receipt', 'notification-snooze', 'notification-test'].map(endpoint => `/api/coopanion/${endpoint}`));
+  expect([...routes.keys()]).toEqual(['status', 'control', 'navigation', 'locale', 'reaction-key-status', 'reaction-key-set', 'reaction-key-clear', 'notification-state', 'notification-claim', 'notification-receipt', 'notification-snooze', 'notification-test'].map(endpoint => `/api/coopanion/${endpoint}`));
   const invoke = async (payload: unknown) => {
     const response = await routes.get('/api/coopanion/control')!.fetch(new Request('http://localhost/api/coopanion/control', { method: 'POST', body: JSON.stringify({ type: 'client-request', rpcId: 'test', method: 'coopanion/control', payload }) }));
     return response.json();
@@ -154,6 +154,52 @@ it('registers and disposes exact authenticated Connection routes without taking 
   expect((await navigation()).result.value).toBeNull(); // Claimed only once.
   expect(bridge.focusHarness).toHaveBeenCalledOnce();
   await fiber.dispose(); expect(routes.size).toBe(0); await ctx.fiber.dispose();
+});
+
+it('handles reaction key endpoints through Connection carrier without leaking secret values', async () => {
+  const ctx = new Context(); ctx.provide('agents', { list: () => [] });
+  const routes = new Map<string, { fetch: (request: Request) => Promise<Response> }>();
+  ctx.provide('sessions', { list: () => [] } as never);
+  const store = new Map<string, string>();
+  const credentials = {
+    resolve: vi.fn(async (ref: string) => store.has(ref) ? { value: store.get(ref)! } : undefined),
+    describe: vi.fn(async (ref: string) => ({ configured: store.has(ref), source: store.has(ref) ? 'file' : undefined, writable: true })),
+    set: vi.fn(async (ref: string, val: string) => { store.set(ref, val); }),
+    unset: vi.fn(async (ref: string) => { store.delete(ref); }),
+  };
+  ctx.provide('credentials', credentials as never);
+  ctx.provide('connection', { fetch: { register: (route: { path: string; fetch: (request: Request) => Promise<Response> }) => { routes.set(route.path, route); return () => { routes.delete(route.path); }; } } } as never);
+  const bridge: PetBridge = { ...nativeBridge(), onAction: () => {}, focusHarness: vi.fn() };
+  const fiber = ctx.plugin(async scope => mountPet(scope, Config({ autoStart: false }), bridge)); await fiber.await();
+
+  const call = async (endpoint: string, payload: unknown) => {
+    const res = await routes.get(`/api/coopanion/${endpoint}`)!.fetch(new Request(`http://localhost/api/coopanion/${endpoint}`, {
+      method: 'POST',
+      body: JSON.stringify({ type: 'client-request', rpcId: 'r1', method: `coopanion/${endpoint}`, payload }),
+    }));
+    return res.json();
+  };
+
+  const initialStatus = await call('reaction-key-status', {});
+  expect(initialStatus.result.ok).toBe(true);
+  expect(initialStatus.result.value).toEqual({
+    openai: { configured: false, writable: true },
+    openrouter: { configured: false, writable: true },
+  });
+
+  const canary = 'test-plugin-key-secret-123';
+  const setResult = await call('reaction-key-set', { provider: 'openrouter', value: canary });
+  expect(setResult.result.ok).toBe(true);
+  expect(JSON.stringify(setResult)).not.toContain(canary);
+  expect(setResult.result.value.openrouter).toEqual({ configured: true, source: 'file', writable: true });
+  expect(store.get('OPENROUTER_API_KEY')).toBe(canary);
+
+  const clearResult = await call('reaction-key-clear', { provider: 'openrouter' });
+  expect(clearResult.result.ok).toBe(true);
+  expect(clearResult.result.value.openrouter).toEqual({ configured: false, writable: true });
+  expect(store.has('OPENROUTER_API_KEY')).toBe(false);
+
+  await fiber.dispose(); await ctx.fiber.dispose();
 });
 
 

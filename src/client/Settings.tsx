@@ -8,7 +8,17 @@ import type { NotificationSettings, NotificationClientStatus } from './notificat
 import { TEXT_SCALES, textScale, type TextScale } from '../../web/text-scale.js';
 
 export interface Preferences { decisionsProvider?: 'openai' | 'openrouter'; decisionsReactions?: boolean; size: number; npcHome: number; npcRange: number; textScale: TextScale; aboveFullscreen: boolean; preferOpeningParagraph: boolean; inlineQuestions: boolean; roam: boolean; diagnostics: boolean; companionship: CompanionshipMode; notifications: boolean; quietMode: boolean; systemNotifications: boolean; reminders: boolean; reminderDelayMs: number; bubbleDurationMs: number; autoStart: boolean; defaultChatTarget?: 'companion' | 'last'; }
-export interface SettingsFace { form: ConfigForm<Preferences>; call: (command?: PetCommand, signal?: AbortSignal) => Promise<PetStatus>; local: boolean; notifier?: NotificationSettings; }
+export interface ReactionKeyInfo { configured: boolean; source?: string; writable: boolean; }
+export type ReactionKeyStatus = Record<'openai' | 'openrouter', ReactionKeyInfo>;
+export interface SettingsFace {
+  form: ConfigForm<Preferences>;
+  call: (command?: PetCommand, signal?: AbortSignal) => Promise<PetStatus>;
+  local: boolean;
+  notifier?: NotificationSettings;
+  getKeyStatus?: (signal?: AbortSignal) => Promise<ReactionKeyStatus>;
+  setKey?: (provider: 'openai' | 'openrouter', value: string, signal?: AbortSignal) => Promise<ReactionKeyStatus>;
+  clearKey?: (provider: 'openai' | 'openrouter', signal?: AbortSignal) => Promise<ReactionKeyStatus>;
+}
 export type SettingsProps = SettingsFace & PropsLocale<'coopanion'>;
 
 function NumberPreference({ value, min, max, label, hint, invalidHint, id, disabled, save }: {
@@ -30,7 +40,7 @@ function NumberPreference({ value, min, max, label, hint, invalidHint, id, disab
 const disconnected: NotificationClientStatus = { web: { supported: false, permission: 'unavailable', osAuthorization: 'unknown' }, connected: false };
 const noSubscribe = () => () => {};
 
-export function Settings({ form, call, local, notifier, t }: SettingsProps) {
+export function Settings({ form, call, local, notifier, getKeyStatus, setKey, clearKey, t }: SettingsProps) {
   const notification = useSyncExternalStore(notifier?.subscribe ?? noSubscribe, notifier?.getSnapshot ?? (() => disconnected));
   const [notificationBusy, setNotificationBusy] = useState(false);
   const [notificationError, setNotificationError] = useState('');
@@ -41,19 +51,30 @@ export function Settings({ form, call, local, notifier, t }: SettingsProps) {
   const [saving, setSaving] = useState(false);
   const [feedback, setFeedback] = useState<'saved' | 'refused'>();
   const [saveFailure, setSaveFailure] = useState('');
+  const [keyStatuses, setKeyStatuses] = useState<ReactionKeyStatus>();
+  const [keyDraft, setKeyDraft] = useState('');
+  const [keyBusy, setKeyBusy] = useState(false);
+  const [keyError, setKeyError] = useState('');
+  const [keyFeedback, setKeyFeedback] = useState<'saved' | 'cleared'>();
   useEffect(() => {
     if (!local) return;
     let active = true;
     const abort = new AbortController();
     let timer: ReturnType<typeof setTimeout>;
     const refresh = async () => {
-      try { const value = await call(undefined, abort.signal); if (active) { setStatus(value); setFailure(''); } }
-      catch (error) { if (active) setFailure(String(error instanceof Error ? error.message : error)); }
+      try {
+        const value = await call(undefined, abort.signal);
+        if (active) { setStatus(value); setFailure(''); }
+        if (active && getKeyStatus) {
+          const keys = await getKeyStatus(abort.signal).catch(() => undefined);
+          if (active && keys) setKeyStatuses(keys);
+        }
+      } catch (error) { if (active) setFailure(String(error instanceof Error ? error.message : error)); }
       finally { if (active) timer = setTimeout(() => void refresh(), 1500); }
     };
     void refresh();
     return () => { active = false; abort.abort(); clearTimeout(timer); };
-  }, [call, local]);
+  }, [call, getKeyStatus, local]);
   const command = async (value: PetCommand) => {
     if (busy && value !== 'stop') return;
     setBusy(true); setFailure('');
@@ -92,6 +113,61 @@ export function Settings({ form, call, local, notifier, t }: SettingsProps) {
   const running = status?.phase === 'running';
   const disabled = !local || busy || status?.phase === 'starting' || status?.phase === 'stopping';
   const statusText = !status ? t('loading') : status.phase === 'running' ? t(status.visible ? 'running' : 'hidden') : t(status.phase);
+
+  useEffect(() => {
+    setKeyDraft('');
+    setKeyError('');
+    setKeyFeedback(undefined);
+  }, [reactionProvider]);
+
+  const handleSaveKey = async () => {
+    if (!setKey || keyBusy || !keyDraft.trim()) return;
+    setKeyBusy(true); setKeyError(''); setKeyFeedback(undefined);
+    try {
+      const res = await setKey(reactionProvider, keyDraft.trim());
+      setKeyStatuses(res);
+      setKeyDraft('');
+      setKeyFeedback('saved');
+    } catch (error) {
+      setKeyError(String(error instanceof Error ? error.message : error));
+    } finally {
+      setKeyBusy(false);
+    }
+  };
+
+  const handleClearKey = async () => {
+    if (!clearKey || keyBusy) return;
+    setKeyBusy(true); setKeyError(''); setKeyFeedback(undefined);
+    try {
+      const res = await clearKey(reactionProvider);
+      setKeyStatuses(res);
+      setKeyDraft('');
+      setKeyFeedback('cleared');
+    } catch (error) {
+      setKeyError(String(error instanceof Error ? error.message : error));
+    } finally {
+      setKeyBusy(false);
+    }
+  };
+
+  const currentKeyInfo = keyStatuses?.[reactionProvider] ?? (
+    status?.reactionStatus?.provider === reactionProvider
+      ? {
+          configured: status.reactionStatus.keyAvailable,
+          source: status.reactionStatus.source,
+          writable: status.reactionStatus.writable ?? (status.reactionStatus.source !== 'env'),
+        }
+      : undefined
+  );
+  const isEnv = currentKeyInfo?.source === 'env';
+  const isConfigured = !!currentKeyInfo?.configured;
+  const keyStatusText = !currentKeyInfo
+    ? t('loading')
+    : !isConfigured
+    ? t('reactionKeyNotConfigured')
+    : isEnv
+    ? t('reactionKeyConfiguredEnv')
+    : t('reactionKeyConfiguredHarness');
   return <div className="dsh-coopanion-settings" data-testid="coopanion-settings">
     <h2>{t('title')}</h2><p>{t('intro')} {t('languageHint')}</p>
     <section className="pet-card" aria-label={t('runtime')}>
@@ -116,7 +192,60 @@ export function Settings({ form, call, local, notifier, t }: SettingsProps) {
           <option value="openai">{t('reactionProviderOpenai')}</option><option value="openrouter">{t('reactionProviderOpenrouter')}</option>
         </select>
       </div>
-      <p role="status" data-testid="reaction-status">{status?.reactionStatus?.provider !== reactionProvider ? t('loading') : status.reactionStatus.keyAvailable ? t('reactionKeyPresent') : t('reactionKeyMissing')} · {t('reactionCalls')}: {status?.reactionStatus?.calls ?? 0}</p>
+      <div className="pet-row">
+        <div className="pet-label">
+          <strong>{t('reactionKeyStatusLabel')}</strong>
+          <p>{t('reactionKeyStorageHint')}</p>
+        </div>
+        <span className="pet-status" role="status" data-testid="reaction-key-status">
+          <StateDot state={isConfigured ? 'done' : 'idle'} />
+          {keyStatusText}
+        </span>
+      </div>
+      <div className="pet-row">
+        <div className="pet-label">
+          <label htmlFor="coopanion-reaction-key">{t('reactionKeyInputLabel')}</label>
+          {isEnv ? <p className="pet-error">{t('reactionKeyEnvReadOnlyHint')}</p> : null}
+        </div>
+        <Input
+          id="coopanion-reaction-key"
+          className="pet-key-input"
+          type="password"
+          autoComplete="off"
+          placeholder={t('reactionKeyPlaceholder')}
+          value={keyDraft}
+          disabled={!ready || !local || isEnv || keyBusy}
+          onChange={event => {
+            setKeyDraft(event.target.value);
+            setKeyError('');
+            setKeyFeedback(undefined);
+          }}
+          onKeyDown={event => {
+            if (event.key === 'Enter' && keyDraft.trim() && !isEnv && !keyBusy) {
+              void handleSaveKey();
+            }
+          }}
+        />
+      </div>
+      <div className="pet-actions">
+        <Button
+          variant="outline"
+          disabled={!ready || !local || isEnv || !keyDraft.trim() || keyBusy || !setKey}
+          onClick={() => void handleSaveKey()}
+        >
+          {t('reactionKeySave')}
+        </Button>
+        <Button
+          variant="outline"
+          disabled={!ready || !local || isEnv || !isConfigured || keyBusy || !clearKey}
+          onClick={() => void handleClearKey()}
+        >
+          {t('reactionKeyClear')}
+        </Button>
+      </div>
+      {keyFeedback ? <p className="pet-feedback" role="status">{t(keyFeedback === 'saved' ? 'reactionKeySaved' : 'reactionKeyCleared')}</p> : null}
+      {keyError ? <p className="pet-error" role="alert">{keyError}</p> : null}
+      <p role="status" data-testid="reaction-status">{keyStatusText} · {t('reactionCalls')}: {status?.reactionStatus?.calls ?? 0}</p>
     </section>
     <section className="pet-card" aria-label={t('preferences')}>
       <h3>{t('preferences')}</h3>

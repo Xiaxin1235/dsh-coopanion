@@ -125,3 +125,166 @@ it('discards an in-flight reaction after changing service and never falls back a
   const denied=vi.fn(async()=>new Response('never log this response',{status:401})),failed=new ReactionDecider({enabled:()=>true,provider:()=> 'openrouter',key:()=>secret,send,log,fetch:denied});
   failed.observe(snapshot());await vi.waitFor(()=>expect(log).toHaveBeenCalledTimes(2));expect(denied).toHaveBeenCalledOnce();expect(log).toHaveBeenLastCalledWith('Decisions reaction unavailable: HTTP 401');failed.dispose();
 });
+
+it('resolves credentials dynamically, hot-updates on subsequent decisions without restart', async () => {
+  const store = new Map<string, string>([['OPENAI_API_KEY', 'first-credential-key']]);
+  const creds = {
+    resolve: vi.fn(async (ref: string) => store.has(ref) ? { value: store.get(ref)! } : undefined),
+    describe: vi.fn(async (ref: string) => ({ configured: store.has(ref), source: store.has(ref) ? 'file' : undefined, writable: true })),
+    set: vi.fn(async (ref: string, val: string) => { store.set(ref, val); }),
+    unset: vi.fn(async (ref: string) => { store.delete(ref); }),
+  };
+  const fetcher = vi.fn(async () => Response.json(answer('happy')));
+  const send = vi.fn(), log = vi.fn();
+  const decider = new ReactionDecider({
+    enabled: () => true,
+    provider: () => 'openai',
+    credentials: () => creds as never,
+    fetch: fetcher,
+    send,
+    log,
+  });
+  await decider.refreshStatus();
+  expect(decider.status()).toMatchObject({ provider: 'openai', keyAvailable: true, source: 'file', writable: true });
+
+  decider.observe(snapshot('r1'));
+  await vi.waitFor(() => expect(fetcher).toHaveBeenCalledOnce());
+  const [, opt1] = fetcher.mock.calls[0] as unknown as [string, RequestInit];
+  expect(opt1.headers).toMatchObject({ Authorization: 'Bearer first-credential-key' });
+
+  // Hot update credential without restarting
+  store.set('OPENAI_API_KEY', 'second-credential-key');
+  decider.observe(snapshot('r2'));
+  await vi.waitFor(() => expect(fetcher).toHaveBeenCalledTimes(2));
+  const [, opt2] = fetcher.mock.calls[1] as unknown as [string, RequestInit];
+  expect(opt2.headers).toMatchObject({ Authorization: 'Bearer second-credential-key' });
+  decider.dispose();
+});
+
+it('falls back to process.env when credentials service is absent', async () => {
+  vi.stubEnv('OPENROUTER_API_KEY', 'env-only-fallback-key');
+  try {
+    const fetcher = vi.fn(async () => Response.json(answer('happy')));
+    const send = vi.fn(), log = vi.fn();
+    const decider = new ReactionDecider({
+      enabled: () => true,
+      provider: () => 'openrouter',
+      credentials: () => undefined,
+      fetch: fetcher,
+      send,
+      log,
+    });
+    await decider.refreshStatus();
+    expect(decider.status()).toMatchObject({ provider: 'openrouter', keyAvailable: true, source: 'env', writable: false });
+
+    decider.observe(snapshot('r1'));
+    await vi.waitFor(() => expect(fetcher).toHaveBeenCalledOnce());
+    const [, opt] = fetcher.mock.calls[0] as unknown as [string, RequestInit];
+    expect(opt.headers).toMatchObject({ Authorization: 'Bearer env-only-fallback-key' });
+    decider.dispose();
+  } finally {
+    vi.unstubAllEnvs();
+  }
+});
+
+it('rejects setKey and clearKey when shadowed by environment variable with exact error', async () => {
+  const creds = {
+    resolve: vi.fn(async () => ({ value: 'env-key' })),
+    describe: vi.fn(async () => ({ configured: true, source: 'env', writable: false })),
+    set: vi.fn(async () => { throw new Error('Cannot set read-only environment variable'); }),
+    unset: vi.fn(async () => { throw new Error('Cannot unset read-only environment variable'); }),
+  };
+  const decider = new ReactionDecider({
+    enabled: () => true,
+    provider: () => 'openai',
+    credentials: () => creds as never,
+    log: vi.fn(),
+    send: vi.fn(),
+  });
+  await decider.refreshStatus();
+  await expect(decider.setKey('openai', 'valid-key-value')).rejects.toThrow('该密钥由系统环境变量提供，请先删除环境变量');
+  await expect(decider.clearKey('openai')).rejects.toThrow('该密钥由系统环境变量提供，请先删除环境变量');
+  decider.dispose();
+});
+
+it('validates key format strictly: trims whitespace and rejects empty, oversize (>512) or non-printable ASCII', async () => {
+  const store = new Map<string, string>();
+  const creds = {
+    resolve: vi.fn(async (ref: string) => store.has(ref) ? { value: store.get(ref)! } : undefined),
+    describe: vi.fn(async (ref: string) => ({ configured: store.has(ref), source: store.has(ref) ? 'file' : undefined, writable: true })),
+    set: vi.fn(async (ref: string, val: string) => { store.set(ref, val); }),
+    unset: vi.fn(async (ref: string) => { store.delete(ref); }),
+  };
+  const decider = new ReactionDecider({
+    enabled: () => true,
+    provider: () => 'openrouter',
+    credentials: () => creds as never,
+    log: vi.fn(),
+    send: vi.fn(),
+  });
+
+  const invalidInputs = [
+    '',
+    '   ',
+    'a'.repeat(513),
+    'key\nwith\nnewlines',
+    'key\twith\ttab',
+    'key\x00null',
+    '包含中文密钥',
+  ];
+  for (const invalid of invalidInputs) {
+    await expect(decider.setKey('openrouter', invalid)).rejects.toThrow('密钥格式无效：只允许 1–512 位的 ASCII 可打印字符');
+  }
+
+  // Valid inputs
+  await decider.setKey('openrouter', '  sk-valid-ascii-123  ');
+  expect(store.get('OPENROUTER_API_KEY')).toBe('sk-valid-ascii-123');
+
+  await decider.setKey('openrouter', 'a'.repeat(512));
+  expect(store.get('OPENROUTER_API_KEY')).toBe('a'.repeat(512));
+
+  decider.dispose();
+});
+
+it('never leaks secret values in status, returns, logs, or error strings', async () => {
+  const canarySecret = 'CANARY_SECRET_DO_NOT_LEAK_XYZ_98765';
+  const store = new Map<string, string>();
+  const creds = {
+    resolve: vi.fn(async (ref: string) => store.has(ref) ? { value: store.get(ref)! } : undefined),
+    describe: vi.fn(async (ref: string) => ({ configured: store.has(ref), source: store.has(ref) ? 'file' : undefined, writable: true })),
+    set: vi.fn(async (ref: string, val: string) => { store.set(ref, val); }),
+    unset: vi.fn(async (ref: string) => { store.delete(ref); }),
+  };
+  const logs: string[] = [];
+  const decider = new ReactionDecider({
+    enabled: () => true,
+    provider: () => 'openai',
+    credentials: () => creds as never,
+    log: msg => logs.push(msg),
+    send: vi.fn(),
+  });
+
+  const setStatus = await decider.setKey('openai', canarySecret);
+  // Status check: returns { configured, writable, source }, no values
+  expect(JSON.stringify(setStatus)).not.toContain(canarySecret);
+  expect(setStatus.openai).toEqual({ configured: true, source: 'file', writable: true });
+
+  const credStatus = await decider.getCredentialStatus();
+  expect(JSON.stringify(credStatus)).not.toContain(canarySecret);
+
+  const currentStatus = decider.status();
+  expect(JSON.stringify(currentStatus)).not.toContain(canarySecret);
+
+  // Clear key
+  const clearStatus = await decider.clearKey('openai');
+  expect(JSON.stringify(clearStatus)).not.toContain(canarySecret);
+
+  // Global log check: canary secret must never appear in logs
+  for (const logMsg of logs) {
+    expect(logMsg).not.toContain(canarySecret);
+  }
+  expect(logs).toContain('已更新 OpenAI 密钥');
+  expect(logs).toContain('已清除 OpenAI 密钥');
+
+  decider.dispose();
+});

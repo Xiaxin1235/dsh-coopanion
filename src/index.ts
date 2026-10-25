@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import type { Context, Volatile } from '@deepseek-ai/cordis';
+import type { CredentialProvider } from '@deepseek-ai/dsh-credentials';
 import type {} from '@deepseek-ai/dsh-client-connection';
 import type {} from '@deepseek-ai/dsh-settings';
 import type {} from '@deepseek-ai/dsh-agent';
@@ -68,20 +69,28 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
   const model = new PetModel();
   const chat = new ChatSubmission(ctx);
   const chatLifetime = new AbortController();
+  let controls: PetControls | undefined;
   const reactions = new ReactionDecider({
     enabled: () => currentOptions().decisionsReactions === true,
     provider: () => options.decisionsProvider.get(),
+    credentials: () => ctx.get('credentials') as CredentialProvider | undefined,
     send: value => bridge.reaction?.(value),
     log: message => ctx.logger.info(message),
-    changed: () => controls.configure(),
+    changed: () => controls?.configure(),
   });
   ctx.effect(() => () => reactions.dispose());
   ctx.effect(() => () => chatLifetime.abort());
+  ctx.on('credentials/reference-updated', ref => {
+    if (ref === 'OPENAI_API_KEY' || ref === 'OPENROUTER_API_KEY') {
+      void reactions.refreshStatus();
+      controls?.configure();
+    }
+  });
   const preferences: Partial<Pick<DesktopOptions, 'roam' | 'notifications' | 'quietMode' | 'decisionsReactions' | 'companionship' | 'interfaceStyle' | 'defaultChatTarget'>> = {};
   let savePreference: ((field: 'roam' | 'notifications' | 'quietMode' | 'decisionsReactions' | 'companionship' | 'interfaceStyle' | 'defaultChatTarget', value: boolean | CompanionshipMode | 'new' | 'classic' | 'companion' | 'last') => Promise<void>) | undefined;
   ctx.inject(['settings'], child => { savePreference = (field, value) => child.settings.mutate('dsh-coopanion', [{ op: 'set', path: [field], value }]); });
   const currentOptions = (): DesktopOptions => ({ interfaceStyle: options.interfaceStyle.get(), defaultChatTarget: options.defaultChatTarget.get(), size: options.size.get(), npcHome: options.npcHome.get(), npcRange: options.npcRange.get(), textScale: options.textScale.get(), aboveFullscreen: options.aboveFullscreen.get(), preferOpeningParagraph: options.preferOpeningParagraph.get(), inlineQuestions: options.inlineQuestions.get(), roam: options.roam.get(), diagnostics: options.diagnostics.get(), companionship: options.companionship.get(), notifications: options.notifications.get(), quietMode: options.quietMode.get(), decisionsReactions: options.decisionsReactions.get(), decisionsProvider: options.decisionsProvider.get(), reactionStatus: reactions.status(), bubbleDurationMs: options.bubbleDurationMs.get(), systemNotifications: options.systemNotifications.get(), reminders: options.reminders.get(), reminderDelayMs: options.reminderDelayMs.get(), electronPath: options.electronPath, locale, ...preferences });
-  const controls = new PetControls(bridge, currentOptions);
+  controls = new PetControls(bridge, currentOptions);
   let locale: string | undefined;
   let clientLocale: string | undefined;
   let dedicatedLocale = false;
@@ -211,6 +220,27 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
           if (!claim) throw new Error('测试通知未能领取，请稍后重试');
           return { ok: true, value: claim };
         }
+        if (endpoint === 'reaction-key-status') {
+          wire.object({}).strict().parse(payload);
+          return { ok: true, value: await reactions.getCredentialStatus() };
+        }
+        if (endpoint === 'reaction-key-set') {
+          const input = wire.object({
+            provider: wire.enum(['openai', 'openrouter']),
+            value: wire.string(),
+          }).strict().parse(payload);
+          const value = await reactions.setKey(input.provider, input.value);
+          controls.configure();
+          return { ok: true, value };
+        }
+        if (endpoint === 'reaction-key-clear') {
+          const input = wire.object({
+            provider: wire.enum(['openai', 'openrouter']),
+          }).strict().parse(payload);
+          const value = await reactions.clearKey(input.provider);
+          controls.configure();
+          return { ok: true, value };
+        }
         if (endpoint !== 'control') throw new Error('未知的桌宠操作');
         const { command } = wire.object({ command: wire.enum(['start', 'show', 'hide', 'restart', 'stop', 'characters']) }).strict().parse(payload);
         return { ok: true, value: await controls.command(command) };
@@ -218,7 +248,8 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
     };
     // Exact Connection routes coexist with the Gateway's exclusive /api interceptor.
     // The Connection carrier applies its normal Host/Origin and authentication checks.
-    for (const endpoint of ['status', 'control', 'navigation', 'locale', ...notificationEndpoints] as const) {
+    const reactionEndpoints = ['reaction-key-status', 'reaction-key-set', 'reaction-key-clear'] as const;
+    for (const endpoint of ['status', 'control', 'navigation', 'locale', ...reactionEndpoints, ...notificationEndpoints] as const) {
       child.effect(() => child.connection.fetch.register({
         path: `/api/coopanion/${endpoint}`, methods: ['POST'], requestBody: 'buffered',
         fetch: async request => {
