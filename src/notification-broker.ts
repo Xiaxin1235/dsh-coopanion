@@ -24,6 +24,8 @@ export interface BrokerClock {
   clearTimeout(timer: unknown): void;
 }
 export interface BrokerOptions {
+  /** Current display name from the same Host session model used by the pet and tray. */
+  sessionLabel?(sessionId: string): string | undefined;
   clock?: BrokerClock;
   /** Must synchronously enqueue into the acknowledged native generation, or return false. */
   presentRole?(notice: TaskNotice, runtime: NotificationRuntime): boolean;
@@ -291,7 +293,7 @@ export class NotificationBroker {
   private eligible(): boolean { return !this.closed && this.prefs.notifications && this.run.phase === 'running' && this.run.visibilityRevision > 0 && !this.run.suspended; }
   private valid(notice: TaskNotice): boolean { return !notice.requestIds.length || notice.requestIds.some(id => this.requests.get(id)?.state !== 'settled' && this.requests.has(id)); }
   private notice(sessionId: string, turn: number, seq: number, time: number, category: TaskNotice['category'], preview: string, requestIds: string[] = [], stage: TaskNotice['stage'] = 'initial'): TaskNotice {
-    return noticeSchema.parse({ id: noticeId(sessionId, turn, seq, category, stage), sessionId, turn, seq, time, category, stage, title: `${this.sources.get(sessionId)?.label ?? '会话'} · ${title[category]}`.slice(0, 256), body: preview.slice(0, 2048), requestIds });
+    return noticeSchema.parse({ id: noticeId(sessionId, turn, seq, category, stage), sessionId, turn, seq, time, category, stage, title: `${this.options.sessionLabel?.(sessionId) ?? this.sources.get(sessionId)?.label ?? '会话'} · ${title[category]}`.slice(0, 256), body: preview.slice(0, 2048), requestIds });
   }
   private identity(notice: TaskNotice, occurrence = 0, runtimeId?: string): string {
     return noticeId(notice.sessionId, notice.turn, notice.seq, notice.category, notice.stage, occurrence, runtimeId);

@@ -266,3 +266,15 @@ it('quiet mode revokes pending delivery and never grants hidden clients a backlo
   expect(broker.claim('hidden', 1)?.notice.stage).toBe('reminder');
   broker.dispose();
 });
+
+
+it('uses current shared session names for initial notices and later reminders', () => {
+  const time = clock(), s = session(); let label = '[WhaleDot] 目标 · 任务';
+  const broker = new NotificationBroker({ clock: time.api, sessionLabel: () => label });
+  broker.runtime(runtime()); broker.preferences({ notifications: true, reminders: true, reminderDelayMs: 60000 });
+  broker.consume(s, event('approval/asked', 1, { id: ApprovalRequestId('title-ask'), toolName: 'pwsh' }));
+  expect(broker.history().at(-1)!.notice.title).toBe('[WhaleDot] 目标 · 任务 · 等你确认');
+  label = 'Harness 改名后的提醒'; time.advance(60000);
+  expect(broker.history().at(-1)!.notice.title).toBe('Harness 改名后的提醒 · 等你确认');
+  broker.dispose();
+});

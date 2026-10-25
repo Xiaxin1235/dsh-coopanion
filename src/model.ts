@@ -3,6 +3,7 @@ import { basename } from 'node:path';
 import type { Session, SessionEvent } from '@deepseek-ai/dsh-session';
 import type { AssistantStreamFrame } from '@deepseek-ai/dsh-agent';
 import type {} from '@deepseek-ai/dsh-user-approval';
+import type {} from '@deepseek-ai/dsh-session-title';
 import { type PendingInteraction, type TaskNotice } from './notification-contract.ts';
 
 export type Mood = 'idle' | 'thinking' | 'talking' | 'working' | 'waiting' | 'happy' | 'error' | 'sleeping';
@@ -10,7 +11,7 @@ export interface PetResult { id: string; sessionId: string; text: string; time: 
 export interface PetSession { id: string; label: string; project: string; cwd: string; prompt: string; createdAt: number; updatedAt: number; mood: Mood; text: string; reply: string; replyId: string; unread: number; revision: number; active: boolean; streaming: boolean; speechId: string; chatAvailable?: boolean; attentionId?: string; completion?: TaskNotice['category']; agentPreset?: string; companion?: boolean; companionRole?: 'current' | 'earlier'; blank?: boolean; }
 export interface PetSnapshot { mood: Mood; text: string; sessionId: string | null; companionSessionId: string | null; revision: number; active: boolean; streaming: boolean; speechId: string; results: PetResult[]; sessions: PetSession[]; }
 export interface PetNotice extends Partial<Omit<TaskNotice, 'title' | 'body' | 'sessionId'>> { title: string; body: string; sessionId: string; kind?: 'task' | 'message'; }
-interface TaskState { started: boolean; completion: CompletionTracker; ended: number; seq: number; turn: number; active: boolean; finalText?: string; tools: Map<string, string>; approvals: Set<symbol | string>; questions: Set<string>; requests: Set<string>; celebrateUntil: number; stream?: { id: string; revision: number; index: number; text: string; blocks: Map<number, string> }; }
+interface TaskState { title?: string; titleSeq: number; promptLabel?: string; started: boolean; completion: CompletionTracker; ended: number; seq: number; turn: number; active: boolean; finalText?: string; tools: Map<string, string>; approvals: Set<symbol | string>; questions: Set<string>; requests: Set<string>; celebrateUntil: number; stream?: { id: string; revision: number; index: number; text: string; blocks: Map<number, string> }; }
 type ObservedSession = Pick<Session, 'id' | 'header'> & Partial<Pick<Session, 'snapshotEvents'>>;
 const ready = '准备好了，随时叫我。';
 
@@ -35,7 +36,7 @@ export class PetModel {
       const project = session.header.cwd ? basename(session.header.cwd) : '未指定项目';
       item = { id: session.id, label: project, project, cwd: session.header.cwd ?? '', prompt: '', createdAt: session.header.createdAt, updatedAt: session.header.createdAt, mood: 'idle', text: ready, reply: '', replyId: '', unread: 0, revision: 0, active: false, streaming: false, speechId: '', agentPreset: session.header.agentPreset, companion: false };
       this.sessions.set(session.id, item);
-      this.tasks.set(session.id, { started: false, completion: new CompletionTracker(), ended: -1, seq: -1, turn: 0, active: false, tools: new Map(), approvals: new Set(), questions: new Set(), requests: new Set(), celebrateUntil: 0 });
+      this.tasks.set(session.id, { titleSeq: -1, started: false, completion: new CompletionTracker(), ended: -1, seq: -1, turn: 0, active: false, tools: new Map(), approvals: new Set(), questions: new Set(), requests: new Set(), celebrateUntil: 0 });
       this.selected ??= session.id;
       // Restore identity from public history, without replaying stale task states or notices.
       for (const event of session.snapshotEvents?.() ?? []) { this.begin(item, event); this.describe(item, event); }
@@ -66,10 +67,19 @@ export class PetModel {
   }
 
   private describe(item: PetSession, event: SessionEvent): void {
+    const task = this.tasks.get(item.id)!;
+    if (event.type === 'session/title') {
+      if (event.seq <= task.titleSeq) return;
+      task.titleSeq = event.seq;
+      task.title = typeof event.data.title === 'string' ? Array.from(event.data.title.trim()).slice(0, 64).join('') || undefined : undefined;
+      item.label = task.title ?? task.promptLabel ?? item.project;
+      return;
+    }
     if (event.type !== 'user/message' || event.data.source.kind !== 'user') return;
     const text = event.data.content.filter(p => p.type === 'text').map(p => p.text).join(' ').replace(/\s+/g, ' ').trim();
     if (!text) return;
-    if (!item.prompt) item.label = Array.from(text).slice(0, 64).join('');
+    task.promptLabel ??= Array.from(text).slice(0, 64).join('');
+    item.label = task.title ?? task.promptLabel;
     item.prompt = Array.from(text).slice(0, 160).join(''); item.updatedAt = event.time;
   }
 

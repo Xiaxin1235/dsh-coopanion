@@ -315,3 +315,59 @@ it('marks Harness blank drafts until a turn or human message starts them, but ne
   // Hiding never moves the user's focus.
   expect(m.snapshot().sessionId).toBe('used');
 });
+
+
+describe('Harness session titles', () => {
+  const human = (text: string) => event('user/message', createUserMessage({ content: [{ type: 'text', text }], source: { kind: 'user' } }));
+  const title = (text: string) => event('session/title', { title: text, messageSeqs: [], source: { kind: 'user' } });
+  it('keeps the original directory then first-human-message fallback and 64-character limit', () => {
+    const m = new PetModel(), s = session('fallback'); m.observe(s);
+    expect(m.snapshot().sessions[0].label).toBe('fallback');
+    m.consume(s, human('鲸🐳'.repeat(40))); m.consume(s, human('second message'));
+    expect(m.snapshot().sessions[0].label).toBe('鲸🐳'.repeat(32));
+    expect(m.snapshot().sessions[0].prompt).toBe('second message');
+  });
+  it('uses a trimmed title received before messages without changing prompt maintenance', () => {
+    const m = new PetModel(), s = session('before'); m.consume(s, title('  手动标题  '));
+    m.consume(s, human('first message')); m.consume(s, human('latest summary'));
+    expect(m.snapshot().sessions[0]).toMatchObject({ label: '手动标题', prompt: 'latest summary' });
+  });
+  it('updates after user messages and always takes the newest title', () => {
+    const m = new PetModel(), s = session('renamed'); m.consume(s, human('first message'));
+    m.consume(s, title('第一次改名')); m.consume(s, title('[WhaleDot] 目标 · 任务'));
+    m.consume(s, human('later message'));
+    expect(m.snapshot().sessions[0]).toMatchObject({ label: '[WhaleDot] 目标 · 任务', prompt: 'later message' });
+  });
+  it.each(['', '   \t', null, 7])('falls back from an empty or invalid latest title: %s', value => {
+    const m = new PetModel(), s = session('empty'); m.consume(s, title('有效标题'));
+    m.consume(s, title(value as string)); expect(m.snapshot().sessions[0].label).toBe('empty');
+    m.consume(s, human('first fallback')); m.consume(s, human('later summary'));
+    m.consume(s, title('又一次改名')); m.consume(s, title(''));
+    expect(m.snapshot().sessions[0]).toMatchObject({ label: 'first fallback', prompt: 'later summary' });
+  });
+  it('restores cold titles found only in snapshotEvents without replaying activity', () => {
+    const m = new PetModel(), s = session('cold'), events = [human('old message'), title('[WhaleDot] 冷目标 · 冷任务')];
+    m.restore({ ...s, snapshotEvents: () => events });
+    expect(m.snapshot().sessions[0]).toMatchObject({ label: '[WhaleDot] 冷目标 · 冷任务', prompt: 'old message', unread: 0, active: false });
+    expect(m.snapshot().results).toEqual([]);
+  });
+  it('does not let an older live event replace the latest title already observed in history', () => {
+    const m = new PetModel(), s = session('sequence'), old = title('旧标题'), latest = title('新标题');
+    m.observe({ ...s, snapshotEvents: () => [old, latest] }); m.consume(s, old);
+    expect(m.snapshot().sessions[0].label).toBe('新标题');
+  });
+  it('truncates titles by Unicode characters without breaking surrogate pairs', () => {
+    const m = new PetModel(), s = session('long'); m.consume(s, title('  ' + '🐳'.repeat(70) + '  '));
+    expect(m.snapshot().sessions[0].label).toBe('🐳'.repeat(64));
+  });
+  it('leaves companion roles, selection, read state and ordering timestamps unchanged on rename', () => {
+    const m = new PetModel(), first = session('earlier'), second = session('current');
+    const a = { ...first, header: { ...first.header, agentPreset: 'whaledot-companion', createdAt: 1 } };
+    const b = { ...second, header: { ...second.header, agentPreset: 'whaledot-companion', createdAt: 2 } };
+    m.observe(a); m.observe(b); m.consume(a, human('old companion prompt'));
+    const before = m.snapshot(); m.consume(a, { ...title('改名也不改变角色'), time: 9999 });
+    const after = m.snapshot();
+    expect(after.sessions.map(s => [s.id, s.companionRole, s.updatedAt, s.unread])).toEqual(before.sessions.map(s => [s.id, s.companionRole, s.updatedAt, s.unread]));
+    expect(after.sessionId).toBe(before.sessionId); expect(after.companionSessionId).toBe('current');
+  });
+});

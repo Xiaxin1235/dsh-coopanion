@@ -203,3 +203,23 @@ it('projects acknowledged quiet mode into the native tray without changing task 
   expect(quiet).toEqual({ ...ordinary, quietMode: true });
   for (const locale of ['zh', 'en']) for (const redesigned of [false, true]) expect(petCopy(locale, redesigned).quietMode).toBeTruthy();
 });
+
+
+it('uses the same updated Harness title in conversation labels and tray while roles stay first', () => {
+  const work = { id: 'work', label: '[WhaleDot] 目标 · 任务', project: 'project', updatedAt: 10, unread: 1 };
+  const current = { id: 'current', label: '标题不覆盖角色名' }, earlier = { id: 'earlier', label: '旧标题', companionRole: 'earlier' };
+  const snapshot = { sessionId: 'work', companionSessionId: 'current', sessions: [work, current, earlier] };
+  for (const locale of ['zh', 'en']) {
+    const copy = petCopy(locale);
+    for (const label of ['[WhaleDot] 目标 · 任务', 'Harness 中的新名称']) {
+      work.label = label;
+      const state = tray.trayState(snapshot, {}, { locale });
+      expect(companionLabel(snapshot, work, copy)).toBe(label);
+      expect(state.sessions.find(s => s.id === work.id).label).toBe(label);
+      expect(state.sessionLabel).toBe(label); expect(state.tooltip).toContain(label);
+      expect(state.sessions.find(s => s.id === current.id).label).toBe(copy.companionName);
+      expect(state.sessions.find(s => s.id === earlier.id).label).toBe(copy.earlierCompanion);
+      expect(state.sessionId).toBe('work'); expect(work.unread).toBe(1);
+    }
+  }
+});

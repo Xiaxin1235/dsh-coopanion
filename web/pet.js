@@ -123,7 +123,7 @@ function applyLocale() {
   activeName = activeView ? nameIn(activeView.name) : text.defaultName;
   $('chat-character').textContent = activeName; $('menu-name').textContent = activeName;
   pet.setAttribute('aria-label', text.petLabel(activeName));
-  if (bubbleResult) bubble.setAttribute('aria-label', text.finalReply(snapshot.sessions.find(session => session.id === bubbleResult.sessionId)?.label ?? activeName));
+  if (bubbleResult) bubble.setAttribute('aria-label', text.finalReply(sessionName(snapshot.sessions.find(session => session.id === bubbleResult.sessionId)) ?? activeName));
   if (libraryState) for (const option of $('character-select').options) { const view = libraryState.characters.find(view => view.id === option.value); if (view) option.textContent = nameIn(view.name); }
   refreshPreviewCopy(); characterStatus(characterFeedback.key, ...characterFeedback.args);
   if (currentNotice && !interaction.hidden) {
@@ -626,7 +626,7 @@ function renderRequests() {
     const card = document.createElement('article'); card.className = 'inbox-card inbox-reply';
     const content = document.createElement('button'), meta = document.createElement('small'), label = document.createElement('strong'), preview = document.createElement('span'), detail = document.createElement('small'), actions = document.createElement('div'), open = document.createElement('button');
     content.className = 'inbox-content'; content.dataset.resultId = result.id; content.dataset.inboxKey = result.id; content.dataset.action = 'read';
-    content.ariaLabel = `${copy.readReply} · ${sources.get(result.sessionId)?.label ?? result.sessionId}`;
+    content.ariaLabel = `${copy.readReply} · ${sessionName(sources.get(result.sessionId)) ?? result.sessionId}`;
     // Capture the queue at the explicit read action so incoming replies cannot reorder it.
     content.onclick = () => openReader(result, currentInbox().replies.map(item => ({ ...item })));
     meta.textContent = `${copy.newReply} · ${sessionTime({ updatedAt: result.time }, notificationLocale())}`;

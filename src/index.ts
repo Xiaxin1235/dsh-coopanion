@@ -17,7 +17,7 @@ import { ElectronBridge, isRecord, type PetBridge, type DesktopOptions } from '.
 import { PetModel } from './model.ts';
 import { PetControls } from './controls.ts';
 import { z as wire } from 'zod';
-import { petLanguage } from '../web/locale.js';
+import { petLanguage, petCopy } from '../web/locale.js';
 import { DEFAULT_TEXT_SCALE, TEXT_SCALES, type TextScale } from '../web/text-scale.js';
 import { COMPANIONSHIP_MODES, type CompanionshipMode } from '../web/companionship.js';
 
@@ -106,7 +106,13 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
     if (!mounted) return;
     const snapshot = inboxAnswers.snapshot(broker.snapshot()); model.interactions(snapshot.interactions); bridge.notificationState?.(snapshot); update();
   };
-  const broker = new NotificationBroker({ changed: syncNotifications, presentRole: (value, runtime) => bridge.presentRole?.(value, runtime) ?? false });
+  const broker = new NotificationBroker({
+    changed: syncNotifications, presentRole: (value, runtime) => bridge.presentRole?.(value, runtime) ?? false,
+    sessionLabel: id => {
+      const session = model.snapshot().sessions.find(item => item.id === id), copy = petCopy(currentOptions().locale);
+      return session?.companionRole === 'current' ? String(copy.companionName) : session?.companionRole === 'earlier' ? String(copy.earlierCompanion) : session?.label;
+    },
+  });
   const inboxAnswers = new InboxQuestions(ctx, () => options.inlineQuestions.get(), () => broker.snapshot(), syncNotifications);
   ctx.effect(() => () => inboxAnswers.dispose());
   broker.preferences(notificationPrefs());
