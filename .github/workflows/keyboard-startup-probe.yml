@@ -1,0 +1,51 @@
+name: Isolated Windows keyboard startup probe
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: windows-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Measure cold PowerShell and CSharp initialization without a startup cutoff
+        shell: pwsh
+        run: |
+          @'
+          const { spawn } = require('node:child_process');
+          const { resolve, win32 } = require('node:path');
+          const source = resolve('desktop/keyboard-activity-win.cs').replaceAll("'", "''");
+          const command = win32.join(process.env.SystemRoot, 'System32/WindowsPowerShell/v1.0/powershell.exe');
+          (async () => {
+            for (let trial = 1; trial <= 3; trial++) {
+              const began = performance.now();
+              const script = `$ErrorActionPreference='Stop'; [Console]::Out.WriteLine('phase:powershell'); try { Add-Type -Path '${source}' -ReferencedAssemblies System.Windows.Forms; [Console]::Out.WriteLine('phase:compiled'); [KeyboardActivity]::Run(${process.pid}) } catch { [Console]::Error.WriteLine($_.Exception.Message); exit 1 }`;
+              const child = spawn(command, ['-NoLogo','-NoProfile','-STA','-NonInteractive','-WindowStyle','Hidden','-Command',script], {stdio:['ignore','pipe','pipe'],windowsHide:true});
+              let pending = '', complete = false;
+              const timer = setTimeout(() => child.kill(), 90000);
+              child.stdout.on('data', bytes => {
+                pending += bytes;
+                let end;
+                while ((end = pending.indexOf('\n')) >= 0) {
+                  const line = pending.slice(0,end).trim(); pending = pending.slice(end+1);
+                  if (line.startsWith('phase:')) console.log(JSON.stringify({trial,phase:line.slice(6),elapsedMs:Math.round(performance.now()-began)}));
+                  else if (['active','idle','unknown'].includes(line)) {
+                    if (!complete) console.log(JSON.stringify({trial,phase:'first-enum',elapsedMs:Math.round(performance.now()-began)}));
+                    complete = true; child.kill();
+                  } else { console.error('Unexpected probe output'); process.exitCode = 1; child.kill(); }
+                }
+              });
+              child.stderr.on('data', bytes => console.error(String(bytes)));
+              await new Promise((done,reject) => { child.once('error',reject); child.once('exit',done); });
+              clearTimeout(timer);
+              if (!complete) throw Error('Native helper produced no bounded enum within 90 seconds');
+            }
+          })().catch(error => { console.error(error); process.exitCode=1; });
+          '@ | Set-Content -LiteralPath "$env:RUNNER_TEMP/keyboard-startup-probe.cjs"
+          node "$env:RUNNER_TEMP/keyboard-startup-probe.cjs"
