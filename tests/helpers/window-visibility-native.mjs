@@ -10,6 +10,7 @@ export async function verifyNativeVisibility({ page, bridge, registry }) {
   const restored = async reason => {
     await waitRecovery(async () => { const s = await command('inspect'); return s.visible && !s.minimized && s.top; }, `window did not recover from ${reason}`);
     const s = await command(process.platform === 'win32' ? 'measure' : 'inspect');
+    assert.equal(s.petFullscreen, false, 'the overlay remains auxiliary and never enters fullscreen itself');
     if (!s.foregroundFocused || s.nativeForegroundFocused === false) console.log('Native recovery focus evidence:', reason, s);
     assert.equal(s.foregroundFocused, true, `${reason} recovery must not activate the pet`);
     assert.equal(s.focused, false); if (process.platform === 'win32') { assert.equal(s.aboveForeground, true); assert.equal(s.nativeForegroundFocused, true, 'Win32 foreground remains the fixture'); }

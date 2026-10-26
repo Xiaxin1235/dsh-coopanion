@@ -5,8 +5,8 @@ runs:
   steps:
     - shell: bash
       run: |
-        sudo apt-get update
-        sudo apt-get install -y --no-install-recommends openbox x11-utils xvfb libxtst6 python3
+        sudo timeout 120 apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=15 -o Acquire::https::Timeout=15 update
+        sudo timeout 120 apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=15 -o Acquire::https::Timeout=15 install -y --no-install-recommends openbox x11-utils xvfb libxtst6 python3
         export DISPLAY=:99
         Xvfb "$DISPLAY" -screen 0 1200x800x24 -nolisten tcp > "$RUNNER_TEMP/coopanion-xvfb.log" 2>&1 &
         display_pid=$!
