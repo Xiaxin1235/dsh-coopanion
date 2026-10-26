@@ -60,6 +60,14 @@ jobs:
       - name: Verify N0 notification contract and prepare the private probe
         run: npm run test:n0
       - run: npm run build
+      - name: Use the official Ubuntu archive for graphical test dependencies
+        if: runner.os == 'Linux'
+        run: |
+          for source in /etc/apt/sources.list /etc/apt/sources.list.d/*.sources /etc/apt/sources.list.d/*.list; do
+            if [ -f "$source" ]; then
+              sudo sed -i 's|http://azure.archive.ubuntu.com/ubuntu|https://archive.ubuntu.com/ubuntu|g' "$source"
+            fi
+          done
       - run: npx playwright-core install --with-deps chromium
       - uses: ./.github/actions/setup-linux-display
         if: runner.os == 'Linux'
@@ -144,6 +152,14 @@ jobs:
           cache: ${{ !inputs.release-tag && 'npm' || '' }}
       - run: npm ci --ignore-scripts
       - run: npm run verify:metadata
+      - name: Use the official Ubuntu archive for graphical test dependencies
+        if: runner.os == 'Linux'
+        run: |
+          for source in /etc/apt/sources.list /etc/apt/sources.list.d/*.sources /etc/apt/sources.list.d/*.list; do
+            if [ -f "$source" ]; then
+              sudo sed -i 's|http://azure.archive.ubuntu.com/ubuntu|https://archive.ubuntu.com/ubuntu|g' "$source"
+            fi
+          done
       - run: npx playwright-core install --with-deps chromium
       - uses: ./.github/actions/setup-linux-display
         if: runner.os == 'Linux'
