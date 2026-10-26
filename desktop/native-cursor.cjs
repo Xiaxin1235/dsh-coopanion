@@ -5,7 +5,6 @@ const { join } = require('node:path');
 // Chromium caches in-window X11 cursor events even after click-through is
 // enabled. Query X11 independently so entry into an ignored window still works.
 exports.createNativeCursor = ({ screen, platform = process.platform, env = process.env, start = spawn, now = () => performance.now() }) => {
-  const original = screen.getCursorScreenPoint;
   let child, point, at = -Infinity, buffer = '';
   const stop = () => { const old = child; child = undefined; point = undefined; old?.kill(); };
   if (platform === 'linux' && env.DISPLAY && !env.WAYLAND_DISPLAY && env.XDG_SESSION_TYPE?.toLowerCase() !== 'wayland') {
@@ -27,5 +26,5 @@ exports.createNativeCursor = ({ screen, platform = process.platform, env = proce
       });
     } catch { stop(); }
   }
-  return { read: () => screen.getCursorScreenPoint !== original ? screen.getCursorScreenPoint() : point && now() - at <= 500 ? point : screen.getCursorScreenPoint(), inspect: () => ({running:!!child,point,age:Number.isFinite(at)?now()-at:null,overridden:screen.getCursorScreenPoint!==original}), stop };
+  return { read: () => point && now() - at <= 500 ? point : screen.getCursorScreenPoint(), inspect: () => ({running:!!child,point,age:Number.isFinite(at)?now()-at:null}), stop };
 };

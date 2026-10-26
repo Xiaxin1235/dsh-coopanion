@@ -57,6 +57,12 @@ try:
 finally: x11.XCloseDisplay(d)
 `;
 
+export async function warpNativePoint(point) {
+  if(process.platform==='darwin')await run('python3',['-c',warpMacCursor,String(point.x),String(point.y)]);
+  else if(process.platform==='linux')await run('python3',['-c',warpCursor,String(point.x),String(point.y)]);
+  else await warpWindowsCursor(point);
+}
+
 /** Exercise real click-through hit testing with the OS and CDP cursors at the same point. */
 export async function petClick(page, options = {}, twice = false) {
   await page.evaluate(() => {
