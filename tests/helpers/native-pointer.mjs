@@ -132,6 +132,13 @@ export async function nativeClick(page, selector) {
   // CDP and the physical cursor on the same measured point rather than mixing
   // two layout samples; locator trial above waits for actionability/stability.
   const { x, y } = measurement.css;
+  // X11 cursor warps are processed asynchronously; Electron's screen query can
+  // still return the previous sample when the helper process has just exited.
+  // Wait for the native observation, without issuing another input action.
+  await page.waitForFunction(async ({ x, y, expected }) => {
+    const value = await window.dshPetBridge.testScreenPoint({ x, y, width: innerWidth, height: innerHeight });
+    return Math.abs(value.cursor.x - expected.x) <= 2 && Math.abs(value.cursor.y - expected.y) <= 2;
+  }, { x, y, expected: measurement.dip }, { timeout: 3000 });
   const beforeCdp = await nativeMeasurement(page, selector);
   assert.ok(Math.abs(beforeCdp.cursor.x-measurement.dip.x)<=2 && Math.abs(beforeCdp.cursor.y-measurement.dip.y)<=2, `OS cursor conversion is correct before CDP input: ${JSON.stringify({ expected: measurement.dip, observed: beforeCdp.cursor, physical: p })}`);
   await page.mouse.move(x, y);
