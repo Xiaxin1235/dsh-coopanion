@@ -36,6 +36,12 @@ it('redacts quoted/unquoted environment assignments, including whitespace and es
   for (const word of ['plainsecret', 'secret words', 'private', 'first', 'second', 'confidential']) expect(text).not.toContain(word);
   expect(text.match(/\[REDACTED\]/g)).toHaveLength(6);
 });
+it('keeps PowerShell variables readable while still hiding env assignments and tokens in them', () => {
+  const text = approvalText("$target = 'D:\\demo\\reports\\old-report.txt'\nRemove-Item -LiteralPath $target -Force\n$env:API_KEY = 'private'\n$token = 'ghp_fake123456789'");
+  expect(text).toContain("$target = 'D:\\demo\\reports\\old-report.txt'");
+  expect(text).not.toContain('private');
+  expect(text).not.toContain('ghp_fake123456789');
+});
 it('removes control and format characters before redaction, retaining normalized newlines', () => {
   expect(approvalText('echo\t one\u0000\r\ntwo\rthree\u007f\u202e')).toBe('echo  one\ntwo\nthree');
   expect(approvalText('echo sk-\u200btestsecret')).toBe('echo [REDACTED]');

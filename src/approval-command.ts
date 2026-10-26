@@ -10,7 +10,9 @@ export function approvalText(value: string): string {
   text = text
     .replace(/\b(?:sk-[a-z0-9_-]+|gh[pousr]_[a-z0-9_]+|github_pat_[a-z0-9_]+|AKIA[A-Z0-9]{12,}|xox[baprs]-[a-z0-9-]+)\b/gi, '[REDACTED]')
     .replace(/\bBearer\s+[^\s"'`;|<>]+/gi, 'Bearer [REDACTED]')
-    .replace(/((?<![\w-])(?:\$env:)?[A-Za-z_][A-Za-z0-9_]*\s*=\s*)((?:"(?:\\[\s\S]|`[\s\S]|[^"\\`])*"|'(?:''|[^'])*'|"[^"\n]*(?=\n|$)|'[^'\n]*(?=\n|$)|\$\([^)]*\)|\\[\s\S]|`[\s\S]|[^\s"';&|<>\\`])+)/g, '$1[REDACTED]');
+    // Environment assignments only. A PowerShell variable such as `$target = 'D:\x'` is not a secret and
+    // must stay readable in an approval; a real token assigned to it is still caught by the formats above.
+    .replace(/((?<![\w$-])(?:\$env:)?[A-Za-z_][A-Za-z0-9_]*\s*=\s*)((?:"(?:\\[\s\S]|`[\s\S]|[^"\\`])*"|'(?:''|[^'])*'|"[^"\n]*(?=\n|$)|'[^'\n]*(?=\n|$)|\$\([^)]*\)|\\[\s\S]|`[\s\S]|[^\s"';&|<>\\`])+)/g, '$1[REDACTED]');
   const lines = text.split('\n'), clipped = lines.slice(0, 12).join('\n');
   if (lines.length <= 12 && clipped.length <= 500) return clipped;
   let prefix = clipped.slice(0, 500 - marker.length);
