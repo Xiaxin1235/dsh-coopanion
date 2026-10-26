@@ -1,0 +1,58 @@
+name: Targeted installed host
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-toolchain
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Pack this committed candidate
+        shell: bash
+        run: |
+          mkdir -p .cache/probe
+          packed=$(npm pack --ignore-scripts --silent --pack-destination .cache/probe)
+          version=$(node -p 'require("./package.json").version')
+          mv ".cache/probe/$packed" ".cache/probe/dsh-coopanion-$version.tgz"
+          node scripts/check-package.mjs ".cache/probe/dsh-coopanion-$version.tgz" --write-report
+      - uses: actions/upload-artifact@v4
+        with:
+          name: installed-host-candidate
+          path: .cache/probe/
+          include-hidden-files: true
+  install:
+    needs: package
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-toolchain
+      - run: npm ci --ignore-scripts
+      - run: npx playwright-core install --with-deps chromium
+      - uses: ./.github/actions/setup-linux-display
+        if: runner.os == 'Linux'
+      - uses: actions/download-artifact@v4
+        with:
+          name: installed-host-candidate
+          path: release
+      - run: npm run test:install
+        env:
+          DSH_TEST_VERSION: 0.2.1-rc.3
+          DSH_TEST_PACKAGE_DIR: ${{ github.workspace }}/release
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: installed-host-${{ runner.os }}
+          path: artifacts/

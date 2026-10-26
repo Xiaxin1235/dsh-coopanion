@@ -377,7 +377,7 @@ try {
     await page.waitForFunction(size => getComputedStyle(document.documentElement).getPropertyValue('--size') === `${size}px`, size);
     for (const textScale of [1, 1.25, 1.5]) {
       await surface.getByRole('combobox', { name: '文字大小', exact: true }).selectOption(String(textScale));
-      await page.waitForFunction(scale => getComputedStyle(document.querySelector('#message')).fontSize === `${13 * scale}px`, textScale);
+      await page.waitForFunction(scale => getComputedStyle(document.querySelector('#message')).fontSize === `${14 * scale}px`, textScale);
       await waitProfile(new RegExp('textScale: ' + String(textScale).replace('.', '[.]') + '(?:\\s|$)'));
       assert.equal(await page.locator('#message').inputValue(), 'M4 installed draft');
       const rect = await page.locator('#chat').evaluate(n => { const r = n.getBoundingClientRect(); return { x: r.x, y: r.y, right: r.right, bottom: r.bottom, W: innerWidth, H: innerHeight }; });
