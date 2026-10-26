@@ -11,9 +11,10 @@ const directory = await mkdtemp(join(tmpdir(), 'dsh-notification-ui-'));
 const server = previewServer({ dataDir: directory }); server.listen(0, '127.0.0.1'); await once(server, 'listening');
 let browser;
 const source = 'session-full-question-abcdef-123456';
-const interactionId = JSON.stringify([source, 'question', 'native-call-full']);
-const request = { id: interactionId, nativeId: 'native-call-full', sessionId: source, kind: 'question', turn: 1, seq: 2, createdAt: 1, preview: '<img src=x onerror="throw 1"> Which option?', state: 'continued', dueAt: Date.now() + 600000, automaticReminders: 0 };
+let interactionId = JSON.stringify([source, 'question', 'native-call-full']);
+let request = { id: interactionId, nativeId: 'native-call-full', sessionId: source, kind: 'question', turn: 1, seq: 2, createdAt: 1, preview: '<img src=x onerror="throw 1"> Which option?', state: 'continued', dueAt: Date.now() + 600000, automaticReminders: 0 };
 const state = { protocol: 1, runtime: { phase: 'running', visible: true, generation: 7, visibilityRevision: 4, suspended: false }, interactions: [request] };
+let questionRevision = 0;
 const notice = (id, category = 'question', stage = 'initial', requestIds = [interactionId]) => ({ id, sessionId: source, category, stage, turn: 1, seq: 2, time: Date.now(), title: 'Question', body: request.preview, requestIds });
 try {
   browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH ?? (existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : chromium.executablePath()), headless: true, args: ['--no-sandbox', '--enable-unsafe-swiftshader'] });
@@ -47,6 +48,19 @@ try {
   assert.ok((await page.evaluate(() => window.n2Actions)).some(action => action.type === 'open-session' && action.sessionId === source));
   assert.ok(!(await page.evaluate(() => window.n2Actions)).some(action => ['read', 'answered', 'approved'].includes(action.type)), 'view/open/snooze cannot answer or approve a request');
 
+  // C04: opening a continued request acknowledges its exact durable identity.
+  await receive({ type: 'notice', notice: notice('acknowledged-reminder', 'question', 'reminder') });
+  await page.waitForTimeout(100);
+  assert.equal(await page.locator('#interaction').isVisible(), false, 'an acknowledged continued request must not replay');
+  async function freshQuestion() {
+    const nativeId = `native-call-next-${++questionRevision}`;
+    interactionId = JSON.stringify([source, 'question', nativeId]);
+    request = { ...request, id: interactionId, nativeId };
+    state.interactions = [request];
+    await receive({ type: 'notification-state', snapshot: state });
+  }
+  await freshQuestion();
+
   // A final reply being read has precedence over a reminder, including continued questions.
   const reply = { id: 'reply-full', sessionId: 'selected-other-session', time: 1, text: 'Full reply. '.repeat(40), read: false };
   await receive({ type: 'snapshot', snapshot: { mood: 'happy', sessionId: reply.sessionId, sessions: [{ id: reply.sessionId, label: 'Reading task', mood: 'happy', unread: 1, replyId: reply.id, chatAvailable: true }, { id: source, label: 'Question source', mood: 'idle' }], results: [reply] } });
@@ -58,12 +72,16 @@ try {
   assert.equal(await page.locator('#interaction-title').innerText(), 'That earlier request is still waiting for you.');
   await page.locator('#interaction-close').click();
 
+  await freshQuestion();
+
   // Chat input holds a prompt. A request settling during that wait must never replay.
   await receive({ type: 'ui-control', command: 'chat' }); await page.locator('#message').fill('I am typing');
   await receive({ type: 'notice', notice: notice('typing-reminder', 'question', 'reminder') });
   await page.waitForTimeout(100); assert.equal(await page.locator('#interaction').isVisible(), false); assert.equal(await page.locator('#message').inputValue(), 'I am typing');
   await receive({ type: 'notification-state', snapshot: { ...state, interactions: [{ ...request, state: 'settled', dueAt: null }] } });
   await page.keyboard.press('Escape'); await page.waitForTimeout(100); assert.equal(await page.locator('#interaction').isVisible(), false);
+
+  await freshQuestion();
 
   // Grouped reminders and Chinese copy, plus keyboard-discoverable request inbox.
   const second = { ...request, id: 'approval-full', nativeId: 'approval-full', kind: 'approval', preview: 'Run command?', state: 'open' };
