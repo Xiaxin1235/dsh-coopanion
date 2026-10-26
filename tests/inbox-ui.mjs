@@ -17,9 +17,9 @@ try {
   const errors = []; page.on('pageerror', error => errors.push(error.message));
   await page.addInitScript(() => {
     window.inboxActions = [];
-    window.dshPetBridge = { subscribe(fn) { window.inboxReceive = fn; }, action(value) { window.inboxActions.push(value); }, hit() {} };
+    window.dshPetBridge = { subscribe(fn) { window.inboxReceive = fn; }, action(value) { window.inboxActions.push(value); if(value.type==='select')queueMicrotask(()=>window.inboxReceive({type:'snapshot',snapshot:{...window.inboxFrame,sessionId:value.sessionId}})); }, hit() {} };
   });
-  const receive = message => page.evaluate(message => window.inboxReceive(message), message);
+  const receive = message => page.evaluate(message => { if(Array.isArray(message.snapshot?.sessions))window.inboxFrame=message.snapshot;window.inboxReceive(message); }, message);
   const actions = () => page.evaluate(() => window.inboxActions.filter(action => ['select', 'read', 'open-session', 'notification-snooze', 'question-answer'].includes(action.type)));
   const resetActions = () => page.evaluate(() => { window.inboxActions = []; });
   const focus = { id: 'focus-full-id', label: '正在聊的会话', project: 'shared', mood: 'idle', unread: 0, chatAvailable: true };

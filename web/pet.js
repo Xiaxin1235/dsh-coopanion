@@ -59,6 +59,7 @@ let body, previewBody, previewCharacter, activeView, activeScheme, activeName = 
 let appliedMood, appliedControls, speech, speechExpires = Infinity, pressing = false, dragStart, dragPoint, dragging = false, previewScheme = "", reducedNeedsStep = true;
 let options = { interfaceStyle: 'new', inlineQuestions: true, preferOpeningParagraph: true, textScale: 1, size: 180, roam: true, companionship: 'off', notifications: true, quietMode: false, bubbleDurationMs: 12000 };
 let snapshot = { mood: 'idle', text: '你好。点点我，或双击和我说话。', sessionId: null, sessions: [] };
+let pendingSelectionId;
 let x = innerWidth * .68, y = innerHeight - 155, hovered = false, asleep = false, toastTimer, noticeSession;
 let cursorPoint, lastHit;
 let renderedSessionId = null, reactionUntil = 0, reactionMood, reactionExpression, bubbleSession, trayKey, touchTimer, touchBlockedUntil = 0;
@@ -740,6 +741,7 @@ function receive(message) {
       act(body, activeView, expression, true); reducedNeedsStep = true; updateMood(); break;
     }
     case 'init':
+      pendingSelectionId = undefined;
       inboxReceipts.load(message.dismissedInbox);
       applyOptions(message.options);
       if (message.snapshot) snapshot = message.snapshot;
@@ -782,7 +784,10 @@ function receive(message) {
     case 'characters': $('open-characters').click(); break;
     case 'snapshot':
       if (JSON.stringify((message.snapshot.sessions ?? []).map(s => [s.id, s.revision, s.mood])) !== JSON.stringify((snapshot.sessions ?? []).map(s => [s.id, s.revision, s.mood]))) attentionToWork();
-      snapshot = { ...message.snapshot, results: message.snapshot.results ?? snapshot.results ?? [] }; render(); break;
+      // A read acknowledgement may already be in flight when the user chooses
+      // its source. Keep that explicit choice until the host acknowledges it.
+      if (message.snapshot.sessionId === pendingSelectionId || !message.snapshot.sessions.some(session => session.id === pendingSelectionId)) pendingSelectionId = undefined;
+      snapshot = { ...message.snapshot, sessionId: pendingSelectionId ?? message.snapshot.sessionId, results: message.snapshot.results ?? snapshot.results ?? [] }; render(); break;
     case 'chat-result':
       if (composer.receive(message)) {
         clearTimeout(chatTimers.get(message.requestId)); chatTimers.delete(message.requestId); render();
@@ -869,8 +874,7 @@ function hit(px, py) {
 function openChat(forceDefault = true) {
   if (forceDefault && options.defaultChatTarget !== 'last' && snapshot.companionSessionId) {
     if (snapshot.sessionId !== snapshot.companionSessionId) {
-      snapshot = { ...snapshot, sessionId: snapshot.companionSessionId };
-      send({ type: 'select', sessionId: snapshot.companionSessionId });
+      chooseSession(snapshot.companionSessionId);
       render();
     }
   }
@@ -932,8 +936,7 @@ pet.addEventListener('pointerenter', () => { hovered = true; }); pet.addEventLis
 $('chat-current').onclick = openConversations;
 $('chat-to-companion').onclick = () => {
   if (!snapshot.companionSessionId) return;
-  snapshot = { ...snapshot, sessionId: snapshot.companionSessionId };
-  send({ type: 'select', sessionId: snapshot.companionSessionId });
+  chooseSession(snapshot.companionSessionId);
   render();
   openChat(false);
 };
@@ -968,13 +971,18 @@ $('conversation-list').onclick = event => {
   const session = card && snapshot.sessions.find(item => item.id === card.dataset.sessionId);
   if (!session) return;
   conversations.hidden = true;
-  if (session.id !== snapshot.sessionId) { snapshot = { ...snapshot, sessionId: session.id }; send({ type: 'select', sessionId: session.id }); }
+  if (session.id !== snapshot.sessionId) chooseSession(session.id);
   const result = unreadReplies(snapshot, acknowledgedResults).find(r => r.sessionId === session.id);
   if (result) openReader(result); else if (snapshot.companionSessionId) { render(); openChat(false); } else render();
 };
 function continueSession(id) {
   if (!id || !snapshot.sessions.some(session => session.id === id)) return;
-  send({ type: 'select', sessionId: id }); snapshot = { ...snapshot, sessionId: id }; render(); openChat(false);
+  chooseSession(id); render(); openChat(false);
+}
+function chooseSession(id) {
+  pendingSelectionId = native ? id : undefined;
+  snapshot = { ...snapshot, sessionId: id };
+  send({ type: 'select', sessionId: id });
 }
 function acknowledgeIssue(id) {
   if (sessionAttention.acknowledge(snapshot, allRequests(), id)) {

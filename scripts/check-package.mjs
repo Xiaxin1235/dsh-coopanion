@@ -19,7 +19,7 @@ const entries = execFileSync('tar', ['-tzf', archive], { encoding: 'utf8' }).tri
 assert.ok(entries.every(path => path.startsWith('package/') && !path.split('/').includes('..')), 'invalid archive paths');
 const unpack = path => execFileSync('tar', ['-xOzf', archive, `package/${path}`], { encoding: 'utf8' });
 const packed = JSON.parse(unpack('package.json'));
-for (const required of ['desktop/native-cursor.cjs', 'desktop/cursor-x11.py']) assert.ok(entries.includes(`package/${required}`), `missing native pointer source ${required}`);
+for (const required of ['desktop/native-cursor.cjs', 'desktop/cursor-x11.py', 'tests/session-selection-ui.mjs']) assert.ok(entries.includes(`package/${required}`), `missing native pointer or selection source ${required}`);
 verifyMetadata(packed, JSON.parse(unpack('npm-shrinkwrap.json')));
 assert.ok(unpack('cordis.patch.yml').includes(`name: '${packed.name}'`), 'bundle must load the scoped package');
 assert.ok(unpack('dist/client.js').includes(`id: ${JSON.stringify(packed.name)}`), 'browser module must register the scoped package');

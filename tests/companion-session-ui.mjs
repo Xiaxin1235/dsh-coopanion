@@ -70,6 +70,7 @@ try {
     assert.equal(await page.locator('#message').inputValue(), '');
     await page.locator('#chat-to-companion').click();
     assert.equal(await page.locator('#chat-session-name').textContent(), copy.chatWithMe);
+    await receive({ type: 'snapshot', snapshot: { ...snapshot, sessionId: 'current' } });
     // A model removal echo selects the first remaining work; 'last' must retain it.
     await page.keyboard.press('Escape');
     await receive({ type: 'configure', options: { defaultChatTarget: 'last' } });
