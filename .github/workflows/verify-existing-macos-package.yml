@@ -32,6 +32,20 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run verify:metadata
       - run: npx playwright-core install --with-deps chromium
+      - name: Use software WebGL for the Intel macOS virtual machine
+        if: runner.os == 'macOS' && runner.arch == 'X64'
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs'), path = require('node:path');
+          const executable = require('electron');
+          const directory = path.join(process.env.RUNNER_TEMP, 'software-electron');
+          const native = path.join(directory, 'Electron.app/Contents/MacOS');
+          fs.mkdirSync(native, {recursive:true});
+          const script = '#!/bin/sh\nexec '+JSON.stringify(executable)+' --use-gl=angle --use-angle=swiftshader --enable-unsafe-swiftshader "$@"\n';
+          for (const file of [path.join(directory,'electron'),path.join(native,'Electron')]) fs.writeFileSync(file,script,{mode:0o700});
+          fs.appendFileSync(process.env.GITHUB_ENV,'ELECTRON_OVERRIDE_DIST_PATH='+directory+'\n');
+          NODE
       - uses: actions/download-artifact@v4
         with:
           name: desktop-pet
