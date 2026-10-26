@@ -46,8 +46,7 @@ try {
   assert.equal(await app.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows()[0].isVisible()),false);
   for(const id of [91001,91002]) {
     await moveCursorToDisplay(page,id);
-    await moveCursorToDisplay(page,91002);
-  await page.evaluate(()=>window.dshPetBridge.action({type:'move-display'}));
+    await page.evaluate(()=>window.dshPetBridge.action({type:'move-display'}));
     await page.waitForSelector(`#pet[data-display-id="${id}"]`);
     if(id===91001) {
       assert.equal(await app.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows()[0].isVisible()),false,'hidden display switch does not show the window');
@@ -72,6 +71,7 @@ try {
     const s=globalThis.m5Screen;s.layout=controlled;const d=s.layout[1];s.cursor={x:d.workArea.x+50,y:d.workArea.y+50};
     screen.emit('display-added',{},d);
   },controlled);
+  await moveCursorToDisplay(page,91002);
   await page.evaluate(()=>window.dshPetBridge.action({type:'move-display'}));
   await page.waitForSelector('#pet[data-display-id="91002"]');
   await page.waitForFunction(()=>!['air','drag','crouch'].includes(document.querySelector('#pet').dataset.mode));
