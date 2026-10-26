@@ -2,9 +2,11 @@
 
 本 fork 保留上游包名用于兼容已有设置与模块身份，**不向 @takboo/dsh-coopanion 的 npm 命名空间发布**。GitHub 成品包和对应源码发布在 Xiaxin1235/dsh-coopanion，安装依赖使用固定 Release URL。WhaleMaid 完整版将自动安装这份组件；市场只提交 WhaleMaid 的完整功能入口。
 
-fork 的发行流程：完成本地类型、单元与包验证，推送 fork 默认分支后运行原有 CI／规范包及安装矩阵；通过后使用其同一份规范 tarball 创建 GitHub Release，包含版本包、固定别名、SHA256SUMS、verification.json、release-notes.md。npm 上传 job 仅为上游仓库保留，fork 不执行。
+fork 的发行流程：完成本地类型、单元与包验证，推送 fork 默认分支后运行 Windows CI／规范包及五版宿主安装矩阵；通过后使用其同一份规范 tarball 创建 GitHub Release，包含版本包、固定别名、SHA256SUMS、verification.json、release-notes.md。npm 上传 job 仅为上游仓库保留，fork 不执行。
 
 后续更新版本和 shrinkwrap、提交到 `whaledot-local` 后，新建并推送对应 `vX.Y.Z` 标签即可触发 **WhaleMaid companion release**；也可手动运行该工作流并填写已有标签。它会重跑标签提交的检查与安装矩阵，再自动发布同一份包到此 fork 的 GitHub Release。随后更新 WhaleMaid 的 `market/companion.json`，发布下个完整包版本。用户仍只安装一个完整包。
+
+本 fork 当前只声明 Windows 支持（`os: win32`），规范包由 Windows runner 生成。原有 macOS 焦点失败和 Linux 受控多屏输入失败保留在旧 Actions 记录，不能计为通过；下述上游三平台流程不代表本 fork 已完成三平台支持。CI 手动入口保留 platforms JSON 参数供后续跨平台开发时使用。
 
 下面保留上游维护流程供追溯；其中 npm OIDC 与 takboo/main 限制不用于本 fork。
 

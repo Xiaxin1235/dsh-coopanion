@@ -1,3 +1,5 @@
+> WhaleMaid 配套 fork 当前首发支持 **Windows**。macOS / Linux 尚未支持；原生焦点及输入回归仍有未解决记录。日常安装请使用 [WhaleMaid 完整版](https://github.com/Xiaxin1235/WhaleMaid)，自动安装本组件。
+
 # DeepSeek 大肥鱼
 
 **让 Harness 的工作，有个看得见的小伙伴。**
