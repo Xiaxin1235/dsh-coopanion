@@ -1,7 +1,7 @@
 const { displayTarget } = require('../web/display-geometry.js');
 
 // The injected screen/window are also used by the deterministic CI layout tests.
-module.exports.createDisplayController = ({ screen, win, send, changed = () => {} }) => {
+module.exports.createDisplayController = ({ screen, win, send, changed = () => {}, cursor = () => screen.getCursorScreenPoint() }) => {
   let currentId = screen.getPrimaryDisplay().id, previous, state, lastKey, revision = 0;
   const publish = () => { if (state) send({ type: 'display-changed', ...state }); };
   function refresh({ point, displayId } = {}) {
@@ -16,6 +16,6 @@ module.exports.createDisplayController = ({ screen, win, send, changed = () => {
       lastKey = key; state = { ...next, revision: ++revision }; publish(); changed();
     }
   }
-  return { refresh, publish, get state() { return state; }, moveToCursor() { const before = revision; refresh({ point: screen.getCursorScreenPoint() }); if (before === revision) publish(); },
-    cursor() { const p = screen.getCursorScreenPoint(), b = state?.contentBounds; return b ? { type: 'cursor', x: p.x - b.x, y: p.y - b.y, revision: state.revision } : undefined; } };
+  return { refresh, publish, get state() { return state; }, moveToCursor() { const before = revision; refresh({ point: cursor() }); if (before === revision) publish(); },
+    cursor() { const p = cursor(), b = state?.contentBounds; return b ? { type: 'cursor', x: p.x - b.x, y: p.y - b.y, revision: state.revision } : undefined; } };
 };

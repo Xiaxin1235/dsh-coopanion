@@ -42,7 +42,7 @@ const displayTest = process.env.DSH_PET_TEST_NO_SANDBOX === '1' && !!process.env
 const keyboardActivity = require('./keyboard-activity.cjs').createKeyboardActivity();
 const { initialLockState } = require('./lifecycle-state.cjs');
 let inboxReceipts, inboxInteractions = [];
-let windowGuard, guardPoll, nativeReady = false, shuttingDown = false, rendererGeometry;
+let windowGuard, guardPoll, nativeCursor, nativeReady = false, shuttingDown = false, rendererGeometry;
 const windowTrace = createWindowTrace({ enabled: () => options?.diagnostics === true, snapshot: () => {
   if (!win || win.isDestroyed()) return null;
   const bounds = win.getBounds(), display = screen.getDisplayMatching(bounds);
@@ -252,7 +252,8 @@ app.whenReady().then(async () => {
   win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
   win.webContents.on('will-navigate', event => event.preventDefault());
   win.webContents.session.setPermissionRequestHandler((_contents, _permission, callback) => callback(false));
-  displays = createDisplayController({ screen, win, send: forward, changed: syncTray });
+  nativeCursor = require('./native-cursor.cjs').createNativeCursor({ screen });
+  displays = createDisplayController({ screen, win, send: forward, changed: syncTray, cursor: () => nativeCursor.read() });
   displays.refresh();
   if (displayTest) require('./test-display-probe.cjs').installDisplayProbe({ ipcMain, screen, win, displays });
   if (displayTest && windowTest) require('./test-window-probe.cjs').installWindowProbe({ ipcMain, BrowserWindow, screen, win, show, hide, hit, powerMonitor });
@@ -298,7 +299,7 @@ app.whenReady().then(async () => {
   await win.loadURL(`http://127.0.0.1:${assetServer.address().port}${prefix}`);
   nativeReady = true;
   if (desiredVisible) show(); else visibility();
-  guardPoll = setInterval(() => windowGuard('patrol'), 2000);
+  guardPoll = setInterval(() => { displays.refresh(); windowGuard('patrol'); }, 2000);
   // Restore input when a click-through window misses movement, without repeatedly
   // overriding the renderer's newer pointer event with a stationary OS cursor.
   let lastCursor, keyboardSentAt = -Infinity;
@@ -322,5 +323,5 @@ app.whenReady().then(async () => {
   if (process.connected) process.send(failure, () => app.exit(1)); else app.exit(1);
 });
 
-app.on('before-quit', event => { shuttingDown = true; if (inboxReceipts?.pending) { event.preventDefault(); void inboxReceipts.flush().then(() => app.quit()); return; } clearInterval(guardPoll); if (userClosed) process.send?.({ type: 'closed' }); clearInterval(poll); keyboardActivity.configure(false); if (diagnosticRead) { clearTimeout(diagnosticRead.timer); diagnosticRead.resolve(null); diagnosticRead = undefined; } diagnostics?.release(); void diagnostics?.close(); assetServer?.close(); tray?.destroy(); });
+app.on('before-quit', event => { shuttingDown = true; if (inboxReceipts?.pending) { event.preventDefault(); void inboxReceipts.flush().then(() => app.quit()); return; } clearInterval(guardPoll); nativeCursor?.stop(); if (userClosed) process.send?.({ type: 'closed' }); clearInterval(poll); keyboardActivity.configure(false); if (diagnosticRead) { clearTimeout(diagnosticRead.timer); diagnosticRead.resolve(null); diagnosticRead = undefined; } diagnostics?.release(); void diagnostics?.close(); assetServer?.close(); tray?.destroy(); });
 app.on('window-all-closed', () => { userClosed = true; app.quit(); });
