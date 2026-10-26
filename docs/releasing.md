@@ -4,6 +4,8 @@
 
 fork 的发行流程：完成本地类型、单元与包验证，推送 fork 默认分支后运行原有 CI／规范包及安装矩阵；通过后使用其同一份规范 tarball 创建 GitHub Release，包含版本包、固定别名、SHA256SUMS、verification.json、release-notes.md。npm 上传 job 仅为上游仓库保留，fork 不执行。
 
+后续更新版本和 shrinkwrap、提交到 `whaledot-local` 后，新建并推送对应 `vX.Y.Z` 标签即可触发 **WhaleMaid companion release**；也可手动运行该工作流并填写已有标签。它会重跑标签提交的检查与安装矩阵，再自动发布同一份包到此 fork 的 GitHub Release。随后更新 WhaleMaid 的 `market/companion.json`，发布下个完整包版本。用户仍只安装一个完整包。
+
 下面保留上游维护流程供追溯；其中 npm OIDC 与 takboo/main 限制不用于本 fork。
 
 # 发布流程
