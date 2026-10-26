@@ -140,7 +140,7 @@ try {
   }
   if (version === '0.2.0-rc.2') assert.equal(evaluatePluginCompatibility(previous, {}, version)?.exempted, false, 'reproduce the previous release rejection');
   assert.ok(evaluatePluginCompatibility(manifest, {}, '0.2.0-rc.1'), 'unverified versions remain incompatible');
-  assert.ok(evaluatePluginCompatibility(manifest, {}, '0.2.1-rc.3'), 'later prereleases require explicit verification');
+  assert.ok(evaluatePluginCompatibility(manifest, {}, '0.2.1-rc.4'), 'later prereleases require explicit verification');
   if (version.startsWith('0.2.1-rc.')) {
     const restricted = structuredClone(manifest);
     restricted.engines.dsh = '0.2.0-rc.2';
