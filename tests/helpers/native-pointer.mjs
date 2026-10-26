@@ -153,11 +153,13 @@ export async function nativeClick(page, selector) {
   // X11 cursor warps are processed asynchronously; Electron's screen query can
   // still return the previous sample when the helper process has just exited.
   // Wait for the native observation, without issuing another input action.
-  await page.waitForFunction(async ({ x, y, expected }) => {
-    const value = await window.dshPetBridge.testScreenPoint({ x, y, width: innerWidth, height: innerHeight });
-    return Math.abs(value.cursor.x - expected.x) <= 2 && Math.abs(value.cursor.y - expected.y) <= 2;
-  }, { x, y, expected: measurement.dip }, { timeout: 3000 });
-  const beforeCdp = await nativeMeasurement(page, selector);
+  let beforeCdp;
+  const deadline=Date.now()+3000;
+  do {
+    beforeCdp=await nativeMeasurement(page, selector);
+    if(Math.abs(beforeCdp.cursor.x-measurement.dip.x)<=2 && Math.abs(beforeCdp.cursor.y-measurement.dip.y)<=2)break;
+    await page.waitForTimeout(25);
+  }while(Date.now()<deadline);
   assert.ok(Math.abs(beforeCdp.cursor.x-measurement.dip.x)<=2 && Math.abs(beforeCdp.cursor.y-measurement.dip.y)<=2, `OS cursor conversion is correct before CDP input: ${JSON.stringify({ expected: measurement.dip, observed: beforeCdp.cursor, physical: p })}`);
   if(process.platform!=='linux')await page.mouse.move(x, y);
   await page.waitForSelector('#pet[data-native-hit=true]');

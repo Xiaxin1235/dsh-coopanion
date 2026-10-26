@@ -237,7 +237,7 @@ app.whenReady().then(async () => {
     if (!(value instanceof ArrayBuffer)) throw new Error('请选择 API 2 ZIP 角色包');
     return characters.import(new Uint8Array(value));
   });
-  win = new BrowserWindow({ ...screen.getPrimaryDisplay().workArea, transparent: true, frame: false, resizable: false, skipTaskbar: true, hasShadow: false, show: false, alwaysOnTop: true, backgroundColor: '#00000000', webPreferences: { additionalArguments: displayTest ? ['--dsh-pet-display-test', ...(windowTest ? ['--dsh-pet-window-test'] : [])] : [], preload: join(__dirname, 'preload.cjs'), sandbox: true, contextIsolation: true, nodeIntegration: false } });
+  win = new BrowserWindow({ ...screen.getPrimaryDisplay().workArea, ...(process.platform==='darwin'?{type:'panel'}:{}), transparent: true, frame: false, resizable: false, skipTaskbar: true, hasShadow: false, show: false, alwaysOnTop: true, backgroundColor: '#00000000', webPreferences: { additionalArguments: displayTest ? ['--dsh-pet-display-test', ...(windowTest ? ['--dsh-pet-window-test'] : [])] : [], preload: join(__dirname, 'preload.cjs'), sandbox: true, contextIsolation: true, nodeIntegration: false } });
   win.setAlwaysOnTop(true, topLevel(options?.aboveFullscreen));
   windowGuard = createVisibilityGuard({ win, state: () => ({ ready: nativeReady, closing: shuttingDown, desiredVisible, suspended, aboveFullscreen: options?.aboveFullscreen !== false }), record: event => windowTrace.record(event) });
   for (const event of ['minimize', 'restore', 'hide', 'show', 'blur', 'focus', 'always-on-top-changed']) win.on(event, () => {
