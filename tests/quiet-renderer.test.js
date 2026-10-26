@@ -22,6 +22,7 @@ function fixture() {
     approvalForms: { retain: vi.fn(), receipt: vi.fn() }, petCopy,
     $, options: { quietMode: false, notifications: true, companionship: 'off', textScale: 1, size: 180 },
     snapshot: { sessionId: 'work', sessions: [{ id: 'work', label: 'Work', mood: 'idle' }], results: [] },
+    pendingSelectionId: undefined,
     shownResults: new Set(), acknowledgedResults: new Set(), quietInbox: new Map(),
     bubble: $('bubble'), interaction: $('interaction'), companionInvitation: $('companion-invitation'), companionFeedback: $('companion-feedback'),
     panels: [$('chat'), $('reader'), $('requests'), $('menu')], pressing: false, dragging: false, reduced: true,
