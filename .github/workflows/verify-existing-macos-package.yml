@@ -42,7 +42,8 @@ jobs:
           const directory = path.join(process.env.RUNNER_TEMP, 'software-electron');
           const native = path.join(directory, 'Electron.app/Contents/MacOS');
           fs.mkdirSync(native, {recursive:true});
-          const script = '#!/bin/sh\nexec '+JSON.stringify(executable)+' --use-gl=angle --use-angle=swiftshader --enable-unsafe-swiftshader "$@"\n';
+          const quoted = "'" + executable.replaceAll("'", "'\\''") + "'";
+          const script = '#!/bin/sh\nexec '+quoted+' --use-gl=angle --use-angle=swiftshader --enable-unsafe-swiftshader "$@"\n';
           for (const file of [path.join(directory,'electron'),path.join(native,'Electron')]) fs.writeFileSync(file,script,{mode:0o700});
           fs.appendFileSync(process.env.GITHUB_ENV,'ELECTRON_OVERRIDE_DIST_PATH='+directory+'\n');
           NODE
