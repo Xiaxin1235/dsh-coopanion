@@ -35,7 +35,10 @@ x11.XCloseDisplay.argtypes = [ctypes.c_void_p]
 display = x11.XOpenDisplay(None)
 if not display:
     raise RuntimeError('Cannot open the native test display')
-x11.XWarpPointer(display, 0, x11.XDefaultRootWindow(display), 0, 0, 0, 0, int(sys.argv[1]), int(sys.argv[2]))
+xtst = ctypes.CDLL('libXtst.so.6')
+xtst.XTestFakeMotionEvent.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_ulong]
+if not xtst.XTestFakeMotionEvent(display, -1, int(sys.argv[1]), int(sys.argv[2]), 0):
+    raise RuntimeError('Cannot move the native X11 test cursor')
 x11.XSync(display, 0)
 x11.XCloseDisplay(display)
 `;

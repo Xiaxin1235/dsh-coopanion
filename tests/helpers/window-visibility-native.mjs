@@ -18,7 +18,8 @@ export async function verifyNativeVisibility({ page, bridge, registry }) {
   bridge.configure({ size: 150, roam: false, notifications: true, diagnostics: true, aboveFullscreen: true, bubbleDurationMs: 12000 });
   try {
     await command('fullscreen');
-    await waitRecovery(async () => (await command('inspect')).foregroundFocused, 'fullscreen fixture did not gain focus');
+    try { await waitRecovery(async () => (await command('inspect')).foregroundFocused, 'fullscreen fixture did not gain focus'); }
+    catch(error) { console.log('Fullscreen setup evidence:',await command('inspect')); throw error; }
     await restored('fullscreen');
     for (const level of ['floating', 'pop-up-menu', 'screen-saver']) {
       await command('level', { level });

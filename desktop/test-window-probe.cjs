@@ -30,13 +30,20 @@ exports.installWindowProbe = ({ ipcMain, BrowserWindow, screen, win, show, hide,
     if (event.sender !== win.webContents || event.senderFrame !== win.webContents.mainFrame) return null;
     switch (input?.command) {
       case 'fullscreen':
+        if(process.platform==='darwin')require('electron').app.setActivationPolicy('regular');
         game = new BrowserWindow({ fullscreen: true, show: false, backgroundColor: '#204060', webPreferences: { sandbox: true, nodeIntegration: false, contextIsolation: true } });
         await game.loadURL('data:text/html,<title>Fullscreen test fixture</title><h1>Fullscreen focus fixture</h1>');
         await startMeasure(); game.setAlwaysOnTop(true,'pop-up-menu'); game.show(); game.moveTop(); hit(false); if(measure)await measure('focus'); game.setAlwaysOnTop(false);
         // This is the explicit foreground fixture setup, not pet recovery.
         // AppKit will not reliably focus its window while the app is inactive.
         if(process.platform==='darwin')require('electron').app.focus({steal:true});
-        game.focus(); break;
+        game.focus();
+        if(process.platform==='darwin') {
+          // AppKit transitions Spaces asynchronously. Request fixture focus
+          // after the transition, rather than during its opening animation.
+          game.once('enter-full-screen',()=>{require('electron').app.focus({steal:true});game.focus();});
+        }
+        break;
       case 'minimize': win.minimize(); break;
       case 'system-hide': win.hide(); break;
       case 'lose-top': win.setAlwaysOnTop(false); break;
