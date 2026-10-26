@@ -39,6 +39,20 @@ x11.XWarpPointer(display, 0, x11.XDefaultRootWindow(display), 0, 0, 0, 0, int(sy
 x11.XSync(display, 0)
 x11.XCloseDisplay(display)
 `;
+const clickX11Cursor = `
+import ctypes
+x11=ctypes.CDLL('libX11.so.6'); xtst=ctypes.CDLL('libXtst.so.6')
+x11.XOpenDisplay.argtypes=[ctypes.c_char_p]; x11.XOpenDisplay.restype=ctypes.c_void_p
+x11.XSync.argtypes=[ctypes.c_void_p,ctypes.c_int]; x11.XCloseDisplay.argtypes=[ctypes.c_void_p]
+xtst.XTestFakeButtonEvent.argtypes=[ctypes.c_void_p,ctypes.c_uint,ctypes.c_int,ctypes.c_ulong]
+d=x11.XOpenDisplay(None)
+if not d: raise RuntimeError('Cannot open the native test display')
+try:
+    if not xtst.XTestFakeButtonEvent(d,1,1,0): raise RuntimeError('Cannot press native test button')
+    if not xtst.XTestFakeButtonEvent(d,1,0,0): raise RuntimeError('Cannot release native test button')
+    x11.XSync(d,0)
+finally: x11.XCloseDisplay(d)
+`;
 
 /** Exercise real click-through hit testing with the OS and CDP cursors at the same point. */
 export async function petClick(page, options = {}, twice = false) {
@@ -123,11 +137,12 @@ export async function nativeMeasurement(page, selector) {
 /** Native OS cursor + CDP click on a panel's measured CSS hit region. */
 export async function nativeClick(page, selector) {
   await page.bringToFront();
-  await page.locator(selector).click({ trial: true });
+  if(process.platform==='linux')await page.locator(selector).waitFor({state:'visible'});
+  else await page.locator(selector).click({ trial: true });
   const measurement = await nativeMeasurement(page, selector), p = measurement.point;
   // Flush the trial's virtual pointer before the OS warp. Otherwise a queued
   // X11 motion from that trial can restore the previous point after the warp.
-  await page.mouse.move(measurement.css.x, measurement.css.y);
+  if(process.platform!=='linux')await page.mouse.move(measurement.css.x, measurement.css.y);
   if (process.platform === 'darwin') await run('python3', ['-c', warpMacCursor, String(p.x), String(p.y)]);
   else if (process.platform === 'linux') await run('python3', ['-c', warpCursor, String(p.x), String(p.y)]);
   else await warpWindowsCursor(p);
@@ -144,9 +159,10 @@ export async function nativeClick(page, selector) {
   }, { x, y, expected: measurement.dip }, { timeout: 3000 });
   const beforeCdp = await nativeMeasurement(page, selector);
   assert.ok(Math.abs(beforeCdp.cursor.x-measurement.dip.x)<=2 && Math.abs(beforeCdp.cursor.y-measurement.dip.y)<=2, `OS cursor conversion is correct before CDP input: ${JSON.stringify({ expected: measurement.dip, observed: beforeCdp.cursor, physical: p })}`);
-  await page.mouse.move(x, y);
+  if(process.platform!=='linux')await page.mouse.move(x, y);
   await page.waitForSelector('#pet[data-native-hit=true]');
-  await page.mouse.click(x, y);
+  if(process.platform==='linux')await run('python3',['-c',clickX11Cursor]);
+  else await page.mouse.click(x, y);
   const observed = await nativeMeasurement(page, selector);
   if (process.env.DSH_PET_INPUT_TRACE === '1') console.log('Pointer conversion stages:', JSON.stringify({ measurement, beforeCdp, observed }));
   // DIP -> integer physical -> DIP rounding is independent on each axis.

@@ -1,0 +1,34 @@
+name: Targeted native recovery
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-toolchain
+      - run: npm ci --ignore-scripts
+      - run: npm run setup:electron
+      - run: npm run build
+      - uses: ./.github/actions/setup-linux-display
+        if: runner.os == 'Linux'
+      - run: node tests/window-recovery-probe.mjs
+      - run: node tests/multi-display-native.mjs
+        if: runner.os == 'Linux'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: targeted-native-${{ runner.os }}
+          path: artifacts/
