@@ -21,6 +21,7 @@ jobs:
           version=$(node -p 'require("./package.json").version')
           mv ".cache/probe/$packed" ".cache/probe/dsh-coopanion-$version.tgz"
           node scripts/check-package.mjs ".cache/probe/dsh-coopanion-$version.tgz" --write-report
+          npm run character:pack -- examples/star .cache/probe/paper-star.zip
       - uses: actions/upload-artifact@v4
         with:
           name: installed-host-candidate

@@ -620,7 +620,7 @@ try {
     await settingsPage.screenshot({ path: join(project, 'artifacts', `settings-failed-${version}.png`) }).catch(() => {});
     console.error('DSH frontend:', await settingsPage.locator('body').innerText().catch(() => ''), uiErrors, consoleErrors.slice(0, 8));
   }
-  if (hostLog) console.error(hostLog);
+  if (hostLog) console.error(hostLog.replace(/([?&]token=)[^&\s]+/g,'$1[REDACTED]'));
   throw error;
 } finally {
   await stop(host);
