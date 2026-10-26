@@ -125,6 +125,9 @@ export async function nativeClick(page, selector) {
   await page.bringToFront();
   await page.locator(selector).click({ trial: true });
   const measurement = await nativeMeasurement(page, selector), p = measurement.point;
+  // Flush the trial's virtual pointer before the OS warp. Otherwise a queued
+  // X11 motion from that trial can restore the previous point after the warp.
+  await page.mouse.move(measurement.css.x, measurement.css.y);
   if (process.platform === 'darwin') await run('python3', ['-c', warpMacCursor, String(p.x), String(p.y)]);
   else if (process.platform === 'linux') await run('python3', ['-c', warpCursor, String(p.x), String(p.y)]);
   else await warpWindowsCursor(p);
