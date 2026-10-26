@@ -69,8 +69,16 @@ try {
     for (const extra of [{ at: Date.now() - 16000 }, { resultId: 'old' }, { expression: 'unknown' }]) { await reaction('love', extra); assert.equal(await held(), ''); }
     await page.evaluate(() => { window.unsupportedReaction = true; }); await reaction(); assert.equal(await held(), '');
     await page.evaluate(() => { window.unsupportedReaction = false; });
-    await page.emulateMedia({ reducedMotion: 'reduce' }); await page.waitForTimeout(100); await reaction(); assert.equal(await held(), '');
-    await page.emulateMedia({ reducedMotion: 'no-preference' }); await page.waitForTimeout(100);
+    async function changeMotion(reducedMotion) {
+      await page.evaluate(() => {
+        window.motionChanged = false;
+        matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', () => { window.motionChanged = true; }, { once: true });
+      });
+      await page.emulateMedia({ reducedMotion });
+      await page.waitForFunction(() => window.motionChanged);
+    }
+    await changeMotion('reduce'); await reaction(); assert.equal(await held(), '');
+    await changeMotion('no-preference');
     await reaction('sad'); assert.equal(await held(), 'sad'); // Explicit opt-in differs from automatic error mapping.
     await receive({ type: 'configure', options: { decisionsReactions: false } }); assert.equal(await held(), '');
     await reaction(); assert.equal(await held(), '');
