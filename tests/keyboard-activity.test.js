@@ -81,6 +81,30 @@ it('handles missing executables, throws, exits and startup stalls without retain
   expect(() => adapter.configure(true)).not.toThrow(); expect(adapter.inspect().status).toBe('failed');
 });
 
+it('allows a delayed Windows initialization while remaining unknown, then enforces heartbeat freshness', () => {
+  const f = fixture('win32', { SystemRoot: 'C:\\Windows' }); f.adapter.configure(true);
+  f.time(20000);
+  expect(f.adapter.inspect()).toEqual({ value: 'unknown', backend: 'windows', status: 'starting' });
+  expect(f.children[0].kills).toBe(0);
+  f.send('idle\r\n'); expect(f.adapter.sample()).toBe('idle');
+  f.time(22501); expect(f.adapter.inspect()).toMatchObject({ value: 'unknown', status: 'stale' });
+  f.adapter.configure(false); expect(f.children[0].kills).toBe(1);
+});
+
+it('bounds Windows startup and stops a pending helper on disable without automatic retries', () => {
+  const f = fixture('win32', { SystemRoot: 'C:\\Windows' }); f.adapter.configure(true);
+  f.time(60001);
+  expect(f.adapter.inspect()).toMatchObject({ value: 'unknown', status: 'failed' });
+  expect(f.children[0].kills).toBe(1);
+  f.adapter.configure(true); expect(f.launches).toHaveLength(1);
+  f.adapter.configure(false); f.adapter.configure(true); f.time(70000);
+  f.adapter.configure(false);
+  expect(f.adapter.inspect()).toMatchObject({ value: 'unknown', status: 'disabled' });
+  expect(f.children[1].kills).toBe(1);
+  f.children[1].stdout.emit('data', Buffer.from('active\r\n'));
+  expect(f.adapter.sample()).toBe('unknown');
+});
+
 it('runs the actual macOS streaming loop through C output and stops when its parent exits', () => {
   let polls = 0; const output = [], sleeps = [];
   const context = vm.createContext({ ObjC: { import() {}, bindFunction() {} }, $: {

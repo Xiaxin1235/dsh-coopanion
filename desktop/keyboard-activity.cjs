@@ -6,11 +6,15 @@ const BACKENDS = { darwin: 'macos', win32: 'windows', linux: 'x11' };
 exports.createKeyboardActivity = ({ platform = process.platform, env = process.env, start = spawn, now = () => performance.now() } = {}) => {
   let child, value = 'unknown', at = -Infinity, pending = '', enabled = false, status = 'disabled', startedAt = 0;
   const backend = BACKENDS[platform] ?? 'none';
+  // Windows initializes PowerShell and compiles the bundled C# before its first
+  // heartbeat. Slow cold starts remain unknown; they must not disable sensing
+  // permanently at the shorter streaming-helper deadline.
+  const startupTimeoutMs = platform === 'win32' ? 60000 : 15000;
   const stop = reason => {
     const old = child; child = undefined; value = 'unknown'; at = -Infinity; pending = ''; status = reason; old?.kill();
   };
   function inspect() {
-    if (child && status === 'starting' && now() - startedAt > 15000) stop('failed');
+    if (child && status === 'starting' && now() - startedAt > startupTimeoutMs) stop('failed');
     const stale = ['available', 'unavailable'].includes(status) && now() - at > 2500;
     return { value: stale ? 'unknown' : value, backend, status: stale ? 'stale' : status };
   }

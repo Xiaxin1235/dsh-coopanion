@@ -57,7 +57,7 @@ node --test --test-name-pattern="home marker" tests/npc-drag-ui.mjs
 
 ## 键盘与生命周期
 
-`test:keyboard-native` 启动当前系统的真实辅助进程，检查固定枚举、停用和清理，报告写入 `artifacts/keyboard-activity-native.json`。macOS 与可用 X11 需取得 active／idle；不支持的会话保守 unknown。Linux CI 在隔离 Xvfb 中设置 `DSH_KEYBOARD_TEST_X11_INPUT=1`，用 XTest 验证键盘触发、仅鼠标不触发和恢复 idle；日常会话不使用这个注入开关。
+`test:keyboard-native` 启动当前系统的真实辅助进程，检查固定枚举、停用和清理，记录首个响应耗时；Windows 允许完整的 60 秒初始化，首次响应后继续观察至少 5 秒，报告写入 `artifacts/keyboard-activity-native.json`。macOS 与可用 X11 需取得 active／idle；不支持的会话保守 unknown。Linux CI 在隔离 Xvfb 中设置 `DSH_KEYBOARD_TEST_X11_INPUT=1`，用 XTest 验证键盘触发、仅鼠标不触发和恢复 idle；日常会话不使用这个注入开关。
 
 macOS 可在已解锁桌面运行普通沙箱探针：
 
