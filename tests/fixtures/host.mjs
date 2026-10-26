@@ -30,6 +30,10 @@ export function apply(ctx) {
         ctx.llm.registerAdapter(['m2-installed'], new Controlled());
         const owned = await ctx.agents.create({ sessionId: 'm2-installed-cold-full', meta: { cwd: process.env.DSH_HOME }, agentOptions: { provider: 'm2-installed', model: 'controlled' } });
         await ctx.sessionController.selectModel({ sessionId: owned.agent.id, provider: 'm2-installed', model: 'controlled' });
+        // This represents a historical conversation, not Harness's empty draft
+        // slot (which the current picker intentionally hides).
+        owned.agent.session.append('turn/start', { turn: 1 });
+        owned.agent.session.append('turn/end', { turn: 1, reason: { kind: 'completed' } });
         await ctx.sessions.flush(owned.agent.session); await owned.dispose();
         process.send?.({ type: 'm2-cold-ready', cold: ctx.agents.get('m2-installed-cold-full') === undefined });
       } catch (error) { process.send?.({ type: 'm2-cold-ready', error: String(error.stack ?? error) }); }
