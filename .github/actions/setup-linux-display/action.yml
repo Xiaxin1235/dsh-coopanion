@@ -5,7 +5,8 @@ runs:
   steps:
     - shell: bash
       run: |
-        sudo apt-get install -y --no-install-recommends openbox x11-utils
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends openbox x11-utils xvfb libxtst6 python3
         export DISPLAY=:99
         Xvfb "$DISPLAY" -screen 0 1200x800x24 -nolisten tcp > "$RUNNER_TEMP/coopanion-xvfb.log" 2>&1 &
         display_pid=$!

@@ -18,5 +18,5 @@ try{
   browser=await chromium.connectOverCDP(`http://127.0.0.1:${port}`);page=browser.contexts()[0].pages()[0];
   await page.waitForSelector('#pet[data-host-ready=true]');
   await verifyNativeVisibility({page,bridge,registry:process.env.DSH_PET_TEST_DIAGNOSTICS_DIR});
-}catch(error){await mkdir('artifacts',{recursive:true});await page?.screenshot({path:'artifacts/window-recovery-failure.png'}).catch(()=>{});throw error;}
-finally{await browser?.close();await bridge.stop();await rm(root,{recursive:true,force:true});}
+}catch(error){console.error(error);await mkdir('artifacts',{recursive:true});await page?.screenshot({path:'artifacts/window-recovery-failure.png'}).catch(()=>{});throw error;}
+finally{await bridge.dispose();await browser?.close();await rm(root,{recursive:true,force:true});}

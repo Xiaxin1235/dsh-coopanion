@@ -16,5 +16,5 @@ export async function sampleNativeDisplay(page, selector = '#message') {
   const d=native.displays.find(d=>d.id===native.geometry.displayId); assert.ok(d);
   // Win32 rounds fractional physical pixels back into integral DIP bounds.
   for (const key of ['x','y','width','height']) assert.ok(Math.abs(native.contentBounds[key]-d.workArea[key])<=1,'native window occupies the chosen work area within one DIP of platform rounding');
-  return {native,renderer,osCursorAndCdpClick:true};
+  return {native,renderer,osCursorAndCdpClick:process.platform!=='linux',nativeOsClick:process.platform==='linux'};
 }
