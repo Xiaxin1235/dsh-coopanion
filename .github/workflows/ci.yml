@@ -4,11 +4,6 @@ on:
     branches: [main, whaledot-local, codex/market-release]
   pull_request:
   workflow_dispatch:
-    inputs:
-      platforms:
-        description: Runner matrix JSON (Windows is the supported fork release platform)
-        type: string
-        default: '["windows-latest"]'
   workflow_call:
     inputs:
       ref:
@@ -48,7 +43,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ${{ fromJSON(inputs.platforms || '["windows-latest"]') }}
+        os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -81,7 +76,7 @@ jobs:
         env:
           DEBUG: pw:browser
         run: npm run test:desktop
-      - name: Check distributable and create canonical Windows package
+      - name: Check distributable and create canonical Linux package
         if: runner.os == 'Linux'
         run: |
           mkdir -p .cache/release
@@ -137,7 +132,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ${{ fromJSON(inputs.platforms || '["windows-latest"]') }}
+        os: [ubuntu-latest, macos-latest, windows-latest]
         dsh: ['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-rc.1', '0.2.1-rc.2', '0.2.1-rc.3']
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
