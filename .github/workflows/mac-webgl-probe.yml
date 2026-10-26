@@ -1,0 +1,43 @@
+name: Diagnose native WebGL on the Intel macOS runner
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: macos-15-intel
+    timeout-minutes: 8
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Probe actual Electron graphics backends before another installation test
+        shell: bash
+        run: |
+          npm install --prefix "$RUNNER_TEMP/webgl-probe" --no-audit --no-fund electron@44.7.0
+          cat > "$RUNNER_TEMP/webgl-probe/main.cjs" <<'JS'
+          const {app,BrowserWindow}=require('electron');
+          app.whenReady().then(async()=>{
+            const win=new BrowserWindow({width:300,height:200,show:true});
+            await win.loadURL('data:text/html,<html><body>Isolated graphics probe</body></html>');
+            const contexts=await win.webContents.executeJavaScript(`['webgl','webgl2'].map(type=>{const gl=document.createElement('canvas').getContext(type);const debug=gl?.getExtension('WEBGL_debug_renderer_info');return {type,available:!!gl,renderer:debug?gl.getParameter(debug.UNMASKED_RENDERER_WEBGL):null}})`);
+            console.log('PROBE '+JSON.stringify({electron:process.versions.electron,arch:process.arch,contexts,features:app.getGPUFeatureStatus()}));
+            app.quit();
+          }).catch(error=>{console.error(error);app.exit(1)});
+          JS
+          cat > "$RUNNER_TEMP/webgl-probe/probe.cjs" <<'JS'
+          const {spawn}=require('node:child_process');
+          const {writeFileSync}=require('node:fs');
+          const electron=require('electron');
+          const variants=[[],['--ignore-gpu-blocklist'],['--use-gl=angle','--use-angle=gl','--ignore-gpu-blocklist'],['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist'],['--use-gl=angle','--use-angle=swiftshader-webgl','--enable-unsafe-swiftshader','--ignore-gpu-blocklist'],['--use-gl=desktop','--ignore-gpu-blocklist'],['--use-gl=angle','--use-angle=metal','--ignore-gpu-blocklist'],['--disable-gpu','--enable-unsafe-swiftshader']];
+          (async()=>{const results=[]; for(const flags of variants){
+            const child=spawn(electron,[...flags,__dirname+'/main.cjs'],{stdio:['ignore','pipe','pipe']});let output='',error='';child.stdout.on('data',b=>output+=b);child.stderr.on('data',b=>error+=b);const timer=setTimeout(()=>child.kill(),20000);await new Promise(done=>child.once('exit',done));clearTimeout(timer);
+            const line=output.split('\n').find(l=>l.startsWith('PROBE '));const result={flags,result:line?JSON.parse(line.slice(6)):null,error:error.slice(-2500)};results.push(result);console.log(JSON.stringify(result));if(result.result?.contexts.some(c=>c.available))break;
+          }writeFileSync(__dirname+'/graphics.json',JSON.stringify(results,null,2));if(!results.some(r=>r.result?.contexts.some(c=>c.available)))process.exitCode=1;})().catch(e=>{console.error(e);process.exitCode=1});
+          JS
+          node "$RUNNER_TEMP/webgl-probe/probe.cjs"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: intel-macos-graphics
+          path: ${{ runner.temp }}/webgl-probe/graphics.json
