@@ -22,6 +22,8 @@ exports.createVisibilityGuard = ({ win, state, record = () => {}, platform = pro
     // AppKit may make a focusable window key while changing its level/order,
     // even though no focus() call is made. Keep passive recovery non-key; an
     // already focused chat window keeps its existing focus and focusability.
+    // Deminiaturization finishes asynchronously: keep passive windows non-key
+    // until a real pointer entry re-enables interaction in hit().
     const passiveMac = platform === 'darwin' && !win.isFocused() && win.isFocusable();
     if (passiveMac) win.setFocusable(false);
     try {
@@ -38,7 +40,7 @@ exports.createVisibilityGuard = ({ win, state, record = () => {}, platform = pro
       } else if (actions.includes('show-inactive')) win.showInactive();
       if (actions.includes('raise')) { win.setAlwaysOnTop(true, exports.topLevel(intent.aboveFullscreen)); win.moveTop(); }
       record('recovery');
-    } finally { if (passiveMac && !win.isDestroyed()) win.setFocusable(true); recovering = false; }
+    } finally { recovering = false; }
     return actions;
   };
 };

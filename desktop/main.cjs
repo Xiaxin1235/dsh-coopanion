@@ -81,6 +81,7 @@ function forward(message) {
 }
 function hit(active) {
   if (!win || win.isDestroyed()) return;
+  if (process.platform === 'darwin' && active && !win.isFocusable()) win.setFocusable(true);
   if (active !== interactive) {
     interactive = active;
     win.setIgnoreMouseEvents(!active, { forward: true });

@@ -129,12 +129,35 @@ export async function petClick(page, options = {}, twice = false) {
 
 /** Measurements and physical conversion come from the tested Electron instance. */
 export async function nativeMeasurement(page, selector) {
-  return page.locator(selector).evaluate(el => {
+  const measurement = await page.locator(selector).evaluate(el => {
     const b = el.getBoundingClientRect();
     if (!window.dshPetBridge.testScreenPoint) throw new Error('Native measurement requires an isolated debug test profile');
     const css = { x: b.x + b.width / 2, y: b.y + b.height / 2 };
     return window.dshPetBridge.testScreenPoint({...css,width:innerWidth,height:innerHeight}).then(native => ({ ...native, css }));
   });
+  if(process.platform==='linux') {
+    // Chromium's X11 screen API may cache the last in-window pointer event.
+    // Independently query the real server cursor, retaining both observations.
+    const {stdout}=await run('python3',['-c',`
+import ctypes,json
+x=ctypes.CDLL('libX11.so.6')
+x.XOpenDisplay.argtypes=[ctypes.c_char_p]; x.XOpenDisplay.restype=ctypes.c_void_p
+x.XDefaultRootWindow.argtypes=[ctypes.c_void_p]; x.XDefaultRootWindow.restype=ctypes.c_ulong
+x.XQueryPointer.argtypes=[ctypes.c_void_p,ctypes.c_ulong,ctypes.POINTER(ctypes.c_ulong),ctypes.POINTER(ctypes.c_ulong),ctypes.POINTER(ctypes.c_int),ctypes.POINTER(ctypes.c_int),ctypes.POINTER(ctypes.c_int),ctypes.POINTER(ctypes.c_int),ctypes.POINTER(ctypes.c_uint)]
+x.XCloseDisplay.argtypes=[ctypes.c_void_p]
+d=x.XOpenDisplay(None)
+if not d: raise RuntimeError('Cannot query native test cursor')
+try:
+ r=ctypes.c_ulong(); c=ctypes.c_ulong(); rx=ctypes.c_int(); ry=ctypes.c_int(); wx=ctypes.c_int(); wy=ctypes.c_int(); m=ctypes.c_uint()
+ if not x.XQueryPointer(d,x.XDefaultRootWindow(d),ctypes.byref(r),ctypes.byref(c),ctypes.byref(rx),ctypes.byref(ry),ctypes.byref(wx),ctypes.byref(wy),ctypes.byref(m)): raise RuntimeError('Native cursor query failed')
+ print(json.dumps({'x':rx.value,'y':ry.value}))
+finally: x.XCloseDisplay(d)
+`]);
+    measurement.electronCursor=measurement.cursor;
+    measurement.cursor=JSON.parse(stdout);
+    measurement.cursorSource='XQueryPointer';
+  }
+  return measurement;
 }
 
 /** Native OS cursor + CDP click on a panel's measured CSS hit region. */
