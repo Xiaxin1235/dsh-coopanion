@@ -31,6 +31,13 @@ it('uses the inactive show path on Windows instead of activating restore', () =>
  createVisibilityGuard({win,state:()=>healthy,platform:'win32'})('minimize');
  expect(calls).toEqual(['showInactive','top','moveTop']);
 });
+it('keeps passive macOS z-order recovery non-focusable and restores chat focusability', () => {
+  const calls=[]; let focusable=true;
+  const win={isDestroyed:()=>false,isMinimized:()=>false,isVisible:()=>true,isAlwaysOnTop:()=>false,isFocused:()=>false,isFocusable:()=>focusable,
+    setFocusable:v=>{focusable=v;calls.push(['focusable',v]);},setAlwaysOnTop:()=>{expect(focusable).toBe(false);calls.push(['top']);},moveTop:()=>{expect(focusable).toBe(false);calls.push(['moveTop']);}};
+  createVisibilityGuard({win,state:()=>healthy,platform:'darwin'})('patrol');
+  expect(calls).toEqual([['focusable',false],['top'],['moveTop'],['focusable',true]]);
+});
 it('keeps only 24 opted-in lifecycle snapshots, strips unknown data and clears history', () => {
   let enabled = false; const rect = { x: -1920, y: 0, width: 1920, height: 1040 };
   const state = { visible: true, minimized: false, alwaysOnTop: true, desiredVisible: true, bounds: rect, workArea: rect, scaleFactor: 1.25, pet: { at: 1, pet: { x: 100, y: 800, width: 150, height: 180 }, viewport: { x: 0, y: 0, width: 1920, height: 1040 } }, title: 'must not leak' };

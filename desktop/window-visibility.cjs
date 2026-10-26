@@ -19,6 +19,11 @@ exports.createVisibilityGuard = ({ win, state, record = () => {}, platform = pro
       alwaysOnTop: !win.isDestroyed() && win.isAlwaysOnTop() }, reason);
     if (!actions.length) return actions;
     recovering = true;
+    // AppKit may make a focusable window key while changing its level/order,
+    // even though no focus() call is made. Keep passive recovery non-key; an
+    // already focused chat window keeps its existing focus and focusability.
+    const passiveMac = platform === 'darwin' && !win.isFocused() && win.isFocusable();
+    if (passiveMac) win.setFocusable(false);
     try {
       if (actions.includes('restore-inactive')) {
         // On Windows showInactive restores the normal show state without the
@@ -33,7 +38,7 @@ exports.createVisibilityGuard = ({ win, state, record = () => {}, platform = pro
       } else if (actions.includes('show-inactive')) win.showInactive();
       if (actions.includes('raise')) { win.setAlwaysOnTop(true, exports.topLevel(intent.aboveFullscreen)); win.moveTop(); }
       record('recovery');
-    } finally { recovering = false; }
+    } finally { if (passiveMac && !win.isDestroyed()) win.setFocusable(true); recovering = false; }
     return actions;
   };
 };
