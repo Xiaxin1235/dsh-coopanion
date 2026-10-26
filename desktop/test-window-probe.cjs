@@ -25,7 +25,7 @@ exports.installWindowProbe = ({ ipcMain, BrowserWindow, screen, win, show, hide,
   win.on('closed', stopMeasure);
   const inspect = () => ({ visible: win.isVisible(), minimized: win.isMinimized(), top: win.isAlwaysOnTop(),
     focused: win.isFocused(), foregroundFocused: game?.isFocused() ?? false, fullscreen: game?.isFullScreen() ?? false,
-    bounds: win.getBounds(), scaleFactor: screen.getDisplayMatching(win.getBounds()).scaleFactor, calls: { ...calls } });
+    bounds: win.getBounds(), workArea: screen.getDisplayMatching(win.getBounds()).workArea, scaleFactor: screen.getDisplayMatching(win.getBounds()).scaleFactor, calls: { ...calls } });
   ipcMain.handle('pet:test-window', async (event, input) => {
     if (event.sender !== win.webContents || event.senderFrame !== win.webContents.mainFrame) return null;
     switch (input?.command) {

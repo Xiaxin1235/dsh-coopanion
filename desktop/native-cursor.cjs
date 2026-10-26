@@ -27,5 +27,5 @@ exports.createNativeCursor = ({ screen, platform = process.platform, env = proce
       });
     } catch { stop(); }
   }
-  return { read: () => screen.getCursorScreenPoint !== original ? screen.getCursorScreenPoint() : point && now() - at <= 500 ? point : screen.getCursorScreenPoint(), stop };
+  return { read: () => screen.getCursorScreenPoint !== original ? screen.getCursorScreenPoint() : point && now() - at <= 500 ? point : screen.getCursorScreenPoint(), inspect: () => ({running:!!child,point,age:Number.isFinite(at)?now()-at:null,overridden:screen.getCursorScreenPoint!==original}), stop };
 };

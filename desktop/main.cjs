@@ -255,7 +255,7 @@ app.whenReady().then(async () => {
   nativeCursor = require('./native-cursor.cjs').createNativeCursor({ screen });
   displays = createDisplayController({ screen, win, send: forward, changed: syncTray, cursor: () => nativeCursor.read() });
   displays.refresh();
-  if (displayTest) require('./test-display-probe.cjs').installDisplayProbe({ ipcMain, screen, win, displays });
+  if (displayTest) require('./test-display-probe.cjs').installDisplayProbe({ ipcMain, screen, win, displays, nativeCursor });
   if (displayTest && windowTest) require('./test-window-probe.cjs').installWindowProbe({ ipcMain, BrowserWindow, screen, win, show, hide, hit, powerMonitor });
   for (const event of ['resize', 'move']) win.on(event, () => setImmediate(() => { if (!win.isDestroyed()) displays.refresh(); }));
   win.webContents.on('did-finish-load', () => { if (lastFrame) forward(lastFrame); displays.publish(); });

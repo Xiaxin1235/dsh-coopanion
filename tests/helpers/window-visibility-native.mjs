@@ -35,7 +35,8 @@ export async function verifyNativeVisibility({ page, bridge, registry }) {
     await command('lose-top'); await restored('lost-top');
     await command('system-hide'); await restored('system-hide');
     await command('offscreen'); await restored('offscreen');
-    await waitRecovery(async()=>{const s=await command('inspect'),expected=samples[0].bounds;return ['x','y','width','height'].every(k=>Math.abs(s.bounds[k]-expected[k])<=1);},'offscreen native window did not return to the work area');
+    try { await waitRecovery(async()=>{const s=await command('inspect'),expected=s.workArea;return ['x','y','width','height'].every(k=>Math.abs(s.bounds[k]-expected[k])<=1);},'offscreen native window did not return to the work area'); }
+    catch(error) { console.log('Offscreen recovery evidence:',await command('inspect'));throw error; }
     await page.waitForFunction(() => { const r = document.querySelector('#pet').getBoundingClientRect(); return r.x >= 0 && r.y >= 0 && r.right <= innerWidth && r.bottom <= innerHeight; });
     await command('user-hide'); await page.waitForTimeout(2300);
     assert.equal((await command('inspect')).visible, false, 'user hide survives the watchdog');

@@ -188,7 +188,8 @@ export async function nativeClick(page, selector) {
   }while(Date.now()<deadline);
   assert.ok(Math.abs(beforeCdp.cursor.x-measurement.dip.x)<=2 && Math.abs(beforeCdp.cursor.y-measurement.dip.y)<=2, `OS cursor conversion is correct before CDP input: ${JSON.stringify({ expected: measurement.dip, observed: beforeCdp.cursor, physical: p })}`);
   if(process.platform!=='linux')await page.mouse.move(x, y);
-  await page.waitForSelector('#pet[data-native-hit=true]');
+  try { await page.waitForSelector('#pet[data-native-hit=true]',{timeout:5000}); }
+  catch(error) { console.log('Native panel entry evidence:',JSON.stringify({measurement,current:await nativeMeasurement(page,selector),renderer:await page.evaluate(()=>({pet:document.querySelector('#pet').dataset,trace:window.__nativeInputTrace,viewport:{width:innerWidth,height:innerHeight}}))}));throw error; }
   if(process.platform==='linux')await run('python3',['-c',clickX11Cursor]);
   else await page.mouse.click(x, y);
   const observed = await nativeMeasurement(page, selector);
