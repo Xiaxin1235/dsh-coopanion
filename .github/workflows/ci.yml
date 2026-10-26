@@ -43,7 +43,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-15-intel, windows-latest]
+        os: [ubuntu-latest, macos-14, windows-latest]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -69,21 +69,6 @@ jobs:
             fi
           done
       - run: npx playwright-core install --with-deps chromium
-      - name: Use software WebGL for the Intel macOS virtual machine
-        if: runner.os == 'macOS' && runner.arch == 'X64'
-        shell: bash
-        run: |
-          node <<'NODE'
-          const fs = require('node:fs'), path = require('node:path');
-          const executable = require('electron');
-          const directory = path.join(process.env.RUNNER_TEMP, 'software-electron');
-          const native = path.join(directory, 'Electron.app/Contents/MacOS');
-          fs.mkdirSync(native, {recursive:true});
-          const quoted = "'" + executable.replaceAll("'", "'\\''") + "'";
-          const script = '#!/bin/sh\nexec '+quoted+' --use-gl=angle --use-angle=swiftshader --enable-unsafe-swiftshader "$@"\n';
-          for (const file of [path.join(directory,'electron'),path.join(native,'Electron')]) fs.writeFileSync(file,script,{mode:0o700});
-          fs.appendFileSync(process.env.GITHUB_ENV,'ELECTRON_OVERRIDE_DIST_PATH='+directory+'\n');
-          NODE
       - uses: ./.github/actions/setup-linux-display
         if: runner.os == 'Linux'
       - run: npm run character:pack -- examples/star paper-star.zip
@@ -155,7 +140,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-15-intel, windows-latest]
+        os: [ubuntu-latest, macos-14, windows-latest]
         dsh: ['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-rc.1', '0.2.1-rc.2', '0.2.1-rc.3']
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -176,21 +161,6 @@ jobs:
             fi
           done
       - run: npx playwright-core install --with-deps chromium
-      - name: Use software WebGL for the Intel macOS virtual machine
-        if: runner.os == 'macOS' && runner.arch == 'X64'
-        shell: bash
-        run: |
-          node <<'NODE'
-          const fs = require('node:fs'), path = require('node:path');
-          const executable = require('electron');
-          const directory = path.join(process.env.RUNNER_TEMP, 'software-electron');
-          const native = path.join(directory, 'Electron.app/Contents/MacOS');
-          fs.mkdirSync(native, {recursive:true});
-          const quoted = "'" + executable.replaceAll("'", "'\\''") + "'";
-          const script = '#!/bin/sh\nexec '+quoted+' --use-gl=angle --use-angle=swiftshader --enable-unsafe-swiftshader "$@"\n';
-          for (const file of [path.join(directory,'electron'),path.join(native,'Electron')]) fs.writeFileSync(file,script,{mode:0o700});
-          fs.appendFileSync(process.env.GITHUB_ENV,'ELECTRON_OVERRIDE_DIST_PATH='+directory+'\n');
-          NODE
       - uses: ./.github/actions/setup-linux-display
         if: runner.os == 'Linux'
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
