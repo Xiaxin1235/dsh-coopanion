@@ -4,11 +4,11 @@
 
 大肥鱼住在你的桌面上，陪你一起用 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 工作。她会思考、挥手、陪你等结果，也会把回复和待办捎到桌边。双击她，就能接着刚才的对话聊下去。
 
-[![Release](https://img.shields.io/github/v/release/takboo/dsh-coopanion?color=4d6bfe)](https://github.com/takboo/dsh-coopanion/releases/latest)
-[![CI](https://github.com/takboo/dsh-coopanion/actions/workflows/ci.yml/badge.svg)](https://github.com/takboo/dsh-coopanion/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/Xiaxin1235/dsh-coopanion?color=4d6bfe)](https://github.com/Xiaxin1235/dsh-coopanion/releases/latest)
+[![CI](https://github.com/Xiaxin1235/dsh-coopanion/actions/workflows/ci.yml/badge.svg)](https://github.com/Xiaxin1235/dsh-coopanion/actions/workflows/ci.yml)
 [![License: AGPL v3+](https://img.shields.io/badge/license-AGPL--3.0--or--later-blue)](LICENSE)
 
-[**下载插件**](https://github.com/takboo/dsh-coopanion/releases/latest/download/dsh-coopanion.tgz) · [快速开始](#开始一起工作) · [使用指南](docs/usage.md) · [更新记录](https://github.com/takboo/dsh-coopanion/releases/latest)
+[**下载插件**](https://github.com/Xiaxin1235/dsh-coopanion/releases/latest/download/dsh-coopanion.tgz) · [快速开始](#开始一起工作) · [使用指南](docs/usage.md) · [更新记录](https://github.com/Xiaxin1235/dsh-coopanion/releases/latest)
 
 > [!IMPORTANT]
 > **这是 [WhaleMaid](https://github.com/Xiaxin1235/WhaleMaid) 配套的修改版**（fork 自 [takboo/dsh-coopanion](https://github.com/takboo/dsh-coopanion)，分支 `whaledot-local`，同样采用 AGPL-3.0-or-later）。在原版之上增加了：
@@ -90,7 +90,7 @@ $dsh = Join-Path $env:LOCALAPPDATA 'Programs\DeepSeek Harness\resources\runtime\
 打开侧边栏 **插件 → 添加插件**，在「包名或地址」中填入：
 
 ```text
-@takboo/dsh-coopanion@0.4.13
+https://github.com/Xiaxin1235/dsh-coopanion/releases/download/v0.5.0/dsh-coopanion-0.5.0.tgz
 ```
 
 点击安装，完成后启用 `dsh-coopanion`，再完全退出并重新打开 Harness。
@@ -102,14 +102,14 @@ $dsh = Join-Path $env:LOCALAPPDATA 'Programs\DeepSeek Harness\resources\runtime\
 使用 **Desktop 自带的 `dsh` 命令**。先启动 Desktop 一次完成初始化，完全退出应用后执行：
 
 ```bash
-dsh plugin --profile desktop add @takboo/dsh-coopanion@0.4.13
+dsh plugin --profile desktop add https://github.com/Xiaxin1235/dsh-coopanion/releases/download/v0.5.0/dsh-coopanion-0.5.0.tgz
 ```
 
 完成后重新打开 Desktop。其他 profile 的安装方法见[使用指南](docs/usage.md#通过-dsh-命令行安装)。
 
 ### 下载压缩包安装
 
-[下载最新插件包 `dsh-coopanion.tgz`](https://github.com/takboo/dsh-coopanion/releases/latest/download/dsh-coopanion.tgz)，在 **插件 → 添加插件** 中填入压缩包的绝对路径，安装并启用，然后重启 Harness。
+[下载最新插件包 `dsh-coopanion.tgz`](https://github.com/Xiaxin1235/dsh-coopanion/releases/latest/download/dsh-coopanion.tgz)，在 **插件 → 添加插件** 中填入压缩包的绝对路径，安装并启用，然后重启 Harness。
 
 安装后在 **Settings → 桌宠** 查看运行状态。首次启动需要联网下载并校验 Electron 运行时。
 
@@ -124,7 +124,7 @@ dsh plugin --profile desktop add @takboo/dsh-coopanion@0.4.13
 
 ## 了解更多与参与
 
-- **使用遇到问题：** 查看[使用指南](docs/usage.md)，或[提交 Issue](https://github.com/takboo/dsh-coopanion/issues)。
+- **使用遇到问题：** 查看[使用指南](docs/usage.md)，或[提交 Issue](https://github.com/Xiaxin1235/dsh-coopanion/issues)。
 - **参与开发：** 从[开发指南](docs/development.md)开始，完整行为契约与验证边界见[工程文档索引](docs/README.md)。
 - **查看改动：** 阅读[版本记录](docs/release-notes.md)。
 

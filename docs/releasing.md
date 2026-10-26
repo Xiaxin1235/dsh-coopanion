@@ -1,3 +1,11 @@
+# WhaleMaid fork 发布
+
+本 fork 保留上游包名用于兼容已有设置与模块身份，**不向 @takboo/dsh-coopanion 的 npm 命名空间发布**。GitHub 成品包和对应源码发布在 Xiaxin1235/dsh-coopanion，安装依赖使用固定 Release URL。WhaleMaid 完整版将自动安装这份组件；市场只提交 WhaleMaid 的完整功能入口。
+
+fork 的发行流程：完成本地类型、单元与包验证，推送 fork 默认分支后运行原有 CI／规范包及安装矩阵；通过后使用其同一份规范 tarball 创建 GitHub Release，包含版本包、固定别名、SHA256SUMS、verification.json、release-notes.md。npm 上传 job 仅为上游仓库保留，fork 不执行。
+
+下面保留上游维护流程供追溯；其中 npm OIDC 与 takboo/main 限制不用于本 fork。
+
 # 发布流程
 
 发布使用仓库固定工具链和 `npm-shrinkwrap.json`。npm 包为 `@takboo/dsh-coopanion`，公开发布；配置 id 和设置 namespace 为 `dsh-coopanion`。分发保留 AGPL 对应源码、构建脚本、锁文件及第三方声明；历史证据和临时交接内容不进入安装包。

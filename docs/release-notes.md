@@ -1,3 +1,9 @@
+# v0.5.0
+
+WhaleMaid 配套修改版的首个 GitHub 成品包，基于 takboo/dsh-coopanion v0.4.13，保留 AGPL-3.0-or-later 与素材声明。增加了双击大肥鱼聊天、信封内回答审批并显示脱敏命令、个性化对话及设置中的情绪判断服务等配合功能。
+
+此 fork 只在 Xiaxin1235/dsh-coopanion 发布 GitHub Release，不发布或占用上游 @takboo npm 命名空间。内部包名与配置 namespace 保持兼容。普通用户使用 WhaleMaid 完整版的一次安装入口，无需单独安装本包。组件维护者可下载本仓库的 dsh-coopanion.tgz。以实际包和 Windows 安装验证为准，未声称所有新增扩展均经过物理多平台验收。
+
 # v0.4.13
 
 ## NPC 日常与交互修复

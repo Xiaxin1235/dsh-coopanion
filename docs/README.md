@@ -24,6 +24,6 @@
 
 源码实现、自动化通过、安装成功、系统实机验收和用户体验分别报告。CI 的三平台测试及宿主安装矩阵以工作流实际结果为准；物理多屏／混合 DPI、通知中心送达、真实模型会话及长期资源表现需要对应设备和场景的记录。
 
-正式发布使用 [GitHub Release](https://github.com/takboo/dsh-coopanion/releases) 中的版本、提交和包摘要核验；`verification.json`、`SHA256SUMS` 与版本包一起提供。本地试装包不代表该版本的正式分发产物。
+正式发布使用 [GitHub Release](https://github.com/Xiaxin1235/dsh-coopanion/releases) 中的版本、提交和包摘要核验；`verification.json`、`SHA256SUMS` 与版本包一起提供。本地试装包不代表该版本的正式分发产物。
 
 仓库的 `docs/evidence/` 只保留历史原始证据，普通搜索及安装包均排除它。追溯时先读其说明并核对实际产物身份。`.cache/`、`artifacts/` 与 `dist/` 属于本机或生成内容，可能来自其他提交。

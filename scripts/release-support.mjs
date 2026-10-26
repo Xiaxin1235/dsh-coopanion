@@ -3,7 +3,7 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { setTimeout as delay } from 'node:timers/promises';
 
-export const repository = 'takboo/dsh-coopanion';
+export const repository = 'Xiaxin1235/dsh-coopanion';
 export const packageName = '@takboo/dsh-coopanion';
 export const npmTarballName = pkg => `${pkg.name.replace(/^@/, '').replaceAll('/', '-')}-${pkg.version}.tgz`;
 export const stableVersion = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
