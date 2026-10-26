@@ -431,7 +431,7 @@ try {
   await settings.getByRole('button', { name: 'Desktop pet', exact: true }).click();
   await surface.getByRole('heading', { name: 'Pet status', exact: true }).waitFor();
   await reopened.waitForFunction(() => document.documentElement.lang === 'en');
-  assert.equal(await reopened.locator('#chat-title').textContent(), 'I’m here. Take your time.');
+  assert.equal(await reopened.locator('#chat-title').textContent(), 'I’m here. Take your time!');
   assert.match(await reopened.locator('#menu-chat').textContent(), /Say something/);
   assert.equal(await reopened.locator('#menu-name').textContent(), 'DeepSeek Whale');
   assert.equal(await reopened.locator('#reader-close').getAttribute('aria-label'), 'Close full reply');
@@ -447,7 +447,7 @@ try {
   await settings.getByRole('menuitem', { name: '中文', exact: true }).click();
   await settings.getByRole('button', { name: '桌宠', exact: true }).waitFor();
   await reopened.waitForFunction(() => document.documentElement.lang === 'zh-CN');
-  assert.equal(await reopened.locator('#chat-title').textContent(), '我在，慢慢说。');
+  assert.equal(await reopened.locator('#chat-title').textContent(), '我在呢～慢慢说！');
   assert.equal(await reopened.locator('#menu-name').textContent(), 'DeepSeek 大肥鱼');
   await waitProfile(/preference: zh/);
   await settings.getByRole('button', { name: '桌宠', exact: true }).click();
