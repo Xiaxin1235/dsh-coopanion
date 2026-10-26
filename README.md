@@ -130,6 +130,8 @@ dsh plugin --profile desktop add https://github.com/Xiaxin1235/dsh-coopanion/rel
 
 支持平台为 Windows、macOS 和 Linux。物理多屏／混合 DPI、系统通知中心实机体验、真实模型会话及长期资源表现的验证范围见[验证说明](docs/README.md#验证与产物身份)。
 
+Linux 桌宠使用 X11 图形会话，鼠标穿透恢复需要 `/usr/bin/python3` 和 libX11；键盘活动感知另需 libXi。Wayland 的窗口置顶、全局鼠标与点击穿透未声明支持。WhaleMaid 的核心授权与执行层独立支持 Windows、macOS、Linux。
+
 ## 致谢与许可
 
 大肥鱼的动画与角色运行时来自 [Pal-AI-Lab / Coopanion](https://github.com/Pal-AI-Lab/Coopanion)。感谢原作者与角色创作者，让她有了灵动的表情、动作和配色。
