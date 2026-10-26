@@ -6,6 +6,8 @@ fork 的发行流程：完成本地类型、单元与包验证，推送 fork 默
 
 后续更新版本和 shrinkwrap、提交到 `whaledot-local` 后，新建并推送对应 `vX.Y.Z` 标签即可触发 **WhaleMaid companion release**；也可手动运行该工作流并填写已有标签。它会重跑标签提交的检查与安装矩阵，再自动发布同一份包到此 fork 的 GitHub Release。随后更新 WhaleMaid 的 `market/companion.json`，发布下个完整包版本。用户仍只安装一个完整包。
 
+当前 fork 检查 Windows、macOS、Linux/X11，并在三平台安装五个已声明的 DSH 版本（含 rc.3），共 15 组。只有全套通过后才发布，定向恢复或安装探针仅用于定位问题。
+
 下面保留上游维护流程供追溯；其中 npm OIDC 与 takboo/main 限制不用于本 fork。
 
 # 发布流程
