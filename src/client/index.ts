@@ -11,6 +11,8 @@ import { en, zh, type LocaleKey } from './locales.ts';
 import css from './settings.css';
 import type { BrowserNotificationApi } from './system-notifications.ts';
 import { NotificationClient } from './notification-client.ts';
+import type {} from '@deepseek-ai/dsh-client-ui-session/client';
+import { ApprovalClient } from './approval-client.ts';
 import { notificationPreferencesSchema, type DeliveryClaim, type NotificationSnapshot } from '../notification-contract.ts';
 import { syncPetLocale } from './locale-sync.ts';
 
@@ -20,6 +22,7 @@ export const inject = ['slots', 'locale', 'configForms', 'connection'];
 
 /** A regular DSH settings section, using Host forms and the authenticated Connection carrier. */
 export function apply(ctx: Context): void {
+  const clientId = `coopanion-${globalThis.crypto.randomUUID()}`;
   const currentLocale = () => ctx.locale.resolveText({ zh: 'zh', en: 'en' });
   ctx.effect(() => ctx.locale.register('coopanion', { zh, en }));
   ctx.effect(() => {
@@ -72,6 +75,19 @@ export function apply(ctx: Context): void {
     name: 'settings.section', id: 'dsh-coopanion', order: 60,
     label: () => ctx.locale.bind('coopanion')('nav'), locale: 'coopanion', inject: () => face,
   }, Settings));
+  ctx.inject(['uiSession'], child => {
+    child.effect(() => new ApprovalClient({
+      clientId, status: () => child.uiSession.sessionStatus.getSnapshot(),
+      subscribe: listener => child.uiSession.sessionStatus.subscribe(listener),
+      enabled: () => face.form.getSnapshot().value?.inlineApprovals !== false,
+      resolve: value => ctx.locale.resolveText(value),
+      poll: async (payload, signal) => {
+        const reply = await ctx.connection.rpc.call('/api', 'coopanion/approval-cards', payload, signal);
+        if (!reply.ok) throw new Error(reply.error.message);
+        return reply.value as { enabled: boolean; commands: import('../approval-cards.ts').CardCommand[] };
+      },
+    }).start());
+  });
   ctx.inject(['uiWorkspace'], child => {
     if (!ctx.connection.isLoopback) return;
     child.effect(() => {
@@ -81,6 +97,7 @@ export function apply(ctx: Context): void {
         return reply.value as T;
       };
       const client = new NotificationClient({
+        clientId,
         locale: currentLocale,
         api: globalThis.Notification as unknown as BrowserNotificationApi,
         transport: {

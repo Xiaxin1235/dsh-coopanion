@@ -3,6 +3,7 @@ import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { EventEmitter } from 'node:events';
 import { questionAnswer } from '../web/question-contract.js';
+import { approvalAnswer, type ApprovalReceipt } from '../web/approval-contract.js';
 import type { QuestionAnswerReceipt } from '../web/question-contract.js';
 import type { ChatReceipt } from '../web/chat-contract.js';
 import type { PetSnapshot, PetNotice } from './model.ts';
@@ -21,6 +22,7 @@ export interface PetBridge {
   update(snapshot: PetSnapshot): void;
   chatResult?(receipt: ChatReceipt): void;
   questionResult?(receipt: QuestionAnswerReceipt): void;
+  approvalResult?(receipt: ApprovalReceipt): void;
   notify(notice: PetNotice | TaskNotice): void;
   notificationState?(snapshot: NotificationSnapshot): void;
   snoozeResult?(interactionId: string, ok: boolean, error?: string): void;
@@ -75,6 +77,7 @@ export class ElectronBridge extends EventEmitter implements PetBridge {
       if (message.type === 'closed') userClosed = true;
       if (message.type === 'action') this.emit('action', message.action);
       if (message.type === 'question-answer') { const request = questionAnswer(message.request); if (request) this.emit('action', request); }
+      if (message.type === 'approval-answer') { const request = approvalAnswer(message.request); if (request) this.emit('action', request); }
       if (message.type === 'tray-state') this.emit('tray-state', message.state);
       if (message.type === 'tray-icon') this.emit('tray-icon', message);
       if (message.type === 'visibility' && message.generation === generation && typeof message.visible === 'boolean' && Number.isSafeInteger(message.visibilityRevision) && (message.visibilityRevision as number) > this.visibilityRevision) {
@@ -138,6 +141,7 @@ export class ElectronBridge extends EventEmitter implements PetBridge {
   chatResult(receipt: ChatReceipt): void { this.send(receipt); }
   reaction(reaction: ReplyReaction): void { this.send(reaction); }
   questionResult(receipt: QuestionAnswerReceipt): void { this.send(receipt); }
+  approvalResult(receipt: ApprovalReceipt): void { this.send(receipt); }
   onAction(listener: (action: unknown) => void): void { this.on('action', listener); }
   removeAction(listener: (action: unknown) => void): void { this.off('action', listener); }
   // JSON IPC omits undefined. An explicit null lets a cleared Harness

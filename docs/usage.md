@@ -254,3 +254,13 @@ Interface style: right-click the pet → Dress up → Interface style. New is th
 Reply emotion reactions are optional and off by default. In **Settings → Desktop pet → Reply emotion reactions**, choose **OpenAI direct** (default, `OPENAI_API_KEY`, `gpt-6-luna`) or **OpenRouter** (`OPENROUTER_API_KEY`, `openai/gpt-6-luna-decisions`). Recommended: enter and save the API key directly in the Harness settings card; keys are stored in the local Harness credential store and take effect immediately without restarting. System environment variables are also supported with higher precedence and set the page to read-only. Secret values are never stored in plugin configuration, `cordis.yml`, browser storage or logs. Only the selected Decisions endpoint is called, without provider fallback, credential sharing or model changes. Switching services discards pending reactions from the previous choice.
 
 Only an eligible final reply opening is sent (first paragraph up to 120 Unicode characters, otherwise the first 200 characters). Excerpts may repeat private information; no prompt, tool, file or session metadata is appended. WhaleMaid (formerly WhaleDot) automatic tasks and archived sessions are excluded; companion replies are eligible. Each result is attempted once, with a shared 30-per-rolling-hour limit, a three-second timeout and no retries. The attempt count includes failures. Quiet mode permits the expression without opening panels; task states and reduced motion take precedence. Disable the switch to stop new calls and discard pending reactions.
+
+## 在桌宠里回答审批
+
+“在桌宠里回答审批”默认开启。信封中的“需要批准”事项显示来源会话和可读原因，可选“允许一次”“拒绝”，或“去 Harness 查看”。这等于按下 Harness 原审批卡的按钮，不增加审批策略，也没有“总是允许”。允许按钮在打开面板后 1 秒才可点，默认不获焦点，回车不会允许；拒绝可立即点。
+
+需要至少一个 Harness 窗口（桌面主窗口或已连接 Web 界面）持续运行。客户端插件随窗口启动，不依赖设置页是否打开；连接离线超过 5 秒后撤下可答入口，信封仅提示“请在 Harness 里处理”。重新连接后恢复。多个客户端的同一会话／调用只显示一项，作答交给最近上报的客户端；Harness 先答后桌宠显示“已在 Harness 处理”并移出。
+
+关闭该开关后，客户端不上报审批摘要、不作答，信封仍可打开源会话。摘要只含客户端／卡片／会话／调用身份、工具名、出现时间和最多 600 字的可读原因，不含工具参数。安静模式照常只亮信封；普通模式沿用待处理提醒。菜单和托盘没有审批按钮。
+
+开启 WhaleMaid 日常自动审批后，已自动放行的普通命令不会到达桌宠，危险操作才会进入人工审批。多选提问和计划审阅仍在 Harness 处理。旧宿主没有 rc.3 的公开卡片能力时，仅保留 Harness 入口。

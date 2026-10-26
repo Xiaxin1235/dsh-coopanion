@@ -155,8 +155,12 @@ export class NotificationBroker {
         break;
       case 'assistant/message':
         source.finalText = event.data.message.content.some(p => p.type === 'tool-call') ? '' : event.data.message.content.filter(p => p.type === 'text').map(p => p.text).join('\n'); break;
-      case 'approval/asked':
-        this.open(session.id, 'approval', event.data.id, source.turn, event.seq, event.time, `${event.data.toolName}: ${event.data.reason ?? body.approval}`, false, live); break;
+      case 'approval/asked': {
+        this.open(session.id, 'approval', event.data.id, source.turn, event.seq, event.time, `${event.data.toolName}: ${event.data.reason ?? body.approval}`, false, live);
+        const item = this.requests.get(interactionId(session.id, 'approval', event.data.id));
+        if (item && event.data.callId) item.callId = event.data.callId;
+        break;
+      }
       case 'turn/end': {
         if (event.data.turn <= source.ended) break;
         source.ended = event.data.turn;

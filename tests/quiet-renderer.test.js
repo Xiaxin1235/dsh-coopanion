@@ -19,6 +19,7 @@ function fixture() {
     return nodes.get(id);
   };
   const context = {
+    approvalForms: { retain: vi.fn(), receipt: vi.fn() }, petCopy,
     $, options: { quietMode: false, notifications: true, companionship: 'off', textScale: 1, size: 180 },
     snapshot: { sessionId: 'work', sessions: [{ id: 'work', label: 'Work', mood: 'idle' }], results: [] },
     shownResults: new Set(), acknowledgedResults: new Set(), quietInbox: new Map(),

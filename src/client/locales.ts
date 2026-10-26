@@ -1,9 +1,10 @@
 export const zh = {
+  inlineApprovals: '在桌宠里回答审批', inlineApprovalsHint: '默认开启。通过运行中的 Harness 窗口按原审批卡的按钮，只能允许一次或拒绝；关闭后只提示去 Harness。',
   reactionSettings: '回复情绪表情', decisionsReactions: '判断回复情绪', decisionsReactionsHint: '默认关闭。开启后会把符合条件的最终回复开头约 200 字发送给所选服务；不附加用户输入、工具、文件或会话元数据。', decisionsProvider: '判断服务', reactionProviderOpenai: 'OpenAI 官方', reactionProviderOpenrouter: 'OpenRouter', reactionKeyHintOpenai: '只读取 OPENAI_API_KEY；回复片段发送给 OpenAI。', reactionKeyHintOpenrouter: '只读取 OPENROUTER_API_KEY；回复片段发送给 OpenRouter，再转交 OpenAI。', reactionKeyMissing: '未检测到密钥', reactionKeyPresent: '已检测到密钥（不显示内容）', reactionCalls: '本次运行已尝试',
   reactionKeyStatusLabel: '密钥状态', reactionKeyInputLabel: '设置密钥', reactionKeyNotConfigured: '未设置', reactionKeyConfiguredHarness: '已设置（保存在 Harness）', reactionKeyConfiguredEnv: '已设置（来自系统环境变量，只读）', reactionKeyConfiguredEnvFile: '已设置（来自 .env 文件，只读）', reactionKeyEnvFileReadOnlyHint: '该密钥来自 Harness 读取的 .env 文件，请先从文件中删除再在设置页修改。',reactionKeyPlaceholder: '输入新的密钥以替换', reactionKeySave: '保存密钥', reactionKeyClear: '清除密钥', reactionKeyEnvReadOnlyHint: '该密钥由系统环境变量提供，请先删除环境变量以在设置页修改。', reactionKeyStorageHint: '密钥保存在本机 Harness 的凭据存储中，与模型的 API Key 一样；插件设置和日志里不会出现。', reactionKeyCleared: '密钥已清除', reactionKeySaved: '密钥已保存',
   quietMode: '安静模式（新消息只亮信封）', quietModeHint: '只更新信封计数，不主动弹框或发送系统通知；稍后提醒仍可安排，关闭后不补弹积压内容。',
   aboveFullscreen: '在全屏应用上方显示', aboveFullscreenHint: '默认开启。窗口被系统隐藏或最小化时自动恢复；主动隐藏后保持隐藏，不抢前台焦点。',
-  inlineQuestions: '在小信封里直接回答提问', inlineQuestionsHint: '普通单选提问可在信封中回答；审批、多选和计划审阅仍在 Harness 处理。',
+  inlineQuestions: '在小信封里直接回答提问', inlineQuestionsHint: '普通单选提问可在信封中回答；多选和计划审阅仍在 Harness 处理。',
   preferOpeningParagraph: '回复气泡：优先显示开头一段', preferOpeningParagraphHint: '优先显示简短纯文本开场白，仍可展开全文；关闭后恢复原有 180 字预览。',
   nav: '桌宠', title: '桌宠', intro: '让大肥鱼陪你工作，并在任务完成或需要确认时提醒你。',
   languageHint: '界面语言跟随 Harness；未指定语言时自动使用系统语言。',
@@ -32,11 +33,12 @@ export const zh = {
 };
 export type LocaleKey = keyof typeof zh;
 export const en: Record<LocaleKey, string> = {
+  inlineApprovals: 'Answer approvals from the pet', inlineApprovalsHint: 'On by default. Uses the original approval card in a running Harness window: allow once or reject. When off, handle approvals in Harness.',
   reactionSettings: 'Reply emotion reactions', decisionsReactions: 'Choose reply emotions', decisionsReactionsHint: 'Off by default. Sends about 200 opening characters of eligible final replies to the selected service, without adding user input, tools, files or session metadata.', decisionsProvider: 'Decision service', reactionProviderOpenai: 'OpenAI direct', reactionProviderOpenrouter: 'OpenRouter', reactionKeyHintOpenai: 'Reads only OPENAI_API_KEY; reply excerpts go to OpenAI.', reactionKeyHintOpenrouter: 'Reads only OPENROUTER_API_KEY; reply excerpts go through OpenRouter to OpenAI.', reactionKeyMissing: 'API key not detected', reactionKeyPresent: 'API key detected (value hidden)', reactionCalls: 'Attempts this run',
   reactionKeyStatusLabel: 'API key status', reactionKeyInputLabel: 'Set API key', reactionKeyNotConfigured: 'Not configured', reactionKeyConfiguredHarness: 'Configured (stored in Harness)', reactionKeyConfiguredEnv: 'Configured (read-only from system env)', reactionKeyConfiguredEnvFile: 'Configured (read-only from a .env file)', reactionKeyEnvFileReadOnlyHint: 'This key comes from a .env file that Harness reads. Remove it from the file first to edit it here.',reactionKeyPlaceholder: 'Enter a new key to replace', reactionKeySave: 'Save key', reactionKeyClear: 'Clear key', reactionKeyEnvReadOnlyHint: 'This key is provided by system environment variables. Remove the environment variable first to edit it here.', reactionKeyStorageHint: 'Keys are stored in local Harness credential storage, alongside model API keys; they never appear in plugin settings or logs.', reactionKeyCleared: 'Key cleared', reactionKeySaved: 'Key saved',
   quietMode: 'Quiet mode (new messages in envelope only)', quietModeHint: 'Update the envelope without popups or system notifications. Remind me later remains available; turning this off does not replay earlier messages.',
   aboveFullscreen: 'Show above fullscreen apps', aboveFullscreenHint: 'On by default. Recover system-hidden or minimized windows without taking focus. Explicitly hidden pets stay hidden.',
-  inlineQuestions: 'Answer questions directly in the inbox', inlineQuestionsHint: 'Answer ordinary single-select questions in the inbox. Approvals, multiple selections and plan reviews stay in Harness.',
+  inlineQuestions: 'Answer questions directly in the inbox', inlineQuestionsHint: 'Answer ordinary single-select questions in the inbox. Multiple selections and plan reviews stay in Harness.',
   preferOpeningParagraph: 'Reply bubbles: prefer the opening paragraph', preferOpeningParagraphHint: 'Show a short plain opening paragraph and keep the full reply available. Turn off for the original 180-character preview.',
   nav: 'Desktop pet', title: 'Desktop pet', intro: 'Keep DeepSeek Whale by your side and get a reminder when a task finishes or needs your attention.',
   languageHint: 'The interface follows the Harness language, using the system language when no preference is set.',

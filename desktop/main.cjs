@@ -1,6 +1,7 @@
 const { InboxStore } = require('./inbox-store.cjs');
 const { validInboxKey, continuedInboxKey } = require('../web/inbox-receipts.js');
 const { questionAnswer } = require('../web/question-contract.js');
+const { approvalAnswer } = require('../web/approval-contract.js');
 const { createVisibilityGuard, topLevel } = require('./window-visibility.cjs');
 const { createWindowTrace, petGeometry } = require('./window-diagnostics.cjs');
 const { app, BrowserWindow, ipcMain, powerMonitor, screen, Menu, Tray, nativeImage, shell } = require('electron');
@@ -166,7 +167,7 @@ process.on('message', message => {
   if (message.type === 'snapshot') { lastFrame = { type: 'init', baseline: true, options, snapshot: { ...message.snapshot, results: message.snapshot.results ?? lastFrame?.snapshot?.results ?? [] } }; forward(message); syncTray(); }
   if (message.type === 'chat-result') forward(message);
   if (message.type === 'reaction') forward(message);
-  if (message.type === 'notification-state' || message.type === 'notification-snooze-result' || message.type === 'question-answer-result') forward(message);
+  if (message.type === 'notification-state' || message.type === 'notification-snooze-result' || message.type === 'question-answer-result' || message.type === 'approval-answer-result') forward(message);
   if (message.type === 'notice') {
     if (message.generation !== undefined && (message.generation !== generation || message.visibilityRevision !== visibilityRevision || !win?.isVisible() || suspended)) return;
     forward(message);
@@ -282,6 +283,12 @@ app.whenReady().then(async () => {
     }
     if (action.type === 'notification-snooze') { if (typeof action.interactionId === 'string' && action.interactionId.length <= 2048 && Number.isSafeInteger(action.generation)) act(action); return; }
     if (action.type === 'question-answer') { const request = questionAnswer(action); if (request) process.send?.({ type: 'question-answer', request }); return; }
+    if (action.type === 'approval-answer') {
+      const request = approvalAnswer(action);
+      if (request && inboxInteractions.some(item => item.id === request.interactionId && item.kind === 'approval' && item.state !== 'settled')) process.send?.({ type: 'approval-answer', request });
+      else if (request) forward({ ...request, type: 'approval-answer-result', status: 'failed', code: 'approval/stale' });
+      return;
+    }
     if (action.type === 'chat') { const request = chatRequest(action); if (request) act(request); return; }
     if (action.type !== 'select' && action.type !== 'open-session' && action.type !== 'preference' && action.type !== 'read') return;
     process.send?.({ type: 'action', action });

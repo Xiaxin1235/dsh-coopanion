@@ -7,7 +7,7 @@ import type { PetCommand, PetStatus } from '../controls.ts';
 import type { NotificationSettings, NotificationClientStatus } from './notification-client.ts';
 import { TEXT_SCALES, textScale, type TextScale } from '../../web/text-scale.js';
 
-export interface Preferences { decisionsProvider?: 'openai' | 'openrouter'; decisionsReactions?: boolean; size: number; npcHome: number; npcRange: number; textScale: TextScale; aboveFullscreen: boolean; preferOpeningParagraph: boolean; inlineQuestions: boolean; roam: boolean; diagnostics: boolean; companionship: CompanionshipMode; notifications: boolean; quietMode: boolean; systemNotifications: boolean; reminders: boolean; reminderDelayMs: number; bubbleDurationMs: number; autoStart: boolean; defaultChatTarget?: 'companion' | 'last'; }
+export interface Preferences { inlineApprovals?: boolean; decisionsProvider?: 'openai' | 'openrouter'; decisionsReactions?: boolean; size: number; npcHome: number; npcRange: number; textScale: TextScale; aboveFullscreen: boolean; preferOpeningParagraph: boolean; inlineQuestions: boolean; roam: boolean; diagnostics: boolean; companionship: CompanionshipMode; notifications: boolean; quietMode: boolean; systemNotifications: boolean; reminders: boolean; reminderDelayMs: number; bubbleDurationMs: number; autoStart: boolean; defaultChatTarget?: 'companion' | 'last'; }
 import { reactionKeyView, type ReactionKeyInfo } from './reaction-key-view.ts';
 export type { ReactionKeyInfo } from './reaction-key-view.ts';
 export type ReactionKeyStatus = Record<'openai' | 'openrouter', ReactionKeyInfo>;
@@ -246,9 +246,9 @@ export function Settings({ form, call, local, notifier, getKeyStatus, setKey, cl
     <section className="pet-card" aria-label={t('preferences')}>
       <h3>{t('preferences')}</h3>
       {!accepted.writable || !local ? <p>{t('unavailable')}</p> : null}
-      {(['autoStart', 'roam', 'notifications', 'quietMode', 'diagnostics', 'aboveFullscreen', 'preferOpeningParagraph', 'inlineQuestions'] as const).map(field => <div className="pet-row" key={field}>
+      {(['autoStart', 'roam', 'notifications', 'quietMode', 'diagnostics', 'aboveFullscreen', 'preferOpeningParagraph', 'inlineQuestions', 'inlineApprovals'] as const).map(field => <div className="pet-row" key={field}>
         <div className="pet-label"><strong>{t(field)}</strong><p>{t(`${field}Hint`)}</p></div>
-        <Switch checked={prefs?.[field] ?? (field === 'aboveFullscreen' || field === 'preferOpeningParagraph' || field === 'inlineQuestions')} disabled={!ready || !local} label={t(field)} onChange={value => void save(field, value)} />
+        <Switch checked={prefs?.[field] ?? (field === 'aboveFullscreen' || field === 'preferOpeningParagraph' || field === 'inlineQuestions' || field === 'inlineApprovals')} disabled={!ready || !local} label={t(field)} onChange={value => void save(field, value)} />
       </div>)}
       {prefs ? <>
         <div className="pet-row"><div className="pet-label"><label htmlFor="coopanion-companionship">{t('companionship')}</label><p id="coopanion-companionship-hint">{t('companionshipHint')}</p></div>

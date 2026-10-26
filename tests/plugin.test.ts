@@ -126,7 +126,7 @@ it('registers and disposes exact authenticated Connection routes without taking 
   let action: ((value: unknown) => void) | undefined;
   const bridge: PetBridge = { ...nativeBridge(), onAction: listener => { action = listener; }, focusHarness: vi.fn() };
   const fiber = ctx.plugin(async scope => mountPet(scope, Config({ autoStart: false }), bridge)); await fiber.await();
-  expect([...routes.keys()]).toEqual(['status', 'control', 'navigation', 'locale', 'reaction-key-status', 'reaction-key-set', 'reaction-key-clear', 'notification-state', 'notification-claim', 'notification-receipt', 'notification-snooze', 'notification-test'].map(endpoint => `/api/coopanion/${endpoint}`));
+  expect([...routes.keys()]).toEqual(['status', 'control', 'navigation', 'locale', 'approval-cards', 'reaction-key-status', 'reaction-key-set', 'reaction-key-clear', 'notification-state', 'notification-claim', 'notification-receipt', 'notification-snooze', 'notification-test'].map(endpoint => `/api/coopanion/${endpoint}`));
   const invoke = async (payload: unknown) => {
     const response = await routes.get('/api/coopanion/control')!.fetch(new Request('http://localhost/api/coopanion/control', { method: 'POST', body: JSON.stringify({ type: 'client-request', rpcId: 'test', method: 'coopanion/control', payload }) }));
     return response.json();

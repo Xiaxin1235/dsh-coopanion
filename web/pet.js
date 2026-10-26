@@ -4,6 +4,7 @@ import { InboxReceipts, continuedInboxKey } from './inbox-receipts.js';
 import { automaticExpression, taskExpression } from './task-expression.js';
 import { reactionFor } from './reaction.js';
 import { createQuestionForms } from './inline-questions.js';
+import { createApprovalForms } from './inline-approvals.js';
 import { advanceRenderCadence } from './render-cadence.js';
 import { createDiagnosticCounters } from './diagnostics.js';
 import { createCompanionStroke } from './companion-touch.js';
@@ -38,6 +39,7 @@ const snoozing = new Map();
 // At most one invitation, feedback and application notice, local to this window.
 const quietInbox = new Map();
 const questionForms = createQuestionForms({ send, changed: () => { renderRequests(); position(); } });
+const approvalForms = createApprovalForms({ send, changed: () => { renderRequests(); position(); }, feedback: text => { $('request-feedback').textContent = text; } });
 const notificationLocale = () => options.locale ? petLanguage(options.locale) : automaticPetLanguage(navigator.languages ?? [navigator.language]);
 const uiCopy = () => petCopy(notificationLocale(), options.interfaceStyle !== 'classic');
 const noticeCopy = () => notificationCopy(notificationLocale(), options.interfaceStyle !== 'classic');
@@ -603,7 +605,7 @@ function renderRequests() {
   $('inbox-empty').textContent = copy.inboxEmpty; $('inbox-empty').hidden = !!inboxState.total;
   const keys = [notificationLocale(), options.interfaceStyle, snapshot.companionSessionId, snapshot.sessions.map(session => [session.id, session.companionRole, session.label, session.project, session.cwd])];
   renderQuietCards();
-  replaceInboxList($('request-list'), JSON.stringify([...keys, items, [...snoozing.keys()], options.reminders, options.notifications, options.inlineQuestions, questionForms.revision]), () => items.map(item => {
+  replaceInboxList($('request-list'), JSON.stringify([...keys, items, [...snoozing.keys()], options.reminders, options.notifications, options.inlineQuestions, questionForms.revision, approvalForms.revision]), () => items.map(item => {
     const card = document.createElement('article'); card.className = 'request-card';
     const label = document.createElement('strong'), preview = document.createElement('p'), meta = document.createElement('small'), actions = document.createElement('div');
     label.textContent = item.kind === 'question' ? copy.questionLabel : copy.approvalLabel;
@@ -619,6 +621,7 @@ function renderRequests() {
     later.onclick = () => { snoozing.set(item.id, { dueAt: item.dueAt, expiresAt: performance.now() + 10000 }); $('request-feedback').textContent = ''; send({ type: 'notification-snooze', interactionId: item.id, generation: notificationState.runtime.generation }); renderRequests(); };
     actions.append(open, later); card.append(label, preview, meta);
     const form = item.kind === 'question' && options.inlineQuestions !== false ? questionForms.render(item, notificationState.runtime.generation, copy, options.interfaceStyle !== 'classic') : undefined;
+    if (item.kind === 'approval') { open.textContent = petCopy(notificationLocale()).approvalOpen; card.append(approvalForms.render(item, notificationState.runtime.generation, petCopy(notificationLocale()))); }
     if (form) {
       if (options.interfaceStyle !== 'classic') {
         const submit = form.querySelector('button[type=submit]'), footer = document.createElement('div');
@@ -665,6 +668,7 @@ function replaceInboxList(list, key, build) {
   if (focused?.inboxKey) (list.querySelector(`[data-inbox-key="${CSS.escape(focused.inboxKey)}"][data-action="${focused.action}"]`) ?? $('requests-close')).focus();
 }
 function openRequests(autoRead = true) {
+  approvalForms.opened();
   clearTimeout(touchTimer); interaction.hidden = true; bubble.hidden = true; $('request-feedback').textContent = '';
   const contents = currentInbox();
   if (autoRead !== false && contents.replies.length === 1 && contents.total === 1) { openReader(contents.replies[0], contents.replies.map(item => ({ ...item }))); return; }
@@ -776,6 +780,7 @@ function receive(message) {
       if (notificationState && value.runtime.generation !== notificationState.runtime.generation) { noticeQueue.clear(); interaction.hidden = true; currentNotice = undefined; snoozing.clear(); }
       if (notificationState && value.runtime.generation === notificationState.runtime.generation && pendingInteractions(value).some(item => !pendingRequests().some(old => old.id === item.id))) attentionToWork();
       questionForms.retain(value.interactions, value.runtime.generation);
+      approvalForms.retain(value.interactions, value.runtime.generation, petCopy(notificationLocale()));
       notificationState = value;
       for (const [id, pending] of snoozing) { const item = value.interactions.find(item => item.id === id); if (!item || item.state === 'settled' || item.dueAt !== pending.dueAt) snoozing.delete(id); }
       if (currentNotice?.requestIds.length && !currentNotice.requestIds.some(id => pendingRequests().some(item => item.id === id))) { interaction.hidden = true; currentNotice = undefined; }
@@ -783,6 +788,7 @@ function receive(message) {
       render(); break;
     }
     case 'question-answer-result': { questionForms.receipt(message); break; }
+    case 'approval-answer-result': { approvalForms.receipt(message, petCopy(notificationLocale())); break; }
     case 'notification-snooze-result': {
       snoozing.delete(message.interactionId);
       if (!message.ok) $('request-feedback').textContent = noticeCopy().unavailable;

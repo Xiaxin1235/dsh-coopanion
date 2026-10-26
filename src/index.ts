@@ -12,6 +12,8 @@ import { SessionId, type Session } from '@deepseek-ai/dsh-session';
 import { NotificationBroker, type NotificationEvent } from './notification-broker.ts';
 import { notificationPreferencesSchema, notificationEndpoints, notificationRequests, noticeId, interactionId } from './notification-contract.ts';
 import { InboxQuestions } from './inbox-questions.ts';
+import { ApprovalCards } from './approval-cards.ts';
+import { approvalAnswer } from '../web/approval-contract.js';
 import { ChatSubmission } from './chat.ts';
 import { archivedSessionIds } from './archive.ts';
 import z from '@deepseek-ai/schemastery';
@@ -30,6 +32,7 @@ export interface Config {
   size: Volatile<number>; npcHome: Volatile<number>; npcRange: Volatile<number>; interfaceStyle: Volatile<'new' | 'classic'>; textScale: Volatile<TextScale>; aboveFullscreen: Volatile<boolean>; preferOpeningParagraph: Volatile<boolean>; inlineQuestions: Volatile<boolean>; roam: Volatile<boolean>; diagnostics: Volatile<boolean>; companionship: Volatile<CompanionshipMode>; notifications: Volatile<boolean>;
   quietMode: Volatile<boolean>; systemNotifications: Volatile<boolean>; reminders: Volatile<boolean>; reminderDelayMs: Volatile<number>;
   decisionsReactions: Volatile<boolean>;
+  inlineApprovals: Volatile<boolean>;
   decisionsProvider: Volatile<'openai' | 'openrouter'>;
   bubbleDurationMs: Volatile<number>; autoStart: Volatile<boolean>; electronPath?: string; defaultChatTarget: Volatile<'companion' | 'last'>;
 }
@@ -41,6 +44,7 @@ export const Config = z.object({
   aboveFullscreen: z.boolean().default(true).volatile(),
   preferOpeningParagraph: z.boolean().default(true).volatile(),
   inlineQuestions: z.boolean().default(true).volatile(),
+  inlineApprovals: z.boolean().default(true).volatile(),
   roam: z.boolean().default(true).volatile(),
   diagnostics: z.boolean().default(false).volatile(),
   npcHome: z.number().min(.05).max(.95).step(.01).default(.85).volatile(),
@@ -128,7 +132,7 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
   const notificationPrefs = () => notificationPreferencesSchema.parse({ notifications: currentOptions().notifications, quietMode: currentOptions().quietMode, systemNotifications: options.systemNotifications.get(), reminders: options.reminders.get(), reminderDelayMs: options.reminderDelayMs.get() });
   const syncNotifications = () => {
     if (!mounted) return;
-    const snapshot = inboxAnswers.snapshot(broker.snapshot()); model.interactions(snapshot.interactions); bridge.notificationState?.(snapshot); update();
+    const snapshot = approvalCards.snapshot(inboxAnswers.snapshot(broker.snapshot())); model.interactions(snapshot.interactions); bridge.notificationState?.(snapshot); update();
   };
   const broker = new NotificationBroker({
     changed: syncNotifications, presentRole: (value, runtime) => bridge.presentRole?.(value, runtime) ?? false,
@@ -138,6 +142,8 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
     },
   });
   const inboxAnswers = new InboxQuestions(ctx, () => options.inlineQuestions.get(), () => broker.snapshot(), syncNotifications);
+  const approvalCards = new ApprovalCards(() => options.inlineApprovals?.get() !== false, () => broker.snapshot(), syncNotifications);
+  ctx.effect(() => { const timer = setInterval(() => approvalCards.expire(), 1000); timer.unref(); return () => { clearInterval(timer); approvalCards.dispose(); }; });
   ctx.effect(() => () => inboxAnswers.dispose());
   broker.preferences(notificationPrefs());
   ctx.effect(() => () => broker.dispose());
@@ -201,7 +207,8 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
           navigation = undefined;
           return { ok: true, value };
         }
-        if (endpoint === 'notification-state') { const input = notificationRequests.state.parse(payload); if (input.locale && !dedicatedLocale) adoptClientLocale(input.locale); return { ok: true, value: inboxAnswers.snapshot(broker.snapshot()) }; }
+        if (endpoint === 'approval-cards') return { ok: true, value: approvalCards.poll(payload) };
+        if (endpoint === 'notification-state') { const input = notificationRequests.state.parse(payload); if (input.locale && !dedicatedLocale) adoptClientLocale(input.locale); return { ok: true, value: approvalCards.snapshot(inboxAnswers.snapshot(broker.snapshot())) }; }
         if (endpoint === 'notification-claim') { const input = notificationRequests.claim.parse(payload); return { ok: true, value: broker.claim(input.clientId, input.generation) }; }
         if (endpoint === 'notification-receipt') { return { ok: true, value: { accepted: broker.receipt(notificationRequests.receipt.parse(payload)) } }; }
         if (endpoint === 'notification-snooze') { const input = notificationRequests.snooze.parse(payload); if (!broker.snooze(input.interactionId, input.generation)) throw new Error('待处理请求已变化或提醒暂不可用'); return { ok: true, value: { accepted: true } }; }
@@ -249,7 +256,7 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
     // Exact Connection routes coexist with the Gateway's exclusive /api interceptor.
     // The Connection carrier applies its normal Host/Origin and authentication checks.
     const reactionEndpoints = ['reaction-key-status', 'reaction-key-set', 'reaction-key-clear'] as const;
-    for (const endpoint of ['status', 'control', 'navigation', 'locale', ...reactionEndpoints, ...notificationEndpoints] as const) {
+    for (const endpoint of ['status', 'control', 'navigation', 'locale', 'approval-cards', ...reactionEndpoints, ...notificationEndpoints] as const) {
       child.effect(() => child.connection.fetch.register({
         path: `/api/coopanion/${endpoint}`, methods: ['POST'], requestBody: 'buffered',
         fetch: async request => {
@@ -316,6 +323,11 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
   });
   const onAction = (action: unknown) => {
     if (!isRecord(action)) return;
+    if (action.type === 'approval-answer') {
+      const input = approvalAnswer(action); if (!input) return;
+      void approvalCards.submit(input).then(receipt => { if (receipt) bridge.approvalResult?.(receipt); syncNotifications(); });
+      return;
+    }
     if (action.type === 'question-answer') {
       const receipt = inboxAnswers.submit(action);
       if (receipt) bridge.questionResult?.(receipt);

@@ -40,6 +40,7 @@ export const interactionSchema = z.object({
   turn: counter, seq: counter, createdAt: counter, preview: z.string().max(2048),
   state: z.enum(['open', 'continued', 'settled']), source: z.enum(['event', 'runtime']).optional(),
   questions: z.custom<InlineQuestion[]>(value => inlineQuestionItems(value) !== undefined).optional(),
+  callId: id.optional(), approvalAnswerable: z.boolean().optional(),
   dueAt: counter.nullable(), automaticReminders: z.number().int().min(0).max(1),
 }).strict();
 export type PendingInteraction = z.infer<typeof interactionSchema>;

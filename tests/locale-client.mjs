@@ -2,12 +2,13 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 import { test } from 'node:test';
+import { webcrypto } from 'node:crypto';
 
 test('the real Client factory synchronizes resolved Harness locale without workspace or notifications', async () => {
   let factory, active='en'; const listeners=new Set(), calls=[], cleanup=[];
   const focusEvents=new EventTarget(), documentEvents=new EventTarget();
   const document={createElement:()=>({dataset:{},remove(){}}),head:{append(){}},visibilityState:'visible',addEventListener:documentEvents.addEventListener.bind(documentEvents),removeEventListener:documentEvents.removeEventListener.bind(documentEvents)};
-  runInNewContext(readFileSync(new URL('../dist/client.js',import.meta.url),'utf8'),{window:{__ModuleLoader__:{load(value){factory=value.factory;}},addEventListener:focusEvents.addEventListener.bind(focusEvents),removeEventListener:focusEvents.removeEventListener.bind(focusEvents)},document,URL,TextEncoder,TextDecoder,AbortController,setTimeout,clearTimeout});
+  runInNewContext(readFileSync(new URL('../dist/client.js',import.meta.url),'utf8'),{crypto:webcrypto,window:{__ModuleLoader__:{load(value){factory=value.factory;}},addEventListener:focusEvents.addEventListener.bind(focusEvents),removeEventListener:focusEvents.removeEventListener.bind(focusEvents)},document,URL,TextEncoder,TextDecoder,AbortController,setTimeout,clearTimeout});
   const client=factory(()=>({}));
   const ctx={effect(fn){const stop=fn(); if(stop) cleanup.push(stop);},inject(){},locale:{register:()=>()=>{},getLocale:()=>({active}),resolveText:()=>active==='custom'?'zh':active,subscribe(fn){listeners.add(fn);return()=>listeners.delete(fn);}},configForms:{get:()=>({getSnapshot:()=>({value:{notifications:false,systemNotifications:false}})})},slots:{inject(){}},connection:{isLoopback:true,rpc:{async call(...args){calls.push(args);return{ok:true,value:{}};}}}};
   client.apply(ctx); await new Promise(resolve=>setTimeout(resolve,20));
