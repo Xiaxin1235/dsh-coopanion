@@ -10,6 +10,17 @@
 
 [**下载插件**](https://github.com/takboo/dsh-coopanion/releases/latest/download/dsh-coopanion.tgz) · [快速开始](#开始一起工作) · [使用指南](docs/usage.md) · [更新记录](https://github.com/takboo/dsh-coopanion/releases/latest)
 
+> [!IMPORTANT]
+> **这是 [WhaleMaid](https://github.com/Xiaxin1235/WhaleMaid) 配套的修改版**（fork 自 [takboo/dsh-coopanion](https://github.com/takboo/dsh-coopanion)，分支 `whaledot-local`，同样采用 AGPL-3.0-or-later）。在原版之上增加了：
+>
+> - 双击直接和大肥鱼聊天、空白草稿与已归档对话不进列表、会话名跟随 Harness 标题、安静模式；
+> - 可选的回复情绪表情，API Key 可在 **Settings → 桌宠** 中直接填写；
+> - 在桌宠信封里回答审批（经 Harness 自己的审批卡，只有“允许一次 / 拒绝”，显示脱敏后的实际命令）；
+> - 支持 DeepSeek Harness Desktop 0.2.1-rc.3。
+>
+> 下文“从 npm 安装”和“下载压缩包”两种方式装的是**原版**，不含这些改动。要使用修改版，请[从这个仓库的源码安装](#从修改版源码安装)。
+
+
 ![大肥鱼从思考到收到回复，双击打开聊天并继续输入](docs/assets/showcase/companion.gif)
 
 <sub>实际浏览器界面演示：思考 → 收到回复 → 双击继续聊。演示中的 Harness 任务事件为模拟。</sub>
@@ -51,9 +62,30 @@
 
 ## 开始一起工作
 
-需要 **DeepSeek Harness Desktop 0.2.0-rc.2、0.2.1-alpha.1、0.2.1-rc.1 或 0.2.1-rc.2**。这是 Harness 插件，聊天使用你在 Harness 中配置的模型，无需另填 API Key。
+需要 **DeepSeek Harness Desktop 0.2.0-rc.2、0.2.1-alpha.1、0.2.1-rc.1、0.2.1-rc.2 或 0.2.1-rc.3**。这是 Harness 插件，聊天使用你在 Harness 中配置的模型，无需另填 API Key。
 
-### 在 Harness 中从 npm 安装（推荐）
+### 从修改版源码安装
+
+适用于这个修改版（Windows，PowerShell）。需要 Git 和 Node.js ≥22.19。
+
+```powershell
+git clone https://github.com/Xiaxin1235/dsh-coopanion.git
+Set-Location dsh-coopanion
+npm ci
+npm run build
+```
+
+`git clone` 默认取得 `whaledot-local` 分支。然后**完全退出 Harness**，用 Desktop 自带的 `dsh` 命令安装；若之前从 npm 或压缩包装过原版，先移除它：
+
+```powershell
+$dsh = Join-Path $env:LOCALAPPDATA 'Programs\DeepSeek Harness\resources\runtime\cli\bin\dsh.cmd'
+& $dsh plugin --profile desktop remove @takboo/dsh-coopanion   # 仅在装过原版时执行
+& $dsh plugin --profile desktop add "link:$((Get-Location).Path)"
+```
+
+从开始菜单重新打开 Harness。这种方式会直接链接这个源码目录：以后更新时，在目录里执行 `git pull`、`npm ci`、`npm run build`，再重启 Harness 即可；不要删除或移动这个目录。
+
+### 在 Harness 中从 npm 安装（原版）
 
 打开侧边栏 **插件 → 添加插件**，在「包名或地址」中填入：
 
