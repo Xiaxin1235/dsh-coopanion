@@ -1,4 +1,5 @@
 import { CompletionTracker } from './completion.ts';
+import { approvalCommand } from './approval-command.ts';
 import { randomUUID } from 'node:crypto';
 import type { Session, SessionEvent } from '@deepseek-ai/dsh-session';
 import type {} from '@deepseek-ai/dsh-user-approval';
@@ -159,6 +160,7 @@ export class NotificationBroker {
         this.open(session.id, 'approval', event.data.id, source.turn, event.seq, event.time, `${event.data.toolName}: ${event.data.reason ?? body.approval}`, false, live);
         const item = this.requests.get(interactionId(session.id, 'approval', event.data.id));
         if (item && event.data.callId) item.callId = event.data.callId;
+        if (item) item.approvalCommand = approvalCommand(event.data.toolName, event.data.callId, session.snapshotEvents?.() ?? []);
         break;
       }
       case 'turn/end': {

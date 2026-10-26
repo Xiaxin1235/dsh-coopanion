@@ -18,12 +18,16 @@ try {
     await page.goto(`http://127.0.0.1:${server.address().port}`); await page.waitForSelector('#pet[data-mode]');
     const receive = message => page.evaluate(message => window.receive(message), message);
     const session = { id: 'approval-session', label: 'Fictional deletion', mood: 'waiting', active: true, unread: 0 };
-    const item = { id: 'approval-item', nativeId: 'native', callId: 'call', sessionId: session.id, kind: 'approval', turn: 1, seq: 2, createdAt: 1, preview: 'Delete only generated.txt in the fictional repo', state: 'open', dueAt: null, automaticReminders: 0, approvalAnswerable: true };
+    const item = { id: 'approval-item', nativeId: 'native', callId: 'call', sessionId: session.id, kind: 'approval', turn: 1, seq: 2, createdAt: 1, preview: 'Delete only generated.txt in the fictional repo', state: 'open', dueAt: null, automaticReminders: 0, approvalAnswerable: true, approvalCommand: { kind: 'shell', command: 'Remove-Item -LiteralPath generated.txt', workdir: 'D:/fictional' } };
     const state = { protocol: 1, runtime: { phase: 'running', visible: true, generation: 2, visibilityRevision: 1, suspended: false }, interactions: [item] };
     await receive({ type: 'init', baseline: true, options: { interfaceStyle: style, locale, quietMode: true, roam: false }, snapshot: { mood: 'waiting', active: true, sessionId: session.id, sessions: [session], results: [] } });
     await receive({ type: 'notification-state', snapshot: state });
     assert.equal(await page.locator('#requests').isVisible(), false, 'quiet mode never opens the inbox');
     await page.locator('#attention').click();
+    assert.equal(await page.locator('.approval-command').innerText(), item.approvalCommand.command);
+    assert.match(await page.locator('.approval-workdir').innerText(), /D:\/fictional/);
+    assert.match(await page.locator('.approval-reason').innerText(), locale === 'zh' ? /^模型说明：/ : /^Model explanation:/);
+    assert.equal(await page.locator('.approval-reason').evaluate(node => getComputedStyle(node).fontWeight), '400');
     const allow = page.locator('[data-action=approval-allow]'), reject = page.locator('[data-action=approval-reject]');
     assert.equal(await allow.isDisabled(), true, 'allow is disabled immediately on opening');
     assert.equal(await reject.isEnabled(), true, 'reject is immediately available');
@@ -53,6 +57,20 @@ try {
     assert.match(await page.locator('.inline-approval').innerText(), locale === 'zh' ? /请在 Harness 里处理/ : /Please handle this in Harness/);
     await receive({ type: 'notification-state', snapshot: { ...state, interactions: [] } });
     assert.match(await page.locator('#request-feedback').innerText(), locale === 'zh' ? /已在 Harness 处理/ : /Handled in Harness/);
+    await receive({ type: 'notification-state', snapshot: { ...state, interactions: [{ ...item, approvalCommand: { kind: 'shell' } }] } });
+    await page.waitForTimeout(1100);
+    assert.equal(await allow.isDisabled(), true, 'a shell approval without a command cannot be allowed after the guard expires');
+    assert.equal(await reject.isEnabled(), true);
+    assert.match(await page.locator('.approval-command-missing').innerText(), locale === 'zh' ? /未能取得命令/ : /Command unavailable/);
+    assert.equal(await page.locator('[data-action=snooze]').count(), 0, 'missing-command cards keep only reject and the Harness link as enabled actions');
+    await receive({ type: 'notification-state', snapshot: { ...state, interactions: [{ ...item, approvalCommand: { kind: 'other' } }] } });
+    assert.equal(await page.locator('.approval-command').count(), 0);
+    assert.match(await page.locator('.approval-detail-hint').innerText(), /Harness/);
+    await receive({ type: 'notification-state', snapshot: { ...state, interactions: [{ ...item, approvalCommand: { kind: 'shell', command: 'x'.repeat(490) + '…（已截断）', workdir: 'D:/' + 'directory'.repeat(50) } }] } });
+    await page.setViewportSize({ width: 360, height: 800 });
+    await page.waitForTimeout(150);
+    assert.equal(await page.locator('.approval-command').evaluate(node => node.getBoundingClientRect().right <= document.querySelector('#requests').getBoundingClientRect().right + 1 && node.scrollWidth <= node.clientWidth + 1), true, 'long command wraps within the inbox');
+    await page.setViewportSize({ width: 1200, height: 850 });
     assert.deepEqual(errors, []); console.log(`PASS approvals ${style}/${locale}: guard, Enter, allow/reject receipts, external settlement, offline, quiet`);
     await page.close();
   }

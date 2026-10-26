@@ -41,6 +41,7 @@ export const interactionSchema = z.object({
   state: z.enum(['open', 'continued', 'settled']), source: z.enum(['event', 'runtime']).optional(),
   questions: z.custom<InlineQuestion[]>(value => inlineQuestionItems(value) !== undefined).optional(),
   callId: id.optional(), approvalAnswerable: z.boolean().optional(),
+  approvalCommand: z.object({ kind: z.enum(['shell', 'other']), command: z.string().max(500).optional(), workdir: z.string().max(500).optional() }).strict().optional(),
   dueAt: counter.nullable(), automaticReminders: z.number().int().min(0).max(1),
 }).strict();
 export type PendingInteraction = z.infer<typeof interactionSchema>;

@@ -619,7 +619,21 @@ function renderRequests() {
     };
     const later = document.createElement('button'); later.textContent = snoozing.has(item.id) ? copy.snoozing : copy.snooze; later.dataset.requestId = item.id; later.dataset.inboxKey = item.id; later.dataset.action = 'snooze'; later.disabled = snoozing.has(item.id) || !options.notifications || options.reminders === false;
     later.onclick = () => { snoozing.set(item.id, { dueAt: item.dueAt, expiresAt: performance.now() + 10000 }); $('request-feedback').textContent = ''; send({ type: 'notification-snooze', interactionId: item.id, generation: notificationState.runtime.generation }); renderRequests(); };
-    actions.append(open, later); card.append(label, preview, meta);
+    actions.append(open);
+    if (!(item.kind === 'approval' && item.approvalCommand?.kind === 'shell' && !item.approvalCommand.command)) actions.append(later);
+    card.append(label);
+    if (item.kind === 'approval') {
+      const words = petCopy(notificationLocale()), detail = item.approvalCommand;
+      if (detail?.kind === 'shell') {
+        if (detail.command) {
+          const command = document.createElement('pre'); command.className = 'approval-command'; command.textContent = detail.command; card.append(command);
+          if (detail.workdir) { const directory = document.createElement('small'); directory.className = 'approval-workdir'; directory.textContent = words.approvalWorkdir(detail.workdir); card.append(directory); }
+        } else { const warning = document.createElement('p'); warning.className = 'approval-command-missing'; warning.textContent = words.approvalCommandMissing; card.append(warning); }
+      }
+      preview.className = 'approval-reason'; preview.textContent = words.approvalModelReason + item.preview; card.append(preview);
+      if (detail?.kind !== 'shell') { const hint = document.createElement('small'); hint.className = 'approval-detail-hint'; hint.textContent = words.approvalDetailHarness; card.append(hint); }
+    } else card.append(preview);
+    card.append(meta);
     const form = item.kind === 'question' && options.inlineQuestions !== false ? questionForms.render(item, notificationState.runtime.generation, copy, options.interfaceStyle !== 'classic') : undefined;
     if (item.kind === 'approval') { open.textContent = petCopy(notificationLocale()).approvalOpen; card.append(approvalForms.render(item, notificationState.runtime.generation, petCopy(notificationLocale()))); }
     if (form) {

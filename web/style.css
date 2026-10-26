@@ -191,6 +191,8 @@ h1 { font-size: clamp(32px, 4vw, 54px); font-weight: 500; line-height: 1.4; lett
 .inbox-section:not([hidden]) { margin-top:10px; }
 .request-card, .inbox-card { border:1px solid var(--line); border-radius:14px; padding:12px; display:flex; flex-direction:column; gap:8px; background:var(--surface); font-size:calc(13px * var(--text-scale)); line-height:1.6; }
 .request-card p { margin:0; white-space:pre-wrap; overflow-wrap:anywhere; max-height:130px; overflow:auto; }
+.request-card .approval-command { margin:0; padding:10px; min-width:0; max-width:100%; box-sizing:border-box; overflow:auto; white-space:pre-wrap; overflow-wrap:anywhere; font:calc(12px * var(--text-scale))/1.6 ui-monospace,Consolas,monospace; background:var(--surface); border:1px solid var(--line); border-radius:8px; }
+.request-card p.approval-reason, .redesigned .request-card p.approval-reason { color:var(--muted); font-size:calc(11px * var(--text-scale)); font-weight:400; }
 .request-card small, .inbox-card small { overflow-wrap:anywhere; color:var(--muted); font-size:calc(10px * var(--text-scale)); }
 .request-card div, .inbox-card>div { display:flex; justify-content:flex-end; flex-wrap:wrap; gap:8px; }
 .inbox-card>strong, .inbox-content strong { overflow-wrap:anywhere; }

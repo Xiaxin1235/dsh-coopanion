@@ -6,6 +6,7 @@ export function automaticPetLanguage(languages = []) {
 export function localizedText(names, locale) { return names?.[petLanguage(locale)] ?? names?.en ?? names?.zh ?? Object.values(names ?? {})[0] ?? ''; }
 
 const zh = {
+  approvalModelReason: '模型说明：', approvalCommandMissing: '未能取得命令，请在 Harness 查看', approvalDetailHarness: '详情请在 Harness 查看', approvalWorkdir: directory => `在 ${directory} 中运行`,
   approvalOpen: '去 Harness 查看', approvalAllow: '允许一次', approvalReject: '拒绝', approvalAllowed: '已允许', approvalRejected: '已拒绝', approvalElsewhere: '已在 Harness 处理', approvalHarness: '请在 Harness 里处理', approvalGuard: '打开后等待 1 秒才能允许；回车不会允许。', approvalFailed: '审批未确认，请回 Harness 核对',
   reactionSettings: '回复情绪表情', decisionsReactions: '判断回复情绪', decisionsReactionsHint: '默认关闭。开启后会把符合条件的最终回复开头约 200 字发送给所选服务；不附加用户输入、工具、文件或会话元数据。', decisionsProvider: '判断服务', reactionProviderOpenai: 'OpenAI 官方', reactionProviderOpenrouter: 'OpenRouter', reactionKeyHintOpenai: '只读取 OPENAI_API_KEY；回复片段发送给 OpenAI。', reactionKeyHintOpenrouter: '只读取 OPENROUTER_API_KEY；回复片段发送给 OpenRouter，再转交 OpenAI。', reactionKeyMissing: '未检测到密钥', reactionKeyPresent: '已检测到密钥（不显示内容）', reactionCalls: '本次运行已尝试',
   quietMode: '安静模式（新消息只亮信封）', quietModeHint: '不弹框，随时点信封查看',
@@ -37,6 +38,7 @@ const zh = {
   trayUnread:n=>` · ${n} 份未读`, trayPending:(unread,pending)=>`待查看 · ${unread} 份回复 · ${pending} 段需要你`, trayTooltip:(name,mood,label,busy,pending,unread)=>`${name} · ${mood}\n关注：${label}\n${busy} 段进行中 · ${pending} 段需要你 · ${unread} 份未读回复`,
 };
 const en = {
+  approvalModelReason: 'Model explanation: ', approvalCommandMissing: 'Command unavailable. View it in Harness.', approvalDetailHarness: 'View details in Harness.', approvalWorkdir: directory => `Run in ${directory}`,
   approvalOpen: 'View in Harness', approvalAllow: 'Allow once', approvalReject: 'Reject', approvalAllowed: 'Allowed', approvalRejected: 'Rejected', approvalElsewhere: 'Handled in Harness', approvalHarness: 'Please handle this in Harness', approvalGuard: 'Wait 1 second before allowing. Enter never allows.', approvalFailed: 'Approval unconfirmed; check Harness',
   reactionSettings: 'Reply emotion reactions', decisionsReactions: 'Choose reply emotions', decisionsReactionsHint: 'Off by default. Sends about 200 opening characters of eligible final replies to the selected service, without adding user input, tools, files or session metadata.', decisionsProvider: 'Decision service', reactionProviderOpenai: 'OpenAI direct', reactionProviderOpenrouter: 'OpenRouter', reactionKeyHintOpenai: 'Reads only OPENAI_API_KEY; reply excerpts go to OpenAI.', reactionKeyHintOpenrouter: 'Reads only OPENROUTER_API_KEY; reply excerpts go through OpenRouter to OpenAI.', reactionKeyMissing: 'API key not detected', reactionKeyPresent: 'API key detected (value hidden)', reactionCalls: 'Attempts this run',
   quietMode: 'Quiet mode (new messages in envelope only)', quietModeHint: 'No popups. Open the envelope anytime.',

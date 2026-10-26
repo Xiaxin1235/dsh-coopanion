@@ -50,6 +50,7 @@ export class ApprovalCards {
     if (!this.enabled()) return receipt('approval/disabled');
     const state = this.current(), item = state.interactions.find(i => i.id === input.interactionId && i.kind === 'approval' && i.state !== 'settled');
     if (!item || state.runtime.phase !== 'running' || state.runtime.generation !== input.generation) return receipt('approval/stale');
+    if (input.answer === 'allow-once' && item.approvalCommand?.kind === 'shell' && !item.approvalCommand.command) return receipt('approval/command-unavailable');
     if ([...this.flights.values()].some(f => f.interactionId === item.id)) return receipt('approval/duplicate');
     const target = this.candidate(item.sessionId, item.callId); if (!target) return receipt('approval/offline');
     return new Promise(resolve => {

@@ -35,10 +35,11 @@ export function createApprovalForms({ send, changed, feedback }) {
       allow.dataset.action = 'approval-allow'; reject.dataset.action = 'approval-reject';
       allow.dataset.inboxKey = reject.dataset.inboxKey = item.id;
       const blocked = draft.status === 'sending' || draft.status === 'accepted';
-      allow.disabled = blocked || performance.now() < draft.readyAt; reject.disabled = blocked;
+      const missingCommand = item.approvalCommand?.kind === 'shell' && !item.approvalCommand.command;
+      allow.disabled = blocked || missingCommand || performance.now() < draft.readyAt; reject.disabled = blocked;
       allow.onkeydown = event => { if (event.key === 'Enter') event.preventDefault(); };
       const answer = value => {
-        if (draft.status === 'sending' || draft.status === 'accepted' || value === 'allow-once' && performance.now() < draft.readyAt) return;
+        if (draft.status === 'sending' || draft.status === 'accepted' || value === 'allow-once' && (missingCommand || performance.now() < draft.readyAt)) return;
         draft.status = 'sending'; draft.requestId = crypto.randomUUID(); clearTimeout(draft.timer);
         send({ type: 'approval-answer', interactionId: item.id, requestId: draft.requestId, generation, answer: value });
         draft.timer = setTimeout(() => { if (draft.status === 'sending') { draft.status = 'failed'; feedback(copy.approvalFailed); revision++; changed(); } }, 7000);
