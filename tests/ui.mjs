@@ -16,11 +16,12 @@ const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PAT
 const speechDone = page => page.waitForSelector('#bubble[data-typing=false]');
 const mainFrame = page => page.locator('#body-layer iframe').contentFrame();
 let page;
-const errors = [];
+const errors = [], consoleErrors = [];
 try {
   page = await browser.newPage({ locale: 'zh-CN', viewport: { width: 1200, height: 800 } });
   page.setDefaultTimeout(12000);
   page.on('pageerror', error => errors.push(error.message));
+  page.on('console', message => { if (['error', 'warning'].includes(message.type())) consoleErrors.push(message.text()); });
   const petClick = async (options = {}, twice = false) => {
     await page.waitForSelector('#pet[data-mode]');
     if (options.button !== 'right') {
@@ -212,8 +213,8 @@ try {
       busy: document.getElementById('character-use').disabled,
       frames: [...document.querySelectorAll('iframe')].map(frame => ({ src: frame.src, connected: frame.isConnected })),
     }));
-    await writeFile('artifacts/browser-startup-ui-failure.json', JSON.stringify({ error: error.stack, errors, state }, null, 2));
-    console.log('UI failure state:', JSON.stringify({ errors, state }));
+    await writeFile('artifacts/browser-startup-ui-failure.json', JSON.stringify({ error: error.stack, errors, consoleErrors, state }, null, 2));
+    console.log('UI failure state:', JSON.stringify({ errors, consoleErrors, state }));
   }
   throw error;
 } finally { await browser.close(); await new Promise(resolve => server.close(resolve)); await rm(directory, { recursive: true, force: true }); }

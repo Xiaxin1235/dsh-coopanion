@@ -69,6 +69,9 @@ jobs:
             fi
           done
       - run: npx playwright-core install --with-deps chromium
+      - name: Configure the isolated macOS headless browser backend
+        if: runner.os == 'macOS'
+        run: node scripts/setup-ci-browser.mjs
       - uses: ./.github/actions/setup-linux-display
         if: runner.os == 'Linux'
       - run: npm run character:pack -- examples/star paper-star.zip
@@ -161,6 +164,9 @@ jobs:
             fi
           done
       - run: npx playwright-core install --with-deps chromium
+      - name: Configure the isolated macOS headless browser backend
+        if: runner.os == 'macOS'
+        run: node scripts/setup-ci-browser.mjs
       - uses: ./.github/actions/setup-linux-display
         if: runner.os == 'Linux'
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
