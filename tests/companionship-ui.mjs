@@ -232,16 +232,19 @@ test('idle rendering is bounded while real elapsed time, work and input keep the
   const sample = async () => { await body.evaluate(() => { window.cadence = []; }); const at = await page.evaluate(() => performance.now()); await page.waitForTimeout(2000); return { elapsed: (await page.evaluate(() => performance.now()) - at) / 1000, ticks: await body.evaluate(() => window.cadence.slice()) }; };
   const idle = await sample();
   await configure({ companionship: 'off' }); const disabled = await sample();
-  const hasHeadroom = disabled.ticks.length / disabled.elapsed >= 40;
-  assert.ok(idle.ticks.length > 0 && idle.ticks.length / idle.elapsed <= 31, JSON.stringify({ idle, disabled }));
-  if (hasHeadroom) assert.ok(idle.ticks.length < disabled.ticks.length * .8 && idle.ticks.length > disabled.ticks.length * .25, JSON.stringify({ idle: idle.ticks.length, disabled: disabled.ticks.length }));
+  const rate = sample => sample.ticks.length / sample.elapsed;
+  const hasHeadroom = rate(disabled) >= 40;
+  assert.ok(idle.ticks.length > 0 && rate(idle) <= 31, JSON.stringify({ idle, disabled }));
+  // A 30fps cap can legitimately be below a quarter of a 120/144/240Hz
+  // uncapped baseline. Judge its lower bound against the cap, not the monitor.
+  if (hasHeadroom) assert.ok(rate(idle) < rate(disabled) * .8 && rate(idle) > 30 * .5, JSON.stringify({ idleFps: rate(idle), disabledFps: rate(disabled) }));
   else t.diagnostic('Renderer baseline is below 40fps; relative speedup is not exercised here. Controlled render-cadence tests cover cap/bypass and dt.');
   if (hasHeadroom) assert.ok(Math.abs(idle.ticks.reduce((a, b) => a + b, 0) - idle.elapsed) < .25, JSON.stringify(idle));
   await configure({ companionship: 'quiet' });
   await receive({ type: 'snapshot', snapshot: snapshot({ mood: 'working', active: true, sessions: [{ ...session, mood: 'working', active: true }] }) });
-  const work = await sample(); assert.ok(work.ticks.length > 0); if (hasHeadroom) assert.ok(work.ticks.length > idle.ticks.length * 1.3);
+  const work = await sample(); assert.ok(work.ticks.length > 0); if (hasHeadroom) assert.ok(rate(work) > rate(idle) * 1.3);
   await receive({ type: 'snapshot', snapshot: snapshot() }); await receive({ type: 'ui-control', command: 'chat' }); await page.locator('#message').fill('Keep the input cadence');
-  const input = await sample(); assert.ok(input.ticks.length > 0); if (hasHeadroom) assert.ok(input.ticks.length > idle.ticks.length * 1.3);
+  const input = await sample(); assert.ok(input.ticks.length > 0); if (hasHeadroom) assert.ok(rate(input) > rate(idle) * 1.3);
 });
 
 
