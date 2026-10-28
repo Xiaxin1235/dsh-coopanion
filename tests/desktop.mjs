@@ -18,6 +18,7 @@ import { verifyNativeTextScale } from './helpers/text-scale-native.mjs';
 import { crashNative, connectRecovered, waitRecovery } from './helpers/desktop-recovery.mjs';
 
 let display, browser;
+const rendererMessages = [];
 let bridge = new ElectronBridge();
 let recoveryControls;
 const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -58,6 +59,8 @@ try {
   await bridge.start({ locale: 'zh', size: 150, roam: false, notifications: true, bubbleDurationMs: 12000 });
   browser = await chromium.connectOverCDP(`http://127.0.0.1:${port}`);
   let page = browser.contexts()[0].pages()[0];
+  page.on('console', message => { if (['error', 'warning'].includes(message.type()) && rendererMessages.length < 20) rendererMessages.push(message.text().slice(0, 500)); });
+  page.on('pageerror', error => { if (rendererMessages.length < 20) rendererMessages.push(error.message.slice(0, 500)); });
   await page.waitForSelector('#pet[data-host-ready=true][data-mood=thinking]');
   assert.equal(await page.locator('#bubble').isVisible(), false, 'thinking is conveyed by animation without a status bubble');
   assert.equal(await page.locator('#demo').isVisible(), false, 'native window does not masquerade as a browser demo');
@@ -300,6 +303,27 @@ try {
   console.log('Native recovery passed: hidden and visible crashes, full Host state, no replay, stop and unload during backoff.');
   console.log('Native smoke passed: Electron ready handshake, isolated renderer, two-way chat IPC, host reply, notification, and clean shutdown.');
   console.log('Native character smoke passed: import, selection, disk persistence across process restart, and removal.');
+} catch (error) {
+  const page = browser?.contexts()[0]?.pages()[0];
+  const state = page ? await Promise.race([
+    page.evaluate(() => ({
+      visibility: document.visibilityState, focus: document.hasFocus(),
+      pet: document.querySelector('#pet')?.dataset,
+      status: document.querySelector('#character-status')?.textContent,
+      selected: document.querySelector('#character-select')?.value,
+      scheme: document.querySelector('#character-scheme')?.value,
+      useDisabled: document.querySelector('#character-use')?.disabled,
+      managerHidden: document.querySelector('#characters')?.hidden,
+      frames: [...document.querySelectorAll('iframe')].map(frame => ({ src: frame.src, rect: frame.getBoundingClientRect().toJSON() })),
+    })).catch(() => ({ unavailable: true })),
+    pause(1500).then(() => ({ timeout: true })),
+  ]) : { unavailable: true };
+  const diagnostic = { sourceCommit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), platform: process.platform, error: error.message, rendererMessages, state };
+  console.error('Native desktop failure state:', JSON.stringify(diagnostic));
+  await mkdir('artifacts', { recursive: true });
+  await writeFile('artifacts/diagnostics-native-failure.json', JSON.stringify(diagnostic, null, 2) + '\n');
+  await page?.screenshot({ path: 'artifacts/native-failure.png', timeout: 3000 }).catch(() => {});
+  throw error;
 } finally {
   await recoveryControls?.dispose();
   await rm('dist/recovery-test.js', { force: true });
