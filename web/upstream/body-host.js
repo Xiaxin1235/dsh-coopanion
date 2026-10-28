@@ -18,7 +18,7 @@
  */
 
 /** A pack that has not drawn its first frame by then is taken as broken: its scripts or textures did not load. */
-const READY_MS = 20_000;
+export const READY_MS = 20_000;
 /**
  * The longest side of a body's box, in 256-unit squares at the body's scale: the kit squashes a body up to 1.33
  * wide and stretches it to 1.5 tall (squash, drag stretch and breath together), and a box turned any way grows by √2.

@@ -1,13 +1,14 @@
 import { mkdir, writeFile } from 'node:fs/promises';
+import { READY_MS } from '../../web/upstream/body-host.js';
 
-/** Keep the original readiness timeout; capture bounded evidence only after failure. */
+/** Match the runtime's first-body initialization budget, leaving interaction limits unchanged. */
 export function observeBodyReady(page, label) {
   const messages = [];
   page.on('console', message => {
     if (['error', 'warning'].includes(message.type()) && messages.length < 12) messages.push(message.text().slice(0, 500));
   });
   return async (selector = '#pet[data-mode]') => {
-    try { await page.waitForSelector(selector); }
+    try { await page.waitForSelector(selector, { timeout: READY_MS }); }
     catch (error) {
       const startup = { label, capturedAt: new Date().toISOString(), console: messages, frames: [] };
       console.error('Browser body startup timeout:', JSON.stringify({ label, console: messages }));

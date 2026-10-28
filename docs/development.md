@@ -37,7 +37,7 @@ npm run test:install
 
 macOS 云端无头 Chromium 的独立角色预览曾拒绝创建 WebGL 上下文。CI 在安装浏览器后运行 `scripts/setup-ci-browser.mjs`，为浏览器检查显式选择 ANGLE SwiftShader；真实网格、像素变化与界面断言保持不变。该设置仅包装 `CHROMIUM_PATH`，Electron 原生窗口、输入、焦点及恢复仍使用原有原生图形后端，分别报告。
 
-收件箱回归中的多屏、NPC、异常表情及拖放浏览器用例串行运行，避免同一运行器同时竞争多个 WebGL 浏览器。所有浏览器入口均遵循 `CHROMIUM_PATH`；各项原有超时和断言保持不变。
+收件箱回归中的多屏、NPC、异常表情及拖放浏览器用例串行运行，避免同一运行器同时竞争多个 WebGL 浏览器。所有浏览器入口均遵循 `CHROMIUM_PATH`；交互超时和断言保持不变。会话回复与字号夹具的首帧初始化共用运行时已有的 `READY_MS`（20 秒），避免把仍处于合法初始化期的 WebGL 首帧按 5 秒交互限时判失败。
 
 | 改动 | 检查入口与范围 |
 |---|---|
