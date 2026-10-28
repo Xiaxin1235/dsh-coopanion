@@ -8,6 +8,7 @@ import { chromium } from 'playwright-core';
 import { zipSync, strToU8 } from 'fflate';
 import { previewServer } from '../scripts/preview.mjs';
 import { importCharacter } from './helpers/characters.mjs';
+import { waitForCanvasChange } from './helpers/canvas.mjs';
 
 const directory = await mkdtemp(join(tmpdir(), 'dsh-figure-ui-'));
 const server = previewServer({ dataDir: directory }); server.listen(0, '127.0.0.1'); await once(server, 'listening');
@@ -39,7 +40,7 @@ try {
   assert.equal(await mainFrame(page).locator('canvas').count(), 1);
   const canvas = mainFrame(page).locator('canvas');
   const beforePixels = await canvas.evaluate(c => c.toDataURL());
-  await page.waitForTimeout(400); assert.notEqual(await canvas.evaluate(c => c.toDataURL()), beforePixels, 'native mesh, face and spring animation produces changing pixels');
+  await waitForCanvasChange(canvas, beforePixels); assert.notEqual(await canvas.evaluate(c => c.toDataURL()), beforePixels, 'native mesh, face and spring animation produces changing pixels');
 
   await openSessionPicker();
   assert.equal(await page.locator('#conversation-list .conversation-card').count(), 2);
@@ -99,7 +100,7 @@ try {
   const preview = page.locator('#character-preview iframe').contentFrame();
   const image1 = await preview.locator('canvas').evaluate(c => c.toDataURL());
   await page.locator('#character-action').selectOption('dance'); await page.locator('#character-test').click();
-  await page.waitForTimeout(400); assert.notEqual(await preview.locator('canvas').evaluate(c => c.toDataURL()), image1);
+  await waitForCanvasChange(preview.locator('canvas'), image1); assert.notEqual(await preview.locator('canvas').evaluate(c => c.toDataURL()), image1);
   await mkdir('artifacts', { recursive: true }); await page.screenshot({ path: 'artifacts/character-library.png' });
   await page.reload(); await page.waitForSelector('#pet[data-character=whale][data-scheme=claude]');
 
