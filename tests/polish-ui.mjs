@@ -7,6 +7,7 @@ import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { chromium } from 'playwright-core';
+import { observeBodyReady } from './helpers/body-startup.mjs';
 import { previewServer } from '../scripts/preview.mjs';
 import { contrast } from '../web/panel-style.js';
 
@@ -29,7 +30,7 @@ try {
       await page.route('**/' + file, route => route.fulfill({ contentType, body }));
     }
   }
-  await page.goto(`http://127.0.0.1:${server.address().port}`); await page.waitForSelector('#pet[data-character=whale][data-mode]');
+  await page.goto(`http://127.0.0.1:${server.address().port}`); await observeBodyReady(page, 'polish-ui')('#pet[data-character=whale][data-mode]');
   // Fix only screenshot placement to avoid subpixel anchors from the breathing figure.
   await page.addStyleTag({ content: '#chat,#menu,#requests{left:16px!important;top:16px!important}' });
   const session = { id: 'polish-session', label: '界面打磨', mood: 'waiting', active: false, chatAvailable: true, replyId: 'reply', reply: '已经检查好啦。' };

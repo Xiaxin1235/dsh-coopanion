@@ -5,6 +5,7 @@ import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { chromium } from 'playwright-core';
+import { observeBodyReady } from './helpers/body-startup.mjs';
 import { previewServer } from '../scripts/preview.mjs';
 
 const directory = await mkdtemp(join(tmpdir(), 'dsh-approval-ui-'));
@@ -15,7 +16,7 @@ try {
     const page = await browser.newPage({ viewport: { width: 1200, height: 850 } }); const errors = [];
     page.on('pageerror', error => errors.push(error.message));
     await page.addInitScript(() => { window.actions = []; window.dshPetBridge = { subscribe(fn) { window.receive = fn; }, action(value) { window.actions.push(value); }, hit() {} }; });
-    await page.goto(`http://127.0.0.1:${server.address().port}`); await page.waitForSelector('#pet[data-mode]');
+    await page.goto(`http://127.0.0.1:${server.address().port}`); await observeBodyReady(page, 'approval-ui')('#pet[data-mode]');
     const receive = message => page.evaluate(message => window.receive(message), message);
     const session = { id: 'approval-session', label: 'Fictional deletion', mood: 'waiting', active: true, unread: 0 };
     const item = { id: 'approval-item', nativeId: 'native', callId: 'call', sessionId: session.id, kind: 'approval', turn: 1, seq: 2, createdAt: 1, preview: 'Delete only generated.txt in the fictional repo', state: 'open', dueAt: null, automaticReminders: 0, approvalAnswerable: true, approvalCommand: { kind: 'shell', command: 'Remove-Item -LiteralPath generated.txt', workdir: 'D:/fictional' } };

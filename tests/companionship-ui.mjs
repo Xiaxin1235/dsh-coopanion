@@ -7,6 +7,7 @@ import { zipSync, strToU8 } from 'fflate';
 import { createRequire } from 'node:module';
 import { before, after, test } from 'node:test';
 import { chromium } from 'playwright-core';
+import { observeBodyReady } from './helpers/body-startup.mjs';
 import { controlCompanionClock, advanceCompanion } from './helpers/companionship.mjs';
 import { controlNpc, npcTick, npcUntil } from './helpers/npc-life.mjs';
 import { recordBodyOrders } from './helpers/body-orders.mjs';
@@ -40,7 +41,7 @@ async function fixture(t, mode = 'interactive', vocab, star = false, timing = nu
   if (vocab) await page.route('**/api/characters/load', async route => { const response = await route.fetch(), result = await response.json(); result.value.vocab = result.value.vocab.filter(w => vocab.includes(w.id)); await route.fulfill({ response, json: result }); });
   await page.addInitScript(() => { window.actions = []; addEventListener('message', e => { if (e.data?.t === 'frame' && e.data.layout) window.lastNpcLayout = e.data.layout; }); window.dshPetBridge = { subscribe(fn) { window.receive = fn; }, action(a) { window.actions.push(a); }, hit() {} }; });
   await page.goto(`http://127.0.0.1:${server.address().port}`);
-  await page.waitForSelector('#pet[data-mode]');
+  await observeBodyReady(page, 'companionship-ui')('#pet[data-mode]');
   const receive = msg => page.evaluate(msg => window.receive(msg), msg);
   await receive({ type: 'init', baseline: true, options: { companionship: mode, roam: true, locale: 'zh' }, snapshot: snapshot() });
   await page.mouse.move(0, 0);
@@ -116,7 +117,7 @@ test('manual play grows only after completion, aborted play does not, archive su
   f.setDay(16); await menu(page); await page.locator('#companion-play').click(); await page.mouse.move(0, 0);
   await f.receive({ type: 'snapshot', snapshot: snapshot({ mood: 'working', active: true, sessions: [{ ...session, mood: 'working', active: true }] }) });
   await advanceCompanion(page, await page.evaluate(() => window.companionNow + 20000)); assert.equal((await read()).relation.total, 1);
-  await page.reload(); await page.waitForSelector('#pet[data-mode]');
+  await page.reload(); await observeBodyReady(page, 'companionship-reload')();
   await f.receive({ type: 'init', baseline: true, options: { companionship: 'quiet', roam: true }, snapshot: snapshot() });
   await page.waitForFunction(() => document.querySelector('#companion-status').textContent.includes('1'));
   const raw = JSON.parse(await readFile(join(f.directory, 'care/state.json'), 'utf8')); assert.equal(raw.characters.whale.total, 1);
@@ -283,7 +284,7 @@ test('unknown input, mouse proximity, lifecycle and limited star keep control an
 
 test('native NPC waits for acknowledged workArea before establishing home', async t => {
   const { page, receive } = await fixture(t, 'quiet');
-  await page.reload(); await page.waitForSelector('#pet[data-mode]');
+  await page.reload(); await observeBodyReady(page, 'companionship-reload')();
   await page.evaluate(() => { window.dshPetBridge.nativeGeometry = true; });
   await receive({ type: 'init', baseline: true, options: { companionship: 'quiet', roam: true }, snapshot: snapshot() });
   for (let i = 0; i < 10; i++) await npcTick(page);

@@ -5,6 +5,7 @@ import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { chromium } from 'playwright-core';
+import { observeBodyReady } from './helpers/body-startup.mjs';
 import { previewServer } from '../scripts/preview.mjs';
 import { petCopy } from '../web/locale.js';
 
@@ -24,7 +25,7 @@ try {
       window.dshPetBridge = { subscribe(fn) { window.receive = fn; }, action(a) { window.actions.push(a); }, hit() {} };
     });
     await page.goto(`http://127.0.0.1:${server.address().port}`);
-    await page.waitForSelector('#pet[data-character=whale][data-mode]');
+    await observeBodyReady(page, 'companion-session-ui')('#pet[data-character=whale][data-mode]');
     const receive = message => page.evaluate(m => window.receive(m), message);
     const work = { id: 'work', label: 'Fictional work', cwd: '/fictional/work', project: 'work', updatedAt: 10, mood: 'idle', chatAvailable: true };
     const current = { ...work, id: 'current', label: 'internal-current', cwd: '/private/companion', project: 'private', companionRole: 'current', updatedAt: 0 };

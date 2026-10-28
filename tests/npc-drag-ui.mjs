@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { before, after, test } from 'node:test';
 import { chromium } from 'playwright-core';
+import { observeBodyReady } from './helpers/body-startup.mjs';
 import { previewServer } from '../scripts/preview.mjs';
 import { controlNpc, npcTick, npcUntil } from './helpers/npc-life.mjs';
 let browser;
@@ -18,7 +19,7 @@ async function fixture(t, mode = 'quiet', videoPath) {
   const errors = []; page.on('pageerror', e => errors.push(e.message)); t.after(() => assert.deepEqual(errors, []));
   await controlNpc(page);
   await page.addInitScript(() => { window.dshPetBridge = { subscribe(fn) { window.receive = fn; }, action() {}, hit() {} }; });
-  await page.goto(`http://127.0.0.1:${server.address().port}`); await page.waitForSelector('#pet[data-mode]');
+  await page.goto(`http://127.0.0.1:${server.address().port}`); await observeBodyReady(page, 'npc-drag-ui')('#pet[data-mode]');
   const receive = value => page.evaluate(value => window.receive(value), value);
   await receive({ type: 'init', baseline: true, options: { companionship: mode, roam: true, size: 180 }, snapshot: { mood: 'idle', active: false, sessionId: null, sessions: [], results: [] } });
   await page.mouse.move(0, 0);

@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { before, after, test } from 'node:test';
 import { chromium } from 'playwright-core';
+import { observeBodyReady } from './helpers/body-startup.mjs';
 import { previewServer } from '../scripts/preview.mjs';
 
 let directory, server, browser;
@@ -22,7 +23,7 @@ async function fixture(t, locale = 'en') {
   const consoleErrors = []; page.on('console', message => { if (['error', 'warning'].includes(message.type())) consoleErrors.push(message.text()); });
   await page.addInitScript(() => { window.localeActions=[]; window.dshPetBridge={ subscribe(fn) { window.localeReceive=fn; }, action(value) { window.localeActions.push(value); }, hit() {} }; });
   await page.goto(`http://127.0.0.1:${server.address().port}`);
-  try { await page.waitForSelector('#pet[data-character=whale][data-mode]'); }
+  try { await observeBodyReady(page, 'locale-ui')('#pet[data-character=whale][data-mode]'); }
   catch (error) {
     await mkdir('artifacts', { recursive: true });
     const state = await page.evaluate(() => ({ pet: document.getElementById('pet').outerHTML, status: document.getElementById('character-status').textContent, frames: [...document.querySelectorAll('iframe')].map(frame => ({src:frame.src, rect:frame.getBoundingClientRect().toJSON()})) }));

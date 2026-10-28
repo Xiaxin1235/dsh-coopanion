@@ -5,6 +5,7 @@ import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { chromium } from 'playwright-core';
+import { observeBodyReady } from './helpers/body-startup.mjs';
 import { previewServer } from '../scripts/preview.mjs';
 
 const directory = await mkdtemp(join(tmpdir(), 'dsh-notification-ui-'));
@@ -27,7 +28,7 @@ try {
   });
   const receive = message => page.evaluate(message => window.n2Receive(message), message);
   await page.goto(`http://127.0.0.1:${server.address().port}`);
-  await page.waitForSelector('#pet[data-character=whale][data-mode]');
+  await observeBodyReady(page, 'notification-ui')('#pet[data-character=whale][data-mode]');
   await receive({ type: 'init', options: { locale: 'en-US', reminders: true, bubbleDurationMs: 60000 }, snapshot: { mood: 'idle', sessionId: 'selected-other-session', sessions: [{ id: 'selected-other-session', label: 'Reading task', mood: 'idle', chatAvailable: true }, { id: source, label: 'Question source', mood: 'idle' }], results: [] } });
   await receive({ type: 'notification-state', snapshot: state });
   await receive({ type: 'notice', notice: notice('initial') });

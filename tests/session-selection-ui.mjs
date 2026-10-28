@@ -4,6 +4,7 @@ import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { chromium } from 'playwright-core';
+import { observeBodyReady } from './helpers/body-startup.mjs';
 import { previewServer } from '../scripts/preview.mjs';
 
 const root=await mkdtemp(join(tmpdir(),'whalemaid-selection-'));
@@ -15,7 +16,7 @@ try {
   page.setDefaultTimeout(12000);
   await page.addInitScript(()=>{window.selectionActions=[];window.dshPetBridge={subscribe:fn=>window.selectionReceive=fn,action:value=>window.selectionActions.push(value),hit(){}};});
   await page.goto(`http://127.0.0.1:${server.address().port}`);
-  await page.waitForSelector('#pet[data-character=whale][data-mode]');
+  await observeBodyReady(page, 'session-selection-ui')('#pet[data-character=whale][data-mode]');
   const a={id:'first',label:'First conversation',mood:'idle',unread:0,chatAvailable:true},b={...a,id:'second',label:'Second conversation',unread:1};
   const reply={id:'second-reply',sessionId:b.id,text:'The second conversation result.',time:1,read:false};
   const frame=id=>({mood:'idle',active:false,sessionId:id,sessions:[a,b],results:[reply]});

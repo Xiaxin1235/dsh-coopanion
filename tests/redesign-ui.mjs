@@ -5,6 +5,7 @@ import { mkdtemp, mkdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { chromium } from 'playwright-core';
+import { observeBodyReady } from './helpers/body-startup.mjs';
 import { previewServer } from '../scripts/preview.mjs';
 import { contrast } from '../web/panel-style.js';
 
@@ -20,7 +21,7 @@ try {
   await page.addInitScript(() => { window.actions = []; window.dshPetBridge = { subscribe(fn) { window.receive = fn; }, action(value) { window.actions.push(value); }, hit() {} }; });
   const receive = message => page.evaluate(message => window.receive(message), message);
   await page.goto(`http://127.0.0.1:${server.address().port}`);
-  await page.waitForSelector('#pet[data-character=whale][data-mode]');
+  await observeBodyReady(page, 'redesign-ui')('#pet[data-character=whale][data-mode]');
   const focus = { id: 'c06-focus', label: '演示会话', mood: 'idle', chatAvailable: true, reply: '任务完成啦！要不要休息一下？' };
   const snapshot = { mood: 'idle', sessionId: focus.id, sessions: [focus], results: [{ id: 'c06-result', sessionId: focus.id, text: focus.reply, time: Date.now(), read: false }] };
   const item = { id: 'c06-question', nativeId: 'question', sessionId: focus.id, kind: 'question', state: 'open', turn: 1, seq: 1, preview: '接下来要怎么做？', questions: [{ id: 'q', question: '接下来要怎么做？', options: [{ label: '继续检查', description: '在已有授权内核对结果。' }, { label: '先停一下', description: '保持当前状态。' }] }] };

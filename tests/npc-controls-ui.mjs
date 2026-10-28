@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { after, before, test } from 'node:test';
 import { chromium } from 'playwright-core';
+import { observeBodyReady } from './helpers/body-startup.mjs';
 import { previewServer } from '../scripts/preview.mjs';
 import { controlNpc, npcTick, npcUntil } from './helpers/npc-life.mjs';
 import { recordBodyOrders } from './helpers/body-orders.mjs';
@@ -26,7 +27,7 @@ async function fixture(t, mode = 'quiet') {
   await controlNpc(page);
   await page.addInitScript(() => { window.npcControlsActions = []; window.dshPetBridge = { subscribe(fn) { window.npcControlsReceive = fn; }, action(a) { window.npcControlsActions.push(a); }, hit() {} }; });
   await page.goto(`http://127.0.0.1:${server.address().port}`);
-  await page.waitForSelector('#pet[data-mode]');
+  await observeBodyReady(page, 'npc-controls-ui')('#pet[data-mode]');
   const receive = message => page.evaluate(message => window.npcControlsReceive(message), message);
   await receive({ type: 'init', baseline: true, options: { companionship: mode, size: 180, roam: true }, snapshot: snapshot() });
   await page.mouse.move(0, 0);

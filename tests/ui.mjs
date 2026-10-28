@@ -5,6 +5,7 @@ import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { chromium } from 'playwright-core';
+import { observeBodyReady } from './helpers/body-startup.mjs';
 import { zipSync, strToU8 } from 'fflate';
 import { previewServer } from '../scripts/preview.mjs';
 import { importCharacter } from './helpers/characters.mjs';
@@ -35,7 +36,7 @@ try {
   };
   const openSessionPicker = async () => { await petClick({}, true); await page.locator('#chat-current').click(); };
   await page.goto(`http://127.0.0.1:${server.address().port}`);
-  await page.waitForSelector('#pet[data-character=whale][data-mode]'); console.log('UI: native figure ready');
+  await observeBodyReady(page, 'ui')('#pet[data-character=whale][data-mode]'); console.log('UI: native figure ready');
   assert.match(await page.locator('#pet').getAttribute('aria-label'), /^DeepSeek 大肥鱼，/);
   assert.equal(await page.locator('#body-layer iframe').getAttribute('sandbox'), 'allow-scripts');
   assert.equal(await mainFrame(page).locator('canvas').count(), 1);
@@ -103,7 +104,7 @@ try {
   await page.locator('#character-action').selectOption('dance'); await page.locator('#character-test').click();
   assert.notEqual(await waitForCanvasChange(preview.locator('canvas'), image1), image1);
   await mkdir('artifacts', { recursive: true }); await page.screenshot({ path: 'artifacts/character-library.png' });
-  await page.reload(); await page.waitForSelector('#pet[data-character=whale][data-scheme=claude]');
+  await page.reload(); await observeBodyReady(page, 'ui-reload-claude')('#pet[data-character=whale][data-scheme=claude]');
 
   console.log('UI: opening manager'); await petClick({ button: 'right' }); await page.locator('#open-characters').click();
   await importCharacter(page, 'paper-star.zip');
@@ -121,7 +122,7 @@ try {
   await mainFrame(page).locator('[data-talk]').evaluate(async () => {
     await new Promise((resolve, reject) => { const start = performance.now(); const check = () => { if (+document.querySelector('[data-talk]').dataset.talk > .2) resolve(); else if (performance.now() - start > 3000) reject(new Error('no mouth pulses')); else requestAnimationFrame(check); }; check(); });
   });
-  await page.reload(); await page.waitForSelector('#pet[data-character=paper-star]');
+  await page.reload(); await observeBodyReady(page, 'ui-reload-star')('#pet[data-character=paper-star]');
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.locator('[data-demo=waiting]').click();
   assert.equal(await page.locator('#bubble').isVisible(), false);

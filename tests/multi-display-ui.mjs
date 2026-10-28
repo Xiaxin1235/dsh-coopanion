@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { after, before, test } from 'node:test';
 import { chromium } from 'playwright-core';
+import { observeBodyReady } from './helpers/body-startup.mjs';
 import { previewServer } from '../scripts/preview.mjs';
 let directory, server, browser;
 before(async () => {
@@ -26,7 +27,7 @@ test('controlled irregular layout and mixed DPR preserve reading, draft, in-flig
   const page = await browser.newPage({viewport:{width:980,height:720},reducedMotion:'reduce'}); t.after(()=>page.close());
   const errors=[]; page.on('pageerror',e=>errors.push(e.message)); t.after(()=>assert.deepEqual(errors,[]));
   await page.addInitScript(()=>{window.displayActions=[];window.displayHits=[];window.m5DropEvents=[];window.addEventListener('message',e=>{if(e.source===document.querySelector('#body-layer iframe')?.contentWindow&&e.data?.t==='frame')for(const item of e.data.events??[])if(item.kind==='touch')window.m5DropEvents.push(item.detail.kind);});window.dshPetBridge={subscribe(fn){window.displayReceive=fn;},action(a){window.displayActions.push(a);},hit(b){window.displayHits.push(b);}};});
-  await page.goto(`http://127.0.0.1:${server.address().port}`); await page.waitForSelector('#pet[data-mode]');
+  await page.goto(`http://127.0.0.1:${server.address().port}`); await observeBodyReady(page, 'multi-display-ui')('#pet[data-mode]');
   const receive=m=>page.evaluate(m=>window.displayReceive(m),m);
   const reply={id:'m5-full-result',sessionId:'m5-session',time:1,read:false,text:'## M5 captured reply\n\n'+'捕获阅读与多屏。 Stable reader across displays.\n\n'.repeat(60)};
   await receive({type:'init',baseline:true,options:{size:90,textScale:1.5,roam:false},snapshot:{mood:'idle',sessionId:reply.sessionId,results:[reply],sessions:[{id:reply.sessionId,label:'M5 full session',mood:'idle',chatAvailable:true,replyId:reply.id,reply:reply.text,unread:1}]}});

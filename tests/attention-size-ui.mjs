@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { before, after, test } from 'node:test';
 import { chromium } from 'playwright-core';
+import { observeBodyReady } from './helpers/body-startup.mjs';
 import { previewServer } from '../scripts/preview.mjs';
 import { controlNpc, npcTick } from './helpers/npc-life.mjs';
 import { recordBodyOrders } from './helpers/body-orders.mjs';
@@ -20,7 +21,7 @@ async function fixture(t, mode = 'off', source = session) {
   t.after(async () => { await page.close(); await new Promise(r => server.close(r)); await rm(directory, { recursive: true, force: true }); });
   await controlNpc(page);
   await page.addInitScript(() => { window.actions = []; window.dshPetBridge = { subscribe(fn) { window.receive = fn; }, action(a) { window.actions.push(a); }, hit() {} }; });
-  await page.goto(`http://127.0.0.1:${server.address().port}`); await page.waitForSelector('#pet[data-mode]');
+  await page.goto(`http://127.0.0.1:${server.address().port}`); await observeBodyReady(page, 'attention-size-ui')('#pet[data-mode]');
   const receive = value => page.evaluate(value => window.receive(value), value);
   await receive({ type: 'init', baseline: true, options: { companionship: mode, roam: true, size: 180, locale: 'en' }, snapshot: snapshot(source) });
   await page.mouse.move(0, 0);

@@ -5,6 +5,7 @@ import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { chromium } from 'playwright-core';
+import { observeBodyReady } from './helpers/body-startup.mjs';
 import { previewServer } from '../scripts/preview.mjs';
 
 const directory = await mkdtemp(join(tmpdir(), 'dsh-inbox-ui-'));
@@ -30,7 +31,7 @@ try {
   const frame = (sessions, results) => ({ mood: 'idle', active: false, sessionId: focus.id, sessions: [focus, ...sessions], results });
   const state = { protocol: 1, runtime: { phase: 'running', visible: true, generation: 8, visibilityRevision: 4, suspended: false }, interactions: [] };
   await page.goto(`http://127.0.0.1:${server.address().port}`);
-  await page.waitForSelector('#pet[data-character=whale][data-mode]');
+  await observeBodyReady(page, 'inbox-ui')('#pet[data-character=whale][data-mode]');
   await receive({ type: 'init', options: { locale: 'zh-CN', roam: false }, snapshot: frame([a], [first]) });
   await receive({ type: 'notification-state', snapshot: state });
   await resetActions();
