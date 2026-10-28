@@ -56,6 +56,10 @@ try:
     for click in range(count):
         if click: time.sleep(.08)
         if not xtst.XTestFakeButtonEvent(d,button,1,0): raise RuntimeError('Cannot press native test button')
+        x11.XSync(d,0)
+        # Keep press and release distinct while Chromium and the window manager
+        # dispatch the native button; do not send another click on a timeout.
+        time.sleep(.05)
         if not xtst.XTestFakeButtonEvent(d,button,0,0): raise RuntimeError('Cannot release native test button')
         x11.XSync(d,0)
 finally: x11.XCloseDisplay(d)
@@ -137,7 +141,15 @@ export async function petClick(page, options = {}, twice = false) {
   } else await pet[twice ? 'dblclick' : 'click'](options);
   if (options.button === 'right') {
     try { await page.locator('#menu').waitFor({ state: 'visible', timeout: 3000 }); }
-    catch (error) { console.log('Native pointer failure:', JSON.stringify(await page.evaluate(() => window.__nativeInputTrace))); throw error; }
+    catch (error) {
+      console.log('Native pointer failure:', JSON.stringify(await page.evaluate(() => window.__nativeInputTrace)));
+      if (process.platform === 'linux') {
+        console.log('Native pointer measurement:', JSON.stringify(await nativeMeasurement(page, '#pet')));
+        const tree = await run('xwininfo', ['-root', '-tree']);
+        console.log('X11 window tree:', tree.stdout.slice(0, 6000));
+      }
+      throw error;
+    }
     const trace = await page.evaluate(() => window.__nativeInputTrace);
     assert.ok(trace.some(event => event.type === 'pointerdown' && event.target === 'DIV#pet'), 'native right click reaches the pet');
     assert.ok(trace.some(event => event.type === 'contextmenu' && event.target === 'DIV#pet'), 'native right click opens the menu through contextmenu');

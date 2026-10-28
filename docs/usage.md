@@ -10,7 +10,7 @@
 
 ### 在 Harness 中从 npm 安装
 
-打开侧边栏 **插件 → 添加插件**，在「包名或地址」输入 **`https://github.com/Xiaxin1235/dsh-coopanion/releases/download/v0.5.6/dsh-coopanion-0.5.6.tgz`**，点击安装，再启用 `dsh-coopanion`。显式版本可以避免发布首日的裸包名解析回退，原因见下方。安装方式见 [Harness 官方插件管理说明](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/ui-plugin-manager/README.zh.md#安装一个组合包)。
+打开侧边栏 **插件 → 添加插件**，在「包名或地址」输入 **`https://github.com/Xiaxin1235/dsh-coopanion/releases/download/v0.5.7/dsh-coopanion-0.5.7.tgz`**，点击安装，再启用 `dsh-coopanion`。显式版本可以避免发布首日的裸包名解析回退，原因见下方。安装方式见 [Harness 官方插件管理说明](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/ui-plugin-manager/README.zh.md#安装一个组合包)。
 
 ### 安装版本与发布时间保护
 
@@ -23,7 +23,7 @@ pnpm 11 的 `minimumReleaseAge` 默认为 1440 分钟（24 小时）。详情页
 **Desktop：** 使用 Desktop 自带的 `dsh` 命令。先启动 Desktop 一次初始化 profile，完全退出应用，再执行：
 
 ```bash
-dsh plugin --profile desktop add https://github.com/Xiaxin1235/dsh-coopanion/releases/download/v0.5.6/dsh-coopanion-0.5.6.tgz
+dsh plugin --profile desktop add https://github.com/Xiaxin1235/dsh-coopanion/releases/download/v0.5.7/dsh-coopanion-0.5.7.tgz
 ```
 
 npm 安装的 dsh 不能管理 Desktop 所拥有的 profile；若系统找不到 Desktop 的命令，先在 Desktop 的菜单栏中使用 **Manage dsh command／管理 dsh 命令** 安装命令入口。
@@ -31,7 +31,7 @@ npm 安装的 dsh 不能管理 Desktop 所拥有的 profile；若系统找不到
 **本机 Web profile：** 使用 npm 安装的 dsh 时，向实际使用的 profile 安装。例如默认 `web` profile：
 
 ```bash
-dsh plugin --profile web add https://github.com/Xiaxin1235/dsh-coopanion/releases/download/v0.5.6/dsh-coopanion-0.5.6.tgz
+dsh plugin --profile web add https://github.com/Xiaxin1235/dsh-coopanion/releases/download/v0.5.7/dsh-coopanion-0.5.7.tgz
 dsh --profile web
 ```
 

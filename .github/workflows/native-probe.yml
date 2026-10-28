@@ -2,6 +2,11 @@ name: Targeted native recovery
 on:
   workflow_dispatch:
     inputs:
+      platform:
+        description: Platform to inspect
+        type: choice
+        default: all
+        options: [all, linux, macos]
       suite:
         description: Native recovery or the release failures under investigation
         type: choice
@@ -14,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-14]
+        os: ${{ fromJSON(inputs.platform == 'linux' && '["ubuntu-latest"]' || inputs.platform == 'macos' && '["macos-14"]' || '["ubuntu-latest","macos-14"]') }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     defaults:
