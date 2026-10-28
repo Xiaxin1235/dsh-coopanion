@@ -9,7 +9,7 @@ import { previewServer } from '../scripts/preview.mjs';
 import { controlNpc, npcTick } from './helpers/npc-life.mjs';
 import { recordBodyOrders } from './helpers/body-orders.mjs';
 let browser;
-before(async () => { browser = await chromium.launch({ headless: true, args: ['--no-sandbox', '--enable-unsafe-swiftshader'] }); });
+before(async () => { browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH, headless: true, args: ['--no-sandbox', '--enable-unsafe-swiftshader'] }); });
 after(async () => { await browser?.close(); });
 const session = { id: 'attention-source', label: 'hi', project: 'dsh-usage-state', mood: 'idle', active: false, revision: 1, chatAvailable: true };
 const snapshot = (source = session) => ({ mood: source.mood, active: false, sessionId: source.id, sessions: [source], results: [] });
@@ -61,7 +61,11 @@ test('error looks worried once, never emits tear faces, and manual previews stil
   await body.waitForFunction(() => window.bodyOrders.some(e => e.t === 'do' && e.word === 'neutral'));
   assert.equal(await page.locator('#pet').getAttribute('data-mood'), 'idle');
   await page.locator('#pet').dispatchEvent('contextmenu', { button: 2 }); await page.locator('#open-characters').click();
-  await page.waitForFunction(() => document.querySelector('#character-action option[value=cry]') && !document.querySelector('#character-test').disabled);
+  try { await page.waitForFunction(() => document.querySelector('#character-action option[value=cry]') && !document.querySelector('#character-test').disabled); }
+  catch (error) {
+    console.log('Manual preview readiness:', JSON.stringify(await page.evaluate(() => ({status:document.querySelector('#character-status').textContent, busy:document.querySelector('#character-test').disabled, actions:[...document.querySelectorAll('#character-action option')].map(option=>option.value)}))));
+    throw error;
+  }
   const preview = page.frames().find(frame => frame !== body && frame.url().includes('figure-frame.html'));
   assert.ok(preview, 'manual preview uses its own character frame');
   await preview.evaluate(() => { window.previewOrders = []; addEventListener('message', e => { if (e.data?.t === 'do') window.previewOrders.push(e.data.word); }); });

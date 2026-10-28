@@ -9,7 +9,7 @@ import { previewServer } from '../scripts/preview.mjs';
 
 const directory = await mkdtemp(join(tmpdir(), 'dsh-approval-ui-'));
 const server = previewServer({ dataDir: directory }); server.listen(0, '127.0.0.1'); await once(server, 'listening');
-const browser = await chromium.launch({ headless: true, args: ['--no-sandbox', '--enable-unsafe-swiftshader'] });
+const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH, headless: true, args: ['--no-sandbox', '--enable-unsafe-swiftshader'] });
 try {
   for (const style of ['new', 'classic']) for (const locale of ['zh', 'en']) {
     const page = await browser.newPage({ viewport: { width: 1200, height: 850 } }); const errors = [];

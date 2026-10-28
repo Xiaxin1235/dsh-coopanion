@@ -13,7 +13,7 @@ import { recordBodyOrders } from './helpers/body-orders.mjs';
 const require = createRequire(import.meta.url);
 const { CharacterStore } = require('../dist/character-store.cjs'), { CompanionStore } = require('../dist/companion-store.cjs'), { createPetServer } = require('../dist/figure-server.cjs');
 let browser;
-before(async () => { await mkdir('artifacts', { recursive: true }); browser = await chromium.launch({ headless: true, args: ['--no-sandbox', '--enable-unsafe-swiftshader'] }); });
+before(async () => { await mkdir('artifacts', { recursive: true }); browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH, headless: true, args: ['--no-sandbox', '--enable-unsafe-swiftshader'] }); });
 after(async () => { await browser?.close(); });
 const session = { id: 'companion-focus', label: 'Companion focus', mood: 'idle', active: false, chatAvailable: true };
 const snapshot = patch => ({ mood: 'idle', active: false, sessionId: session.id, sessions: [session], results: [], ...patch });

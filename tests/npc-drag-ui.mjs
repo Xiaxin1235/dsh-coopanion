@@ -8,7 +8,7 @@ import { chromium } from 'playwright-core';
 import { previewServer } from '../scripts/preview.mjs';
 import { controlNpc, npcTick, npcUntil } from './helpers/npc-life.mjs';
 let browser;
-before(async () => { browser = await chromium.launch({ headless: true, args: ['--no-sandbox', '--enable-unsafe-swiftshader'] }); });
+before(async () => { browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH, headless: true, args: ['--no-sandbox', '--enable-unsafe-swiftshader'] }); });
 after(async () => { await browser?.close(); });
 async function fixture(t, mode = 'quiet', videoPath) {
   const directory = await mkdtemp(join(tmpdir(), 'dsh-npc-drag-'));
