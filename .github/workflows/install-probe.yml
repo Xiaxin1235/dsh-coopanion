@@ -1,6 +1,17 @@
 name: Targeted installed host
 on:
   workflow_dispatch:
+    inputs:
+      platform:
+        description: Platform to inspect
+        type: choice
+        default: all
+        options: [all, windows, linux, macos]
+      dsh:
+        description: Advertised host version to inspect
+        type: choice
+        default: '0.2.1-rc.3'
+        options: ['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-rc.1', '0.2.1-rc.2', '0.2.1-rc.3']
 permissions:
   contents: read
 jobs:
@@ -32,11 +43,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
-        dsh: ['0.2.1-rc.3']
-        include:
-          - os: windows-latest
-            dsh: '0.2.1-alpha.1'
+        os: ${{ fromJSON(inputs.platform == 'windows' && '["windows-latest"]' || inputs.platform == 'linux' && '["ubuntu-latest"]' || inputs.platform == 'macos' && '["macos-14"]' || '["windows-latest","ubuntu-latest","macos-14"]') }}
+        dsh: ['${{ inputs.dsh }}']
     runs-on: ${{ matrix.os }}
     timeout-minutes: 25
     steps:
@@ -45,9 +53,11 @@ jobs:
           persist-credentials: false
       - uses: ./.github/actions/setup-toolchain
       - run: npm ci --ignore-scripts
-      - run: npx playwright-core install --with-deps chromium
       - uses: ./.github/actions/setup-linux-display
         if: runner.os == 'Linux'
+      - run: npx playwright-core install --with-deps chromium
+      - run: node scripts/setup-ci-browser.mjs
+        if: runner.os == 'macOS'
       - uses: actions/download-artifact@v4
         with:
           name: installed-host-candidate

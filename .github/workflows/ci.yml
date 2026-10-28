@@ -180,7 +180,11 @@ jobs:
           DSH_TEST_PACKAGE_DIR: ${{ github.workspace }}/release
         run: |
           cd release
-          sha256sum --check SHA256SUMS
+          if [[ "$RUNNER_OS" == "macOS" ]]; then
+            shasum -a 256 --check SHA256SUMS
+          else
+            sha256sum --check SHA256SUMS
+          fi
           cd ..
           npm run test:install
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

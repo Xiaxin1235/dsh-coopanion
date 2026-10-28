@@ -121,10 +121,12 @@ export async function petClick(page, options = {}, twice = false) {
   }
   await pet.hover();
   await page.waitForSelector('#pet[data-native-hit=true]');
-  if (process.platform === 'linux' && process.env.DISPLAY) {
+  if (process.platform === 'linux' && process.env.DISPLAY && options.button === 'right') {
     // After a restart X11 may discard CDP's virtual button events even after
     // native hit entry. Send the actual OS button at the measured body point,
     // as nativeClick already does for panels, retaining the event assertions.
+    // Left/double clicks retain CDP's explicit click count; changing their
+    // native timing is unrelated to the restarted right-button regression.
     const { point } = await nativeMeasurement(page, '#pet');
     await run('python3', ['-c', warpCursor, String(point.x), String(point.y)]);
     await page.waitForSelector('#pet[data-native-hit=true]');
