@@ -35,6 +35,8 @@ npm run test:install
 
 动画像素检查等待实际渲染结果，不以固定 400 毫秒延迟判定成功；仍沿用界面测试的超时上限并保留像素变化断言。Linux 原生点击通过 XTest 同步按下与释放，保留真实事件到达、右键菜单和系统鼠标位置断言，不在点击超时后自动重发操作。
 
+macOS 云端无头 Chromium 的独立角色预览曾拒绝创建 WebGL 上下文。CI 在安装浏览器后运行 `scripts/setup-ci-browser.mjs`，为浏览器检查显式选择 ANGLE SwiftShader；真实网格、像素变化与界面断言保持不变。该设置仅包装 `CHROMIUM_PATH`，Electron 原生窗口、输入、焦点及恢复仍使用原有原生图形后端，分别报告。
+
 | 改动 | 检查入口与范围 |
 |---|---|
 | 完成、通知与请求结算 | `npm test`、`test:n0`、`test:notification-ui`；宿主接口检查由安装入口执行 |

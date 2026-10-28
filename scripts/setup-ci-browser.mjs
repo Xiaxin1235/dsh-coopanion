@@ -2,7 +2,7 @@ import { appendFileSync, chmodSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { chromium } from 'playwright-core';
 
-// Headless Chromium on macOS runners can initialize one Metal WebGL context
+// Headless Chromium on macOS runners can initialize one WebGL context
 // and then refuse the independent character-preview context. Use ANGLE's
 // software WebGL backend for browser tests; native Electron is not wrapped.
 if (process.platform !== 'darwin' || !process.env.GITHUB_ENV || !process.env.RUNNER_TEMP) {
