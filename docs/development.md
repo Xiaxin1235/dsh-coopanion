@@ -35,7 +35,7 @@ npm run test:install
 
 动画像素检查等待实际渲染结果，不以固定 400 毫秒延迟判定成功；仍沿用界面测试的超时上限并保留像素变化断言。Linux 原生点击通过 XTest 同步按下与释放，保留真实事件到达、右键菜单和系统鼠标位置断言，不在点击超时后自动重发操作。
 
-macOS 云端无头 Chromium 的独立角色预览曾拒绝创建 WebGL 上下文。CI 在安装浏览器后运行 `scripts/setup-ci-browser.mjs`，为浏览器检查显式选择 ANGLE SwiftShader；真实网格、像素变化与界面断言保持不变。该设置仅包装 `CHROMIUM_PATH`，Electron 原生窗口、输入、焦点及恢复仍使用原有原生图形后端，分别报告。
+macOS ARM 发布检查使用 `macos-15` 运行器；`macos-14` 曾因容量不足未分配到运行器而取消，该取消不计通过。macOS 云端无头 Chromium 的独立角色预览曾拒绝创建 WebGL 上下文。CI 在安装浏览器后运行 `scripts/setup-ci-browser.mjs`，为浏览器检查显式选择 ANGLE SwiftShader；真实网格、像素变化与界面断言保持不变。该设置仅包装 `CHROMIUM_PATH`，Electron 原生窗口、输入、焦点及恢复仍使用原有原生图形后端，分别报告。
 
 收件箱回归中的多屏、NPC、异常表情及拖放浏览器用例串行运行，避免同一运行器同时竞争多个 WebGL 浏览器。所有浏览器入口均遵循 `CHROMIUM_PATH`；交互超时和断言保持不变。浏览器夹具的首帧初始化共用运行时已有的 `READY_MS`（20 秒），避免把仍处于合法初始化期的 WebGL 首帧按各自的短交互限时判失败。
 

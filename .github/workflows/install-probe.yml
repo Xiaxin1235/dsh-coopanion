@@ -43,7 +43,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ${{ fromJSON(inputs.platform == 'windows' && '["windows-latest"]' || inputs.platform == 'linux' && '["ubuntu-latest"]' || inputs.platform == 'macos' && '["macos-14"]' || '["windows-latest","ubuntu-latest","macos-14"]') }}
+        os: ${{ fromJSON(inputs.platform == 'windows' && '["windows-latest"]' || inputs.platform == 'linux' && '["ubuntu-latest"]' || inputs.platform == 'macos' && '["macos-15"]' || '["windows-latest","ubuntu-latest","macos-15"]') }}
         dsh: ['${{ inputs.dsh }}']
     runs-on: ${{ matrix.os }}
     timeout-minutes: 25

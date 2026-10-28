@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ${{ fromJSON(inputs.platform == 'linux' && '["ubuntu-latest"]' || inputs.platform == 'macos' && '["macos-14"]' || '["ubuntu-latest","macos-14"]') }}
+        os: ${{ fromJSON(inputs.platform == 'linux' && '["ubuntu-latest"]' || inputs.platform == 'macos' && '["macos-15"]' || '["ubuntu-latest","macos-15"]') }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     defaults:
