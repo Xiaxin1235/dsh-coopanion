@@ -5,9 +5,12 @@ import { petClick } from './native-pointer.mjs';
 import { sampleNativeDisplay } from './multi-display-native.mjs';
 
 export async function verifyNativeTextScale({ page, bridge, snapshot }) {
+  // Open the composer before emitting the deliberately long reply. On a small
+  // work area its bubble can cover the body; this fixture exercises reader
+  // scaling, not clicking through an interactive reply bubble.
+  await petClick(page, {}, true);
   const reply = { id: 'native-scale-result', sessionId: snapshot.sessionId, text: '## Native text scale\n\n' + '原生窗口阅读与字号独立。 Reading remains captured.\n\n'.repeat(25), time: 1, read: false };
   bridge.update({ ...snapshot, results: [reply], sessions: snapshot.sessions.map(s => ({ ...s, replyId: reply.id, reply: reply.text })) });
-  await petClick(page, {}, true);
   await page.locator('#chat-read').click();
   await page.locator('#reader').waitFor({ state: 'visible' });
   const html = await page.locator('#reader-text').innerHTML();

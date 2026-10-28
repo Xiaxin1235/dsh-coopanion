@@ -11,7 +11,7 @@ on:
         description: Native recovery or the release failures under investigation
         type: choice
         default: recovery
-        options: [recovery, release-regressions]
+        options: [recovery, release-regressions, desktop]
 permissions:
   contents: read
 jobs:
@@ -40,15 +40,15 @@ jobs:
       - run: node scripts/setup-ci-browser.mjs
         if: runner.os == 'macOS' && inputs.suite == 'release-regressions'
       - run: npm run character:pack -- examples/star paper-star.zip
-        if: inputs.suite == 'release-regressions'
+        if: inputs.suite == 'release-regressions' || inputs.suite == 'desktop'
       - run: node tests/window-recovery-probe.mjs
-        if: inputs.suite != 'release-regressions'
+        if: inputs.suite == 'recovery'
       - run: node tests/multi-display-native.mjs
-        if: runner.os == 'Linux' && inputs.suite != 'release-regressions'
+        if: runner.os == 'Linux' && inputs.suite == 'recovery'
       - run: npm run test:ui
         if: runner.os == 'macOS' && inputs.suite == 'release-regressions'
       - run: npm run test:desktop
-        if: runner.os == 'Linux' && inputs.suite == 'release-regressions'
+        if: inputs.suite == 'desktop' || (runner.os == 'Linux' && inputs.suite == 'release-regressions')
       - uses: actions/upload-artifact@v4
         if: always()
         with:
