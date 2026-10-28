@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { once } from 'node:events';
-import { mkdir, mkdtemp, rm } from 'node:fs/promises';
+import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -19,8 +19,19 @@ async function fixture(t, locale = 'en') {
   const page = await browser.newPage({ locale: 'zh-CN', viewport: { width: 1100, height: 800 }, reducedMotion: 'reduce' });
   t.after(() => page.close());
   const errors = []; page.on('pageerror', error => errors.push(error.message)); t.after(() => assert.deepEqual(errors, []));
+  const consoleErrors = []; page.on('console', message => { if (['error', 'warning'].includes(message.type())) consoleErrors.push(message.text()); });
   await page.addInitScript(() => { window.localeActions=[]; window.dshPetBridge={ subscribe(fn) { window.localeReceive=fn; }, action(value) { window.localeActions.push(value); }, hit() {} }; });
-  await page.goto(`http://127.0.0.1:${server.address().port}`); await page.waitForSelector('#pet[data-character=whale][data-mode]');
+  await page.goto(`http://127.0.0.1:${server.address().port}`);
+  try { await page.waitForSelector('#pet[data-character=whale][data-mode]'); }
+  catch (error) {
+    await mkdir('artifacts', { recursive: true });
+    const state = await page.evaluate(() => ({ pet: document.getElementById('pet').outerHTML, status: document.getElementById('character-status').textContent, frames: [...document.querySelectorAll('iframe')].map(frame => ({src:frame.src, rect:frame.getBoundingClientRect().toJSON()})) }));
+    const evidence = { test:t.name, errors, consoleErrors, state };
+    await writeFile('artifacts/browser-startup-locale-failure.json', JSON.stringify(evidence,null,2));
+    await page.screenshot({path:'artifacts/browser-locale-failure.png'});
+    console.log('Locale startup failure:',JSON.stringify(evidence));
+    throw error;
+  }
   const receive = value => page.evaluate(value => window.localeReceive(value), value);
   const session = { id: 'source', label: '用户的中文会话', project: 'User project', mood: 'idle', unread: 1, chatAvailable: true };
   const result = { id: 'reply', sessionId: session.id, text: '**中文回复** stays unchanged.', time: 1, read: false };
