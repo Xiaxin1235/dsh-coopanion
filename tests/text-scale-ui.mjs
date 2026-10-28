@@ -22,6 +22,9 @@ const focus = { id: 'scale-focus', label: '当前会话 · Focused session', moo
 const source = { id: 'scale-source', label: '后台结果 · Background reply', mood: 'idle', unread: 1, chatAvailable: true };
 const result = { id: 'scale-result', sessionId: source.id, text: longText, time: 1, read: false };
 const snapshot = results => ({ mood: 'idle', active: false, sessionId: focus.id, sessions: [focus, source], results });
+// Saving evidence can outlast the 5s UI interaction limit on a software GPU.
+// Give only screenshot capture its own finite budget; action and layout limits stay unchanged.
+const screenshot = (page, path) => page.screenshot({ path, timeout: 20000 });
 async function fixture(t, locale = 'zh-CN') {
   const page = await browser.newPage({ locale, viewport: { width: 320, height: 640 }, reducedMotion: 'reduce' });
   page.setDefaultTimeout(5000); t.after(() => page.close());
@@ -66,7 +69,7 @@ for (const locale of ['zh-CN', 'en-US']) test(`${locale}: all text scales × cha
     assert.equal(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--size')), `${size}px`);
     assert.equal(await page.locator('#reader-text pre').evaluate(n => n.scrollWidth > n.clientWidth), true, 'long code keeps horizontal scroll');
     assert.equal(await page.locator('#reader-text table').evaluate(n => n.scrollWidth > n.clientWidth), true, 'wide table keeps horizontal scroll');
-    await page.screenshot({ path: `artifacts/text-scale-${locale}-${size}-${textScale}.png` });
+    await screenshot(page, `artifacts/text-scale-${locale}-${size}-${textScale}.png`);
     samples.push({ locale, size, textScale, font, readerContained: true, scrollTop: 140 });
   }
   assert.deepEqual(await page.evaluate(() => window.scaleActions), actions, 'scaling and incoming results do not select, acknowledge, or submit');
@@ -75,7 +78,7 @@ for (const locale of ['zh-CN', 'en-US']) test(`${locale}: all text scales × cha
     await configure({ size, textScale }); await contained(page, '#requests');
     assert.equal(await page.locator('.inbox-card').first().evaluate(n => parseFloat(getComputedStyle(n).fontSize)), 13 * textScale);
   }
-  await page.screenshot({ path: `artifacts/text-scale-inbox-${locale}.png` });
+  await screenshot(page, `artifacts/text-scale-inbox-${locale}.png`);
   await page.locator('#inbox-replies [data-action=read]').first().focus();
   await page.keyboard.press('Enter');
   await page.locator('#reader').waitFor({ state: 'visible' });
@@ -88,7 +91,7 @@ for (const locale of ['zh-CN', 'en-US']) test(`${locale}: all text scales × cha
   assert.equal(await page.locator('#message').inputValue(), '未发送的草稿 · unsent draft');
   assert.deepEqual(await page.locator('#message').evaluate(n => [n.selectionStart, n.selectionEnd]), selection);
   assert.equal(await page.locator('#message').evaluate(n => n === document.activeElement), true);
-  await page.screenshot({ path: `artifacts/text-scale-chat-${locale}.png` });
+  await screenshot(page, `artifacts/text-scale-chat-${locale}.png`);
   // Keyboard submission retains its exact in-flight identity across resizing.
   await page.locator('#message').press('Control+Enter');
   const sent = await page.evaluate(() => window.scaleActions.filter(a => a.type === 'chat'));
