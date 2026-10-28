@@ -32,6 +32,8 @@ jobs:
         if: runner.os == 'Linux'
       - run: npx playwright-core install --with-deps chromium
         if: inputs.suite == 'release-regressions'
+      - run: npm run character:pack -- examples/star paper-star.zip
+        if: inputs.suite == 'release-regressions'
       - run: node tests/window-recovery-probe.mjs
         if: inputs.suite != 'release-regressions'
       - run: node tests/multi-display-native.mjs
