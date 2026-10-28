@@ -1,6 +1,12 @@
 name: Targeted native recovery
 on:
   workflow_dispatch:
+    inputs:
+      suite:
+        description: Native recovery or the release failures under investigation
+        type: choice
+        default: recovery
+        options: [recovery, release-regressions]
 permissions:
   contents: read
 jobs:
@@ -8,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-14]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     defaults:
@@ -24,9 +30,16 @@ jobs:
       - run: npm run build
       - uses: ./.github/actions/setup-linux-display
         if: runner.os == 'Linux'
+      - run: npx playwright-core install --with-deps chromium
+        if: inputs.suite == 'release-regressions'
       - run: node tests/window-recovery-probe.mjs
+        if: inputs.suite != 'release-regressions'
       - run: node tests/multi-display-native.mjs
-        if: runner.os == 'Linux'
+        if: runner.os == 'Linux' && inputs.suite != 'release-regressions'
+      - run: npm run test:ui
+        if: runner.os == 'macOS' && inputs.suite == 'release-regressions'
+      - run: npm run test:desktop
+        if: runner.os == 'Linux' && inputs.suite == 'release-regressions'
       - uses: actions/upload-artifact@v4
         if: always()
         with:

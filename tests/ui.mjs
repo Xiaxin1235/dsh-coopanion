@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { once } from 'node:events';
-import { mkdir, mkdtemp, rm, readFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, rm, readFile, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -14,10 +14,12 @@ const server = previewServer({ dataDir: directory }); server.listen(0, '127.0.0.
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH ?? (existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : chromium.executablePath()), headless: true, args: ['--no-sandbox', '--enable-unsafe-swiftshader'] });
 const speechDone = page => page.waitForSelector('#bubble[data-typing=false]');
 const mainFrame = page => page.locator('#body-layer iframe').contentFrame();
+let page;
+const errors = [];
 try {
-  const page = await browser.newPage({ locale: 'zh-CN', viewport: { width: 1200, height: 800 } });
+  page = await browser.newPage({ locale: 'zh-CN', viewport: { width: 1200, height: 800 } });
   page.setDefaultTimeout(12000);
-  const errors = []; page.on('pageerror', error => errors.push(error.message));
+  page.on('pageerror', error => errors.push(error.message));
   const petClick = async (options = {}, twice = false) => {
     await page.waitForSelector('#pet[data-mode]');
     if (options.button !== 'right') {
@@ -199,4 +201,18 @@ try {
   await page.locator('[data-demo=happy]').click(); await speechDone(page); await page.screenshot({ path: 'artifacts/desktop-pet.png' });
   assert.deepEqual(errors, []);
   console.log('UI passed: native WebGL animation, speech/mouth synchronization, physics, sessions, chat, outfits, API 2 import, persistence, rejection and sandbox isolation.');
+} catch (error) {
+  await mkdir('artifacts', { recursive: true });
+  if (page && !page.isClosed()) {
+    await page.screenshot({ path: 'artifacts/browser-ui-failure.png' });
+    const state = await page.evaluate(() => ({
+      pet: { hidden: document.getElementById('pet').hidden, data: { ...document.getElementById('pet').dataset } },
+      status: document.getElementById('character-status').textContent,
+      busy: document.getElementById('character-use').disabled,
+      frames: [...document.querySelectorAll('iframe')].map(frame => ({ src: frame.src, connected: frame.isConnected })),
+    }));
+    await writeFile('artifacts/browser-startup-ui-failure.json', JSON.stringify({ error: error.stack, errors, state }, null, 2));
+    console.log('UI failure state:', JSON.stringify({ errors, state }));
+  }
+  throw error;
 } finally { await browser.close(); await new Promise(resolve => server.close(resolve)); await rm(directory, { recursive: true, force: true }); }

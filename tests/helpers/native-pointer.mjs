@@ -43,7 +43,7 @@ x11.XSync(display, 0)
 x11.XCloseDisplay(display)
 `;
 const clickX11Cursor = `
-import ctypes
+import ctypes, sys, time
 x11=ctypes.CDLL('libX11.so.6'); xtst=ctypes.CDLL('libXtst.so.6')
 x11.XOpenDisplay.argtypes=[ctypes.c_char_p]; x11.XOpenDisplay.restype=ctypes.c_void_p
 x11.XSync.argtypes=[ctypes.c_void_p,ctypes.c_int]; x11.XCloseDisplay.argtypes=[ctypes.c_void_p]
@@ -51,9 +51,13 @@ xtst.XTestFakeButtonEvent.argtypes=[ctypes.c_void_p,ctypes.c_uint,ctypes.c_int,c
 d=x11.XOpenDisplay(None)
 if not d: raise RuntimeError('Cannot open the native test display')
 try:
-    if not xtst.XTestFakeButtonEvent(d,1,1,0): raise RuntimeError('Cannot press native test button')
-    if not xtst.XTestFakeButtonEvent(d,1,0,0): raise RuntimeError('Cannot release native test button')
-    x11.XSync(d,0)
+    button = int(sys.argv[1]) if len(sys.argv) > 1 else 1
+    count = int(sys.argv[2]) if len(sys.argv) > 2 else 1
+    for click in range(count):
+        if click: time.sleep(.08)
+        if not xtst.XTestFakeButtonEvent(d,button,1,0): raise RuntimeError('Cannot press native test button')
+        if not xtst.XTestFakeButtonEvent(d,button,0,0): raise RuntimeError('Cannot release native test button')
+        x11.XSync(d,0)
 finally: x11.XCloseDisplay(d)
 `;
 
@@ -113,7 +117,15 @@ export async function petClick(page, options = {}, twice = false) {
   }
   await pet.hover();
   await page.waitForSelector('#pet[data-native-hit=true]');
-  if (process.platform === 'darwin') {
+  if (process.platform === 'linux' && process.env.DISPLAY) {
+    // After a restart X11 may discard CDP's virtual button events even after
+    // native hit entry. Send the actual OS button at the measured body point,
+    // as nativeClick already does for panels, retaining the event assertions.
+    const { point } = await nativeMeasurement(page, '#pet');
+    await run('python3', ['-c', warpCursor, String(point.x), String(point.y)]);
+    await page.waitForSelector('#pet[data-native-hit=true]');
+    await run('python3', ['-c', clickX11Cursor, options.button === 'right' ? '3' : '1', twice ? '2' : '1']);
+  } else if (process.platform === 'darwin') {
     // Hover freezes roaming. Use one fresh point for both pointers so a later
     // locator stability check cannot choose another point in the breathing body.
     const point = await pet.evaluate(el => {
