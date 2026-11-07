@@ -20,7 +20,7 @@ import { crashNative, connectRecovered, waitRecovery } from './helpers/desktop-r
 
 const sourceCommit = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
 const version = process.env.DSH_TEST_VERSION ?? '0.2.0-rc.2';
-assert.ok(['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-rc.1', '0.2.1-rc.2', '0.2.1-rc.3'].includes(version), 'test only advertised DSH versions');
+assert.ok(['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-rc.1', '0.2.1-rc.2', '0.2.1-rc.3', '0.2.2-rc.1'].includes(version), 'test only advertised DSH versions');
 const project = fileURLToPath(new URL('../', import.meta.url));
 const manifest = JSON.parse(await readFile(join(project, 'package.json'), 'utf8'));
 const archive = resolve(process.env.DSH_TEST_PACKAGE ?? (process.env.DSH_TEST_PACKAGE_DIR
@@ -56,8 +56,11 @@ async function waitProfile(pattern) {
 }
 async function openPetSettings(page, chinese = true) {
   const settingsName = chinese ? '设置' : 'Settings';
-  const accountMenu = version.startsWith('0.2.1-rc.');
-  const launcher = page.getByRole('button', { name: accountMenu ? (chinese ? '账号菜单' : 'Account menu') : settingsName, exact: true });
+  const account = page.getByRole('button', { name: chinese ? '账号菜单' : 'Account menu', exact: true });
+  const direct = page.getByRole('button', { name: settingsName, exact: true });
+  await account.or(direct).first().waitFor();
+  const accountMenu = await account.isVisible();
+  const launcher = accountMenu ? account : direct;
   const section = page.getByRole('button', { name: chinese ? '桌宠' : 'Desktop pet', exact: true });
   for (let attempt = 0; attempt < 2; attempt++) {
     await launcher.click();
@@ -140,8 +143,9 @@ try {
   }
   if (version === '0.2.0-rc.2') assert.equal(evaluatePluginCompatibility(previous, {}, version)?.exempted, false, 'reproduce the previous release rejection');
   assert.ok(evaluatePluginCompatibility(manifest, {}, '0.2.0-rc.1'), 'unverified versions remain incompatible');
-  assert.ok(evaluatePluginCompatibility(manifest, {}, '0.2.1-rc.4'), 'later prereleases require explicit verification');
-  if (version.startsWith('0.2.1-rc.')) {
+  assert.equal(evaluatePluginCompatibility(manifest, {}, '0.2.1-rc.4'), undefined, '0.2.x prereleases enter the compatibility window');
+  assert.ok(evaluatePluginCompatibility(manifest, {}, '0.3.0-alpha.1'), '0.3 previews require compatibility review');
+  if (['0.2.1-rc.2', '0.2.1-rc.3', '0.2.2-rc.1'].includes(version)) {
     const restricted = structuredClone(manifest);
     restricted.engines.dsh = '0.2.0-rc.2';
     assert.ok(evaluatePluginCompatibility(restricted, {}, version), 'new hosts enforce engines.dsh even when peers match');
