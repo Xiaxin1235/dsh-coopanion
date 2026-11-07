@@ -240,7 +240,11 @@ test('idle rendering is bounded while real elapsed time, work and input keep the
   // uncapped baseline. Judge its lower bound against the cap, not the monitor.
   if (hasHeadroom) assert.ok(rate(idle) < rate(disabled) * .8 && rate(idle) > 30 * .5, JSON.stringify({ idleFps: rate(idle), disabledFps: rate(disabled) }));
   else t.diagnostic('Renderer baseline is below 40fps; relative speedup is not exercised here. Controlled render-cadence tests cover cap/bypass and dt.');
-  if (hasHeadroom) assert.ok(Math.abs(idle.ticks.reduce((a, b) => a + b, 0) - idle.elapsed) < .25, JSON.stringify(idle));
+  // Each tick's dt is capped at 0.05s to avoid jumps. A runner drawing idle frames below 20fps
+  // therefore drops time by design, so only an uncapped sample must account for all elapsed time.
+  const idleSum = idle.ticks.reduce((a, b) => a + b, 0), capped = idle.ticks.some(dt => dt >= .0499);
+  if (hasHeadroom) assert.ok(idleSum - idle.elapsed < .25 && (capped || idle.elapsed - idleSum < .25), JSON.stringify(idle));
+  if (hasHeadroom && capped) t.diagnostic('Idle frames reached the 0.05s step cap; skipped the lower elapsed-time bound.');
   await configure({ companionship: 'quiet' });
   await receive({ type: 'snapshot', snapshot: snapshot({ mood: 'working', active: true, sessions: [{ ...session, mood: 'working', active: true }] }) });
   const work = await sample(); assert.ok(work.ticks.length > 0); if (hasHeadroom) assert.ok(rate(work) > rate(idle) * 1.3);
