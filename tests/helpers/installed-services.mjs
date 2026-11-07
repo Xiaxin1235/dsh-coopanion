@@ -10,7 +10,9 @@ export async function verifyInstalledServices({ modules, plugin }) {
     import(pathToFileURL(join(plugin, 'dist/index.js')).href),
   ]);
   const ctx = new Context();
-  new SessionProjectionRegistry(ctx); new SessionStore(ctx); new UserQuestionService(ctx); new ApprovalService(ctx, { policy: 'ask' });
+  // Load services as a real host does; DSH 0.2.2 runs their async start-up (projection registration) only as plugins.
+  ctx.plugin(SessionProjectionRegistry); ctx.plugin(SessionStore); ctx.plugin(UserQuestionService); ctx.plugin(ApprovalService, { policy: 'ask' });
+  await ctx.fiber.await();
   const session = ctx.sessions.create('installed-service-source');
   const agent = { id: session.id, session, ctx, status: 'idle', inbox: { nextTurn: [], nextStep: [] },
     // Admission is controlled here; answer() creates the actual public reply message.

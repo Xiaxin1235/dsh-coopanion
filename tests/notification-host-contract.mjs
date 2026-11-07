@@ -17,7 +17,8 @@ const [{ Context }, { SessionStore }, { SessionProjectionRegistry }, { UserQuest
   import(pathToFileURL(join(modules, '@deepseek-ai/cordis/lib/index.js')).href), load('dsh-session'), load('dsh-session-projection'), load('dsh-user-questions'), load('dsh-user-approval'),
 ]);
 const ctx = new Context();
-new SessionProjectionRegistry(ctx); new SessionStore(ctx); new UserQuestionService(ctx); new ApprovalService(ctx, { policy: 'ask' });
+// Load services as a real host does; DSH 0.2.2 runs their async start-up (projection registration) only as plugins.
+ctx.plugin(SessionProjectionRegistry); ctx.plugin(SessionStore); ctx.plugin(UserQuestionService); ctx.plugin(ApprovalService, { policy: 'ask' });
 await ctx.fiber.await();
 const report = { dsh: values.version, pluginVersion: JSON.parse(await readFile('package.json', 'utf8')).version,
   sourceCommit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
