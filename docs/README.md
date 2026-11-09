@@ -16,6 +16,7 @@
 | NPC 日常、小窝、邀请与关系存档 | [自主陪伴契约](companionship-contract.md) |
 | 本地诊断、采样与资源报告 | [诊断契约](diagnostics-contract.md) |
 | 角色制作、API 2 与动作回退 | [角色接口](characters.md) |
+| 同源面板嵌入角色与桌宠暂离 | [舞台协议](stage-protocol.md) |
 | 同包安装验证、npm 与 GitHub Release | [发布流程](releasing.md) |
 | 首页展示素材的来源与重拍 | [素材说明](assets/README.md) |
 | 源码、素材与依赖许可 | [第三方声明](../THIRD_PARTY_NOTICES.md)、[上游版本](../web/upstream/UPSTREAM.md) |

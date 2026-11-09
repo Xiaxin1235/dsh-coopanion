@@ -122,6 +122,10 @@ dsh plugin --profile desktop add https://github.com/Xiaxin1235/dsh-coopanion/rel
 
 系统通知与自主陪伴默认关闭，可在设置中开启。安静陪伴和互动陪伴统一使用小窝出发、探索并返回的 NPC 日常；关闭陪伴即停止自主活动。更多配置、CLI 安装和旧角色迁移见[使用指南](docs/usage.md)。
 
+## 舞台接口（0.6.0）
+
+同源 Harness 面板可以通过 `stage/1` 让 Coopanion 在透明区域绘制大肥鱼。舞台支持站立、行走、坐姿工作、睡觉和现有表情，可调整位置、朝向与光线。面板也可申请桌宠暂时离开，最后一个客户端退出后按用户的显示设置恢复。字段、事件与接入方式见 [舞台协议](docs/stage-protocol.md)。0.6.0 为本地候选，安装链接仍指向已发布的 0.5.8。
+
 ## 了解更多与参与
 
 - **使用遇到问题：** 查看[使用指南](docs/usage.md)，或[提交 Issue](https://github.com/Xiaxin1235/dsh-coopanion/issues)。

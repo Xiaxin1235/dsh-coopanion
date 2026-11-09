@@ -17,6 +17,7 @@ import { npmTarballName } from '../scripts/release-support.mjs';
 import { unzipSync } from 'fflate';
 import { prepareNotifications, verifyInstalledNotifications } from './helpers/installed-notifications.mjs';
 import { crashNative, connectRecovered, waitRecovery } from './helpers/desktop-recovery.mjs';
+import { verifyInstalledStage } from './helpers/installed-stage.mjs';
 
 const sourceCommit = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
 const version = process.env.DSH_TEST_VERSION ?? '0.2.0-rc.2';
@@ -287,8 +288,9 @@ try {
   await mkdir(join(project, 'artifacts'), { recursive: true });
   await page.screenshot({ path: join(project, 'artifacts', `installed-${version}.png`) });
   assert.ok(hostUrl, 'the published DSH web surface is ready');
-  settingsBrowser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH ?? (existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : chromium.executablePath()), headless: true, args: ['--no-sandbox'] });
-  const settings = await settingsBrowser.newPage({ viewport: { width: 1280, height: 900 } });
+  settingsBrowser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH ?? (existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : chromium.executablePath()), headless: true, args: ['--no-sandbox', '--enable-unsafe-swiftshader'] });
+  const settingsContext = await settingsBrowser.newContext({ viewport: { width: 1280, height: 900 } });
+  const settings = await settingsContext.newPage();
   settingsPage = settings;
   await prepareNotifications(settings);
   settings.on('pageerror', error => uiErrors.push(error.message));
@@ -324,6 +326,10 @@ try {
   await surface.waitFor();
   console.log('Official DSH settings page loaded; checking controls and persisted preferences…');
   await surface.getByTestId('pet-status').filter({ hasText: '正在显示' }).waitFor();
+  const stageEvidence = await verifyInstalledStage({ page: settings, pet: page, hostUrl });
+  await writeFile(join(project, 'artifacts', 'stage-installed-' + version + '.json'), JSON.stringify({
+    dsh: version, plugin: manifest.version, archiveSha256: createHash('sha256').update(await readFile(archive)).digest('hex'), ...stageEvidence,
+  }, null, 2) + '\n');
   await verifyInstalledNotifications({ page: settings, surface, profile, version, hostUrl, project });
   await surface.getByRole('button', { name: '隐藏桌宠', exact: true }).click();
   await surface.getByTestId('pet-status').filter({ hasText: '已隐藏' }).waitFor();

@@ -32,6 +32,7 @@ export interface PetBridge {
   dispose(): Promise<void>;
   configure?(options: DesktopOptions): void;
   control?(command: 'show' | 'hide' | 'characters'): void;
+  setStageAway?(away: boolean): void;
   focusHarness?(): void;
   onLifecycle?(listener: (state: NativeLifecycle) => void): void;
   removeLifecycle?(listener: (state: NativeLifecycle) => void): void;
@@ -64,7 +65,7 @@ export class ElectronBridge extends EventEmitter implements PetBridge {
     let executable: string;
     try { executable = options.electronPath ?? createRequire(import.meta.url)('electron'); }
     catch (error) { throw new NativeStartError(String(error).slice(0, 600), false); }
-    const env: NodeJS.ProcessEnv = { ...process.env, DSH_PET_GENERATION: String(this.generation), DSH_PET_VISIBLE: lifetime?.visible === false ? '0' : '1', DSH_PET_SCREEN_LOCKED: this.screenLocked ? '1' : '0', DSH_PET_SYSTEM_ASLEEP: this.systemAsleep ? '1' : '0' };
+    const env: NodeJS.ProcessEnv = { ...process.env, DSH_PET_GENERATION: String(this.generation), DSH_PET_VISIBLE: lifetime?.visible === false ? '0' : '1', DSH_PET_STAGE_AWAY: lifetime?.stageAway ? '1' : '0', DSH_PET_SCREEN_LOCKED: this.screenLocked ? '1' : '0', DSH_PET_SYSTEM_ASLEEP: this.systemAsleep ? '1' : '0' };
     delete (env as NodeJS.ProcessEnv).ELECTRON_RUN_AS_NODE;
     const args = [fileURLToPath(new URL('../desktop/main.cjs', import.meta.url))];
     if (env.DSH_PET_TEST_NO_SANDBOX === '1') args.unshift('--no-sandbox');
@@ -149,6 +150,7 @@ export class ElectronBridge extends EventEmitter implements PetBridge {
   // its previous locale during a merged configuration update.
   configure(options: DesktopOptions): void { this.latestOptions = { ...options }; this.send({ type: 'configure', options: { ...options, locale: options.locale ?? null } }); }
   control(command: 'show' | 'hide' | 'characters'): void { this.send({ type: 'control', command }); }
+  setStageAway(away: boolean): void { this.send({ type: 'stage-presence', away }); }
   focusHarness(): void { this.send({ type: 'control', command: 'focus-harness' }); }
   onLifecycle(listener: (state: NativeLifecycle) => void): void { this.on('lifecycle', listener); }
   removeLifecycle(listener: (state: NativeLifecycle) => void): void { this.off('lifecycle', listener); }

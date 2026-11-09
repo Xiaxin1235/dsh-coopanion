@@ -19,6 +19,7 @@ export class PetControls {
   private stable?: ReturnType<typeof setTimeout>;
   private epoch = 0;
   private wanted = false;
+  private stageAway = false;
   private cleanupBlocked = false;
   private readonly listeners = new Set<(status: PetStatus) => void>();
   private readonly changed = (event: NativeLifecycle) => {
@@ -45,6 +46,11 @@ export class PetControls {
     this.listeners.add(listener); try { listener(this.status()); } catch { /* A view is optional. */ } return () => this.listeners.delete(listener);
   }
   configure(): void { this.bridge.configure?.(this.options()); }
+  setStageAway(away: boolean): void {
+    if (this.disposed || this.stageAway === away) return;
+    this.stageAway = away;
+    this.bridge.setStageAway?.(away);
+  }
   command(command: PetCommand): Promise<PetStatus> {
     // Intent and cancellation take effect before queued work, including queued starts.
     if (command === 'hide') this.set({ ...this.state, desiredVisible: false });
@@ -91,7 +97,7 @@ export class PetControls {
     if (this.disposed || !this.wanted || epoch !== this.epoch) return;
     const startup = new AbortController(); this.startup = startup; this.startupExit = undefined;
     this.set({ ...this.state, phase: 'starting', error: undefined, retryAt: undefined, visible: false, generation: this.state.generation + 1, visibilityRevision: 0, suspended: false });
-    try { await this.withDeadline(this.bridge.start(this.options(), { signal: startup.signal, generation: this.state.generation, visible: this.state.desiredVisible }), this.limits.startTimeoutMs ?? 25_000, '桌宠启动超时', startup.signal, true); }
+    try { await this.withDeadline(this.bridge.start(this.options(), { signal: startup.signal, generation: this.state.generation, visible: this.state.desiredVisible, ...(this.stageAway ? { stageAway: true } : {}) }), this.limits.startTimeoutMs ?? 25_000, '桌宠启动超时', startup.signal, true); }
     catch (error) { throw this.startupExit ?? error; }
     if (startup.signal.aborted || this.disposed || epoch !== this.epoch) throw new Error('桌宠启动已取消');
     this.startup = undefined;

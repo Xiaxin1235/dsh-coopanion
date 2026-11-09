@@ -453,7 +453,7 @@ export async function createWhaleFigure(base = new URL('./', import.meta.url), o
 
   function draw(petG, fc, o) {
     if (mountedIn !== petG || !petG.contains(fo)) mount(petG);
-    if (frameN++ % 20 === 0) fitCanvas();
+    if (frameN++ % 20 === 0 || o.staticPose) fitCanvas();
     const t = o.t, dt = lastT == null ? 1 / 60 : clamp(t - lastT, 0, .05);
     lastT = t;
     const mode = o.mode || 'idle', face = o.face || 'neutral';
@@ -461,7 +461,8 @@ export async function createWhaleFigure(base = new URL('./', import.meta.url), o
     const walking = mode === 'walk' || mode === 'run', held = mode === 'drag', airborne = mode === 'air';
 
     /* body: the kit's `low` is how far the hips sink (sitting, the walk's bob), in these units */
-    sitK = lerp(sitK, clamp(o.sit ?? 0, 0, 1), ease(12, dt));
+    const seat = clamp(o.sit ?? 0, 0, 1);
+    sitK = o.staticPose ? seat : lerp(sitK, seat, ease(12, dt));
     const low = o.low || 0;
     const lowV = (low - prevLow) / Math.max(dt, 1e-3); prevLow = low;
     const breath = Math.sin(t * (mode === 'sleep' ? 1.7 : 2.4));
@@ -539,8 +540,10 @@ export async function createWhaleFigure(base = new URL('./', import.meta.url), o
     if (runK > .001) { aN = lerp(aN, 38, runK); aF = lerp(aF, 32, runK); }
     if (wave) aN = lerp(aN, 108, wave);
     if (shiver) { aN = lerp(aN, -10, shiver); aF = lerp(aF, 8, shiver); }
-    const armN = sp.armN.step(aN, dt) + wave * 13 * Math.sin(t * 15) + shiver * 1.4 * Math.sin(t * 47) + flap * 9 * Math.sin(t * 24);
-    const armF = sp.armF.step(aF, dt) - shiver * 1.2 * Math.sin(t * 43 + 1) - flap * 9 * Math.sin(t * 24 + 1);
+    // Stage-only seated work, animated on the same arm joints as the desktop gestures.
+    if (o.work) { aN = -19 + 7 * Math.sin(t * 12); aF = -26 + 6 * Math.sin(t * 12 + Math.PI); }
+    const armN = (o.staticPose ? aN : sp.armN.step(aN, dt)) + wave * 13 * Math.sin(t * 15) + shiver * 1.4 * Math.sin(t * 47) + flap * 9 * Math.sin(t * 24);
+    const armF = (o.staticPose ? aF : sp.armF.step(aF, dt)) - shiver * 1.2 * Math.sin(t * 43 + 1) - flap * 9 * Math.sin(t * 24 + 1);
 
     /* deformer states */
     // the kit sinks the hips 29 when seated; the sitting drawing's lowest point is 19.4 above the soles

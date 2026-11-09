@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import { StagePresence, stageRoutes } from './stage-host.ts';
 import type { Context, Volatile } from '@deepseek-ai/cordis';
 import type { CredentialProvider } from '@deepseek-ai/dsh-credentials';
 import type {} from '@deepseek-ai/dsh-client-connection';
@@ -189,6 +190,9 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
   });
   ctx.on('settings/document-updated', ns => { if (ns === 'dsh-coopanion') { controls.configure(); broker.preferences(notificationPrefs()); syncNotifications(); } else if (ns === 'locale') syncLocale(); });
   ctx.inject(['connection'], child => {
+    const presence = new StagePresence(away => controls.setStageAway(away));
+    child.effect(() => () => presence.close());
+    for (const route of stageRoutes(child.connection, presence)) child.effect(() => child.connection.fetch.register(route));
     const dispatch = async (endpoint: string, payload: unknown, signal: AbortSignal) => {
       try {
         if (signal.aborted) throw new Error('请求已取消');

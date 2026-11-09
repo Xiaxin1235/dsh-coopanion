@@ -781,6 +781,9 @@ function receive(message) {
       else if (message.command === 'sleep') $('toggle-sleep').click();
       else if (message.command === 'sound') $('toggle-sound').click();
       break;
+    case 'stage-departure':
+      if (body && !reduced) act(body, activeView, 'hop');
+      break;
     case 'characters': $('open-characters').click(); break;
     case 'snapshot':
       if (JSON.stringify((message.snapshot.sessions ?? []).map(s => [s.id, s.revision, s.mood])) !== JSON.stringify((snapshot.sessions ?? []).map(s => [s.id, s.revision, s.mood]))) attentionToWork();

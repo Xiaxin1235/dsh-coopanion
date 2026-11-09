@@ -1,10 +1,24 @@
 import { build } from 'esbuild';
-import { readFile, rm } from 'node:fs/promises';
+import { readFile, readdir, rm } from 'node:fs/promises';
 const manifest = JSON.parse(await readFile('package.json', 'utf8'));
 await rm('dist', { recursive: true, force: true });
 await build({ entryPoints: ['src/index.ts', 'src/bridge.ts', 'src/model.ts'], outdir: 'dist', bundle: true, packages: 'external', platform: 'node', format: 'esm', target: 'node22', sourcemap: true });
 await build({ entryPoints: ['src/character-store.ts', 'src/companion-store.ts', 'src/figure-server.ts', 'src/diagnostics.ts'], outdir: 'dist', outExtension: { '.js': '.cjs' }, bundle: true, platform: 'node', format: 'cjs', target: 'node22' });
 await build({ entryPoints: ['web/reply-markdown.js'], outfile: 'web/markdown-runtime.js', bundle: true, platform: 'browser', format: 'esm', target: 'chrome130', minify: true });
+// The opaque-origin stage cannot use the owner's authenticated subresource requests.
+// Package only the original scheme's textures, from the existing pack, in its document.
+const textures = {};
+for (const dir of ['tex', 'feat']) {
+  for (const name of (await readdir('web/upstream/whale/' + dir)).sort()) {
+    if (!name.endsWith('.png')) continue;
+    textures[dir + '/' + name] = 'data:image/png;base64,' + (await readFile('web/upstream/whale/' + dir + '/' + name)).toString('base64');
+  }
+}
+await build({
+  entryPoints: ['web/stage/index.js'], outfile: 'dist/stage.js', bundle: true,
+  platform: 'browser', format: 'esm', target: 'chrome130', minify: true,
+  define: { STAGE_TEXTURES: JSON.stringify(textures) },
+});
 await build({ entryPoints: ['src/client/index.ts'], outfile: 'dist/client.js', bundle: true,
   // DSH supplies its public peers and React. Runtime dependencies such as zod
   // must be bundled because they have no DSH browser module factory.
@@ -17,7 +31,7 @@ await build({ entryPoints: ['src/client/index.ts'], outfile: 'dist/client.js', b
 // Bind source exports without requiring a Git checkout to rebuild them.
 const { createHash } = await import('node:crypto');
 const { execFileSync } = await import('node:child_process');
-const { writeFile, readdir } = await import('node:fs/promises');
+const { writeFile } = await import('node:fs/promises');
 const inputPaths = ['scripts/build.mjs', 'package.json', 'npm-shrinkwrap.json'];
 async function collectInputs(directory) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {

@@ -73,6 +73,7 @@ let visibilityRevision = 0, screenLocked = process.env.DSH_PET_SCREEN_LOCKED ===
 let lockStateKnown = false;
 let suspended = true;
 let desiredVisible = process.env.DSH_PET_VISIBLE !== '0', userClosed = false;
+let stageAway = process.env.DSH_PET_STAGE_AWAY === '1', departureTimer;
 function visibility() { if (win && !win.isDestroyed()) { process.send?.({ type: 'visibility', generation, visibilityRevision: ++visibilityRevision, visible: win.isVisible(), desiredVisible, suspended, screenLocked, systemAsleep, lockStateKnown }); syncTray(); } }
 function forward(message) {
   if (message.type === 'notification-state') inboxInteractions = message.snapshot.interactions;
@@ -88,8 +89,30 @@ function hit(active) {
   }
   forward({ type: 'hit-state', active, focused: win.isFocused(), visible: win.isVisible() });
 }
-function show() { desiredVisible = true; windowGuard?.('show'); win?.showInactive(); visibility(); }
-function hide() { desiredVisible = false; win?.hide(); visibility(); }
+function show() {
+  desiredVisible = true;
+  if (!stageAway) { windowGuard?.('show'); win?.showInactive(); }
+  visibility();
+}
+function cancelDeparture() { clearTimeout(departureTimer); departureTimer = undefined; }
+function hide() { desiredVisible = false; cancelDeparture(); win?.hide(); visibility(); }
+function setStageAway(away) {
+  if (stageAway === away) return;
+  stageAway = away;
+  cancelDeparture();
+  if (!away) {
+    if (desiredVisible && nativeReady && !suspended && !win?.isVisible()) show();
+    return;
+  }
+  if (!desiredVisible || !win?.isVisible()) return;
+  forward({ type: 'stage-departure' });
+  // Crouch (.16s) plus the existing 480-unit hop at 2300 units/s².
+  departureTimer = setTimeout(() => {
+    departureTimer = undefined;
+    win?.hide();
+    visibility();
+  }, 650);
+}
 function act(action) { process.send?.({ type: 'action', action }); }
 function syncTray() {
   if (!tray || tray.isDestroyed()) return;
@@ -156,6 +179,7 @@ async function syncIcon(state, key) {
 process.on('message', message => {
   if (!message || typeof message !== 'object') return;
   if (message.type === 'quit') { app.quit(); return; }
+  if (message.type === 'stage-presence' && typeof message.away === 'boolean') setStageAway(message.away);
   if (message.type === 'init') { options = message.options; configureDiagnostics(); lastFrame = message; forward(message); syncTray(); }
   if (message.type === 'configure') { options = message.options; configureDiagnostics(); windowGuard?.('configure'); if (lastFrame) lastFrame.options = options; forward(message); syncTray(); }
   if (message.type === 'control') {
@@ -240,7 +264,7 @@ app.whenReady().then(async () => {
   });
   win = new BrowserWindow({ ...screen.getPrimaryDisplay().workArea, ...(process.platform==='darwin'?{type:'panel',fullscreenable:false}:{}), transparent: true, frame: false, resizable: false, skipTaskbar: true, hasShadow: false, show: false, alwaysOnTop: true, backgroundColor: '#00000000', webPreferences: { additionalArguments: displayTest ? ['--dsh-pet-display-test', ...(windowTest ? ['--dsh-pet-window-test'] : [])] : [], preload: join(__dirname, 'preload.cjs'), sandbox: true, contextIsolation: true, nodeIntegration: false } });
   win.setAlwaysOnTop(true, topLevel(options?.aboveFullscreen));
-  windowGuard = createVisibilityGuard({ win, state: () => ({ ready: nativeReady, closing: shuttingDown, desiredVisible, suspended, aboveFullscreen: options?.aboveFullscreen !== false }), record: event => windowTrace.record(event) });
+  windowGuard = createVisibilityGuard({ win, state: () => ({ ready: nativeReady, closing: shuttingDown, desiredVisible: desiredVisible && (!stageAway || !!departureTimer), suspended, aboveFullscreen: options?.aboveFullscreen !== false }), record: event => windowTrace.record(event) });
   for (const event of ['minimize', 'restore', 'hide', 'show', 'blur', 'focus', 'always-on-top-changed']) win.on(event, () => {
     windowTrace.record(event);
     if (['minimize', 'restore', 'hide', 'show'].includes(event)) visibility();
@@ -323,5 +347,5 @@ app.whenReady().then(async () => {
   if (process.connected) process.send(failure, () => app.exit(1)); else app.exit(1);
 });
 
-app.on('before-quit', event => { shuttingDown = true; if (inboxReceipts?.pending) { event.preventDefault(); void inboxReceipts.flush().then(() => app.quit()); return; } clearInterval(guardPoll); nativeCursor?.stop(); if (userClosed) process.send?.({ type: 'closed' }); clearInterval(poll); keyboardActivity.configure(false); if (diagnosticRead) { clearTimeout(diagnosticRead.timer); diagnosticRead.resolve(null); diagnosticRead = undefined; } diagnostics?.release(); void diagnostics?.close(); assetServer?.close(); tray?.destroy(); });
+app.on('before-quit', event => { shuttingDown = true; cancelDeparture(); if (inboxReceipts?.pending) { event.preventDefault(); void inboxReceipts.flush().then(() => app.quit()); return; } clearInterval(guardPoll); nativeCursor?.stop(); if (userClosed) process.send?.({ type: 'closed' }); clearInterval(poll); keyboardActivity.configure(false); if (diagnosticRead) { clearTimeout(diagnosticRead.timer); diagnosticRead.resolve(null); diagnosticRead = undefined; } diagnostics?.release(); void diagnostics?.close(); assetServer?.close(); tray?.destroy(); });
 app.on('window-all-closed', () => { userClosed = true; app.quit(); });
