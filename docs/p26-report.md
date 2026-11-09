@@ -21,6 +21,23 @@ Coopanion fork 0.6.0 本地候选。实现位于 `whaledot-local`，供 WhaleMai
 
 三个 PNG 为 Chromium 实际渲染的透明截图，保存在本机验收目录。角色贴图、缩略图和默认桌宠行为沿用现有版本。
 
+## 验证记录
+
+Windows x64，Node 24.18.0，npm 11.16.0。修改前在 `cdcf9dc` 完成元数据、构建、类型、单元与浏览器回归。修改后 `verify:metadata`、`build`、`typecheck` 与 `git diff --check` 通过。`npm test` 中 Vitest 350 项通过、11 项沿用原有跳过规则，另有 12 项 Node 测试通过。`test:ui`、`test:inbox-ui`、`test:notification-ui`、`test:n0`、`test:keyboard-native` 和 `test:desktop` 通过。
+
+舞台浏览器检查涵盖来源与版本校验、参数边界、点击与悬停、30 帧／秒预算、隐藏时停绘和减少动态效果。宿主单测检查连接计数、断线与重启清零。
+
+安装候选来自 `62df82c5798e2e8b8754a5411006d47544833048`。`artifacts/p26-verified-package/takboo-dsh-coopanion-0.6.0.tgz` 通过归档校验，含 680 个条目。SHA-256 为 `de331a3445414cf381a99353841500e594bfeb58922501fe45a62647311efec7`，构建绑定见同目录 `verification.json`。
+
+此前安装验证发现 Harness 默认配置的 gzip 会缓冲普通文本长响应。舞台暂离改用未压缩的事件流，浏览器测试同时检查首条回执与响应头。
+
+| DSH 版本 | 同包安装结果 | `artifacts/p26-verified-package/` 中的记录 |
+| --- | --- | --- |
+| 0.2.1-rc.3 | 通过，使用官方安装命令和隔离 profile | `install-0.2.1-rc.3.json`、`stage-installed-0.2.1-rc.3.json` |
+| 0.2.2-rc.1 | 通过，使用官方安装命令和隔离 profile | `install-0.2.2-rc.1.json`、`stage-installed-0.2.2-rc.1.json` |
+
+两版都检查了未认证请求被拒绝、认证 iframe 首帧、首次暂离实际播放一次小跳、关闭最后一个标签页后恢复，以及手动隐藏在离开和返回时保持。完整安装回归也通过了设置持久化、桌宠原生窗口和干净退出检查。
+
 ## 验收边界
 
 舞台固定使用内置默认大肥鱼，需要浏览器 WebGL。失败通过 `render-failed` 回报，嵌入方负责回退。舞台文档约 1.72 MB。原生暂离按连接存续，反向代理需要允许流式响应以及向 Harness 传播连接关闭。自定义角色若无小跳动作则只暂时隐藏。
