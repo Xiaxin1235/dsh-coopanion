@@ -31,7 +31,10 @@ jobs:
         run: |
           [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit 1
           commit=$(git rev-parse "refs/tags/$TAG^{commit}")
-          git merge-base --is-ancestor "$commit" origin/whaledot-local
+          # Patch releases for an earlier minor line come from release/<major.minor> branches.
+          minor=${TAG#v}; minor=${minor%.*}
+          git merge-base --is-ancestor "$commit" origin/whaledot-local ||
+            git merge-base --is-ancestor "$commit" "origin/release/${minor}"
           git checkout --detach "$commit"
           test "v$(node -p 'require("./package.json").version')" = "$TAG"
           echo "commit=$commit" >> "$GITHUB_OUTPUT"
