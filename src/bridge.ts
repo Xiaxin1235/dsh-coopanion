@@ -63,10 +63,12 @@ export class ElectronBridge extends EventEmitter implements PetBridge {
   async start(options: DesktopOptions, lifetime?: StartLifetime): Promise<void> {
     if (this.child) throw new NativeStartError('Desktop pet is already running', false);
     if (lifetime?.signal.aborted) throw new Error('桌宠启动已取消');
+    // Preparing the runtime may take minutes (first download); settings changed meanwhile
+    // through configure() update latestOptions and are delivered once the process exists.
+    const requested = this.latestOptions = { ...options };
     const { executable } = await this.prepareRuntime(options, lifetime?.signal);
-    lifetime?.signal.throwIfAborted();
+    if (lifetime?.signal.aborted) throw new Error('桌宠启动已取消');
     if (this.child) throw new NativeStartError('Desktop pet is already running', false);
-    this.latestOptions = { ...options };
     this.closing = false;
     this.generation = lifetime?.generation ?? this.generation + 1;
     this.visibilityRevision = 0; this.nativeVisible = false;
@@ -76,6 +78,7 @@ export class ElectronBridge extends EventEmitter implements PetBridge {
     if (env.DSH_PET_TEST_NO_SANDBOX === '1') args.unshift('--no-sandbox');
     const child = spawn(executable, args, { env, stdio: ['ignore', 'pipe', 'pipe', 'ipc'] });
     const generation = this.generation; this.child = child;
+    if (this.latestOptions !== requested) this.configure(this.latestOptions!);
     let diagnostic = '', userClosed = false;
     child.stderr?.on('data', data => { diagnostic = (diagnostic + data.toString()).slice(-4000); });
     child.on('message', message => {
