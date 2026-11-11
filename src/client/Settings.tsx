@@ -4,10 +4,11 @@ import { COMPANIONSHIP_MODES, type CompanionshipMode } from '../../web/companion
 import type { ConfigForm } from '@deepseek-ai/dsh-client-ui-settings/client';
 import type { PropsLocale } from '@deepseek-ai/dsh-client-ui-slots';
 import type { PetCommand, PetStatus } from '../controls.ts';
+import type { RuntimeSourcePreference } from '../electron-runtime.ts';
 import type { NotificationSettings, NotificationClientStatus } from './notification-client.ts';
 import { TEXT_SCALES, textScale, type TextScale } from '../../web/text-scale.js';
 
-export interface Preferences { inlineApprovals?: boolean; decisionsProvider?: 'openai' | 'openrouter'; decisionsReactions?: boolean; size: number; npcHome: number; npcRange: number; textScale: TextScale; aboveFullscreen: boolean; preferOpeningParagraph: boolean; inlineQuestions: boolean; roam: boolean; diagnostics: boolean; companionship: CompanionshipMode; notifications: boolean; quietMode: boolean; systemNotifications: boolean; reminders: boolean; reminderDelayMs: number; bubbleDurationMs: number; autoStart: boolean; defaultChatTarget?: 'companion' | 'last'; }
+export interface Preferences { inlineApprovals?: boolean; runtimeSource?: RuntimeSourcePreference; decisionsProvider?: 'openai' | 'openrouter'; decisionsReactions?: boolean; size: number; npcHome: number; npcRange: number; textScale: TextScale; aboveFullscreen: boolean; preferOpeningParagraph: boolean; inlineQuestions: boolean; roam: boolean; diagnostics: boolean; companionship: CompanionshipMode; notifications: boolean; quietMode: boolean; systemNotifications: boolean; reminders: boolean; reminderDelayMs: number; bubbleDurationMs: number; autoStart: boolean; defaultChatTarget?: 'companion' | 'last'; }
 import { reactionKeyView, type ReactionKeyInfo } from './reaction-key-view.ts';
 export type { ReactionKeyInfo } from './reaction-key-view.ts';
 export type ReactionKeyStatus = Record<'openai' | 'openrouter', ReactionKeyInfo>;
@@ -83,7 +84,7 @@ export function Settings({ form, call, local, notifier, getKeyStatus, setKey, cl
     catch (error) { setFailure(String(error instanceof Error ? error.message : error)); }
     finally { setBusy(false); }
   };
-  const save = async (field: keyof Preferences, value: number | boolean | CompanionshipMode | 'companion' | 'last' | 'openai' | 'openrouter') => {
+  const save = async (field: keyof Preferences, value: number | boolean | CompanionshipMode | RuntimeSourcePreference | 'companion' | 'last' | 'openai' | 'openrouter') => {
     setSaving(true); setFeedback(undefined); setSaveFailure('');
     try { setFeedback(await form.set(field, value) ? 'saved' : 'refused'); }
     catch (error) { setSaveFailure(String(error instanceof Error ? error.message : error)); }
@@ -177,6 +178,12 @@ export function Settings({ form, call, local, notifier, getKeyStatus, setKey, cl
       </div>
       {status?.recoveryAttempt ? <p role="status">{t('recoveryHint')}: {status.recoveryAttempt} / 3</p> : null}
       {failure || status?.error ? <p className="pet-error" role="alert">{failure || status?.error}</p> : null}
+      <div className="pet-row"><div className="pet-label"><label htmlFor="coopanion-runtime-source">{t('runtimeSource')}</label><p id="coopanion-runtime-source-hint">{t('runtimeSourceHint')}</p></div>
+        <select id="coopanion-runtime-source" className="pet-number pet-provider" aria-describedby="coopanion-runtime-source-hint" value={prefs?.runtimeSource ?? 'auto'} disabled={!ready || !local} onChange={event => void save('runtimeSource', event.target.value as RuntimeSourcePreference)}>
+          <option value="auto">{t('runtimeSourceAuto')}</option><option value="official">{t('runtimeSourceOfficial')}</option><option value="mirror">{t('runtimeSourceMirror')}</option>
+        </select>
+      </div>
+      {status?.runtimeDownloadSource ? <p data-testid="runtime-download-source">{t('runtimeLastSource')}: {t(({ official: 'runtimeDownloadedOfficial', mirror: 'runtimeDownloadedMirror', custom: 'runtimeDownloadedCustom' } as const)[status.runtimeDownloadSource])}</p> : null}
     </section>
     <section className="pet-card" aria-label={t('reactionSettings')}>
       <h3>{t('reactionSettings')}</h3>

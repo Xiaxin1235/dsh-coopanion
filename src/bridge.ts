@@ -9,16 +9,16 @@ import type { PetSnapshot, PetNotice } from './model.ts';
 import type { ReplyReaction, ReactionStatus, DecisionsProvider } from './reaction-decider.ts';
 import type { NotificationRuntime, NotificationSnapshot, TaskNotice } from './notification-contract.ts';
 import { NativeStartError, type StartLifetime, type NativeLifecycle } from './desktop-lifecycle.ts';
-import { prepareElectronRuntime } from './electron-runtime.ts';
+import { prepareElectronRuntime, type PreparedRuntime, type RuntimeSourcePreference } from './electron-runtime.ts';
 export { NativeStartError, type StartLifetime, type NativeLifecycle } from './desktop-lifecycle.ts';
 
 import type { CompanionshipMode } from '../web/companionship.js';
 import type { TextScale } from '../web/text-scale.js';
 
-export interface DesktopOptions { decisionsProvider?: DecisionsProvider; decisionsReactions?: boolean; reactionStatus?: ReactionStatus; interfaceStyle?: 'new' | 'classic'; defaultChatTarget?: 'companion' | 'last'; size: number; npcHome?: number; npcRange?: number; textScale?: TextScale; aboveFullscreen?: boolean; preferOpeningParagraph?: boolean; inlineQuestions?: boolean; roam: boolean; diagnostics?: boolean; companionship?: CompanionshipMode; notifications: boolean; quietMode?: boolean; bubbleDurationMs: number; electronPath?: string; locale?: string; systemNotifications?: boolean; reminders?: boolean; reminderDelayMs?: number; }
+export interface DesktopOptions { decisionsProvider?: DecisionsProvider; decisionsReactions?: boolean; reactionStatus?: ReactionStatus; interfaceStyle?: 'new' | 'classic'; defaultChatTarget?: 'companion' | 'last'; size: number; npcHome?: number; npcRange?: number; textScale?: TextScale; aboveFullscreen?: boolean; preferOpeningParagraph?: boolean; inlineQuestions?: boolean; roam: boolean; diagnostics?: boolean; companionship?: CompanionshipMode; notifications: boolean; quietMode?: boolean; bubbleDurationMs: number; electronPath?: string; runtimeSource?: RuntimeSourcePreference; locale?: string; systemNotifications?: boolean; reminders?: boolean; reminderDelayMs?: number; }
 export interface PetBridge {
   reaction?(reaction: ReplyReaction): void;
-  prepareRuntime?(options: DesktopOptions, signal?: AbortSignal): Promise<string>;
+  prepareRuntime?(options: DesktopOptions, signal?: AbortSignal): Promise<PreparedRuntime>;
   start(options: DesktopOptions, lifetime?: StartLifetime): Promise<void>;
   update(snapshot: PetSnapshot): void;
   chatResult?(receipt: ChatReceipt): void;
@@ -54,15 +54,15 @@ export class ElectronBridge extends EventEmitter implements PetBridge {
   private systemAsleep = false;
   private lastNotificationState?: NotificationSnapshot;
 
-  async prepareRuntime(options: DesktopOptions, signal?: AbortSignal): Promise<string> {
+  async prepareRuntime(options: DesktopOptions, signal?: AbortSignal): Promise<PreparedRuntime> {
     if (process.platform === 'linux' && !process.env.DISPLAY && !process.env.WAYLAND_DISPLAY) throw new NativeStartError('桌宠需要桌面显示环境。', false);
-    return options.electronPath ?? prepareElectronRuntime(signal, options.locale);
+    return options.electronPath ? { executable: options.electronPath } : prepareElectronRuntime(signal, options.locale, options.runtimeSource);
   }
 
   async start(options: DesktopOptions, lifetime?: StartLifetime): Promise<void> {
     if (this.child) throw new NativeStartError('Desktop pet is already running', false);
     if (lifetime?.signal.aborted) throw new Error('桌宠启动已取消');
-    const executable = await this.prepareRuntime(options, lifetime?.signal);
+    const { executable } = await this.prepareRuntime(options, lifetime?.signal);
     lifetime?.signal.throwIfAborted();
     if (this.child) throw new NativeStartError('Desktop pet is already running', false);
     this.latestOptions = { ...options };

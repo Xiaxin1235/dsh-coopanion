@@ -1,11 +1,12 @@
 import type { DesktopOptions, PetBridge } from './bridge.ts';
 import type { NotificationRuntime } from './notification-contract.ts';
 import type { ReactionStatus } from './reaction-decider.ts';
+import type { RuntimeDownloadSource } from './electron-runtime.ts';
 import { NativeStartError, type NativeLifecycle } from './desktop-lifecycle.ts';
 export { NativeStartError, type NativeLifecycle, type StartLifetime } from './desktop-lifecycle.ts';
 
 export type PetCommand = 'start' | 'show' | 'hide' | 'restart' | 'stop' | 'characters';
-export type PetStatus = NotificationRuntime & { reactionStatus?: ReactionStatus };
+export type PetStatus = NotificationRuntime & { reactionStatus?: ReactionStatus; runtimeDownloadSource?: RuntimeDownloadSource };
 export interface ControlLimits { startTimeoutMs?: number; cleanupTimeoutMs?: number; retryDelaysMs?: readonly [number, number, number]; stableMs?: number; }
 
 /** Commands own a cancellable native generation. Lifecycle acknowledgements alone establish visibility. */
@@ -94,8 +95,9 @@ export class PetControls {
     try {
       let prepared = this.options();
       if (this.bridge.prepareRuntime) {
-        const executable = await this.bridge.prepareRuntime(prepared, startup.signal);
+        const { executable, downloadSource } = await this.bridge.prepareRuntime(prepared, startup.signal);
         startup.signal.throwIfAborted();
+        if (downloadSource) this.set({ ...this.state, runtimeDownloadSource: downloadSource });
         const options = this.options();
         prepared = { ...options, electronPath: options.electronPath ?? executable };
       }

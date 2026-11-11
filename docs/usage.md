@@ -12,7 +12,9 @@
 
 打开侧边栏 **插件 → 添加插件**，在「包名或地址」输入 **`https://github.com/Xiaxin1235/dsh-coopanion/releases/download/v0.5.9/dsh-coopanion-0.5.9.tgz`**，点击安装，再启用 `dsh-coopanion`。显式版本可以避免发布首日的裸包名解析回退，原因见下方。安装方式见 [Harness 官方插件管理说明](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/ui-plugin-manager/README.zh.md#安装一个组合包)。
 
-桌宠首次启动需要下载 Electron。设置中的错误会区分网络、目录写入、磁盘空间和解压问题。处理提示里的原因后点击「重启」。网络受限时可让 Harness 继承 Electron 官方支持的代理或镜像设置，完整退出再打开 Harness。配置过自有运行组件的用户可继续使用 `electronPath`。见 [Electron 下载和镜像说明](https://www.electronjs.org/docs/latest/tutorial/installation#custom-mirrors-and-caches)。
+桌宠首次启动需要下载 Electron。「运行组件下载源」默认选「自动」，遇到官方源网络错误或超时时，会改用阿里巴巴提供的 npmmirror 公共镜像重试一次。两处下载均按 Electron npm 包内的 SHA-256 核对，通过后才解压。可以在 **Settings → 桌宠** 选择「仅官方」或「仅镜像」。如果 Harness 已继承自设的 `ELECTRON_MIRROR`，优先使用该镜像。设置中的错误会区分网络、目录写入、磁盘空间和校验／解压问题。处理提示里的原因后点击「重启」。配置过自有运行组件的用户可继续使用 `electronPath`。见 [Electron 下载和镜像说明](https://www.electronjs.org/docs/latest/tutorial/installation#custom-mirrors-and-caches)。
+
+The first launch downloads Electron. In Automatic mode, a network error or timeout on the official release triggers one retry on Alibaba's public npmmirror. Downloads from both sources are verified against the SHA-256 hashes bundled with Electron before extraction. Select **Official only** or **Mirror only** in **Settings → Desktop pet → Runtime download source**. A custom `ELECTRON_MIRROR` inherited by Harness takes precedence.
 
 ### 安装版本与发布时间保护
 
