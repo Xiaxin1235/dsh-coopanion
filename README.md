@@ -111,7 +111,9 @@ dsh plugin --profile desktop add https://github.com/Xiaxin1235/dsh-coopanion/rel
 
 [下载最新插件包 `dsh-coopanion.tgz`](https://github.com/Xiaxin1235/dsh-coopanion/releases/latest/download/dsh-coopanion.tgz)，在 **插件 → 添加插件** 中填入压缩包的绝对路径，安装并启用，然后重启 Harness。
 
-安装后在 **Settings → 桌宠** 查看运行状态。首次启动需要联网下载并校验 Electron 运行时。
+安装后在 **Settings → 桌宠** 查看运行状态。首次启动会从 Electron 官方下载运行组件，遇到网络错误或超时会改用阿里巴巴提供的 npmmirror 公共镜像。两处下载都按 Electron 随包提供的 SHA-256 校验。可在「运行组件下载源」中选择「仅官方」或「仅镜像」。
+
+On first launch, the pet downloads Electron from the official release and falls back to Alibaba's public npmmirror on network errors or timeouts. Both sources are checked against the SHA-256 hashes shipped with Electron. In **Settings → Desktop pet → Runtime download source**, you can select **Official only** or **Mirror only**.
 
 | 操作 | 会发生什么 |
 |---|---|

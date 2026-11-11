@@ -30,7 +30,7 @@ it('keeps runtime preparation separate from the window deadline and cancels it o
   vi.useFakeTimers();
   const { controls, bridge } = fixture({ startTimeoutMs: 25 });
   let preparation: AbortSignal | undefined;
-  bridge.prepareRuntime = vi.fn((_options, signal) => new Promise<string>((_, reject) => {
+  bridge.prepareRuntime = vi.fn((_options, signal) => new Promise<never>((_, reject) => {
     preparation = signal;
     signal!.addEventListener('abort', () => reject(signal!.reason), { once: true });
   }));
@@ -44,8 +44,9 @@ it('keeps runtime preparation separate from the window deadline and cancels it o
     expect(preparation?.aborted).toBe(true);
     expect(controls.status().phase).toBe('stopped');
     expect(bridge.start).not.toHaveBeenCalled();
-    vi.mocked(bridge.prepareRuntime).mockResolvedValue('prepared-electron');
+    vi.mocked(bridge.prepareRuntime).mockResolvedValue({ executable: 'prepared-electron', downloadSource: 'mirror' });
     expect((await controls.command('start')).phase).toBe('running');
+    expect(controls.status().runtimeDownloadSource).toBe('mirror');
     expect(bridge.start).toHaveBeenCalledWith(expect.objectContaining({ electronPath: 'prepared-electron' }), expect.any(Object));
   } finally { await controls.dispose(); vi.useRealTimers(); }
 });

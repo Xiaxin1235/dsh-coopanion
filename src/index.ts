@@ -26,6 +26,7 @@ import { z as wire } from 'zod';
 import { petLanguage, petCopy } from '../web/locale.js';
 import { DEFAULT_TEXT_SCALE, TEXT_SCALES, type TextScale } from '../web/text-scale.js';
 import { COMPANIONSHIP_MODES, type CompanionshipMode } from '../web/companionship.js';
+import type { RuntimeSourcePreference } from './electron-runtime.ts';
 
 export const name = 'dsh-coopanion';
 export const inject = ['agents'];
@@ -35,6 +36,7 @@ export interface Config {
   decisionsReactions: Volatile<boolean>;
   inlineApprovals: Volatile<boolean>;
   decisionsProvider: Volatile<'openai' | 'openrouter'>;
+  runtimeSource: Volatile<RuntimeSourcePreference>;
   bubbleDurationMs: Volatile<number>; autoStart: Volatile<boolean>; electronPath?: string; defaultChatTarget: Volatile<'companion' | 'last'>;
 }
 export const Config = z.object({
@@ -60,6 +62,7 @@ export const Config = z.object({
   reminderDelayMs: z.number().step(1).min(60000).max(86400000).default(600000).volatile(),
   bubbleDurationMs: z.number().min(2000).max(60000).default(12000).volatile(),
   autoStart: z.boolean().default(true).volatile(),
+  runtimeSource: z.union([z.const('auto'), z.const('official'), z.const('mirror')]).default('auto').volatile(),
   electronPath: z.string(),
 });
 
@@ -94,7 +97,7 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
   const preferences: Partial<Pick<DesktopOptions, 'roam' | 'notifications' | 'quietMode' | 'decisionsReactions' | 'companionship' | 'interfaceStyle' | 'defaultChatTarget'>> = {};
   let savePreference: ((field: 'roam' | 'notifications' | 'quietMode' | 'decisionsReactions' | 'companionship' | 'interfaceStyle' | 'defaultChatTarget', value: boolean | CompanionshipMode | 'new' | 'classic' | 'companion' | 'last') => Promise<void>) | undefined;
   ctx.inject(['settings'], child => { savePreference = (field, value) => child.settings.mutate('dsh-coopanion', [{ op: 'set', path: [field], value }]); });
-  const currentOptions = (): DesktopOptions => ({ interfaceStyle: options.interfaceStyle.get(), defaultChatTarget: options.defaultChatTarget.get(), size: options.size.get(), npcHome: options.npcHome.get(), npcRange: options.npcRange.get(), textScale: options.textScale.get(), aboveFullscreen: options.aboveFullscreen.get(), preferOpeningParagraph: options.preferOpeningParagraph.get(), inlineQuestions: options.inlineQuestions.get(), roam: options.roam.get(), diagnostics: options.diagnostics.get(), companionship: options.companionship.get(), notifications: options.notifications.get(), quietMode: options.quietMode.get(), decisionsReactions: options.decisionsReactions.get(), decisionsProvider: options.decisionsProvider.get(), reactionStatus: reactions.status(), bubbleDurationMs: options.bubbleDurationMs.get(), systemNotifications: options.systemNotifications.get(), reminders: options.reminders.get(), reminderDelayMs: options.reminderDelayMs.get(), electronPath: options.electronPath, locale, ...preferences });
+  const currentOptions = (): DesktopOptions => ({ interfaceStyle: options.interfaceStyle.get(), defaultChatTarget: options.defaultChatTarget.get(), size: options.size.get(), npcHome: options.npcHome.get(), npcRange: options.npcRange.get(), textScale: options.textScale.get(), aboveFullscreen: options.aboveFullscreen.get(), preferOpeningParagraph: options.preferOpeningParagraph.get(), inlineQuestions: options.inlineQuestions.get(), roam: options.roam.get(), diagnostics: options.diagnostics.get(), companionship: options.companionship.get(), notifications: options.notifications.get(), quietMode: options.quietMode.get(), decisionsReactions: options.decisionsReactions.get(), decisionsProvider: options.decisionsProvider.get(), reactionStatus: reactions.status(), bubbleDurationMs: options.bubbleDurationMs.get(), systemNotifications: options.systemNotifications.get(), reminders: options.reminders.get(), reminderDelayMs: options.reminderDelayMs.get(), electronPath: options.electronPath, runtimeSource: options.runtimeSource.get(), locale, ...preferences });
   controls = new PetControls(bridge, currentOptions);
   let locale: string | undefined;
   let clientLocale: string | undefined;
