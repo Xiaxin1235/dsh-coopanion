@@ -3,7 +3,7 @@ import { SessionId, SessionSeq, type Session, type SessionEvent } from '@deepsee
 import { ApprovalRequestId } from '@deepseek-ai/dsh-user-approval/types';
 import { createAssistantMessage, ToolCallId } from '@deepseek-ai/dsh-llm';
 import { NotificationBroker, type BrokerClock, type NotificationEvent } from '../src/notification-broker.ts';
-import { interactionId, type DeliveryClaim, type DeliveryReceipt, type NotificationRuntime, type TaskNotice } from '../src/notification-contract.ts';
+import { interactionId, notificationRuntime, type DeliveryClaim, type DeliveryReceipt, type NotificationRuntime, type TaskNotice } from '../src/notification-contract.ts';
 function session(id = 'full:session:id'): Pick<Session, 'id' | 'header'> {
   return { id: SessionId(id), header: { version: 4, id: SessionId(id), createdAt: 0, isSeeded: false, cwd: '/project/demo' } };
 }
@@ -277,4 +277,12 @@ it('uses current shared session names for initial notices and later reminders', 
   label = 'Harness 改名后的提醒'; time.advance(60000);
   expect(broker.history().at(-1)!.notice.title).toBe('Harness 改名后的提醒 · 等你确认');
   broker.dispose();
+});
+
+it('accepts pet status that carries fields outside the strict runtime contract', () => {
+  const broker = new NotificationBroker({ clock: clock().api, presentRole: () => true });
+  const status = { ...runtime(), runtimeDownloadSource: 'mirror', reactionStatus: { state: 'off' }, error: undefined } as NotificationRuntime;
+  expect(() => broker.runtime(status)).toThrow();
+  expect(broker.runtime(notificationRuntime(status))).toBe(true);
+  expect(broker.snapshot().runtime).toEqual(runtime());
 });

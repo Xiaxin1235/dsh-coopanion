@@ -52,6 +52,11 @@ export const runtimeSchema = z.object({
   desiredVisible: z.boolean().optional(), recoveryAttempt: counter.max(3).optional(), retryAt: counter.optional(),
 }).strict();
 export type NotificationRuntime = z.infer<typeof runtimeSchema>;
+/** Pet status carries extra fields (download source, reaction status); the strict runtime contract takes only its own. */
+export function notificationRuntime(status: NotificationRuntime): NotificationRuntime {
+  const source = status as Record<string, unknown>;
+  return Object.fromEntries(Object.keys(runtimeSchema.shape).filter(key => source[key] !== undefined).map(key => [key, source[key]])) as NotificationRuntime;
+}
 export const deliveryClaimSchema = z.object({
   token: id, clientId: id, generation: counter, visibilityRevision: counter,
   expiresAt: counter, notice: noticeSchema,
