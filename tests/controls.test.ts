@@ -26,6 +26,30 @@ it('serializes concurrent starts, recovers after native close, and shows a hidde
   await controls.dispose(); await expect(controls.command('start')).rejects.toThrow('停用');
 });
 
+it('keeps runtime preparation separate from the window deadline and cancels it on stop', async () => {
+  vi.useFakeTimers();
+  const { controls, bridge } = fixture({ startTimeoutMs: 25 });
+  let preparation: AbortSignal | undefined;
+  bridge.prepareRuntime = vi.fn((_options, signal) => new Promise<string>((_, reject) => {
+    preparation = signal;
+    signal!.addEventListener('abort', () => reject(signal!.reason), { once: true });
+  }));
+  try {
+    const start = controls.command('start');
+    await vi.advanceTimersByTimeAsync(100);
+    expect(controls.status().phase).toBe('starting');
+    expect(bridge.start).not.toHaveBeenCalled();
+    await controls.command('stop');
+    await start;
+    expect(preparation?.aborted).toBe(true);
+    expect(controls.status().phase).toBe('stopped');
+    expect(bridge.start).not.toHaveBeenCalled();
+    vi.mocked(bridge.prepareRuntime).mockResolvedValue('prepared-electron');
+    expect((await controls.command('start')).phase).toBe('running');
+    expect(bridge.start).toHaveBeenCalledWith(expect.objectContaining({ electronPath: 'prepared-electron' }), expect.any(Object));
+  } finally { await controls.dispose(); vi.useRealTimers(); }
+});
+
 for (const action of ['stop', 'dispose'] as const) it(`${action} cancels waiting recovery and cannot be revived by late events`, async () => {
   vi.useFakeTimers();
   const { controls, bridge, lifecycle } = fixture();

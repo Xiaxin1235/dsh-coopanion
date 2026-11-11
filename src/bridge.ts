@@ -1,5 +1,4 @@
 import { spawn, type ChildProcess } from 'node:child_process';
-import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { EventEmitter } from 'node:events';
 import { questionAnswer } from '../web/question-contract.js';
@@ -10,6 +9,7 @@ import type { PetSnapshot, PetNotice } from './model.ts';
 import type { ReplyReaction, ReactionStatus, DecisionsProvider } from './reaction-decider.ts';
 import type { NotificationRuntime, NotificationSnapshot, TaskNotice } from './notification-contract.ts';
 import { NativeStartError, type StartLifetime, type NativeLifecycle } from './desktop-lifecycle.ts';
+import { prepareElectronRuntime } from './electron-runtime.ts';
 export { NativeStartError, type StartLifetime, type NativeLifecycle } from './desktop-lifecycle.ts';
 
 import type { CompanionshipMode } from '../web/companionship.js';
@@ -18,6 +18,7 @@ import type { TextScale } from '../web/text-scale.js';
 export interface DesktopOptions { decisionsProvider?: DecisionsProvider; decisionsReactions?: boolean; reactionStatus?: ReactionStatus; interfaceStyle?: 'new' | 'classic'; defaultChatTarget?: 'companion' | 'last'; size: number; npcHome?: number; npcRange?: number; textScale?: TextScale; aboveFullscreen?: boolean; preferOpeningParagraph?: boolean; inlineQuestions?: boolean; roam: boolean; diagnostics?: boolean; companionship?: CompanionshipMode; notifications: boolean; quietMode?: boolean; bubbleDurationMs: number; electronPath?: string; locale?: string; systemNotifications?: boolean; reminders?: boolean; reminderDelayMs?: number; }
 export interface PetBridge {
   reaction?(reaction: ReplyReaction): void;
+  prepareRuntime?(options: DesktopOptions, signal?: AbortSignal): Promise<string>;
   start(options: DesktopOptions, lifetime?: StartLifetime): Promise<void>;
   update(snapshot: PetSnapshot): void;
   chatResult?(receipt: ChatReceipt): void;
@@ -53,17 +54,21 @@ export class ElectronBridge extends EventEmitter implements PetBridge {
   private systemAsleep = false;
   private lastNotificationState?: NotificationSnapshot;
 
+  async prepareRuntime(options: DesktopOptions, signal?: AbortSignal): Promise<string> {
+    if (process.platform === 'linux' && !process.env.DISPLAY && !process.env.WAYLAND_DISPLAY) throw new NativeStartError('桌宠需要桌面显示环境。', false);
+    return options.electronPath ?? prepareElectronRuntime(signal, options.locale);
+  }
+
   async start(options: DesktopOptions, lifetime?: StartLifetime): Promise<void> {
     if (this.child) throw new NativeStartError('Desktop pet is already running', false);
     if (lifetime?.signal.aborted) throw new Error('桌宠启动已取消');
+    const executable = await this.prepareRuntime(options, lifetime?.signal);
+    lifetime?.signal.throwIfAborted();
+    if (this.child) throw new NativeStartError('Desktop pet is already running', false);
     this.latestOptions = { ...options };
     this.closing = false;
     this.generation = lifetime?.generation ?? this.generation + 1;
     this.visibilityRevision = 0; this.nativeVisible = false;
-    if (process.platform === 'linux' && !process.env.DISPLAY && !process.env.WAYLAND_DISPLAY) throw new NativeStartError('桌宠需要桌面显示环境。', false);
-    let executable: string;
-    try { executable = options.electronPath ?? createRequire(import.meta.url)('electron'); }
-    catch (error) { throw new NativeStartError(String(error).slice(0, 600), false); }
     const env: NodeJS.ProcessEnv = { ...process.env, DSH_PET_GENERATION: String(this.generation), DSH_PET_VISIBLE: lifetime?.visible === false ? '0' : '1', DSH_PET_SCREEN_LOCKED: this.screenLocked ? '1' : '0', DSH_PET_SYSTEM_ASLEEP: this.systemAsleep ? '1' : '0' };
     delete (env as NodeJS.ProcessEnv).ELECTRON_RUN_AS_NODE;
     const args = [fileURLToPath(new URL('../desktop/main.cjs', import.meta.url))];

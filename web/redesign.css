@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: AGPL-3.0-or-later */
 @font-face { font-family: Nunito; src: url('fonts/nunito-latin.woff2') format('woff2'); font-weight: 400 800; font-style: normal; font-display: swap; }
 #companion-segments, .inbox-read { display: none; }
-.redesigned { --surface: #fff; --text: #24303f; --muted: #5f6672; --tint: color-mix(in srgb, var(--accent) 8%, transparent); --line: color-mix(in srgb, var(--accent) 18%, transparent); --band: color-mix(in srgb, var(--accent) 13%, white); --action: #344bbb; font-family: Nunito, 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+.redesigned { --surface: #fff; --text: #24303f; --muted: #5f6672; --tint: color-mix(in srgb, var(--accent) 8%, transparent); --line: color-mix(in srgb, var(--accent) 18%, transparent); --band: color-mix(in srgb, var(--accent) 13%, white); --action: #344bbb; font-family: Nunito, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei UI', 'Microsoft YaHei', 'Segoe UI Emoji', sans-serif; }
 .redesigned :is(#chat,#menu,#requests) { --pad: 18px; display: flex; flex-direction: column; gap: 14px; width: min(360px, calc(100vw - 24px)); max-height: min(var(--panel-room, 100vh), calc(100vh - 28px)); padding: var(--pad); border: 1px solid var(--line); border-radius: 26px; background: #fff; box-shadow: 0 14px 34px rgba(30,45,80,.14); overflow: visible; color: var(--text); }
 .redesigned :is(#chat,#menu,#requests)::before { content: none; }
 .redesigned :is(#chat,#menu,#requests)::after { content: ''; position: absolute; left: calc(var(--tail) - 9px); bottom: -10px; top: auto; width: 18px; height: 18px; border: 0; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); border-radius: 0; background: #fff; transform: rotate(45deg); clip-path: none; pointer-events: none; }
