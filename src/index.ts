@@ -11,7 +11,7 @@ import type {} from '@deepseek-ai/dsh-api-session-controller';
 import type {} from '@deepseek-ai/dsh-session-projection';
 import { SessionId, type Session } from '@deepseek-ai/dsh-session';
 import { NotificationBroker, type NotificationEvent } from './notification-broker.ts';
-import { notificationPreferencesSchema, notificationEndpoints, notificationRequests, noticeId, interactionId } from './notification-contract.ts';
+import { notificationPreferencesSchema, notificationEndpoints, notificationRequests, noticeId, interactionId, notificationRuntime } from './notification-contract.ts';
 import { InboxQuestions } from './inbox-questions.ts';
 import { ApprovalCards } from './approval-cards.ts';
 import { approvalAnswer } from '../web/approval-contract.js';
@@ -151,7 +151,7 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
   ctx.effect(() => () => inboxAnswers.dispose());
   broker.preferences(notificationPrefs());
   ctx.effect(() => () => broker.dispose());
-  ctx.effect(() => controls.onState(state => broker.runtime(state)));
+  ctx.effect(() => controls.onState(state => broker.runtime(notificationRuntime(state))));
   let questions: ((session: Session, live?: boolean) => void) | undefined;
   ctx.inject(['sessionProjections', 'userQuestions'], child => {
     const sync = (session: Session, live = true) => {
