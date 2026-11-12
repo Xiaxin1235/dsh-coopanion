@@ -10,7 +10,7 @@
 
 ### 在 Harness 中从 npm 安装
 
-打开侧边栏 **插件 → 添加插件**，在「包名或地址」输入 **`https://github.com/Xiaxin1235/dsh-coopanion/releases/download/v0.5.8/dsh-coopanion-0.5.8.tgz`**，点击安装，再启用 `dsh-coopanion`。显式版本可以避免发布首日的裸包名解析回退，原因见下方。安装方式见 [Harness 官方插件管理说明](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/ui-plugin-manager/README.zh.md#安装一个组合包)。
+打开侧边栏 **插件 → 添加插件**，在「包名或地址」输入 **`https://github.com/Xiaxin1235/dsh-coopanion/releases/download/v0.6.0/dsh-coopanion-0.6.0.tgz`**，点击安装，再启用 `dsh-coopanion`。显式版本可以避免发布首日的裸包名解析回退，原因见下方。安装方式见 [Harness 官方插件管理说明](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/ui-plugin-manager/README.zh.md#安装一个组合包)。
 
 桌宠首次启动需要下载 Electron。「运行组件下载源」默认选「自动」，遇到官方源网络错误或超时时，会改用阿里巴巴提供的 npmmirror 公共镜像重试一次。两处下载均按 Electron npm 包内的 SHA-256 核对，通过后才解压。可以在 **Settings → 桌宠** 选择「仅官方」或「仅镜像」。如果 Harness 已继承自设的 `ELECTRON_MIRROR`，优先使用该镜像。设置中的错误会区分网络、目录写入、磁盘空间和校验／解压问题。处理提示里的原因后点击「重启」。配置过自有运行组件的用户可继续使用 `electronPath`。见 [Electron 下载和镜像说明](https://www.electronjs.org/docs/latest/tutorial/installation#custom-mirrors-and-caches)。
 
@@ -27,7 +27,7 @@ pnpm 11 的 `minimumReleaseAge` 默认为 1440 分钟（24 小时）。详情页
 **Desktop：** 使用 Desktop 自带的 `dsh` 命令。先启动 Desktop 一次初始化 profile，完全退出应用，再执行：
 
 ```bash
-dsh plugin --profile desktop add https://github.com/Xiaxin1235/dsh-coopanion/releases/download/v0.5.8/dsh-coopanion-0.5.8.tgz
+dsh plugin --profile desktop add https://github.com/Xiaxin1235/dsh-coopanion/releases/download/v0.6.0/dsh-coopanion-0.6.0.tgz
 ```
 
 npm 安装的 dsh 不能管理 Desktop 所拥有的 profile；若系统找不到 Desktop 的命令，先在 Desktop 的菜单栏中使用 **Manage dsh command／管理 dsh 命令** 安装命令入口。
@@ -35,7 +35,7 @@ npm 安装的 dsh 不能管理 Desktop 所拥有的 profile；若系统找不到
 **本机 Web profile：** 使用 npm 安装的 dsh 时，向实际使用的 profile 安装。例如默认 `web` profile：
 
 ```bash
-dsh plugin --profile web add https://github.com/Xiaxin1235/dsh-coopanion/releases/download/v0.5.8/dsh-coopanion-0.5.8.tgz
+dsh plugin --profile web add https://github.com/Xiaxin1235/dsh-coopanion/releases/download/v0.6.0/dsh-coopanion-0.6.0.tgz
 dsh --profile web
 ```
 
