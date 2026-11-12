@@ -16,7 +16,7 @@
 > - 双击直接和大肥鱼聊天、空白草稿与已归档对话不进列表、会话名跟随 Harness 标题、安静模式；
 > - 可选的回复情绪表情，API Key 可在 **Settings → 桌宠** 中直接填写；
 > - 在桌宠信封里回答审批（经 Harness 自己的审批卡，只有“允许一次 / 拒绝”，显示脱敏后的实际命令）；
-> - 支持 DeepSeek Harness Desktop 0.2.2-rc.1，兼容范围覆盖 0.2.1-rc.2 起的 0.2.x。
+> - 支持 DeepSeek Harness Desktop 0.2.2-rc.2，兼容范围覆盖 0.2.1-rc.2 起的 0.2.x。
 >
 > 下文“从 npm 安装”和“下载压缩包”两种方式装的是**原版**，不含这些改动。要使用修改版，请[从这个仓库的源码安装](#从修改版源码安装)。
 
@@ -90,7 +90,7 @@ $dsh = Join-Path $env:LOCALAPPDATA 'Programs\DeepSeek Harness\resources\runtime\
 打开侧边栏 **插件 → 添加插件**，在「包名或地址」中填入：
 
 ```text
-https://github.com/Xiaxin1235/dsh-coopanion/releases/download/v0.6.0/dsh-coopanion-0.6.0.tgz
+https://github.com/Xiaxin1235/dsh-coopanion/releases/download/v0.6.1/dsh-coopanion-0.6.1.tgz
 ```
 
 点击安装，完成后启用 `dsh-coopanion`，再完全退出并重新打开 Harness。
@@ -102,7 +102,7 @@ https://github.com/Xiaxin1235/dsh-coopanion/releases/download/v0.6.0/dsh-coopani
 使用 **Desktop 自带的 `dsh` 命令**。先启动 Desktop 一次完成初始化，完全退出应用后执行：
 
 ```bash
-dsh plugin --profile desktop add https://github.com/Xiaxin1235/dsh-coopanion/releases/download/v0.6.0/dsh-coopanion-0.6.0.tgz
+dsh plugin --profile desktop add https://github.com/Xiaxin1235/dsh-coopanion/releases/download/v0.6.1/dsh-coopanion-0.6.1.tgz
 ```
 
 完成后重新打开 Desktop。其他 profile 的安装方法见[使用指南](docs/usage.md#通过-dsh-命令行安装)。
@@ -126,7 +126,7 @@ On first launch, the pet downloads Electron from the official release and falls 
 
 ## 舞台接口（0.6.0）
 
-同源 Harness 面板可以通过 `stage/1` 让 Coopanion 在透明区域绘制大肥鱼。舞台支持站立、行走、坐姿工作、睡觉和现有表情，可调整位置、朝向与光线。面板也可申请桌宠暂时离开，最后一个客户端退出后按用户的显示设置恢复。字段、事件与接入方式见 [舞台协议](docs/stage-protocol.md)。0.6.0 为本地候选，安装链接仍指向已发布的 0.5.8。
+同源 Harness 面板可以通过 `stage/1` 让 Coopanion 在透明区域绘制大肥鱼。舞台支持站立、行走、坐姿工作、睡觉和现有表情，可调整位置、朝向与光线。面板也可申请桌宠暂时离开，最后一个客户端退出后按用户的显示设置恢复。字段、事件与接入方式见 [舞台协议](docs/stage-protocol.md)。
 
 ## 了解更多与参与
 

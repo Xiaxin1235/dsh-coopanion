@@ -49,8 +49,12 @@ export class InboxQuestions {
   }
 
   private root(sessionId: string): Agent | undefined {
-    const agent = this.ctx.agents.get(SessionId(sessionId));
-    return agent && this.ctx.agents.roots().includes(agent) ? agent : undefined;
+    const agents = this.ctx.agents;
+    const agent = agents.get(SessionId(sessionId));
+    if (!agent) return;
+    if (typeof agents.roots === 'function') return agents.roots().includes(agent) ? agent : undefined;
+    const { origin, parentSession } = agent.session.header;
+    return origin !== 'subagent' && !parentSession ? agent : undefined;
   }
   private continued(item: PendingInteraction) {
     const agent = this.root(item.sessionId);
