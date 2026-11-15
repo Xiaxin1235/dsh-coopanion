@@ -38,6 +38,38 @@ it('keeps passive macOS recovery non-focusable until real pointer interaction', 
   createVisibilityGuard({win,state:()=>healthy,platform:'darwin'})('patrol');
   expect(calls).toEqual([['focusable',false],['top'],['moveTop']]);
 });
+it('removes unintended key focus during and after a passive macOS deminiaturization', () => {
+  const calls = [];
+  const handlers = new Map();
+  let focused = false;
+  let focusable = true;
+  let minimized = true;
+  const win = {
+    isDestroyed: () => false,
+    isMinimized: () => minimized,
+    isVisible: () => !minimized,
+    isAlwaysOnTop: () => true,
+    isFocused: () => focused,
+    isFocusable: () => focusable,
+    setFocusable: value => { focusable = value; calls.push(['focusable', value]); },
+    on: (name, callback) => handlers.set(name, callback),
+    restore: () => { minimized = false; focused = true; handlers.get('focus')?.(); calls.push(['restore']); },
+    showInactive: () => calls.push(['showInactive']),
+    blur: () => { focused = false; calls.push(['blur']); },
+    setAlwaysOnTop: () => calls.push(['top']),
+    moveTop: () => calls.push(['moveTop']),
+  };
+  createVisibilityGuard({ win, state: () => healthy, platform: 'darwin' })('minimize');
+  expect(focused).toBe(false);
+  expect(focusable).toBe(false);
+  expect(calls).toContainEqual(['blur']);
+  // AppKit can deliver another key-window event after deminiaturization.
+  focused = true;
+  handlers.get('focus')?.();
+  expect(focused).toBe(false);
+  expect(calls.filter(value => value[0] === 'blur')).toHaveLength(2);
+});
+
 it('keeps only 24 opted-in lifecycle snapshots, strips unknown data and clears history', () => {
   let enabled = false; const rect = { x: -1920, y: 0, width: 1920, height: 1040 };
   const state = { visible: true, minimized: false, alwaysOnTop: true, desiredVisible: true, bounds: rect, workArea: rect, scaleFactor: 1.25, pet: { at: 1, pet: { x: 100, y: 800, width: 150, height: 180 }, viewport: { x: 0, y: 0, width: 1920, height: 1040 } }, title: 'must not leak' };

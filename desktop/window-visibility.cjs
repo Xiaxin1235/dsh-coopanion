@@ -11,6 +11,17 @@ exports.topLevel = (aboveFullscreen, platform = process.platform) => aboveFullsc
 
 exports.createVisibilityGuard = ({ win, state, record = () => {}, platform = process.platform }) => {
   let recovering = false;
+  let passiveMacRestore = false;
+  let passiveMacReset;
+  // AppKit's deminiaturize may make a panel key even if it was temporarily
+  // non-focusable. Reject that unintended activation, including delayed focus.
+  const rejectPassiveFocus = () => {
+    if (!passiveMacRestore || win.isDestroyed() || !win.isFocused()) return;
+    win.blur();
+    win.showInactive();
+    record('recovery');
+  };
+  if (platform === 'darwin') win.on?.('focus', rejectPassiveFocus);
   return reason => {
     if (recovering) return [];
     const intent = state();
@@ -26,6 +37,13 @@ exports.createVisibilityGuard = ({ win, state, record = () => {}, platform = pro
     // until a real pointer entry re-enables interaction in hit().
     const passiveMac = platform === 'darwin' && !win.isFocused() && win.isFocusable();
     if (passiveMac) win.setFocusable(false);
+    if (passiveMac && actions.includes('restore-inactive')) {
+      passiveMacRestore = true;
+      clearTimeout(passiveMacReset);
+      // A native macOS minimize/Spaces transition can finish after restore().
+      passiveMacReset = setTimeout(() => { passiveMacRestore = false; }, 1500);
+      passiveMacReset.unref?.();
+    }
     try {
       if (actions.includes('restore-inactive')) {
         // On Windows showInactive restores the normal show state without the
@@ -39,6 +57,7 @@ exports.createVisibilityGuard = ({ win, state, record = () => {}, platform = pro
         }
       } else if (actions.includes('show-inactive')) win.showInactive();
       if (actions.includes('raise')) { win.setAlwaysOnTop(true, exports.topLevel(intent.aboveFullscreen)); win.moveTop(); }
+      rejectPassiveFocus();
       record('recovery');
     } finally { recovering = false; }
     return actions;
