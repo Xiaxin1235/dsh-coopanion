@@ -20,6 +20,7 @@ import { renderReplyMarkdown } from './markdown-runtime.js';
 import { petLanguage, petCopy, localizedText, appNoticeCopy, automaticPetLanguage, sessionStateLabel } from './locale.js';
 import { textScale } from './text-scale.js';
 import { viewportPoint, panelPosition } from './display-geometry.js';
+import { billingPhase, billingCountdown, billingBeijingTime } from './billing-phase.js';
 const PACK_LIMIT = 128 * 1024 * 1024;
 const isCompanionSession = s => companionRole(snapshot, s) === 'current';
 const isCompanionHistory = s => !!companionRole(snapshot, s);
@@ -29,6 +30,10 @@ const BUILTIN_ID = 'whale';
 const $ = id => document.getElementById(id);
 const native = window.dshPetBridge;
 const pet = $('pet'), bubble = $('bubble'), conversations = $('conversations'), chat = $('chat'), menu = $('menu'), characters = $('characters'), reader = $('reader');
+const billingBadge = $('billing-phase');
+const billingStorageKey = 'dsh-pet.billing-phase.visible.v1';
+let billingVisible = true;
+try { billingVisible = localStorage.getItem(billingStorageKey) !== 'false'; } catch { /* sandboxed browser demo */ }
 const interaction = $('interaction'), requests = $('requests');
 const companionInvitation = $('companion-invitation'), companionFeedback = $('companion-feedback');
 const panels = [conversations, chat, menu, characters, reader, requests];
@@ -139,6 +144,29 @@ function applyLocale() {
   trayKey = undefined;
 }
 
+function renderBillingBadge(now = new Date()) {
+  const phase = billingPhase(now);
+  const zh = notificationLocale() === 'zh';
+  $('toggle-billing').setAttribute('aria-checked', String(billingVisible));
+  billingBadge.hidden = !billingVisible || pet.hidden;
+  billingBadge.dataset.phase = phase.phase;
+  if (phase.phase === 'unknown' || !phase.nextAt) {
+    billingBadge.textContent = zh ? '峰谷日历待更新' : 'Pricing calendar needs update';
+    billingBadge.title = zh
+      ? '2026–2027 年节假日已内置；后续年份请更新日历后再使用。'
+      : 'The bundled statutory holiday calendar covers 2026–2027; update it for later years.';
+    return;
+  }
+  const peak = phase.phase === 'peak';
+  const countdown = billingCountdown(phase.remainingMs, zh ? 'zh' : 'en');
+  billingBadge.textContent = zh
+    ? `${peak ? '峰期' : '谷期 5折'} · ${countdown} 后${peak ? '谷' : '峰'}`
+    : `${peak ? 'Peak' : 'Off-peak -50%'} · ${countdown}`;
+  billingBadge.title = zh
+    ? `DeepSeek API ${peak ? '高峰计费' : '空闲时段半价'}；下次${peak ? '谷' : '峰'}期：北京时间 ${billingBeijingTime(phase.nextAt)}。以官方服务端计费为准。`
+    : `DeepSeek API ${peak ? 'peak pricing' : 'half-price off-peak'}; next ${peak ? 'off-peak' : 'peak'}: ${billingBeijingTime(phase.nextAt)} Beijing time. Server billing is authoritative.`;
+}
+
 function bounds() { return { W: innerWidth, H: innerHeight, floorY: innerHeight - 24, S: options.size / 256 }; }
 function previewBounds() { const el = $('character-preview'); return { W: el.clientWidth, H: el.clientHeight, floorY: el.clientHeight - 14, S: Math.min(el.clientWidth, el.clientHeight - 22) / 256 }; }
 function position() {
@@ -158,6 +186,12 @@ function position() {
     Object.assign(pet.style, { left: `${left}px`, top: `${top}px`, width: `${Math.max(1, Math.ceil(x + box.w) - left)}px`, height: `${Math.max(1, Math.ceil(y + box.h) - top)}px` });
     pet.dataset.mode = layout.mode; pet.dataset.pressing = String(layout.pressing);
     pet.style.cursor = layout.cursor || 'grab';
+  }
+  billingBadge.hidden = !billingVisible || pet.hidden;
+  if (!billingBadge.hidden && box) {
+    const badgeLeft = Math.max(4, Math.min(innerWidth - 178, box.x + box.w / 2 - 87));
+    billingBadge.style.left = `${Math.round(badgeLeft)}px`;
+    billingBadge.style.top = `${Math.round(Math.max(4, box.y - 32))}px`;
   }
   const anchor = layout?.bubble ?? { x: x + options.size / 2, y };
   for (const panel of [bubble, interaction, companionInvitation, companionFeedback, ...panels]) {
@@ -431,7 +465,7 @@ function updateMood() {
 
 function render() {
   attentionSnapshot = sessionAttention.project(snapshot, allRequests());
-  applyLocale(); const labels = uiCopy().labels;
+  applyLocale(); renderBillingBadge(); const labels = uiCopy().labels;
   const previous = renderedSessionId;
   const selected = snapshot.sessions.find(session => session.id === snapshot.sessionId);
   const shortIds = shortSessionIds(snapshot.sessions);
@@ -1036,6 +1070,11 @@ $('toggle-roam').onclick = () => preference('roam');
 $('toggle-sleep').onclick = () => { if ($('toggle-sleep').disabled) return; asleep = !asleep; if (!asleep) react('happy'); menu.hidden = true; bubble.hidden = true; updateMood(); };
 $('toggle-notices').onclick = () => preference('notifications');
 $('toggle-quiet').onclick = () => preference('quietMode');
+$('toggle-billing').onclick = () => {
+  billingVisible = !billingVisible;
+  try { localStorage.setItem(billingStorageKey, String(billingVisible)); } catch { /* non-persistent demo */ }
+  renderBillingBadge(); position();
+};
 $('toggle-reactions').onclick = () => preference('decisionsReactions');
 $('hide').onclick = () => { if (native) send({ type: 'hide' }); else closePanels(); };
 $('toast').onclick = () => { $('toast').hidden = true; openSession(noticeSession); };
@@ -1297,6 +1336,8 @@ $('character-remove').onclick = () => void characterOperation(async () => {
   previewBody?.dispose(); previewBody = undefined;
   await library.remove(id); await refreshCharacters(); characterStatus('removed');
 });
+renderBillingBadge();
+setInterval(renderBillingBadge, 30_000);
 applyOptions({});
 void (async () => {
   setBusy(true);

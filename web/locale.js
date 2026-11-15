@@ -76,7 +76,12 @@ const panelLabels = {
 export function petCopy(locale, redesigned = false) {
   const language = petLanguage(locale), base = language === 'zh' ? zh : en;
   const labels = language === 'zh' ? { chatTitle: '我在呢～慢慢说！', readFull: '看全文', back: '回到会话', send: '发送', changeConversation: '⌄', appearance: '换装扮', source: '源码 · AGPL', expand: '展开完整回复', openCurrent: '打开当前会话', sendHint: 'Enter 换行 · Ctrl / ⌘ + Enter 发送' } : { chatTitle: "I’m here. Take your time!", readFull: 'Read full reply', back: 'Back to chat', send: 'Send', changeConversation: '⌄', appearance: 'Dress up', source: 'Source · AGPL', expand: 'Read full reply', openCurrent: 'Open current chat', sendHint: 'Enter for a new line · Ctrl / ⌘ + Enter to send' };
-  return { ...base, ...panelLabels[language], ...(redesigned ? labels : {}) };
+  return {
+    ...base, ...panelLabels[language],
+    billingPhase: language === 'zh' ? 'API 峰谷时段' : 'API billing hours',
+    billingPhaseHint: language === 'zh' ? '显示当前峰谷与切换倒计时' : 'Show peak/off-peak and countdown',
+    ...(redesigned ? labels : {}),
+  };
 }
 
 /** Only application diagnostics are translated; conversation content stays verbatim. */
