@@ -109,7 +109,20 @@ test('text scaling keeps final bubble font and original dismissal clock', async 
   await configure({ bubbleDurationMs: 2000 });
   await receive({ type: 'snapshot', snapshot: snapshot([{ ...result, id: 'scale-bubble', sessionId: focus.id, text: '回复气泡 · Reply bubble' }]) });
   await page.locator('#bubble:not([hidden])').waitFor();
-  await page.mouse.move(0, 0);
+  // At a narrow viewport the final bubble may reach (0,0). Hover extends
+  // its dismissal clock, so choose a provably external cursor position.
+  const r = await page.locator('#bubble').boundingBox();
+  const candidates = [
+    { x: 1, y: 1 }, { x: 318, y: 1 },
+    { x: 1, y: 638 }, { x: 318, y: 638 },
+  ];
+  const outside = candidates.find(({ x, y }) => x < r.x || x >= r.x + r.width || y < r.y || y >= r.y + r.height);
+  assert.ok(outside, 'at least one viewport corner lies outside the speech bubble');
+  await page.mouse.move(outside.x, outside.y);
+  await page.waitForFunction(() => {
+    const bubble = document.getElementById('bubble');
+    return !bubble.matches(':hover') && !bubble.contains(document.activeElement);
+  });
   await page.waitForTimeout(1100);
   await configure({ textScale: 1.5 });
   assert.equal(await page.locator('#bubble').evaluate(n => parseFloat(getComputedStyle(n).fontSize)), 21.75);
