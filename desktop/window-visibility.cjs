@@ -17,13 +17,14 @@ exports.createVisibilityGuard = ({ win, state, record = () => {}, platform = pro
   // non-focusable. Reject that unintended activation, including delayed focus.
   const rejectPassiveFocus = () => {
     if (!passiveMacRestore || win.isDestroyed() || !win.isFocused()) return;
+    // Do not call showInactive() from the focus event: AppKit may emit
+    // another focus event while opening the panel, creating a focus loop.
     win.blur();
-    win.showInactive();
     record('recovery');
   };
   if (platform === 'darwin') win.on?.('focus', rejectPassiveFocus);
   return reason => {
-    if (recovering) return [];
+    if (recovering || (passiveMacRestore && reason === 'blur')) return [];
     const intent = state();
     const actions = exports.visibilityPlan({ ...intent, belowTaskbar: platform === 'win32' && intent.aboveFullscreen === false, destroyed: win.isDestroyed(),
       minimized: !win.isDestroyed() && win.isMinimized(), visible: !win.isDestroyed() && win.isVisible(),
@@ -40,7 +41,7 @@ exports.createVisibilityGuard = ({ win, state, record = () => {}, platform = pro
     if (passiveMac && actions.includes('restore-inactive')) {
       passiveMacRestore = true;
       clearTimeout(passiveMacReset);
-      // A native macOS minimize/Spaces transition can finish after restore().
+      // A native macOS minimize/Spaces transition can finish after showInactive().
       passiveMacReset = setTimeout(() => { passiveMacRestore = false; }, 1500);
       passiveMacReset.unref?.();
     }
@@ -49,7 +50,10 @@ exports.createVisibilityGuard = ({ win, state, record = () => {}, platform = pro
         // On Windows showInactive restores the normal show state without the
         // activation performed by restore(). A temporary focusable=false does
         // not suppress that activation reliably in Electron 44.
-        if (platform === 'win32') win.showInactive();
+        // On macOS, restore() deminiaturizes by activating the NSPanel even
+        // when temporarily non-focusable; showInactive() is the non-key path.
+        // Windows likewise restores without activation via showInactive().
+        if (platform === 'darwin' || platform === 'win32') win.showInactive();
         else {
           const focusable = win.isFocusable(); win.setFocusable(false);
           try { win.restore(); win.showInactive(); }

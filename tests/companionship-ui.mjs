@@ -198,6 +198,33 @@ test('twenty real strokes keep visible feedback while hovering and share the gro
 });
 
 
+test('petting cooldown follows real time even when reduced motion stops physics steps', async t => {
+  const { page } = await fixture(t, 'quiet');
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.evaluate(() => {
+    window.petTouchTimes = [];
+    addEventListener('message', event => {
+      if (event.data?.t === 'frame' && event.data.events?.some(e => e.kind === 'touch' && e.detail?.kind === 'pet')) {
+        window.petTouchTimes.push(performance.now());
+      }
+    });
+  });
+  const stroke = async () => {
+    await page.mouse.move(0, 0);
+    const b = await page.locator('#pet').boundingBox();
+    for (let i = 0; i < 18; i++) {
+      await page.mouse.move(b.x + b.width * (i % 2 ? .35 : .65), b.y + b.height * .45, { steps: 1 });
+    }
+  };
+  await stroke();
+  await page.waitForFunction(() => window.petTouchTimes.length >= 1);
+  await page.waitForTimeout(2700);
+  await stroke();
+  await page.waitForFunction(() => window.petTouchTimes.length >= 2);
+  const intervals = await page.evaluate(() => window.petTouchTimes.slice(1).map((at, index) => at - window.petTouchTimes[index]));
+  assert.ok(intervals[0] >= 2500, JSON.stringify(intervals));
+});
+
 test('six stored moments across three dates unlock the real familiar greeting after rehydration', async t => {
   const f = await fixture(t, 'quiet', ['neutral', 'stand', 'wave', 'love', 'happy', 'nod']); const { page, store, read } = f;
   for (let day = 15; day < 18; day++) for (const minute of [0, 5]) {

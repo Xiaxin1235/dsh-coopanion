@@ -146,7 +146,7 @@ export function createPet(els, opts) {
     cursor: '',
   };
   const pointer = { x: -1e4, y: -1e4, inside: false, vx: 0, samples: [] };
-  let press = null, strokeAcc = 0, petCool = 0;
+  let press = null, strokeAcc = 0, nextPetAt = -Infinity;
   /** Whether the last frame found the horizontal speed not finite: a run of such frames is logged once. */
   let velXBad = false;
   const P = [];
@@ -606,7 +606,7 @@ export function createPet(els, opts) {
       }
     }
     strokeAcc *= Math.exp(-dt * 1.5);
-    petCool -= dt;
+    // The 2.5s touch cooldown follows real monotonic time, not throttled render dt.
 
     for (let i = P.length - 1; i >= 0; i--) {
       const p = P[i];
@@ -726,8 +726,8 @@ export function createPet(els, opts) {
     const over = hitPet(p);
     if (over && ['idle', 'look', 'sit', 'sleep'].includes(pet.mode)) {
       strokeAcc += Math.hypot(ddx, ddy);
-      if (strokeAcc > 320 && petCool <= 0) {
-        strokeAcc = 0; petCool = 2.5;
+      if (strokeAcc > 320 && performance.now() >= nextPetAt) {
+        strokeAcc = 0; nextPetAt = performance.now() + 2500;
         play('purr', 'touch');
         if (pet.mode === 'sleep') emitHeart();
         else setExpr(Math.random() < .5 ? 'love' : 'shy');
