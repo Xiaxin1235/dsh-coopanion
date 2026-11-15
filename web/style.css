@@ -10,7 +10,7 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 #stage { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
 .interactive { pointer-events: auto; }
 .pet { position: absolute; z-index: 1; width: var(--size); height: calc(var(--size) * 1.26); touch-action: none; user-select: none; cursor: grab; outline: none; }
-.billing-phase { position: absolute; z-index: 2; width: 174px; padding: 5px 9px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--text); box-shadow: 0 3px 10px var(--shadow); font-size: calc(10px * var(--text-scale)); font-weight: 650; text-align: center; white-space: nowrap; pointer-events: none; user-select: none; }
+.billing-phase { position: absolute; z-index: 2; width: max-content; max-width: calc(100vw - 8px); padding: 5px 9px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--text); box-shadow: 0 3px 10px var(--shadow); font-size: calc(10px * var(--text-scale)); font-weight: 650; text-align: center; white-space: nowrap; pointer-events: none; user-select: none; }
 .billing-phase[data-phase="offpeak"] { color: #187c60; border-color: #a2d7c8; }
 .billing-phase[data-phase="peak"] { color: #985b2d; border-color: #e4c3a0; }
 .billing-phase[data-phase="unknown"] { color: var(--muted); }

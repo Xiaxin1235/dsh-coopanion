@@ -160,8 +160,8 @@ function renderBillingBadge(now = new Date()) {
   const peak = phase.phase === 'peak';
   const countdown = billingCountdown(phase.remainingMs, zh ? 'zh' : 'en');
   billingBadge.textContent = zh
-    ? `${peak ? '峰期' : '谷期 5折'} · ${countdown} 后${peak ? '谷' : '峰'}`
-    : `${peak ? 'Peak' : 'Off-peak -50%'} · ${countdown}`;
+    ? `${peak ? '峰期' : '谷期 5折'} · 距${peak ? '谷' : '峰'}期 ${countdown}`
+    : `${peak ? 'Peak' : 'Off-peak -50%'} · ${peak ? 'off-peak' : 'peak'} in ${countdown}`;
   billingBadge.title = zh
     ? `DeepSeek API ${peak ? '高峰计费' : '空闲时段半价'}；下次${peak ? '谷' : '峰'}期：北京时间 ${billingBeijingTime(phase.nextAt)}。以官方服务端计费为准。`
     : `DeepSeek API ${peak ? 'peak pricing' : 'half-price off-peak'}; next ${peak ? 'off-peak' : 'peak'}: ${billingBeijingTime(phase.nextAt)} Beijing time. Server billing is authoritative.`;
@@ -189,7 +189,8 @@ function position() {
   }
   billingBadge.hidden = !billingVisible || pet.hidden;
   if (!billingBadge.hidden && box) {
-    const badgeLeft = Math.max(4, Math.min(innerWidth - 178, box.x + box.w / 2 - 87));
+    const badgeWidth = billingBadge.offsetWidth;
+    const badgeLeft = Math.max(4, Math.min(innerWidth - badgeWidth - 4, box.x + box.w / 2 - badgeWidth / 2));
     billingBadge.style.left = `${Math.round(badgeLeft)}px`;
     billingBadge.style.top = `${Math.round(Math.max(4, box.y - 32))}px`;
   }
