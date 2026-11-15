@@ -21,7 +21,7 @@ import { verifyInstalledStage } from './helpers/installed-stage.mjs';
 
 const sourceCommit = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
 const version = process.env.DSH_TEST_VERSION ?? '0.2.0-rc.2';
-assert.ok(['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-rc.1', '0.2.1-rc.2', '0.2.1-rc.3', '0.2.2-rc.1'].includes(version), 'test only advertised DSH versions');
+assert.ok(['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-rc.1', '0.2.1-rc.2', '0.2.1-rc.3', '0.2.2-rc.1', '0.2.2-rc.2'].includes(version), 'test only advertised DSH versions');
 const project = fileURLToPath(new URL('../', import.meta.url));
 const manifest = JSON.parse(await readFile(join(project, 'package.json'), 'utf8'));
 const archive = resolve(process.env.DSH_TEST_PACKAGE ?? (process.env.DSH_TEST_PACKAGE_DIR
@@ -146,7 +146,7 @@ try {
   assert.ok(evaluatePluginCompatibility(manifest, {}, '0.2.0-rc.1'), 'unverified versions remain incompatible');
   assert.equal(evaluatePluginCompatibility(manifest, {}, '0.2.1-rc.4'), undefined, '0.2.x prereleases enter the compatibility window');
   assert.ok(evaluatePluginCompatibility(manifest, {}, '0.3.0-alpha.1'), '0.3 previews require compatibility review');
-  if (['0.2.1-rc.2', '0.2.1-rc.3', '0.2.2-rc.1'].includes(version)) {
+  if (['0.2.1-rc.2', '0.2.1-rc.3', '0.2.2-rc.1', '0.2.2-rc.2'].includes(version)) {
     const restricted = structuredClone(manifest);
     restricted.engines.dsh = '0.2.0-rc.2';
     assert.ok(evaluatePluginCompatibility(restricted, {}, version), 'new hosts enforce engines.dsh even when peers match');

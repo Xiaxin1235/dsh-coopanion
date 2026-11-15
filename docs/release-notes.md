@@ -1,3 +1,9 @@
+# v0.6.4
+
+- Fix macOS passive minimize recovery without activating the pet window.
+- Use monotonic real-time petting cooldown and add slow-render regression coverage.
+- Retain the DeepSeek peak/off-peak badge and all-weekend off-peak schedule.
+
 # v0.6.3
 
 - 优化 DeepSeek API 峰谷计费徽标：显示“距峰期 / 距谷期”的自然倒计时文案，并让徽标宽度自适应，避免遮挡和截断。
