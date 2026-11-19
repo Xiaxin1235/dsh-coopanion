@@ -1,6 +1,6 @@
 import type { Context } from '@deepseek-ai/cordis';
 import type { ConnectionHandle } from '@deepseek-ai/dsh-client-connection/client';
-import type {} from '@deepseek-ai/dsh-client-ui-settings/client';
+import type { ConfigForm } from '@deepseek-ai/dsh-client-ui-settings/client';
 import type {} from '@deepseek-ai/dsh-client-ui-renderer/client';
 import type {} from '@deepseek-ai/dsh-client-locale/client';
 import type {} from '@deepseek-ai/dsh-client-ui-workspace/client';
@@ -45,14 +45,16 @@ export function apply(ctx: Context): void {
     const tag = document.createElement('style'); tag.dataset.plugin = 'dsh-coopanion'; tag.textContent = css;
     document.head.append(tag); return () => tag.remove();
   });
+  let settingsForm: ConfigForm<Preferences> | undefined;
   const face: SettingsFace = {
-    form: ctx.configForms.get<Preferences>('dsh-coopanion'),
+    form: () => settingsForm,
     local: ctx.connection.isLoopback,
     call: async (command, signal) => {
       const reply = await ctx.connection.rpc.call('/api', command ? 'coopanion/control' : 'coopanion/status', command ? { command } : {}, signal);
       if (!reply.ok) throw new Error(reply.error.message);
-      const value = reply.value as PetStatus;
+      const value = reply.value as PetStatus & { settingsNamespace?: string };
       if (!value || !['stopped', 'starting', 'running', 'stopping', 'error'].includes(value.phase) || typeof value.visible !== 'boolean') throw new Error('Invalid desktop pet status');
+      if (!command && !signal?.aborted) settingsForm = ctx.configForms.get<Preferences>(value.settingsNamespace ?? 'dsh-coopanion');
       return value;
     },
     getKeyStatus: async signal => {
@@ -71,6 +73,17 @@ export function apply(ctx: Context): void {
       return reply.value as ReactionKeyStatus;
     },
   };
+  ctx.effect(() => {
+    if (!face.local) return () => {};
+    const controller = new AbortController();
+    // Notifications and approvals also consume settings when the settings page is closed.
+    const refresh = () => { void face.call(undefined, controller.signal).catch(() => {}); };
+    const unsubscribe = ctx.connection.generation.subscribe(() => {
+      if (ctx.connection.generation.getSnapshot()) refresh();
+    });
+    refresh();
+    return () => { unsubscribe(); controller.abort(); };
+  });
   ctx.slots.inject('settings.section', () => ctx.slots.register({
     name: 'settings.section', id: 'dsh-coopanion', order: 60,
     label: () => ctx.locale.bind('coopanion')('nav'), locale: 'coopanion', inject: () => face,
@@ -79,7 +92,7 @@ export function apply(ctx: Context): void {
     child.effect(() => new ApprovalClient({
       clientId, status: () => child.uiSession.sessionStatus.getSnapshot(),
       subscribe: listener => child.uiSession.sessionStatus.subscribe(listener),
-      enabled: () => face.form.getSnapshot().value?.inlineApprovals !== false,
+      enabled: () => face.form()?.getSnapshot().value?.inlineApprovals !== false,
       resolve: value => ctx.locale.resolveText(value),
       poll: async (payload, signal) => {
         const reply = await ctx.connection.rpc.call('/api', 'coopanion/approval-cards', payload, signal);
@@ -107,7 +120,7 @@ export function apply(ctx: Context): void {
           snooze: (payload, signal) => request('notification-snooze', payload, signal),
         },
         preferences: () => {
-          const value = face.form.getSnapshot().value;
+          const value = face.form()?.getSnapshot().value;
           return notificationPreferencesSchema.parse({ notifications: value?.notifications ?? false, quietMode: value?.quietMode ?? false, systemNotifications: value?.systemNotifications ?? false, reminders: value?.reminders ?? true, reminderDelayMs: value?.reminderDelayMs ?? 600000 });
         },
         openSession: sessionId => { child.uiWorkspace.openSession(sessionId as SessionId); window.focus(); },

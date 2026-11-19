@@ -1,9 +1,10 @@
 import { randomUUID } from 'node:crypto';
 import { StagePresence, stageRoutes } from './stage-host.ts';
 import type { Context, Volatile } from '@deepseek-ai/cordis';
+import type {} from '@deepseek-ai/cordis-plugin-loader';
 import type { CredentialProvider } from '@deepseek-ai/dsh-credentials';
 import type {} from '@deepseek-ai/dsh-client-connection';
-import type {} from '@deepseek-ai/dsh-settings';
+import type { SettingsNamespace } from '@deepseek-ai/dsh-settings';
 import type {} from '@deepseek-ai/dsh-agent';
 import type {} from '@deepseek-ai/dsh-user-approval';
 import type {} from '@deepseek-ai/dsh-user-questions';
@@ -74,6 +75,8 @@ export async function apply(ctx: Context, config: Config): Promise<void> {
 
 /** Shared assembly used by integration tests with an IPC substitute for the native window. */
 export async function mountPet(ctx: Context, options: Config, bridge: PetBridge): Promise<void> {
+  // Settings addresses the entry's options id. The Loader's full id includes its parent path.
+  const settingsNamespace = (ctx.fiber.entry?.options.id ?? name) as SettingsNamespace;
   const model = new PetModel();
   const chat = new ChatSubmission(ctx);
   const chatLifetime = new AbortController();
@@ -96,7 +99,7 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
   });
   const preferences: Partial<Pick<DesktopOptions, 'roam' | 'notifications' | 'quietMode' | 'decisionsReactions' | 'companionship' | 'interfaceStyle' | 'defaultChatTarget'>> = {};
   let savePreference: ((field: 'roam' | 'notifications' | 'quietMode' | 'decisionsReactions' | 'companionship' | 'interfaceStyle' | 'defaultChatTarget', value: boolean | CompanionshipMode | 'new' | 'classic' | 'companion' | 'last') => Promise<void>) | undefined;
-  ctx.inject(['settings'], child => { savePreference = (field, value) => child.settings.mutate('dsh-coopanion', [{ op: 'set', path: [field], value }]); });
+  ctx.inject(['settings'], child => { savePreference = (field, value) => child.settings.mutate(settingsNamespace, [{ op: 'set', path: [field], value }]); });
   const currentOptions = (): DesktopOptions => ({ interfaceStyle: options.interfaceStyle.get(), defaultChatTarget: options.defaultChatTarget.get(), size: options.size.get(), npcHome: options.npcHome.get(), npcRange: options.npcRange.get(), textScale: options.textScale.get(), aboveFullscreen: options.aboveFullscreen.get(), preferOpeningParagraph: options.preferOpeningParagraph.get(), inlineQuestions: options.inlineQuestions.get(), roam: options.roam.get(), diagnostics: options.diagnostics.get(), companionship: options.companionship.get(), notifications: options.notifications.get(), quietMode: options.quietMode.get(), decisionsReactions: options.decisionsReactions.get(), decisionsProvider: options.decisionsProvider.get(), reactionStatus: reactions.status(), bubbleDurationMs: options.bubbleDurationMs.get(), systemNotifications: options.systemNotifications.get(), reminders: options.reminders.get(), reminderDelayMs: options.reminderDelayMs.get(), electronPath: options.electronPath, runtimeSource: options.runtimeSource.get(), locale, ...preferences });
   controls = new PetControls(bridge, currentOptions);
   let locale: string | undefined;
@@ -191,7 +194,7 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
     const timer = setInterval(sync, 2000);
     timer.unref(); return () => clearInterval(timer);
   });
-  ctx.on('settings/document-updated', ns => { if (ns === 'dsh-coopanion') { controls.configure(); broker.preferences(notificationPrefs()); syncNotifications(); } else if (ns === 'locale') syncLocale(); });
+  ctx.on('settings/document-updated', ns => { if (ns === settingsNamespace) { controls.configure(); broker.preferences(notificationPrefs()); syncNotifications(); } else if (ns === 'locale') syncLocale(); });
   ctx.inject(['connection'], child => {
     const presence = new StagePresence(away => controls.setStageAway(away));
     child.effect(() => () => presence.close());
@@ -206,7 +209,7 @@ export async function mountPet(ctx: Context, options: Config, bridge: PetBridge)
         }
         if (endpoint === 'status') {
           wire.object({}).strict().parse(payload);
-          return { ok: true, value: { ...controls.status(), reactionStatus: reactions.status() } };
+          return { ok: true, value: { ...controls.status(), reactionStatus: reactions.status(), settingsNamespace } };
         }
         if (endpoint === 'navigation') {
           wire.object({}).strict().parse(payload);

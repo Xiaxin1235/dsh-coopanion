@@ -5,14 +5,25 @@ import { test } from 'node:test';
 import { webcrypto } from 'node:crypto';
 
 test('the real Client factory synchronizes resolved Harness locale without workspace or notifications', async () => {
-  let factory, active='en'; const listeners=new Set(), calls=[], cleanup=[];
+  let factory, active='en'; const listeners=new Set(), calls=[], cleanup=[], forms=[];
   const focusEvents=new EventTarget(), documentEvents=new EventTarget();
   const document={createElement:()=>({dataset:{},remove(){}}),head:{append(){}},visibilityState:'visible',addEventListener:documentEvents.addEventListener.bind(documentEvents),removeEventListener:documentEvents.removeEventListener.bind(documentEvents)};
   runInNewContext(readFileSync(new URL('../dist/client.js',import.meta.url),'utf8'),{crypto:webcrypto,window:{__ModuleLoader__:{load(value){factory=value.factory;}},addEventListener:focusEvents.addEventListener.bind(focusEvents),removeEventListener:focusEvents.removeEventListener.bind(focusEvents)},document,URL,TextEncoder,TextDecoder,AbortController,setTimeout,clearTimeout});
   const client=factory(()=>({}));
-  const ctx={effect(fn){const stop=fn(); if(stop) cleanup.push(stop);},inject(){},locale:{register:()=>()=>{},getLocale:()=>({active}),resolveText:()=>active==='custom'?'zh':active,subscribe(fn){listeners.add(fn);return()=>listeners.delete(fn);}},configForms:{get:()=>({getSnapshot:()=>({value:{notifications:false,systemNotifications:false}})})},slots:{inject(){}},connection:{isLoopback:true,rpc:{async call(...args){calls.push(args);return{ok:true,value:{}};}}}};
+  const ctx={
+    effect(fn){const stop=fn(); if(stop) cleanup.push(stop);},inject(){},
+    locale:{register:()=>()=>{},getLocale:()=>({active}),resolveText:()=>active==='custom'?'zh':active,subscribe(fn){listeners.add(fn);return()=>listeners.delete(fn);}},
+    configForms:{get(ns){forms.push(ns);return{getSnapshot:()=>({value:{notifications:false,systemNotifications:false}})};}},
+    slots:{inject(){}},
+    connection:{isLoopback:true,generation:{subscribe:()=>()=>{}},rpc:{async call(...args){
+      calls.push(args);
+      const value=args[1]==='coopanion/status' ? {phase:'running',visible:true,settingsNamespace:'renamed-coopanion'} : {};
+      return {ok:true,value};
+    }}},
+  };
   client.apply(ctx); await new Promise(resolve=>setTimeout(resolve,20));
   assert.ok(calls.some(call=>call[2]?.locale==='en'),'initial resolved language is sent even without uiWorkspace');
+  assert.deepEqual(forms,['renamed-coopanion'],'the browser binds only the namespace reported by the Host');
   active='zh'; for(const listener of listeners) listener(); await new Promise(resolve=>setTimeout(resolve,20));
   assert.equal(calls.at(-1)[2].locale,'zh','language changes propagate immediately');
   const previous=calls.length; focusEvents.dispatchEvent(new Event('focus')); await new Promise(resolve=>setTimeout(resolve,20));

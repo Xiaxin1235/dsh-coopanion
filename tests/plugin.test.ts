@@ -298,16 +298,25 @@ it('defaults to the new interface and hot-syncs the persisted style through exis
 });
 
 
-it('writes the interface style preference to the existing durable settings service', async () => {
+it.each([undefined, 'renamed-coopanion'])('writes interface style and watches updates for the owning settings entry (%s)', async (entryId) => {
   const ctx = new Context(); ctx.provide('agents', { list: () => [] });
   const mutate = vi.fn(async () => {}); ctx.provide('settings', { describe: () => [], mutate });
   let action: ((value: unknown) => void) | undefined;
-  const bridge = { ...nativeBridge(), onAction: (fn: (value: unknown) => void) => { action = fn; } };
-  const fiber = ctx.plugin(scope => mountPet(scope, Config({ autoStart: false }), bridge));
+  const bridge = { ...nativeBridge(), configure: vi.fn(), onAction: (fn: (value: unknown) => void) => { action = fn; } };
+  const fiber = ctx.plugin(scope => {
+    if (entryId) Object.assign(scope.fiber, { entry: { id: `include:${entryId}`, options: { id: entryId } } });
+    return mountPet(scope, Config({ autoStart: false }), bridge);
+  });
   try {
+    const ns = (entryId ?? 'dsh-coopanion') as SettingsNamespace;
     await fiber.await(); action?.({ type: 'preference', field: 'interfaceStyle', value: 'classic' });
-    await vi.waitFor(() => expect(mutate).toHaveBeenCalledWith('dsh-coopanion', [{ op: 'set', path: ['interfaceStyle'], value: 'classic' }]));
+    await vi.waitFor(() => expect(mutate).toHaveBeenCalledWith(ns, [{ op: 'set', path: ['interfaceStyle'], value: 'classic' }]));
     action?.({ type: 'preference', field: 'interfaceStyle', value: 'dark' }); expect(mutate).toHaveBeenCalledTimes(1);
+    bridge.configure.mockClear();
+    ctx.emit('settings/document-updated', `include:${ns}` as SettingsNamespace, 1);
+    expect(bridge.configure).not.toHaveBeenCalled();
+    ctx.emit('settings/document-updated', ns, 1);
+    expect(bridge.configure).toHaveBeenCalledOnce();
   } finally { await fiber.dispose(); await ctx.fiber.dispose(); }
 });
 

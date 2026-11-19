@@ -13,7 +13,7 @@ import { reactionKeyView, type ReactionKeyInfo } from './reaction-key-view.ts';
 export type { ReactionKeyInfo } from './reaction-key-view.ts';
 export type ReactionKeyStatus = Record<'openai' | 'openrouter', ReactionKeyInfo>;
 export interface SettingsFace {
-  form: ConfigForm<Preferences>;
+  form: () => ConfigForm<Preferences> | undefined;
   call: (command?: PetCommand, signal?: AbortSignal) => Promise<PetStatus>;
   local: boolean;
   notifier?: NotificationSettings;
@@ -42,11 +42,12 @@ function NumberPreference({ value, min, max, label, hint, invalidHint, id, disab
 const disconnected: NotificationClientStatus = { web: { supported: false, permission: 'unavailable', osAuthorization: 'unknown' }, connected: false };
 const noSubscribe = () => () => {};
 
-export function Settings({ form, call, local, notifier, getKeyStatus, setKey, clearKey, t }: SettingsProps) {
+export function Settings({ form: getForm, call, local, notifier, getKeyStatus, setKey, clearKey, t }: SettingsProps) {
   const notification = useSyncExternalStore(notifier?.subscribe ?? noSubscribe, notifier?.getSnapshot ?? (() => disconnected));
   const [notificationBusy, setNotificationBusy] = useState(false);
   const [notificationError, setNotificationError] = useState('');
-  const accepted = useSyncExternalStore(listener => form.subscribe(listener), () => form.getSnapshot());
+  const form = getForm();
+  const accepted = useSyncExternalStore(listener => form?.subscribe(listener) ?? noSubscribe(), () => form?.getSnapshot());
   const [status, setStatus] = useState<PetStatus>();
   const [failure, setFailure] = useState('');
   const [busy, setBusy] = useState(false);
@@ -86,7 +87,7 @@ export function Settings({ form, call, local, notifier, getKeyStatus, setKey, cl
   };
   const save = async (field: keyof Preferences, value: number | boolean | CompanionshipMode | RuntimeSourcePreference | 'companion' | 'last' | 'openai' | 'openrouter') => {
     setSaving(true); setFeedback(undefined); setSaveFailure('');
-    try { setFeedback(await form.set(field, value) ? 'saved' : 'refused'); }
+    try { setFeedback(await form?.set(field, value) ? 'saved' : 'refused'); }
     catch (error) { setSaveFailure(String(error instanceof Error ? error.message : error)); }
     finally { setSaving(false); }
   };
@@ -109,8 +110,8 @@ export function Settings({ form, call, local, notifier, getKeyStatus, setKey, cl
     catch (error) { setNotificationError(String(error instanceof Error ? error.message : error)); }
     finally { setNotificationBusy(false); }
   };
-  const ready = accepted.status === 'ready' && accepted.writable && !saving;
-  const prefs = accepted.value;
+  const ready = accepted?.status === 'ready' && accepted.writable && !saving;
+  const prefs = accepted?.value;
   const reactionProvider = prefs?.decisionsProvider ?? 'openai';
   const running = status?.phase === 'running';
   const disabled = !local || busy || status?.phase === 'starting' || status?.phase === 'stopping';
@@ -252,7 +253,7 @@ export function Settings({ form, call, local, notifier, getKeyStatus, setKey, cl
     </section>
     <section className="pet-card" aria-label={t('preferences')}>
       <h3>{t('preferences')}</h3>
-      {!accepted.writable || !local ? <p>{t('unavailable')}</p> : null}
+      {accepted?.writable === false || !local ? <p>{t('unavailable')}</p> : null}
       {(['autoStart', 'roam', 'notifications', 'quietMode', 'diagnostics', 'aboveFullscreen', 'preferOpeningParagraph', 'inlineQuestions', 'inlineApprovals'] as const).map(field => <div className="pet-row" key={field}>
         <div className="pet-label"><strong>{t(field)}</strong><p>{t(`${field}Hint`)}</p></div>
         <Switch checked={prefs?.[field] ?? (field === 'aboveFullscreen' || field === 'preferOpeningParagraph' || field === 'inlineQuestions' || field === 'inlineApprovals')} disabled={!ready || !local} label={t(field)} onChange={value => void save(field, value)} />
