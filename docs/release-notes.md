@@ -1,3 +1,8 @@
+# v0.6.5
+
+- 修复桌宠菜单和 Harness 设置页的保存问题。保存与实时更新使用宿主为当前桌宠分配的配置条目 ID，兼容自定义 ID。
+- Fix persistence from the desktop pet menu and Harness settings by using the active plugin entry ID, including custom IDs.
+
 # v0.6.4
 
 - Fix macOS passive minimize recovery without activating the pet window.
