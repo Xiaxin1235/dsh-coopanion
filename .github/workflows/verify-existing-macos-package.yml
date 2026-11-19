@@ -1,4 +1,4 @@
-name: Verify existing canonical package on macOS 14
+name: Verify remaining macOS installs and publish the canonical package
 on:
   workflow_dispatch:
     inputs:
@@ -7,24 +7,76 @@ on:
         required: true
         type: string
       canonical-run:
-        description: Workflow run containing the existing desktop-pet artifact
+        description: Fork release run that built and tested the canonical package
         required: true
         type: string
 permissions:
   contents: read
   actions: read
+concurrency:
+  group: fork-release-${{ inputs.tag }}
+  cancel-in-progress: false
 jobs:
-  install:
-    runs-on: macos-14
-    timeout-minutes: 30
-    strategy:
-      fail-fast: false
-      matrix:
-        dsh: ['0.2.1-alpha.1']
+  verify:
+    if: github.repository == 'Xiaxin1235/dsh-coopanion'
+    runs-on: ubuntu-latest
+    outputs:
+      commit: ${{ steps.evidence.outputs.commit }}
+      missing: ${{ steps.evidence.outputs.missing }}
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.tag }}
+          persist-credentials: false
+      - id: evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+          CANONICAL_RUN: ${{ inputs.canonical-run }}
+        run: |
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import { execFileSync } from 'node:child_process';
+          import { appendFileSync, readFileSync } from 'node:fs';
+          const { TAG, CANONICAL_RUN, GITHUB_REPOSITORY, GITHUB_OUTPUT } = process.env;
+          assert.match(TAG, /^v\d+\.\d+\.\d+$/);
+          assert.match(CANONICAL_RUN, /^\d+$/);
+          const commit = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+          assert.equal(TAG, 'v' + JSON.parse(readFileSync('package.json', 'utf8')).version);
+          const base = `repos/${GITHUB_REPOSITORY}/actions/runs/${CANONICAL_RUN}`;
+          const gh = (path) => JSON.parse(execFileSync('gh', ['api', path], { encoding: 'utf8' }));
+          const run = gh(base);
+          assert.equal(run.path, '.github/workflows/fork-release.yml');
+          assert.equal(run.head_sha, commit);
+          assert.equal(run.head_branch, TAG);
+          assert.equal(run.status, 'completed');
+          const { jobs } = gh(base + '/jobs?filter=latest&per_page=100');
+          const passed = (name) => assert.equal(jobs.find(job => job.name === name)?.conclusion, 'success', name);
+          passed('verify');
+          passed('checks / workflow-syntax');
+          const versions = ['0.2.0-rc.2', '0.2.1-alpha.1', '0.2.1-rc.1', '0.2.1-rc.2', '0.2.1-rc.3', '0.2.2-rc.1', '0.2.2-rc.2'];
+          const missing = [];
+          for (const os of ['ubuntu-latest', 'windows-latest', 'macos-15']) {
+            passed(`checks / Test (${os})`);
+            for (const version of versions) {
+              const name = `checks / Install (${os}, DSH ${version})`;
+              const job = jobs.find(item => item.name === name);
+              if (os === 'macos-15' && job?.conclusion === 'cancelled' && job.steps.length === 0) missing.push(version);
+              else passed(name);
+            }
+          }
+          assert.ok(missing.length > 0, 'No unassigned macOS jobs to resume');
+          appendFileSync(GITHUB_OUTPUT, `commit=${commit}\nmissing=${missing.join(' ')}\n`);
+          console.log('Accepted the previous successful release checks for', commit, 'and will run macOS installs for', missing.join(', '));
+          JS
+  install:
+    needs: verify
+    runs-on: macos-15
+    timeout-minutes: 65
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.verify.outputs.commit }}
           persist-credentials: false
       - uses: ./.github/actions/setup-toolchain
         with:
@@ -38,22 +90,51 @@ jobs:
           path: release
           run-id: ${{ inputs.canonical-run }}
           github-token: ${{ github.token }}
-      - name: Verify the existing package identity and real host installation
+      - name: Install the canonical package in each remaining DSH version
         env:
-          DSH_TEST_VERSION: ${{ matrix.dsh }}
           DSH_TEST_PACKAGE_DIR: ${{ github.workspace }}/release
+          MISSING: ${{ needs.verify.outputs.missing }}
+          TAG: ${{ inputs.tag }}
+          COMMIT: ${{ needs.verify.outputs.commit }}
         shell: bash
         run: |
-          cd release
-          shasum -a 256 --check SHA256SUMS
-          cd ..
-          commit=$(git rev-parse HEAD)
-          version=$(node -p 'require("./package.json").version')
-          node scripts/check-package.mjs "release/dsh-coopanion-$version.tgz" --report release/verification.json --expected-commit "$commit" --expected-version "$version"
-          npm run test:install
+          (cd release && shasum -a 256 --check SHA256SUMS)
+          node scripts/check-package.mjs "release/dsh-coopanion-${TAG#v}.tgz" --report release/verification.json --expected-commit "$COMMIT" --expected-version "${TAG#v}"
+          read -r -a versions <<< "$MISSING"
+          for version in "${versions[@]}"; do
+            echo "::group::Install on DSH $version"
+            DSH_TEST_VERSION="$version" npm run test:install
+            echo "::endgroup::"
+          done
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: installation-macOS15-${{ matrix.dsh }}
+          name: remaining-macos-install-checks
           path: artifacts/
           retention-days: 7
+  publish:
+    needs: [verify, install]
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.verify.outputs.commit }}
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: desktop-pet
+          path: release
+          run-id: ${{ inputs.canonical-run }}
+          github-token: ${{ github.token }}
+      - name: Publish the canonical package
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+          COMMIT: ${{ needs.verify.outputs.commit }}
+        run: |
+          (cd release && sha256sum --check SHA256SUMS)
+          node scripts/check-package.mjs "release/dsh-coopanion-${TAG#v}.tgz" --report release/verification.json --expected-commit "$COMMIT" --expected-version "${TAG#v}"
+          gh release create "$TAG" release/* --repo "$GITHUB_REPOSITORY" --verify-tag --title "WhaleMaid companion ${TAG#v}" --notes-file release/release-notes.md
