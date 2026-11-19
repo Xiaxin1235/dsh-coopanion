@@ -62,9 +62,12 @@ async function menu(page) { await page.locator('#pet').dispatchEvent('contextmen
 
 test('NPC follows real arrival, pauses typing, resumes retained intent and returns home', async t => {
   const { page, receive, body, configure } = await fixture(t, 'quiet');
+  // Exercise the same real walks on a short route so software WebGL can reach both endpoints.
+  await configure({ npcRange: .1 });
   await npcUntil(page, 'outbound');
-  const original = await page.evaluate(() => ({ id: window.npcState.walkId, target: window.npcState.target }));
+  const original = await page.evaluate(() => ({ id: window.npcState.walkId, target: window.npcState.target, start: window.npcInput.layout.x }));
   assert.ok(original.id > 0);
+  assert.ok(Math.abs(original.target - original.start) >= 30);
   await page.evaluate(() => { window.npcKeyboard = 'active'; }); await npcTick(page);
   assert.equal(await page.evaluate(() => window.npcState.phase), 'yield');
   assert.equal(await page.evaluate(() => window.npcState.target), original.target);
